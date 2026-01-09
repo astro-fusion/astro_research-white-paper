@@ -70,11 +70,11 @@ ephemeris = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/vedic-numerology-astrology"
-Documentation = "https://vedic-numerology-astrology.readthedocs.io/"
-Repository = "https://github.com/yourusername/vedic-numerology-astrology"
-"Bug Reports" = "https://github.com/yourusername/vedic-numerology-astrology/issues"
-"Source" = "https://github.com/yourusername/vedic-numerology-astrology"
+Homepage = "https://github.com/astro-fusion/numerology-white-paper"
+Documentation = "https://numerology-white-paper.readthedocs.io/"
+Repository = "https://github.com/astro-fusion/numerology-white-paper"
+"Bug Reports" = "https://github.com/astro-fusion/numerology-white-paper/issues"
+"Source" = "https://github.com/astro-fusion/numerology-white-paper"
 
 [tool.setuptools]
 packages = ["vedic_numerology"]

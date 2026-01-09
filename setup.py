@@ -21,11 +21,11 @@ setup(
     description="Computational Integration of Vedic Numerology and Sidereal Mechanics",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/vedic-numerology-astrology",
+    url="https://github.com/astro-fusion/numerology-white-paper",
     project_urls={
-        "Bug Tracker": "https://github.com/yourusername/vedic-numerology-astrology/issues",
-        "Documentation": "https://vedic-numerology-astrology.readthedocs.io/",
-        "Source Code": "https://github.com/yourusername/vedic-numerology-astrology",
+        "Bug Tracker": "https://github.com/astro-fusion/numerology-white-paper/issues",
+        "Documentation": "https://numerology-white-paper.readthedocs.io/",
+        "Source Code": "https://github.com/astro-fusion/numerology-white-paper",
     },
     classifiers=[
         "Development Status :: 3 - Alpha",

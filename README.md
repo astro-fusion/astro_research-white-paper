@@ -1,6 +1,6 @@
 # Vedic Numerology-Astrology Integration System
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yourusername/vedic-numerology-astrology/blob/main/notebooks/01_numerology_calculations.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/astro-fusion/numerology-white-paper/blob/main/notebooks/01_numerology_calculations.ipynb)
 
 A comprehensive Python package for integrating Vedic Numerology (Anka Jyotish) with Vedic Astrology (Parashari Jyotish) using Swiss Ephemeris calculations. This system provides quantitative analysis of how planetary positions support or contradict numerological potentials.
 
@@ -35,7 +35,7 @@ A comprehensive Python package for integrating Vedic Numerology (Anka Jyotish) w
 2. Upload and run the tutorial notebooks:
    ```bash
    # In Colab cell:
-   !pip install git+https://github.com/yourusername/vedic-numerology-astrology.git
+   !pip install git+https://github.com/astro-fusion/numerology-white-paper.git
    ```
 
 ### Option 2: Local Installation
@@ -47,7 +47,7 @@ A comprehensive Python package for integrating Vedic Numerology (Anka Jyotish) w
 #### Install Core Package
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/vedic-numerology-astrology.git
+git clone https://github.com/astro-fusion/numerology-white-paper.git
 cd vedic-numerology-astrology
 
 # Install with pip
@@ -186,7 +186,7 @@ print(f"Dignity type: {mars_dignity['dignity_type']}")
 2. **Install the Package**:
    ```python
    # Run this in the first Colab cell
-   !pip install git+https://github.com/yourusername/vedic-numerology-astrology.git
+   !pip install git+https://github.com/astro-fusion/numerology-white-paper.git
    ```
 
 3. **Run Tutorial Notebooks**:
@@ -229,7 +229,7 @@ To share your analysis:
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/vedic-numerology-astrology.git
+git clone https://github.com/astro-fusion/numerology-white-paper.git
 cd vedic-numerology-astrology
 
 # Create virtual environment
@@ -365,7 +365,7 @@ with open('analysis_report.txt', 'w') as f:
 ## 📁 Project Structure
 
 ```
-vedic-numerology-astrology/
+numerology-white-paper/
 ├── src/vedic_numerology/          # Main package
 │   ├── numerology/                 # Numerology calculations
 │   ├── astrology/                  # Astronomical calculations
@@ -462,9 +462,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/vedic-numerology-astrology/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/vedic-numerology-astrology/discussions)
-- **Documentation**: [Read the Docs](https://vedic-numerology-astrology.readthedocs.io/)
+- **Issues**: [GitHub Issues](https://github.com/astro-fusion/numerology-white-paper/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/astro-fusion/numerology-white-paper/discussions)
+- **Documentation**: [Read the Docs](https://numerology-white-paper.readthedocs.io/)
 
 ---
 
