@@ -6,12 +6,14 @@ Provides centralized configuration for all modules in the system.
 """
 
 import os
-import yaml
-from typing import Dict, Any, Optional, Union
 from pathlib import Path
+from typing import Any, Dict, Optional, Union
+
+import yaml
 
 try:
     import yaml
+
     YAML_AVAILABLE = True
 except ImportError:
     YAML_AVAILABLE = False
@@ -21,53 +23,54 @@ from .constants import AYANAMSA_SYSTEMS, HOUSE_SYSTEMS
 
 # Default configuration
 DEFAULT_CONFIG = {
-    'astrology': {
-        'ayanamsa_system': 'lahiri',
-        'house_system': 'placidus',
-        'sidereal_zodiac': True,
-        'default_latitude': 28.6139,  # Delhi
-        'default_longitude': 77.1025,  # Delhi
-        'default_timezone': 'Asia/Kolkata',
+    "astrology": {
+        "ayanamsa_system": "lahiri",
+        "house_system": "placidus",
+        "sidereal_zodiac": True,
+        "default_latitude": 28.6139,  # Delhi
+        "default_longitude": 77.1025,  # Delhi
+        "default_timezone": "Asia/Kolkata",
     },
-    'numerology': {
-        'sunrise_correction': True,
-        'vedic_day_calculation': True,
-        'master_numbers_reduced': True,  # Reduce 11,22,33 to 2,4,6
+    "numerology": {
+        "sunrise_correction": True,
+        "vedic_day_calculation": True,
+        "master_numbers_reduced": True,  # Reduce 11,22,33 to 2,4,6
     },
-    'dignity': {
-        'scoring_scale': '0-100',
-        'include_retrograde_bonus': True,
-        'include_combustion_penalty': True,
-        'include_shadbala': False,  # Advanced feature, disabled by default
-        'friendship_matrix': 'traditional',
+    "dignity": {
+        "scoring_scale": "0-100",
+        "include_retrograde_bonus": True,
+        "include_combustion_penalty": True,
+        "include_shadbala": False,  # Advanced feature, disabled by default
+        "friendship_matrix": "traditional",
     },
-    'visualization': {
-        'default_library': 'plotly',  # 'plotly' or 'matplotlib'
-        'color_scheme': 'default',
-        'figure_size': [10, 6],
-        'dpi': 150,
-        'interactive_charts': True,
+    "visualization": {
+        "default_library": "plotly",  # 'plotly' or 'matplotlib'
+        "color_scheme": "default",
+        "figure_size": [10, 6],
+        "dpi": 150,
+        "interactive_charts": True,
     },
-    'performance': {
-        'cache_ephemeris': True,
-        'cache_timeout_hours': 24,
-        'batch_processing': True,
-        'max_cache_size_mb': 100,
+    "performance": {
+        "cache_ephemeris": True,
+        "cache_timeout_hours": 24,
+        "batch_processing": True,
+        "max_cache_size_mb": 100,
     },
-    'logging': {
-        'level': 'INFO',
-        'file_logging': False,
-        'log_directory': 'logs',
-        'max_log_files': 30,
-        'log_format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    "logging": {
+        "level": "INFO",
+        "file_logging": False,
+        "log_directory": "logs",
+        "max_log_files": 30,
+        "log_format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     },
-    'output': {
-        'decimal_precision': 2,
-        'include_symbols': True,
-        'language': 'en',
-        'report_format': 'text',
+    "output": {
+        "decimal_precision": 2,
+        "include_symbols": True,
+        "language": "en",
+        "report_format": "text",
     },
 }
+
 
 class Config:
     """
@@ -111,7 +114,7 @@ class Config:
         if not config_path.exists():
             raise FileNotFoundError(f"Configuration file not found: {config_path}")
 
-        with open(config_path, 'r', encoding='utf-8') as f:
+        with open(config_path, "r", encoding="utf-8") as f:
             user_config = yaml.safe_load(f)
 
         # Deep merge user config with defaults
@@ -133,7 +136,7 @@ class Config:
         config_path = Path(config_file)
         config_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(config_path, 'w', encoding='utf-8') as f:
+        with open(config_path, "w", encoding="utf-8") as f:
             yaml.dump(self._config, f, default_flow_style=False, indent=2)
 
     def get(self, key: str, default: Any = None) -> Any:
@@ -147,7 +150,7 @@ class Config:
         Returns:
             Configuration value
         """
-        keys = key.split('.')
+        keys = key.split(".")
         value = self._config
 
         try:
@@ -165,7 +168,7 @@ class Config:
             key: Dot-separated configuration key
             value: Value to set
         """
-        keys = key.split('.')
+        keys = key.split(".")
         config = self._config
 
         # Navigate to the parent of the final key
@@ -203,31 +206,41 @@ class Config:
             ValueError: If configuration contains invalid values
         """
         # Validate Ayanamsa system
-        ayanamsa = self.get('astrology.ayanamsa_system')
-        if ayanamsa and ayanamsa.lower() not in [k.lower() for k in AYANAMSA_SYSTEMS.keys()]:
+        ayanamsa = self.get("astrology.ayanamsa_system")
+        if ayanamsa and ayanamsa.lower() not in [
+            k.lower() for k in AYANAMSA_SYSTEMS.keys()
+        ]:
             valid_systems = list(AYANAMSA_SYSTEMS.keys())
-            raise ValueError(f"Invalid Ayanamsa system '{ayanamsa}'. Valid systems: {valid_systems}")
+            raise ValueError(
+                f"Invalid Ayanamsa system '{ayanamsa}'. Valid systems: {valid_systems}"
+            )
 
         # Validate house system
-        house_system = self.get('astrology.house_system')
-        if house_system and house_system.lower() not in [k.lower() for k in HOUSE_SYSTEMS.keys()]:
+        house_system = self.get("astrology.house_system")
+        if house_system and house_system.lower() not in [
+            k.lower() for k in HOUSE_SYSTEMS.keys()
+        ]:
             valid_systems = list(HOUSE_SYSTEMS.keys())
-            raise ValueError(f"Invalid house system '{house_system}'. Valid systems: {valid_systems}")
+            raise ValueError(
+                f"Invalid house system '{house_system}'. Valid systems: {valid_systems}"
+            )
 
         # Validate visualization library
-        viz_lib = self.get('visualization.default_library')
-        if viz_lib and viz_lib.lower() not in ['plotly', 'matplotlib']:
+        viz_lib = self.get("visualization.default_library")
+        if viz_lib and viz_lib.lower() not in ["plotly", "matplotlib"]:
             raise ValueError("Visualization library must be 'plotly' or 'matplotlib'")
 
         # Validate coordinate ranges
-        lat = self.get('astrology.default_latitude')
-        lon = self.get('astrology.default_longitude')
+        lat = self.get("astrology.default_latitude")
+        lon = self.get("astrology.default_longitude")
 
         if lat is not None and not (-90 <= lat <= 90):
             raise ValueError(f"Default latitude must be between -90 and 90, got {lat}")
 
         if lon is not None and not (-180 <= lon <= 180):
-            raise ValueError(f"Default longitude must be between -180 and 180, got {lon}")
+            raise ValueError(
+                f"Default longitude must be between -180 and 180, got {lon}"
+            )
 
     def to_dict(self) -> Dict[str, Any]:
         """
@@ -268,7 +281,9 @@ def load_config(config_file: Optional[Union[str, Path]] = None) -> Config:
     return Config(config_file)
 
 
-def create_default_config_file(config_file: Union[str, Path] = "config/default_config.yaml") -> None:
+def create_default_config_file(
+    config_file: Union[str, Path] = "config/default_config.yaml",
+) -> None:
     """
     Create a default configuration file.
 
@@ -294,10 +309,10 @@ def get_config_paths() -> Dict[str, Path]:
     cwd = Path.cwd()
 
     return {
-        'user_home': home / '.vedic_numerology' / 'config.yaml',
-        'project_root': cwd / 'config' / 'default_config.yaml',
-        'current_dir': cwd / 'vedic_config.yaml',
-        'system_config': Path('/etc/vedic_numerology/config.yaml'),
+        "user_home": home / ".vedic_numerology" / "config.yaml",
+        "project_root": cwd / "config" / "default_config.yaml",
+        "current_dir": cwd / "vedic_config.yaml",
+        "system_config": Path("/etc/vedic_numerology/config.yaml"),
     }
 
 
@@ -342,6 +357,7 @@ def load_or_create_config(config_file: Optional[Union[str, Path]] = None) -> Con
 # Global configuration instance
 _global_config = None
 
+
 def get_global_config() -> Config:
     """
     Get the global configuration instance.
@@ -354,6 +370,7 @@ def get_global_config() -> Config:
         _global_config = load_or_create_config()
     return _global_config
 
+
 def set_global_config(config: Config) -> None:
     """
     Set the global configuration instance.
@@ -364,15 +381,16 @@ def set_global_config(config: Config) -> None:
     global _global_config
     _global_config = config
 
+
 # Export key functions and classes
 __all__ = [
-    'Config',
-    'load_config',
-    'create_default_config_file',
-    'get_config_paths',
-    'find_config_file',
-    'load_or_create_config',
-    'get_global_config',
-    'set_global_config',
-    'DEFAULT_CONFIG',
+    "Config",
+    "load_config",
+    "create_default_config_file",
+    "get_config_paths",
+    "find_config_file",
+    "load_or_create_config",
+    "get_global_config",
+    "set_global_config",
+    "DEFAULT_CONFIG",
 ]

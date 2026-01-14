@@ -8,20 +8,26 @@ This module handles the low-level astronomical calculations required
 for Vedic astrology, including sidereal zodiac conversions.
 """
 
-from typing import Dict, List, Optional, Tuple, Union
+import math
 from datetime import datetime
 from enum import Enum
-import math
+from typing import Dict, List, Optional, Tuple, Union
 
 try:
     import swisseph as swe
+
     SWISSEPH_AVAILABLE = True
 except ImportError:
     SWISSEPH_AVAILABLE = False
     swe = None
 
-from .ayanamsa import AyanamsaSystem, get_ayanamsa_offset, convert_tropical_to_sidereal, get_pyswisseph_ayanamsa_constant
 from ..config.constants import PLANETS
+from .ayanamsa import (
+    AyanamsaSystem,
+    convert_tropical_to_sidereal,
+    get_ayanamsa_offset,
+    get_pyswisseph_ayanamsa_constant,
+)
 
 
 class EphemerisEngine:
@@ -79,9 +85,9 @@ class EphemerisEngine:
         """
         # Convert to UTC if timezone-aware
         if dt.tzinfo is not None:
-            dt = dt.utctimetuple()
-            year, month, day = dt.tm_year, dt.tm_mon, dt.tm_mday
-            hour = dt.tm_hour + dt.tm_min / 60.0 + dt.tm_sec / 3600.0
+            utc_tm = dt.utctimetuple()
+            year, month, day = utc_tm.tm_year, utc_tm.tm_mon, utc_tm.tm_mday
+            hour = utc_tm.tm_hour + utc_tm.tm_min / 60.0 + utc_tm.tm_sec / 3600.0
         else:
             year, month, day = dt.year, dt.month, dt.day
             hour = dt.hour + dt.minute / 60.0 + dt.second / 3600.0
@@ -94,9 +100,14 @@ class EphemerisEngine:
         a = math.floor(year / 100)
         b = 2 - a + math.floor(a / 4)
 
-        jd = (math.floor(365.25 * (year + 4716)) +
-              math.floor(30.6001 * (month + 1)) +
-              day + b - 1524 + hour / 24.0)
+        jd = (
+            math.floor(365.25 * (year + 4716))
+            + math.floor(30.6001 * (month + 1))
+            + day
+            + b
+            - 1524.5
+            + hour / 24.0
+        )
 
         return jd
 
@@ -130,7 +141,7 @@ class EphemerisEngine:
         # Calculate position using Swiss Ephemeris
         # swe.calc_ut returns: ((longitude, latitude, distance, speed_longitude, speed_latitude, speed_distance), rflag)
         result = swe.calc_ut(julian_day, planet)
-        
+
         # Unpack coordinates from the first element of the result tuple
         coordinates = result[0]
         longitude, latitude, distance = coordinates[0], coordinates[1], coordinates[2]
@@ -146,6 +157,7 @@ class EphemerisEngine:
 
         # Get zodiac sign information
         from .ayanamsa import get_zodiac_sign
+
         sign_index, sign_name, degrees_in_sign = get_zodiac_sign(longitude)
 
         # Check retrograde status
@@ -155,7 +167,7 @@ class EphemerisEngine:
         sun_result = swe.calc_ut(julian_day, swe.SUN)
         sun_coordinates = sun_result[0]
         sun_longitude = sun_coordinates[0]
-        
+
         if not self.sidereal_mode_set:
             sun_longitude = convert_tropical_to_sidereal(sun_longitude, ayanamsa)
 
@@ -165,15 +177,15 @@ class EphemerisEngine:
         combust = angle_diff <= 8.0  # 8-degree orb for combustion
 
         return {
-            'longitude': longitude,
-            'latitude': latitude,
-            'distance': distance,
-            'longitude_speed': speed_longitude,
-            'sign': sign_index,
-            'sign_name': sign_name,
-            'degrees_in_sign': degrees_in_sign,
-            'retrograde': retrograde,
-            'combust': combust
+            "longitude": longitude,
+            "latitude": latitude,
+            "distance": distance,
+            "longitude_speed": speed_longitude,
+            "sign": sign_index,
+            "sign_name": sign_name,
+            "degrees_in_sign": degrees_in_sign,
+            "retrograde": retrograde,
+            "combust": combust,
         }
 
     def get_node_positions(self, julian_day: float) -> Tuple[Dict, Dict]:
@@ -190,18 +202,21 @@ class EphemerisEngine:
         rahu_data = self.get_planet_position(julian_day, swe.TRUE_NODE)
 
         # Ketu is always 180 degrees opposite to Rahu
-        ketu_longitude = (rahu_data['longitude'] + 180) % 360
+        ketu_longitude = (rahu_data["longitude"] + 180) % 360
 
         # Create Ketu position data (copy Rahu and modify)
         ketu_data = rahu_data.copy()
-        ketu_data['longitude'] = ketu_longitude
+        ketu_data["longitude"] = ketu_longitude
 
         # Recalculate sign information for Ketu
         from .ayanamsa import get_zodiac_sign
-        ketu_sign_index, ketu_sign_name, ketu_degrees_in_sign = get_zodiac_sign(ketu_longitude)
-        ketu_data['sign'] = ketu_sign_index
-        ketu_data['sign_name'] = ketu_sign_name
-        ketu_data['degrees_in_sign'] = ketu_degrees_in_sign
+
+        ketu_sign_index, ketu_sign_name, ketu_degrees_in_sign = get_zodiac_sign(
+            ketu_longitude
+        )
+        ketu_data["sign"] = ketu_sign_index
+        ketu_data["sign_name"] = ketu_sign_name
+        ketu_data["degrees_in_sign"] = ketu_degrees_in_sign
 
         return rahu_data, ketu_data
 
@@ -217,7 +232,7 @@ class EphemerisEngine:
             True if planet is retrograde
         """
         position_data = self.get_planet_position(julian_day, planet)
-        return position_data['retrograde']
+        return position_data["retrograde"]
 
     def is_combust(self, julian_day: float, planet: Union[int, str]) -> bool:
         """
@@ -231,7 +246,7 @@ class EphemerisEngine:
             True if planet is combust
         """
         position_data = self.get_planet_position(julian_day, planet)
-        return position_data['combust']
+        return position_data["combust"]
 
     def get_all_planet_positions(self, julian_day: float) -> Dict[str, Dict]:
         """
@@ -244,29 +259,31 @@ class EphemerisEngine:
             Dictionary mapping planet names to position data
         """
         planets = {
-            'Sun': swe.SUN,
-            'Moon': swe.MOON,
-            'Mars': swe.MARS,
-            'Mercury': swe.MERCURY,
-            'Jupiter': swe.JUPITER,
-            'Venus': swe.VENUS,
-            'Saturn': swe.SATURN,
-            'Rahu': swe.TRUE_NODE,  # Will be handled specially
-            'Ketu': 'KETU'  # Special marker for Ketu calculation
+            "Sun": swe.SUN,
+            "Moon": swe.MOON,
+            "Mars": swe.MARS,
+            "Mercury": swe.MERCURY,
+            "Jupiter": swe.JUPITER,
+            "Venus": swe.VENUS,
+            "Saturn": swe.SATURN,
+            "Rahu": swe.TRUE_NODE,  # Will be handled specially
+            "Ketu": "KETU",  # Special marker for Ketu calculation
         }
 
         positions = {}
 
         for planet_name, planet_const in planets.items():
-            if planet_name == 'Ketu':
+            if planet_name == "Ketu":
                 # Handle Ketu specially
                 rahu_data, ketu_data = self.get_node_positions(julian_day)
-                positions['Ketu'] = ketu_data
-            elif planet_name == 'Rahu':
+                positions["Ketu"] = ketu_data
+            elif planet_name == "Rahu":
                 rahu_data, ketu_data = self.get_node_positions(julian_day)
-                positions['Rahu'] = rahu_data
+                positions["Rahu"] = rahu_data
             else:
-                positions[planet_name] = self.get_planet_position(julian_day, planet_const)
+                positions[planet_name] = self.get_planet_position(
+                    julian_day, planet_const
+                )
 
         return positions
 
@@ -284,25 +301,27 @@ class EphemerisEngine:
             ValueError: If planet name is not recognized
         """
         name_to_const = {
-            'sun': swe.SUN,
-            'moon': swe.MOON,
-            'mars': swe.MARS,
-            'mercury': swe.MERCURY,
-            'jupiter': swe.JUPITER,
-            'venus': swe.VENUS,
-            'saturn': swe.SATURN,
-            'rahu': swe.TRUE_NODE,
-            'ketu': swe.TRUE_NODE,  # Ketu handled separately
-            'north_node': swe.TRUE_NODE,
-            'south_node': swe.TRUE_NODE,
-            'true_node': swe.TRUE_NODE,
-            'mean_node': swe.MEAN_NODE,
+            "sun": swe.SUN,
+            "moon": swe.MOON,
+            "mars": swe.MARS,
+            "mercury": swe.MERCURY,
+            "jupiter": swe.JUPITER,
+            "venus": swe.VENUS,
+            "saturn": swe.SATURN,
+            "rahu": swe.TRUE_NODE,
+            "ketu": swe.TRUE_NODE,  # Ketu handled separately
+            "north_node": swe.TRUE_NODE,
+            "south_node": swe.TRUE_NODE,
+            "true_node": swe.TRUE_NODE,
+            "mean_node": swe.MEAN_NODE,
         }
 
         planet_lower = planet_name.lower()
         if planet_lower not in name_to_const:
             valid_names = list(name_to_const.keys())
-            raise ValueError(f"Unknown planet '{planet_name}'. Valid names: {valid_names}")
+            raise ValueError(
+                f"Unknown planet '{planet_name}'. Valid names: {valid_names}"
+            )
 
         return name_to_const[planet_lower]
 
@@ -314,8 +333,8 @@ class EphemerisEngine:
             Dictionary with ephemeris configuration info
         """
         return {
-            'swisseph_available': SWISSEPH_AVAILABLE,
-            'sidereal_mode_set': self.sidereal_mode_set,
-            'ayanamsa_system': self.ayanamsa_system.value,
-            'version': swe.version if SWISSEPH_AVAILABLE else None
+            "swisseph_available": SWISSEPH_AVAILABLE,
+            "sidereal_mode_set": self.sidereal_mode_set,
+            "ayanamsa_system": self.ayanamsa_system.value,
+            "version": swe.version if SWISSEPH_AVAILABLE else None,
         }

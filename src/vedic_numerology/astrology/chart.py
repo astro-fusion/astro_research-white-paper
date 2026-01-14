@@ -5,20 +5,21 @@ Handles complete birth chart generation including ascendant calculation,
 house cusps, planetary positions, and chart analysis for Vedic astrology.
 """
 
-from typing import Dict, List, Optional, Tuple, Union
-from datetime import datetime
 import math
+from datetime import datetime
+from typing import Dict, List, Optional, Tuple, Union
 
 try:
     import swisseph as swe
+
     SWISSEPH_AVAILABLE = True
 except ImportError:
     SWISSEPH_AVAILABLE = False
     swe = None
 
-from .ephemeris import EphemerisEngine
-from .ayanamsa import AyanamsaSystem, get_ayanamsa_offset, convert_tropical_to_sidereal
 from ..config.constants import PLANETS, SIGNS
+from .ayanamsa import AyanamsaSystem, convert_tropical_to_sidereal, get_ayanamsa_offset
+from .ephemeris import EphemerisEngine
 
 
 class BirthChart:
@@ -29,8 +30,13 @@ class BirthChart:
     required for dignity scoring and numerology-astrology correlation.
     """
 
-    def __init__(self, birth_datetime: datetime, latitude: float, longitude: float,
-                 ayanamsa_system: AyanamsaSystem = AyanamsaSystem.LAHIRI):
+    def __init__(
+        self,
+        birth_datetime: datetime,
+        latitude: float,
+        longitude: float,
+        ayanamsa_system: AyanamsaSystem = AyanamsaSystem.LAHIRI,
+    ):
         """
         Initialize birth chart.
 
@@ -45,6 +51,14 @@ class BirthChart:
         self.longitude = longitude
         self.ayanamsa_system = ayanamsa_system
 
+        # Validate coordinates
+        if not (-90 <= self.latitude <= 90):
+            raise ValueError(f"Latitude must be between -90 and 90, got {self.latitude}")
+        if not (-180 <= self.longitude <= 180):
+            raise ValueError(
+                f"Longitude must be between -180 and 180, got {self.longitude}"
+            )
+
         # Initialize ephemeris engine
         self.ephemeris = EphemerisEngine(ayanamsa_system)
 
@@ -58,21 +72,21 @@ class BirthChart:
         self._ayanamsa = None
 
     @property
-    def ascendant(self) -> Optional[Dict]:
+    def ascendant(self) -> Dict:
         """Get ascendant (Lagna) information."""
         if self._ascendant is None:
             self._ascendant = self._calculate_ascendant()
         return self._ascendant
 
     @property
-    def houses(self) -> Optional[List[Dict]]:
+    def houses(self) -> List[Dict]:
         """Get house cusp information."""
         if self._houses is None:
             self._houses = self._calculate_houses()
         return self._houses
 
     @property
-    def planets(self) -> Optional[Dict[str, Dict]]:
+    def planets(self) -> Dict[str, Dict]:
         """Get all planetary positions."""
         if self._planets is None:
             self._planets = self.ephemeris.get_all_planet_positions(self.julian_day)
@@ -83,6 +97,7 @@ class BirthChart:
         """Get Ayanamsa value for this chart."""
         if self._ayanamsa is None:
             from .ayanamsa import get_ayanamsa_offset
+
             self._ayanamsa = get_ayanamsa_offset(self.julian_day, self.ayanamsa_system)
         return self._ayanamsa
 
@@ -98,27 +113,32 @@ class BirthChart:
         """
         # Calculate ascendant using Swiss Ephemeris
         # swe.houses_ex() returns house cusps, but we can also get ascendant directly
-        cusps, ascmc = swe.houses_ex(self.julian_day, self.latitude, self.longitude, b'P')  # Placidus
+        cusps, ascmc = swe.houses_ex(
+            self.julian_day, self.latitude, self.longitude, b"P"
+        )  # Placidus
 
         ascendant_longitude = ascmc[0]  # Ascendant is first element
 
         # Convert to sidereal if needed
         if not self.ephemeris.sidereal_mode_set:
-            ascendant_longitude = convert_tropical_to_sidereal(ascendant_longitude, self.ayanamsa)
+            ascendant_longitude = convert_tropical_to_sidereal(
+                ascendant_longitude, self.ayanamsa
+            )
 
         # Normalize to 0-360
         ascendant_longitude = ascendant_longitude % 360
 
         # Get sign information
         from .ayanamsa import get_zodiac_sign
+
         sign_index, sign_name, degrees_in_sign = get_zodiac_sign(ascendant_longitude)
 
         return {
-            'longitude': ascendant_longitude,
-            'sign': sign_index,
-            'sign_name': sign_name,
-            'degrees_in_sign': degrees_in_sign,
-            'full_name': f"{sign_name} {degrees_in_sign:.2f}°"
+            "longitude": ascendant_longitude,
+            "sign": sign_index,
+            "sign_name": sign_name,
+            "degrees_in_sign": degrees_in_sign,
+            "full_name": f"{sign_name} {degrees_in_sign:.2f}°",
         }
 
     def _calculate_houses(self) -> List[Dict]:
@@ -131,7 +151,9 @@ class BirthChart:
             List of 12 dictionaries with house information
         """
         # Calculate houses using Swiss Ephemeris
-        cusps, ascmc = swe.houses_ex(self.julian_day, self.latitude, self.longitude, b'P')  # Placidus
+        cusps, ascmc = swe.houses_ex(
+            self.julian_day, self.latitude, self.longitude, b"P"
+        )  # Placidus
 
         houses = []
 
@@ -140,23 +162,28 @@ class BirthChart:
 
             # Convert to sidereal if needed
             if not self.ephemeris.sidereal_mode_set:
-                house_longitude = convert_tropical_to_sidereal(house_longitude, self.ayanamsa)
+                house_longitude = convert_tropical_to_sidereal(
+                    house_longitude, self.ayanamsa
+                )
 
             # Normalize to 0-360
             house_longitude = house_longitude % 360
 
             # Get sign information
             from .ayanamsa import get_zodiac_sign
+
             sign_index, sign_name, degrees_in_sign = get_zodiac_sign(house_longitude)
 
-            houses.append({
-                'house_number': i + 1,
-                'longitude': house_longitude,
-                'sign': sign_index,
-                'sign_name': sign_name,
-                'degrees_in_sign': degrees_in_sign,
-                'full_name': f"{sign_name} {degrees_in_sign:.2f}°"
-            })
+            houses.append(
+                {
+                    "house_number": i + 1,
+                    "longitude": house_longitude,
+                    "sign": sign_index,
+                    "sign_name": sign_name,
+                    "degrees_in_sign": degrees_in_sign,
+                    "full_name": f"{sign_name} {degrees_in_sign:.2f}°",
+                }
+            )
 
         return houses
 
@@ -173,8 +200,8 @@ class BirthChart:
         if planet_name not in self.planets:
             return None
 
-        planet_longitude = self.planets[planet_name]['longitude']
-        ascendant_longitude = self.ascendant['longitude']
+        planet_longitude = self.planets[planet_name]["longitude"]
+        ascendant_longitude = self.ascendant["longitude"]
 
         # Calculate house by finding angular distance from ascendant
         # Each house spans 30 degrees
@@ -196,7 +223,7 @@ class BirthChart:
         planets_in_sign = []
 
         for planet_name, planet_data in self.planets.items():
-            if planet_data['sign'] == sign_index:
+            if planet_data["sign"] == sign_index:
                 planets_in_sign.append(planet_name)
 
         return planets_in_sign
@@ -209,21 +236,31 @@ class BirthChart:
             Dictionary with chart summary information
         """
         return {
-            'birth_datetime': self.birth_datetime.isoformat(),
-            'latitude': self.latitude,
-            'longitude': self.longitude,
-            'ayanamsa_system': self.ayanamsa_system.value,
-            'ayanamsa_value': self.ayanamsa,
-            'julian_day': self.julian_day,
-            'ascendant': self.ascendant,
-            'planets': self.planets,
-            'houses': [{'house': h['house_number'], 'sign': h['sign_name'],
-                       'longitude': h['longitude']} for h in self.houses]
+            "birth_datetime": self.birth_datetime.isoformat(),
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+            "ayanamsa_system": self.ayanamsa_system.value,
+            "ayanamsa_value": self.ayanamsa,
+            "julian_day": self.julian_day,
+            "ascendant": self.ascendant,
+            "planets": self.planets,
+            "houses": [
+                {
+                    "house": h["house_number"],
+                    "sign": h["sign_name"],
+                    "longitude": h["longitude"],
+                }
+                for h in self.houses
+            ],
         }
 
 
-def calculate_chart(birth_datetime: datetime, latitude: float, longitude: float,
-                   ayanamsa_system: AyanamsaSystem = AyanamsaSystem.LAHIRI) -> BirthChart:
+def calculate_chart(
+    birth_datetime: datetime,
+    latitude: float,
+    longitude: float,
+    ayanamsa_system: AyanamsaSystem = AyanamsaSystem.LAHIRI,
+) -> BirthChart:
     """
     Convenience function to calculate a complete birth chart.
 
@@ -239,8 +276,12 @@ def calculate_chart(birth_datetime: datetime, latitude: float, longitude: float,
     return BirthChart(birth_datetime, latitude, longitude, ayanamsa_system)
 
 
-def get_ascendant(birth_datetime: datetime, latitude: float, longitude: float,
-                 ayanamsa_system: AyanamsaSystem = AyanamsaSystem.LAHIRI) -> Dict:
+def get_ascendant(
+    birth_datetime: datetime,
+    latitude: float,
+    longitude: float,
+    ayanamsa_system: AyanamsaSystem = AyanamsaSystem.LAHIRI,
+) -> Dict:
     """
     Calculate ascendant for a given birth data.
 
@@ -257,8 +298,12 @@ def get_ascendant(birth_datetime: datetime, latitude: float, longitude: float,
     return chart.ascendant
 
 
-def get_house_system(birth_datetime: datetime, latitude: float, longitude: float,
-                    ayanamsa_system: AyanamsaSystem = AyanamsaSystem.LAHIRI) -> List[Dict]:
+def get_house_system(
+    birth_datetime: datetime,
+    latitude: float,
+    longitude: float,
+    ayanamsa_system: AyanamsaSystem = AyanamsaSystem.LAHIRI,
+) -> List[Dict]:
     """
     Calculate house cusps for a given birth data.
 
@@ -286,4 +331,5 @@ def get_planet_in_sign(longitude: float) -> Tuple[int, str, float]:
         Tuple of (sign_index, sign_name, degrees_in_sign)
     """
     from .ayanamsa import get_zodiac_sign
+
     return get_zodiac_sign(longitude)

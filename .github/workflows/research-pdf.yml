@@ -74,10 +74,10 @@ jobs:
         matplotlib.use('Agg')
 
         # Use workflow inputs or defaults
-        birth_date = '${{ github.event.inputs.birth_date || \"1984-08-27\" }}'
-        birth_time = '${{ github.event.inputs.birth_time || \"10:30\" }}'
-        latitude = float('${{ github.event.inputs.latitude || \"28.6139\" }}')
-        longitude = float('${{ github.event.inputs.longitude || \"77.1025\" }}')
+        birth_date = '${{ coalesce(github.event.inputs.birth_date, '1984-08-27') }}'
+        birth_time = '${{ coalesce(github.event.inputs.birth_time, '10:30') }}'
+        latitude = float('${{ coalesce(github.event.inputs.latitude, '28.6139') }}')
+        longitude = float('${{ coalesce(github.event.inputs.longitude, '77.1025') }}')
 
         print(f'Generating analysis for: {birth_date} {birth_time}')
         print(f'Location: {latitude}°N, {longitude}°E')
@@ -207,13 +207,13 @@ jobs:
         "
 
     - name: Upload research PDF
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: research-manuscript-pdf
         path: manuscript.pdf
 
     - name: Upload research data and reports
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: research-data-reports
         path: |
@@ -224,7 +224,7 @@ jobs:
 
     - name: Upload PDF to GitHub Pages (optional)
       if: github.ref == 'refs/heads/main'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: github-pages-pdf
         path: manuscript.pdf

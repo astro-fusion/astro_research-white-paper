@@ -12,15 +12,23 @@ This package provides:
 - Google Colab integration
 """
 
-from datetime import datetime
-from typing import Optional, Dict, Any, Tuple, Union
 import warnings
+from datetime import date, datetime, time
+from typing import Any, Dict, Optional, Tuple, Union
 
-from .numerology import calculate_mulanka, calculate_bhagyanka, calculate_complete_numerology
-from .astrology import BirthChart, calculate_chart
+from .astrology import AyanamsaSystem, BirthChart, calculate_chart
+from .config import PLANET_NAMES, Planet
 from .dignity import DignityScorer
-from .visualization import plot_temporal_support, plot_mulanka_vs_bhagyanka, plot_dignity_radar
-from .config import Planet
+from .numerology import (
+    calculate_bhagyanka,
+    calculate_complete_numerology,
+    calculate_mulanka,
+)
+from .visualization import (
+    plot_dignity_radar,
+    plot_mulanka_vs_bhagyanka,
+    plot_temporal_support,
+)
 
 __version__ = "0.1.0"
 __author__ = "Norah Jones"
@@ -36,11 +44,15 @@ class VedicNumerologyAstrology:
     contradict numerological potentials.
     """
 
-    def __init__(self, birth_date: Union[str, datetime.date],
-                 birth_time: Optional[Union[str, datetime.time]] = None,
-                 latitude: float = 28.6139, longitude: float = 77.1025,
-                 timezone: str = "Asia/Kolkata",
-                 ayanamsa_system: str = "LAHIRI"):
+    def __init__(
+        self,
+        birth_date: Union[str, date],
+        birth_time: Optional[Union[str, time]] = None,
+        latitude: float = 28.6139,
+        longitude: float = 77.1025,
+        timezone: str = "Asia/Kolkata",
+        ayanamsa_system: str = "LAHIRI",
+    ):
         """
         Initialize the analysis with birth data.
 
@@ -60,12 +72,24 @@ class VedicNumerologyAstrology:
         self.timezone = timezone
         self.ayanamsa_system = ayanamsa_system
 
+        # Validate Ayanamsa system
+        if self.ayanamsa_system.upper() != "LAHIRI":
+            try:
+                AyanamsaSystem[self.ayanamsa_system.upper()]
+            except KeyError:
+                valid_systems = [s.name for s in AyanamsaSystem]
+                raise ValueError(
+                    f"Unknown Ayanamsa system '{self.ayanamsa_system}'. Valid systems: {valid_systems}"
+                )
+
         # Create datetime object for birth
         if self.birth_time:
             self.birth_datetime = datetime.combine(self.birth_date, self.birth_time)
         else:
             # Use noon if no time specified (common default)
-            self.birth_datetime = datetime.combine(self.birth_date, datetime.strptime("12:00:00", "%H:%M:%S").time())
+            self.birth_datetime = datetime.combine(
+                self.birth_date, datetime.strptime("12:00:00", "%H:%M:%S").time()
+            )
 
         # Initialize components
         self._numerology_data = None
@@ -75,19 +99,23 @@ class VedicNumerologyAstrology:
         # Validate coordinates
         self._validate_coordinates()
 
-    def _parse_birth_date(self, birth_date: Union[str, datetime.date]) -> datetime.date:
+    def _parse_birth_date(self, birth_date: Union[str, date]) -> date:
         """Parse birth date from string or date object."""
         if isinstance(birth_date, str):
             try:
                 return datetime.strptime(birth_date, "%Y-%m-%d").date()
             except ValueError:
-                raise ValueError(f"Invalid birth date format: {birth_date}. Use YYYY-MM-DD")
-        elif isinstance(birth_date, datetime.date):
+                raise ValueError(
+                    f"Invalid birth date format: {birth_date}. Use YYYY-MM-DD"
+                )
+        elif isinstance(birth_date, date):
             return birth_date
         else:
-            raise TypeError(f"birth_date must be string or date object, got {type(birth_date)}")
+            raise TypeError(
+                f"birth_date must be string or date object, got {type(birth_date)}"
+            )
 
-    def _parse_birth_time(self, birth_time: Union[str, datetime.time]) -> datetime.time:
+    def _parse_birth_time(self, birth_time: Union[str, time]) -> time:
         """Parse birth time from string or time object."""
         if isinstance(birth_time, str):
             try:
@@ -97,28 +125,34 @@ class VedicNumerologyAstrology:
                 try:
                     return datetime.strptime(birth_time, "%H:%M").time()
                 except ValueError:
-                    raise ValueError(f"Invalid birth time format: {birth_time}. Use HH:MM or HH:MM:SS")
-        elif isinstance(birth_time, datetime.time):
+                    raise ValueError(
+                        f"Invalid birth time format: {birth_time}. Use HH:MM or HH:MM:SS"
+                    )
+        elif isinstance(birth_time, time):
             return birth_time
         else:
-            raise TypeError(f"birth_time must be string or time object, got {type(birth_time)}")
+            raise TypeError(
+                f"birth_time must be string or time object, got {type(birth_time)}"
+            )
+
 
     def _validate_coordinates(self):
         """Validate latitude and longitude coordinates."""
         if not (-90 <= self.latitude <= 90):
-            raise ValueError(f"Latitude must be between -90 and 90, got {self.latitude}")
+            raise ValueError(
+                f"Latitude must be between -90 and 90, got {self.latitude}"
+            )
         if not (-180 <= self.longitude <= 180):
-            raise ValueError(f"Longitude must be between -180 and 180, got {self.longitude}")
+            raise ValueError(
+                f"Longitude must be between -180 and 180, got {self.longitude}"
+            )
 
     @property
     def numerology_data(self) -> Dict[str, Any]:
         """Get numerology calculations (Mulanka and Bhagyanka)."""
         if self._numerology_data is None:
             self._numerology_data = calculate_complete_numerology(
-                self.birth_date,
-                self.birth_time,
-                self.latitude,
-                self.longitude
+                self.birth_date, self.birth_time, self.latitude, self.longitude
             )
         return self._numerology_data
 
@@ -126,15 +160,13 @@ class VedicNumerologyAstrology:
     def chart(self) -> BirthChart:
         """Get birth chart with planetary positions."""
         if self._chart is None:
-            from .astrology import AyanamsaSystem
             ayanamsa = AyanamsaSystem.LAHIRI  # Default to Lahiri
             if self.ayanamsa_system.upper() != "LAHIRI":
-                try:
-                    ayanamsa = AyanamsaSystem[self.ayanamsa_system.upper()]
-                except KeyError:
-                    warnings.warn(f"Unknown Ayanamsa system '{self.ayanamsa_system}', using Lahiri")
+                ayanamsa = AyanamsaSystem[self.ayanamsa_system.upper()]
 
-            self._chart = calculate_chart(self.birth_datetime, self.latitude, self.longitude, ayanamsa)
+            self._chart = calculate_chart(
+                self.birth_datetime, self.latitude, self.longitude, ayanamsa
+            )
         return self._chart
 
     def calculate_mulanka(self) -> Dict[str, Any]:
@@ -144,7 +176,7 @@ class VedicNumerologyAstrology:
         Returns:
             Dictionary with Mulanka data including number, planet, and correction status
         """
-        return self.numerology_data['mulanka']
+        return self.numerology_data["mulanka"]
 
     def calculate_bhagyanka(self) -> Dict[str, Any]:
         """
@@ -153,7 +185,7 @@ class VedicNumerologyAstrology:
         Returns:
             Dictionary with Bhagyanka data including number and planet
         """
-        return self.numerology_data['bhagyanka']
+        return self.numerology_data["bhagyanka"]
 
     def score_dignity(self, planet: Union[Planet, str]) -> Dict[str, Any]:
         """
@@ -181,7 +213,7 @@ class VedicNumerologyAstrology:
         mulanka_data = self.calculate_mulanka()
         bhagyanka_data = self.calculate_bhagyanka()
 
-        return mulanka_data['planet'], bhagyanka_data['planet']
+        return mulanka_data["planet"], bhagyanka_data["planet"]
 
     def analyze_support_contradiction(self) -> Dict[str, Any]:
         """
@@ -207,24 +239,27 @@ class VedicNumerologyAstrology:
                 return "Contradiction"
 
         analysis = {
-            'mulanka': {
-                'planet': mulanka_planet.name,
-                'score': mulanka_score['score'],
-                'support_level': get_support_level(mulanka_score['score']),
-                'dignity_type': mulanka_score['dignity_type'],
-                'details': mulanka_score
+            "mulanka": {
+                "planet": mulanka_planet.name,
+                "score": mulanka_score["score"],
+                "support_level": get_support_level(mulanka_score["score"]),
+                "dignity_type": mulanka_score["dignity_type"],
+                "details": mulanka_score,
             },
-            'bhagyanka': {
-                'planet': bhagyanka_planet.name,
-                'score': bhagyanka_score['score'],
-                'support_level': get_support_level(bhagyanka_score['score']),
-                'dignity_type': bhagyanka_score['dignity_type'],
-                'details': bhagyanka_score
+            "bhagyanka": {
+                "planet": bhagyanka_planet.name,
+                "score": bhagyanka_score["score"],
+                "support_level": get_support_level(bhagyanka_score["score"]),
+                "dignity_type": bhagyanka_score["dignity_type"],
+                "details": bhagyanka_score,
             },
-            'overall': {
-                'average_score': (mulanka_score['score'] + bhagyanka_score['score']) / 2,
-                'harmony_level': self._calculate_harmony(mulanka_score['score'], bhagyanka_score['score'])
-            }
+            "overall": {
+                "average_score": (mulanka_score["score"] + bhagyanka_score["score"])
+                / 2,
+                "harmony_level": self._calculate_harmony(
+                    mulanka_score["score"], bhagyanka_score["score"]
+                ),
+            },
         }
 
         return analysis
@@ -243,10 +278,13 @@ class VedicNumerologyAstrology:
         else:
             return "Significant Tension"
 
-    def plot_support_index(self, start_date: Optional[datetime] = None,
-                          end_date: Optional[datetime] = None,
-                          planet: Optional[Union[Planet, str]] = None,
-                          use_plotly: bool = True):
+    def plot_support_index(
+        self,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None,
+        planet: Optional[Union[Planet, str]] = None,
+        use_plotly: bool = True,
+    ):
         """
         Create temporal support visualization for numerology planet.
 
@@ -276,11 +314,16 @@ class VedicNumerologyAstrology:
             planet = Planet[planet.upper()]
 
         # Get natal score for reference line
-        natal_score = self.score_dignity(planet)['score']
+        natal_score = self.score_dignity(planet)["score"]
 
         return plot_temporal_support(
-            planet, start_date.date(), end_date.date(),
-            self.latitude, self.longitude, natal_score, use_plotly
+            planet,
+            start_date,
+            end_date,
+            self.latitude,
+            self.longitude,
+            natal_score,
+            use_plotly,
         )
 
     def plot_numerology_comparison(self, use_plotly: bool = True):
@@ -296,17 +339,20 @@ class VedicNumerologyAstrology:
         mulanka_data = self.calculate_mulanka()
         bhagyanka_data = self.calculate_bhagyanka()
 
-        mulanka_score = self.score_dignity(mulanka_data['planet'])['score']
-        bhagyanka_score = self.score_dignity(bhagyanka_data['planet'])['score']
+        mulanka_score = self.score_dignity(mulanka_data["planet"])["score"]
+        bhagyanka_score = self.score_dignity(bhagyanka_data["planet"])["score"]
 
         return plot_mulanka_vs_bhagyanka(
-            mulanka_score, bhagyanka_score,
-            mulanka_data['planet'], bhagyanka_data['planet'],
-            use_plotly
+            mulanka_score,
+            bhagyanka_score,
+            mulanka_data["planet"],
+            bhagyanka_data["planet"],
+            use_plotly,
         )
 
-    def plot_dignity_analysis(self, planet: Optional[Union[Planet, str]] = None,
-                             use_plotly: bool = True):
+    def plot_dignity_analysis(
+        self, planet: Optional[Union[Planet, str]] = None, use_plotly: bool = True
+    ):
         """
         Create radar chart showing dignity factors for a planet.
 
@@ -349,35 +395,57 @@ class VedicNumerologyAstrology:
         report_lines.append(f"  Date: {self.birth_date}")
         if self.birth_time:
             report_lines.append(f"  Time: {self.birth_time}")
-        report_lines.append(f"  Location: {self.latitude:.4f}°N, {self.longitude:.4f}°E")
+        report_lines.append(
+            f"  Location: {self.latitude:.4f}°N, {self.longitude:.4f}°E"
+        )
         report_lines.append("")
 
         # Numerology results
         report_lines.append("NUMEROLOGY CALCULATIONS:")
-        mulanka = numerology['mulanka']
-        bhagyanka = numerology['bhagyanka']
+        mulanka = numerology["mulanka"]
+        bhagyanka = numerology["bhagyanka"]
 
-        report_lines.append(f"  Mulanka (Birth Number): {mulanka['number']} - {mulanka['planet'].name}")
-        report_lines.append(f"  Bhagyanka (Destiny Number): {bhagyanka['number']} - {bhagyanka['planet'].name}")
+        report_lines.append(
+            f"  Mulanka (Birth Number): {mulanka['number']} - {PLANET_NAMES[mulanka['planet']]}"
+        )
+        report_lines.append(
+            f"  Bhagyanka (Destiny Number): {bhagyanka['number']} - {PLANET_NAMES[bhagyanka['planet']]}"
+        )
 
-        if numerology['sunrise_corrected']:
-            report_lines.append("  Note: Sunrise correction applied for Vedic day calculation")
+        if numerology["sunrise_corrected"]:
+            report_lines.append(
+                "  Note: Sunrise correction applied for Vedic day calculation"
+            )
         report_lines.append("")
 
         # Support analysis
         report_lines.append("PLANETARY SUPPORT ANALYSIS:")
-        report_lines.append(f"  Mulanka ({analysis['mulanka']['planet']}): {analysis['mulanka']['support_level']}")
-        report_lines.append(f"    Dignity Score: {analysis['mulanka']['score']:.1f}/100")
+        report_lines.append(
+            f"  Mulanka ({analysis['mulanka']['planet']}): {analysis['mulanka']['support_level']}"
+        )
+        report_lines.append(
+            f"    Dignity Score: {analysis['mulanka']['score']:.1f}/100"
+        )
         report_lines.append(f"    Dignity Type: {analysis['mulanka']['dignity_type']}")
 
         report_lines.append("")
-        report_lines.append(f"  Bhagyanka ({analysis['bhagyanka']['planet']}): {analysis['bhagyanka']['support_level']}")
-        report_lines.append(f"    Dignity Score: {analysis['bhagyanka']['score']:.1f}/100")
-        report_lines.append(f"    Dignity Type: {analysis['bhagyanka']['dignity_type']}")
+        report_lines.append(
+            f"  Bhagyanka ({analysis['bhagyanka']['planet']}): {analysis['bhagyanka']['support_level']}"
+        )
+        report_lines.append(
+            f"    Dignity Score: {analysis['bhagyanka']['score']:.1f}/100"
+        )
+        report_lines.append(
+            f"    Dignity Type: {analysis['bhagyanka']['dignity_type']}"
+        )
 
         report_lines.append("")
-        report_lines.append(f"  Overall Harmony: {analysis['overall']['harmony_level']}")
-        report_lines.append(f"  Average Score: {analysis['overall']['average_score']:.1f}")
+        report_lines.append(
+            f"  Overall Harmony: {analysis['overall']['harmony_level']}"
+        )
+        report_lines.append(
+            f"  Average Score: {analysis['overall']['average_score']:.1f}"
+        )
 
         report_lines.append("=" * 70)
 
@@ -385,16 +453,21 @@ class VedicNumerologyAstrology:
 
     def __repr__(self) -> str:
         """String representation of the analysis object."""
-        return (f"VedicNumerologyAstrology("
-                f"birth_date={self.birth_date}, "
-                f"birth_time={self.birth_time}, "
-                f"location=({self.latitude:.2f}, {self.longitude:.2f}))")
+        return (
+            f"VedicNumerologyAstrology("
+            f"birth_date={self.birth_date}, "
+            f"birth_time={self.birth_time}, "
+            f"location=({self.latitude:.2f}, {self.longitude:.2f}))"
+        )
 
 
 # Convenience functions for quick analysis
-def analyze_birth_chart(birth_date: Union[str, datetime.date],
-                       birth_time: Optional[Union[str, datetime.time]] = None,
-                       latitude: float = 28.6139, longitude: float = 77.1025) -> VedicNumerologyAstrology:
+def analyze_birth_chart(
+    birth_date: Union[str, date],
+    birth_time: Optional[Union[str, time]] = None,
+    latitude: float = 28.6139,
+    longitude: float = 77.1025,
+) -> VedicNumerologyAstrology:
     """
     Create and return a VedicNumerologyAstrology analysis object.
 

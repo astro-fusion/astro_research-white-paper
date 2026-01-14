@@ -69,10 +69,10 @@ jobs:
         matplotlib.use('Agg')
 
         # Get workflow inputs
-        analysis_type = '${{ github.event.inputs.analysis_type || \"comprehensive\" }}'
-        birth_dates_input = '${{ github.event.inputs.birth_dates || \"1984-08-27\" }}'
-        output_format = '${{ github.event.inputs.output_format || \"both\" }}'
-        include_viz = '${{ github.event.inputs.include_visualizations || \"true\" }}'
+        analysis_type = '${{ coalesce(github.event.inputs.analysis_type, 'comprehensive') }}'
+        birth_dates_input = '${{ coalesce(github.event.inputs.birth_dates, '1984-08-27') }}'
+        output_format = '${{ coalesce(github.event.inputs.output_format, 'both') }}'
+        include_viz = '${{ coalesce(github.event.inputs.include_visualizations, 'true') }}'
 
         print(f'Analysis Type: {analysis_type}')
         print(f'Birth Dates: {birth_dates_input}')
@@ -232,7 +232,7 @@ jobs:
         "
 
     - name: Upload analysis results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: data-analysis-results-${{ github.run_number }}
         path: analysis_results/

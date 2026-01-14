@@ -9,9 +9,9 @@ The Vedic day (Vara) starts at sunrise and affects which day number
 is used for numerological calculations.
 """
 
-from typing import Optional, Tuple
-from datetime import datetime, date, time, timedelta
 import math
+from datetime import date, datetime, time, timedelta
+from typing import Optional, Tuple
 
 try:
     from suntime import Sun
@@ -22,12 +22,15 @@ try:
     from flatlib import const
     from flatlib.datetime import Datetime as FlatlibDatetime
     from flatlib.geopos import GeoPos
+
     FLATLIB_AVAILABLE = True
 except ImportError:
     FLATLIB_AVAILABLE = False
 
 
-def get_sunrise_time(birth_date: date, latitude: float, longitude: float) -> Optional[datetime]:
+def get_sunrise_time(
+    birth_date: date, latitude: float, longitude: float
+) -> Optional[datetime]:
     """
     Calculate sunrise time for a given date and location.
 
@@ -64,15 +67,21 @@ def get_sunrise_time(birth_date: date, latitude: float, longitude: float) -> Opt
     if FLATLIB_AVAILABLE:
         try:
             # Create flatlib datetime and geopos objects
-            dt = FlatlibDatetime(birth_date.year, birth_date.month, birth_date.day, 12, 0, 0)
+            dt = FlatlibDatetime(
+                birth_date.year, birth_date.month, birth_date.day, 12, 0, 0
+            )
             pos = GeoPos(latitude, longitude)
 
             # Calculate sunrise (this is approximate and may need refinement)
             # Note: flatlib's sunrise calculation might not be as accurate as suntime
             # This is a simplified implementation
-            sunrise_hour = _calculate_sunrise_approximation(latitude, longitude, birth_date)
-            sunrise = datetime.combine(birth_date, time(hour=int(sunrise_hour),
-                                                         minute=int((sunrise_hour % 1) * 60)))
+            sunrise_hour = _calculate_sunrise_approximation(
+                latitude, longitude, birth_date
+            )
+            sunrise = datetime.combine(
+                birth_date,
+                time(hour=int(sunrise_hour), minute=int((sunrise_hour % 1) * 60)),
+            )
             return sunrise
 
         except Exception as e:
@@ -83,7 +92,9 @@ def get_sunrise_time(birth_date: date, latitude: float, longitude: float) -> Opt
     return None
 
 
-def _calculate_sunrise_approximation(latitude: float, longitude: float, date: date) -> float:
+def _calculate_sunrise_approximation(
+    latitude: float, longitude: float, date: date
+) -> float:
     """
     Approximate sunrise time using simplified astronomical calculations.
 
@@ -111,7 +122,9 @@ def _calculate_sunrise_approximation(latitude: float, longitude: float, date: da
     solar_noon = 12 - longitude / 15 - equation_of_time / 60
 
     # Hour angle at sunrise
-    hour_angle = math.acos(-math.tan(math.radians(latitude)) * math.tan(math.radians(declination)))
+    hour_angle = math.acos(
+        -math.tan(math.radians(latitude)) * math.tan(math.radians(declination))
+    )
     hour_angle_deg = math.degrees(hour_angle)
 
     # Sunrise time
@@ -121,8 +134,9 @@ def _calculate_sunrise_approximation(latitude: float, longitude: float, date: da
     return sunrise % 24
 
 
-def adjust_date_for_vedic_day(birth_date: date, birth_time: time,
-                             latitude: float, longitude: float) -> date:
+def adjust_date_for_vedic_day(
+    birth_date: date, birth_time: time, latitude: float, longitude: float
+) -> date:
     """
     Adjust Gregorian date to Vedic date based on sunrise.
 
@@ -177,8 +191,9 @@ def is_vedic_day_transition(birth_time: time, sunrise_time: time) -> bool:
     return birth_time < sunrise_time
 
 
-def get_vedic_day_info(birth_date: date, birth_time: time,
-                      latitude: float, longitude: float) -> dict:
+def get_vedic_day_info(
+    birth_date: date, birth_time: time, latitude: float, longitude: float
+) -> dict:
     """
     Get complete Vedic day information for numerological analysis.
 
@@ -200,15 +215,17 @@ def get_vedic_day_info(birth_date: date, birth_time: time,
     vedic_date = adjust_date_for_vedic_day(birth_date, birth_time, latitude, longitude)
 
     birth_datetime = datetime.combine(birth_date, birth_time)
-    birth_before_sunrise = sunrise is not None and birth_datetime.time() < sunrise.time()
+    birth_before_sunrise = (
+        sunrise is not None and birth_datetime.time() < sunrise.time()
+    )
 
     return {
-        'gregorian_date': birth_date,
-        'vedic_date': vedic_date,
-        'sunrise_time': sunrise,
-        'birth_before_sunrise': birth_before_sunrise,
-        'day_number_used': vedic_date.day,
-        'correction_applied': birth_before_sunrise
+        "gregorian_date": birth_date,
+        "vedic_date": vedic_date,
+        "sunrise_time": sunrise,
+        "birth_before_sunrise": birth_before_sunrise,
+        "day_number_used": vedic_date.day,
+        "correction_applied": birth_before_sunrise,
     }
 
 

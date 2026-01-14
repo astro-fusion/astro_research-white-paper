@@ -12,10 +12,10 @@ from .settings import Config, load_config
 
 __all__ = [
     # constants
-    'PLANETS',
-    'SIGNS',
-    'NUMBER_TO_PLANET',
+    "PLANETS",
+    "SIGNS",
+    "NUMBER_TO_PLANET",
     # settings
-    'Config',
-    'load_config'
+    "Config",
+    "load_config",
 ]

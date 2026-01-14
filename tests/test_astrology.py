@@ -5,20 +5,20 @@ Tests astronomical calculations including ephemeris, chart generation,
 and Ayanamsa handling.
 """
 
-import unittest
-from datetime import datetime, date, time
-import sys
-import os
 import math
+import os
+import sys
+import unittest
+from datetime import date, datetime, time
 
 # Add src to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from vedic_numerology.astrology import AyanamsaSystem
 from vedic_numerology.astrology.ayanamsa import (
-    get_ayanamsa_offset,
-    convert_tropical_to_sidereal,
     convert_sidereal_to_tropical,
+    convert_tropical_to_sidereal,
+    get_ayanamsa_offset,
     get_zodiac_sign,
 )
 from vedic_numerology.config.constants import Planet, ZodiacSign
@@ -44,7 +44,8 @@ class TestAyanamsaCalculations(unittest.TestCase):
         ayanamsa = 24.0  # Current Lahiri Ayanamsa
 
         sidereal = convert_tropical_to_sidereal(longitude, ayanamsa)
-        self.assertAlmostEqual(sidereal, longitude - ayanamsa, places=5)
+        expected = (longitude - ayanamsa) % 360
+        self.assertAlmostEqual(sidereal, expected, places=5)
 
         # Test round-trip conversion
         tropical_again = convert_sidereal_to_tropical(sidereal, ayanamsa)
@@ -89,6 +90,7 @@ class TestEphemerisEngine(unittest.TestCase):
         """Set up test fixtures."""
         try:
             from vedic_numerology.astrology import EphemerisEngine
+
             self.ephemeris = EphemerisEngine()
             self.ephemeris_available = True
         except ImportError:
@@ -126,22 +128,31 @@ class TestEphemerisEngine(unittest.TestCase):
         position = self.ephemeris.get_planet_position(jd, Planet.SUN.name.lower())
 
         # Check required keys exist
-        required_keys = ['longitude', 'latitude', 'distance', 'longitude_speed',
-                        'sign', 'sign_name', 'degrees_in_sign', 'retrograde', 'combust']
+        required_keys = [
+            "longitude",
+            "latitude",
+            "distance",
+            "longitude_speed",
+            "sign",
+            "sign_name",
+            "degrees_in_sign",
+            "retrograde",
+            "combust",
+        ]
 
         for key in required_keys:
             self.assertIn(key, position)
 
         # Check data types
-        self.assertIsInstance(position['longitude'], float)
-        self.assertIsInstance(position['retrograde'], bool)
-        self.assertIsInstance(position['combust'], bool)
+        self.assertIsInstance(position["longitude"], float)
+        self.assertIsInstance(position["retrograde"], bool)
+        self.assertIsInstance(position["combust"], bool)
 
         # Longitude should be 0-360
-        self.assertGreaterEqual(position['longitude'], 0)
-        self.assertLess(position['longitude'], 360)
+        self.assertGreaterEqual(position["longitude"], 0)
+        self.assertLess(position["longitude"], 360)
 
-    @unittest.skipUnless(hasattr(unittest, 'assertLogs'), "assertLogs not available")
+    @unittest.skipUnless(hasattr(unittest, "assertLogs"), "assertLogs not available")
     def test_ephemeris_error_handling(self):
         """Test error handling when ephemeris is not available."""
         if self.ephemeris_available:
@@ -190,7 +201,7 @@ class TestBirthChart(unittest.TestCase):
 
     def test_ascendant_calculation(self):
         """Test ascendant calculation."""
-        if not hasattr(unittest, 'assertLogs'):
+        if not hasattr(unittest, "assertLogs"):
             self.skipTest("Cannot test without ephemeris")
 
         from vedic_numerology.astrology import BirthChart
@@ -201,16 +212,22 @@ class TestBirthChart(unittest.TestCase):
         ascendant = chart.ascendant
 
         # Check structure
-        required_keys = ['longitude', 'sign', 'sign_name', 'degrees_in_sign', 'full_name']
+        required_keys = [
+            "longitude",
+            "sign",
+            "sign_name",
+            "degrees_in_sign",
+            "full_name",
+        ]
         for key in required_keys:
             self.assertIn(key, ascendant)
 
         # Check value ranges
-        self.assertGreaterEqual(ascendant['longitude'], 0)
-        self.assertLess(ascendant['longitude'], 360)
-        self.assertIsInstance(ascendant['sign'], int)
-        self.assertGreaterEqual(ascendant['sign'], 0)
-        self.assertLess(ascendant['sign'], 12)
+        self.assertGreaterEqual(ascendant["longitude"], 0)
+        self.assertLess(ascendant["longitude"], 360)
+        self.assertIsInstance(ascendant["sign"], int)
+        self.assertGreaterEqual(ascendant["sign"], 0)
+        self.assertLess(ascendant["sign"], 12)
 
 
 class TestMars1984Case(unittest.TestCase):
@@ -235,16 +252,31 @@ class TestMars1984Case(unittest.TestCase):
         mars_position = ephemeris.get_planet_position(jd, Planet.MARS.name.lower())
 
         # Mars should be in a valid sign (0-11)
-        self.assertIsInstance(mars_position['sign'], int)
-        self.assertGreaterEqual(mars_position['sign'], 0)
-        self.assertLess(mars_position['sign'], 12)
+        self.assertIsInstance(mars_position["sign"], int)
+        self.assertGreaterEqual(mars_position["sign"], 0)
+        self.assertLess(mars_position["sign"], 12)
 
         # Scorpio is sign index 7 (210°-240°)
         # The document mentions Mars in Scorpio, so let's verify the framework works
-        sign_name = mars_position['sign_name']
+        sign_name = mars_position["sign_name"]
         self.assertIsInstance(sign_name, str)
-        self.assertIn(sign_name, ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
-                                 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'])
+        self.assertIn(
+            sign_name,
+            [
+                "Aries",
+                "Taurus",
+                "Gemini",
+                "Cancer",
+                "Leo",
+                "Virgo",
+                "Libra",
+                "Scorpio",
+                "Sagittarius",
+                "Capricorn",
+                "Aquarius",
+                "Pisces",
+            ],
+        )
 
 
 class TestCoordinateValidation(unittest.TestCase):
@@ -285,5 +317,5 @@ class TestCoordinateValidation(unittest.TestCase):
             BirthChart(birth_datetime, 28.6139, -181.0)  # Longitude < -180
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

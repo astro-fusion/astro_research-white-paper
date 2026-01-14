@@ -7,14 +7,19 @@ Main engine for calculating planetary dignity scores (0-100) based on:
 - Positional modifiers (retrograde, combust)
 """
 
-from typing import Dict, List, Optional, Tuple, Union, Any
+from typing import Any, Dict, List, Optional, Tuple, Union
+
 from ..config.constants import Planet
 from .exaltation_matrix import (
-    is_in_exaltation, is_in_debilitation, is_in_moolatrikona,
-    is_in_own_sign, get_dignity_type
+    get_dignity_type,
+    is_in_debilitation,
+    is_in_exaltation,
+    is_in_moolatrikona,
+    is_in_own_sign,
 )
-from .friendship_matrix import get_natural_friendship, FriendshipType
+from .friendship_matrix import FriendshipType, get_natural_friendship
 from .modifiers import apply_all_modifiers, get_modifier_explanation
+
 
 class DignityScorer:
     """
@@ -26,23 +31,28 @@ class DignityScorer:
 
     # Dignity score mapping (0-100 scale)
     DIGNITY_SCORES = {
-        'exaltation': 100,
-        'moolatrikona': 90,  # 85-90 range, using 90 as representative
-        'own_sign': 75,
-        'great_friend': 65,
-        'friend': 50,
-        'neutral': 40,
-        'enemy': 25,
-        'great_enemy': 10,
-        'debilitation': 5,  # 0-5 range, using 5 as representative
+        "exaltation": 100,
+        "moolatrikona": 90,  # 85-90 range, using 90 as representative
+        "own_sign": 75,
+        "great_friend": 65,
+        "friend": 50,
+        "neutral": 40,
+        "enemy": 25,
+        "great_enemy": 10,
+        "debilitation": 5,  # 0-5 range, using 5 as representative
     }
 
     def __init__(self):
         """Initialize the dignity scorer."""
         pass
 
-    def calculate_base_score(self, planet: Planet, sign_index: int,
-                           longitude: float, chart: Optional[Any] = None) -> float:
+    def calculate_base_score(
+        self,
+        planet: Planet,
+        sign_index: int,
+        longitude: float,
+        chart: Optional[Any] = None,
+    ) -> float:
         """
         Calculate base dignity score without modifiers.
 
@@ -57,19 +67,25 @@ class DignityScorer:
         """
         # Check essential dignity hierarchy
         if is_in_exaltation(longitude, planet):
-            return self.DIGNITY_SCORES['exaltation']
+            return self.DIGNITY_SCORES["exaltation"]
         elif is_in_debilitation(longitude, planet):
-            return self.DIGNITY_SCORES['debilitation']
+            return self.DIGNITY_SCORES["debilitation"]
         elif is_in_moolatrikona(longitude, planet):
-            return self.DIGNITY_SCORES['moolatrikona']
+            return self.DIGNITY_SCORES["moolatrikona"]
         elif is_in_own_sign(longitude, planet):
-            return self.DIGNITY_SCORES['own_sign']
+            return self.DIGNITY_SCORES["own_sign"]
         else:
             # Neutral sign, check friendship with sign lord
             return self._calculate_friendship_score(planet, sign_index, chart)
 
-    def calculate_full_score(self, planet: Planet, sign_index: int, longitude: float,
-                           chart: Optional[Any] = None, planet_data: Optional[Dict] = None) -> float:
+    def calculate_full_score(
+        self,
+        planet: Planet,
+        sign_index: int,
+        longitude: float,
+        chart: Optional[Any] = None,
+        planet_data: Optional[Dict] = None,
+    ) -> float:
         """
         Calculate complete dignity score with all modifiers.
 
@@ -94,8 +110,9 @@ class DignityScorer:
 
         return final_score
 
-    def _calculate_friendship_score(self, planet: Planet, sign_index: int,
-                                  chart: Optional[Any] = None) -> float:
+    def _calculate_friendship_score(
+        self, planet: Planet, sign_index: int, chart: Optional[Any] = None
+    ) -> float:
         """
         Calculate dignity score based on friendship with sign lord.
 
@@ -111,18 +128,18 @@ class DignityScorer:
         sign_lord = self._get_sign_lord(sign_index)
 
         if sign_lord is None:
-            return self.DIGNITY_SCORES['neutral']
+            return self.DIGNITY_SCORES["neutral"]
 
         # Get friendship type
         friendship = get_natural_friendship(planet, sign_lord)
 
         # Convert friendship to score
         if friendship == FriendshipType.NATURAL_FRIEND:
-            return self.DIGNITY_SCORES['friend']
+            return self.DIGNITY_SCORES["friend"]
         elif friendship == FriendshipType.NATURAL_ENEMY:
-            return self.DIGNITY_SCORES['enemy']
+            return self.DIGNITY_SCORES["enemy"]
         else:
-            return self.DIGNITY_SCORES['neutral']
+            return self.DIGNITY_SCORES["neutral"]
 
     def _get_sign_lord(self, sign_index: int) -> Optional[Planet]:
         """
@@ -136,17 +153,17 @@ class DignityScorer:
         """
         # Traditional Vedic sign lords
         sign_lords = {
-            0: Planet.MARS,      # Aries - Mars
-            1: Planet.VENUS,     # Taurus - Venus
-            2: Planet.MERCURY,   # Gemini - Mercury
-            3: Planet.MOON,      # Cancer - Moon
-            4: Planet.SUN,       # Leo - Sun
-            5: Planet.MERCURY,   # Virgo - Mercury
-            6: Planet.VENUS,     # Libra - Venus
-            7: Planet.MARS,      # Scorpio - Mars
-            8: Planet.JUPITER,   # Sagittarius - Jupiter
-            9: Planet.SATURN,    # Capricorn - Saturn
-            10: Planet.SATURN,   # Aquarius - Saturn
+            0: Planet.MARS,  # Aries - Mars
+            1: Planet.VENUS,  # Taurus - Venus
+            2: Planet.MERCURY,  # Gemini - Mercury
+            3: Planet.MOON,  # Cancer - Moon
+            4: Planet.SUN,  # Leo - Sun
+            5: Planet.MERCURY,  # Virgo - Mercury
+            6: Planet.VENUS,  # Libra - Venus
+            7: Planet.MARS,  # Scorpio - Mars
+            8: Planet.JUPITER,  # Sagittarius - Jupiter
+            9: Planet.SATURN,  # Capricorn - Saturn
+            10: Planet.SATURN,  # Aquarius - Saturn
             11: Planet.JUPITER,  # Pisces - Jupiter
         }
 
@@ -171,21 +188,23 @@ class DignityScorer:
         """
         if planet.name not in chart.planets:
             return {
-                'score': 0.0,
-                'base_score': 0.0,
-                'dignity_type': 'Not found',
-                'sign_lord': None,
-                'friendship': None,
-                'modifiers': 'Planet position not available'
+                "score": 0.0,
+                "base_score": 0.0,
+                "dignity_type": "Not found",
+                "sign_lord": None,
+                "friendship": None,
+                "modifiers": "Planet position not available",
             }
 
         planet_data = chart.planets[planet.name]
-        longitude = planet_data['longitude']
-        sign_index = planet_data['sign']
+        longitude = planet_data["longitude"]
+        sign_index = planet_data["sign"]
 
         # Calculate scores
         base_score = self.calculate_base_score(planet, sign_index, longitude, chart)
-        final_score = self.calculate_full_score(planet, sign_index, longitude, chart, planet_data)
+        final_score = self.calculate_full_score(
+            planet, sign_index, longitude, chart, planet_data
+        )
 
         # Get dignity type
         dignity_type = get_dignity_type(longitude, planet)
@@ -197,15 +216,17 @@ class DignityScorer:
             friendship = get_natural_friendship(planet, sign_lord)
 
         # Get modifier explanation
-        modifiers = get_modifier_explanation(base_score, final_score, planet_data, planet)
+        modifiers = get_modifier_explanation(
+            base_score, final_score, planet_data, planet
+        )
 
         return {
-            'score': final_score,
-            'base_score': base_score,
-            'dignity_type': dignity_type,
-            'sign_lord': sign_lord.name if sign_lord else None,
-            'friendship': friendship.value if friendship else None,
-            'modifiers': modifiers
+            "score": final_score,
+            "base_score": base_score,
+            "dignity_type": dignity_type,
+            "sign_lord": sign_lord.name if sign_lord else None,
+            "friendship": friendship.value if friendship else None,
+            "modifiers": modifiers,
         }
 
     def get_dignity_status(self, score: float) -> str:
@@ -233,7 +254,9 @@ class DignityScorer:
         else:
             return "Debilitated/Critical"
 
-    def compare_planet_scores(self, planet_scores: Dict[Planet, float]) -> Dict[str, Any]:
+    def compare_planet_scores(
+        self, planet_scores: Dict[Planet, float]
+    ) -> Dict[str, Any]:
         """
         Compare dignity scores of multiple planets.
 
@@ -244,7 +267,7 @@ class DignityScorer:
             Analysis dictionary with comparisons and insights
         """
         if not planet_scores:
-            return {'error': 'No planet scores provided'}
+            return {"error": "No planet scores provided"}
 
         scores_list = list(planet_scores.values())
         planets_list = list(planet_scores.keys())
@@ -265,24 +288,25 @@ class DignityScorer:
         poor = sum(1 for s in scores_list if s < 25)
 
         return {
-            'strongest_planets': max_planets,
-            'weakest_planets': min_planets,
-            'highest_score': max_score,
-            'lowest_score': min_score,
-            'average_score': avg_score,
-            'distribution': {
-                'excellent': excellent,
-                'strong': strong,
-                'moderate': moderate,
-                'weak': weak,
-                'poor': poor
-            }
+            "strongest_planets": max_planets,
+            "weakest_planets": min_planets,
+            "highest_score": max_score,
+            "lowest_score": min_score,
+            "average_score": avg_score,
+            "distribution": {
+                "excellent": excellent,
+                "strong": strong,
+                "moderate": moderate,
+                "weak": weak,
+                "poor": poor,
+            },
         }
 
 
 # Convenience functions for external use
-def calculate_base_score(planet: Planet, sign_index: int, longitude: float,
-                        chart: Optional[Any] = None) -> float:
+def calculate_base_score(
+    planet: Planet, sign_index: int, longitude: float, chart: Optional[Any] = None
+) -> float:
     """
     Convenience function to calculate base dignity score.
 
@@ -299,8 +323,13 @@ def calculate_base_score(planet: Planet, sign_index: int, longitude: float,
     return scorer.calculate_base_score(planet, sign_index, longitude, chart)
 
 
-def calculate_full_score(planet: Planet, sign_index: int, longitude: float,
-                        chart: Optional[Any] = None, planet_data: Optional[Dict] = None) -> float:
+def calculate_full_score(
+    planet: Planet,
+    sign_index: int,
+    longitude: float,
+    chart: Optional[Any] = None,
+    planet_data: Optional[Dict] = None,
+) -> float:
     """
     Convenience function to calculate full dignity score.
 
@@ -315,4 +344,6 @@ def calculate_full_score(planet: Planet, sign_index: int, longitude: float,
         Full dignity score (0-100)
     """
     scorer = DignityScorer()
-    return scorer.calculate_full_score(planet, sign_index, longitude, chart, planet_data)
+    return scorer.calculate_full_score(
+        planet, sign_index, longitude, chart, planet_data
+    )

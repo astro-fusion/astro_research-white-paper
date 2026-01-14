@@ -5,36 +5,36 @@ Tests planetary dignity scoring, exaltation/debilitation matrices,
 friendship matrices, and scoring modifiers.
 """
 
+import os
+import sys
 import unittest
 from unittest.mock import Mock
-import sys
-import os
 
 # Add src to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
+from vedic_numerology.config.constants import Planet
 from vedic_numerology.dignity import DignityScorer
 from vedic_numerology.dignity.exaltation_matrix import (
-    get_exaltation_sign,
-    get_debilitation_sign,
-    is_in_exaltation,
-    is_in_debilitation,
-    is_in_moolatrikona,
-    is_in_own_sign,
-    EXALTATION_TABLE,
     DEBILITATION_TABLE,
+    EXALTATION_TABLE,
     MOOLATRIKONA_TABLE,
     OWN_SIGNS_TABLE,
+    get_debilitation_sign,
+    get_exaltation_sign,
+    is_in_debilitation,
+    is_in_exaltation,
+    is_in_moolatrikona,
+    is_in_own_sign,
 )
 from vedic_numerology.dignity.friendship_matrix import (
-    get_natural_friendship,
     FriendshipType,
+    get_natural_friendship,
 )
 from vedic_numerology.dignity.modifiers import (
-    apply_retrograde_bonus,
     apply_combust_penalty,
+    apply_retrograde_bonus,
 )
-from vedic_numerology.config.constants import Planet
 
 
 class TestExaltationMatrix(unittest.TestCase):
@@ -124,25 +124,57 @@ class TestFriendshipMatrix(unittest.TestCase):
     def test_natural_friendship_sun(self):
         """Test Sun's natural friendships."""
         # Sun should be friend with Moon, Mars, Jupiter
-        self.assertEqual(get_natural_friendship(Planet.SUN, Planet.MOON), FriendshipType.NATURAL_FRIEND)
-        self.assertEqual(get_natural_friendship(Planet.SUN, Planet.MARS), FriendshipType.NATURAL_FRIEND)
-        self.assertEqual(get_natural_friendship(Planet.SUN, Planet.JUPITER), FriendshipType.NATURAL_FRIEND)
+        self.assertEqual(
+            get_natural_friendship(Planet.SUN, Planet.MOON),
+            FriendshipType.NATURAL_FRIEND,
+        )
+        self.assertEqual(
+            get_natural_friendship(Planet.SUN, Planet.MARS),
+            FriendshipType.NATURAL_FRIEND,
+        )
+        self.assertEqual(
+            get_natural_friendship(Planet.SUN, Planet.JUPITER),
+            FriendshipType.NATURAL_FRIEND,
+        )
 
         # Sun should be enemy with Venus, Saturn
-        self.assertEqual(get_natural_friendship(Planet.SUN, Planet.VENUS), FriendshipType.NATURAL_ENEMY)
-        self.assertEqual(get_natural_friendship(Planet.SUN, Planet.SATURN), FriendshipType.NATURAL_ENEMY)
+        self.assertEqual(
+            get_natural_friendship(Planet.SUN, Planet.VENUS),
+            FriendshipType.NATURAL_ENEMY,
+        )
+        self.assertEqual(
+            get_natural_friendship(Planet.SUN, Planet.SATURN),
+            FriendshipType.NATURAL_ENEMY,
+        )
 
         # Sun should be neutral with Mercury
-        self.assertEqual(get_natural_friendship(Planet.SUN, Planet.MERCURY), FriendshipType.NATURAL_NEUTRAL)
+        self.assertEqual(
+            get_natural_friendship(Planet.SUN, Planet.MERCURY),
+            FriendshipType.NATURAL_NEUTRAL,
+        )
 
     def test_rahu_ketu_friendship(self):
         """Test Rahu and Ketu friendship (natural enemies)."""
-        self.assertEqual(get_natural_friendship(Planet.RAHU, Planet.KETU), FriendshipType.NATURAL_ENEMY)
-        self.assertEqual(get_natural_friendship(Planet.KETU, Planet.RAHU), FriendshipType.NATURAL_ENEMY)
+        self.assertEqual(
+            get_natural_friendship(Planet.RAHU, Planet.KETU),
+            FriendshipType.NATURAL_ENEMY,
+        )
+        self.assertEqual(
+            get_natural_friendship(Planet.KETU, Planet.RAHU),
+            FriendshipType.NATURAL_ENEMY,
+        )
 
     def test_friendship_symmetry(self):
         """Test that friendship relationships are symmetric."""
-        planets = [Planet.SUN, Planet.MOON, Planet.MARS, Planet.MERCURY, Planet.JUPITER, Planet.VENUS, Planet.SATURN]
+        planets = [
+            Planet.SUN,
+            Planet.MOON,
+            Planet.MARS,
+            Planet.MERCURY,
+            Planet.JUPITER,
+            Planet.VENUS,
+            Planet.SATURN,
+        ]
 
         for p1 in planets:
             for p2 in planets:
@@ -152,9 +184,13 @@ class TestFriendshipMatrix(unittest.TestCase):
                 with self.subTest(p1=p1, p2=p2):
                     # Friendship should be symmetric (A friend of B means B friend of A)
                     if friendship_1_to_2 == FriendshipType.NATURAL_FRIEND:
-                        self.assertEqual(friendship_2_to_1, FriendshipType.NATURAL_FRIEND)
+                        self.assertEqual(
+                            friendship_2_to_1, FriendshipType.NATURAL_FRIEND
+                        )
                     elif friendship_1_to_2 == FriendshipType.NATURAL_ENEMY:
-                        self.assertEqual(friendship_2_to_1, FriendshipType.NATURAL_ENEMY)
+                        self.assertEqual(
+                            friendship_2_to_1, FriendshipType.NATURAL_ENEMY
+                        )
 
 
 class TestDignityScorer(unittest.TestCase):
@@ -171,7 +207,9 @@ class TestDignityScorer(unittest.TestCase):
 
         # Sun in Aries 10° (exact exaltation)
         sun_longitude = 0 * 30 + 10  # Aries 10°
-        score = self.scorer.calculate_base_score(Planet.SUN, 0, sun_longitude, mock_chart)
+        score = self.scorer.calculate_base_score(
+            Planet.SUN, 0, sun_longitude, mock_chart
+        )
         self.assertEqual(score, 100.0)  # Exaltation score
 
     def test_debilitation_scoring(self):
@@ -180,7 +218,9 @@ class TestDignityScorer(unittest.TestCase):
 
         # Sun in Libra 10° (exact debilitation)
         sun_longitude = 6 * 30 + 10  # Libra 10°
-        score = self.scorer.calculate_base_score(Planet.SUN, 6, sun_longitude, mock_chart)
+        score = self.scorer.calculate_base_score(
+            Planet.SUN, 6, sun_longitude, mock_chart
+        )
         self.assertEqual(score, 5.0)  # Debilitation score
 
     def test_moolatrikona_scoring(self):
@@ -189,16 +229,20 @@ class TestDignityScorer(unittest.TestCase):
 
         # Sun in Leo 15° (Moolatrikona range: Leo 0-20°)
         sun_longitude = 4 * 30 + 15  # Leo 15°
-        score = self.scorer.calculate_base_score(Planet.SUN, 4, sun_longitude, mock_chart)
+        score = self.scorer.calculate_base_score(
+            Planet.SUN, 4, sun_longitude, mock_chart
+        )
         self.assertEqual(score, 90.0)  # Moolatrikona score
 
     def test_own_sign_scoring(self):
         """Test scoring for planets in own signs."""
         mock_chart = Mock()
 
-        # Mars in Aries 15° (own sign)
-        mars_longitude = 0 * 30 + 15  # Aries 15°
-        score = self.scorer.calculate_base_score(Planet.MARS, 0, mars_longitude, mock_chart)
+        # Mars in Aries 20° (own sign, outside Moolatrikona)
+        mars_longitude = 0 * 30 + 20  # Aries 20°
+        score = self.scorer.calculate_base_score(
+            Planet.MARS, 0, mars_longitude, mock_chart
+        )
         self.assertEqual(score, 75.0)  # Own sign score
 
     def test_neutral_sign_scoring(self):
@@ -207,7 +251,9 @@ class TestDignityScorer(unittest.TestCase):
 
         # Sun in Gemini (neither exalted, debilitated, own sign, nor Moolatrikona)
         sun_longitude = 2 * 30 + 15  # Gemini 15°
-        score = self.scorer.calculate_base_score(Planet.SUN, 2, sun_longitude, mock_chart)
+        score = self.scorer.calculate_base_score(
+            Planet.SUN, 2, sun_longitude, mock_chart
+        )
         self.assertTrue(40 <= score <= 65)  # Should be in friend/neutral range
 
     def test_dignity_status_conversion(self):
@@ -260,7 +306,9 @@ class TestModifiers(unittest.TestCase):
         self.assertEqual(score, 55.0)
 
         # Test upper bound with multiple bonuses
-        score = apply_retrograde_bonus(95.0, True, False)  # 95 + 15 = 110 → capped at 100
+        score = apply_retrograde_bonus(
+            95.0, True, False
+        )  # 95 + 15 = 110 → capped at 100
         self.assertEqual(score, 100.0)
 
         # Test lower bound with penalties
@@ -296,5 +344,5 @@ class TestMars1984Dignity(unittest.TestCase):
         self.assertEqual(score, 5.0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

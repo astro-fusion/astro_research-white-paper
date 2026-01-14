@@ -9,34 +9,39 @@ zodiac signs, and other astrological constants.
 from enum import Enum
 from typing import Dict, List
 
+
 # Planet Constants (matching Swiss Ephemeris)
 class Planet(Enum):
     """Vedic planets with their Swiss Ephemeris constants."""
-    SUN = 0       # Surya
-    MOON = 1      # Chandra
-    MARS = 4      # Mangal
-    MERCURY = 2   # Budha
-    JUPITER = 5   # Guru
-    VENUS = 3     # Shukra
-    SATURN = 6    # Shani
-    RAHU = 10     # North Node
-    KETU = 11     # South Node (calculated)
+
+    SUN = 0  # Surya
+    MOON = 1  # Chandra
+    MARS = 4  # Mangal
+    MERCURY = 2  # Budha
+    JUPITER = 5  # Guru
+    VENUS = 3  # Shukra
+    SATURN = 6  # Shani
+    RAHU = 10  # North Node
+    KETU = 11  # South Node (calculated)
+
 
 # Zodiac Signs
 class ZodiacSign(Enum):
     """12 Zodiac signs with their starting longitudes."""
-    ARIES = 0       # 0° - 30°
-    TAURUS = 30     # 30° - 60°
-    GEMINI = 60     # 60° - 90°
-    CANCER = 90     # 90° - 120°
-    LEO = 120       # 120° - 150°
-    VIRGO = 150     # 150° - 180°
-    LIBRA = 180     # 180° - 210°
-    SCORPIO = 210   # 210° - 240°
+
+    ARIES = 0  # 0° - 30°
+    TAURUS = 30  # 30° - 60°
+    GEMINI = 60  # 60° - 90°
+    CANCER = 90  # 90° - 120°
+    LEO = 120  # 120° - 150°
+    VIRGO = 150  # 150° - 180°
+    LIBRA = 180  # 180° - 210°
+    SCORPIO = 210  # 210° - 240°
     SAGITTARIUS = 240  # 240° - 270°
-    CAPRICORN = 270    # 270° - 300°
-    AQUARIUS = 300     # 300° - 330°
-    PISCES = 330       # 330° - 360°
+    CAPRICORN = 270  # 270° - 300°
+    AQUARIUS = 300  # 300° - 330°
+    PISCES = 330  # 330° - 360°
+
 
 # Planet Names and Symbols
 PLANETS = Planet  # Alias for backward compatibility
@@ -164,41 +169,62 @@ PLANET_NATURES: Dict[Planet, str] = {
 
 # Dignity Status Descriptions
 DIGNITY_DESCRIPTIONS: Dict[str, str] = {
-    'exaltation': "Exalted - Maximum strength and positive expression",
-    'moolatrikona': "Moolatrikona - Root power, highly favorable",
-    'own_sign': "Own Sign - Comfortable, strong influence",
-    'friend': "Friend's Sign - Supportive environment",
-    'neutral': "Neutral Sign - Balanced, neither helping nor hindering",
-    'enemy': "Enemy's Sign - Challenging environment",
-    'debilitation': "Debilitated - Weakened, negative expression",
+    "exaltation": "Exalted - Maximum strength and positive expression",
+    "moolatrikona": "Moolatrikona - Root power, highly favorable",
+    "own_sign": "Own Sign - Comfortable, strong influence",
+    "friend": "Friend's Sign - Supportive environment",
+    "neutral": "Neutral Sign - Balanced, neither helping nor hindering",
+    "enemy": "Enemy's Sign - Challenging environment",
+    "debilitation": "Debilitated - Weakened, negative expression",
 }
 
 # Support Level Categories
 SUPPORT_LEVELS: Dict[str, Dict] = {
-    'excellent': {'range': (75, 100), 'color': '#28a745', 'description': 'Excellent planetary support'},
-    'good': {'range': (50, 75), 'color': '#17a2b8', 'description': 'Good planetary support'},
-    'neutral': {'range': (40, 50), 'color': '#ffc107', 'description': 'Neutral planetary influence'},
-    'weak': {'range': (25, 40), 'color': '#fd7e14', 'description': 'Weak planetary support'},
-    'poor': {'range': (0, 25), 'color': '#dc3545', 'description': 'Poor planetary support or contradiction'},
+    "excellent": {
+        "range": (75, 100),
+        "color": "#28a745",
+        "description": "Excellent planetary support",
+    },
+    "good": {
+        "range": (50, 75),
+        "color": "#17a2b8",
+        "description": "Good planetary support",
+    },
+    "neutral": {
+        "range": (40, 50),
+        "color": "#ffc107",
+        "description": "Neutral planetary influence",
+    },
+    "weak": {
+        "range": (25, 40),
+        "color": "#fd7e14",
+        "description": "Weak planetary support",
+    },
+    "poor": {
+        "range": (0, 25),
+        "color": "#dc3545",
+        "description": "Poor planetary support or contradiction",
+    },
 }
 
 # Ayanamsa Systems
 AYANAMSA_SYSTEMS: Dict[str, str] = {
-    'lahiri': 'Lahiri (Chitra Paksha) - Standard Vedic',
-    'raman': 'Krishnamurti Ayanamsa',
-    'yukteshwar': 'Yukteshwar Ayanamsa',
-    'fagan': 'Fagan-Bradley Ayanamsa',
-    'deluce': 'De Luce Ayanamsa',
-    'djwhal_khul': 'Djwhal Khul Ayanamsa',
+    "lahiri": "Lahiri (Chitra Paksha) - Standard Vedic",
+    "raman": "Krishnamurti Ayanamsa",
+    "yukteshwar": "Yukteshwar Ayanamsa",
+    "fagan": "Fagan-Bradley Ayanamsa",
+    "deluce": "De Luce Ayanamsa",
+    "djwhal_khul": "Djwhal Khul Ayanamsa",
 }
 
 # House Systems
 HOUSE_SYSTEMS: Dict[str, str] = {
-    'placidus': 'Placidus - Most common in Vedic astrology',
-    'koch': 'Koch - Alternative Western system',
-    'equal': 'Equal House - Simple equal division',
-    'whole_sign': 'Whole Sign - Traditional Vedic approach',
+    "placidus": "Placidus - Most common in Vedic astrology",
+    "koch": "Koch - Alternative Western system",
+    "equal": "Equal House - Simple equal division",
+    "whole_sign": "Whole Sign - Traditional Vedic approach",
 }
+
 
 # Utility Functions
 def get_planet_from_longitude(longitude: float) -> Planet:
@@ -215,6 +241,7 @@ def get_planet_from_longitude(longitude: float) -> Planet:
     # For now, return Sun as default
     return Planet.SUN
 
+
 def get_sign_from_longitude(longitude: float) -> ZodiacSign:
     """
     Get zodiac sign from longitude.
@@ -229,6 +256,7 @@ def get_sign_from_longitude(longitude: float) -> ZodiacSign:
     sign_index = int(normalized_long / 30)
     return list(ZodiacSign)[sign_index]
 
+
 def get_degrees_in_sign(longitude: float) -> float:
     """
     Get degrees within the sign from longitude.
@@ -240,6 +268,7 @@ def get_degrees_in_sign(longitude: float) -> float:
         Degrees within the sign (0-29.999...)
     """
     return longitude % 30
+
 
 def longitude_to_sign_position(longitude: float) -> Dict:
     """
@@ -255,12 +284,13 @@ def longitude_to_sign_position(longitude: float) -> Dict:
     degrees = get_degrees_in_sign(longitude)
 
     return {
-        'sign': sign,
-        'sign_name': SIGN_NAMES[sign],
-        'sign_symbol': SIGN_SYMBOLS[sign],
-        'degrees': degrees,
-        'formatted': f"{SIGN_NAMES[sign]} {degrees:.2f}°"
+        "sign": sign,
+        "sign_name": SIGN_NAMES[sign],
+        "sign_symbol": SIGN_SYMBOLS[sign],
+        "degrees": degrees,
+        "formatted": f"{SIGN_NAMES[sign]} {degrees:.2f}°",
     }
+
 
 def get_support_level(score: float) -> Dict:
     """
@@ -273,40 +303,43 @@ def get_support_level(score: float) -> Dict:
         Dictionary with level info
     """
     for level, info in SUPPORT_LEVELS.items():
-        min_score, max_score = info['range']
-        if min_score <= score < max_score or (level == 'excellent' and score >= max_score):
+        min_score, max_score = info["range"]
+        if min_score <= score < max_score or (
+            level == "excellent" and score >= max_score
+        ):
             return {
-                'level': level,
-                'description': info['description'],
-                'color': info['color'],
-                'range': info['range']
+                "level": level,
+                "description": info["description"],
+                "color": info["color"],
+                "range": info["range"],
             }
 
     # Default to poor
-    return SUPPORT_LEVELS['poor']
+    return SUPPORT_LEVELS["poor"]
+
 
 # Export all constants for easy importing
 __all__ = [
-    'Planet',
-    'PLANETS',
-    'ZodiacSign',
-    'SIGNS',
-    'PLANET_NAMES',
-    'PLANET_SYMBOLS',
-    'PLANET_RULERSHIPS',
-    'SIGN_NAMES',
-    'SIGN_SYMBOLS',
-    'HOUSE_NAMES',
-    'PLANET_GENDERS',
-    'PLANET_ELEMENTS',
-    'PLANET_NATURES',
-    'DIGNITY_DESCRIPTIONS',
-    'SUPPORT_LEVELS',
-    'AYANAMSA_SYSTEMS',
-    'HOUSE_SYSTEMS',
-    'get_planet_from_longitude',
-    'get_sign_from_longitude',
-    'get_degrees_in_sign',
-    'longitude_to_sign_position',
-    'get_support_level',
+    "Planet",
+    "PLANETS",
+    "ZodiacSign",
+    "SIGNS",
+    "PLANET_NAMES",
+    "PLANET_SYMBOLS",
+    "PLANET_RULERSHIPS",
+    "SIGN_NAMES",
+    "SIGN_SYMBOLS",
+    "HOUSE_NAMES",
+    "PLANET_GENDERS",
+    "PLANET_ELEMENTS",
+    "PLANET_NATURES",
+    "DIGNITY_DESCRIPTIONS",
+    "SUPPORT_LEVELS",
+    "AYANAMSA_SYSTEMS",
+    "HOUSE_SYSTEMS",
+    "get_planet_from_longitude",
+    "get_sign_from_longitude",
+    "get_degrees_in_sign",
+    "longitude_to_sign_position",
+    "get_support_level",
 ]

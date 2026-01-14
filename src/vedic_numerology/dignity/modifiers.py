@@ -7,25 +7,29 @@ Implements modifiers that adjust planetary dignity scores based on:
 - Other positional modifiers
 """
 
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
+
 from ..config.constants import Planet
 
 # Modifier constants
 RETROGRADE_BONUS_DEBILITATED = 50  # Points added for retrograde debilitated planet
-RETROGRADE_BONUS_NORMAL = 15       # Points added for retrograde non-debilitated planet
+RETROGRADE_BONUS_NORMAL = 15  # Points added for retrograde non-debilitated planet
 
-COMBUST_PENALTY_MAJOR = 40         # Points subtracted for close combustion
-COMBUST_PENALTY_MINOR = 20         # Points subtracted for moderate combustion
+COMBUST_PENALTY_MAJOR = 40  # Points subtracted for close combustion
+COMBUST_PENALTY_MINOR = 20  # Points subtracted for moderate combustion
 
 # Combustion orbs (degrees from Sun)
-COMBUST_ORB_MAJOR = 3.0    # Within 3° of Sun (major combustion)
-COMBUST_ORB_MINOR = 8.0    # Within 8° of Sun (minor combustion)
+COMBUST_ORB_MAJOR = 3.0  # Within 3° of Sun (major combustion)
+COMBUST_ORB_MINOR = 8.0  # Within 8° of Sun (minor combustion)
 
 # Other modifiers
-EXACT_EXALTATION_BONUS = 5         # Bonus for exact exaltation degree
-EXACT_DEBILITATION_PENALTY = 10    # Additional penalty for exact debilitation
+EXACT_EXALTATION_BONUS = 5  # Bonus for exact exaltation degree
+EXACT_DEBILITATION_PENALTY = 10  # Additional penalty for exact debilitation
 
-def apply_retrograde_bonus(base_score: float, is_retrograde: bool, is_debilitated: bool) -> float:
+
+def apply_retrograde_bonus(
+    base_score: float, is_retrograde: bool, is_debilitated: bool
+) -> float:
     """
     Apply retrograde bonus to dignity score.
 
@@ -54,7 +58,9 @@ def apply_retrograde_bonus(base_score: float, is_retrograde: bool, is_debilitate
     return min(modified_score, 100.0)
 
 
-def apply_combust_penalty(base_score: float, is_combust: bool, combust_degree: Optional[float] = None) -> float:
+def apply_combust_penalty(
+    base_score: float, is_combust: bool, combust_degree: Optional[float] = None
+) -> float:
     """
     Apply combustion penalty to dignity score.
 
@@ -84,7 +90,9 @@ def apply_combust_penalty(base_score: float, is_combust: bool, combust_degree: O
     return max(modified_score, 0.0)
 
 
-def apply_exact_degree_modifiers(base_score: float, planet_longitude: float, planet: Planet) -> float:
+def apply_exact_degree_modifiers(
+    base_score: float, planet_longitude: float, planet: Planet
+) -> float:
     """
     Apply modifiers for planets at exact exaltation or debilitation degrees.
 
@@ -96,7 +104,7 @@ def apply_exact_degree_modifiers(base_score: float, planet_longitude: float, pla
     Returns:
         Modified score with exact degree bonuses/penalties
     """
-    from .exaltation_matrix import EXALTATION_TABLE, DEBILITATION_TABLE
+    from .exaltation_matrix import DEBILITATION_TABLE, EXALTATION_TABLE
 
     modified_score = base_score
 
@@ -119,7 +127,9 @@ def apply_exact_degree_modifiers(base_score: float, planet_longitude: float, pla
     return max(0.0, min(modified_score, 100.0))
 
 
-def apply_shadbala_modifiers(base_score: float, chart_data: Dict[str, Any], planet: Planet) -> float:
+def apply_shadbala_modifiers(
+    base_score: float, chart_data: Dict[str, Any], planet: Planet
+) -> float:
     """
     Apply Shad Bala (six-fold strength) modifiers.
 
@@ -148,8 +158,12 @@ def apply_shadbala_modifiers(base_score: float, chart_data: Dict[str, Any], plan
     return base_score
 
 
-def apply_all_modifiers(base_score: float, planet_data: Dict[str, Any], planet: Planet,
-                       chart_data: Optional[Dict[str, Any]] = None) -> float:
+def apply_all_modifiers(
+    base_score: float,
+    planet_data: Dict[str, Any],
+    planet: Planet,
+    chart_data: Optional[Dict[str, Any]] = None,
+) -> float:
     """
     Apply all available modifiers to a dignity score.
 
@@ -165,26 +179,30 @@ def apply_all_modifiers(base_score: float, planet_data: Dict[str, Any], planet: 
     modified_score = base_score
 
     # Retrograde modifier
-    is_retrograde = planet_data.get('retrograde', False)
+    is_retrograde = planet_data.get("retrograde", False)
     is_debilitated = base_score <= 5  # Very low score indicates debilitation
 
-    modified_score = apply_retrograde_bonus(modified_score, is_retrograde, is_debilitated)
+    modified_score = apply_retrograde_bonus(
+        modified_score, is_retrograde, is_debilitated
+    )
 
     # Combustion modifier
-    is_combust = planet_data.get('combust', False)
+    is_combust = planet_data.get("combust", False)
     # Calculate angular separation from Sun for graduated penalty
     combust_degree = None
-    if 'sun_longitude' in planet_data:
-        sun_long = planet_data['sun_longitude']
-        planet_long = planet_data['longitude']
+    if "sun_longitude" in planet_data:
+        sun_long = planet_data["sun_longitude"]
+        planet_long = planet_data["longitude"]
         combust_degree = abs(planet_long - sun_long)
         combust_degree = min(combust_degree, 360 - combust_degree)  # Handle wraparound
 
     modified_score = apply_combust_penalty(modified_score, is_combust, combust_degree)
 
     # Exact degree modifiers
-    planet_longitude = planet_data.get('longitude', 0)
-    modified_score = apply_exact_degree_modifiers(modified_score, planet_longitude, planet)
+    planet_longitude = planet_data.get("longitude", 0)
+    modified_score = apply_exact_degree_modifiers(
+        modified_score, planet_longitude, planet
+    )
 
     # Shad Bala modifiers (if chart data available)
     if chart_data is not None:
@@ -194,8 +212,9 @@ def apply_all_modifiers(base_score: float, planet_data: Dict[str, Any], planet: 
     return max(0.0, min(modified_score, 100.0))
 
 
-def get_modifier_explanation(base_score: float, final_score: float,
-                           planet_data: Dict[str, Any], planet: Planet) -> str:
+def get_modifier_explanation(
+    base_score: float, final_score: float, planet_data: Dict[str, Any], planet: Planet
+) -> str:
     """
     Generate explanation of how modifiers affected the dignity score.
 
@@ -215,32 +234,42 @@ def get_modifier_explanation(base_score: float, final_score: float,
         return "No significant modifiers applied."
 
     # Check retrograde
-    if planet_data.get('retrograde', False):
+    if planet_data.get("retrograde", False):
         is_debilitated = base_score <= 5
         if is_debilitated:
-            explanations.append("Neecha Bhanga: Retrograde debilitated planet gains strength")
+            explanations.append(
+                "Neecha Bhanga: Retrograde debilitated planet gains strength"
+            )
         else:
-            explanations.append("Retrograde bonus: Planet gains strength in retrograde motion")
+            explanations.append(
+                "Retrograde bonus: Planet gains strength in retrograde motion"
+            )
 
     # Check combustion
-    if planet_data.get('combust', False):
-        explanations.append("Combustion penalty: Planet loses strength due to proximity to Sun")
+    if planet_data.get("combust", False):
+        explanations.append(
+            "Combustion penalty: Planet loses strength due to proximity to Sun"
+        )
 
     # Check exact degrees
-    planet_longitude = planet_data.get('longitude', 0)
-    from .exaltation_matrix import EXALTATION_TABLE, DEBILITATION_TABLE
+    planet_longitude = planet_data.get("longitude", 0)
+    from .exaltation_matrix import DEBILITATION_TABLE, EXALTATION_TABLE
 
     if planet in EXALTATION_TABLE:
         exalt_sign, exalt_deg = EXALTATION_TABLE[planet]
         exalt_longitude = exalt_sign * 30 + exalt_deg
         if abs(planet_longitude - exalt_longitude) <= 0.5:
-            explanations.append("Exact exaltation: Additional strength from precise placement")
+            explanations.append(
+                "Exact exaltation: Additional strength from precise placement"
+            )
 
     if planet in DEBILITATION_TABLE:
         debilitation_sign, debilitation_deg = DEBILITATION_TABLE[planet]
         debilitation_longitude = debilitation_sign * 30 + debilitation_deg
         if abs(planet_longitude - debilitation_longitude) <= 0.5:
-            explanations.append("Exact debilitation: Additional weakness from precise placement")
+            explanations.append(
+                "Exact debilitation: Additional weakness from precise placement"
+            )
 
     if explanations:
         return " | ".join(explanations)

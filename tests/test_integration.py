@@ -4,13 +4,13 @@ Integration tests for the complete Vedic Numerology-Astrology system.
 Tests end-to-end workflows combining numerology, astrology, and dignity scoring.
 """
 
-import unittest
-from datetime import datetime, date
-import sys
 import os
+import sys
+import unittest
+from datetime import date, datetime
 
 # Add src to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from vedic_numerology import VedicNumerologyAstrology, analyze_birth_chart
 from vedic_numerology.config.constants import Planet
@@ -29,40 +29,37 @@ class TestCompleteWorkflow(unittest.TestCase):
 
         # Create analysis object
         self.analysis = VedicNumerologyAstrology(
-            self.birth_date,
-            self.birth_time,
-            self.latitude,
-            self.longitude
+            self.birth_date, self.birth_time, self.latitude, self.longitude
         )
 
     def test_mars_1984_complete_analysis(self):
         """Test complete analysis for Mars 1984 case."""
         # Check numerology results
         mulanka_data = self.analysis.calculate_mulanka()
-        self.assertEqual(mulanka_data['number'], 9)
-        self.assertEqual(mulanka_data['planet'], Planet.MARS)
+        self.assertEqual(mulanka_data["number"], 9)
+        self.assertEqual(mulanka_data["planet"], Planet.MARS)
 
         bhagyanka_data = self.analysis.calculate_bhagyanka()
-        self.assertEqual(bhagyanka_data['number'], 3)
-        self.assertEqual(bhagyanka_data['planet'], Planet.JUPITER)
+        self.assertEqual(bhagyanka_data["number"], 3)
+        self.assertEqual(bhagyanka_data["planet"], Planet.JUPITER)
 
         # Check support analysis
         support_analysis = self.analysis.analyze_support_contradiction()
 
         # Should have analysis for both planets
-        self.assertIn('mulanka', support_analysis)
-        self.assertIn('bhagyanka', support_analysis)
-        self.assertIn('overall', support_analysis)
+        self.assertIn("mulanka", support_analysis)
+        self.assertIn("bhagyanka", support_analysis)
+        self.assertIn("overall", support_analysis)
 
         # Check structure
-        mulanka_analysis = support_analysis['mulanka']
-        required_keys = ['planet', 'score', 'support_level', 'dignity_type', 'details']
+        mulanka_analysis = support_analysis["mulanka"]
+        required_keys = ["planet", "score", "support_level", "dignity_type", "details"]
         for key in required_keys:
             self.assertIn(key, mulanka_analysis)
 
         # Scores should be numeric
-        self.assertIsInstance(mulanka_analysis['score'], (int, float))
-        self.assertIsInstance(support_analysis['bhagyanka']['score'], (int, float))
+        self.assertIsInstance(mulanka_analysis["score"], (int, float))
+        self.assertIsInstance(support_analysis["bhagyanka"]["score"], (int, float))
 
     def test_report_generation(self):
         """Test complete report generation."""
@@ -88,16 +85,23 @@ class TestCompleteWorkflow(unittest.TestCase):
         jupiter_score = self.analysis.score_dignity(Planet.JUPITER)
 
         # Check score structure
-        required_keys = ['score', 'base_score', 'dignity_type', 'sign_lord', 'friendship', 'modifiers']
+        required_keys = [
+            "score",
+            "base_score",
+            "dignity_type",
+            "sign_lord",
+            "friendship",
+            "modifiers",
+        ]
         for key in required_keys:
             self.assertIn(key, mars_score)
             self.assertIn(key, jupiter_score)
 
         # Scores should be reasonable (0-100)
-        self.assertGreaterEqual(mars_score['score'], 0)
-        self.assertLessEqual(mars_score['score'], 100)
-        self.assertGreaterEqual(jupiter_score['score'], 0)
-        self.assertLessEqual(jupiter_score['score'], 100)
+        self.assertGreaterEqual(mars_score["score"], 0)
+        self.assertLessEqual(mars_score["score"], 100)
+        self.assertGreaterEqual(jupiter_score["score"], 0)
+        self.assertLessEqual(jupiter_score["score"], 100)
 
 
 class TestConvenienceFunctions(unittest.TestCase):
@@ -113,8 +117,8 @@ class TestConvenienceFunctions(unittest.TestCase):
 
         # Should have basic functionality
         mulanka = analysis.calculate_mulanka()
-        self.assertEqual(mulanka['number'], 9)
-        self.assertEqual(mulanka['planet'], Planet.MARS)
+        self.assertEqual(mulanka["number"], 9)
+        self.assertEqual(mulanka["planet"], Planet.MARS)
 
     def test_different_birth_dates(self):
         """Test analysis with different birth dates."""
@@ -134,10 +138,10 @@ class TestConvenienceFunctions(unittest.TestCase):
                 support = analysis.analyze_support_contradiction()
 
                 # Basic validation
-                self.assertIsInstance(mulanka['number'], int)
-                self.assertIsInstance(bhagyanka['number'], int)
-                self.assertIn('mulanka', support)
-                self.assertIn('bhagyanka', support)
+                self.assertIsInstance(mulanka["number"], int)
+                self.assertIsInstance(bhagyanka["number"], int)
+                self.assertIn("mulanka", support)
+                self.assertIn("bhagyanka", support)
 
 
 class TestVisualizationIntegration(unittest.TestCase):
@@ -198,7 +202,7 @@ class TestErrorHandling(unittest.TestCase):
 
         # Numerology should still work
         mulanka = analysis.calculate_mulanka()
-        self.assertEqual(mulanka['number'], 9)
+        self.assertEqual(mulanka["number"], 9)
 
         # Astrology-dependent features may fail gracefully
         # (exact behavior depends on implementation)
@@ -212,10 +216,7 @@ class TestConfigurationIntegration(unittest.TestCase):
         birth_date = date(1984, 8, 27)
 
         # Test with Raman Ayanamsa
-        analysis = VedicNumerologyAstrology(
-            birth_date,
-            ayanamsa_system="raman"
-        )
+        analysis = VedicNumerologyAstrology(birth_date, ayanamsa_system="raman")
 
         # Should initialize without errors
         self.assertIsNotNone(analysis)
@@ -246,7 +247,7 @@ class TestPerformanceScenarios(unittest.TestCase):
         for birth_date in birth_dates:
             analysis = analyze_birth_chart(birth_date)
             mulanka = analysis.calculate_mulanka()
-            results.append(mulanka['number'])
+            results.append(mulanka["number"])
 
         # Should get consistent results
         self.assertEqual(results[0], 9)  # Mars case
@@ -256,5 +257,5 @@ class TestPerformanceScenarios(unittest.TestCase):
             self.assertIn(result, range(1, 10))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

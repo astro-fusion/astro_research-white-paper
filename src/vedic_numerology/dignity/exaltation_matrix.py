@@ -5,9 +5,11 @@ Contains the classical Vedic astrology exaltation and debilitation positions
 for all planets, along with Moolatrikona ranges and sign rulership data.
 """
 
-from typing import Dict, Tuple, Optional, List
 from enum import Enum
+from typing import Dict, List, Optional, Tuple
+
 from ..config.constants import Planet
+
 
 # Zodiac signs
 class ZodiacSign(Enum):
@@ -24,63 +26,109 @@ class ZodiacSign(Enum):
     AQUARIUS = 10
     PISCES = 11
 
+
 # Exaltation and Debilitation data
 # Format: (sign_index, degrees_in_sign)
 EXALTATION_TABLE: Dict[Planet, Tuple[int, float]] = {
-    Planet.SUN: (ZodiacSign.ARIES.value, 10.0),        # Aries 10°
-    Planet.MOON: (ZodiacSign.TAURUS.value, 3.0),       # Taurus 3°
-    Planet.MARS: (ZodiacSign.CAPRICORN.value, 28.0),   # Capricorn 28°
-    Planet.MERCURY: (ZodiacSign.VIRGO.value, 15.0),    # Virgo 15°
-    Planet.JUPITER: (ZodiacSign.CANCER.value, 5.0),    # Cancer 5°
-    Planet.VENUS: (ZodiacSign.PISCES.value, 27.0),     # Pisces 27°
-    Planet.SATURN: (ZodiacSign.LIBRA.value, 20.0),     # Libra 20°
+    Planet.SUN: (ZodiacSign.ARIES.value, 10.0),  # Aries 10°
+    Planet.MOON: (ZodiacSign.TAURUS.value, 3.0),  # Taurus 3°
+    Planet.MARS: (ZodiacSign.CAPRICORN.value, 28.0),  # Capricorn 28°
+    Planet.MERCURY: (ZodiacSign.VIRGO.value, 15.0),  # Virgo 15°
+    Planet.JUPITER: (ZodiacSign.CANCER.value, 5.0),  # Cancer 5°
+    Planet.VENUS: (ZodiacSign.PISCES.value, 27.0),  # Pisces 27°
+    Planet.SATURN: (ZodiacSign.LIBRA.value, 20.0),  # Libra 20°
     # Rahu and Ketu: Special handling (Taurus/Scorpio convention)
-    Planet.RAHU: (ZodiacSign.TAURUS.value, 0.0),       # Taurus (variable)
-    Planet.KETU: (ZodiacSign.SCORPIO.value, 0.0),      # Scorpio (variable)
+    Planet.RAHU: (ZodiacSign.TAURUS.value, 0.0),  # Taurus (variable)
+    Planet.KETU: (ZodiacSign.SCORPIO.value, 0.0),  # Scorpio (variable)
 }
 
 DEBILITATION_TABLE: Dict[Planet, Tuple[int, float]] = {
-    Planet.SUN: (ZodiacSign.LIBRA.value, 10.0),        # Libra 10°
-    Planet.MOON: (ZodiacSign.SCORPIO.value, 3.0),      # Scorpio 3°
-    Planet.MARS: (ZodiacSign.CANCER.value, 28.0),      # Cancer 28°
-    Planet.MERCURY: (ZodiacSign.PISCES.value, 15.0),   # Pisces 15°
-    Planet.JUPITER: (ZodiacSign.CAPRICORN.value, 5.0), # Capricorn 5°
-    Planet.VENUS: (ZodiacSign.VIRGO.value, 27.0),      # Virgo 27°
-    Planet.SATURN: (ZodiacSign.ARIES.value, 20.0),     # Aries 20°
+    Planet.SUN: (ZodiacSign.LIBRA.value, 10.0),  # Libra 10°
+    Planet.MOON: (ZodiacSign.SCORPIO.value, 3.0),  # Scorpio 3°
+    Planet.MARS: (ZodiacSign.CANCER.value, 28.0),  # Cancer 28°
+    Planet.MERCURY: (ZodiacSign.PISCES.value, 15.0),  # Pisces 15°
+    Planet.JUPITER: (ZodiacSign.CAPRICORN.value, 5.0),  # Capricorn 5°
+    Planet.VENUS: (ZodiacSign.VIRGO.value, 27.0),  # Virgo 27°
+    Planet.SATURN: (ZodiacSign.ARIES.value, 20.0),  # Aries 20°
     # Rahu and Ketu: Opposite signs to exaltation
-    Planet.RAHU: (ZodiacSign.SCORPIO.value, 0.0),      # Scorpio (variable)
-    Planet.KETU: (ZodiacSign.TAURUS.value, 0.0),       # Taurus (variable)
+    Planet.RAHU: (ZodiacSign.SCORPIO.value, 0.0),  # Scorpio (variable)
+    Planet.KETU: (ZodiacSign.TAURUS.value, 0.0),  # Taurus (variable)
 }
 
 # Moolatrikona ranges: (start_sign, start_degrees, end_sign, end_degrees)
 MOOLATRIKONA_TABLE: Dict[Planet, Tuple[int, float, int, float]] = {
-    Planet.SUN: (ZodiacSign.LEO.value, 0.0, ZodiacSign.LEO.value, 20.0),         # Leo 0-20°
-    Planet.MOON: (ZodiacSign.TAURUS.value, 4.0, ZodiacSign.TAURUS.value, 30.0),  # Taurus 4-30°
-    Planet.MARS: (ZodiacSign.ARIES.value, 0.0, ZodiacSign.ARIES.value, 18.0),    # Aries 0-18°
-    Planet.MERCURY: (ZodiacSign.VIRGO.value, 16.0, ZodiacSign.VIRGO.value, 20.0), # Virgo 16-20°
-    Planet.JUPITER: (ZodiacSign.SAGITTARIUS.value, 0.0, ZodiacSign.SAGITTARIUS.value, 13.0), # Sagittarius 0-13°
-    Planet.VENUS: (ZodiacSign.LIBRA.value, 0.0, ZodiacSign.LIBRA.value, 10.0),    # Libra 0-10°
-    Planet.SATURN: (ZodiacSign.AQUARIUS.value, 0.0, ZodiacSign.AQUARIUS.value, 20.0), # Aquarius 0-20°
+    Planet.SUN: (ZodiacSign.LEO.value, 0.0, ZodiacSign.LEO.value, 20.0),  # Leo 0-20°
+    Planet.MOON: (
+        ZodiacSign.TAURUS.value,
+        4.0,
+        ZodiacSign.TAURUS.value,
+        30.0,
+    ),  # Taurus 4-30°
+    Planet.MARS: (
+        ZodiacSign.ARIES.value,
+        0.0,
+        ZodiacSign.ARIES.value,
+        18.0,
+    ),  # Aries 0-18°
+    Planet.MERCURY: (
+        ZodiacSign.VIRGO.value,
+        16.0,
+        ZodiacSign.VIRGO.value,
+        20.0,
+    ),  # Virgo 16-20°
+    Planet.JUPITER: (
+        ZodiacSign.SAGITTARIUS.value,
+        0.0,
+        ZodiacSign.SAGITTARIUS.value,
+        13.0,
+    ),  # Sagittarius 0-13°
+    Planet.VENUS: (
+        ZodiacSign.LIBRA.value,
+        0.0,
+        ZodiacSign.LIBRA.value,
+        10.0,
+    ),  # Libra 0-10°
+    Planet.SATURN: (
+        ZodiacSign.AQUARIUS.value,
+        0.0,
+        ZodiacSign.AQUARIUS.value,
+        20.0,
+    ),  # Aquarius 0-20°
     # Rahu and Ketu do not have Moolatrikona
 }
 
 # Own signs (Swakshetra) - planets rule these signs
 OWN_SIGNS_TABLE: Dict[Planet, List[int]] = {
-    Planet.SUN: [ZodiacSign.LEO.value],                    # Leo
-    Planet.MOON: [ZodiacSign.CANCER.value],               # Cancer
+    Planet.SUN: [ZodiacSign.LEO.value],  # Leo
+    Planet.MOON: [ZodiacSign.CANCER.value],  # Cancer
     Planet.MARS: [ZodiacSign.ARIES.value, ZodiacSign.SCORPIO.value],  # Aries, Scorpio
-    Planet.MERCURY: [ZodiacSign.GEMINI.value, ZodiacSign.VIRGO.value], # Gemini, Virgo
-    Planet.JUPITER: [ZodiacSign.SAGITTARIUS.value, ZodiacSign.PISCES.value], # Sagittarius, Pisces
-    Planet.VENUS: [ZodiacSign.TAURUS.value, ZodiacSign.LIBRA.value], # Taurus, Libra
-    Planet.SATURN: [ZodiacSign.CAPRICORN.value, ZodiacSign.AQUARIUS.value], # Capricorn, Aquarius
+    Planet.MERCURY: [ZodiacSign.GEMINI.value, ZodiacSign.VIRGO.value],  # Gemini, Virgo
+    Planet.JUPITER: [
+        ZodiacSign.SAGITTARIUS.value,
+        ZodiacSign.PISCES.value,
+    ],  # Sagittarius, Pisces
+    Planet.VENUS: [ZodiacSign.TAURUS.value, ZodiacSign.LIBRA.value],  # Taurus, Libra
+    Planet.SATURN: [
+        ZodiacSign.CAPRICORN.value,
+        ZodiacSign.AQUARIUS.value,
+    ],  # Capricorn, Aquarius
     # Rahu and Ketu don't rule signs traditionally
 }
 
 # Sign names for display
 SIGN_NAMES: Dict[int, str] = {
-    0: "Aries", 1: "Taurus", 2: "Gemini", 3: "Cancer",
-    4: "Leo", 5: "Virgo", 6: "Libra", 7: "Scorpio",
-    8: "Sagittarius", 9: "Capricorn", 10: "Aquarius", 11: "Pisces"
+    0: "Aries",
+    1: "Taurus",
+    2: "Gemini",
+    3: "Cancer",
+    4: "Leo",
+    5: "Virgo",
+    6: "Libra",
+    7: "Scorpio",
+    8: "Sagittarius",
+    9: "Capricorn",
+    10: "Aquarius",
+    11: "Pisces",
 }
 
 
@@ -122,7 +170,9 @@ def get_debilitation_sign(planet: Planet) -> Tuple[int, float, str]:
     return sign_index, degrees, sign_name
 
 
-def get_moolatrikona_range(planet: Planet) -> Optional[Tuple[int, float, int, float, str, str]]:
+def get_moolatrikona_range(
+    planet: Planet,
+) -> Optional[Tuple[int, float, int, float, str, str]]:
     """
     Get Moolatrikona range for a planet.
 
@@ -186,7 +236,9 @@ def is_in_exaltation(longitude: float, planet: Planet, tolerance: float = 2.0) -
     return diff <= tolerance
 
 
-def is_in_debilitation(longitude: float, planet: Planet, tolerance: float = 2.0) -> bool:
+def is_in_debilitation(
+    longitude: float, planet: Planet, tolerance: float = 2.0
+) -> bool:
     """
     Check if a planet is in its debilitation degree (within tolerance).
 

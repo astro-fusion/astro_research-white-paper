@@ -5,24 +5,24 @@ Tests numerological calculations including Mulanka, Bhagyanka,
 sunrise correction, and planet mapping.
 """
 
-import unittest
-from datetime import date, time, datetime
-import sys
 import os
+import sys
+import unittest
+from datetime import date, datetime, time
 
 # Add src to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from vedic_numerology.numerology import (
-    calculate_mulanka,
     calculate_bhagyanka,
     calculate_complete_numerology,
+    calculate_mulanka,
     reduce_to_single_digit,
 )
 from vedic_numerology.numerology.planet_mapping import (
-    get_planet_from_number,
     NUMBER_TO_PLANET,
-    Planet
+    Planet,
+    get_planet_from_number,
 )
 from vedic_numerology.numerology.sunrise_correction import (
     adjust_date_for_vedic_day,
@@ -84,8 +84,14 @@ class TestNumerologyCalculations(unittest.TestCase):
 
         # Test other cases
         test_cases = [
-            (date(1990, 5, 15), 5),  # 15 + 5 + 1990 = 2010 → 2 + 0 + 1 + 0 = 3 → wait, let's calculate properly
-            (date(1985, 12, 3), 4),  # 3 + 12 + 1985 = 2000 → 2 + 0 + 0 + 0 = 2 → wait, need correct calculation
+            (
+                date(1990, 5, 15),
+                5,
+            ),  # 15 + 5 + 1990 = 2010 → 2 + 0 + 1 + 0 = 3 → wait, let's calculate properly
+            (
+                date(1985, 12, 3),
+                4,
+            ),  # 3 + 12 + 1985 = 2000 → 2 + 0 + 0 + 0 = 2 → wait, need correct calculation
         ]
 
         # Let's calculate these properly:
@@ -95,7 +101,10 @@ class TestNumerologyCalculations(unittest.TestCase):
         correct_test_cases = [
             (date(1990, 5, 15), 3),  # 15 + 5 + 1990 = 2010 → 2+0+1+0 = 3
             (date(1985, 12, 3), 2),  # 3 + 12 + 1985 = 2000 → 2+0+0+0 = 2
-            (date(1975, 1, 11), 4),  # 11 + 1 + 1975 = 1987 → 1+9+8+7 = 25 → 2+5 = 7 → wait, 1+9+8+7=25, 2+5=7
+            (
+                date(1975, 1, 11),
+                7,
+            ),  # 11 + 1 + 1975 = 1987 → 1+9+8+7 = 25 → 2+5 = 7
         ]
 
         # Actually let's recalculate properly:
@@ -112,16 +121,16 @@ class TestNumerologyCalculations(unittest.TestCase):
         result = calculate_complete_numerology(birth_date)
 
         # Check structure
-        self.assertIn('mulanka', result)
-        self.assertIn('bhagyanka', result)
-        self.assertIn('sunrise_corrected', result)
+        self.assertIn("mulanka", result)
+        self.assertIn("bhagyanka", result)
+        self.assertIn("sunrise_corrected", result)
 
         # Check values
-        self.assertEqual(result['mulanka']['number'], 9)
-        self.assertEqual(result['mulanka']['planet'], Planet.MARS)
-        self.assertEqual(result['bhagyanka']['number'], 3)
-        self.assertEqual(result['bhagyanka']['planet'], Planet.JUPITER)
-        self.assertFalse(result['sunrise_corrected'])  # No time provided
+        self.assertEqual(result["mulanka"]["number"], 9)
+        self.assertEqual(result["mulanka"]["planet"], Planet.MARS)
+        self.assertEqual(result["bhagyanka"]["number"], 3)
+        self.assertEqual(result["bhagyanka"]["planet"], Planet.JUPITER)
+        self.assertFalse(result["sunrise_corrected"])  # No time provided
 
 
 class TestPlanetMapping(unittest.TestCase):
@@ -133,10 +142,14 @@ class TestPlanetMapping(unittest.TestCase):
         self.assertEqual(get_planet_from_number(1), Planet.SUN)
         self.assertEqual(get_planet_from_number(2), Planet.MOON)
         self.assertEqual(get_planet_from_number(3), Planet.JUPITER)
-        self.assertEqual(get_planet_from_number(4), Planet.RAHU)  # Vedic: Rahu not Uranus
+        self.assertEqual(
+            get_planet_from_number(4), Planet.RAHU
+        )  # Vedic: Rahu not Uranus
         self.assertEqual(get_planet_from_number(5), Planet.MERCURY)
         self.assertEqual(get_planet_from_number(6), Planet.VENUS)
-        self.assertEqual(get_planet_from_number(7), Planet.KETU)  # Vedic: Ketu not Neptune
+        self.assertEqual(
+            get_planet_from_number(7), Planet.KETU
+        )  # Vedic: Ketu not Neptune
         self.assertEqual(get_planet_from_number(8), Planet.SATURN)
         self.assertEqual(get_planet_from_number(9), Planet.MARS)
 
@@ -178,14 +191,20 @@ class TestSunriseCorrection(unittest.TestCase):
         # Test with mock sunrise (this will use approximation since suntime may not be available)
         info = get_vedic_day_info(birth_date, birth_time, 28.6139, 77.1025)
 
-        required_keys = ['gregorian_date', 'vedic_date', 'sunrise_time',
-                        'birth_before_sunrise', 'day_number_used', 'correction_applied']
+        required_keys = [
+            "gregorian_date",
+            "vedic_date",
+            "sunrise_time",
+            "birth_before_sunrise",
+            "day_number_used",
+            "correction_applied",
+        ]
 
         for key in required_keys:
             self.assertIn(key, info)
 
-        self.assertEqual(info['gregorian_date'], birth_date)
-        self.assertEqual(info['day_number_used'], info['vedic_date'].day)
+        self.assertEqual(info["gregorian_date"], birth_date)
+        self.assertEqual(info["day_number_used"], info["vedic_date"].day)
 
 
 class TestIntegration(unittest.TestCase):
@@ -212,15 +231,15 @@ class TestIntegration(unittest.TestCase):
         result = calculate_complete_numerology(birth_date)
 
         # Should have both numbers and planets
-        self.assertIsInstance(result['mulanka']['number'], int)
-        self.assertIsInstance(result['bhagyanka']['number'], int)
-        self.assertIsInstance(result['mulanka']['planet'], Planet)
-        self.assertIsInstance(result['bhagyanka']['planet'], Planet)
+        self.assertIsInstance(result["mulanka"]["number"], int)
+        self.assertIsInstance(result["bhagyanka"]["number"], int)
+        self.assertIsInstance(result["mulanka"]["planet"], Planet)
+        self.assertIsInstance(result["bhagyanka"]["planet"], Planet)
 
         # Numbers should be between 1-9
-        self.assertIn(result['mulanka']['number'], range(1, 10))
-        self.assertIn(result['bhagyanka']['number'], range(1, 10))
+        self.assertIn(result["mulanka"]["number"], range(1, 10))
+        self.assertIn(result["bhagyanka"]["number"], range(1, 10))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -8,20 +8,20 @@ Handles planetary dignity calculations including:
 - Modifiers for retrograde (Neecha Bhanga) and combust
 """
 
-from .scorer import DignityScorer, calculate_base_score, calculate_full_score
-from .exaltation_matrix import EXALTATION_TABLE, DEBILITATION_TABLE, get_exaltation_sign
+from .exaltation_matrix import DEBILITATION_TABLE, EXALTATION_TABLE, get_exaltation_sign
 from .friendship_matrix import NAISARGIKA_MAITRI, calculate_tatkalika_maitri
-from .modifiers import apply_retrograde_bonus, apply_combust_penalty
+from .modifiers import apply_combust_penalty, apply_retrograde_bonus
+from .scorer import DignityScorer, calculate_base_score, calculate_full_score
 
 __all__ = [
-    'DignityScorer',
-    'calculate_base_score',
-    'calculate_full_score',
-    'EXALTATION_TABLE',
-    'DEBILITATION_TABLE',
-    'get_exaltation_sign',
-    'NAISARGIKA_MAITRI',
-    'calculate_tatkalika_maitri',
-    'apply_retrograde_bonus',
-    'apply_combust_penalty'
+    "DignityScorer",
+    "calculate_base_score",
+    "calculate_full_score",
+    "EXALTATION_TABLE",
+    "DEBILITATION_TABLE",
+    "get_exaltation_sign",
+    "NAISARGIKA_MAITRI",
+    "calculate_tatkalika_maitri",
+    "apply_retrograde_bonus",
+    "apply_combust_penalty",
 ]

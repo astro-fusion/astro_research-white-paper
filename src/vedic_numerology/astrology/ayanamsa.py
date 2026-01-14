@@ -8,33 +8,37 @@ The Lahiri Ayanamsa (Chitra Paksha) is the standard for Vedic astrology
 and Government of India astronomical calculations.
 """
 
-from typing import Dict, Optional, Union
+import math
 from datetime import datetime
 from enum import Enum
-import math
+from typing import Dict, Optional, Union
+
 
 # Ayanamsa system constants
 class AyanamsaSystem(Enum):
     """Available Ayanamsa systems for Vedic astrology."""
-    LAHIRI = "lahiri"          # Chitra Paksha - Standard for Vedic astrology
-    RAMAN = "raman"            # Krishnamurti Ayanamsa
+
+    LAHIRI = "lahiri"  # Chitra Paksha - Standard for Vedic astrology
+    RAMAN = "raman"  # Krishnamurti Ayanamsa
     KRISHNAMURTI = "krishnamurti"  # Same as Raman
     YUKTESHWAR = "yukteshwar"  # Yukteshwar Ayanamsa
-    FAGAN = "fagan"            # Fagan-Bradley Ayanamsa
-    DELUCE = "deluce"          # De Luce Ayanamsa
+    FAGAN = "fagan"  # Fagan-Bradley Ayanamsa
+    DELUCE = "deluce"  # De Luce Ayanamsa
     DJWHAL_KHUL = "djwhal_khul"  # Djwhal Khul Ayanamsa
+
 
 # Ayanamsa values for different systems (in degrees)
 # These are reference values that would need to be calculated precisely
 AYANAMSA_OFFSETS: Dict[AyanamsaSystem, float] = {
-    AyanamsaSystem.LAHIRI: 24.0,          # Current Lahiri Ayanamsa (approximate)
-    AyanamsaSystem.RAMAN: 22.5,           # Krishnamurti Ayanamsa
-    AyanamsaSystem.KRISHNAMURTI: 22.5,    # Same as Raman
-    AyanamsaSystem.YUKTESHWAR: 22.0,      # Yukteshwar Ayanamsa
-    AyanamsaSystem.FAGAN: 24.1,           # Fagan-Bradley Ayanamsa
-    AyanamsaSystem.DELUCE: 25.2,          # De Luce Ayanamsa
-    AyanamsaSystem.DJWHAL_KHUL: 23.8,     # Djwhal Khul Ayanamsa
+    AyanamsaSystem.LAHIRI: 24.0,  # Current Lahiri Ayanamsa (approximate)
+    AyanamsaSystem.RAMAN: 22.5,  # Krishnamurti Ayanamsa
+    AyanamsaSystem.KRISHNAMURTI: 22.5,  # Same as Raman
+    AyanamsaSystem.YUKTESHWAR: 22.0,  # Yukteshwar Ayanamsa
+    AyanamsaSystem.FAGAN: 24.1,  # Fagan-Bradley Ayanamsa
+    AyanamsaSystem.DELUCE: 25.2,  # De Luce Ayanamsa
+    AyanamsaSystem.DJWHAL_KHUL: 23.8,  # Djwhal Khul Ayanamsa
 }
+
 
 def calculate_lahiri_ayanamsa(julian_day: float) -> float:
     """
@@ -73,7 +77,9 @@ def calculate_lahiri_ayanamsa(julian_day: float) -> float:
     return ayanamsa
 
 
-def get_ayanamsa_offset(julian_day: float, system: Union[str, AyanamsaSystem] = AyanamsaSystem.LAHIRI) -> float:
+def get_ayanamsa_offset(
+    julian_day: float, system: Union[str, AyanamsaSystem] = AyanamsaSystem.LAHIRI
+) -> float:
     """
     Get the Ayanamsa offset for converting Tropical to Sidereal positions.
 
@@ -92,7 +98,9 @@ def get_ayanamsa_offset(julian_day: float, system: Union[str, AyanamsaSystem] = 
             system = AyanamsaSystem(system.lower())
         except ValueError:
             valid_systems = [s.value for s in AyanamsaSystem]
-            raise ValueError(f"Unknown Ayanamsa system '{system}'. Valid systems: {valid_systems}")
+            raise ValueError(
+                f"Unknown Ayanamsa system '{system}'. Valid systems: {valid_systems}"
+            )
 
     if system == AyanamsaSystem.LAHIRI:
         # Use precise calculation for Lahiri
@@ -171,9 +179,18 @@ def get_zodiac_sign(longitude: float) -> tuple:
 
     # Sign names
     sign_names = [
-        "Aries", "Taurus", "Gemini", "Cancer",
-        "Leo", "Virgo", "Libra", "Scorpio",
-        "Sagittarius", "Capricorn", "Aquarius", "Pisces"
+        "Aries",
+        "Taurus",
+        "Gemini",
+        "Cancer",
+        "Leo",
+        "Virgo",
+        "Libra",
+        "Scorpio",
+        "Sagittarius",
+        "Capricorn",
+        "Aquarius",
+        "Pisces",
     ]
 
     sign_name = sign_names[sign_index]
@@ -181,7 +198,9 @@ def get_zodiac_sign(longitude: float) -> tuple:
     return sign_index, sign_name, degrees_in_sign
 
 
-def get_ayanamsa_info(julian_day: float, system: Union[str, AyanamsaSystem] = AyanamsaSystem.LAHIRI) -> dict:
+def get_ayanamsa_info(
+    julian_day: float, system: Union[str, AyanamsaSystem] = AyanamsaSystem.LAHIRI
+) -> dict:
     """
     Get comprehensive Ayanamsa information for a given time.
 
@@ -204,19 +223,20 @@ def get_ayanamsa_info(julian_day: float, system: Union[str, AyanamsaSystem] = Ay
         AyanamsaSystem.YUKTESHWAR: "Yukteshwar Ayanamsa - From Paramahansa Yogananda's guru",
         AyanamsaSystem.FAGAN: "Fagan-Bradley Ayanamsa - Popular in some Western sidereal systems",
         AyanamsaSystem.DELUCE: "De Luce Ayanamsa - Alternative calculation method",
-        AyanamsaSystem.DJWHAL_KHUL: "Djwhal Khul Ayanamsa - Esoteric tradition"
+        AyanamsaSystem.DJWHAL_KHUL: "Djwhal Khul Ayanamsa - Esoteric tradition",
     }
 
     return {
-        'system': system.value if isinstance(system, AyanamsaSystem) else system,
-        'ayanamsa': ayanamsa,
-        'description': system_descriptions.get(system, "Unknown Ayanamsa system")
+        "system": system.value if isinstance(system, AyanamsaSystem) else system,
+        "ayanamsa": ayanamsa,
+        "description": system_descriptions.get(system, "Unknown Ayanamsa system"),
     }
 
 
 # Constants for pyswisseph integration
 try:
     import swisseph as swe
+
     SWISSEPH_AVAILABLE = True
 
     # pyswisseph Ayanamsa constants
@@ -250,15 +270,15 @@ def get_pyswisseph_ayanamsa_constant(system: AyanamsaSystem) -> Optional[int]:
 
     return PYSWISSEPH_AYANAMSA_MAP.get(system)
 
+
 # Export for external use
 __all__ = [
-    'AyanamsaSystem',
-    'AYANAMSA_OFFSETS',
-    'get_ayanamsa_offset',
-    'convert_tropical_to_sidereal',
-    'convert_sidereal_to_tropical',
-    'get_zodiac_sign',
-    'AYANAMSA_SYSTEMS',  # This is from constants
-    'get_ayanamsa_info',
-    'get_pyswisseph_ayanamsa_constant',
+    "AyanamsaSystem",
+    "AYANAMSA_OFFSETS",
+    "get_ayanamsa_offset",
+    "convert_tropical_to_sidereal",
+    "convert_sidereal_to_tropical",
+    "get_zodiac_sign",
+    "get_ayanamsa_info",
+    "get_pyswisseph_ayanamsa_constant",
 ]

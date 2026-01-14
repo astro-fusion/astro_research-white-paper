@@ -8,52 +8,29 @@ This mapping is critical for the numerology-astrology integration as it determin
 which planetary positions are evaluated for support/contradiction analysis.
 """
 
-from typing import Dict, Optional, Union
 from enum import Enum
+from typing import Dict, Optional, Union
 
-# Planet constants matching pyswisseph (when available)
-class Planet(Enum):
-    """Planetary constants for Vedic astrology."""
-    SUN = 0
-    MOON = 1
-    MARS = 4
-    MERCURY = 2
-    JUPITER = 5
-    VENUS = 3
-    SATURN = 6
-    RAHU = 10  # North Node
-    KETU = 11  # South Node (calculated as Rahu + 180°)
+from ..config.constants import PLANET_NAMES, Planet
+
 
 # Vedic Number-to-Planet Mapping
 # This is the core mapping that differentiates Vedic from Western numerology
 NUMBER_TO_PLANET: Dict[int, Planet] = {
-    1: Planet.SUN,      # Authority, Ego, Soul, Vitality
-    2: Planet.MOON,     # Mind, Emotions, Nurturing
+    1: Planet.SUN,  # Authority, Ego, Soul, Vitality
+    2: Planet.MOON,  # Mind, Emotions, Nurturing
     3: Planet.JUPITER,  # Wisdom, Expansion, Optimism
-    4: Planet.RAHU,     # Illusion, Materialism, Innovation (NOT Uranus in Vedic)
+    4: Planet.RAHU,  # Illusion, Materialism, Innovation (NOT Uranus in Vedic)
     5: Planet.MERCURY,  # Intellect, Communication, Logic
-    6: Planet.VENUS,    # Luxury, Art, Desire, Relationship
-    7: Planet.KETU,     # Detachment, Moksha, Intuition (NOT Neptune in Vedic)
-    8: Planet.SATURN,   # Discipline, Delay, Structure
-    9: Planet.MARS,     # Energy, Aggression, Action
+    6: Planet.VENUS,  # Luxury, Art, Desire, Relationship
+    7: Planet.KETU,  # Detachment, Moksha, Intuition (NOT Neptune in Vedic)
+    8: Planet.SATURN,  # Discipline, Delay, Structure
+    9: Planet.MARS,  # Energy, Aggression, Action
 }
 
 # Reverse mapping for lookups
 PLANET_TO_NUMBER: Dict[Planet, int] = {
     planet: number for number, planet in NUMBER_TO_PLANET.items()
-}
-
-# Descriptive names for display
-PLANET_NAMES: Dict[Planet, str] = {
-    Planet.SUN: "Sun (Surya)",
-    Planet.MOON: "Moon (Chandra)",
-    Planet.MARS: "Mars (Mangal)",
-    Planet.MERCURY: "Mercury (Budha)",
-    Planet.JUPITER: "Jupiter (Guru)",
-    Planet.VENUS: "Venus (Shukra)",
-    Planet.SATURN: "Saturn (Shani)",
-    Planet.RAHU: "Rahu (North Node)",
-    Planet.KETU: "Ketu (South Node)",
 }
 
 # Vedic qualities associated with each number
@@ -68,6 +45,7 @@ NUMBER_QUALITIES: Dict[int, str] = {
     8: "Discipline, Delay, Structure",
     9: "Energy, Aggression, Action",
 }
+
 
 def get_planet_from_number(number: int) -> Optional[Planet]:
     """
@@ -87,6 +65,7 @@ def get_planet_from_number(number: int) -> Optional[Planet]:
 
     return NUMBER_TO_PLANET[number]
 
+
 def get_number_from_planet(planet: Planet) -> int:
     """
     Get the numerological number associated with a planet.
@@ -99,6 +78,7 @@ def get_number_from_planet(planet: Planet) -> int:
     """
     return PLANET_TO_NUMBER[planet]
 
+
 def get_planet_name(planet: Planet) -> str:
     """
     Get the display name for a planet.
@@ -110,6 +90,7 @@ def get_planet_name(planet: Planet) -> str:
         Human-readable planet name
     """
     return PLANET_NAMES[planet]
+
 
 def get_number_qualities(number: int) -> str:
     """
@@ -129,6 +110,7 @@ def get_number_qualities(number: int) -> str:
 
     return NUMBER_QUALITIES[number]
 
+
 def validate_vedic_mapping() -> bool:
     """
     Validate that the Vedic mapping is correctly implemented.
@@ -142,8 +124,12 @@ def validate_vedic_mapping() -> bool:
         True if validation passes, raises AssertionError otherwise
     """
     # Check Vedic-specific mappings
-    assert NUMBER_TO_PLANET[4] == Planet.RAHU, "Number 4 must map to Rahu in Vedic system"
-    assert NUMBER_TO_PLANET[7] == Planet.KETU, "Number 7 must map to Ketu in Vedic system"
+    assert (
+        NUMBER_TO_PLANET[4] == Planet.RAHU
+    ), "Number 4 must map to Rahu in Vedic system"
+    assert (
+        NUMBER_TO_PLANET[7] == Planet.KETU
+    ), "Number 7 must map to Ketu in Vedic system"
 
     # Check that all numbers 1-9 are mapped
     for i in range(1, 10):
@@ -151,12 +137,24 @@ def validate_vedic_mapping() -> bool:
 
     # Check that all planets are used exactly once
     planets_used = set(NUMBER_TO_PLANET.values())
-    expected_planets = {Planet.SUN, Planet.MOON, Planet.MARS, Planet.MERCURY,
-                       Planet.JUPITER, Planet.VENUS, Planet.SATURN, Planet.RAHU, Planet.KETU}
+    expected_planets = {
+        Planet.SUN,
+        Planet.MOON,
+        Planet.MARS,
+        Planet.MERCURY,
+        Planet.JUPITER,
+        Planet.VENUS,
+        Planet.SATURN,
+        Planet.RAHU,
+        Planet.KETU,
+    }
 
-    assert planets_used == expected_planets, f"Planet mapping mismatch: {planets_used} vs {expected_planets}"
+    assert (
+        planets_used == expected_planets
+    ), f"Planet mapping mismatch: {planets_used} vs {expected_planets}"
 
     return True
+
 
 # Run validation on module import
 validate_vedic_mapping()

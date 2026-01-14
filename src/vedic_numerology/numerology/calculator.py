@@ -10,11 +10,11 @@ The calculator handles the mathematical operations that form the foundation
 of numerological analysis in the Vedic tradition.
 """
 
-from typing import Tuple, Optional, Union
-from datetime import datetime, date, time
 import math
+from datetime import date, datetime, time
+from typing import Optional, Tuple, Union
 
-from .planet_mapping import get_planet_from_number, Planet
+from .planet_mapping import Planet, get_planet_from_number
 
 
 def reduce_to_single_digit(number: Union[int, str]) -> int:
@@ -58,8 +58,12 @@ def reduce_to_single_digit(number: Union[int, str]) -> int:
     return number
 
 
-def calculate_mulanka(birth_date: date, birth_time: Optional[time] = None,
-                      latitude: Optional[float] = None, longitude: Optional[float] = None) -> Tuple[int, Planet]:
+def calculate_mulanka(
+    birth_date: date,
+    birth_time: Optional[time] = None,
+    latitude: Optional[float] = None,
+    longitude: Optional[float] = None,
+) -> Tuple[int, Planet]:
     """
     Calculate the Mulanka (Birth Number/Psychic Number).
 
@@ -88,7 +92,9 @@ def calculate_mulanka(birth_date: date, birth_time: Optional[time] = None,
         # Import here to avoid circular imports
         from .sunrise_correction import adjust_date_for_vedic_day
 
-        corrected_date = adjust_date_for_vedic_day(birth_date, birth_time, latitude, longitude)
+        corrected_date = adjust_date_for_vedic_day(
+            birth_date, birth_time, latitude, longitude
+        )
         day_number = corrected_date.day
 
     # Calculate Mulanka by reducing day number
@@ -136,8 +142,12 @@ def calculate_bhagyanka(birth_date: date) -> Tuple[int, Planet]:
     return bhagyanka, planet
 
 
-def calculate_complete_numerology(birth_date: date, birth_time: Optional[time] = None,
-                                 latitude: Optional[float] = None, longitude: Optional[float] = None) -> dict:
+def calculate_complete_numerology(
+    birth_date: date,
+    birth_time: Optional[time] = None,
+    latitude: Optional[float] = None,
+    longitude: Optional[float] = None,
+) -> dict:
     """
     Calculate complete numerological profile including Mulanka and Bhagyanka.
 
@@ -156,25 +166,26 @@ def calculate_complete_numerology(birth_date: date, birth_time: Optional[time] =
         - 'bhagyanka': {'number': int, 'planet': Planet}
         - 'sunrise_corrected': bool
     """
-    sunrise_corrected = birth_time is not None and latitude is not None and longitude is not None
+    sunrise_corrected = (
+        birth_time is not None and latitude is not None and longitude is not None
+    )
 
     # Calculate Mulanka
-    mulanka_num, mulanka_planet = calculate_mulanka(birth_date, birth_time, latitude, longitude)
+    mulanka_num, mulanka_planet = calculate_mulanka(
+        birth_date, birth_time, latitude, longitude
+    )
 
     # Calculate Bhagyanka
     bhagyanka_num, bhagyanka_planet = calculate_bhagyanka(birth_date)
 
     return {
-        'mulanka': {
-            'number': mulanka_num,
-            'planet': mulanka_planet,
-            'corrected': sunrise_corrected
+        "mulanka": {
+            "number": mulanka_num,
+            "planet": mulanka_planet,
+            "corrected": sunrise_corrected,
         },
-        'bhagyanka': {
-            'number': bhagyanka_num,
-            'planet': bhagyanka_planet
-        },
-        'sunrise_corrected': sunrise_corrected
+        "bhagyanka": {"number": bhagyanka_num, "planet": bhagyanka_planet},
+        "sunrise_corrected": sunrise_corrected,
     }
 
 
