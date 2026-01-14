@@ -33,3 +33,4 @@ wheels/
 
 # Data (Generated)
 data/
+docs/_build/

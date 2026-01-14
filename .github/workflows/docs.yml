@@ -64,4 +64,5 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: docs-html
-        cname: vedic-numerology.astrology.research
+        # Remove CNAME if not using custom domain
+        # cname: vedic-numerology.astrology.research

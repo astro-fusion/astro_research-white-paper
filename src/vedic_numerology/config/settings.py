@@ -22,7 +22,7 @@ except ImportError:
 from .constants import AYANAMSA_SYSTEMS, HOUSE_SYSTEMS
 
 # Default configuration
-DEFAULT_CONFIG = {
+DEFAULT_CONFIG: Dict[str, Any] = {
     "astrology": {
         "ayanamsa_system": "lahiri",
         "house_system": "placidus",
@@ -151,7 +151,7 @@ class Config:
             Configuration value
         """
         keys = key.split(".")
-        value = self._config
+        value: Any = self._config
 
         try:
             for k in keys:
@@ -184,7 +184,7 @@ class Config:
         """Reset configuration to default values."""
         self._config = DEFAULT_CONFIG.copy()
 
-    def _deep_merge(self, base: Dict, update: Dict) -> None:
+    def _deep_merge(self, base: Dict[str, Any], update: Dict[str, Any]) -> None:
         """
         Deep merge update dictionary into base dictionary.
 

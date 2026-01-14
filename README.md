@@ -169,6 +169,57 @@ report = analysis.generate_report()
 print(report)
 ```
 
+### 📊 Advanced Data Analysis Workflows
+
+#### Temporal Trend Analysis
+```python
+from vedic_numerology import VedicNumerologyAstrology
+from datetime import datetime
+
+# Analyze how numerological support changes over time
+vna = VedicNumerologyAstrology("1984-08-27", "10:30", 28.6139, 77.1025)
+
+# Generate time series data
+fig = vna.plot_temporal_support(
+    start_date="2024-01-01",
+    end_date="2024-12-31",
+    use_plotly=True
+)
+fig.show()
+```
+
+#### Comparative Studies
+```python
+# Compare multiple birth charts
+subjects = [
+    {"name": "Person A", "date": "1984-08-27", "time": "10:30", "lat": 28.6139, "lon": 77.1025},
+    {"name": "Person B", "date": "1990-05-15", "time": "14:20", "lat": 40.7128, "lon": -74.0060},
+]
+
+results = []
+for subject in subjects:
+    vna = VedicNumerologyAstrology(
+        birth_date=subject["date"],
+        birth_time=subject["time"],
+        latitude=subject["lat"],
+        longitude=subject["lon"]
+    )
+
+    analysis = vna.analyze_support_contradiction()
+    results.append({
+        "name": subject["name"],
+        "mulanka_support": analysis['mulanka']['support_level'],
+        "bhagyanka_support": analysis['bhagyanka']['support_level']
+    })
+
+# Create comparison visualization
+import plotly.express as px
+df = pd.DataFrame(results)
+fig = px.bar(df, x='name', y=['mulanka_support', 'bhagyanka_support'],
+             title="Comparative Numerological Support Analysis")
+fig.show()
+```
+
 ### 🪐 Advanced Astrology Integration
 
 Combine numerology with full astrological analysis:
@@ -314,6 +365,72 @@ To share your analysis:
    ```markdown
    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](YOUR_COLAB_LINK)
    ```
+
+## 🚀 Deployment & Publishing
+
+### Multi-Format Publishing Strategy
+
+Your research platform supports **three deployment channels** for maximum reach:
+
+#### 1. 📖 **Static Research Site** (GitHub Pages)
+- **Purpose**: Primary research dissemination
+- **Content**: Manuscripts, documentation, interactive components
+- **Access**: `https://astro-fusion.github.io/numerology-white-paper/`
+
+#### 2. 🎮 **Interactive Web App** (Streamlit Cloud)
+- **Purpose**: Real-time exploration and analysis
+- **Features**: Live calculators, dynamic visualizations, data export
+- **Access**: `https://share.streamlit.io/astro-fusion/numerology-app/main/app.py`
+
+#### 3. 📚 **Academic Publications**
+- **PDF**: Traditional research paper format
+- **HTML**: Web-optimized with cross-references
+- **DOCX**: Collaborative editing format
+
+### Automated Deployment
+
+#### GitHub Actions Workflows
+
+**Deploy Static Site:**
+```yaml
+# .github/workflows/deploy-platform.yml
+# Deploys to GitHub Pages automatically on main branch push
+```
+
+**Manual Deployment Options:**
+```bash
+# Deploy everything
+gh workflow run deploy-platform.yml -f deploy_target=both
+
+# Deploy only static content
+gh workflow run deploy-platform.yml -f deploy_target=static-only
+
+# Deploy only interactive app
+gh workflow run deploy-platform.yml -f deploy_target=app-only
+```
+
+#### Local Deployment Testing
+
+**Test Static Site Locally:**
+```bash
+# Build all content
+make build-all
+
+# Serve locally
+cd _site && python -m http.server 8000
+# Visit: http://localhost:8000
+```
+
+**Test Streamlit App Locally:**
+```bash
+# Install Streamlit
+pip install streamlit
+
+# Run the app
+streamlit run app.py
+
+# Access at: http://localhost:8501
+```
 
 ## 🛠️ Development & Building
 
@@ -526,6 +643,55 @@ pytest tests/test_numerology.py -k "mulanka" -s
 
 # Check dependencies
 pip check
+```
+
+## 🌐 Interactive Research Platform
+
+Your project now supports **multiple deployment formats** for maximum accessibility and engagement:
+
+### 📊 **1. Static Research Publications**
+- **PDF Downloads**: Traditional academic paper format for citations and printing
+- **HTML Manuscripts**: Web-optimized versions with cross-references and navigation
+- **DOCX Format**: Microsoft Word compatible for collaborative editing
+
+### 🎮 **2. Interactive Web Experience**
+- **Embedded Interactive Components**: Live calculators and visualizations in the manuscript
+- **Streamlit Web App**: Full-featured application with real-time controls
+- **Dynamic Visualizations**: Plotly-powered charts that respond to user input
+
+### 🔧 **3. Developer Resources**
+- **API Documentation**: Complete Sphinx-generated documentation
+- **Jupyter Notebooks**: Executable computational narratives
+- **Google Colab Integration**: Zero-setup cloud execution
+
+## 📄 Research Content Formats
+
+### Academic Publications
+```bash
+# Generate all formats
+make build
+
+# Individual formats
+make build-pdf     # Research paper PDF
+make build-html    # Web manuscript
+make build-docx    # Word document
+```
+
+### Interactive Experience
+```bash
+# Run local Streamlit app
+streamlit run app.py
+
+# Access interactive components
+# Visit: manuscript.html#interactive-controls
+```
+
+### Developer Documentation
+```bash
+# Build API docs
+make docs
+
+# View at: docs/_build/html/index.html
 ```
 
 ## 📄 PDF Report Generation

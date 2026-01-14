@@ -1,0 +1,196 @@
+name: Deploy Research Platform
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      deploy_target:
+        description: 'Deployment target'
+        required: true
+        default: 'both'
+        type: choice
+        options:
+          - both
+          - static-only
+          - app-only
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "research-platform"
+  cancel-in-progress: false
+
+jobs:
+  # Static site deployment (GitHub Pages)
+  deploy-static:
+    name: Deploy Static Site
+    runs-on: ubuntu-latest
+    if: github.event.inputs.deploy_target != 'app-only' || github.event_name == 'push'
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: Set up Quarto
+      uses: quarto-dev/quarto-actions/setup@v2
+      with:
+        tinytex: true
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Cache pip dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-static-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-static-
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update && sudo apt-get install -y libswisseph-dev
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt -e ".[dev]" pyswisseph>=2.08.00
+        pip install sphinx sphinx-rtd-theme myst-parser
+
+    - name: Build content
+      run: |
+        # Build manuscripts
+        ./build.sh html
+        ./build.sh pdf
+
+        # Build documentation
+        mkdir -p docs/api
+        python -m sphinx -b html docs/ docs/_build/html
+
+    - name: Create site structure
+      run: |
+        mkdir -p _site
+
+        # Copy manuscript as main content
+        if [ -f "_book/html/manuscript.html" ]; then
+          cp _book/html/manuscript.html _site/index.html
+          cp -r _book/html/* _site/ 2>/dev/null || true
+        fi
+
+        # Copy documentation
+        if [ -d "docs/_build/html" ]; then
+          mkdir -p _site/docs
+          cp -r docs/_build/html/* _site/docs/
+        fi
+
+        # Copy interactive components
+        cp interactive-components.html _site/ 2>/dev/null || true
+
+        # Create enhanced landing page
+        cat > _site/index.html << 'EOF'
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>🪐 Vedic Numerology Research Platform</title>
+            <style>
+                body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #333; }
+                .hero { text-align: center; color: white; padding: 60px 20px; }
+                .hero h1 { font-size: 3em; margin-bottom: 20px; }
+                .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+                .card { background: white; border-radius: 15px; padding: 30px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+                .btn { display: inline-block; padding: 12px 24px; background: linear-gradient(45deg, #667eea, #764ba2); color: white; text-decoration: none; border-radius: 25px; margin: 5px; }
+                .badge { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.8em; }
+            </style>
+        </head>
+        <body>
+            <div class="hero">
+                <h1>🪐 Vedic Numerology Research Platform</h1>
+                <p>Interactive computational analysis of planetary influences on numerological potentials</p>
+                <div><span class="badge">🔬 Research-Driven</span> <span class="badge">⚡ Real-Time Analysis</span> <span class="badge">📊 Interactive</span></div>
+            </div>
+
+            <div class="grid">
+                <div class="card">
+                    <h3>📖 Research Manuscript</h3>
+                    <p>Complete academic paper with methodology and findings</p>
+                    <a href="manuscript.html" class="btn">📖 Read Online</a>
+                    <a href="manuscript.pdf" class="btn" target="_blank">📄 Download PDF</a>
+                </div>
+
+                <div class="card">
+                    <h3>🎮 Interactive Explorer</h3>
+                    <p>Real-time numerology calculator with dynamic visualizations</p>
+                    <a href="interactive-components.html" class="btn">⚡ Try Interactive</a>
+                    <a href="https://share.streamlit.io/astro-fusion/numerology-app/main/app.py" class="btn" target="_blank">🚀 Full App</a>
+                </div>
+
+                <div class="card">
+                    <h3>🔧 API Documentation</h3>
+                    <p>Complete developer documentation and API reference</p>
+                    <a href="docs/index.html" class="btn">📚 View Docs</a>
+                </div>
+
+                <div class="card">
+                    <h3>💻 Source Code</h3>
+                    <p>GitHub repository with implementation and examples</p>
+                    <a href="https://github.com/astro-fusion/numerology-white-paper" class="btn" target="_blank">🐙 View Code</a>
+                </div>
+            </div>
+        </body>
+        </html>
+        EOF
+
+    - name: Upload static content
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: _site
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+
+  # Streamlit app deployment (to Streamlit Cloud or similar)
+  deploy-app:
+    name: Deploy Streamlit App
+    runs-on: ubuntu-latest
+    if: github.event.inputs.deploy_target != 'static-only' || github.event_name == 'push'
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Deploy to Streamlit Cloud
+      run: |
+        echo "Streamlit app deployment would go here"
+        echo "App files prepared for deployment:"
+        ls -la app.py requirements-app.txt
+        # Note: Actual Streamlit Cloud deployment requires API token
+        # and would typically use: streamlit deploy app.py
+
+    - name: Create deployment package
+      run: |
+        mkdir -p app-deployment
+        cp app.py requirements-app.txt app-deployment/
+        cp -r src/ app-deployment/
+        tar -czf streamlit-app.tar.gz app-deployment/
+        echo "App package created: streamlit-app.tar.gz"
+
+    - name: Upload app package
+      uses: actions/upload-artifact@v4
+      with:
+        name: streamlit-app-package
+        path: streamlit-app.tar.gz

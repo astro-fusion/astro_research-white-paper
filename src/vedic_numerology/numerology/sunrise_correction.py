@@ -11,7 +11,7 @@ is used for numerological calculations.
 
 import math
 from datetime import date, datetime, time, timedelta
-from typing import Optional, Tuple
+from typing import Any, Optional, Tuple, cast
 
 try:
     from suntime import Sun
@@ -58,7 +58,7 @@ def get_sunrise_time(
         try:
             sun = Sun(latitude, longitude)
             sunrise = sun.get_sunrise_time(birth_date)
-            return sunrise
+            return cast(datetime, sunrise)
         except Exception as e:
             # Fall back to flatlib if suntime fails
             pass

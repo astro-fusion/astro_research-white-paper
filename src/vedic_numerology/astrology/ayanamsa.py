@@ -11,7 +11,7 @@ and Government of India astronomical calculations.
 import math
 from datetime import datetime
 from enum import Enum
-from typing import Dict, Optional, Union
+from typing import Any, Dict, Optional, Union, cast
 
 
 # Ayanamsa system constants
@@ -214,6 +214,12 @@ def get_ayanamsa_info(
         - 'ayanamsa': Ayanamsa value in degrees
         - 'description': Description of the system
     """
+    if isinstance(system, str):
+        try:
+            system = AyanamsaSystem(system.lower())
+        except ValueError:
+            pass
+
     ayanamsa = get_ayanamsa_offset(julian_day, system)
 
     system_descriptions = {
@@ -229,7 +235,7 @@ def get_ayanamsa_info(
     return {
         "system": system.value if isinstance(system, AyanamsaSystem) else system,
         "ayanamsa": ayanamsa,
-        "description": system_descriptions.get(system, "Unknown Ayanamsa system"),
+        "description": system_descriptions.get(cast(Any, system), "Unknown Ayanamsa system"),
     }
 
 
@@ -240,7 +246,7 @@ try:
     SWISSEPH_AVAILABLE = True
 
     # pyswisseph Ayanamsa constants
-    PYSWISSEPH_AYANAMSA_MAP = {
+    PYSWISSEPH_AYANAMSA_MAP: Dict[AyanamsaSystem, int] = {
         AyanamsaSystem.LAHIRI: swe.SIDM_LAHIRI,
         AyanamsaSystem.RAMAN: swe.SIDM_KRISHNAMURTI,  # Close approximation
         AyanamsaSystem.KRISHNAMURTI: swe.SIDM_KRISHNAMURTI,
@@ -252,7 +258,7 @@ try:
 
 except ImportError:
     SWISSEPH_AVAILABLE = False
-    PYSWISSEPH_AYANAMSA_MAP = {}
+    PYSWISSEPH_AYANAMSA_MAP: Dict[AyanamsaSystem, int] = {}  # type: ignore[no-redef]
 
 
 def get_pyswisseph_ayanamsa_constant(system: AyanamsaSystem) -> Optional[int]:

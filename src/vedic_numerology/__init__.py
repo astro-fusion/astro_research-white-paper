@@ -135,7 +135,7 @@ class VedicNumerologyAstrology:
                 f"birth_time must be string or time object, got {type(birth_time)}"
             )
 
-    def _validate_coordinates(self):
+    def _validate_coordinates(self) -> None:
         """Validate latitude and longitude coordinates."""
         if not (-90 <= self.latitude <= 90):
             raise ValueError(

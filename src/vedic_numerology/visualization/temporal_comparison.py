@@ -209,7 +209,7 @@ def _plot_comparison_plotly(
     planet: Planet,
     num_col: str,
     ast_col: str,
-    save_path: str = None,
+    save_path: Optional[str] = None,
 ) -> go.Figure:
     """Create Plotly comparison plot for a single planet."""
     fig = go.Figure()
@@ -270,7 +270,7 @@ def _plot_comparison_matplotlib(
     planet: Planet,
     num_col: str,
     ast_col: str,
-    save_path: str = None,
+    save_path: Optional[str] = None,
 ) -> plt.Axes:
     """Create Matplotlib comparison plot for a single planet."""
     if SEABORN_AVAILABLE:
@@ -324,7 +324,7 @@ def _plot_comparison_matplotlib(
     return ax
 
 
-def _plot_all_planets_plotly(data: pd.DataFrame, save_path: str = None) -> go.Figure:
+def _plot_all_planets_plotly(data: pd.DataFrame, save_path: Optional[str] = None) -> go.Figure:
     """Create Plotly overview plot showing all planets."""
     planets = [
         Planet.SUN,
@@ -406,7 +406,7 @@ def _plot_all_planets_plotly(data: pd.DataFrame, save_path: str = None) -> go.Fi
 
 
 def _plot_all_planets_matplotlib(
-    data: pd.DataFrame, save_path: str = None
+    data: pd.DataFrame, save_path: Optional[str] = None
 ) -> plt.Figure:
     """Create Matplotlib overview plot showing all planets."""
     planets = [
@@ -480,7 +480,7 @@ def _plot_all_planets_matplotlib(
 
 
 def _plot_correlation_plotly(
-    data: pd.DataFrame, planets: List[Planet], save_path: str = None
+    data: pd.DataFrame, planets: List[Planet], save_path: Optional[str] = None
 ) -> go.Figure:
     """Create Plotly correlation analysis plot."""
     # Calculate correlations for each planet
@@ -577,7 +577,7 @@ def _plot_correlation_plotly(
 
 
 def _plot_correlation_matplotlib(
-    data: pd.DataFrame, planets: List[Planet], save_path: str = None
+    data: pd.DataFrame, planets: List[Planet], save_path: Optional[str] = None
 ) -> plt.Figure:
     """Create Matplotlib correlation analysis plot."""
     # Calculate correlations
@@ -636,7 +636,7 @@ def _plot_correlation_matplotlib(
     return fig
 
 
-def _plot_moon_highlight_plotly(data: pd.DataFrame, save_path: str = None) -> go.Figure:
+def _plot_moon_highlight_plotly(data: pd.DataFrame, save_path: Optional[str] = None) -> go.Figure:
     """Create Plotly moon movement highlight plot."""
     fig = go.Figure()
 
@@ -700,7 +700,7 @@ def _plot_moon_highlight_plotly(data: pd.DataFrame, save_path: str = None) -> go
 
 
 def _plot_moon_highlight_matplotlib(
-    data: pd.DataFrame, save_path: str = None
+    data: pd.DataFrame, save_path: Optional[str] = None
 ) -> plt.Axes:
     """Create Matplotlib moon movement highlight plot."""
     if SEABORN_AVAILABLE:
