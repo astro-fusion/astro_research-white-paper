@@ -134,7 +134,8 @@ def adjust_date_for_vedic_day(
     Adjust Gregorian date to Vedic date based on sunrise.
 
     In Vedic tradition, the day begins at sunrise, not midnight.
-    If birth time is before sunrise, the numerological day is the previous Gregorian day.
+    If birth time is before sunrise, the numerological day is the previous
+    Gregorian day.
 
     Args:
         birth_date: Gregorian birth date

@@ -949,11 +949,11 @@ The Vedic Numerology-Astrology API is available through multiple deployment opti
 
 #### 🚀 **FastAPI on Render** (Recommended)
 ```bash
-# Deployed at: https://vedic-numerology-api.onrender.com
-curl https://vedic-numerology-api.onrender.com/api/v1/health
+# Deployed at: https://your-app-name.onrender.com
+curl https://your-app-name.onrender.com/api/v1/health
 
 # Interactive API docs
-# Visit: https://vedic-numerology-api.onrender.com/docs
+# Visit: https://your-app-name.onrender.com/docs
 ```
 
 #### ⚡ **GitHub Actions Webhook API** (Free)

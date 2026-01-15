@@ -67,7 +67,8 @@ def calculate_mulanka(
     Calculate the Mulanka (Birth Number/Psychic Number).
 
     The Mulanka represents the core personality and immediate reactions.
-    It is calculated from the day of birth, with Vedic sunrise correction if coordinates provided.
+    It is calculated from the day of birth, with Vedic sunrise correction if
+    coordinates provided.
 
     Args:
         birth_date: Date of birth
@@ -76,7 +77,8 @@ def calculate_mulanka(
         longitude: Longitude for sunrise calculation (optional)
 
     Returns:
-        Tuple of (mulanka_number, planet) where number is 1-9 and planet is the ruling Planet
+        Tuple of (mulanka_number, planet) where number is 1-9 and planet is the
+        ruling Planet
 
     Raises:
         ValueError: If date is invalid or coordinates are incomplete
@@ -109,14 +111,16 @@ def calculate_bhagyanka(birth_date: date) -> Tuple[int, Planet]:
     """
     Calculate the Bhagyanka (Destiny Number/Life Path Number).
 
-    The Bhagyanka represents the life path, karmic trajectory, and external circumstances.
-    It is calculated by summing all components of the birth date and reducing to a single digit.
+    The Bhagyanka represents the life path, karmic trajectory, and external
+    circumstances. It is calculated by summing all components of the birth date
+    and reducing to a single digit.
 
     Args:
         birth_date: Complete date of birth
 
     Returns:
-        Tuple of (bhagyanka_number, planet) where number is 1-9 and planet is the ruling Planet
+        Tuple of (bhagyanka_number, planet) where number is 1-9 and planet is the
+        ruling Planet
 
     Raises:
         TypeError: If birth_date is not a date object

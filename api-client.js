@@ -94,12 +94,8 @@ class VedicNumerologyAPI {
             ayanamsa_system: birthData.ayanamsa_system || 'lahiri'
         };
 
-        // Use GitHub Actions webhook for GitHub Pages
-        if (this.baseURL.includes('github.com')) {
-            return this.callGitHubActions('calculate-numerology', payload);
-        }
-
         // Use direct API for deployed services
+        // Note: GitHub Actions webhook requires backend authentication and is not suitable for browser clients
         return this.request('/api/v1/numerology', {
             method: 'POST',
             body: payload
@@ -119,11 +115,8 @@ class VedicNumerologyAPI {
             ayanamsa_system: birthData.ayanamsa_system || 'lahiri'
         };
 
-        // Use GitHub Actions webhook for GitHub Pages
-        if (this.baseURL.includes('github.com')) {
-            return this.callGitHubActions('calculate-astrology', payload);
-        }
-
+        // Use direct API for deployed services
+        // Note: GitHub Actions webhook requires backend authentication and is not suitable for browser clients
         return this.request('/api/v1/astrology', {
             method: 'POST',
             body: payload
@@ -143,11 +136,8 @@ class VedicNumerologyAPI {
             ayanamsa_system: birthData.ayanamsa_system || 'lahiri'
         };
 
-        // Use GitHub Actions webhook for GitHub Pages
-        if (this.baseURL.includes('github.com')) {
-            return this.callGitHubActions('complete-analysis', payload);
-        }
-
+        // Use direct API for deployed services
+        // Note: GitHub Actions webhook requires backend authentication and is not suitable for browser clients
         return this.request('/api/v1/analysis', {
             method: 'POST',
             body: payload
@@ -156,10 +146,15 @@ class VedicNumerologyAPI {
 
     /**
      * Call GitHub Actions via repository dispatch
+     * Note: Requires GitHub token with repo scope
      */
-    async callGitHubActions(eventType, payload) {
+    async callGitHubActions(eventType, payload, githubToken = null) {
         // For GitHub Actions webhook, we need to trigger a repository dispatch
         // This will run the GitHub Actions workflow and return results
+
+        if (!githubToken) {
+            throw new Error('GitHub token required for Actions API. This should be called from a backend service.');
+        }
 
         const webhookPayload = {
             event_type: eventType,
@@ -174,7 +169,7 @@ class VedicNumerologyAPI {
             const response = await this.request('', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `token ${process.env.GITHUB_TOKEN || ''}`,
+                    'Authorization': `token ${githubToken}`,
                     'Accept': 'application/vnd.github.v3+json'
                 },
                 body: webhookPayload

@@ -43,9 +43,9 @@ app = FastAPI(
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify your domains
+    allow_origins=os.environ.get("ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:8000").split(","),
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
@@ -97,9 +97,6 @@ class AnalysisResponse(BaseModel):
     astrology: Dict[str, Any]
     support_analysis: Dict[str, Any]
     timestamp: str
-
-# Global cache for calculations (in production, use Redis or similar)
-calculation_cache = {}
 
 @app.get("/")
 async def root():
@@ -319,6 +316,14 @@ async def http_exception_handler(request, exc):
 
 @app.exception_handler(Exception)
 async def general_exception_handler(request, exc):
+    # It's a good practice to log the exception with its traceback
+    import traceback
+    import logging
+
+    # Log the full exception details
+    logging.error(f"Unhandled exception: {exc}")
+    logging.error("".join(traceback.format_tb(exc.__traceback__)))
+
     return {
         "error": "Internal server error",
         "detail": str(exc),

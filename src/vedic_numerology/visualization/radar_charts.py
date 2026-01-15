@@ -5,7 +5,7 @@ Creates radar/spider charts to visualize multiple dignity factors
 and provide comprehensive planetary strength analysis.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple, cast
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -400,7 +400,7 @@ def _plot_radar_matplotlib(
     factor_values += factor_values[:1]
 
     # Create figure
-    fig = plt.figure(figsize=RADAR_CONFIG["figsize"])
+    fig = plt.figure(figsize=cast(Tuple[float, float], RADAR_CONFIG["figsize"]))
     ax = fig.add_subplot(111, polar=True)
 
     # Plot data
@@ -505,7 +505,7 @@ def _plot_multi_radar_matplotlib(
     angles += angles[:1]
 
     # Create figure
-    fig = plt.figure(figsize=RADAR_CONFIG["figsize"])
+    fig = plt.figure(figsize=cast(Tuple[float, float], RADAR_CONFIG["figsize"]))
     ax = fig.add_subplot(111, polar=True)
 
     # Plot each planet

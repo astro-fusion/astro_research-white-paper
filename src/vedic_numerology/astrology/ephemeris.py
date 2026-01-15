@@ -139,7 +139,8 @@ class EphemerisEngine:
             planet = self._planet_name_to_constant(planet)
 
         # Calculate position using Swiss Ephemeris
-        # swe.calc_ut returns: ((longitude, latitude, distance, speed_longitude, speed_latitude, speed_distance), rflag)
+        # swe.calc_ut returns:
+        # ((longitude, latitude, distance, speed_long, speed_lat, speed_dist), rflag)
         result = swe.calc_ut(julian_day, planet)
 
         # Unpack coordinates from the first element of the result tuple

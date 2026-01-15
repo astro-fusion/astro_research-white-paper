@@ -176,7 +176,8 @@ class TestSunriseCorrection(unittest.TestCase):
         birth_date = date(1984, 8, 27)
         birth_time = time(10, 30)
 
-        # Test with mock sunrise (this will use approximation since suntime may not be available)
+        # Test with mock sunrise (this will use approximation since suntime may
+        # not be available)
         info = get_vedic_day_info(birth_date, birth_time, 28.6139, 77.1025)
 
         required_keys = [

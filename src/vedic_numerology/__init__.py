@@ -290,7 +290,8 @@ class VedicNumerologyAstrology:
         Create temporal support visualization for numerology planet.
 
         Args:
-            start_date: Start date for analysis (optional, defaults to current year start)
+            start_date: Start date for analysis (optional, defaults to current
+                year start)
             end_date: End date for analysis (optional, defaults to current year end)
             planet: Planet to analyze (optional, defaults to Mulanka planet)
             use_plotly: Whether to use Plotly for interactive charts

@@ -6,7 +6,7 @@ Demonstrates the fundamental difference between discrete numerological changes
 and gradual astrological movements.
 """
 
-from typing import Any, List, Optional, Union
+from typing import Any, List, Optional, Union, cast
 
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
@@ -502,7 +502,7 @@ def _plot_correlation_plotly(
             )
 
     # Sort by correlation strength
-    correlations.sort(key=lambda x: abs(x["correlation"]), reverse=True)
+    correlations.sort(key=lambda x: abs(cast(float, x["correlation"])), reverse=True)
 
     # Create scatter plots for top correlations
     fig = make_subplots(
@@ -518,7 +518,7 @@ def _plot_correlation_plotly(
     colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]
 
     for i, corr_data in enumerate(correlations[:4]):
-        planet = corr_data["planet_enum"]
+        planet = cast(Planet, corr_data["planet_enum"])
         row = (i // 2) + 1
         col = (i % 2) + 1
 
@@ -539,7 +539,7 @@ def _plot_correlation_plotly(
         )
 
         # Add correlation line if meaningful
-        if abs(corr_data["correlation"]) > 0.1:
+        if abs(cast(float, corr_data["correlation"])) > 0.1:
             # Simple linear fit
             coeffs = np.polyfit(num_values, ast_values, 1)
             line_x = np.linspace(num_values.min(), num_values.max(), 50)

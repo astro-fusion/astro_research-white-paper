@@ -192,7 +192,9 @@ def _plot_temporal_support_plotly(
                 mode="lines",
                 name="Natal Score",
                 line=dict(color="red", width=2, dash="dash"),
-                hovertemplate=f"<b>Natal Score:</b> {baseline_score:.1f}<extra></extra>",
+                hovertemplate=(
+                    f"<b>Natal Score:</b> {baseline_score:.1f}<extra></extra>"
+                ),
             )
         )
 

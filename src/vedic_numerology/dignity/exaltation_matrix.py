@@ -180,8 +180,8 @@ def get_moolatrikona_range(
         planet: Planet enum
 
     Returns:
-        Tuple of (start_sign, start_deg, end_sign, end_deg, start_sign_name, end_sign_name)
-        or None if planet has no Moolatrikona
+        Tuple of (start_sign, start_deg, end_sign, end_deg, start_sign_name,
+        end_sign_name) or None if planet has no Moolatrikona
     """
     if planet not in MOOLATRIKONA_TABLE:
         return None
