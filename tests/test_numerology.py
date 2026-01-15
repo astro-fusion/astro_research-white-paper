@@ -8,23 +8,23 @@ sunrise correction, and planet mapping.
 import os
 import sys
 import unittest
-from datetime import date, datetime, time
+from datetime import date, time
 
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from vedic_numerology.numerology import (
+from vedic_numerology.numerology import (  # noqa: E402
     calculate_bhagyanka,
     calculate_complete_numerology,
     calculate_mulanka,
     reduce_to_single_digit,
 )
-from vedic_numerology.numerology.planet_mapping import (
+from vedic_numerology.numerology.planet_mapping import (  # noqa: E402
     NUMBER_TO_PLANET,
     Planet,
     get_planet_from_number,
 )
-from vedic_numerology.numerology.sunrise_correction import (
+from vedic_numerology.numerology.sunrise_correction import (  # noqa: E402
     adjust_date_for_vedic_day,
     get_vedic_day_info,
 )
@@ -83,18 +83,6 @@ class TestNumerologyCalculations(unittest.TestCase):
         self.assertEqual(planet, Planet.JUPITER)
 
         # Test other cases
-        test_cases = [
-            (
-                date(1990, 5, 15),
-                5,
-            ),  # 15 + 5 + 1990 = 2010 → 2 + 0 + 1 + 0 = 3 → wait, let's calculate properly
-            (
-                date(1985, 12, 3),
-                4,
-            ),  # 3 + 12 + 1985 = 2000 → 2 + 0 + 0 + 0 = 2 → wait, need correct calculation
-        ]
-
-        # Let's calculate these properly:
         # May 15, 1990: 15 + 5 + 1990 = 2010 → 2+0+1+0 = 3
         # December 3, 1985: 3 + 12 + 1985 = 2000 → 2+0+0+0 = 2
 
@@ -188,7 +176,8 @@ class TestSunriseCorrection(unittest.TestCase):
         birth_date = date(1984, 8, 27)
         birth_time = time(10, 30)
 
-        # Test with mock sunrise (this will use approximation since suntime may not be available)
+        # Test with mock sunrise (this will use approximation since suntime may
+        # not be available)
         info = get_vedic_day_info(birth_date, birth_time, 28.6139, 77.1025)
 
         required_keys = [

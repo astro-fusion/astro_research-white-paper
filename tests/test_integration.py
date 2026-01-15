@@ -12,8 +12,8 @@ from datetime import date, datetime
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from vedic_numerology import VedicNumerologyAstrology, analyze_birth_chart
-from vedic_numerology.config.constants import Planet
+from vedic_numerology import VedicNumerologyAstrology, analyze_birth_chart  # noqa: E402
+from vedic_numerology.config.constants import Planet  # noqa: E402
 
 
 class TestCompleteWorkflow(unittest.TestCase):

@@ -44,7 +44,7 @@ lint: ## Run code quality checks
 	@echo "Running code quality checks..."
 	-black --check --diff src/ tests/
 	-isort --check-only --diff src/ tests/
-	-flake8 src/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
+	-flake8 src/ tests/ --count --show-source --statistics
 	-mypy src/vedic_numerology/
 
 format: ## Format code with Black and isort

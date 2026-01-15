@@ -11,21 +11,20 @@ is used for numerological calculations.
 
 import math
 from datetime import date, datetime, time, timedelta
-from typing import Any, Optional, Tuple, cast
+from typing import Optional, Tuple, cast
 
 try:
     from suntime import Sun
 except ImportError:
     Sun = None
 
+FLATLIB_AVAILABLE = False
 try:
-    from flatlib import const
-    from flatlib.datetime import Datetime as FlatlibDatetime
-    from flatlib.geopos import GeoPos
+    import flatlib  # noqa: F401
 
     FLATLIB_AVAILABLE = True
 except ImportError:
-    FLATLIB_AVAILABLE = False
+    pass
 
 
 def get_sunrise_time(
@@ -59,19 +58,13 @@ def get_sunrise_time(
             sun = Sun(latitude, longitude)
             sunrise = sun.get_sunrise_time(birth_date)
             return cast(datetime, sunrise)
-        except Exception as e:
+        except Exception:
             # Fall back to flatlib if suntime fails
             pass
 
     # Fallback to flatlib
     if FLATLIB_AVAILABLE:
         try:
-            # Create flatlib datetime and geopos objects
-            dt = FlatlibDatetime(
-                birth_date.year, birth_date.month, birth_date.day, 12, 0, 0
-            )
-            pos = GeoPos(latitude, longitude)
-
             # Calculate sunrise (this is approximate and may need refinement)
             # Note: flatlib's sunrise calculation might not be as accurate as suntime
             # This is a simplified implementation
@@ -84,7 +77,7 @@ def get_sunrise_time(
             )
             return sunrise
 
-        except Exception as e:
+        except Exception:
             pass
 
     # If both methods fail, return None
@@ -141,7 +134,8 @@ def adjust_date_for_vedic_day(
     Adjust Gregorian date to Vedic date based on sunrise.
 
     In Vedic tradition, the day begins at sunrise, not midnight.
-    If birth time is before sunrise, the numerological day is the previous Gregorian day.
+    If birth time is before sunrise, the numerological day is the previous
+    Gregorian day.
 
     Args:
         birth_date: Gregorian birth date

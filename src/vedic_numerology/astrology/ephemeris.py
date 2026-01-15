@@ -10,8 +10,7 @@ for Vedic astrology, including sidereal zodiac conversions.
 
 import math
 from datetime import datetime
-from enum import Enum
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, Tuple, Union
 
 try:
     import swisseph as swe
@@ -21,7 +20,6 @@ except ImportError:
     SWISSEPH_AVAILABLE = False
     swe = None
 
-from ..config.constants import PLANETS
 from .ayanamsa import (
     AyanamsaSystem,
     convert_tropical_to_sidereal,
@@ -51,17 +49,19 @@ class EphemerisEngine:
         if SWISSEPH_AVAILABLE:
             self._initialize_swisseph()
         else:
-            raise ImportError(
-                "pyswisseph is not available. Install with: pip install pyswisseph>=2.08.00-1\n"
+            msg = (
+                "pyswisseph is not available. "
+                "Install with: pip install pyswisseph>=2.08.00-1\n"
                 "For Google Colab: pip install pyswisseph"
             )
+            raise ImportError(msg)
 
     def _initialize_swisseph(self) -> None:
         """Initialize Swiss Ephemeris with proper settings."""
         # Set ephemeris path if needed (usually not required in modern installations)
         try:
             swe.set_ephe_path()
-        except:
+        except Exception:
             pass  # Default path usually works
 
         # Set sidereal mode
@@ -139,7 +139,8 @@ class EphemerisEngine:
             planet = self._planet_name_to_constant(planet)
 
         # Calculate position using Swiss Ephemeris
-        # swe.calc_ut returns: ((longitude, latitude, distance, speed_longitude, speed_latitude, speed_distance), rflag)
+        # swe.calc_ut returns:
+        # ((longitude, latitude, distance, speed_long, speed_lat, speed_dist), rflag)
         result = swe.calc_ut(julian_day, planet)
 
         # Unpack coordinates from the first element of the result tuple

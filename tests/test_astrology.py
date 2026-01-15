@@ -5,23 +5,22 @@ Tests astronomical calculations including ephemeris, chart generation,
 and Ayanamsa handling.
 """
 
-import math
 import os
 import sys
 import unittest
-from datetime import date, datetime, time
+from datetime import datetime
 
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from vedic_numerology.astrology import AyanamsaSystem
-from vedic_numerology.astrology.ayanamsa import (
+from vedic_numerology.astrology import AyanamsaSystem  # noqa: E402
+from vedic_numerology.astrology.ayanamsa import (  # noqa: E402
     convert_sidereal_to_tropical,
     convert_tropical_to_sidereal,
     get_ayanamsa_offset,
     get_zodiac_sign,
 )
-from vedic_numerology.config.constants import Planet, ZodiacSign
+from vedic_numerology.config.constants import Planet  # noqa: E402
 
 
 class TestAyanamsaCalculations(unittest.TestCase):

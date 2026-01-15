@@ -6,7 +6,7 @@ and date ranges.
 """
 
 from datetime import datetime
-from typing import Optional, Tuple, Union
+from typing import Optional
 
 from .datetime_utils import parse_datetime
 

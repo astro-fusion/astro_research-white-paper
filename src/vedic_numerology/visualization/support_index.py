@@ -22,7 +22,6 @@ except ImportError:
 
 try:
     import plotly.graph_objects as go
-    from plotly.subplots import make_subplots
 
     PLOTLY_AVAILABLE = True
 except ImportError:
@@ -125,7 +124,7 @@ def _calculate_temporal_scores(
             dates.append(current_date)
             scores.append(score)
 
-        except Exception as e:
+        except Exception:
             # Skip problematic dates
             pass
 
@@ -193,7 +192,9 @@ def _plot_temporal_support_plotly(
                 mode="lines",
                 name="Natal Score",
                 line=dict(color="red", width=2, dash="dash"),
-                hovertemplate=f"<b>Natal Score:</b> {baseline_score:.1f}<extra></extra>",
+                hovertemplate=(
+                    f"<b>Natal Score:</b> {baseline_score:.1f}<extra></extra>"
+                ),
             )
         )
 

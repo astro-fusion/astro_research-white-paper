@@ -10,8 +10,7 @@ The calculator handles the mathematical operations that form the foundation
 of numerological analysis in the Vedic tradition.
 """
 
-import math
-from datetime import date, datetime, time
+from datetime import date, time
 from typing import Optional, Tuple, Union
 
 from .planet_mapping import Planet, get_planet_from_number
@@ -68,7 +67,8 @@ def calculate_mulanka(
     Calculate the Mulanka (Birth Number/Psychic Number).
 
     The Mulanka represents the core personality and immediate reactions.
-    It is calculated from the day of birth, with Vedic sunrise correction if coordinates provided.
+    It is calculated from the day of birth, with Vedic sunrise correction if
+    coordinates provided.
 
     Args:
         birth_date: Date of birth
@@ -77,7 +77,8 @@ def calculate_mulanka(
         longitude: Longitude for sunrise calculation (optional)
 
     Returns:
-        Tuple of (mulanka_number, planet) where number is 1-9 and planet is the ruling Planet
+        Tuple of (mulanka_number, planet) where number is 1-9 and planet is the
+        ruling Planet
 
     Raises:
         ValueError: If date is invalid or coordinates are incomplete
@@ -110,14 +111,16 @@ def calculate_bhagyanka(birth_date: date) -> Tuple[int, Planet]:
     """
     Calculate the Bhagyanka (Destiny Number/Life Path Number).
 
-    The Bhagyanka represents the life path, karmic trajectory, and external circumstances.
-    It is calculated by summing all components of the birth date and reducing to a single digit.
+    The Bhagyanka represents the life path, karmic trajectory, and external
+    circumstances. It is calculated by summing all components of the birth date
+    and reducing to a single digit.
 
     Args:
         birth_date: Complete date of birth
 
     Returns:
-        Tuple of (bhagyanka_number, planet) where number is 1-9 and planet is the ruling Planet
+        Tuple of (bhagyanka_number, planet) where number is 1-9 and planet is the
+        ruling Planet
 
     Raises:
         TypeError: If birth_date is not a date object
@@ -212,15 +215,17 @@ def get_numerology_relationship(mulanka_num: int, bhagyanka_num: int) -> str:
         raise ValueError(f"Bhagyanka must be 1-9, got {bhagyanka_num}")
 
     if mulanka_num == bhagyanka_num:
-        return "Harmonic Unity: Personality and destiny are aligned - strong potential for self-actualization"
+        return (
+            "Harmonic Unity: Personality and destiny are aligned - "
+            "strong potential for self-actualization"
+        )
 
     # Check for complementary numbers (summing to 10)
     if mulanka_num + bhagyanka_num == 10:
-        return "Complementary Balance: Personality and destiny complement each other perfectly"
-
-    # Get planets for deeper analysis
-    mulanka_planet = get_planet_from_number(mulanka_num)
-    bhagyanka_planet = get_planet_from_number(bhagyanka_num)
+        return (
+            "Complementary Balance: Personality and destiny "
+            "complement each other perfectly"
+        )
 
     # This would be enhanced with planetary friendship analysis
     # For now, provide basic analysis
@@ -231,4 +236,7 @@ def get_numerology_relationship(mulanka_num: int, bhagyanka_num: int) -> str:
     elif diff >= 6:
         return "Dynamic Tension: Personality and destiny present significant challenges"
     else:
-        return "Balanced Growth: Personality and destiny offer opportunities for development"
+        return (
+            "Balanced Growth: Personality and destiny offer "
+            "opportunities for development"
+        )

@@ -8,8 +8,6 @@ The Lahiri Ayanamsa (Chitra Paksha) is the standard for Vedic astrology
 and Government of India astronomical calculations.
 """
 
-import math
-from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, Optional, Union, cast
 
@@ -223,11 +221,17 @@ def get_ayanamsa_info(
     ayanamsa = get_ayanamsa_offset(julian_day, system)
 
     system_descriptions = {
-        AyanamsaSystem.LAHIRI: "Chitra Paksha - Standard Vedic astrology (Government of India)",
+        AyanamsaSystem.LAHIRI: (
+            "Chitra Paksha - Standard Vedic astrology (Government of India)"
+        ),
         AyanamsaSystem.RAMAN: "Krishnamurti Ayanamsa - Named after Sanjay Rath",
         AyanamsaSystem.KRISHNAMURTI: "Krishnamurti Ayanamsa - Same as Raman",
-        AyanamsaSystem.YUKTESHWAR: "Yukteshwar Ayanamsa - From Paramahansa Yogananda's guru",
-        AyanamsaSystem.FAGAN: "Fagan-Bradley Ayanamsa - Popular in some Western sidereal systems",
+        AyanamsaSystem.YUKTESHWAR: (
+            "Yukteshwar Ayanamsa - From Paramahansa Yogananda's guru"
+        ),
+        AyanamsaSystem.FAGAN: (
+            "Fagan-Bradley Ayanamsa - Popular in some Western sidereal systems"
+        ),
         AyanamsaSystem.DELUCE: "De Luce Ayanamsa - Alternative calculation method",
         AyanamsaSystem.DJWHAL_KHUL: "Djwhal Khul Ayanamsa - Esoteric tradition",
     }

@@ -1,12 +1,13 @@
 """
 Planetary Friendship Matrices
 
-Implements Naisargika Maitri (Natural Friendship) and Tatkalika Maitri (Temporary Friendship)
-systems used in Vedic astrology for determining planetary relationships.
+Implements Naisargika Maitri (Natural Friendship) and Tatkalika Maitri
+(Temporary Friendship) systems used in Vedic astrology for determining
+planetary relationships.
 """
 
 from enum import Enum
-from typing import TYPE_CHECKING, Dict, List, Optional, Set, Tuple
+from typing import TYPE_CHECKING, Dict, List, Optional
 
 from ..config.constants import Planet
 

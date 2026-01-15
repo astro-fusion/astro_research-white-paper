@@ -5,9 +5,8 @@ Handles complete birth chart generation including ascendant calculation,
 house cusps, planetary positions, and chart analysis for Vedic astrology.
 """
 
-import math
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple
 
 try:
     import swisseph as swe
@@ -17,8 +16,12 @@ except ImportError:
     SWISSEPH_AVAILABLE = False
     swe = None
 
-from ..config.constants import PLANETS, SIGNS
-from .ayanamsa import AyanamsaSystem, convert_tropical_to_sidereal, get_ayanamsa_offset
+from .ayanamsa import (
+    AyanamsaSystem,
+    convert_tropical_to_sidereal,
+    get_ayanamsa_offset,
+    get_zodiac_sign,
+)
 from .ephemeris import EphemerisEngine
 
 
@@ -98,8 +101,6 @@ class BirthChart:
     def ayanamsa(self) -> float:
         """Get Ayanamsa value for this chart."""
         if self._ayanamsa is None:
-            from .ayanamsa import get_ayanamsa_offset
-
             self._ayanamsa = get_ayanamsa_offset(self.julian_day, self.ayanamsa_system)
         return self._ayanamsa
 
@@ -131,8 +132,6 @@ class BirthChart:
         ascendant_longitude = ascendant_longitude % 360
 
         # Get sign information
-        from .ayanamsa import get_zodiac_sign
-
         sign_index, sign_name, degrees_in_sign = get_zodiac_sign(ascendant_longitude)
 
         return {
@@ -172,8 +171,6 @@ class BirthChart:
             house_longitude = house_longitude % 360
 
             # Get sign information
-            from .ayanamsa import get_zodiac_sign
-
             sign_index, sign_name, degrees_in_sign = get_zodiac_sign(house_longitude)
 
             houses.append(
@@ -332,6 +329,4 @@ def get_planet_in_sign(longitude: float) -> Tuple[int, str, float]:
     Returns:
         Tuple of (sign_index, sign_name, degrees_in_sign)
     """
-    from .ayanamsa import get_zodiac_sign
-
     return get_zodiac_sign(longitude)

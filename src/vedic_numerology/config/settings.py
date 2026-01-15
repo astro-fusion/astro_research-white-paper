@@ -5,11 +5,8 @@ Handles application settings and configuration management with YAML support.
 Provides centralized configuration for all modules in the system.
 """
 
-import os
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
-
-import yaml
 
 try:
     import yaml

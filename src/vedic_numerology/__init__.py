@@ -20,9 +20,7 @@ from .astrology import AyanamsaSystem, BirthChart, calculate_chart
 from .config import PLANET_NAMES, Planet
 from .dignity import DignityScorer
 from .numerology import (
-    calculate_bhagyanka,
     calculate_complete_numerology,
-    calculate_mulanka,
 )
 from .visualization import (
     plot_dignity_radar,
@@ -78,9 +76,11 @@ class VedicNumerologyAstrology:
                 AyanamsaSystem[self.ayanamsa_system.upper()]
             except KeyError:
                 valid_systems = [s.name for s in AyanamsaSystem]
-                raise ValueError(
-                    f"Unknown Ayanamsa system '{self.ayanamsa_system}'. Valid systems: {valid_systems}"
+                msg = (
+                    f"Unknown Ayanamsa system '{self.ayanamsa_system}'. "
+                    f"Valid systems: {valid_systems}"
                 )
+                raise ValueError(msg)
 
         # Create datetime object for birth
         if self.birth_time:
@@ -125,9 +125,11 @@ class VedicNumerologyAstrology:
                 try:
                     return datetime.strptime(birth_time, "%H:%M").time()
                 except ValueError:
-                    raise ValueError(
-                        f"Invalid birth time format: {birth_time}. Use HH:MM or HH:MM:SS"
+                    msg = (
+                        f"Invalid birth time format: {birth_time}. "
+                        "Use HH:MM or HH:MM:SS"
                     )
+                    raise ValueError(msg)
         elif isinstance(birth_time, time):
             return birth_time
         else:
@@ -288,7 +290,8 @@ class VedicNumerologyAstrology:
         Create temporal support visualization for numerology planet.
 
         Args:
-            start_date: Start date for analysis (optional, defaults to current year start)
+            start_date: Start date for analysis (optional, defaults to current
+                year start)
             end_date: End date for analysis (optional, defaults to current year end)
             planet: Planet to analyze (optional, defaults to Mulanka planet)
             use_plotly: Whether to use Plotly for interactive charts
@@ -405,10 +408,12 @@ class VedicNumerologyAstrology:
         bhagyanka = numerology["bhagyanka"]
 
         report_lines.append(
-            f"  Mulanka (Birth Number): {mulanka['number']} - {PLANET_NAMES[mulanka['planet']]}"
+            f"  Mulanka (Birth Number): {mulanka['number']} - "
+            f"{PLANET_NAMES[mulanka['planet']]}"
         )
         report_lines.append(
-            f"  Bhagyanka (Destiny Number): {bhagyanka['number']} - {PLANET_NAMES[bhagyanka['planet']]}"
+            f"  Bhagyanka (Destiny Number): {bhagyanka['number']} - "
+            f"{PLANET_NAMES[bhagyanka['planet']]}"
         )
 
         if numerology["sunrise_corrected"]:
@@ -420,7 +425,8 @@ class VedicNumerologyAstrology:
         # Support analysis
         report_lines.append("PLANETARY SUPPORT ANALYSIS:")
         report_lines.append(
-            f"  Mulanka ({analysis['mulanka']['planet']}): {analysis['mulanka']['support_level']}"
+            f"  Mulanka ({analysis['mulanka']['planet']}): "
+            f"{analysis['mulanka']['support_level']}"
         )
         report_lines.append(
             f"    Dignity Score: {analysis['mulanka']['score']:.1f}/100"
@@ -429,7 +435,8 @@ class VedicNumerologyAstrology:
 
         report_lines.append("")
         report_lines.append(
-            f"  Bhagyanka ({analysis['bhagyanka']['planet']}): {analysis['bhagyanka']['support_level']}"
+            f"  Bhagyanka ({analysis['bhagyanka']['planet']}): "
+            f"{analysis['bhagyanka']['support_level']}"
         )
         report_lines.append(
             f"    Dignity Score: {analysis['bhagyanka']['score']:.1f}/100"

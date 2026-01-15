@@ -1,0 +1,167 @@
+name: API Webhook Calculator
+
+on:
+  repository_dispatch:
+    types: [calculate-numerology]
+  workflow_dispatch:
+    inputs:
+      birth_date:
+        description: 'Birth date (YYYY-MM-DD)'
+        required: true
+        default: '1984-08-27'
+      birth_time:
+        description: 'Birth time (HH:MM)'
+        required: false
+        default: '10:30'
+      latitude:
+        description: 'Latitude'
+        required: false
+        default: '28.6139'
+      longitude:
+        description: 'Longitude'
+        required: false
+        default: '77.1025'
+      ayanamsa:
+        description: 'Ayanamsa system'
+        required: false
+        default: 'lahiri'
+        type: choice
+        options:
+          - lahiri
+          - raman
+
+jobs:
+  calculate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update && sudo apt-get install -y libswisseph-dev
+        python -m pip install --upgrade pip
+        pip install -e .
+        pip install pyswisseph>=2.08.00
+
+    - name: Run calculation
+      id: calculation
+      run: |
+        # Get input parameters
+        BIRTH_DATE="${{ github.event.inputs.birth_date || github.event.client_payload.birth_date || '1984-08-27' }}"
+        BIRTH_TIME="${{ github.event.inputs.birth_time || github.event.client_payload.birth_time || '10:30' }}"
+        LATITUDE="${{ github.event.inputs.latitude || github.event.client_payload.latitude || '28.6139' }}"
+        LONGITUDE="${{ github.event.inputs.longitude || github.event.client_payload.longitude || '77.1025' }}"
+        AYANAMSA="${{ github.event.inputs.ayanamsa || github.event.client_payload.ayanamsa || 'lahiri' }}"
+
+        echo "Calculating for: $BIRTH_DATE $BIRTH_TIME at $LATITUDE, $LONGITUDE"
+
+        # Run Python calculation
+        python3 -c "
+        from vedic_numerology import VedicNumerologyAstrology
+        import json
+
+        # Create analysis
+        vna = VedicNumerologyAstrology(
+            birth_date='$BIRTH_DATE',
+            birth_time='$BIRTH_TIME',
+            latitude=float('$LATITUDE'),
+            longitude=float('$LONGITUDE'),
+            ayanamsa_system='$AYANAMSA'
+        )
+
+        # Get results
+        mulanka = vna.calculate_mulanka()
+        bhagyanka = vna.calculate_bhagyanka()
+        support = vna.analyze_support_contradiction()
+
+        result = {
+            'input': {
+                'birth_date': '$BIRTH_DATE',
+                'birth_time': '$BIRTH_TIME',
+                'latitude': float('$LATITUDE'),
+                'longitude': float('$LONGITUDE'),
+                'ayanamsa_system': '$AYANAMSA'
+            },
+            'numerology': {
+                'mulanka': mulanka,
+                'bhagyanka': bhagyanka
+            },
+            'support_analysis': support,
+            'timestamp': vna.birth_datetime.isoformat()
+        }
+
+        # Save result as JSON
+        with open('calculation_result.json', 'w') as f:
+            json.dump(result, f, indent=2, default=str)
+
+        # Print summary
+        print(f'✅ Calculation completed!')
+        print(f'Mulanka: {mulanka[\"number\"]} ({mulanka[\"planet\"]})')
+        print(f'Bhagyanka: {bhagyanka[\"number\"]} ({bhagyanka[\"planet\"]})')
+        print(f'Harmony: {support[\"overall\"][\"harmony_level\"]}')
+        "
+
+    - name: Read calculation result
+      id: result
+      run: |
+        if [ -f calculation_result.json ]; then
+          RESULT=$(cat calculation_result.json | jq -c .)
+          echo "result=$RESULT" >> $GITHUB_OUTPUT
+
+          # Pretty print for logs
+          echo "📊 Calculation Result:"
+          cat calculation_result.json | jq .
+        else
+          echo "❌ No result file found"
+          exit 1
+        fi
+
+    - name: Create API response comment (if triggered by issue)
+      if: github.event_name == 'repository_dispatch' && github.event.client_payload.issue_number
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const result = ${{ steps.result.outputs.result }};
+
+          const comment = `## 🪐 Vedic Numerology Calculation Result
+
+**Input Data:**
+- Birth Date: ${result.input.birth_date}
+- Birth Time: ${result.input.birth_time}
+- Location: ${result.input.latitude}°, ${result.input.longitude}°
+- Ayanamsa: ${result.input.ayanamsa_system}
+
+**Numerology Results:**
+- **Mulanka**: ${result.numerology.mulanka.number} (${result.numerology.mulanka.planet})
+- **Bhagyanka**: ${result.numerology.bhagyanka.number} (${result.numerology.bhagyanka.planet})
+
+**Support Analysis:**
+- Mulanka: ${result.support_analysis.mulanka.support_level}
+- Bhagyanka: ${result.support_analysis.bhagyanka.support_level}
+- Overall Harmony: ${result.support_analysis.overall.harmony_level}
+
+*Calculated on: ${result.timestamp}*
+
+---
+[📊 View Full JSON Result](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}})`;
+
+          github.rest.issues.createComment({
+            issue_number: ${{ github.event.client_payload.issue_number }},
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+
+    - name: Upload result artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: numerology-calculation-${{ github.run_number }}
+        path: calculation_result.json
+        retention-days: 7

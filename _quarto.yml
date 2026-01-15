@@ -11,7 +11,7 @@ subtitle: "Computational Analysis of Planetary Influences on Numerological Poten
 description: "A comprehensive study integrating Vedic numerology (Anka Jyotish) with sidereal astrology using Swiss Ephemeris calculations."
 author:
   - name: "Bishal Ghimire"
-    orcid: "0000-0000-0000-0000"
+    # orcid: "YOUR-ORCID-HERE"  # Add actual ORCID when available
     email: "astrofusion369@gmail.com"
     affiliations:
       - name: "Astro Fusion Research"

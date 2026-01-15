@@ -7,14 +7,15 @@ Handles configuration management including:
 - Environment-specific configurations
 """
 
-from .constants import *
+from .constants import PLANET_NAMES, PLANETS, SIGNS, Planet
 from .settings import Config, load_config
 
 __all__ = [
     # constants
+    "Planet",
     "PLANETS",
     "SIGNS",
-    "NUMBER_TO_PLANET",
+    "PLANET_NAMES",
     # settings
     "Config",
     "load_config",

@@ -5,7 +5,7 @@ Creates visualizations comparing Mulanka (Birth Number) and Bhagyanka (Destiny N
 planetary dignity scores and relationships.
 """
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -19,7 +19,6 @@ except ImportError:
 
 try:
     import plotly.graph_objects as go
-    from plotly.subplots import make_subplots
 
     PLOTLY_AVAILABLE = True
 except ImportError:

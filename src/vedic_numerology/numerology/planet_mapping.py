@@ -8,8 +8,7 @@ This mapping is critical for the numerology-astrology integration as it determin
 which planetary positions are evaluated for support/contradiction analysis.
 """
 
-from enum import Enum
-from typing import Dict, Union
+from typing import Dict
 
 from ..config.constants import PLANET_NAMES, Planet
 

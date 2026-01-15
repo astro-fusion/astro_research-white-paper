@@ -7,7 +7,7 @@ Main engine for calculating planetary dignity scores (0-100) based on:
 - Positional modifiers (retrograde, combust)
 """
 
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, Optional
 
 from ..config.constants import Planet
 from .exaltation_matrix import (
@@ -270,8 +270,6 @@ class DignityScorer:
             return {"error": "No planet scores provided"}
 
         scores_list = list(planet_scores.values())
-        planets_list = list(planet_scores.keys())
-
         # Find highest and lowest
         max_score = max(scores_list)
         min_score = min(scores_list)

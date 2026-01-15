@@ -938,3 +938,98 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 **Note**: This system is designed for research and educational purposes. Always consult qualified astrologers for personal astrological advice.
+
+---
+
+## 🔌 REST API Access
+
+### Deployed API Endpoints
+
+The Vedic Numerology-Astrology API is available through multiple deployment options:
+
+#### 🚀 **FastAPI on Render** (Recommended)
+```bash
+# Deployed at: https://your-app-name.onrender.com
+curl https://your-app-name.onrender.com/api/v1/health
+
+# Interactive API docs
+# Visit: https://your-app-name.onrender.com/docs
+```
+
+#### ⚡ **GitHub Actions Webhook API** (Free)
+```bash
+# Trigger calculation via GitHub Actions
+curl -X POST \
+  -H "Authorization: token YOUR_GITHUB_TOKEN" \
+  https://api.github.com/repos/astro-fusion/numerology-white-paper/dispatches \
+  -d '{"event_type": "calculate-numerology", "client_payload": {"birth_date": "1984-08-27"}}'
+```
+
+> **⚠️ Security Note**: Use fine-grained personal access tokens with minimum required scopes. See [API_DEPLOYMENT.md](API_DEPLOYMENT.md) for detailed security guidelines.
+
+#### 🎮 **Streamlit Web App**
+```bash
+# Interactive web application
+# Visit: https://share.streamlit.io/astro-fusion/numerology-app/main/app.py
+```
+
+### API Usage Examples
+
+#### Calculate Complete Analysis
+```python
+import requests
+
+response = requests.post("https://vedic-numerology-api.onrender.com/api/v1/analysis", json={
+    "birth_date": "1984-08-27",
+    "birth_time": "10:30",
+    "latitude": 28.6139,
+    "longitude": 77.1025
+})
+
+result = response.json()
+print(f"Mulanka: {result['numerology']['mulanka']['number']}")
+```
+
+#### JavaScript Integration
+```html
+<script src="api-client.js"></script>
+<script>
+const vedicAPI = new VedicNumerologyAPI();
+
+const result = await vedicAPI.completeAnalysis({
+    birth_date: "1984-08-27",
+    birth_time: "10:30",
+    latitude: 28.6139,
+    longitude: 77.1025
+});
+
+console.log("Results:", result);
+</script>
+```
+
+### API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/v1/analysis` | Complete numerology + astrology analysis |
+| `POST` | `/api/v1/numerology` | Numerology calculations only |
+| `POST` | `/api/v1/astrology` | Astrology calculations only |
+| `GET` | `/api/v1/health` | API health check |
+| `GET` | `/docs` | Interactive API documentation |
+
+### Self-Hosting
+
+For self-hosting the API:
+
+```bash
+# Install API dependencies
+pip install -r requirements-api.txt
+
+# Start FastAPI server
+uvicorn api:app --reload
+
+# API available at: http://localhost:8000
+# Documentation at: http://localhost:8000/docs
+```
+
+📖 **Full API Documentation**: See [`API_DEPLOYMENT.md`](API_DEPLOYMENT.md) for deployment guides and advanced usage.
