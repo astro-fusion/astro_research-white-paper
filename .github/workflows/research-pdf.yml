@@ -74,10 +74,10 @@ jobs:
         matplotlib.use('Agg')
 
         # Use workflow inputs or defaults
-        birth_date = '${{ coalesce(github.event.inputs.birth_date, '1984-08-27') }}'
-        birth_time = '${{ coalesce(github.event.inputs.birth_time, '10:30') }}'
-        latitude = float('${{ coalesce(github.event.inputs.latitude, '28.6139') }}')
-        longitude = float('${{ coalesce(github.event.inputs.longitude, '77.1025') }}')
+        birth_date = '${{ github.event.inputs.birth_date || '1984-08-27' }}'
+        birth_time = '${{ github.event.inputs.birth_time || '10:30' }}'
+        latitude = float('${{ github.event.inputs.latitude || '28.6139' }}')
+        longitude = float('${{ github.event.inputs.longitude || '77.1025' }}')
 
         print(f'Generating analysis for: {birth_date} {birth_time}')
         print(f'Location: {latitude}°N, {longitude}°E')

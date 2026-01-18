@@ -56,7 +56,7 @@ jobs:
         echo "Generating comprehensive research manuscript..."
 
         # Update manuscript with current version info
-        VERSION="${{ coalesce(github.event.inputs.version, github.ref_name) }}"
+        VERSION="${{ github.event.inputs.version || github.ref_name }}"
         echo "Building version: $VERSION"
 
         # Generate research data and visualizations

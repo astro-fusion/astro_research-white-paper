@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "vedic-numerology-astrology"
+name = "vedic-astrology-core"
 version = "0.1.0"
-description = "Computational Integration of Vedic Numerology and Sidereal Mechanics"
+description = "Vedic Astrology Core Library with Swiss Ephemeris Integration"
 readme = "README.md"
 license = "MIT"
 authors = [

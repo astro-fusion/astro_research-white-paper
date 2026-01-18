@@ -20,9 +20,14 @@ import uvicorn
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 
 try:
-    from vedic_numerology import VedicNumerologyAstrology, analyze_birth_chart
-    from vedic_numerology.astrology import AyanamsaSystem
-    from vedic_numerology.config import Planet
+    from vedic_astrology_core import VedicAstrologyChart, create_birth_chart
+    from vedic_astrology_core.astrology import AyanamsaSystem
+    from vedic_astrology_core.config import Planet
+    # Import numerology from use case
+    import sys
+    import os
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), "use_cases", "numerology", "src"))
+    from numerology import calculate_complete_numerology
     import matplotlib.pyplot as plt
     import plotly.graph_objects as go
     import json
@@ -128,23 +133,19 @@ async def health_check():
 async def calculate_numerology(birth_data: BirthData):
     """Calculate numerology for given birth data."""
     try:
-        # Create analysis object
-        vna = VedicNumerologyAstrology(
-            birth_date=birth_data.birth_date,
-            birth_time=birth_data.birth_time,
-            latitude=birth_data.latitude,
-            longitude=birth_data.longitude,
-            timezone=birth_data.timezone,
-            ayanamsa_system=birth_data.ayanamsa_system.upper()
+        # Parse birth date and time
+        from datetime import datetime
+        birth_date = datetime.strptime(birth_data.birth_date, "%Y-%m-%d").date()
+        birth_time = datetime.strptime(birth_data.birth_time, "%H:%M:%S").time() if birth_data.birth_time else None
+
+        # Calculate numerology using use case module
+        numerology_data = calculate_complete_numerology(
+            birth_date, birth_time, birth_data.latitude, birth_data.longitude
         )
 
-        # Calculate numerology
-        mulanka = vna.calculate_mulanka()
-        bhagyanka = vna.calculate_bhagyanka()
-
         return NumerologyResponse(
-            mulanka=mulanka,
-            bhagyanka=bhagyanka,
+            mulanka=numerology_data["mulanka"],
+            bhagyanka=numerology_data["bhagyanka"],
             timestamp=datetime.now().isoformat()
         )
 
@@ -156,7 +157,7 @@ async def calculate_astrology(birth_data: BirthData):
     """Calculate astrology for given birth data."""
     try:
         # Create analysis object
-        vna = VedicNumerologyAstrology(
+        chart = VedicAstrologyChart(
             birth_date=birth_data.birth_date,
             birth_time=birth_data.birth_time,
             latitude=birth_data.latitude,
@@ -165,11 +166,11 @@ async def calculate_astrology(birth_data: BirthData):
             ayanamsa_system=birth_data.ayanamsa_system.upper()
         )
 
-        chart = vna.chart
+        birth_chart = chart.chart
 
         # Format planetary data
         planets = {}
-        for planet_name, planet_data in chart.planets.items():
+        for planet_name, planet_data in birth_chart.planets.items():
             planets[planet_name] = {
                 "longitude": planet_data.longitude,
                 "latitude": planet_data.latitude,
@@ -191,12 +192,12 @@ async def calculate_astrology(birth_data: BirthData):
         return AstrologyResponse(
             planets=planets,
             ascendant={
-                "longitude": chart.ascendant.longitude,
-                "sign": chart.ascendant.sign_name,
-                "degrees_in_sign": chart.ascendant.degrees_in_sign
+                "longitude": birth_chart.ascendant.longitude,
+                "sign": birth_chart.ascendant.sign_name,
+                "degrees_in_sign": birth_chart.ascendant.degrees_in_sign
             },
             houses=houses,
-            ayanamsa=chart.ayanamsa,
+            ayanamsa=birth_chart.ayanamsa,
             timestamp=datetime.now().isoformat()
         )
 
@@ -207,8 +208,18 @@ async def calculate_astrology(birth_data: BirthData):
 async def complete_analysis(birth_data: BirthData):
     """Perform complete numerology-astrology analysis."""
     try:
-        # Create analysis object
-        vna = VedicNumerologyAstrology(
+        # Parse birth data
+        from datetime import datetime
+        birth_date = datetime.strptime(birth_data.birth_date, "%Y-%m-%d").date()
+        birth_time = datetime.strptime(birth_data.birth_time, "%H:%M:%S").time() if birth_data.birth_time else None
+
+        # Get numerology data
+        numerology_data = calculate_complete_numerology(
+            birth_date, birth_time, birth_data.latitude, birth_data.longitude
+        )
+
+        # Create astrology chart
+        chart_obj = VedicAstrologyChart(
             birth_date=birth_data.birth_date,
             birth_time=birth_data.birth_time,
             latitude=birth_data.latitude,
@@ -217,33 +228,36 @@ async def complete_analysis(birth_data: BirthData):
             ayanamsa_system=birth_data.ayanamsa_system.upper()
         )
 
-        # Get all analysis components
-        numerology = {
-            "mulanka": vna.calculate_mulanka(),
-            "bhagyanka": vna.calculate_bhagyanka()
+        # Get astrology chart
+        birth_chart = chart_obj.chart
+
+        # Calculate support analysis (this would need to be implemented in numerology use case)
+        # For now, provide basic structure
+        support_analysis = {
+            "mulanka": {"planet": numerology_data["mulanka"]["planet"], "support_level": "Analysis pending"},
+            "bhagyanka": {"planet": numerology_data["bhagyanka"]["planet"], "support_level": "Analysis pending"},
+            "overall": {"harmony_level": "Analysis pending"}
         }
-
-        support_analysis = vna.analyze_support_contradiction()
-
-        # Simplified astrology data
-        chart = vna.chart
         astrology = {
-            "ayanamsa": chart.ayanamsa,
+            "ayanamsa": birth_chart.ayanamsa,
             "ascendant": {
-                "sign": chart.ascendant.sign_name,
-                "degrees_in_sign": chart.ascendant.degrees_in_sign
+                "sign": birth_chart.ascendant.sign_name,
+                "degrees_in_sign": birth_chart.ascendant.degrees_in_sign
             },
             "planets": {
                 planet_name: {
                     "sign": planet_data.sign.name,
                     "degrees_in_sign": planet_data.degrees_in_sign
                 }
-                for planet_name, planet_data in chart.planets.items()
+                for planet_name, planet_data in birth_chart.planets.items()
             }
         }
 
         return AnalysisResponse(
-            numerology=numerology,
+            numerology={
+                "mulanka": numerology_data["mulanka"],
+                "bhagyanka": numerology_data["bhagyanka"]
+            },
             astrology=astrology,
             support_analysis=support_analysis,
             timestamp=datetime.now().isoformat()

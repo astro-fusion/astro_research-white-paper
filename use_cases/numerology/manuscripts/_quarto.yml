@@ -1,0 +1,186 @@
+# Numerology Use Case Configuration
+# Inherits shared settings from root _quarto.yml
+
+project:
+  type: manuscript
+  output-dir: _book
+
+manuscript:
+  article: manuscript.qmd
+
+# Project metadata - Numerology specific
+title: "Exploring Patterns in Numerology: A Statistical Analysis of Name-Number Relationships"
+subtitle: "An Empirical Investigation Using Computational Methods"
+description: "A comprehensive study investigating the statistical relationships between names and their corresponding numerological values using computational methods."
+author:
+  - name: "Norah Jones"
+    affiliation: "Independent Researcher"
+date: today
+date-format: "MMMM DD, YYYY"
+abstract: |
+  This study investigates the statistical relationships between names and their corresponding numerological values using computational methods. We analyze large datasets of names to explore potential patterns and correlations in numerology systems. The research employs Python-based statistical analysis and data visualization techniques implemented in Google Colab notebooks to examine whether numerological calculations reveal meaningful patterns beyond random chance. Our findings contribute to the ongoing discourse regarding the scientific validity of numerological systems and provide methodological frameworks for future research in this domain.
+keywords:
+  - Numerology
+  - Statistical Analysis
+  - Name-Number Relationships
+  - Computational Methods
+  - Data Visualization
+license: "MIT"
+copyright: "© 2025 Norah Jones. All rights reserved."
+repository: "https://github.com/astro-fusion/numerology-white-paper"
+
+# Use case specific bibliography
+bibliography:
+  - references.bib
+
+# Environment variables for numerology use case
+environment:
+  QUARTO_PROJECT_DIR: "."
+  PYTHONPATH: "../../../src:../src"
+
+format:
+  # Interactive HTML format for web publication
+  html:
+    theme:
+      light: cosmo
+      dark: darkly
+    toc: true
+    toc-depth: 3
+    toc-title: "Table of Contents"
+    number-sections: true
+    number-depth: 3
+    code-fold: true
+    code-tools:
+      source: true
+      toggle: true
+      caption: "Show code"
+    fig-cap-location: top
+    tbl-cap-location: top
+    comments:
+      hypothesis: true
+    embed-resources: true
+    self-contained: true
+    page-layout: article
+    grid:
+      sidebar-width: 250px
+      body-width: 900px
+      margin-width: 250px
+    fontsize: "1.1em"
+    linestretch: 1.6
+    link-external-newwindow: true
+    link-external-filter: '^(?:http:|https:)\/\/www\.astro-fusion\.com\/custom'
+    citations-hover: true
+    footnotes-hover: true
+    anchor-sections: true
+    smooth-scroll: true
+    css: styles/custom.css
+    # Interactive features
+    include-after-body:
+      - interactive-components.html
+
+  # PDF format for print publication
+  pdf:
+    documentclass: scrbook
+    classoption:
+      - oneside
+      - openany
+    geometry:
+      - top=30mm
+      - left=25mm
+      - right=25mm
+      - bottom=30mm
+      - heightrounded
+    fontfamily: libertine
+    fontsize: 11pt
+    linestretch: 1.2
+    number-sections: true
+    colorlinks: true
+    linkcolor: blue
+    urlcolor: blue
+    citecolor: green
+    keep-tex: true
+    fig-cap-location: top
+    tbl-cap-location: top
+    fig-pos: 'H'
+    tbl-pos: 'H'
+    pdf-engine: lualatex
+    pdf-engine-opts: ["-shell-escape"]
+    include-in-header: styles/pdf-header.tex
+    include-before-body: styles/pdf-before-body.tex
+
+  # DOCX format for Microsoft Word compatibility
+  docx:
+    reference-doc: styles/reference.docx
+    number-sections: true
+    fig-cap-location: top
+    tbl-cap-location: top
+    toc: true
+    toc-depth: 3
+    highlight-style: github
+
+  # EPUB format for e-readers
+  epub:
+    cover-image: images/cover.png
+    number-sections: true
+    fig-cap-location: top
+    tbl-cap-location: top
+
+  # JATS format for academic publishing
+  jats: default
+
+# Cross-referencing configuration
+crossref:
+  chapters: true
+  fig-title: "Figure"
+  tbl-title: "Table"
+  lst-title: "Listing"
+  eq-title: "Equation"
+  title-delim: "."
+  fig-prefix: "Figure"
+  tbl-prefix: "Table"
+  lst-prefix: "Listing"
+  eq-prefix: "Equation"
+  sec-prefix: "Section"
+  ref-hyperlink: true
+  labels: arabic
+
+# Execution settings
+execute:
+  freeze: true
+  cache: true
+  echo: false
+  warning: false
+  error: false
+  eval: true
+  output: true
+
+# Jupyter configuration
+jupyter: python3
+
+# Bibliography and citations
+bibliography:
+  - references.bib
+  - research_paper/references.bib
+
+csl: styles/apa.csl
+
+# Language and localization
+lang: en-US
+
+# Metadata for different formats
+metadata-files:
+  - styles/html-metadata.yml
+  - styles/pdf-metadata.yml
+
+# Custom filters and extensions
+filters:
+  - styles/conditional-content.lua
+  - styles/format-specific.lua
+
+# Environment variables
+environment:
+  QUARTO_PROJECT_DIR: "."
+  PYTHONPATH: "src"
+
+
+

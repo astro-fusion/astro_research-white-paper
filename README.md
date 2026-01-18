@@ -1,4 +1,4 @@
-# Vedic Numerology-Astrology Integration System
+# Vedic Astrology Core Library
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/astro-fusion/numerology-white-paper/blob/main/notebooks/01_numerology_calculations.ipynb)
 [![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
@@ -6,19 +6,14 @@
 [![Quarto](https://img.shields.io/badge/Quarto-1.3+-purple.svg)](https://quarto.org/)
 [![CI/CD](https://github.com/astro-fusion/numerology-white-paper/actions/workflows/ci.yml/badge.svg)](https://github.com/astro-fusion/numerology-white-paper/actions)
 
-A comprehensive computational framework for integrating Vedic Numerology (Anka Jyotish) with Vedic Astrology (Parashari Jyotish) using high-precision Swiss Ephemeris calculations. This system provides quantitative analysis of how planetary positions support or contradict numerological potentials through temporal analysis and interactive visualizations.
+A comprehensive Python library for Vedic Astrology (Parashari Jyotish) calculations using high-precision Swiss Ephemeris. This core library provides the foundation for astrological analysis and can be extended by use cases like numerology correlations, earthquake studies, and other research applications.
 
 ## 🌟 Key Features
 
-### 🔢 **Vedic Numerology Engine**
-- **Mulanka (Birth Number)**: Sunrise-corrected birth number calculations
-- **Bhagyanka (Destiny Number)**: Destiny number analysis with planetary rulership
-- **Compound Numbers**: Advanced numerological combinations and interpretations
-
-### 🪐 **Sidereal Astrology Integration**
+### 🪐 **Core Vedic Astrology Engine**
 - **Swiss Ephemeris Backend**: Astronomical precision with 0.1 arcsecond accuracy
 - **Lahiri Ayanamsa**: Traditional Chitra Paksha ayanamsa system
-- **Complete Birth Charts**: All planets, lunar nodes, and key points
+- **Complete Birth Charts**: All planets, lunar nodes, houses, and key points
 
 ### 📊 **Dignity & Strength Analysis**
 - **Classical Dignity Scoring**: Moolatrikona, own sign, exaltation analysis
@@ -26,14 +21,19 @@ A comprehensive computational framework for integrating Vedic Numerology (Anka J
 - **Aspect Analysis**: Planetary relationships and influence patterns
 
 ### 📈 **Temporal Dynamics**
-- **Support Trajectory Analysis**: How numerological support evolves over time
-- **Planetary Transit Effects**: Current planetary influences on natal potentials
-- **Life Period Analysis**: Major and sub-period influence mapping
+- **Transit Analysis**: Current planetary influences on natal positions
+- **Dasha Period Calculations**: Major and sub-period influence mapping
+- **Time Series Analysis**: How planetary strengths evolve over time
 
 ### 🎨 **Advanced Visualizations**
 - **Interactive Charts**: Plotly-powered dynamic visualizations
 - **Publication-Ready Graphics**: High-DPI static plots for research papers
-- **Comparative Analysis**: Side-by-side numerology vs. astrology comparisons
+- **Birth Chart Diagrams**: Traditional and modern chart representations
+
+### 🔧 **Extensible Architecture**
+- **Use Case Framework**: Easy to add new research applications
+- **Modular Design**: Core astrology separate from specific analyses
+- **API-First**: REST API and Python library interfaces
 
 ### ☁️ **Multi-Platform Support**
 - **Google Colab Ready**: Zero-setup cloud execution
@@ -67,12 +67,13 @@ The fastest way to get started - no installation required!
    ```
 3. **Execute Your First Analysis**:
    ```python
-   from vedic_numerology import analyze_birth_chart
+   from vedic_astrology_core import create_birth_chart
 
-# Analyze any birth data
-analysis = analyze_birth_chart("1984-08-27", "10:30", 28.6139, 77.1025)
-mulanka = analysis.calculate_mulanka()
-print(f"Mulanka: {mulanka['number']} ({mulanka['planet']})")
+# Create a birth chart
+chart = create_birth_chart("1984-08-27", "10:30", 28.6139, 77.1025)
+print(f"Ascendant: {chart.chart.ascendant.sign_name}")
+
+# For numerology analysis, see the numerology use case
    ```
 
 ### 🖥️ Local Development Setup
@@ -148,26 +149,41 @@ docker run -it --rm -v $(pwd):/app vedic-numerology
 
 ## 💡 Usage Examples
 
-### 🔢 Basic Numerology Analysis
+### 🪐 Basic Astrology Analysis
 
-Get started with fundamental numerological calculations:
+Get started with fundamental astrological calculations:
 
 ```python
-from vedic_numerology import analyze_birth_chart
+from vedic_astrology_core import create_birth_chart
 
-# Analyze birth data (Delhi, India coordinates)
-analysis = analyze_birth_chart("1984-08-27", "10:30", 28.6139, 77.1025)
+# Create a birth chart
+chart = create_birth_chart("1984-08-27", "10:30", 28.6139, 77.1025)
 
-# Core numerology results
-mulanka = analysis.calculate_mulanka()        # Birth number: 9 (Mars)
-bhagyanka = analysis.calculate_bhagyanka()    # Destiny number: 3 (Jupiter)
+# Basic chart information
+print(f"Ascendant: {chart.chart.ascendant.sign_name}")
+print(f"Moon sign: {chart.chart.planets['MOON'].sign.name}")
 
-print(f"🔢 Mulanka: {mulanka['number']} ({mulanka['planet']})")
-print(f"🎯 Bhagyanka: {bhagyanka['number']} ({bhagyanka['planet']})")
+# Planetary dignity analysis
+mars_dignity = chart.score_dignity('MARS')
+print(f"Mars dignity score: {mars_dignity['score']:.1f}/100")
 
-# Generate comprehensive report
-report = analysis.generate_report()
+# Generate chart report
+report = chart.generate_chart_report()
 print(report)
+```
+
+### 🔢 Numerology Use Case
+
+For numerology analysis, see the dedicated use case:
+
+```python
+# In the numerology use case environment
+from numerology import calculate_complete_numerology
+
+# Calculate numerology
+numerology = calculate_complete_numerology("1984-08-27", "10:30", 28.6139, 77.1025)
+print(f"Mulanka: {numerology['mulanka']['number']}")
+print(f"Bhagyanka: {numerology['bhagyanka']['number']}")
 ```
 
 ### 📊 Advanced Data Analysis Workflows
@@ -834,23 +850,69 @@ Workflows automatically generate these files on:
 ## 📁 Project Structure
 
 ```
-numerology-white-paper/
-├── src/vedic_numerology/          # Main package
-│   ├── numerology/                 # Numerology calculations
-│   ├── astrology/                  # Astronomical calculations
+vedic-astrology-core/
+├── src/vedic_astrology_core/       # Core astrology library
+│   ├── astrology/                  # Swiss Ephemeris integration
 │   ├── dignity/                    # Planetary dignity scoring
-│   ├── visualization/              # Charts and graphs
-│   ├── utils/                      # Utilities
+│   ├── visualization/              # Generic visualization utilities
+│   ├── utils/                      # Core utilities
 │   └── config/                     # Configuration
-├── notebooks/                      # Jupyter notebooks
+├── use_cases/                      # Research use cases
+│   ├── numerology/                 # Numerology correlation studies
+│   │   ├── src/numerology/         # Numerology calculations
+│   │   ├── manuscripts/            # Research manuscripts
+│   │   ├── notebooks/              # Analysis notebooks
+│   │   ├── scripts/                # Analysis scripts
+│   │   ├── data/                   # Research data
+│   │   └── figures/                # Generated figures
+│   └── earthquake/                 # Future: Earthquake studies
+├── api.py                          # REST API server
+├── app.py                          # Streamlit web application
 ├── tests/                          # Test suite
-├── docs/                           # Documentation
-├── config/                         # Configuration files
-├── manuscript.qmd                  # Quarto manuscript
-├── pyproject.toml                  # Modern Python packaging
-├── requirements.txt                # Dependencies
+├── docs/                           # API documentation
+├── _quarto.yml                     # Shared Quarto configuration
+├── styles/                         # Shared styling
+├── pyproject.toml                  # Python package configuration
+├── requirements*.txt               # Dependencies
 └── README.md                       # This file
 ```
+
+### 🏗️ **Architecture Overview**
+
+- **Core Library** (`src/vedic_astrology_core/`): Domain-agnostic astrology calculations
+- **Use Cases** (`use_cases/`): Specific research applications that extend the core
+- **API/Web** (`api.py`, `app.py`): Interfaces for accessing functionality
+- **Documentation** (`docs/`, manuscripts): Research papers and API docs
+
+## 🔧 Adding New Use Cases
+
+The project is designed to easily accommodate new research applications. To add a new use case:
+
+1. **Create Use Case Structure**:
+   ```bash
+   mkdir -p use_cases/your_use_case/{src,manuscripts,notebooks,scripts,data,figures}
+   ```
+
+2. **Implement Use Case Logic**:
+   - Add your calculations in `use_cases/your_use_case/src/`
+   - Import from `vedic_astrology_core` for astrology functionality
+   - Follow the same structure as the numerology use case
+
+3. **Create Research Manuscripts**:
+   - Add Quarto manuscripts in `use_cases/your_use_case/manuscripts/`
+   - Copy and customize `_quarto.yml` for your specific needs
+
+4. **Build and Test**:
+   ```bash
+   ./build.sh your_use_case    # Build specific use case
+   ./build-all.sh              # Build all use cases
+   ```
+
+### 📚 **Example Use Cases**
+- **Numerology**: Planetary correlations with numerological numbers
+- **Earthquake Studies**: Astrological patterns in seismic activity
+- **Financial Markets**: Planetary influences on market trends
+- **Weather Patterns**: Astronomical correlations with climate
 
 ## 📚 API Documentation
 

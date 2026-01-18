@@ -115,12 +115,30 @@ setup_python() {
 # Build manuscript in multiple formats
 build_manuscript() {
     local format=$1
-    local output_dir="_book/${format}"
+    local use_case=${2:-numerology}
 
-    log_info "Building manuscript in $format format..."
+    log_info "Building $use_case manuscript in $format format..."
+
+    # Set paths based on use case
+    local project_dir=""
+    local output_dir=""
+    case $use_case in
+        "numerology")
+            project_dir="use_cases/numerology/manuscripts"
+            output_dir="use_cases/numerology/_book/${format}"
+            ;;
+        *)
+            log_error "Unknown use case: $use_case"
+            return 1
+            ;;
+    esac
 
     # Create output directory
     mkdir -p "$output_dir"
+
+    # Save current directory and change to project directory
+    local original_dir=$(pwd)
+    cd "$project_dir" || { log_error "Failed to change to project directory: $project_dir"; return 1; }
 
     case $format in
         "html")
@@ -146,9 +164,13 @@ build_manuscript() {
             ;;
         *)
             log_error "Unknown format: $format"
+            cd "$original_dir"
             return 1
             ;;
     esac
+
+    # Return to original directory
+    cd "$original_dir"
 
     if [ $? -eq 0 ]; then
         log_success "$format build completed"
@@ -263,13 +285,14 @@ run_quality_checks() {
 build_notebooks() {
     log_header "Building Jupyter Notebooks"
 
-    if [ ! -d "notebooks/" ]; then
-        log_warning "notebooks/ directory not found, skipping notebook build"
+    local notebooks_dir="use_cases/numerology/notebooks"
+    if [ ! -d "$notebooks_dir" ]; then
+        log_warning "notebooks/ directory not found at $notebooks_dir, skipping notebook build"
         return 0
     fi
 
     log_info "Executing notebooks..."
-    for notebook in notebooks/*.ipynb; do
+    for notebook in "$notebooks_dir"/*.ipynb; do
         if [ -f "$notebook" ]; then
             log_info "Processing $notebook..."
             jupyter nbconvert --to notebook --execute --inplace "$notebook" 2>&1 | tee -a "$LOG_FILE" || true

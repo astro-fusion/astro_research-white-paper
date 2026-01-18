@@ -19,15 +19,22 @@ import streamlit as st
 
 # Add the src directory to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
+# Add use cases to path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "use_cases", "numerology", "src"))
 
 try:
     import matplotlib.pyplot as plt
     import seaborn as sns
 
-    from vedic_numerology import VedicNumerologyAstrology
-    from vedic_numerology.astrology import EphemerisEngine
-    from vedic_numerology.dignity import DignityScorer
-    from vedic_numerology.numerology import NumerologyCalculator
+    from vedic_astrology_core import VedicAstrologyChart
+    from vedic_astrology_core.astrology import EphemerisEngine
+    from vedic_astrology_core.dignity import DignityScorer
+    # Import numerology from use case (optional)
+    try:
+        from numerology import calculate_complete_numerology
+        NUMEROLOGY_AVAILABLE = True
+    except ImportError:
+        NUMEROLOGY_AVAILABLE = False
 except ImportError as e:
     st.error(f"Failed to import required modules: {e}")
     st.error("Please ensure the package is properly installed.")

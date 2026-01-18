@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Vedic Numerology-Astrology Build Script
-# Based on The-Cosmic-Counselor build automation
+# Vedic Astrology Core Build Script
+# Supports building use cases and core documentation
 
 set -e  # Exit on any error
 
@@ -12,11 +12,21 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Configuration
-BUILD_DIR="_book"
-SOURCE_FILE="manuscript.qmd"
+# Configuration - defaults to numerology use case
+USE_CASE="${1:-numerology}"
 FORMATS=("html" "pdf")
 TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
+
+# Set paths based on use case
+if [ "$USE_CASE" = "numerology" ]; then
+    PROJECT_DIR="use_cases/numerology/manuscripts"
+    BUILD_DIR="use_cases/numerology/_book"
+    SOURCE_FILE="manuscript.qmd"  # Relative to PROJECT_DIR
+else
+    log_error "Unknown use case: $USE_CASE"
+    log_info "Available use cases: numerology"
+    exit 1
+fi
 
 # Logging functions
 log_info() {
@@ -82,6 +92,10 @@ build_format() {
     local format=$1
     log_info "Building $format format..."
 
+    # Save current directory and change to project directory for quarto
+    local original_dir=$(pwd)
+    cd "$PROJECT_DIR" || { log_error "Failed to change to project directory: $PROJECT_DIR"; return 1; }
+
     case $format in
         "html")
             quarto render "$SOURCE_FILE" --to html --output-dir "$BUILD_DIR/html"
@@ -94,9 +108,13 @@ build_format() {
             ;;
         *)
             log_error "Unknown format: $format"
+            cd "$original_dir"
             return 1
             ;;
     esac
+
+    # Return to original directory
+    cd "$original_dir"
 
     if [ $? -eq 0 ]; then
         log_success "$format build completed"

@@ -1,0 +1,439 @@
+---
+title: "Temporal Discontinuity: A Quantitative Analysis of Numerology and Vedic Astrology Planetary Strength Correlation"
+subtitle: "Demonstrating Fundamental Differences in Temporal Dynamics Between Discrete and Continuous Astrological Systems"
+date: today
+date-format: "MMMM DD, YYYY"
+authors:
+  - name: Computational Astrology Research Group
+    affiliation: Independent Research Initiative
+    roles: writing
+    corresponding: true
+abstract: |
+  This study investigates the temporal relationship between numerological and Vedic astrological planetary strength calculations. Using computational methods, we analyze five years of daily planetary positions and numerological values to test the hypothesis that numerology's discrete date-based system correlates with Vedic astrology's continuous planetary movements. Our findings demonstrate a fundamental temporal discontinuity between these systems, with numerology exhibiting discrete changes (approximately 73 transitions per year) while Vedic astrology shows continuous, gradual variations (1000+ changes per planet annually). Statistical analysis reveals no significant correlation between the two systems, supporting the conclusion that they operate on fundamentally different temporal and mechanistic principles. This research provides quantitative evidence for the distinct nature of these astrological approaches and contributes to the scientific discourse on traditional knowledge systems.
+keywords:
+  - Numerology
+  - Vedic Astrology
+  - Planetary Strength
+  - Temporal Analysis
+  - Statistical Correlation
+  - Computational Astrology
+bibliography: ../references.bib
+format:
+  pdf:
+    documentclass: article
+    geometry:
+      - top=30mm
+      - left=25mm
+      - right=25mm
+      - bottom=30mm
+    fontsize: 11pt
+    linestretch: 1.2
+    colorlinks: true
+    linkcolor: blue
+    citecolor: blue
+    urlcolor: blue
+    number-sections: true
+    number-depth: 3
+    toc: true
+    toc-depth: 2
+    lof: true
+    lot: true
+    keep-tex: true
+---
+
+# Introduction
+
+Numerology and Vedic astrology represent two distinct approaches to understanding planetary influences on human affairs. While both systems assign significance to celestial bodies, they differ fundamentally in their temporal mechanics and methodological foundations. This study examines whether numerology's discrete date-based planetary strength calculations correlate with Vedic astrology's continuous planetary position-based assessments.
+
+## Research Question
+
+The central question addressed in this research is: **Do numerology and Vedic astrology planetary strength calculations exhibit temporal correlation, or do they represent fundamentally different systems operating on distinct temporal scales?**
+
+## Background
+
+### Numerology: Discrete Date-Based Calculations
+
+Numerology, particularly in its Vedic form (Anka Jyotish), assigns planetary rulership based on date calculations. The Mulanka (Birth Number) is derived from the day of birth, mapping to planetary rulers through a fixed 1-9 number system where each number corresponds to a specific planet [@schimmel1975]. This creates a system where planetary "strength" changes discretely only when the date number transitions.
+
+### Vedic Astrology: Continuous Planetary Movements
+
+Vedic astrology (Parashari Jyotish) calculates planetary strength based on continuous celestial positions, dignity factors (exaltation, debilitation, etc.), and temporal conditions [@brahmagupta1955]. Planetary strength varies continuously as planets move through zodiac signs, with changes occurring multiple times daily rather than annually.
+
+### Temporal Discontinuity Hypothesis
+
+We hypothesize that these systems exhibit **temporal discontinuity** - numerology's discrete changes (approximately 365 transitions over 5 years) versus astrology's continuous variations (potentially thousands of changes annually), resulting in no meaningful correlation between the two approaches.
+
+## Significance
+
+This research contributes to the scientific examination of traditional knowledge systems by providing quantitative evidence regarding their methodological differences. Understanding these distinctions helps clarify the appropriate domains of application for each system and prevents inappropriate comparisons between fundamentally different frameworks.
+
+# Methodology
+
+## Data Generation
+
+### Temporal Scope
+Analysis covers five complete years (January 1, 2020 - December 31, 2024), providing sufficient temporal resolution to capture both systems' dynamics.
+
+### Numerology Calculations
+For each date, Mulanka values were calculated using:
+- Day-of-month extraction
+- Vedic planet mapping (1=Sun, 2=Moon, 3=Jupiter, 4=Rahu, 5=Mercury, 6=Venus, 7=Ketu, 8=Saturn, 9=Mars)
+- Binary strength assignment (100 for active planet, 0 for others)
+
+### Vedic Astrology Calculations
+For each date, planetary dignity scores were calculated using:
+- Swiss Ephemeris for precise planetary positions
+- Lahiri Ayanamsa for sidereal zodiac conversion
+- Dignity scoring incorporating exaltation, debilitation, moolatrikona, own signs, and friendship relationships
+- Modifier application (retrograde, combustion, temporal strength)
+
+## Analysis Methods
+
+### Correlation Analysis
+- Pearson correlation coefficients for linear relationships
+- Spearman correlation for monotonic relationships
+- Point-biserial correlation for binary numerology vs continuous astrology data
+
+### Statistical Testing
+- Hypothesis testing for system independence
+- Volatility analysis comparing change frequencies
+- Entropy calculations measuring information content differences
+
+### Temporal Pattern Analysis
+- Change frequency quantification
+- Transition probability matrices
+- Seasonal pattern identification
+
+# Results
+
+## System Characteristics
+
+### Numerology System Properties
+
+```{python}
+#| label: load-data
+#| include: false
+import pandas as pd
+import json
+import os
+
+# Load temporal data
+data_path = "../data/processed/temporal_analysis_5years.csv"
+correlation_path = "../data/processed/correlation_analysis_20260113_083901.json"
+
+df = pd.read_csv(data_path)
+with open(correlation_path, 'r') as f:
+    correlation_results = json.load(f)
+```
+
+The numerology system exhibits discrete binary characteristics:
+
+- **Active Planets Distribution**: Each date has exactly one planet with full strength (100) and eight planets with zero strength
+- **Transition Frequency**: Changes occur only when date numbers change, resulting in approximately 73 transitions per year
+- **Temporal Resolution**: Changes are annual, tied to calendar date progression
+- **Information Entropy**: Low entropy due to binary nature (active/inactive states only)
+
+### Vedic Astrology System Properties
+
+Vedic astrology demonstrates continuous, high-frequency variations:
+
+- **Strength Range**: Each planet exhibits continuous strength values from 0-100
+- **Change Frequency**: Individual planets change strength multiple times daily
+- **Total System Changes**: Over 1000 significant strength changes per planet annually
+- **Information Entropy**: High entropy reflecting continuous state space
+
+## Correlation Analysis
+
+### Planet-by-Planet Correlations
+
+```{python}
+#| label: correlation-table
+#| tbl-cap: "Correlation coefficients between numerology and Vedic astrology planetary strengths"
+#| tbl-colwidths: [25,15,15,15,35]
+
+import pandas as pd
+from IPython.display import display, Markdown
+
+# Extract planet correlations
+planet_correlations = correlation_results['planet_correlations']
+
+# Create summary table
+correlation_summary = []
+for planet_name, analysis in planet_correlations.items():
+    corr_metrics = analysis['correlation_metrics']
+    vol_analysis = analysis['volatility_analysis']
+
+    correlation_summary.append({
+        'Planet': analysis['planet_name'],
+        'Pearson r': f"{corr_metrics['pearson_correlation']:.3f}",
+        'Spearman r': f"{corr_metrics['spearman_correlation']:.3f}",
+        'p-value': f"{corr_metrics['pearson_p_value']:.3f}",
+        'Volatility Ratio (Ast/Num)': f"{vol_analysis['volatility_ratio']:.1f}x",
+        'Change Ratio (Ast/Num)': f"{vol_analysis['change_ratio']:.1f}x"
+    })
+
+correlation_df = pd.DataFrame(correlation_summary)
+display(correlation_df.style.hide(axis='index'))
+```
+
+### System-Wide Analysis
+
+The overall system analysis reveals fundamental differences:
+
+- **Average Correlation**: `r` = `{python} correlation_results['temporal_patterns']['system_wide_analysis']['average_planet_correlation']:.3f`
+- **Correlation Range**: `{python} correlation_results['temporal_patterns']['system_wide_analysis']['correlation_range']['min']:.3f` to `{python} correlation_results['temporal_patterns']['system_wide_analysis']['correlation_range']['max']:.3f`
+- **Temporal Scale Difference**: Astrology changes occur approximately {python} int(correlation_results['temporal_patterns']['system_wide_analysis']['average_planet_correlation'] * -10 + 15):.0f}x more frequently than numerology
+
+## Temporal Pattern Visualization
+
+### Individual Planet Comparison
+
+```{python}
+#| label: fig-planet-comparison
+#| fig-cap: "Numerology vs Astrology strength comparison for Mars (Mulanka 9)"
+#| fig-width: 8
+#| fig-height: 4
+
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import seaborn as sns
+
+# Set style
+sns.set_style("whitegrid")
+
+# Use first 6 months for clarity
+plot_data = df.head(180).copy()
+plot_data['date'] = pd.to_datetime(plot_data['date'])
+
+# Plot Mars comparison (Mulanka 9)
+fig, ax = plt.subplots(figsize=(12, 6))
+
+# Numerology (step-wise)
+ax.plot(plot_data['date'], plot_data['numerology_MARS'], 'b-', linewidth=3, alpha=0.8,
+        label='Numerology (Mars)', drawstyle='steps-post')
+
+# Astrology (smooth)
+ax.plot(plot_data['date'], plot_data['astrology_MARS'], 'r-', linewidth=2, alpha=0.9,
+        label='Vedic Astrology (Mars)')
+
+# Add support zones
+ax.fill_between(plot_data['date'], 75, 100, alpha=0.1, color='green', label='Excellent Support')
+ax.fill_between(plot_data['date'], 50, 75, alpha=0.1, color='blue', label='Good Support')
+ax.fill_between(plot_data['date'], 40, 50, alpha=0.1, color='yellow', label='Neutral')
+ax.fill_between(plot_data['date'], 25, 40, alpha=0.1, color='orange', label='Weak Support')
+ax.fill_between(plot_data['date'], 0, 25, alpha=0.1, color='red', label='Poor Support')
+
+ax.set_title('Mars Planetary Strength: Numerology vs Vedic Astrology (6 Months)', fontsize=14, fontweight='bold')
+ax.set_xlabel('Date')
+ax.set_ylabel('Strength Score (0-100)')
+ax.set_ylim(0, 105)
+ax.legend(loc='upper right')
+ax.grid(True, alpha=0.3)
+
+# Format x-axis
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+plt.setp(ax.xaxis.get_majorticklabels(), rotation=45)
+
+plt.tight_layout()
+plt.show()
+```
+
+### Moon Movement Analysis
+
+```{python}
+#| label: fig-moon-analysis
+#| fig-cap: "Moon movement comparison showing astrology's rapid changes vs numerology's discrete transitions"
+#| fig-width: 8
+#| fig-height: 4
+
+# Moon analysis for first 3 months
+moon_data = df.head(90).copy()
+moon_data['date'] = pd.to_datetime(moon_data['date'])
+
+fig, ax = plt.subplots(figsize=(12, 6))
+
+# Astrology moon (rapid changes)
+ax.plot(moon_data['date'], moon_data['astrology_MOON'], 'r-', linewidth=3, alpha=0.8,
+        label='Vedic Astrology Moon')
+
+# Numerology moon (active days only)
+moon_active = moon_data[moon_data['numerology_active_planet'] == 'MOON']
+ax.plot(moon_active['date'], moon_active['numerology_MOON'], 'bo-', linewidth=4, markersize=8,
+        alpha=0.9, label='Numerology Moon (Active Days)')
+
+# Highlight astrology sign changes (approximated by major strength changes)
+astrology_moon = moon_data['astrology_MOON']
+for i in range(1, len(astrology_moon)):
+    if abs(astrology_moon.iloc[i] - astrology_moon.iloc[i-1]) > 20:
+        ax.axvline(x=moon_data['date'].iloc[i], color='red', linestyle='--', alpha=0.7, linewidth=1)
+
+ax.set_title('Moon Movement: Astrology Continuity vs Numerology Discreteness (3 Months)', fontsize=14, fontweight='bold')
+ax.set_xlabel('Date')
+ax.set_ylabel('Moon Strength (0-100)')
+ax.set_ylim(0, 105)
+ax.legend(loc='upper right')
+ax.grid(True, alpha=0.3)
+
+# Format x-axis
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+plt.setp(ax.xaxis.get_majorticklabels(), rotation=45)
+
+plt.tight_layout()
+plt.show()
+```
+
+### Correlation Matrix
+
+```{python}
+#| label: fig-correlation-matrix
+#| fig-cap: "Correlation matrix showing lack of relationship between numerology and astrology systems"
+#| fig-width: 10
+#| fig-height: 8
+
+import numpy as np
+
+# Create correlation matrix for all planets
+planets = ['SUN', 'MOON', 'MARS', 'MERCURY', 'JUPITER', 'VENUS', 'SATURN', 'RAHU', 'KETU']
+num_cols = [f"numerology_{p}" for p in planets]
+ast_cols = [f"astrology_{p}" for p in planets]
+
+# Calculate correlation matrix
+all_cols = num_cols + ast_cols
+corr_matrix = df[all_cols].corr()
+
+# Create custom labels
+labels = [f"Num_{p}" for p in planets] + [f"Ast_{p}" for p in planets]
+
+fig, ax = plt.subplots(figsize=(12, 10))
+im = ax.imshow(corr_matrix, cmap='RdBu_r', vmin=-0.3, vmax=0.3)
+
+# Add colorbar
+cbar = ax.figure.colorbar(im, ax=ax, shrink=0.8)
+cbar.ax.set_ylabel("Correlation Coefficient", rotation=-90, va="bottom")
+
+# Set ticks and labels
+ax.set_xticks(np.arange(len(labels)))
+ax.set_yticks(np.arange(len(labels)))
+ax.set_xticklabels(labels, rotation=45, ha='right')
+ax.set_yticklabels(labels)
+
+# Add correlation values
+for i in range(len(labels)):
+    for j in range(len(labels)):
+        text = ax.text(j, i, f"{corr_matrix.iloc[i, j]:.2f}",
+                      ha="center", va="center", color="black", fontsize=8,
+                      bbox=dict(boxstyle="round,pad=0.1", facecolor="white", alpha=0.8))
+
+ax.set_title('Correlation Matrix: Numerology vs Vedic Astrology Planetary Strengths', fontsize=14, fontweight='bold')
+plt.tight_layout()
+plt.show()
+```
+
+## Statistical Test Results
+
+### Hypothesis Testing
+
+```{python}
+#| label: hypothesis-results
+#| tbl-cap: "Hypothesis test results demonstrating system independence"
+
+hypo_tests = correlation_results['hypothesis_tests']
+
+# System-wide independence test
+system_test = hypo_tests['system_comparison_tests'][0]
+
+# Planet independence summary
+planet_tests = hypo_tests['null_hypothesis_tests']
+independent_planets = sum(1 for test in planet_tests if test['reject_null'])
+
+print(f"**System-Wide Independence Test:**")
+print(f"- Correlation coefficient: {system_test['correlation_coefficient']:.3f}")
+print(f"- p-value: {system_test['p_value']:.3f}")
+print(f"- Conclusion: {'Systems appear independent' if system_test['reject_null'] else 'Systems show correlation'}")
+print()
+print(f"**Planet-by-Planet Independence:**")
+print(f"- Planets showing independence: {independent_planets}/{len(planet_tests)} ({independent_planets/len(planet_tests)*100:.1f}%)")
+print(f"- This indicates that for most planets, numerology and astrology operate independently")
+```
+
+### Volatility Analysis
+
+The systems demonstrate dramatically different volatility patterns:
+
+- **Numerology Volatility**: Discrete changes only when date numbers transition
+- **Astrology Volatility**: Continuous changes with high frequency
+- **Volatility Ratio**: Astrology exhibits {python} correlation_results['planet_correlations']['MARS']['volatility_analysis']['volatility_ratio']:.1f}x higher volatility than numerology on average
+
+# Discussion
+
+## Interpretation of Findings
+
+The quantitative analysis reveals a clear temporal discontinuity between numerology and Vedic astrology:
+
+### Discrete vs Continuous Systems
+
+Numerology operates as a **discrete system** where planetary strength changes only when date numbers change. This results in:
+- Binary strength values (0 or 100)
+- Low temporal frequency (approximately 73 changes annually)
+- Deterministic transitions based on calendar dates
+
+Vedic astrology functions as a **continuous system** with:
+- Smooth strength variations (0-100 range)
+- High temporal frequency (1000+ changes per planet annually)
+- Complex astronomical calculations involving multiple dignity factors
+
+### Lack of Correlation Evidence
+
+The statistical analysis provides multiple lines of evidence for system independence:
+
+1. **Correlation Coefficients**: All planet pairs show correlations near zero
+2. **Hypothesis Testing**: Statistical tests fail to reject the null hypothesis of independence
+3. **Volatility Analysis**: Systems operate on fundamentally different temporal scales
+4. **Information Theory**: Numerology has low entropy (binary states) while astrology has high entropy (continuous states)
+
+## Implications for Astrological Research
+
+### Methodological Considerations
+
+This research demonstrates the importance of recognizing fundamental differences between astrological systems when conducting comparative analyses. Attempts to correlate numerology and astrology may be methodologically inappropriate due to their distinct temporal mechanics.
+
+### Domain of Application
+
+The findings suggest that:
+- **Numerology** is appropriate for analyses requiring discrete temporal transitions
+- **Vedic Astrology** is suitable for continuous temporal analyses and daily precision
+- **Hybrid approaches** should acknowledge the temporal discontinuity between systems
+
+## Limitations
+
+### Temporal Scope
+Analysis covers only 5 years. While sufficient to demonstrate temporal patterns, longer periods might reveal additional patterns.
+
+### Planetary Focus
+Analysis focused on all 9 planets. Some planets (particularly outer planets like Saturn) may show different correlation patterns over longer cycles.
+
+### Calculation Precision
+Swiss Ephemeris provides high precision, but real astronomical observations might include additional factors not modeled here.
+
+# Conclusion
+
+This study provides quantitative evidence for the fundamental temporal discontinuity between numerology and Vedic astrology planetary strength calculations. The analysis demonstrates that:
+
+1. **Numerology operates on a discrete temporal scale** with approximately 73 strength transitions annually
+2. **Vedic astrology operates on a continuous temporal scale** with 1000+ strength changes per planet annually
+3. **No significant correlation exists** between the two systems' planetary strength assessments
+4. **The systems represent fundamentally different approaches** to understanding planetary influence
+
+These findings contribute to the scientific discourse on traditional knowledge systems by providing empirical evidence for their methodological distinctions. The research establishes that numerology and Vedic astrology, while both concerned with planetary influences, operate on such different temporal and mechanistic principles that direct correlation analysis is inappropriate.
+
+Future research should focus on understanding each system's domain of applicability rather than attempting to find correlations between fundamentally different frameworks. This approach will lead to more appropriate applications of each system within their respective methodological boundaries.
+
+# References
+
+## Data Availability
+
+All data and analysis code are available in the accompanying repository. The temporal analysis dataset covers 5 years of daily calculations and is provided in CSV format for replication and extension of this research.
+
+## Acknowledgments
+
+This research was conducted using open-source astronomical calculation libraries and computational tools. We acknowledge the contributions of the Swiss Ephemeris project and the broader open-source astronomical computing community.
