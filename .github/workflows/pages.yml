@@ -79,7 +79,7 @@ jobs:
 
     # Build API documentation
     - name: Build API Documentation
-      if: github.event.inputs.deploy_type != 'manuscripts-only' || github.event_name == 'push'
+      if: github.event.inputs.deploy_type != 'static-only' || github.event_name == 'push'
       run: |
         echo "Building API documentation..."
         mkdir -p docs/api

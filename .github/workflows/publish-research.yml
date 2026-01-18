@@ -61,11 +61,15 @@ jobs:
 
         # Generate research data and visualizations
         VERSION="$VERSION" python -c "
-        from vedic_numerology import VedicNumerologyAstrology
+        import sys
+        sys.path.insert(0, 'use_cases/numerology/src')
+        from numerology.calculator import calculate_complete_numerology
+        from vedic_astrology_core import VedicAstrologyChart
         import matplotlib
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt
         import json
+        from datetime import datetime
 
         print('Generating research data for manuscript...')
 

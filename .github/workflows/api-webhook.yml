@@ -64,7 +64,7 @@ jobs:
 
         # Run Python calculation
         python3 -c "
-        from vedic_numerology import VedicNumerologyAstrology
+        from vedic_astrology_core import VedicAstrologyChart
         import json
 
         # Create analysis

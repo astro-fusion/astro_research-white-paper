@@ -64,7 +64,7 @@ jobs:
         import os
         import json
         from datetime import datetime
-        from vedic_numerology import analyze_birth_chart, VedicNumerologyAstrology
+        from vedic_astrology_core import create_birth_chart, VedicAstrologyChart
         import matplotlib
         matplotlib.use('Agg')
 
