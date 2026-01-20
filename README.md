@@ -6,6 +6,16 @@
 [![Quarto](https://img.shields.io/badge/Quarto-1.3+-purple.svg)](https://quarto.org/)
 [![CI/CD](https://github.com/astro-fusion/numerology-white-paper/actions/workflows/ci.yml/badge.svg)](https://github.com/astro-fusion/numerology-white-paper/actions)
 
+## 📥 Downloads
+
+[![Download PDF](https://img.shields.io/github/downloads/astro-fusion/numerology-white-paper/total.svg?label=PDF%20Downloads&logo=adobe-acrobat-reader)](https://github.com/astro-fusion/numerology-white-paper/releases/latest/download/vedic-numerology-research-manuscript.pdf)
+[![Download DOCX](https://img.shields.io/github/downloads/astro-fusion/numerology-white-paper/total.svg?label=DOCX%20Downloads&logo=microsoft-word)](https://github.com/astro-fusion/numerology-white-paper/releases/latest/download/vedic-numerology-research-manuscript.docx)
+[![Download HTML](https://img.shields.io/github/downloads/astro-fusion/numerology-white-paper/total.svg?label=HTML%20Downloads&logo=html5)](https://github.com/astro-fusion/numerology-white-paper/releases/latest/download/vedic-numerology-research-manuscript.html)
+
+### 📖 Read the Research
+
+**🌐 [View Online](https://astro-fusion.github.io/numerology-white-paper/)** | **[📄 Download PDF](https://github.com/astro-fusion/numerology-white-paper/releases/latest/download/vedic-numerology-research-manuscript.pdf)** | **[📝 Download DOCX](https://github.com/astro-fusion/numerology-white-paper/releases/latest/download/vedic-numerology-research-manuscript.docx)**
+
 A comprehensive Python library for Vedic Astrology (Parashari Jyotish) calculations using high-precision Swiss Ephemeris. This core library provides the foundation for astrological analysis and can be extended by use cases like numerology correlations, earthquake studies, and other research applications.
 
 ## 🌟 Key Features

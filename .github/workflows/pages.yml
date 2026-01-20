@@ -92,7 +92,7 @@ jobs:
 
         # Copy manuscript HTML as main content
         if [ -f "_book/html/manuscript.html" ]; then
-          cp _book/html/manuscript.html _site/index.html
+          cp _book/html/manuscript.html _site/manuscript.html
           cp -r _book/html/* _site/ 2>/dev/null || true
         fi
 
@@ -102,64 +102,13 @@ jobs:
           cp -r docs/_build/html/* _site/docs/
         fi
 
-        # Create navigation page
-        cat > _site/index.html << 'EOF'
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Vedic Numerology-Astrology Integration System</title>
-            <style>
-                body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-                .hero { text-align: center; margin: 40px 0; }
-                .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 40px 0; }
-                .card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; text-align: center; }
-                .card h3 { margin-top: 0; }
-                .btn { display: inline-block; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; }
-                .btn:hover { background: #0056b3; }
-            </style>
-        </head>
-        <body>
-            <div class="hero">
-                <h1>🪐 Vedic Numerology-Astrology Integration System</h1>
-                <p>Computational analysis of planetary influences on numerological potentials</p>
-            </div>
-
-            <div class="cards">
-                <div class="card">
-                    <h3>📖 Research Manuscript</h3>
-                    <p>Complete research paper with integrated analysis results</p>
-                    <a href="manuscript.html" class="btn">Read Manuscript</a>
-                    <br><br>
-                    <a href="manuscript.pdf" class="btn" target="_blank">📄 Download PDF</a>
-                </div>
-
-                <div class="card">
-                    <h3>🔧 API Documentation</h3>
-                    <p>Complete API reference for developers</p>
-                    <a href="docs/index.html" class="btn">View API Docs</a>
-                </div>
-
-                <div class="card">
-                    <h3>💻 Source Code</h3>
-                    <p>GitHub repository with implementation</p>
-                    <a href="https://github.com/astro-fusion/numerology-white-paper" class="btn" target="_blank">View on GitHub</a>
-                </div>
-
-                <div class="card">
-                    <h3>📊 Interactive Examples</h3>
-                    <p>Try the system in Google Colab</p>
-                    <a href="https://colab.research.google.com/github/astro-fusion/numerology-white-paper/blob/main/notebooks/01_numerology_calculations.ipynb" class="btn" target="_blank">Open in Colab</a>
-                </div>
-            </div>
-
-            <footer style="text-align: center; margin-top: 40px; color: #666;">
-                <p>© 2025 Bishal Ghimire. Built with Quarto and Sphinx.</p>
-            </footer>
-        </body>
-        </html>
-        EOF
+        # Copy the custom index.html (if it exists)
+        if [ -f "_site/index.html" ]; then
+          echo "Using existing index.html"
+        else
+          echo "Creating basic index.html"
+          cp manuscript.html _site/index.html 2>/dev/null || echo "No manuscript.html found"
+        fi
 
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3

@@ -1,0 +1,308 @@
+name: Auto Release on Main Push
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'manuscript.qmd'
+      - 'src/**'
+      - '_quarto.yml'
+      - 'references.bib'
+      - 'use_cases/numerology/**'
+
+# Prevent concurrent releases
+concurrency:
+  group: "release"
+  cancel-in-progress: false
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Quarto
+      uses: quarto-dev/quarto-actions/setup@v2
+      with:
+        tinytex: true
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libswisseph-dev
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e ".[all]"
+        pip install pyswisseph>=2.08.00
+
+    - name: Generate research content
+      run: |
+        echo "Generating research content for manuscript..."
+
+        # Generate research data and visualizations
+        python -c "
+        import sys
+        sys.path.insert(0, 'use_cases/numerology/src')
+        from numerology.calculator import calculate_complete_numerology
+        from vedic_astrology_core import VedicNumerologyAstrology
+        import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+        import json
+        from datetime import datetime
+
+        print('Generating research data for manuscript...')
+
+        # Create comprehensive case studies
+        case_studies = [
+            {
+                'name': 'Mars 1984 Reference Case',
+                'birth_date': '1984-08-27',
+                'birth_time': '10:30',
+                'latitude': 28.6139,
+                'longitude': 77.1025,
+                'description': 'Primary reference case for Mars-Mulanka analysis'
+            },
+            {
+                'name': 'Venus Research Subject',
+                'birth_date': '1990-05-15',
+                'birth_time': '14:20',
+                'latitude': 40.7128,
+                'longitude': -74.0060,
+                'description': 'Venus-Bhagyanka case study'
+            }
+        ]
+
+        research_data = {}
+
+        for case in case_studies:
+            print(f'Analyzing {case[\"name\"]}...')
+            analysis = VedicNumerologyAstrology(
+                case['birth_date'],
+                case['birth_time'],
+                case['latitude'],
+                case['longitude']
+            )
+
+            # Generate comprehensive analysis
+            support_analysis = analysis.analyze_support_contradiction()
+            numerology = {
+                'mulanka': analysis.calculate_mulanka(),
+                'bhagyanka': analysis.calculate_bhagyanka()
+            }
+
+            research_data[case['name']] = {
+                'metadata': case,
+                'numerology': numerology,
+                'support_analysis': support_analysis,
+                'report': analysis.generate_report()
+            }
+
+            # Generate visualizations
+            try:
+                fig1 = analysis.plot_numerology_comparison(use_plotly=False)
+                fig1.savefig(f'figures/{case[\"name\"].replace(\" \", \"_\").lower()}_comparison.png', dpi=300, bbox_inches='tight')
+                plt.close(fig1)
+
+                fig2 = analysis.plot_dignity_analysis(use_plotly=False)
+                fig2.savefig(f'figures/{case[\"name\"].replace(\" \", \"_\").lower()}_dignity.png', dpi=300, bbox_inches='tight')
+                plt.close(fig2)
+
+            except Exception as e:
+                print(f'Visualization failed for {case[\"name\"]}: {e}')
+
+        # Save comprehensive research data
+        import os
+        timestamp = datetime.now().strftime('%Y%m%d-%H%M%S')
+        with open('research_database.json', 'w') as f:
+            json.dump({
+                'version': f'auto-{timestamp}',
+                'generated': datetime.now().isoformat() + 'Z',
+                'case_studies': research_data,
+                'methodology': {
+                    'ayanamsa': 'Lahiri (Chitra Paksha)',
+                    'ephemeris': 'Swiss Ephemeris 2.10.03',
+                    'dignity_system': 'Parashari Vedic Astrology',
+                    'numerology_system': 'Vedic Anka Jyotish'
+                }
+            }, f, indent=2, default=str)
+
+        print('Research database generated successfully')
+        "
+
+    - name: Render research manuscript to PDF
+      run: |
+        echo "Rendering manuscript to PDF..."
+        quarto render manuscript.qmd --to pdf --pdf-engine lualatex
+        ls -la *.pdf
+
+    - name: Generate DOCX version
+      run: |
+        echo "Rendering manuscript to DOCX..."
+        quarto render manuscript.qmd --to docx
+        ls -la *.docx
+
+    - name: Generate HTML version
+      run: |
+        echo "Rendering manuscript to HTML..."
+        quarto render manuscript.qmd --to html
+        ls -la *.html
+
+    - name: Generate research summary
+      run: |
+        python -c "
+        import json
+        from datetime import datetime
+
+        # Load research database
+        try:
+            with open('research_database.json', 'r') as f:
+                data = json.load(f)
+
+            # Generate summary report
+            summary = '# Vedic Numerology-Astrology Research Summary\\n\\n'
+            summary += '**Generated:** ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC') + '\\n'
+            summary += '**Methodology:** Lahiri Ayanamsa, Swiss Ephemeris\\n\\n'
+            summary += '## Case Studies Analyzed\\n\\n'
+
+            for case_name, case_data in data['case_studies'].items():
+                support = case_data['support_analysis']
+                summary += '### ' + case_name + '\\n'
+                summary += '- **Birth:** ' + case_data['metadata']['birth_date'] + ' at ' + case_data['metadata']['birth_time'] + '\\n'
+                summary += '- **Mulanka:** ' + str(case_data['numerology']['mulanka']['number']) + ' (' + case_data['numerology']['mulanka']['planet'] + ')\\n'
+                summary += '- **Bhagyanka:** ' + str(case_data['numerology']['bhagyanka']['number']) + ' (' + case_data['numerology']['bhagyanka']['planet'] + ')\\n'
+                summary += '- **Mulanka Support:** ' + support['mulanka']['support_level'] + ' (' + str(round(support['mulanka']['score'], 1)) + '/100)\\n'
+                summary += '- **Bhagyanka Support:** ' + support['bhagyanka']['support_level'] + ' (' + str(round(support['bhagyanka']['score'], 1)) + '/100)\\n\\n'
+
+            summary += '---\\n*Auto-generated by Vedic Numerology-Astrology System*'
+
+            with open('RESEARCH_SUMMARY.md', 'w') as f:
+                f.write(summary)
+
+            print('Research summary generated')
+
+        except Exception as e:
+            print(f'Summary generation failed: {e}')
+        "
+
+    - name: Get current date for version
+      id: date
+      run: echo "date=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+
+    - name: Create GitHub Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: release-${{ steps.date.outputs.date }}
+        release_name: Research Release ${{ steps.date.outputs.date }}
+        body: |
+          ## 📄 Vedic Numerology-Astrology Research Release
+
+          **Auto-generated release with latest research manuscript and analysis results.**
+
+          ### 📊 What's Included:
+          - **📄 Research Manuscript** (PDF) - Complete academic paper with integrated analysis
+          - **📝 Research Manuscript** (DOCX) - Microsoft Word compatible format
+          - **🌐 Research Manuscript** (HTML) - Web-optimized version
+          - **📊 Research Database** (JSON) - Raw analysis data and computational results
+          - **📋 Research Summary** (Markdown) - Key findings and case studies
+          - **📈 Generated Figures** (PNG) - Charts and visualizations
+
+          ### 🔬 Case Studies:
+          - Mars 1984 Reference Case (Mulanka planetary correlation analysis)
+          - Venus Research Subject (Bhagyanka planetary correlation analysis)
+
+          ### 🛠️ Technical Details:
+          - **Ephemeris:** Swiss Ephemeris 2.10.03
+          - **Ayanamsa:** Lahiri (Chitra Paksha)
+          - **Dignity System:** Parashari Vedic Astrology
+          - **Numerology:** Vedic Anka Jyotish
+
+          ### 📈 Research Features:
+          - Quantitative planetary dignity scoring (0-100 scale)
+          - Temporal support analysis over time periods
+          - Interactive visualizations and charts
+          - Comprehensive automated research reports
+
+          ---
+          *Auto-published by Vedic Numerology-Astrology Integration System*
+          *Generated on: ${{ steps.date.outputs.date }}*
+        draft: false
+        prerelease: false
+
+    - name: Upload PDF to Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./manuscript.pdf
+        asset_name: vedic-numerology-research-manuscript.pdf
+        asset_content_type: application/pdf
+
+    - name: Upload DOCX to Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./manuscript.docx
+        asset_name: vedic-numerology-research-manuscript.docx
+        asset_content_type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+
+    - name: Upload HTML to Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./manuscript.html
+        asset_name: vedic-numerology-research-manuscript.html
+        asset_content_type: text/html
+
+    - name: Upload Research Database to Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./research_database.json
+        asset_name: research-database.json
+        asset_content_type: application/json
+
+    - name: Upload Research Summary to Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./RESEARCH_SUMMARY.md
+        asset_name: research-summary.md
+        asset_content_type: text/markdown
+
+    - name: Upload Figures to Release
+      run: |
+        for file in figures/*.png; do
+          if [ -f "$file" ]; then
+            filename=$(basename "$file")
+            echo "Uploading $filename..."
+            gh release upload "release-${{ steps.date.outputs.date }}" "$file" --clobber
+          fi
+        done
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -12,22 +12,6 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Configuration - defaults to numerology use case
-USE_CASE="${1:-numerology}"
-FORMATS=("html" "pdf")
-TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
-
-# Set paths based on use case
-if [ "$USE_CASE" = "numerology" ]; then
-    PROJECT_DIR="use_cases/numerology/manuscripts"
-    BUILD_DIR="use_cases/numerology/_book"
-    SOURCE_FILE="manuscript.qmd"  # Relative to PROJECT_DIR
-else
-    log_error "Unknown use case: $USE_CASE"
-    log_info "Available use cases: numerology"
-    exit 1
-fi
-
 # Logging functions
 log_info() {
     echo -e "${BLUE}[INFO]${NC} $1"
@@ -44,6 +28,22 @@ log_warning() {
 log_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
+
+# Configuration - defaults to numerology use case
+USE_CASE="${1:-numerology}"
+FORMATS=("html" "pdf")
+TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
+
+# Set paths based on use case
+if [ "$USE_CASE" = "numerology" ]; then
+    PROJECT_DIR="use_cases/numerology/manuscripts"
+    BUILD_DIR="use_cases/numerology/_book"
+    SOURCE_FILE="manuscript.qmd"  # Relative to PROJECT_DIR
+else
+    log_error "Unknown use case: $USE_CASE"
+    log_info "Available use cases: numerology"
+    exit 1
+fi
 
 # Check if quarto is installed
 check_dependencies() {
