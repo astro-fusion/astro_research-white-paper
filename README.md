@@ -1,20 +1,20 @@
 # Vedic Astrology Core Library
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/astro-fusion/numerology-white-paper/blob/main/notebooks/01_numerology_calculations.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/astro-fusion/astro_research-white-paper/blob/main/notebooks/01_numerology_calculations.ipynb)
 [![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Quarto](https://img.shields.io/badge/Quarto-1.3+-purple.svg)](https://quarto.org/)
-[![CI/CD](https://github.com/astro-fusion/numerology-white-paper/actions/workflows/ci.yml/badge.svg)](https://github.com/astro-fusion/numerology-white-paper/actions)
+[![CI/CD](https://github.com/astro-fusion/astro_research-white-paper/actions/workflows/ci.yml/badge.svg)](https://github.com/astro-fusion/astro_research-white-paper/actions)
 
 ## 📥 Downloads
 
-[![Download PDF](https://img.shields.io/github/downloads/astro-fusion/numerology-white-paper/total.svg?label=PDF%20Downloads&logo=adobe-acrobat-reader)](https://github.com/astro-fusion/numerology-white-paper/releases/latest/download/vedic-numerology-research-manuscript.pdf)
-[![Download DOCX](https://img.shields.io/github/downloads/astro-fusion/numerology-white-paper/total.svg?label=DOCX%20Downloads&logo=microsoft-word)](https://github.com/astro-fusion/numerology-white-paper/releases/latest/download/vedic-numerology-research-manuscript.docx)
-[![Download HTML](https://img.shields.io/github/downloads/astro-fusion/numerology-white-paper/total.svg?label=HTML%20Downloads&logo=html5)](https://github.com/astro-fusion/numerology-white-paper/releases/latest/download/vedic-numerology-research-manuscript.html)
+[![Download PDF](https://img.shields.io/github/downloads/astro-fusion/astro_research-white-paper/total.svg?label=PDF%20Downloads&logo=adobe-acrobat-reader)](https://github.com/astro-fusion/astro_research-white-paper/releases/latest/download/vedic-numerology-research-manuscript.pdf)
+[![Download DOCX](https://img.shields.io/github/downloads/astro-fusion/astro_research-white-paper/total.svg?label=DOCX%20Downloads&logo=microsoft-word)](https://github.com/astro-fusion/astro_research-white-paper/releases/latest/download/vedic-numerology-research-manuscript.docx)
+[![Download HTML](https://img.shields.io/github/downloads/astro-fusion/astro_research-white-paper/total.svg?label=HTML%20Downloads&logo=html5)](https://github.com/astro-fusion/astro_research-white-paper/releases/latest/download/vedic-numerology-research-manuscript.html)
 
 ### 📖 Read the Research
 
-**🌐 [View Online](https://astro-fusion.github.io/numerology-white-paper/)** | **[📄 Download PDF](https://github.com/astro-fusion/numerology-white-paper/releases/latest/download/vedic-numerology-research-manuscript.pdf)** | **[📝 Download DOCX](https://github.com/astro-fusion/numerology-white-paper/releases/latest/download/vedic-numerology-research-manuscript.docx)**
+**🌐 [View Online](https://astro-fusion.github.io/astro_research-white-paper/)** | **[📄 Download PDF](https://github.com/astro-fusion/astro_research-white-paper/releases/latest/download/vedic-numerology-research-manuscript.pdf)** | **[📝 Download DOCX](https://github.com/astro-fusion/astro_research-white-paper/releases/latest/download/vedic-numerology-research-manuscript.docx)**
 
 A comprehensive Python library for Vedic Astrology (Parashari Jyotish) calculations using high-precision Swiss Ephemeris. This core library provides the foundation for astrological analysis and can be extended by use cases like numerology correlations, earthquake studies, and other research applications.
 
@@ -73,7 +73,7 @@ The fastest way to get started - no installation required!
 1. **Click the Colab Badge** above or visit [Google Colab](https://colab.research.google.com/)
 2. **Run the Installation**:
    ```python
-   !pip install git+https://github.com/astro-fusion/numerology-white-paper.git
+   !pip install git+https://github.com/astro-fusion/astro_research-white-paper.git
    ```
 3. **Execute Your First Analysis**:
    ```python
@@ -96,8 +96,8 @@ print(f"Ascendant: {chart.chart.ascendant.sign_name}")
 #### One-Command Setup
 ```bash
 # Clone and setup in one command
-git clone https://github.com/astro-fusion/numerology-white-paper.git
-cd numerology-white-paper
+git clone https://github.com/astro-fusion/astro_research-white-paper.git
+cd astro_research-white-paper
 make setup-dev
 ```
 
@@ -105,8 +105,8 @@ make setup-dev
 
 **1. Clone Repository**
 ```bash
-git clone https://github.com/astro-fusion/numerology-white-paper.git
-cd numerology-white-paper
+git clone https://github.com/astro-fusion/astro_research-white-paper.git
+cd astro_research-white-paper
 ```
 
 **2. Install Python Dependencies**
@@ -356,7 +356,7 @@ print(f"Dignity type: {mars_dignity['dignity_type']}")
 2. **Install the Package**:
    ```python
    # Run this in the first Colab cell
-   !pip install git+https://github.com/astro-fusion/numerology-white-paper.git
+   !pip install git+https://github.com/astro-fusion/astro_research-white-paper.git
    ```
 
 3. **Run Tutorial Notebooks**:
@@ -402,7 +402,7 @@ Your research platform supports **three deployment channels** for maximum reach:
 #### 1. 📖 **Static Research Site** (GitHub Pages)
 - **Purpose**: Primary research dissemination
 - **Content**: Manuscripts, documentation, interactive components
-- **Access**: `https://astro-fusion.github.io/numerology-white-paper/`
+- **Access**: `https://astro-fusion.github.io/astro_research-white-paper/`
 
 #### 2. 🎮 **Interactive Web App** (Streamlit Cloud)
 - **Purpose**: Real-time exploration and analysis
@@ -477,8 +477,8 @@ This project uses a comprehensive build system inspired by modern documentation 
 make setup-dev
 
 # Or manually:
-git clone https://github.com/astro-fusion/numerology-white-paper.git
-cd numerology-white-paper
+git clone https://github.com/astro-fusion/astro_research-white-paper.git
+cd astro_research-white-paper
 pip install -r requirements.txt
 pip install -e ".[dev]"
 ```
@@ -817,38 +817,38 @@ This repository includes automated workflows that generate research manuscripts 
 
 #### 📋 Research Manuscript PDF
 - **File**: `manuscript.pdf`
-- **Workflow**: [Research PDF Generation](https://github.com/astro-fusion/numerology-white-paper/actions/workflows/research-pdf.yml)
+- **Workflow**: [Research PDF Generation](https://github.com/astro-fusion/astro_research-white-paper/actions/workflows/research-pdf.yml)
 - **Contents**: Complete research paper with integrated analysis results
 - **Download**: Available as workflow artifact `research-manuscript-pdf`
 
 #### 📈 Analysis Reports
 - **File**: `research_results.json`
-- **Workflow**: [Research PDF Generation](https://github.com/astro-fusion/numerology-white-paper/actions/workflows/research-pdf.yml)
+- **Workflow**: [Research PDF Generation](https://github.com/astro-fusion/astro_research-white-paper/actions/workflows/research-pdf.yml)
 - **Contents**: Raw analysis data and computational results
 - **Download**: Available as workflow artifact `research-data-reports`
 
 #### 📊 Research Summary
 - **File**: `RESEARCH_SUMMARY.md`
-- **Workflow**: [Publish Research](https://github.com/astro-fusion/numerology-white-paper/actions/workflows/publish-research.yml)
+- **Workflow**: [Publish Research](https://github.com/astro-fusion/astro_research-white-paper/actions/workflows/publish-research.yml)
 - **Contents**: Executive summary of research findings and methodology
 - **Download**: Available as workflow artifact `research-release-artifacts`
 
 #### 📉 Data Analysis Results
 - **File**: `analysis_results/` (directory)
-- **Workflow**: [Data Analysis](https://github.com/astro-fusion/numerology-white-paper/actions/workflows/data-analysis.yml)
+- **Workflow**: [Data Analysis](https://github.com/astro-fusion/astro_research-white-paper/actions/workflows/data-analysis.yml)
 - **Contents**: Statistical analysis and research data processing results
 - **Download**: Available as workflow artifact `data-analysis-results-{run_number}`
 
 ### Accessing Generated Files
 
 #### From GitHub Actions
-1. Go to the [Actions tab](https://github.com/astro-fusion/numerology-white-paper/actions)
+1. Go to the [Actions tab](https://github.com/astro-fusion/astro_research-white-paper/actions)
 2. Click on the latest successful workflow run
 3. Scroll down to the "Artifacts" section
 4. Download the desired artifact files
 
 #### From Latest Release
-- Visit the [Releases page](https://github.com/astro-fusion/numerology-white-paper/releases)
+- Visit the [Releases page](https://github.com/astro-fusion/astro_research-white-paper/releases)
 - Download the latest release assets which include compiled PDFs and reports
 
 #### Automated Generation
@@ -1003,9 +1003,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/astro-fusion/numerology-white-paper/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/astro-fusion/numerology-white-paper/discussions)
-- **Documentation**: [Read the Docs](https://numerology-white-paper.readthedocs.io/)
+- **Issues**: [GitHub Issues](https://github.com/astro-fusion/astro_research-white-paper/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/astro-fusion/astro_research-white-paper/discussions)
+- **Documentation**: [Read the Docs](https://astro_research-white-paper.readthedocs.io/)
 
 ---
 
@@ -1033,7 +1033,7 @@ curl https://your-app-name.onrender.com/api/v1/health
 # Trigger calculation via GitHub Actions
 curl -X POST \
   -H "Authorization: token YOUR_GITHUB_TOKEN" \
-  https://api.github.com/repos/astro-fusion/numerology-white-paper/dispatches \
+  https://api.github.com/repos/astro-fusion/astro_research-white-paper/dispatches \
   -d '{"event_type": "calculate-numerology", "client_payload": {"birth_date": "1984-08-27"}}'
 ```
 
