@@ -353,9 +353,14 @@ jobs:
       run: python -m build
 
     - name: Publish to PyPI (if configured)
-      if: github.repository_owner == 'astro-fusion' && secrets.PYPI_API_TOKEN != ''
+      if: github.repository_owner == 'astro-fusion'
       run: |
-        twine upload dist/* -u __token__ -p ${{ secrets.PYPI_API_TOKEN }}
+        # Only upload if PYPI_API_TOKEN secret is available
+        if [ -n "${{ secrets.PYPI_API_TOKEN }}" ]; then
+          twine upload dist/* -u __token__ -p ${{ secrets.PYPI_API_TOKEN }}
+        else
+          echo "PYPI_API_TOKEN secret not configured, skipping PyPI upload"
+        fi
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
