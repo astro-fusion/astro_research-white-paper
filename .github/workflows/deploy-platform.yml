@@ -64,7 +64,21 @@ jobs:
 
     - name: Install dependencies
       run: |
-        sudo apt-get update && sudo apt-get install -y libswisseph-dev
+        sudo apt-get update && (
+        # Try to install Swiss Ephemeris library (may not be available in standard repos)
+        sudo apt-get install -y libswe-dev || {
+          echo "libswe-dev not available, installing build dependencies to compile from source..."
+          sudo apt-get install -y build-essential wget
+          # Download and install Swiss Ephemeris from source
+          wget -q http://www.astro.com/ftp/swisseph/swe_unix_src_2.10.03.tar.gz
+          tar -xzf swe_unix_src_2.10.03.tar.gz
+          cd swe_unix_src_2.10.03/src
+          make libswe.a
+          sudo make install
+          cd ../..
+          rm -rf swe_unix_src_2.10.03*
+        }
+      )
         python -m pip install --upgrade pip
         pip install -r requirements.txt -e ".[dev]" pyswisseph>=2.08.00
         pip install sphinx sphinx-rtd-theme myst-parser
