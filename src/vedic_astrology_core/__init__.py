@@ -207,6 +207,9 @@ class VedicAstrologyChart:
         if isinstance(planet, str):
             planet = Planet[planet.upper()]
 
+        if planet is None:
+            raise ValueError("Planet must be specified")
+
         # Get natal score for reference line
         natal_score = self.score_dignity(planet)["score"]
 
@@ -236,6 +239,9 @@ class VedicAstrologyChart:
         # Get planet to analyze
         if isinstance(planet, str):
             planet = Planet[planet.upper()]
+
+        if planet is None:
+            raise ValueError("Planet must be specified")
 
         return plot_dignity_radar(self.chart, planet, use_plotly=use_plotly)
 
@@ -271,9 +277,9 @@ class VedicAstrologyChart:
         # Ascendant
         report_lines.append("ASCENDANT:")
         asc = chart.ascendant
-        report_lines.append(f"  Sign: {asc.sign_name}")
-        report_lines.append(f"  Degrees: {asc.degrees_in_sign:.2f}°")
-        report_lines.append(f"  Longitude: {asc.longitude:.2f}°")
+        report_lines.append(f"  Sign: {asc['sign_name']}")
+        report_lines.append(f"  Degrees: {asc['degrees_in_sign']:.2f}°")
+        report_lines.append(f"  Longitude: {asc['longitude']:.2f}°")
         report_lines.append("")
 
         # Planetary positions
@@ -281,13 +287,13 @@ class VedicAstrologyChart:
         for planet_name, planet_data in chart.planets.items():
             dignity_score = self.score_dignity(planet_name)
             report_lines.append(f"  {planet_name}:")
-            report_lines.append(f"    Sign: {planet_data.sign.name}")
-            report_lines.append(f"    Degrees: {planet_data.degrees_in_sign:.2f}°")
-            report_lines.append(f"    Longitude: {planet_data.longitude:.2f}°")
+            report_lines.append(f"    Sign: {planet_data['sign_name']}")
+            report_lines.append(f"    Degrees: {planet_data['degrees_in_sign']:.2f}°")
+            report_lines.append(f"    Longitude: {planet_data['longitude']:.2f}°")
             report_lines.append(
                 f"    Dignity Score: {dignity_score['score']:.1f}/100 ({dignity_score['dignity_type']})"
             )
-            if hasattr(planet_data, "retrograde") and planet_data.retrograde:
+            if planet_data.get("retrograde"):
                 report_lines.append("    Retrograde: Yes")
         report_lines.append("")
 
@@ -295,7 +301,7 @@ class VedicAstrologyChart:
         report_lines.append("HOUSE CUSPS:")
         for i, house_data in enumerate(chart.houses):
             report_lines.append(
-                f"  House {i+1}: {house_data.sign_name} {house_data.degrees_in_sign:.2f}°"
+                f"  House {i+1}: {house_data['sign_name']} {house_data['degrees_in_sign']:.2f}°"
             )
         report_lines.append("")
 

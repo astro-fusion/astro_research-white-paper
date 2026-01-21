@@ -266,13 +266,6 @@ execute:
 # Jupyter configuration
 jupyter: python3
 
-# Bibliography and citations
-bibliography:
-  - references.bib
-  - research_paper/references.bib
-
-csl: styles/apa.csl
-
 # Language and localization
 lang: en-US
 

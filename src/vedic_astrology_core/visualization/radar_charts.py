@@ -16,7 +16,7 @@ try:
     PLOTLY_AVAILABLE = True
 except ImportError:
     PLOTLY_AVAILABLE = False
-    go = Any  # type: ignore
+    go = Any
 
 from ..config.constants import Planet
 
