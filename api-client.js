@@ -219,6 +219,49 @@ class VedicNumerologyAPI {
     async getExamples() {
         return this.request('/api/v1/examples');
     }
+
+    /**
+     * Get astrology dignity strength time-series.
+     */
+    async getPlanetStrengthSeries(params) {
+        const qs = new URLSearchParams({
+            start: params.start,
+            end: params.end,
+            step_days: String(params.step_days || 1),
+        });
+        if (params.planets) qs.set('planets', params.planets); // e.g. "MARS,VENUS"
+        if (params.latitude != null) qs.set('latitude', String(params.latitude));
+        if (params.longitude != null) qs.set('longitude', String(params.longitude));
+        return this.request(`/api/v1/planet-strength-series?${qs.toString()}`);
+    }
+
+    /**
+     * Get numerology (Mulanka active planet) time-series.
+     */
+    async getNumerologySeries(params) {
+        const qs = new URLSearchParams({
+            start: params.start,
+            end: params.end,
+            step_days: String(params.step_days || 1),
+        });
+        if (params.planets) qs.set('planets', params.planets);
+        return this.request(`/api/v1/numerology-series?${qs.toString()}`);
+    }
+
+    /**
+     * Get combined numerology + astrology time-series.
+     */
+    async getCombinedSeries(params) {
+        const qs = new URLSearchParams({
+            start: params.start,
+            end: params.end,
+            step_days: String(params.step_days || 1),
+        });
+        if (params.planets) qs.set('planets', params.planets);
+        if (params.latitude != null) qs.set('latitude', String(params.latitude));
+        if (params.longitude != null) qs.set('longitude', String(params.longitude));
+        return this.request(`/api/v1/combined-series?${qs.toString()}`);
+    }
 }
 
 // Global API instance

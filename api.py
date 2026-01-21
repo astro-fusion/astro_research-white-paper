@@ -23,11 +23,13 @@ try:
     from vedic_astrology_core import VedicAstrologyChart, create_birth_chart
     from vedic_astrology_core.astrology import AyanamsaSystem
     from vedic_astrology_core.config import Planet
-    # Import numerology from use case
-    import sys
-    import os
-    sys.path.insert(0, os.path.join(os.path.dirname(__file__), "use_cases", "numerology", "src"))
-    from numerology import calculate_complete_numerology
+    from vedic_astrology_core.time_series import (
+        TimeSeriesConfig,
+        compute_astrology_strength_series,
+        compute_combined_series,
+        compute_numerology_series,
+    )
+    from vedic_numerology.numerology import calculate_complete_numerology
     import matplotlib.pyplot as plt
     import plotly.graph_objects as go
     import json
@@ -116,6 +118,9 @@ async def root():
             "astrology": "/api/v1/astrology",
             "analysis": "/api/v1/analysis",
             "planets": "/api/v1/planets",
+            "planet_strength_series": "/api/v1/planet-strength-series",
+            "numerology_series": "/api/v1/numerology-series",
+            "combined_series": "/api/v1/combined-series",
             "health": "/api/v1/health"
         }
     }
@@ -318,6 +323,79 @@ async def get_examples():
   }'"""
         }
     }
+
+
+def _parse_planets(planets: Optional[str]) -> Optional[List[Planet]]:
+    if not planets:
+        return None
+    items = [p.strip().upper() for p in planets.split(",") if p.strip()]
+    parsed: List[Planet] = []
+    for item in items:
+        try:
+            parsed.append(Planet[item])
+        except KeyError:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Unknown planet '{item}'. Expected one of: {[p.name for p in Planet]}",
+            )
+    return parsed
+
+
+@app.get("/api/v1/planet-strength-series")
+async def planet_strength_series(
+    start: str = Query(..., description="Start date YYYY-MM-DD"),
+    end: str = Query(..., description="End date YYYY-MM-DD"),
+    step_days: int = Query(1, ge=1, le=366, description="Step size in days"),
+    planets: Optional[str] = Query(
+        None, description="Comma-separated planet names (e.g., MARS,VENUS). Defaults to all."
+    ),
+    latitude: float = Query(28.6139, description="Latitude for astrology calculation"),
+    longitude: float = Query(77.1025, description="Longitude for astrology calculation"),
+):
+    """Astrology dignity strength over time."""
+    planet_list = _parse_planets(planets)
+    cfg = TimeSeriesConfig(latitude=latitude, longitude=longitude)
+    df = compute_astrology_strength_series(
+        start_date=start, end_date=end, step_days=step_days, planets=planet_list, config=cfg
+    )
+    return {"start": start, "end": end, "step_days": step_days, "data": df.to_dict(orient="list")}
+
+
+@app.get("/api/v1/numerology-series")
+async def numerology_series(
+    start: str = Query(..., description="Start date YYYY-MM-DD"),
+    end: str = Query(..., description="End date YYYY-MM-DD"),
+    step_days: int = Query(1, ge=1, le=366, description="Step size in days"),
+    planets: Optional[str] = Query(
+        None, description="Comma-separated planet names (e.g., MARS,VENUS). Defaults to all."
+    ),
+):
+    """Numerology (Mulanka active planet strength) over time."""
+    planet_list = _parse_planets(planets)
+    df = compute_numerology_series(
+        start_date=start, end_date=end, step_days=step_days, planets=planet_list
+    )
+    return {"start": start, "end": end, "step_days": step_days, "data": df.to_dict(orient="list")}
+
+
+@app.get("/api/v1/combined-series")
+async def combined_series(
+    start: str = Query(..., description="Start date YYYY-MM-DD"),
+    end: str = Query(..., description="End date YYYY-MM-DD"),
+    step_days: int = Query(1, ge=1, le=366, description="Step size in days"),
+    planets: Optional[str] = Query(
+        None, description="Comma-separated planet names (e.g., MARS,VENUS). Defaults to all."
+    ),
+    latitude: float = Query(28.6139, description="Latitude for astrology calculation"),
+    longitude: float = Query(77.1025, description="Longitude for astrology calculation"),
+):
+    """Combined numerology + astrology time-series over time."""
+    planet_list = _parse_planets(planets)
+    cfg = TimeSeriesConfig(latitude=latitude, longitude=longitude)
+    df = compute_combined_series(
+        start_date=start, end_date=end, step_days=step_days, planets=planet_list, config=cfg
+    )
+    return {"start": start, "end": end, "step_days": step_days, "data": df.to_dict(orient="list")}
 
 # Error handlers
 @app.exception_handler(HTTPException)

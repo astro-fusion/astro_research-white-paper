@@ -1,0 +1,126 @@
+---
+title: "Planetary Strength vs Numerology Over Time"
+subtitle: "Separate and combined time-series graphs"
+date: today
+format:
+  html:
+    toc: true
+    code-fold: true
+---
+
+## Overview
+
+This notebook generates **three graphs** over a **custom date range**:
+
+- Planetary dignity strength (astrology)
+- Numerology (Mulanka-based active planet strength)
+- Combined comparison (overlay)
+
+## Configure inputs
+
+```{python}
+#| label: config
+from datetime import date
+
+from vedic_astrology_core.config.constants import Planet
+from vedic_astrology_core.time_series import (
+    TimeSeriesConfig,
+    compute_astrology_strength_series,
+    compute_combined_series,
+    compute_numerology_series,
+)
+
+# Custom range + step
+start_date = date(2024, 1, 1)
+end_date = date(2024, 4, 30)
+step_days = 2
+
+# Which planet to visualize (pick one for clear plots)
+planet = Planet.MARS
+
+# Location for astrology computation (dignity at local noon)
+cfg = TimeSeriesConfig(latitude=28.6139, longitude=77.1025)
+```
+
+## Generate data
+
+```{python}
+#| label: generate-data
+num_df = compute_numerology_series(start_date, end_date, step_days=step_days)
+ast_df = compute_astrology_strength_series(
+    start_date, end_date, step_days=step_days, planets=[planet], config=cfg
+)
+combined_df = compute_combined_series(
+    start_date, end_date, step_days=step_days, planets=[planet], config=cfg
+)
+
+num_df.head(), ast_df.head(), combined_df.head()
+```
+
+## Graph 1 — Planetary strength over time (Astrology)
+
+```{python}
+#| label: plot-astrology
+import plotly.express as px
+
+fig_ast = px.line(
+    ast_df,
+    x="date",
+    y=f"astrology_{planet.name}",
+    title=f"Astrology Dignity Strength Over Time — {planet.name}",
+    markers=True,
+)
+fig_ast.update_yaxes(range=[0, 105], title="Dignity score (0–100)")
+fig_ast.update_xaxes(title="Date")
+fig_ast
+```
+
+## Graph 2 — Numerology over time (Mulanka active planet)
+
+```{python}
+#| label: plot-numerology
+fig_num = px.line(
+    num_df,
+    x="date",
+    y=f"numerology_{planet.name}",
+    title=f"Numerology Strength Over Time (Mulanka active planet) — {planet.name}",
+    markers=True,
+)
+fig_num.update_yaxes(range=[0, 105], title="Strength (0 or 100)")
+fig_num.update_xaxes(title="Date")
+fig_num
+```
+
+## Graph 3 — Combined comparison
+
+```{python}
+#| label: plot-combined
+import plotly.graph_objects as go
+
+fig = go.Figure()
+fig.add_trace(
+    go.Scatter(
+        x=combined_df["date"],
+        y=combined_df[f"astrology_{planet.name}"],
+        mode="lines+markers",
+        name=f"Astrology {planet.name}",
+    )
+)
+fig.add_trace(
+    go.Scatter(
+        x=combined_df["date"],
+        y=combined_df[f"numerology_{planet.name}"],
+        mode="lines+markers",
+        name=f"Numerology {planet.name}",
+    )
+)
+fig.update_layout(
+    title=f"Combined Comparison — {planet.name}",
+    xaxis_title="Date",
+    yaxis_title="Strength (0–100)",
+    hovermode="x unified",
+)
+fig.update_yaxes(range=[0, 105])
+fig
+```
+

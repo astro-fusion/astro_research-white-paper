@@ -7,7 +7,7 @@ name = "vedic-astrology-core"
 version = "0.1.0"
 description = "Vedic Astrology Core Library with Swiss Ephemeris Integration"
 readme = "README.md"
-license = "MIT"
+license = { text = "MIT" }
 authors = [
     {name = "Norah Jones", email = "author@example.com"},
 ]
@@ -79,7 +79,7 @@ Repository = "https://github.com/astro-fusion/numerology-white-paper"
 "Source" = "https://github.com/astro-fusion/numerology-white-paper"
 
 [tool.setuptools]
-packages = ["vedic_astrology_core"]
+packages = ["vedic_astrology_core", "vedic_numerology"]
 package-dir = {"" = "src"}
 
 [tool.setuptools.package-data]
