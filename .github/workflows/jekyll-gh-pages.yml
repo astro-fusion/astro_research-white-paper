@@ -68,7 +68,7 @@ jobs:
       - name: Build research manuscripts
         run: |
           echo "Building research manuscripts..."
-          ./build.sh all
+          ./build.sh numerology
 
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1

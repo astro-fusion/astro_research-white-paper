@@ -131,6 +131,14 @@ strict_equality = true
 module = [
     "swisseph.*",
     "flatlib.*",
+    "matplotlib.*",
+    "numpy",
+    "pandas",
+    "seaborn",
+    "plotly.*",
+    "yaml",
+    "pytz",
+    "dateutil",
 ]
 ignore_missing_imports = true
 
