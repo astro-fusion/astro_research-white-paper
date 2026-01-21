@@ -113,8 +113,8 @@ jobs:
 
             # Calculate numerology
             numerology = calculate_complete_numerology(
-                case['birth_date'],
-                case['birth_time'],
+                datetime.strptime(case['birth_date'], '%Y-%m-%d').date(),
+                datetime.strptime(case['birth_time'], '%H:%M').time(),
                 case['latitude'],
                 case['longitude']
             )

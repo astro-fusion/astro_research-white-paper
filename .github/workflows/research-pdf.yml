@@ -84,6 +84,11 @@ jobs:
         from vedic_astrology_core import create_birth_chart
         import matplotlib
         matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+        import sys
+        sys.path.insert(0, 'use_cases/numerology/src')
+        from numerology.calculator import calculate_complete_numerology
+        from datetime import datetime
 
         # Use workflow inputs or defaults
         birth_date = '${{ github.event.inputs.birth_date || '1984-08-27' }}'
@@ -94,11 +99,20 @@ jobs:
         print(f'Generating analysis for: {birth_date} {birth_time}')
         print(f'Location: {latitude}°N, {longitude}°E')
 
-        # Generate comprehensive analysis
-        analysis = analyze_birth_chart(birth_date, birth_time, latitude, longitude)
+        # Create astrology chart
+        chart = create_birth_chart(birth_date, birth_time, latitude, longitude)
 
-        # Save detailed results for manuscript inclusion
-        results = analysis.analyze_support_contradiction()
+        # Calculate numerology
+        numerology = calculate_complete_numerology(
+            datetime.strptime(birth_date, '%Y-%m-%d').date(),
+            datetime.strptime(birth_time, '%H:%M').time() if birth_time != 'None' else None,
+            latitude,
+            longitude
+        )
+
+        # Get dignity scores for numerology planets
+        mars_dignity = chart.score_dignity('MARS')
+        venus_dignity = chart.score_dignity('VENUS')
 
         # Create results file for Quarto to include
         with open('research_results.json', 'w') as f:
@@ -110,39 +124,21 @@ jobs:
                     'latitude': latitude,
                     'longitude': longitude
                 },
-                'numerology': {
-                    'mulanka': analysis.calculate_mulanka(),
-                    'bhagyanka': analysis.calculate_bhagyanka()
+                'numerology': numerology,
+                'astrology': {
+                    'mars_dignity': mars_dignity,
+                    'venus_dignity': venus_dignity,
+                    'ascendant': chart.chart.ascendant['sign_name'] if isinstance(chart.chart.ascendant, dict) else str(chart.chart.ascendant)
                 },
-                'support_analysis': results
+                'support_analysis': {
+                    'mars_score': mars_dignity['score'],
+                    'venus_score': venus_dignity['score'],
+                    'mars_type': mars_dignity['dignity_type'],
+                    'venus_type': venus_dignity['dignity_type']
+                }
             }, f, indent=2, default=str)
 
-        # Generate visualization figures
-        try:
-            # Comparison chart
-            fig1 = analysis.plot_numerology_comparison(use_plotly=False)
-            fig1.savefig('figures/mulanka_bhagyanka_comparison.png', dpi=300, bbox_inches='tight')
-            plt.close(fig1)
-
-            # Dignity radar chart
-            fig2 = analysis.plot_dignity_analysis(use_plotly=False)
-            fig2.savefig('figures/dignity_analysis.png', dpi=300, bbox_inches='tight')
-            plt.close(fig2)
-
-            # Time series support (if time data available)
-            try:
-                fig3 = analysis.plot_temporal_support('2024-01-01', '2024-12-31', use_plotly=False)
-                fig3.savefig('figures/temporal_support.png', dpi=300, bbox_inches='tight')
-                plt.close(fig3)
-            except Exception as e:
-                print(f'Temporal analysis not available: {e}')
-
-            print('All visualizations generated successfully')
-
-        except Exception as e:
-            print(f'Visualization generation failed: {e}')
-            import traceback
-            traceback.print_exc()
+        print('Research data generated successfully')
         "
 
     - name: Render research manuscript to PDF
