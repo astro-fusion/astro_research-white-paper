@@ -4,13 +4,13 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'manuscript.qmd'
+      - 'use_cases/numerology/manuscripts/manuscript.qmd'
       - 'src/**'
       - '_quarto.yml'
       - 'references.bib'
   pull_request:
     paths:
-      - 'manuscript.qmd'
+      - 'use_cases/numerology/manuscripts/manuscript.qmd'
       - 'src/**'
       - '_quarto.yml'
       - 'references.bib'
@@ -145,9 +145,15 @@ jobs:
         print('Research data generated successfully')
         "
 
+    - name: Copy research data to manuscript directory
+      run: |
+        mkdir -p use_cases/numerology/manuscripts
+        cp research_results.json use_cases/numerology/manuscripts/
+
     - name: Render research manuscript to PDF
       run: |
         echo "Rendering manuscript with dynamic research content..."
+        cd use_cases/numerology/manuscripts
         quarto render manuscript.qmd --to pdf --pdf-engine lualatex
         ls -la *.pdf
 
@@ -163,7 +169,7 @@ jobs:
             with open('research_results.json', 'r') as f:
                 data = json.load(f)
 
-            analysis = analyze_birth_chart(
+            analysis = create_birth_chart(
                 data['birth_data']['date'],
                 data['birth_data']['time'],
                 data['birth_data']['latitude'],
@@ -222,7 +228,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: research-manuscript-pdf
-        path: manuscript.pdf
+        path: use_cases/numerology/manuscripts/manuscript.pdf
 
     - name: Upload research data and reports
       uses: actions/upload-artifact@v4
@@ -239,5 +245,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: github-pages-pdf
-        path: manuscript.pdf
+        path: use_cases/numerology/manuscripts/manuscript.pdf
         retention-days: 30

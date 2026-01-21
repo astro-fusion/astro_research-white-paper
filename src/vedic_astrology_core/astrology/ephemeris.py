@@ -62,7 +62,7 @@ class EphemerisEngine:
         try:
             swe.set_ephe_path()
         except Exception:
-            pass  # Default path usually works
+            pass  # nosec B110 - Default path usually works, intentional exception handling
 
         # Set sidereal mode
         pyswisseph_constant = get_pyswisseph_ayanamsa_constant(self.ayanamsa_system)

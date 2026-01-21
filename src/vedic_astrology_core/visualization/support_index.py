@@ -126,7 +126,7 @@ def _calculate_temporal_scores(
 
         except Exception:
             # Skip problematic dates
-            pass
+            pass  # nosec B110 - Intentional exception handling for problematic dates
 
         current_date += timedelta(days=1)
 
