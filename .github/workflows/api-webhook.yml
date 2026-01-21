@@ -46,20 +46,20 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update && (
-        # Try to install Swiss Ephemeris library (may not be available in standard repos)
-        sudo apt-get install -y libswe-dev || {
-          echo "libswe-dev not available, installing build dependencies to compile from source..."
-          sudo apt-get install -y build-essential wget
-          # Download and install Swiss Ephemeris from source
-          wget -q http://www.astro.com/ftp/swisseph/swe_unix_src_2.10.03.tar.gz
-          tar -xzf swe_unix_src_2.10.03.tar.gz
-          cd swe_unix_src_2.10.03/src
-          make libswe.a
-          sudo make install
-          cd ../..
-          rm -rf swe_unix_src_2.10.03*
-        }
-      )
+          # Try to install Swiss Ephemeris library (may not be available in standard repos)
+          sudo apt-get install -y libswe-dev || {
+            echo "libswe-dev not available, installing build dependencies to compile from source..."
+            sudo apt-get install -y build-essential wget
+            # Download and install Swiss Ephemeris from source
+            wget -q http://www.astro.com/ftp/swisseph/swe_unix_src_2.10.03.tar.gz
+            tar -xzf swe_unix_src_2.10.03.tar.gz
+            cd swe_unix_src_2.10.03/src
+            make libswe.a
+            sudo make install
+            cd ../..
+            rm -rf swe_unix_src_2.10.03*
+          }
+        )
         python -m pip install --upgrade pip
         pip install -e .
         pip install pyswisseph>=2.08.00
@@ -144,27 +144,29 @@ jobs:
         script: |
           const result = ${{ steps.result.outputs.result }};
 
-          const comment = `## 🪐 Vedic Numerology Calculation Result
-
-**Input Data:**
-- Birth Date: ${result.input.birth_date}
-- Birth Time: ${result.input.birth_time}
-- Location: ${result.input.latitude}°, ${result.input.longitude}°
-- Ayanamsa: ${result.input.ayanamsa_system}
-
-**Numerology Results:**
-- **Mulanka**: ${result.numerology.mulanka.number} (${result.numerology.mulanka.planet})
-- **Bhagyanka**: ${result.numerology.bhagyanka.number} (${result.numerology.bhagyanka.planet})
-
-**Support Analysis:**
-- Mulanka: ${result.support_analysis.mulanka.support_level}
-- Bhagyanka: ${result.support_analysis.bhagyanka.support_level}
-- Overall Harmony: ${result.support_analysis.overall.harmony_level}
-
-*Calculated on: ${result.timestamp}*
-
----
-[📊 View Full JSON Result](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}})`;
+          const comment = [
+            '## 🪐 Vedic Numerology Calculation Result',
+            '',
+            '**Input Data:**',
+            `- Birth Date: ${result.input.birth_date}`,
+            `- Birth Time: ${result.input.birth_time}`,
+            `- Location: ${result.input.latitude}°, ${result.input.longitude}°`,
+            `- Ayanamsa: ${result.input.ayanamsa_system}`,
+            '',
+            '**Numerology Results:**',
+            `- **Mulanka**: ${result.numerology.mulanka.number} (${result.numerology.mulanka.planet})`,
+            `- **Bhagyanka**: ${result.numerology.bhagyanka.number} (${result.numerology.bhagyanka.planet})`,
+            '',
+            '**Support Analysis:**',
+            `- Mulanka: ${result.support_analysis.mulanka.support_level}`,
+            `- Bhagyanka: ${result.support_analysis.bhagyanka.support_level}`,
+            `- Overall Harmony: ${result.support_analysis.overall.harmony_level}`,
+            '',
+            `*Calculated on: ${result.timestamp}*`,
+            '',
+            '---',
+            `[📊 View Full JSON Result](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}})`,
+          ].join('\n');
 
           github.rest.issues.createComment({
             issue_number: ${{ github.event.client_payload.issue_number }},

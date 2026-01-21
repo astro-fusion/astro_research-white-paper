@@ -57,6 +57,7 @@ jobs:
         key: ${{ runner.os }}-pip-pages-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-pages-
+          ${{ runner.os }}-pip-
 
     - name: Install system dependencies
       run: sudo apt-get update && (
