@@ -9,6 +9,7 @@ on:
       - '_quarto.yml'
       - 'references.bib'
       - 'use_cases/numerology/**'
+  workflow_dispatch:
 
 # Prevent concurrent releases
 concurrency:
@@ -57,7 +58,7 @@ jobs:
         import sys
         sys.path.insert(0, 'use_cases/numerology/src')
         from numerology.calculator import calculate_complete_numerology
-        from vedic_astrology_core import VedicNumerologyAstrology
+        from vedic_astrology_core import VedicAstrologyChart
         import matplotlib
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt
@@ -90,39 +91,43 @@ jobs:
 
         for case in case_studies:
             print(f'Analyzing {case[\"name\"]}...')
-            analysis = VedicNumerologyAstrology(
+            # Create astrology chart
+            chart = VedicAstrologyChart(
                 case['birth_date'],
                 case['birth_time'],
                 case['latitude'],
                 case['longitude']
             )
 
-            # Generate comprehensive analysis
-            support_analysis = analysis.analyze_support_contradiction()
-            numerology = {
-                'mulanka': analysis.calculate_mulanka(),
-                'bhagyanka': analysis.calculate_bhagyanka()
+            # Calculate numerology
+            numerology = calculate_complete_numerology(
+                case['birth_date'],
+                case['birth_time'],
+                case['latitude'],
+                case['longitude']
+            )
+
+            # Get dignity scores for key planets
+            mars_dignity = chart.score_dignity('MARS')
+            venus_dignity = chart.score_dignity('VENUS')
+
+            support_analysis = {
+                'mars_dignity': mars_dignity,
+                'venus_dignity': venus_dignity,
+                'overall': {
+                    'mars_score': mars_dignity['score'],
+                    'venus_score': venus_dignity['score']
+                }
             }
 
             research_data[case['name']] = {
                 'metadata': case,
                 'numerology': numerology,
                 'support_analysis': support_analysis,
-                'report': analysis.generate_report()
+                'report': chart.generate_chart_report()
             }
 
-            # Generate visualizations
-            try:
-                fig1 = analysis.plot_numerology_comparison(use_plotly=False)
-                fig1.savefig(f'figures/{case[\"name\"].replace(\" \", \"_\").lower()}_comparison.png', dpi=300, bbox_inches='tight')
-                plt.close(fig1)
-
-                fig2 = analysis.plot_dignity_analysis(use_plotly=False)
-                fig2.savefig(f'figures/{case[\"name\"].replace(\" \", \"_\").lower()}_dignity.png', dpi=300, bbox_inches='tight')
-                plt.close(fig2)
-
-            except Exception as e:
-                print(f'Visualization failed for {case[\"name\"]}: {e}')
+            print(f'Completed analysis for {case[\"name\"]}')
 
         # Save comprehensive research data
         import os
