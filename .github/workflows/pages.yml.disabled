@@ -50,15 +50,6 @@ jobs:
       with:
         python-version: "3.10"
 
-    - name: Cache pip dependencies
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-pages-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-pages-
-          ${{ runner.os }}-pip-
-
     - name: Install system dependencies
       run: sudo apt-get update && (
         # Try to install Swiss Ephemeris library (may not be available in standard repos)
@@ -83,7 +74,6 @@ jobs:
         pip install -e ".[dev]"
         pip install pyswisseph>=2.08.00 sphinx sphinx-rtd-theme myst-parser
 
-    # Build manuscripts (HTML, PDF, DOCX)
     - name: Build Manuscripts
       if: github.event.inputs.deploy_type != 'docs-only' || github.event_name == 'push'
       run: |
@@ -92,7 +82,6 @@ jobs:
         ./build.sh pdf
         ./build.sh docx
 
-    # Build API documentation
     - name: Build API Documentation
       if: github.event.inputs.deploy_type != 'static-only' || github.event_name == 'push'
       run: |
@@ -100,7 +89,6 @@ jobs:
         mkdir -p docs/api
         python -m sphinx -b html docs/ docs/_build/html
 
-    # Create combined site structure
     - name: Create Site Structure
       run: |
         mkdir -p _site

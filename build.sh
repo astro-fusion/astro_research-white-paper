@@ -29,21 +29,15 @@ log_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
-# Configuration - defaults to numerology use case
-USE_CASE="${1:-numerology}"
+# Configuration - hardcoded to numerology use case (only supported use case)
+USE_CASE="numerology"
 FORMATS=("html" "pdf")
 TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
 
-# Set paths based on use case
-if [ "$USE_CASE" = "numerology" ]; then
-    PROJECT_DIR="use_cases/numerology/manuscripts"
-    BUILD_DIR="use_cases/numerology/_book"
-    SOURCE_FILE="manuscript.qmd"  # Relative to PROJECT_DIR
-else
-    log_error "Unknown use case: $USE_CASE"
-    log_info "Available use cases: numerology"
-    exit 1
-fi
+# Set paths based on use case (currently only numerology is supported)
+PROJECT_DIR="use_cases/numerology/manuscripts"
+BUILD_DIR="use_cases/numerology/_book"
+SOURCE_FILE="manuscript.qmd"  # Relative to PROJECT_DIR
 
 # Check if quarto is installed
 check_dependencies() {
