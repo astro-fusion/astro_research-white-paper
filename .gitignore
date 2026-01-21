@@ -36,3 +36,6 @@ data/
 docs/_build/
 
 /.quarto/
+
+# macOS
+.DS_Store
