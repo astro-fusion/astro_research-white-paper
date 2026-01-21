@@ -29,10 +29,6 @@ license: "MIT"
 copyright: "© 2025 Norah Jones. All rights reserved."
 repository: "https://github.com/astro-fusion/numerology-white-paper"
 
-# Use case specific bibliography
-bibliography:
-  - references.bib
-
 # Environment variables for numerology use case
 environment:
   QUARTO_PROJECT_DIR: "."
