@@ -48,7 +48,7 @@ dependencies = [
 ]
 
 [project.scripts]
-vedic-numerology = "vedic_numerology.cli:main"
+vedic-numerology = "vedic_astrology_core.cli:main"
 
 [project.optional-dependencies]
 dev = [
@@ -136,7 +136,7 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 minversion = "7.0"
-addopts = "-ra -q --cov=vedic_numerology --cov-report=html --cov-report=term-missing"
+addopts = "-ra -q --cov=vedic_astrology_core --cov-report=html --cov-report=term-missing"
 testpaths = ["tests"]
 python_files = "test_*.py"
 python_classes = "Test*"
