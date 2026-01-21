@@ -263,7 +263,9 @@ class VedicAstrologyChart:
         report_lines.append(
             f"  Location: {self.latitude:.4f}°N, {self.longitude:.4f}°E"
         )
-        report_lines.append(f"  Ayanamsa: {chart.ayanamsa:.2f}° ({self.ayanamsa_system})")
+        report_lines.append(
+            f"  Ayanamsa: {chart.ayanamsa:.2f}° ({self.ayanamsa_system})"
+        )
         report_lines.append("")
 
         # Ascendant
@@ -282,15 +284,19 @@ class VedicAstrologyChart:
             report_lines.append(f"    Sign: {planet_data.sign.name}")
             report_lines.append(f"    Degrees: {planet_data.degrees_in_sign:.2f}°")
             report_lines.append(f"    Longitude: {planet_data.longitude:.2f}°")
-            report_lines.append(f"    Dignity Score: {dignity_score['score']:.1f}/100 ({dignity_score['dignity_type']})")
-            if hasattr(planet_data, 'retrograde') and planet_data.retrograde:
+            report_lines.append(
+                f"    Dignity Score: {dignity_score['score']:.1f}/100 ({dignity_score['dignity_type']})"
+            )
+            if hasattr(planet_data, "retrograde") and planet_data.retrograde:
                 report_lines.append("    Retrograde: Yes")
         report_lines.append("")
 
         # House cusps
         report_lines.append("HOUSE CUSPS:")
         for i, house_data in enumerate(chart.houses):
-            report_lines.append(f"  House {i+1}: {house_data.sign_name} {house_data.degrees_in_sign:.2f}°")
+            report_lines.append(
+                f"  House {i+1}: {house_data.sign_name} {house_data.degrees_in_sign:.2f}°"
+            )
         report_lines.append("")
 
         report_lines.append("=" * 70)

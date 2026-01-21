@@ -79,11 +79,11 @@ Repository = "https://github.com/astro-fusion/numerology-white-paper"
 "Source" = "https://github.com/astro-fusion/numerology-white-paper"
 
 [tool.setuptools]
-packages = ["vedic_numerology"]
+packages = ["vedic_astrology_core"]
 package-dir = {"" = "src"}
 
 [tool.setuptools.package-data]
-vedic_numerology = ["config/*.yaml"]
+vedic_astrology_core = ["config/*.yaml"]
 
 [tool.black]
 line-length = 88
