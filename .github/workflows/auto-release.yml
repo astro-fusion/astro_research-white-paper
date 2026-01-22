@@ -172,14 +172,14 @@ jobs:
         echo "Rendering manuscript to DOCX..."
         cd use_cases/numerology/manuscripts
         quarto render manuscript.qmd --to docx
-        ls -la *.docx
+        find _book -name "*.docx" -exec ls -la {} \;
 
     - name: Generate HTML version
       run: |
         echo "Rendering manuscript to HTML..."
         cd use_cases/numerology/manuscripts
         quarto render manuscript.qmd --to html
-        ls -la *.html
+        find _book -name "*.html" -exec ls -la {} \;
 
     - name: Generate research summary
       run: |

@@ -1,7 +1,7 @@
 # Vedic Numerology-Astrology Makefile
 # Based on The-Cosmic-Counselor build patterns
 
-.PHONY: help build build-all build-html build-pdf build-docx clean test lint format docs preview install dev-install check-deps
+.PHONY: help build build-all build-html build-pdf build-docx assets clean test lint format docs preview install dev-install check-deps
 
 # Default target
 help: ## Show this help message
@@ -24,6 +24,9 @@ build-pdf: ## Build PDF format only
 
 build-docx: ## Build DOCX format only
 	./build.sh docx
+
+assets: ## Generate local fallback assets
+	./build.sh assets
 
 # Development targets
 install: ## Install Python dependencies

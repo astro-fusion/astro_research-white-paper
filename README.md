@@ -8,13 +8,15 @@
 
 ## 📥 Downloads
 
-[![Download PDF](https://img.shields.io/github/downloads/astro-fusion/astro_research-white-paper/total.svg?label=PDF%20Downloads&logo=adobe-acrobat-reader)](https://github.com/astro-fusion/astro_research-white-paper/releases/latest/download/vedic-numerology-research-manuscript.pdf)
-[![Download DOCX](https://img.shields.io/github/downloads/astro-fusion/astro_research-white-paper/total.svg?label=DOCX%20Downloads&logo=microsoft-word)](https://github.com/astro-fusion/astro_research-white-paper/releases/latest/download/vedic-numerology-research-manuscript.docx)
-[![Download HTML](https://img.shields.io/github/downloads/astro-fusion/astro_research-white-paper/total.svg?label=HTML%20Downloads&logo=html5)](https://github.com/astro-fusion/astro_research-white-paper/releases/latest/download/vedic-numerology-research-manuscript.html)
+[![Download PDF](https://img.shields.io/badge/PDF-Download-blue?logo=adobe-acrobat-reader)](assets/releases/vedic-numerology-research-manuscript.pdf)
+[![Download DOCX](https://img.shields.io/badge/DOCX-Download-blue?logo=microsoft-word)](assets/releases/vedic-numerology-research-manuscript.docx)
+[![Download HTML](https://img.shields.io/badge/HTML-Download-blue?logo=html5)](assets/releases/vedic-numerology-research-manuscript.html)
 
 ### 📖 Read the Research
 
-**🌐 [View Online](https://astro-fusion.github.io/astro_research-white-paper/)** | **[📄 Download PDF](https://github.com/astro-fusion/astro_research-white-paper/releases/latest/download/vedic-numerology-research-manuscript.pdf)** | **[📝 Download DOCX](https://github.com/astro-fusion/astro_research-white-paper/releases/latest/download/vedic-numerology-research-manuscript.docx)**
+**🌐 [View Online](https://astro-fusion.github.io/astro_research-white-paper/)** | **[📄 Download PDF](assets/releases/vedic-numerology-research-manuscript.pdf)** | **[📝 Download DOCX](assets/releases/vedic-numerology-research-manuscript.docx)**
+
+> **📁 Local Assets**: The download links above point to locally generated research manuscripts. For the latest automated versions, check GitHub Actions artifacts or run `python3 generate-assets.py` to regenerate.
 
 ## 🌟 Core Research Principles
 

@@ -154,6 +154,18 @@ preview_build() {
     fi
 }
 
+# Generate fallback assets
+generate_assets() {
+    log_info "Generating research manuscript assets..."
+
+    if [ -f "generate-assets.py" ]; then
+        python3 generate-assets.py
+        log_success "Assets generated successfully"
+    else
+        log_warning "generate-assets.py not found, skipping asset generation"
+    fi
+}
+
 # Show usage
 usage() {
     echo "Vedic Numerology-Astrology Build Script"
@@ -165,6 +177,7 @@ usage() {
     echo "  html       Build HTML format only"
     echo "  pdf        Build PDF format only"
     echo "  docx       Build DOCX format only"
+    echo "  assets     Generate local fallback assets"
     echo "  clean      Clean build artifacts"
     echo "  preview    Preview built HTML in browser"
     echo "  check      Check dependencies"
@@ -176,6 +189,7 @@ usage() {
     echo "Examples:"
     echo "  $0 all          # Build everything"
     echo "  $0 html         # Build HTML only"
+    echo "  $0 assets       # Generate fallback assets"
     echo "  $0 clean && $0 all  # Clean and rebuild"
     echo "  $0 preview      # Preview after building"
 }
@@ -196,7 +210,7 @@ main() {
                 verbose=true
                 shift
                 ;;
-            all|html|pdf|docx|clean|preview|check)
+            all|html|pdf|docx|assets|clean|preview|check)
                 command=$1
                 shift
                 ;;
@@ -232,6 +246,11 @@ main() {
             check_dependencies
             install_dependencies
             build_format "docx"
+            ;;
+        "assets")
+            check_dependencies
+            install_dependencies
+            generate_assets
             ;;
         "all")
             check_dependencies
