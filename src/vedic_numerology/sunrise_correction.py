@@ -39,7 +39,7 @@ def get_sunrise_time(
             sunrise = sun.get_sunrise_time(target_date)
             return cast(datetime, sunrise)
         except Exception:
-            pass
+            pass  # nosec B110: Graceful fallback when external library fails
 
     if FLATLIB_AVAILABLE:
         try:
@@ -51,7 +51,7 @@ def get_sunrise_time(
                 time(hour=int(sunrise_hour), minute=int((sunrise_hour % 1) * 60)),
             )
         except Exception:
-            pass
+            pass  # nosec B110: Graceful fallback when calculation fails
 
     return None
 
