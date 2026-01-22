@@ -9,10 +9,10 @@ description = "Vedic Astrology Core Library with Swiss Ephemeris Integration"
 readme = "README.md"
 license = { text = "MIT" }
 authors = [
-    {name = "Norah Jones", email = "author@example.com"},
+    {name = "Bishal Ghimire", email = "bishal.ghimire@gmail.com"},
 ]
 maintainers = [
-    {name = "Norah Jones", email = "author@example.com"},
+    {name = "Bishal Ghimire", email = "bishal.ghimire@gmail.com"},
 ]
 keywords = [
     "numerology",
@@ -32,6 +32,9 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Scientific/Engineering :: Astronomy",
     "Topic :: Scientific/Engineering :: Mathematics",
     "Topic :: Religion",
@@ -72,11 +75,11 @@ ephemeris = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/astro-fusion/numerology-white-paper"
-Documentation = "https://numerology-white-paper.readthedocs.io/"
-Repository = "https://github.com/astro-fusion/numerology-white-paper"
-"Bug Reports" = "https://github.com/astro-fusion/numerology-white-paper/issues"
-"Source" = "https://github.com/astro-fusion/numerology-white-paper"
+Homepage = "https://github.com/astro-fusion/astro_research-white-paper"
+Documentation = "https://astro-research-white-paper.readthedocs.io/"
+Repository = "https://github.com/astro-fusion/astro_research-white-paper"
+"Bug Reports" = "https://github.com/astro-fusion/astro_research-white-paper/issues"
+"Source" = "https://github.com/astro-fusion/astro_research-white-paper"
 
 [tool.setuptools]
 packages = ["vedic_astrology_core", "vedic_numerology"]

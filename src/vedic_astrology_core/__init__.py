@@ -27,7 +27,7 @@ from .visualization import (
 )
 
 __version__ = "0.1.0"
-__author__ = "Norah Jones"
+__author__ = "Bishal Ghimire"
 __description__ = "Vedic Astrology Core Library with Swiss Ephemeris Integration"
 
 

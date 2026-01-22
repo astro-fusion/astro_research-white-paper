@@ -167,18 +167,12 @@ def render_manuscripts():
     for format_name, file_path in generated_files:
         src = Path(file_path)
         if src.exists():
-            # Create a timestamped filename
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            dst_name = f"vedic-numerology-research-manuscript-{timestamp}.{format_name}"
+            # Create the base filename (no timestamp - git handles versioning)
+            dst_name = f"vedic-numerology-research-manuscript.{format_name}"
             dst = assets_dir / dst_name
 
             shutil.copy2(src, dst)
             print(f"Copied {src} -> {dst}")
-
-            # Also create a latest version
-            latest_dst = assets_dir / f"vedic-numerology-research-manuscript.{format_name}"
-            shutil.copy2(src, latest_dst)
-            print(f"Created latest version: {latest_dst}")
 
             copied_files.append((format_name, str(dst.relative_to(Path("../../")))))
         else:
@@ -202,36 +196,22 @@ def create_download_links():
     content = "# Vedic Numerology-Astrology Research Manuscript Downloads\n\n"
     content += f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
 
-    # Find latest files
-    latest_files = {}
+    # Find current files (no timestamps - git handles versioning)
+    current_files = {}
     for file in assets_dir.glob("vedic-numerology-research-manuscript.*"):
         if file.suffix in ['.pdf', '.docx', '.html']:
-            latest_files[file.suffix[1:]] = file
+            current_files[file.suffix[1:]] = file
 
-    if latest_files:
-        content += "## Latest Versions\n\n"
-        for format_name, file_path in latest_files.items():
+    if current_files:
+        content += "## Current Versions\n\n"
+        for format_name, file_path in sorted(current_files.items()):
             content += f"- **{format_name.upper()}**: [{file_path.name}](./{file_path.name})\n"
 
-    content += "\n## All Versions\n\n"
-    files_by_format = {}
-    for file in sorted(assets_dir.glob("vedic-numerology-research-manuscript-*.{pdf,docx,html}")):
-        format_name = file.suffix[1:]
-        if format_name not in files_by_format:
-            files_by_format[format_name] = []
-        files_by_format[format_name].append(file)
-
-    for format_name, files in files_by_format.items():
-        content += f"### {format_name.upper()} Files\n"
-        for file in sorted(files, reverse=True):
-            timestamp = file.stem.split('-')[-1]  # Extract timestamp from filename
-            content += f"- {timestamp}: [{file.name}](./{file.name})\n"
-        content += "\n"
-
-    content += "## Notes\n\n"
+    content += "\n## Notes\n\n"
     content += "- These are locally generated fallback versions\n"
-    content += "- For the latest automated versions, check GitHub Actions artifacts\n"
+    content += "- For version history, check git commits or GitHub Actions artifacts\n"
     content += "- Files are generated using Quarto with dynamic research data\n"
+    content += "- Git handles versioning - files are overwritten on each generation\n"
 
     with open(links_file, 'w') as f:
         f.write(content)

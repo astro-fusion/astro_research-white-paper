@@ -16,7 +16,7 @@ For development installation with all dependencies:
 
 .. code-block:: bash
 
-   git clone https://github.com/astro-fusion/numerology-white-paper.git
+   git clone https://github.com/astro-fusion/astro_research-white-paper.git
    cd numerology-white-paper
    pip install -e ".[dev]"
 

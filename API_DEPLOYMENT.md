@@ -17,7 +17,7 @@ This guide explains how to deploy the REST API for real-time numerology and astr
 
 2. **Deploy from GitHub**
    - Click "New +" → "Web Service"
-   - Connect your `astro-fusion/numerology-white-paper` repository
+   - Connect your `astro-fusion/astro_research-white-paper` repository
    - Configure build settings:
      ```bash
      Build Command: pip install -r requirements-api.txt
@@ -65,7 +65,7 @@ This guide explains how to deploy the REST API for real-time numerology and astr
    curl -X POST \
      -H "Authorization: token YOUR_GITHUB_TOKEN" \
      -H "Accept: application/vnd.github.v3+json" \
-     https://api.github.com/repos/astro-fusion/numerology-white-paper/dispatches \
+     https://api.github.com/repos/astro-fusion/astro_research-white-paper/dispatches \
      -d '{
        "event_type": "calculate-numerology",
        "client_payload": {
@@ -254,7 +254,7 @@ curl -X POST "https://your-api-url.onrender.com/api/v1/analysis" \
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/astro-fusion/numerology-white-paper/issues)
+- **Issues**: [GitHub Issues](https://github.com/astro-fusion/astro_research-white-paper/issues)
 - **API Docs**: Available at `/docs` endpoint on deployed API
 - **Examples**: Check `/api/v1/examples` endpoint
 

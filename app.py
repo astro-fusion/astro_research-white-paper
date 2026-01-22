@@ -516,9 +516,9 @@ with tab4:
         st.subheader("🔗 Links")
         st.markdown(
             """
-        [📚 GitHub Repository](https://github.com/astro-fusion/numerology-white-paper)
+        [📚 GitHub Repository](https://github.com/astro-fusion/astro_research-white-paper)
         [🌐 Research Website](https://astro-fusion.com)
-        [📖 Documentation](https://numerology-white-paper.readthedocs.io/)
+        [📖 Documentation](https://astro-research-white-paper.readthedocs.io/)
         """
         )
 

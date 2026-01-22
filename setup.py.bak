@@ -16,15 +16,15 @@ with open(os.path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 setup(
     name="vedic-numerology-astrology",
     version="0.1.0",
-    author="Norah Jones",
-    author_email="author@example.com",
+    author="Bishal Ghimire",
+    author_email="bishal.ghimire@gmail.com",
     description="Computational Integration of Vedic Numerology and Sidereal Mechanics",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/astro-fusion/numerology-white-paper",
+    url="https://github.com/astro-fusion/astro_research-white-paper",
     project_urls={
         "Bug Tracker": "https://github.com/astro-fusion/numerology-white-paper/issues",
-        "Documentation": "https://numerology-white-paper.readthedocs.io/",
+        "Documentation": "https://astro-research-white-paper.readthedocs.io/",
         "Source Code": "https://github.com/astro-fusion/numerology-white-paper",
     },
     classifiers=[

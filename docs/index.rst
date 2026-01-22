@@ -108,6 +108,6 @@ Indices and Tables
 * :ref:`modindex`
 * :ref:`search`
 
-.. _GitHub Repository: https://github.com/astro-fusion/numerology-white-paper
-.. _Issue Tracker: https://github.com/astro-fusion/numerology-white-paper/issues
-.. _Documentation: https://numerology-white-paper.readthedocs.io/
+.. _GitHub Repository: https://github.com/astro-fusion/astro_research-white-paper
+.. _Issue Tracker: https://github.com/astro-fusion/astro_research-white-paper/issues
+.. _Documentation: https://astro-research-white-paper.readthedocs.io/

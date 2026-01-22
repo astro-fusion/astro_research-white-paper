@@ -7,21 +7,5 @@
 # Interactive visualizations for Colab
 plotly>=5.0.0
 
-# Jupyter widgets for interactive input forms
-ipywidgets>=7.6.0
-jupyter-widgets>=0.6.0
-
-# Enhanced Jupyter support
-jupyter>=1.0.0
-notebook>=6.4.0
-
 # Swiss Ephemeris (required for astronomical calculations)
-pyswisseph>=2.08.00-1
-
-# Additional scientific libraries that might be useful in Colab
-scipy>=1.7.0
-scikit-learn>=1.0.0
-
-# For advanced plotting and data manipulation
-plotly-express>=0.4.0
-cufflinks>=0.17.0
+pyswisseph>=2.08.00

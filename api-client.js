@@ -26,7 +26,7 @@ class VedicNumerologyAPI {
 
         // GitHub Pages (use GitHub Actions webhook API)
         if (hostname.includes('github.io')) {
-            return 'https://api.github.com/repos/astro-fusion/numerology-white-paper/dispatches';
+            return 'https://api.github.com/repos/astro-fusion/astro_research-white-paper/dispatches';
         }
 
         // Default to deployed API
@@ -180,7 +180,7 @@ class VedicNumerologyAPI {
             return {
                 status: 'processing',
                 message: 'Calculation started via GitHub Actions',
-                workflow_url: `https://github.com/astro-fusion/numerology-white-paper/actions`,
+                workflow_url: `https://github.com/astro-fusion/astro_research-white-paper/actions`,
                 payload: webhookPayload
             };
 
@@ -189,7 +189,7 @@ class VedicNumerologyAPI {
             return {
                 status: 'manual_required',
                 message: 'Please trigger calculation manually via GitHub Actions',
-                manual_url: `https://github.com/astro-fusion/numerology-white-paper/actions/workflows/api-webhook.yml`,
+                manual_url: `https://github.com/astro-fusion/astro_research-white-paper/actions/workflows/api-webhook.yml`,
                 payload: payload
             };
         }

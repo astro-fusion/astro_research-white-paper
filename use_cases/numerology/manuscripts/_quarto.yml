@@ -13,7 +13,7 @@ title: "Exploring Patterns in Numerology: A Statistical Analysis of Name-Number 
 subtitle: "An Empirical Investigation Using Computational Methods"
 description: "A comprehensive study investigating the statistical relationships between names and their corresponding numerological values using computational methods."
 author:
-  - name: "Norah Jones"
+  - name: "Bishal Ghimire"
     affiliation: "Independent Researcher"
 date: today
 date-format: "MMMM DD, YYYY"
@@ -26,8 +26,8 @@ keywords:
   - Computational Methods
   - Data Visualization
 license: "MIT"
-copyright: "© 2025 Norah Jones. All rights reserved."
-repository: "https://github.com/astro-fusion/numerology-white-paper"
+copyright: "© 2025 Bishal Ghimire. All rights reserved."
+repository: "https://github.com/astro-fusion/astro_research-white-paper"
 
 format:
   # Override PDF settings for manuscripts

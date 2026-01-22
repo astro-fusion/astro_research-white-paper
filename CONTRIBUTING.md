@@ -34,11 +34,11 @@ Thank you for your interest in contributing to the Vedic Numerology-Astrology In
 ```bash
 # Fork the repository on GitHub
 # Then clone your fork
-git clone https://github.com/YOUR_USERNAME/numerology-white-paper.git
-cd numerology-white-paper
+git clone https://github.com/YOUR_USERNAME/astro-research-white-paper.git
+cd astro-research-white-paper
 
 # Set up upstream remote
-git remote add upstream https://github.com/astro-fusion/numerology-white-paper.git
+git remote add upstream https://github.com/astro-fusion/astro_research-white-paper.git
 ```
 
 ### 2. Set Up Development Environment
@@ -75,7 +75,7 @@ make quality-gate
 
 ### 1. Choose an Issue
 
-* Check the [Issues](https://github.com/astro-fusion/numerology-white-paper/issues) page
+* Check the [Issues](https://github.com/astro-fusion/astro_research-white-paper/issues) page
 * Look for issues labeled `good first issue` or `help wanted`
 * Comment on the issue to indicate you're working on it
 
@@ -407,9 +407,9 @@ This project follows a code of conduct to ensure a welcoming environment:
 
 ## 📞 Getting Help
 
-* **Issues**: [GitHub Issues](https://github.com/astro-fusion/numerology-white-paper/issues)
-* **Discussions**: [GitHub Discussions](https://github.com/astro-fusion/numerology-white-paper/discussions)
-* **Documentation**: [Read the Docs](https://numerology-white-paper.readthedocs.io/)
+* **Issues**: [GitHub Issues](https://github.com/astro-fusion/astro_research-white-paper/issues)
+* **Discussions**: [GitHub Discussions](https://github.com/astro-fusion/astro_research-white-paper/discussions)
+* **Documentation**: [Read the Docs](https://astro-research-white-paper.readthedocs.io/)
 
 ## 🙏 Recognition
 

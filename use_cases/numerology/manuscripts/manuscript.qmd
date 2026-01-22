@@ -4,8 +4,8 @@ subtitle: "An Empirical Investigation Using Computational Methods"
 date: today
 date-format: "MMMM DD, YYYY"
 authors:
-  - name: Norah Jones
-    affiliation: The University
+  - name: Bishal Ghimire
+    affiliation: Independent Researcher
     roles: writing
     corresponding: true
 abstract: |
