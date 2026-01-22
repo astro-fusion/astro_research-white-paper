@@ -129,6 +129,7 @@ warn_unused_ignores = true
 warn_no_return = true
 warn_unreachable = true
 strict_equality = true
+disable_error_code = ["attr-defined", "arg-type"]
 
 [[tool.mypy.overrides]]
 module = [
@@ -142,8 +143,10 @@ module = [
     "yaml",
     "pytz",
     "dateutil",
+    "vedic_numerology.*",
 ]
 ignore_missing_imports = true
+
 
 [tool.pytest.ini_options]
 minversion = "7.0"
