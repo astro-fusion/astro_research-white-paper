@@ -266,10 +266,11 @@ class TestTimeSeriesIntegration(unittest.TestCase):
     def setUp(self):
         """Set up test fixtures."""
         from datetime import datetime
+
         from vedic_astrology_core.time_series import (
             compute_astrology_strength_series,
-            compute_numerology_series,
             compute_combined_series,
+            compute_numerology_series,
         )
 
         self.compute_planet_strength = compute_astrology_strength_series
