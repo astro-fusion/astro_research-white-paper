@@ -269,7 +269,7 @@ class TestTimeSeriesIntegration(unittest.TestCase):
         from vedic_astrology_core.time_series import (
             compute_astrology_strength_series,
             compute_numerology_series,
-            compute_combined_series
+            compute_combined_series,
         )
 
         self.compute_planet_strength = compute_astrology_strength_series
@@ -283,18 +283,30 @@ class TestTimeSeriesIntegration(unittest.TestCase):
 
     def test_planet_strength_series_basic(self):
         """Test basic planetary strength series generation."""
-        df = self.compute_planet_strength(self.start_date, self.end_date, self.step_days)
+        df = self.compute_planet_strength(
+            self.start_date, self.end_date, self.step_days
+        )
 
         # Check it's a DataFrame
         self.assertIsInstance(df, pd.DataFrame)
 
         # Check required columns exist
-        self.assertIn('date', df.columns)
+        self.assertIn("date", df.columns)
 
         # Should have all planets
-        expected_planets = ['SUN', 'MOON', 'MARS', 'MERCURY', 'JUPITER', 'VENUS', 'SATURN', 'RAHU', 'KETU']
+        expected_planets = [
+            "SUN",
+            "MOON",
+            "MARS",
+            "MERCURY",
+            "JUPITER",
+            "VENUS",
+            "SATURN",
+            "RAHU",
+            "KETU",
+        ]
         for planet in expected_planets:
-            col_name = f'astrology_{planet}'
+            col_name = f"astrology_{planet}"
             self.assertIn(col_name, df.columns)
 
             # Values should be reasonable (0-100)
@@ -315,14 +327,24 @@ class TestTimeSeriesIntegration(unittest.TestCase):
         self.assertIsInstance(df, pd.DataFrame)
 
         # Check required columns exist
-        self.assertIn('date', df.columns)
-        self.assertIn('numerology_active_planet', df.columns)
-        self.assertIn('numerology_mulanka_number', df.columns)
+        self.assertIn("date", df.columns)
+        self.assertIn("numerology_active_planet", df.columns)
+        self.assertIn("numerology_mulanka_number", df.columns)
 
         # Should have all planets
-        expected_planets = ['SUN', 'MOON', 'MARS', 'MERCURY', 'JUPITER', 'VENUS', 'SATURN', 'RAHU', 'KETU']
+        expected_planets = [
+            "SUN",
+            "MOON",
+            "MARS",
+            "MERCURY",
+            "JUPITER",
+            "VENUS",
+            "SATURN",
+            "RAHU",
+            "KETU",
+        ]
         for planet in expected_planets:
-            col_name = f'numerology_{planet}'
+            col_name = f"numerology_{planet}"
             self.assertIn(col_name, df.columns)
 
             # Numerology values should be either 0 or 100 (binary)
@@ -342,11 +364,11 @@ class TestTimeSeriesIntegration(unittest.TestCase):
         self.assertIsInstance(df, pd.DataFrame)
 
         # Check required columns exist
-        self.assertIn('date', df.columns)
+        self.assertIn("date", df.columns)
 
         # Should have both numerology and astrology columns
-        numerology_cols = [col for col in df.columns if col.startswith('numerology_')]
-        astrology_cols = [col for col in df.columns if col.startswith('astrology_')]
+        numerology_cols = [col for col in df.columns if col.startswith("numerology_")]
+        astrology_cols = [col for col in df.columns if col.startswith("astrology_")]
 
         self.assertGreater(len(numerology_cols), 0)
         self.assertGreater(len(astrology_cols), 0)
@@ -359,16 +381,18 @@ class TestTimeSeriesIntegration(unittest.TestCase):
         step_days = 5
         df = self.compute_planet_strength(self.start_date, self.end_date, step_days)
 
-        dates = pd.to_datetime(df['date'])
+        dates = pd.to_datetime(df["date"])
         self.assertGreater(len(dates), 1)
 
         # Check spacing between consecutive dates
         for i in range(1, len(dates)):
             from datetime import timedelta
+
             expected_diff = timedelta(days=step_days)
-            actual_diff = dates.iloc[i] - dates.iloc[i-1]
-            self.assertEqual(actual_diff, expected_diff,
-                           f"Date spacing incorrect at index {i}")
+            actual_diff = dates.iloc[i] - dates.iloc[i - 1]
+            self.assertEqual(
+                actual_diff, expected_diff, f"Date spacing incorrect at index {i}"
+            )
 
     def test_step_size_variations(self):
         """Test different step sizes work correctly."""
@@ -384,13 +408,15 @@ class TestTimeSeriesIntegration(unittest.TestCase):
                 # If more than one point, check spacing
                 if len(df) > 1:
                     from datetime import timedelta
-                    dates = pd.to_datetime(df['date'])
+
+                    dates = pd.to_datetime(df["date"])
                     diff = dates.iloc[1] - dates.iloc[0]
                     self.assertEqual(diff, timedelta(days=step))
 
     def test_edge_case_single_day(self):
         """Test edge case with single day range."""
         from datetime import timedelta
+
         single_date = self.start_date
         end_date = single_date + timedelta(days=1)
 
@@ -398,8 +424,8 @@ class TestTimeSeriesIntegration(unittest.TestCase):
 
         # Should have two data points (start and end dates, 1 day apart with step=1)
         self.assertEqual(len(df), 2)
-        self.assertEqual(pd.to_datetime(df['date'].iloc[0]).date(), single_date.date())
-        self.assertEqual(pd.to_datetime(df['date'].iloc[1]).date(), end_date.date())
+        self.assertEqual(pd.to_datetime(df["date"].iloc[0]).date(), single_date.date())
+        self.assertEqual(pd.to_datetime(df["date"].iloc[1]).date(), end_date.date())
 
     def test_reverse_date_range_error(self):
         """Test that reverse date ranges raise appropriate errors."""

@@ -173,7 +173,7 @@ jobs:
     - name: Render final research manuscript
       run: |
         quarto render manuscript.qmd --to pdf --pdf-engine lualatex
-        ls -la *.pdf
+        find . -name "*.pdf" -exec ls -la {} \;
 
     - name: Generate research summary report
       run: |

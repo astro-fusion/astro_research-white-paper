@@ -53,4 +53,3 @@ __all__ = [
     "plot_dignity_analysis",
     "create_support_index_chart",
 ]
-

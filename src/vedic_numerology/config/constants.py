@@ -9,4 +9,3 @@ This module re-exports them so existing docs/tests that reference
 from vedic_astrology_core.config.constants import PLANET_NAMES, Planet
 
 __all__ = ["Planet", "PLANET_NAMES"]
-

@@ -175,7 +175,9 @@ def compute_numerology_series(
             "numerology_mulanka_number": int(mulanka_num),
         }
         for planet in planets_to_use:
-            row[f"numerology_{planet.name}"] = 100.0 if planet == mulanka_planet else 0.0
+            row[f"numerology_{planet.name}"] = (
+                100.0 if planet == mulanka_planet else 0.0
+            )
         rows.append(row)
 
     return pd.DataFrame(rows)
@@ -205,4 +207,3 @@ def compute_combined_series(
         config=config,
     )
     return num_df.merge(ast_df, on="date", how="inner")
-

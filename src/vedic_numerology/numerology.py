@@ -42,7 +42,9 @@ def calculate_mulanka(
 
     day_number = birth_date.day
     if birth_time is not None and latitude is not None and longitude is not None:
-        corrected_date = adjust_date_for_vedic_day(birth_date, birth_time, latitude, longitude)
+        corrected_date = adjust_date_for_vedic_day(
+            birth_date, birth_time, latitude, longitude
+        )
         day_number = corrected_date.day
 
     mulanka = reduce_to_single_digit(day_number)
@@ -82,4 +84,3 @@ def calculate_complete_numerology(
         "bhagyanka": {"number": bhagyanka_num, "planet": bhagyanka_planet},
         "sunrise_corrected": sunrise_corrected,
     }
-

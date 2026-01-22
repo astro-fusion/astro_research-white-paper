@@ -43,7 +43,9 @@ def get_sunrise_time(
 
     if FLATLIB_AVAILABLE:
         try:
-            sunrise_hour = _calculate_sunrise_approximation(latitude, longitude, target_date)
+            sunrise_hour = _calculate_sunrise_approximation(
+                latitude, longitude, target_date
+            )
             return datetime.combine(
                 target_date,
                 time(hour=int(sunrise_hour), minute=int((sunrise_hour % 1) * 60)),
@@ -54,7 +56,9 @@ def get_sunrise_time(
     return None
 
 
-def _calculate_sunrise_approximation(latitude: float, longitude: float, d: date) -> float:
+def _calculate_sunrise_approximation(
+    latitude: float, longitude: float, d: date
+) -> float:
     day_of_year = d.timetuple().tm_yday
     declination = 23.45 * math.sin(math.radians(360 * (284 + day_of_year) / 365))
     equation_of_time = 4 * math.sin(math.radians(360 * (day_of_year - 81) / 365))
@@ -88,4 +92,3 @@ def validate_coordinates(latitude: float, longitude: float) -> Tuple[bool, str]:
     if not (-180 <= longitude <= 180):
         return False, f"Longitude must be between -180 and 180 degrees, got {longitude}"
     return True, ""
-

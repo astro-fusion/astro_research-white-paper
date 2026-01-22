@@ -165,7 +165,7 @@ jobs:
         echo "Rendering manuscript to PDF..."
         cd use_cases/numerology/manuscripts
         quarto render manuscript.qmd --to pdf --pdf-engine lualatex
-        ls -la *.pdf
+        find . -name "*.pdf" -exec ls -la {} \;
 
     - name: Generate DOCX version
       run: |

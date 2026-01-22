@@ -12,4 +12,3 @@ while the core library lives in `vedic_astrology_core`.
 from .analysis import VedicNumerologyAstrology, analyze_birth_chart
 
 __all__ = ["VedicNumerologyAstrology", "analyze_birth_chart"]
-

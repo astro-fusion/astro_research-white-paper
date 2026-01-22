@@ -155,7 +155,7 @@ jobs:
         echo "Rendering manuscript with dynamic research content..."
         cd use_cases/numerology/manuscripts
         quarto render manuscript.qmd --to pdf --pdf-engine lualatex
-        ls -la *.pdf
+        find . -name "*.pdf" -exec ls -la {} \;
 
     - name: Generate additional research reports
       if: github.event.inputs.generate_reports == 'true' || github.event_name != 'workflow_dispatch'

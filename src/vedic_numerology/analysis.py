@@ -124,7 +124,9 @@ class VedicNumerologyAstrology:
             },
         }
 
-    def plot_dignity_analysis(self, planet: Union[Planet, str], use_plotly: bool = True) -> Any:
+    def plot_dignity_analysis(
+        self, planet: Union[Planet, str], use_plotly: bool = True
+    ) -> Any:
         return self._astro.plot_dignity_analysis(planet=planet, use_plotly=use_plotly)
 
     def plot_temporal_support(
@@ -161,7 +163,9 @@ class VedicNumerologyAstrology:
         df = compute_combined_series(today, end, step_days=1)
 
         mulanka_planet = self.calculate_mulanka()["planet"]
-        return plot_numerology_comparison(df, planet=mulanka_planet, use_plotly=use_plotly)
+        return plot_numerology_comparison(
+            df, planet=mulanka_planet, use_plotly=use_plotly
+        )
 
     def generate_report(self) -> str:
         mul = self.calculate_mulanka()
@@ -219,4 +223,3 @@ def analyze_birth_chart(
         timezone=timezone,
         ayanamsa_system=ayanamsa_system,
     )
-

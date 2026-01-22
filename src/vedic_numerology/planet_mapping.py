@@ -20,7 +20,9 @@ NUMBER_TO_PLANET: Dict[int, Planet] = {
     9: Planet.MARS,
 }
 
-PLANET_TO_NUMBER: Dict[Planet, int] = {planet: number for number, planet in NUMBER_TO_PLANET.items()}
+PLANET_TO_NUMBER: Dict[Planet, int] = {
+    planet: number for number, planet in NUMBER_TO_PLANET.items()
+}
 
 
 def get_planet_from_number(number: int) -> Planet:
@@ -35,4 +37,3 @@ def get_number_from_planet(planet: Planet) -> int:
 
 def get_planet_name(planet: Planet) -> str:
     return PLANET_NAMES[planet]
-
