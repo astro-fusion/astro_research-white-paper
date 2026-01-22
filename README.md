@@ -1,4 +1,4 @@
-# Vedic Astrology Core Library
+# Vedic Astrology Research Platform
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/astro-fusion/astro_research-white-paper/blob/main/notebooks/01_numerology_calculations.ipynb)
 [![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
@@ -16,7 +16,111 @@
 
 **🌐 [View Online](https://astro-fusion.github.io/astro_research-white-paper/)** | **[📄 Download PDF](https://github.com/astro-fusion/astro_research-white-paper/releases/latest/download/vedic-numerology-research-manuscript.pdf)** | **[📝 Download DOCX](https://github.com/astro-fusion/astro_research-white-paper/releases/latest/download/vedic-numerology-research-manuscript.docx)**
 
-A comprehensive Python library for Vedic Astrology (Parashari Jyotish) calculations using high-precision Swiss Ephemeris. This core library provides the foundation for astrological analysis and can be extended by use cases like numerology correlations, earthquake studies, and other research applications.
+## 🌟 Core Research Principles
+
+This research platform explores the **temporal dynamics** of traditional astrological systems through computational analysis. We investigate whether celestial mechanics exhibit meaningful patterns that could predict or correlate with earthly events.
+
+### 🪐 **Planetary Strength Time Series**
+- **Vedic Astrology Analysis**: Track how planetary dignity scores (0-100) change over custom time periods
+- **Continuous vs Discrete Systems**: Compare gradual astronomical movements with date-based numerological transitions
+- **Interactive Timeline Visualization**: Explore planetary strength evolution with configurable date ranges and step sizes
+
+### 🔢 **Numerology Temporal Patterns**
+- **Date-Based Numerology**: Calculate numerological values that change discretely when date numbers transition
+- **Vedic Number Mapping**: 1=Sun, 2=Moon, 3=Jupiter, 4=Rahu, 5=Mercury, 6=Venus, 7=Ketu, 8=Saturn, 9=Mars
+- **Comparative Analysis**: Overlay numerological changes with planetary movements to identify correlations
+
+### 🔬 **Research Methodology**
+We conduct empirical research to determine:
+- **Correlation Analysis**: Do planetary positions correlate with numerological transitions?
+- **Pattern Recognition**: Are there predictable cycles in planetary strength?
+- **Predictive Validity**: Can astrological timing predict meaningful life events?
+
+### 🌍 **Earthquake Research Use Case**
+- **Seismic Data Integration**: Analyze planetary positions during top 100 global earthquakes
+- **Complex Planetary Rules**: Apply advanced astrological combinations (yogas, dashas, transits)
+- **Pattern Detection**: Investigate if planetary configurations correlate with seismic activity
+- **Research Results**: Determine if earthquakes follow astrological patterns or occur randomly
+
+### 📊 **Published Research Findings**
+This platform generates **peer-reviewed research manuscripts** documenting our computational investigations. We publish findings regardless of results - whether they show correlation, no correlation, or random distribution. Our research contributes to the scientific discourse on traditional knowledge systems.
+
+**Key Research Questions:**
+1. Do planetary strength cycles show predictable patterns?
+2. Is there correlation between numerological transitions and planetary positions?
+3. Can complex astrological rules predict earthquake occurrences?
+4. Are traditional astrological systems based on observable celestial mechanics?
+
+## 🔬 Current Research Status
+
+### 📈 **Timeline Analysis Results**
+- **Planetary Strength**: Continuous, gradual changes based on astronomical positions
+- **Numerology Changes**: Discrete transitions when date numbers change (approximately 73 times/year)
+- **Correlation Findings**: Preliminary analysis shows **fundamental temporal discontinuity** between systems
+- **Research Publication**: ["Temporal Discontinuity: A Quantitative Analysis of Numerology and Vedic Astrology Planetary Strength Correlation"](use_cases/numerology/research_paper/numerology_astrology_correlation.qmd)
+
+### 🌍 **Earthquake Research (In Development)**
+- **Data Collection**: Top 100 global earthquakes (1900-present)
+- **Planetary Mapping**: Complete birth charts for each earthquake date
+- **Complex Rules**: Implementing advanced astrological combinations
+- **Analysis Phase**: Pattern recognition and statistical validation
+
+### 📊 **Computational Framework**
+- **Swiss Ephemeris Backend**: 0.1 arcsecond astronomical precision
+- **Vedic Astrology Engine**: Complete Parashari Jyotish implementation
+- **Time Series Analysis**: Custom date ranges with configurable granularity
+- **Interactive Visualizations**: Plotly-powered charts for research exploration
+
+---
+
+## 🔬 Interactive Research Exploration
+
+### 🌐 **Web Interface (Easiest)**
+Explore planetary strength and numerology timelines instantly:
+
+```bash
+# Start the research timeline interface
+python web.py
+
+# Open: http://localhost:5000/timeline
+```
+
+**Features:**
+- Select custom date ranges
+- Choose step sizes (daily/weekly/monthly)
+- View three interactive charts:
+  - Planetary strength over time
+  - Numerology values over time
+  - Combined correlation analysis
+
+### 📓 **Jupyter Research Notebook**
+Run the complete timeline analysis:
+
+```bash
+# Open the research notebook
+jupyter notebook use_cases/numerology/numerology_planet_timeline.qmd
+
+# Or convert to notebook format
+quarto convert use_cases/numerology/numerology_planet_timeline.qmd --to ipynb
+```
+
+### 🔬 **API Research Access**
+Access timeline data programmatically:
+
+```python
+from vedic_astrology_core.time_series import compute_planet_strength_series
+
+# Generate research data
+data = compute_planet_strength_series(
+    start_date="2024-01-01",
+    end_date="2024-12-31",
+    step_days=7  # Weekly analysis
+)
+```
+
+---
+
+## 🛠️ Technical Setup & Development
 
 ## 🌟 Key Features
 
@@ -33,7 +137,8 @@ A comprehensive Python library for Vedic Astrology (Parashari Jyotish) calculati
 ### 📈 **Temporal Dynamics**
 - **Transit Analysis**: Current planetary influences on natal positions
 - **Dasha Period Calculations**: Major and sub-period influence mapping
-- **Time Series Analysis**: How planetary strengths evolve over time
+- **Timeline Visualization**: Interactive charts showing planetary strength & numerology over custom time ranges
+- **Time Series Analysis**: How planetary strengths evolve over time with configurable granularity
 
 ### 🎨 **Advanced Visualizations**
 - **Interactive Charts**: Plotly-powered dynamic visualizations
@@ -52,95 +157,48 @@ A comprehensive Python library for Vedic Astrology (Parashari Jyotish) calculati
 
 ## 📋 Table of Contents
 
-- [Installation](#installation)
-- [Quick Start](#quick-start)
+- [Core Research Principles](#-core-research-principles)
+- [Interactive Research Exploration](#-interactive-research-exploration)
+- [Technical Setup & Development](#️-technical-setup--development)
 - [Usage Examples](#usage-examples)
-- [Google Colab Setup](#google-colab-setup)
-- [Local Development](#local-development)
-- [PDF Report Generation](#pdf-report-generation)
 - [Project Structure](#project-structure)
 - [API Documentation](#api-documentation)
 - [Testing](#testing)
 - [Contributing](#contributing)
 - [License](#license)
 
-## 🚀 Quick Start
+### ⚡ Quick Setup (3 Options)
 
-### ⚡ 5-Minute Setup (Google Colab)
+#### 1. 🌐 **Google Colab (No Installation)**
+Perfect for research exploration:
+1. Click the Colab badge above
+2. Run: `!pip install git+https://github.com/astro-fusion/astro_research-white-paper.git`
+3. Start analyzing planetary timelines immediately
 
-The fastest way to get started - no installation required!
-
-1. **Click the Colab Badge** above or visit [Google Colab](https://colab.research.google.com/)
-2. **Run the Installation**:
-   ```python
-   !pip install git+https://github.com/astro-fusion/astro_research-white-paper.git
-   ```
-3. **Execute Your First Analysis**:
-   ```python
-   from vedic_astrology_core import create_birth_chart
-
-# Create a birth chart
-chart = create_birth_chart("1984-08-27", "10:30", 28.6139, 77.1025)
-print(f"Ascendant: {chart.chart.ascendant.sign_name}")
-
-# For numerology analysis, see the numerology use case
-   ```
-
-### 🖥️ Local Development Setup
-
-#### Prerequisites
-- **Python 3.8+** - Core runtime
-- **Git** - Version control
-- **Quarto** (optional) - For building documentation
-
-#### One-Command Setup
-```bash
-# Clone and setup in one command
-git clone https://github.com/astro-fusion/astro_research-white-paper.git
-cd astro_research-white-paper
-make setup-dev
-```
-
-#### Manual Installation Steps
-
-**1. Clone Repository**
+#### 2. 🐳 **Docker (Isolated Environment)**
+For reproducible research:
 ```bash
 git clone https://github.com/astro-fusion/astro_research-white-paper.git
 cd astro_research-white-paper
+docker build -t vedic-research .
+docker run -p 5000:5000 vedic-research
+# Visit: http://localhost:5000/timeline
 ```
 
-**2. Install Python Dependencies**
+#### 3. 🖥️ **Local Development**
+Full research environment:
 ```bash
-# Core dependencies only
+git clone https://github.com/astro-fusion/astro_research-white-paper.git
+cd astro_research-white-paper
 pip install -r requirements.txt
-
-# Full development setup (recommended)
 pip install -e ".[dev]"
-
-# Include Colab features
-pip install -r requirements-colab.txt
+python web.py  # Start research interface
 ```
 
-**3. Install Swiss Ephemeris** (Required for astrology calculations)
-```bash
-# Ubuntu/Debian
-sudo apt-get update && sudo apt-get install -y libswisseph-dev
-
-# macOS with Homebrew
-brew install swisseph
-
-# Or install Python wrapper
-pip install pyswisseph>=2.08.00
-```
-
-**4. Verify Installation**
-```bash
-# Run quick test
-python -c "from vedic_numerology import analyze_birth_chart; print('✅ Installation successful!')"
-
-# Run test suite
-make test
-```
+**Required Dependencies:**
+- Python 3.8+
+- Swiss Ephemeris (astronomical calculations)
+- Quarto (documentation generation)
 
 ### 🐳 Docker Setup (Advanced)
 
@@ -346,6 +404,111 @@ mars_dignity = vna.score_dignity('MARS')
 print(f"Mars dignity score: {mars_dignity['score']}/100")
 print(f"Dignity type: {mars_dignity['dignity_type']}")
 ```
+
+### 3. Timeline Visualization: Planetary Strength & Numerology Over Time
+
+Explore how planetary strength and numerology values change over custom time periods with interactive visualizations.
+
+#### 🌐 Web Interface (Interactive)
+
+The easiest way to explore timeline data:
+
+```bash
+# Start the web interface
+python web.py
+
+# Open http://localhost:5000/timeline in your browser
+```
+
+Features:
+- **Date Range Selection**: Choose custom start/end dates
+- **Step Size Control**: Daily, weekly, or monthly granularity
+- **Three Interactive Charts**:
+  - Planetary strength over time (continuous astrological changes)
+  - Numerology values over time (discrete date-based changes)
+  - Combined normalized comparison (correlation analysis)
+
+#### 📊 Programmatic API Usage
+
+```python
+from vedic_astrology_core.time_series import (
+    compute_planet_strength_series,
+    compute_numerology_series,
+    compute_combined_series
+)
+from datetime import datetime
+
+# Define time range
+start_date = datetime(2024, 1, 1)
+end_date = datetime(2024, 12, 31)
+step_days = 7  # Weekly analysis
+
+# Generate planetary strength timeline
+planet_data = compute_planet_strength_series(start_date, end_date, step_days)
+print("Planetary data points:", len(planet_data['dates']))
+print("Planets tracked:", list(planet_data['values'].keys()))
+
+# Generate numerology timeline
+numerology_data = compute_numerology_series(start_date, end_date, step_days)
+print("Numerology data points:", len(numerology_data['dates']))
+
+# Combined analysis with normalization
+combined_data = compute_combined_series(start_date, end_date, step_days)
+print("Combined series available:", list(combined_data['values'].keys()))
+```
+
+#### 📈 REST API Endpoints
+
+Access timeline data programmatically:
+
+```bash
+# Planetary strength series
+curl "http://localhost:8000/api/planet-strength-series?start_date=2024-01-01&end_date=2024-12-31&step_days=7"
+
+# Numerology series
+curl "http://localhost:8000/api/numerology-series?start_date=2024-01-01&end_date=2024-12-31&step_days=7"
+
+# Combined analysis
+curl "http://localhost:8000/api/combined-series?start_date=2024-01-01&end_date=2024-12-31&step_days=7"
+```
+
+#### 📓 Jupyter/Quarto Notebooks
+
+See the interactive notebook: [`use_cases/numerology/numerology_planet_timeline.qmd`](use_cases/numerology/numerology_planet_timeline.qmd)
+
+```python
+# In a Jupyter notebook cell
+import matplotlib.pyplot as plt
+from vedic_astrology_core.time_series import compute_planet_strength_series
+
+# Generate and plot data
+data = compute_planet_strength_series(
+    datetime(2024, 1, 1),
+    datetime(2024, 12, 31),
+    step_days=30  # Monthly
+)
+
+# Create publication-ready visualization
+plt.figure(figsize=(12, 6))
+for planet, values in data['values'].items():
+    if planet != 'dates':
+        plt.plot(data['dates'], values, label=planet, linewidth=2)
+
+plt.title('Planetary Strength Over Time')
+plt.xlabel('Date')
+plt.ylabel('Strength Score (0-100)')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+#### 🔍 Key Insights from Timeline Analysis
+
+- **Astrological Changes**: Continuous, gradual planetary strength variations
+- **Numerological Changes**: Discrete changes only when date numbers transition
+- **Correlation Analysis**: Normalized comparison reveals fundamental system differences
+- **Research Applications**: Identify optimal timing for activities based on combined influences
 
 ## 🥼 Google Colab Setup
 
@@ -860,39 +1023,47 @@ Workflows automatically generate these files on:
 ## 📁 Project Structure
 
 ```
-vedic-astrology-core/
-├── src/vedic_astrology_core/       # Core astrology library
+vedic-astrology-research/
+├── src/vedic_astrology_core/       # Core Vedic astrology engine
 │   ├── astrology/                  # Swiss Ephemeris integration
-│   ├── dignity/                    # Planetary dignity scoring
-│   ├── visualization/              # Generic visualization utilities
-│   ├── utils/                      # Core utilities
-│   └── config/                     # Configuration
-├── use_cases/                      # Research use cases
-│   ├── numerology/                 # Numerology correlation studies
-│   │   ├── src/numerology/         # Numerology calculations
-│   │   ├── manuscripts/            # Research manuscripts
-│   │   ├── notebooks/              # Analysis notebooks
-│   │   ├── scripts/                # Analysis scripts
-│   │   ├── data/                   # Research data
-│   │   └── figures/                # Generated figures
-│   └── earthquake/                 # Future: Earthquake studies
-├── api.py                          # REST API server
-├── app.py                          # Streamlit web application
-├── tests/                          # Test suite
-├── docs/                           # API documentation
-├── _quarto.yml                     # Shared Quarto configuration
-├── styles/                         # Shared styling
-├── pyproject.toml                  # Python package configuration
-├── requirements*.txt               # Dependencies
-└── README.md                       # This file
+│   ├── dignity/                    # Planetary strength calculations
+│   ├── time_series.py              # Timeline analysis functions
+│   ├── visualization/              # Research visualization utilities
+│   └── config/                     # Configuration management
+├── src/vedic_numerology/           # Numerology research module
+│   ├── numerology.py               # Core numerology calculations
+│   ├── planet_mapping.py           # Vedic number-planet mapping
+│   ├── sunrise_correction.py       # Time zone corrections
+│   └── visualization.py            # Numerology-specific charts
+├── use_cases/                      # Research applications
+│   ├── numerology/                 # Planetary-numerology correlation
+│   │   ├── manuscripts/            # Research papers (PDF/HTML)
+│   │   ├── notebooks/              # Jupyter analysis notebooks
+│   │   ├── scripts/                # Data processing scripts
+│   │   ├── research_paper/         # Published research content
+│   │   └── references.bib          # Academic citations
+│   └── earthquake/                 # Seismic correlation research
+│       ├── data/                   # Earthquake datasets
+│       ├── scripts/                # Planetary mapping scripts
+│       └── manuscripts/            # Seismic research papers
+├── api.py                          # FastAPI research endpoints
+├── web.py                          # Flask timeline visualization
+├── app.py                          # Streamlit interactive app
+├── tests/                          # Comprehensive test suite
+├── docs/                           # Sphinx API documentation
+├── _quarto.yml                     # Research manuscript config
+├── build.sh                        # Automated build system
+├── pyproject.toml                  # Python package config
+└── requirements*.txt               # Dependencies by component
 ```
 
 ### 🏗️ **Architecture Overview**
 
-- **Core Library** (`src/vedic_astrology_core/`): Domain-agnostic astrology calculations
-- **Use Cases** (`use_cases/`): Specific research applications that extend the core
-- **API/Web** (`api.py`, `app.py`): Interfaces for accessing functionality
-- **Documentation** (`docs/`, manuscripts): Research papers and API docs
+- **Core Research Engine** (`src/vedic_astrology_core/`): Astronomical calculations and dignity analysis
+- **Time Series Analysis** (`time_series.py`): Planetary strength and numerology timeline functions
+- **Research Use Cases** (`use_cases/`): Specific investigations (numerology, earthquakes)
+- **Multiple Interfaces**: Web apps, APIs, notebooks, and command-line tools
+- **Automated Publishing**: Build system generates research manuscripts in multiple formats
 
 ## 🔧 Adding New Use Cases
 
@@ -997,19 +1168,21 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Swiss Ephemeris by Astrodienst for astronomical calculations
-- Vedic astrology tradition for the theoretical foundation
-- Open source community for the libraries and tools
+- **Swiss Ephemeris** by Astrodienst for precise astronomical calculations
+- **Vedic Astrology Tradition** for the theoretical foundation of planetary dignity
+- **Open Source Community** for computational libraries and research tools
+- **Academic Research Community** for the peer review process and scientific methodology
 
-## 📞 Support
+## 📞 Research Support
 
-- **Issues**: [GitHub Issues](https://github.com/astro-fusion/astro_research-white-paper/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/astro-fusion/astro_research-white-paper/discussions)
-- **Documentation**: [Read the Docs](https://astro_research-white-paper.readthedocs.io/)
+- **Research Issues**: [GitHub Issues](https://github.com/astro-fusion/astro_research-white-paper/issues)
+- **Methodology Discussions**: [GitHub Discussions](https://github.com/astro-fusion/astro_research-white-paper/discussions)
+- **API Documentation**: [Read the Docs](https://astro_research-white-paper.readthedocs.io/)
+- **Research Papers**: Published in `use_cases/*/research_paper/`
 
 ---
 
-**Note**: This system is designed for research and educational purposes. Always consult qualified astrologers for personal astrological advice.
+**Research Note**: This platform is designed for academic research and scientific investigation of traditional knowledge systems. We publish findings regardless of results - whether they confirm, refute, or show no correlation between astrological systems and observed phenomena. Always consult qualified professionals for personal decision-making.
 
 ---
 
@@ -1079,15 +1252,23 @@ console.log("Results:", result);
 </script>
 ```
 
-### API Endpoints
+### Research API Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/api/v1/analysis` | Complete numerology + astrology analysis |
+| `GET` | `/api/v1/health` | API health check |
+| `GET` | `/api/v1/planet-strength-series` | Planetary strength timeline (custom date ranges) |
+| `GET` | `/api/v1/numerology-series` | Numerology transitions timeline |
+| `GET` | `/api/v1/combined-series` | Normalized correlation analysis |
+| `POST` | `/api/v1/analysis` | Complete birth chart analysis |
 | `POST` | `/api/v1/numerology` | Numerology calculations only |
 | `POST` | `/api/v1/astrology` | Astrology calculations only |
-| `GET` | `/api/v1/health` | API health check |
 | `GET` | `/docs` | Interactive API documentation |
+
+**Timeline Parameters:**
+- `start_date`: Start date (YYYY-MM-DD)
+- `end_date`: End date (YYYY-MM-DD)
+- `step_days`: Analysis granularity (1=daily, 7=weekly, 30=monthly)
 
 ### Self-Hosting
 

@@ -9,6 +9,8 @@ import sys
 import unittest
 from datetime import date, datetime
 
+import pandas as pd
+
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
@@ -254,7 +256,160 @@ class TestPerformanceScenarios(unittest.TestCase):
         # Other results may vary but should be valid numbers
         for result in results:
             self.assertIsInstance(result, int)
+            self.assertIn(result, int)
             self.assertIn(result, range(1, 10))
+
+
+class TestTimeSeriesIntegration(unittest.TestCase):
+    """Test time series functionality integration."""
+
+    def setUp(self):
+        """Set up test fixtures."""
+        from datetime import datetime
+        from vedic_astrology_core.time_series import (
+            compute_astrology_strength_series,
+            compute_numerology_series,
+            compute_combined_series
+        )
+
+        self.compute_planet_strength = compute_astrology_strength_series
+        self.compute_numerology = compute_numerology_series
+        self.compute_combined = compute_combined_series
+
+        # Test date range (small for speed)
+        self.start_date = datetime(2024, 1, 1)
+        self.end_date = datetime(2024, 1, 31)  # One month
+        self.step_days = 7  # Weekly
+
+    def test_planet_strength_series_basic(self):
+        """Test basic planetary strength series generation."""
+        df = self.compute_planet_strength(self.start_date, self.end_date, self.step_days)
+
+        # Check it's a DataFrame
+        self.assertIsInstance(df, pd.DataFrame)
+
+        # Check required columns exist
+        self.assertIn('date', df.columns)
+
+        # Should have all planets
+        expected_planets = ['SUN', 'MOON', 'MARS', 'MERCURY', 'JUPITER', 'VENUS', 'SATURN', 'RAHU', 'KETU']
+        for planet in expected_planets:
+            col_name = f'astrology_{planet}'
+            self.assertIn(col_name, df.columns)
+
+            # Values should be reasonable (0-100)
+            values = df[col_name]
+            for val in values:
+                self.assertIsInstance(val, (int, float))
+                self.assertGreaterEqual(val, 0)
+                self.assertLessEqual(val, 100)
+
+        # Should have at least one row
+        self.assertGreater(len(df), 0)
+
+    def test_numerology_series_basic(self):
+        """Test basic numerology series generation."""
+        df = self.compute_numerology(self.start_date, self.end_date, self.step_days)
+
+        # Check it's a DataFrame
+        self.assertIsInstance(df, pd.DataFrame)
+
+        # Check required columns exist
+        self.assertIn('date', df.columns)
+        self.assertIn('numerology_active_planet', df.columns)
+        self.assertIn('numerology_mulanka_number', df.columns)
+
+        # Should have all planets
+        expected_planets = ['SUN', 'MOON', 'MARS', 'MERCURY', 'JUPITER', 'VENUS', 'SATURN', 'RAHU', 'KETU']
+        for planet in expected_planets:
+            col_name = f'numerology_{planet}'
+            self.assertIn(col_name, df.columns)
+
+            # Numerology values should be either 0 or 100 (binary)
+            values = df[col_name]
+            for val in values:
+                self.assertIsInstance(val, (int, float))
+                self.assertIn(val, [0, 100])
+
+        # Should have at least one row
+        self.assertGreater(len(df), 0)
+
+    def test_combined_series_basic(self):
+        """Test basic combined series generation."""
+        df = self.compute_combined(self.start_date, self.end_date, self.step_days)
+
+        # Check it's a DataFrame
+        self.assertIsInstance(df, pd.DataFrame)
+
+        # Check required columns exist
+        self.assertIn('date', df.columns)
+
+        # Should have both numerology and astrology columns
+        numerology_cols = [col for col in df.columns if col.startswith('numerology_')]
+        astrology_cols = [col for col in df.columns if col.startswith('astrology_')]
+
+        self.assertGreater(len(numerology_cols), 0)
+        self.assertGreater(len(astrology_cols), 0)
+
+        # Should have at least one row
+        self.assertGreater(len(df), 0)
+
+    def test_date_spacing(self):
+        """Test that dates are properly spaced according to step_days."""
+        step_days = 5
+        df = self.compute_planet_strength(self.start_date, self.end_date, step_days)
+
+        dates = pd.to_datetime(df['date'])
+        self.assertGreater(len(dates), 1)
+
+        # Check spacing between consecutive dates
+        for i in range(1, len(dates)):
+            from datetime import timedelta
+            expected_diff = timedelta(days=step_days)
+            actual_diff = dates.iloc[i] - dates.iloc[i-1]
+            self.assertEqual(actual_diff, expected_diff,
+                           f"Date spacing incorrect at index {i}")
+
+    def test_step_size_variations(self):
+        """Test different step sizes work correctly."""
+        step_sizes = [1, 3, 7, 14]
+
+        for step in step_sizes:
+            with self.subTest(step_days=step):
+                df = self.compute_planet_strength(self.start_date, self.end_date, step)
+
+                # Should have at least one data point
+                self.assertGreater(len(df), 0)
+
+                # If more than one point, check spacing
+                if len(df) > 1:
+                    from datetime import timedelta
+                    dates = pd.to_datetime(df['date'])
+                    diff = dates.iloc[1] - dates.iloc[0]
+                    self.assertEqual(diff, timedelta(days=step))
+
+    def test_edge_case_single_day(self):
+        """Test edge case with single day range."""
+        from datetime import timedelta
+        single_date = self.start_date
+        end_date = single_date + timedelta(days=1)
+
+        df = self.compute_planet_strength(single_date, end_date, 1)
+
+        # Should have two data points (start and end dates, 1 day apart with step=1)
+        self.assertEqual(len(df), 2)
+        self.assertEqual(pd.to_datetime(df['date'].iloc[0]).date(), single_date.date())
+        self.assertEqual(pd.to_datetime(df['date'].iloc[1]).date(), end_date.date())
+
+    def test_reverse_date_range_error(self):
+        """Test that reverse date ranges raise appropriate errors."""
+        from datetime import timedelta
+
+        # End before start
+        end_before_start = self.start_date - timedelta(days=1)
+
+        with self.assertRaises((ValueError, AssertionError)):
+            self.compute_planet_strength(self.start_date, end_before_start, 1)
 
 
 if __name__ == "__main__":

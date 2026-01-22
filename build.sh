@@ -61,7 +61,7 @@ install_dependencies() {
     log_info "Installing Python dependencies..."
 
     if [ -f "requirements.txt" ]; then
-        pip install -r requirements.txt
+        pip3 install -r requirements.txt
         log_success "Python dependencies installed"
     else
         log_warning "requirements.txt not found, skipping Python dependencies"

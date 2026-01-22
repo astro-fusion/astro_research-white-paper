@@ -29,57 +29,12 @@ license: "MIT"
 copyright: "© 2025 Norah Jones. All rights reserved."
 repository: "https://github.com/astro-fusion/numerology-white-paper"
 
-# Environment variables for numerology use case
-environment:
-  QUARTO_PROJECT_DIR: "."
-  PYTHONPATH: "../../../src:../src"
-
 format:
-  # Interactive HTML format for web publication
-  html:
-    theme:
-      light: cosmo
-      dark: darkly
-    toc: true
-    toc-depth: 3
-    toc-title: "Table of Contents"
-    number-sections: true
-    number-depth: 3
-    code-fold: true
-    code-tools:
-      source: true
-      toggle: true
-      caption: "Show code"
-    fig-cap-location: top
-    tbl-cap-location: top
-    comments:
-      hypothesis: true
-    embed-resources: true
-    self-contained: true
-    page-layout: article
-    grid:
-      sidebar-width: 250px
-      body-width: 900px
-      margin-width: 250px
-    fontsize: "1.1em"
-    linestretch: 1.6
-    link-external-newwindow: true
-    link-external-filter: '^(?:http:|https:)\/\/www\.astro-fusion\.com\/custom'
-    citations-hover: true
-    footnotes-hover: true
-    anchor-sections: true
-    smooth-scroll: true
-    css: styles/custom.css
-    # Interactive features
-    include-after-body:
-      - interactive-components.html
-
-  # PDF format for print publication
+  # Override PDF settings for manuscripts
   pdf:
-    documentclass: scrbook
+    documentclass: article
     classoption:
       - oneside
-      - openany
     geometry:
       - top=30mm
       - left=25mm
@@ -101,28 +56,8 @@ format:
     tbl-pos: 'H'
     pdf-engine: lualatex
     pdf-engine-opts: ["-shell-escape"]
-    include-in-header: styles/pdf-header.tex
-    include-before-body: styles/pdf-before-body.tex
-
-  # DOCX format for Microsoft Word compatibility
-  docx:
-    reference-doc: styles/reference.docx
-    number-sections: true
-    fig-cap-location: top
-    tbl-cap-location: top
-    toc: true
-    toc-depth: 3
-    highlight-style: github
-
-  # EPUB format for e-readers
-  epub:
-    cover-image: images/cover.png
-    number-sections: true
-    fig-cap-location: top
-    tbl-cap-location: top
-
-  # JATS format for academic publishing
-  jats: default
+    include-in-header: ../../../styles/pdf-header.tex
+    include-before-body: ../../../styles/pdf-before-body.tex
 
 # Cross-referencing configuration
 crossref:
@@ -155,28 +90,22 @@ jupyter: python3
 
 # Bibliography and citations
 bibliography:
-  - references.bib
-  - research_paper/references.bib
+  - ../../../use_cases/numerology/references.bib
 
-csl: styles/apa.csl
+csl: ../../../styles/apa.csl
 
 # Language and localization
 lang: en-US
 
 # Metadata for different formats
 metadata-files:
-  - styles/html-metadata.yml
-  - styles/pdf-metadata.yml
+  - ../../../styles/html-metadata.yml
+  - ../../../styles/pdf-metadata.yml
 
 # Custom filters and extensions
 filters:
-  - styles/conditional-content.lua
-  - styles/format-specific.lua
-
-# Environment variables
-environment:
-  QUARTO_PROJECT_DIR: "."
-  PYTHONPATH: "src"
+  - ../../../styles/conditional-content.lua
+  - ../../../styles/format-specific.lua
 
 
 

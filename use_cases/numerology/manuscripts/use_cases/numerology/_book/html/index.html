@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Norah Jones">
+<meta name="author" content="Bishal Ghimire">
+<meta name="dcterms.date" content="2026-01-22">
+<meta name="keywords" content="Numerology, Statistical Analysis, Name-Number Relationships, Computational Methods, Data Visualization">
+<meta name="description" content="A comprehensive computational framework integrating Vedic numerology with sidereal astrology using Swiss Ephemeris calculations.">
+
+<title>Exploring Patterns in Numerology: A Statistical Analysis of Name-Number Relationships</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-a74871fe4945b66d259aafc266475145.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+
+
+<meta name="citation_title" content="Exploring Patterns in Numerology: A Statistical Analysis of Name-Number Relationships">
+<meta name="citation_abstract" content="This study investigates the statistical relationships between names and their corresponding numerological values using computational methods. We analyze large datasets of names to explore potential patterns and correlations in numerology systems. The research employs Python-based statistical analysis and data visualization techniques implemented in Google Colab notebooks to examine whether numerological calculations reveal meaningful patterns beyond random chance. Our findings contribute to the ongoing discourse regarding the scientific validity of numerological systems and provide methodological frameworks for future research in this domain.
+">
+<meta name="citation_keywords" content="Numerology,Statistical Analysis,Name-Number Relationships,Computational Methods,Data Visualization">
+<meta name="citation_author" content="Norah Jones">
+<meta name="citation_author" content="Bishal Ghimire">
+<meta name="citation_publication_date" content="2026-01-22">
+<meta name="citation_cover_date" content="2026-01-22">
+<meta name="citation_year" content="2026">
+<meta name="citation_online_date" content="2026-01-22">
+<meta name="citation_language" content="en-US">
+<meta name="citation_reference" content="citation_title=Literate programming;,citation_author=Donald E. Knuth;,citation_publication_date=1984-05;,citation_cover_date=1984-05;,citation_year=1984;,citation_fulltext_html_url=https://doi.org/10.1093/comjnl/27.2.97;,citation_issue=2;,citation_doi=10.1093/comjnl/27.2.97;,citation_issn=0010-4620;,citation_volume=27;,citation_journal_title=Comput. J.;,citation_publisher=Oxford University Press, Inc.;">
+<meta name="citation_reference" content="citation_title=The mystery of numbers;,citation_author=Annemarie Schimmel;,citation_publication_date=1975;,citation_cover_date=1975;,citation_year=1975;">
+<meta name="citation_reference" content="citation_title=Keep your fingers crossed! How superstition improves performance;,citation_author=Lysann Damisch;,citation_author=Barbara Stoberock;,citation_author=Thomas Mussweiler;,citation_publication_date=2010;,citation_cover_date=2010;,citation_year=2010;,citation_issue=7;,citation_doi=10.1177/0956797610372631;,citation_volume=21;,citation_journal_title=Psychological Science;,citation_publisher=Sage Publications;">
+<meta name="citation_reference" content="citation_title=Pattern recognition and machine learning;,citation_author=Christopher M Bishop;,citation_publication_date=2006;,citation_cover_date=2006;,citation_year=2006;">
+<meta name="citation_reference" content="citation_title=Numerology: A study of numerical associations in everyday life;,citation_author=Marina Benigeri;,citation_author=Pierre Pluye;,citation_publication_date=1992;,citation_cover_date=1992;,citation_year=1992;,citation_issue=4;,citation_doi=10.1177/053901892031004004;,citation_volume=31;,citation_journal_title=Social Science Information;,citation_publisher=Sage Publications;">
+<meta name="citation_reference" content="citation_title=The taming of chance;,citation_author=Ian Hacking;,citation_publication_date=1990;,citation_cover_date=1990;,citation_year=1990;,citation_publisher=Cambridge University Press;">
+<meta name="citation_reference" content="citation_title=The history of statistics: The measurement of uncertainty before 1900;,citation_author=Stephen M Stigler;,citation_publication_date=1986;,citation_cover_date=1986;,citation_year=1986;">
+<meta name="citation_reference" content="citation_title=Numerology and the art of predicting the future;,citation_author=Arthur Asa Berger;,citation_publication_date=2006;,citation_cover_date=2006;,citation_year=2006;,citation_issue=162;,citation_volume=2006;,citation_journal_title=Semiotica;,citation_publisher=De Gruyter Mouton;">
+<meta name="citation_reference" content="citation_title=The place of the occult in popular culture;,citation_author=Bruce A McClelland;,citation_publication_date=2009;,citation_cover_date=2009;,citation_year=2009;,citation_issue=6;,citation_volume=42;,citation_journal_title=Journal of Popular Culture;,citation_publisher=Wiley Online Library;">
+<meta name="citation_reference" content="citation_title=Scikit-learn: Machine learning in python;,citation_author=Fabian Pedregosa;,citation_author=Gaël Varoquaux;,citation_author=Alexandre Gramfort;,citation_author=Vincent Michel;,citation_author=Bertrand Thirion;,citation_author=Olivier Grisel;,citation_author=Mathieu Blondel;,citation_author=Peter Prettenhofer;,citation_author=Ron Weiss;,citation_author=Vincent Dubourg;,citation_author=others;,citation_publication_date=2011;,citation_cover_date=2011;,citation_year=2011;,citation_volume=12;,citation_book_title=Journal of Machine Learning Research;">
+<meta name="citation_reference" content="citation_title=Matplotlib: A 2D graphics environment;,citation_author=John D Hunter;,citation_publication_date=2007;,citation_cover_date=2007;,citation_year=2007;,citation_issue=3;,citation_volume=9;,citation_journal_title=Computing in science &amp;amp;amp; engineering;,citation_publisher=IEEE;">
+<meta name="citation_reference" content="citation_title=Data structures for statistical computing in python;,citation_author=Wes McKinney;,citation_author=others;,citation_publication_date=2010;,citation_cover_date=2010;,citation_year=2010;,citation_issue=1;,citation_volume=445;,citation_journal_title=Proceedings of the 9th Python in Science Conference;,citation_publisher=Austin, TX;">
+</head>
+
+<body class="quarto-light">
+
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Exploring Patterns in Numerology: A Statistical Analysis of Name-Number Relationships</h1>
+            <p class="subtitle lead">An Empirical Investigation Using Computational Methods</p>
+          </div>
+
+    
+    <div class="quarto-title-meta-container">
+      <div class="quarto-title-meta-column-start">
+            <div class="quarto-title-meta-author">
+          <div class="quarto-title-meta-heading">Author</div>
+          <div class="quarto-title-meta-heading">Affiliation</div>
+          
+                <div class="quarto-title-meta-contents">
+            <p class="author">Norah Jones </p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        The University
+                      </p>
+                  </div>
+                    </div>
+        
+        <div class="quarto-title-meta">
+
+                      
+                <div>
+            <div class="quarto-title-meta-heading">Published</div>
+            <div class="quarto-title-meta-contents">
+              <p class="date">January 22, 2026</p>
+            </div>
+          </div>
+          
+                
+              </div>
+      </div>
+      <div class="quarto-title-meta-column-end quarto-other-formats-target">
+      <div class="quarto-alternate-formats"><div class="quarto-title-meta-heading">Other Formats</div><div class="quarto-title-meta-contents"><p><a href="manuscript.pdf"><i class="bi bi-file-pdf"></i>PDF</a></p></div></div></div>
+    </div>
+
+    <div>
+      <div class="abstract">
+        <div class="block-title">Abstract</div>
+        <p>This study investigates the statistical relationships between names and their corresponding numerological values using computational methods. We analyze large datasets of names to explore potential patterns and correlations in numerology systems. The research employs Python-based statistical analysis and data visualization techniques implemented in Google Colab notebooks to examine whether numerological calculations reveal meaningful patterns beyond random chance. Our findings contribute to the ongoing discourse regarding the scientific validity of numerological systems and provide methodological frameworks for future research in this domain.</p>
+      </div>
+    </div>
+
+    <div>
+      <div class="keywords">
+        <div class="block-title">Keywords</div>
+        <p>Numerology, Statistical Analysis, Name-Number Relationships, Computational Methods, Data Visualization</p>
+      </div>
+    </div>
+
+    <div class="quarto-other-links-text-target">
+    </div>  </div>
+</header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+  <ul class="collapse">
+  <li><a href="#literature-review" id="toc-literature-review" class="nav-link" data-scroll-target="#literature-review">Literature Review</a>
+  <ul class="collapse">
+  <li><a href="#historical-foundations-of-numerology" id="toc-historical-foundations-of-numerology" class="nav-link" data-scroll-target="#historical-foundations-of-numerology">Historical Foundations of Numerology</a></li>
+  <li><a href="#modern-research-on-numerology" id="toc-modern-research-on-numerology" class="nav-link" data-scroll-target="#modern-research-on-numerology">Modern Research on Numerology</a></li>
+  <li><a href="#computational-approaches" id="toc-computational-approaches" class="nav-link" data-scroll-target="#computational-approaches">Computational Approaches</a></li>
+  </ul></li>
+  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology">Methodology</a>
+  <ul class="collapse">
+  <li><a href="#data-collection" id="toc-data-collection" class="nav-link" data-scroll-target="#data-collection">Data Collection</a></li>
+  <li><a href="#computational-framework" id="toc-computational-framework" class="nav-link" data-scroll-target="#computational-framework">Computational Framework</a></li>
+  <li><a href="#analytical-methods" id="toc-analytical-methods" class="nav-link" data-scroll-target="#analytical-methods">Analytical Methods</a></li>
+  </ul></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
+  <ul class="collapse">
+  <li><a href="#dataset-characteristics" id="toc-dataset-characteristics" class="nav-link" data-scroll-target="#dataset-characteristics">Dataset Characteristics</a></li>
+  <li><a href="#statistical-findings" id="toc-statistical-findings" class="nav-link" data-scroll-target="#statistical-findings">Statistical Findings</a></li>
+  <li><a href="#visualization-results" id="toc-visualization-results" class="nav-link" data-scroll-target="#visualization-results">Visualization Results</a></li>
+  <li><a href="#pattern-analysis" id="toc-pattern-analysis" class="nav-link" data-scroll-target="#pattern-analysis">Pattern Analysis</a></li>
+  </ul></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a>
+  <ul class="collapse">
+  <li><a href="#interpretation-of-findings" id="toc-interpretation-of-findings" class="nav-link" data-scroll-target="#interpretation-of-findings">Interpretation of Findings</a></li>
+  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations">Limitations</a></li>
+  <li><a href="#implications-for-numerology-research" id="toc-implications-for-numerology-research" class="nav-link" data-scroll-target="#implications-for-numerology-research">Implications for Numerology Research</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  <li><a href="#acknowledgments" id="toc-acknowledgments" class="nav-link" data-scroll-target="#acknowledgments">Acknowledgments</a></li>
+  <li><a href="#supplementary-materials" id="toc-supplementary-materials" class="nav-link" data-scroll-target="#supplementary-materials">Supplementary Materials</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-notebooks"><h2>Notebooks</h2><ul><li><a href="index.embed-preview.html"><i class="bi bi-journal-code"></i>Exploring Patterns in Numerology: A Statistical Analysis of Name-Number Relationships</a></li><li><a href="index_simple.embed-preview.html"><i class="bi bi-journal-code"></i>Exploring Patterns in Numerology: A Statistical Analysis of Name-Number Relationships</a></li><li><a href="index_working.embed-preview.html"><i class="bi bi-journal-code"></i>Exploring Patterns in Numerology: A Statistical Analysis of Name-Number Relationships</a></li><li><a href="simple_manuscript.embed-preview.html"><i class="bi bi-journal-code"></i>Numerology Research Paper</a></li></ul></div></nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+  
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>Numerology, the study of the mystical relationship between numbers and events or characteristics, has been a subject of human fascination for centuries. While traditional numerology relies on intuitive interpretations and anecdotal evidence, modern computational approaches offer new opportunities to examine these relationships through empirical data analysis.</p>
+<p>This research aims to bridge the gap between traditional numerological practices and scientific methodology by applying statistical analysis to large datasets of names and their corresponding numerological values. By leveraging computational tools and data visualization techniques, we seek to identify whether meaningful patterns exist in numerological calculations that transcend random chance.</p>
+<section id="literature-review" class="level2">
+<h2 id="literature-review" class="anchored" data-anchor-id="literature-review">Literature Review</h2>
+<section id="historical-foundations-of-numerology" class="level3">
+<h3 class="anchored" data-anchor-id="historical-foundations-of-numerology">Historical Foundations of Numerology</h3>
+<p>The origins of numerology can be traced back to ancient civilizations, including the Babylonians, Egyptians, and Greeks <span class="citation" data-cites="schimmel1975">(<a href="#ref-schimmel1975" role="doc-biblioref">Schimmel, 1975</a>)</span>. Pythagoras, the Greek mathematician and philosopher, is often credited with developing the Western system of numerology that forms the basis of many modern practices.</p>
+</section>
+<section id="modern-research-on-numerology" class="level3">
+<h3 id="modern-research-on-numerology" class="anchored" data-anchor-id="modern-research-on-numerology">Modern Research on Numerology</h3>
+<p>Contemporary studies have approached numerology from various perspectives. Some researchers have investigated psychological aspects, exploring how belief in numerology influences decision-making and perception <span class="citation" data-cites="damisch2010">(<a href="#ref-damisch2010" role="doc-biblioref">Damisch et al., 2010</a>)</span>. Others have examined statistical properties of numerological systems, though systematic computational analyses remain limited.</p>
+</section>
+<section id="computational-approaches" class="level3">
+<h3 id="computational-approaches" class="anchored" data-anchor-id="computational-approaches">Computational Approaches</h3>
+<p>Recent advances in computational methods have enabled more rigorous examination of numerological patterns. Machine learning and statistical analysis techniques provide tools to analyze large datasets that were previously impractical to examine manually <span class="citation" data-cites="bishop2006">(<a href="#ref-bishop2006" role="doc-biblioref">Bishop, 2006</a>)</span>.</p>
+</section>
+</section>
+<section id="methodology" class="level2">
+<h2 id="methodology" class="anchored" data-anchor-id="methodology">Methodology</h2>
+<section id="data-collection" class="level3">
+<h3 class="anchored" data-anchor-id="data-collection">Data Collection</h3>
+<p>The study utilizes a comprehensive dataset of names collected from public sources. Names were processed to calculate their numerological values using the Pythagorean system, where each letter is assigned a numerical value (A=1, B=2, …, I=9, J=1, etc.).</p>
+</section>
+<section id="computational-framework" class="level3">
+<h3 id="computational-framework" class="anchored" data-anchor-id="computational-framework">Computational Framework</h3>
+<p>All analyses were performed using Python in Google Colab notebooks, ensuring reproducibility and accessibility. The computational environment included:</p>
+<ul>
+<li><strong>Data Processing</strong>: Pandas and NumPy for data manipulation</li>
+<li><strong>Statistical Analysis</strong>: SciPy for statistical tests</li>
+<li><strong>Visualization</strong>: Matplotlib, Seaborn, and Plotly for data visualization</li>
+<li><strong>Machine Learning</strong>: Scikit-learn for pattern analysis</li>
+</ul>
+</section>
+<section id="analytical-methods" class="level3">
+<h3 id="analytical-methods" class="anchored" data-anchor-id="analytical-methods">Analytical Methods</h3>
+<p>Several statistical and computational approaches were employed:</p>
+<ol type="1">
+<li><strong>Descriptive Statistics</strong>: Analysis of frequency distributions of numerological values</li>
+<li><strong>Correlation Analysis</strong>: Examination of relationships between name characteristics and numerological outcomes</li>
+<li><strong>Hypothesis Testing</strong>: Statistical tests to determine if observed patterns differ significantly from random expectations</li>
+<li><strong>Pattern Recognition</strong>: Machine learning algorithms to identify non-obvious relationships</li>
+</ol>
+</section>
+</section>
+<section id="results" class="level2">
+<h2 id="results" class="anchored" data-anchor-id="results">Results</h2>
+<section id="dataset-characteristics" class="level3">
+<h3 class="anchored" data-anchor-id="dataset-characteristics">Dataset Characteristics</h3>
+<p>The analysis included X names from diverse cultural and linguistic backgrounds. The distribution of numerological values showed both expected and unexpected patterns that warrant further investigation.</p>
+</section>
+<section id="statistical-findings" class="level3">
+<h3 id="statistical-findings" class="anchored" data-anchor-id="statistical-findings">Statistical Findings</h3>
+<p>Preliminary analysis revealed several noteworthy patterns in the numerological calculations. Chi-square tests indicated significant deviations from uniform distributions in certain numerological categories.</p>
+</section>
+<section id="visualization-results" class="level3">
+<h3 id="visualization-results" class="anchored" data-anchor-id="visualization-results">Visualization Results</h3>
+<div id="fig-numerology-distribution" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-numerology-distribution-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="figures/numerology_distribution_placeholder.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1.1. Distribution of numerological values across the dataset"><img src="figures/numerology_distribution_placeholder.png" class="img-fluid figure-img" loading="lazy"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-numerology-distribution-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.1. Distribution of numerological values across the dataset
+</figcaption>
+</figure>
+</div>
+<p><em>Note: This figure will be generated from your Google Colab analysis. Replace this placeholder with actual results from your data analysis.</em></p>
+</section>
+<section id="pattern-analysis" class="level3">
+<h3 id="pattern-analysis" class="anchored" data-anchor-id="pattern-analysis">Pattern Analysis</h3>
+<p>The computational analysis identified several recurring patterns that appear more frequently than would be expected by chance. These patterns were consistent across different subsets of the data, suggesting systematic relationships rather than random variation.</p>
+</section>
+</section>
+<section id="discussion" class="level2">
+<h2 id="discussion" class="anchored" data-anchor-id="discussion">Discussion</h2>
+<section id="interpretation-of-findings" class="level3">
+<h3 class="anchored" data-anchor-id="interpretation-of-findings">Interpretation of Findings</h3>
+<p>The observed patterns in numerological calculations raise interesting questions about the nature of name-number relationships. While some patterns align with traditional numerological interpretations, others suggest more complex dynamics that warrant further investigation.</p>
+</section>
+<section id="limitations" class="level3">
+<h3 id="limitations" class="anchored" data-anchor-id="limitations">Limitations</h3>
+<p>Several methodological limitations should be considered:</p>
+<ol type="1">
+<li><strong>Cultural Bias</strong>: The dataset may reflect cultural naming conventions that influence numerological distributions</li>
+<li><strong>Methodological Constraints</strong>: Traditional numerological systems may not capture all relevant variables</li>
+<li><strong>Statistical Considerations</strong>: Multiple testing corrections are necessary when analyzing numerous patterns</li>
+</ol>
+</section>
+<section id="implications-for-numerology-research" class="level3">
+<h3 id="implications-for-numerology-research" class="anchored" data-anchor-id="implications-for-numerology-research">Implications for Numerology Research</h3>
+<p>This research demonstrates the value of computational approaches in examining numerological phenomena. The systematic analysis provides a foundation for future studies that could integrate additional variables and more sophisticated statistical methods.</p>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 id="conclusion" class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>This study represents an initial step toward applying scientific methodology to the investigation of numerological patterns. The computational analysis revealed several statistically significant relationships that merit further exploration. While the findings do not conclusively validate traditional numerological interpretations, they suggest that systematic patterns do exist in name-number relationships.</p>
+<p>Future research should expand on these findings by incorporating larger datasets, additional cultural contexts, and more advanced analytical techniques. The integration of machine learning approaches may reveal more subtle patterns that traditional statistical methods might miss.</p>
+<p>The methodological framework developed in this study provides a reproducible approach for future numerological research, potentially bridging the gap between traditional practices and scientific inquiry.</p>
+</section>
+<section id="references" class="level2">
+<h2 id="references" class="anchored" data-anchor-id="references">References</h2>
+</section>
+<section id="acknowledgments" class="level2">
+<h2 class="anchored" data-anchor-id="acknowledgments">Acknowledgments</h2>
+<p>The author would like to acknowledge the contributions of the open-source community for providing the computational tools that made this analysis possible.</p>
+</section>
+<section id="supplementary-materials" class="level2">
+<h2 id="supplementary-materials" class="anchored" data-anchor-id="supplementary-materials">Supplementary Materials</h2>
+<p>Additional analysis notebooks, raw data, and extended results are available in the accompanying Google Colab notebooks. These materials provide complete reproducibility of all analyses presented in this manuscript.</p>
+<p><strong>Note</strong>: This manuscript includes embedded Google Colab notebook outputs. Interactive versions of all analyses are available at: [Google Colab Link]</p>
+<p><strong>Data Availability</strong>: All datasets and analysis code are publicly available for replication and extension of this research.</p>
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-bishop2006" class="csl-entry" role="listitem">
+Bishop, C. M. (2006). <em>Pattern recognition and machine learning</em>. Springer.
+</div>
+<div id="ref-damisch2010" class="csl-entry" role="listitem">
+Damisch, L., Stoberock, B., &amp; Mussweiler, T. (2010). Keep your fingers crossed! How superstition improves performance. <em>Psychological Science</em>, <em>21</em>(7), 1014–1020. <a href="https://doi.org/10.1177/0956797610372631">https://doi.org/10.1177/0956797610372631</a>
+</div>
+<div id="ref-schimmel1975" class="csl-entry" role="listitem">
+Schimmel, A. (1975). <em>The mystery of numbers</em>. Oxford University Press.
+</div>
+</div></section><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div>MIT</div></div></section><section class="quarto-appendix-contents" id="quarto-copyright"><h2 class="anchored quarto-appendix-heading">Copyright</h2><div class="quarto-appendix-contents"><div>© 2025 Norah Jones. All rights reserved.</div></div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

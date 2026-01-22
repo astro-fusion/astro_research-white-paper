@@ -16,7 +16,7 @@ keywords:
   - Name-Number Relationships
   - Computational Methods
   - Data Visualization
-bibliography: references.bib
+bibliography: ../../../use_cases/numerology/references.bib
 ---
 
 # Introduction
