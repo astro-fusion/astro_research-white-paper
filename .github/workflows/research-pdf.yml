@@ -228,7 +228,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: research-manuscript-pdf
-        path: use_cases/numerology/manuscripts/manuscript.pdf
+        path: use_cases/numerology/manuscripts/_book/manuscript.pdf
 
     - name: Upload research data and reports
       uses: actions/upload-artifact@v4
@@ -245,5 +245,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: github-pages-pdf
-        path: use_cases/numerology/manuscripts/manuscript.pdf
+        path: use_cases/numerology/manuscripts/_book/manuscript.pdf
         retention-days: 30

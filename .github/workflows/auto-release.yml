@@ -271,7 +271,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./use_cases/numerology/manuscripts/manuscript.pdf
+        asset_path: ./use_cases/numerology/manuscripts/_book/manuscript.pdf
         asset_name: vedic-numerology-research-manuscript.pdf
         asset_content_type: application/pdf
 
@@ -281,7 +281,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./use_cases/numerology/manuscripts/manuscript.docx
+        asset_path: ./use_cases/numerology/manuscripts/_book/manuscript.docx
         asset_name: vedic-numerology-research-manuscript.docx
         asset_content_type: application/vnd.openxmlformats-officedocument.wordprocessingml.document
 
@@ -291,7 +291,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./use_cases/numerology/manuscripts/manuscript.html
+        asset_path: ./use_cases/numerology/manuscripts/_book/index.html
         asset_name: vedic-numerology-research-manuscript.html
         asset_content_type: text/html
 

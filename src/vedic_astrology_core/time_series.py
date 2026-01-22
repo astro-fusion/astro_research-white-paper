@@ -20,7 +20,6 @@ from .astrology import EphemerisEngine
 from .config.constants import Planet
 from .dignity import DignityScorer
 
-
 DateLike = Union[str, date, datetime]
 
 
