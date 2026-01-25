@@ -1,0 +1,435 @@
+name: Build & Deploy Research Platform
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - 'docs/**'
+      - 'use_cases/**'
+      - 'scripts/**'
+      - 'README.md'
+      - 'ARCHITECTURE.md'
+      - '.github/workflows/build-deploy.yml'
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Step 1: Test with Sample Data
+  test-sample-data:
+    runs-on: ubuntu-latest
+    name: Test with Sample Earthquake Data
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential wget
+          # Install Swiss Ephemeris from source
+          wget -q http://www.astro.com/ftp/swisseph/swe_unix_src_2.10.03.tar.gz
+          tar -xzf swe_unix_src_2.10.03.tar.gz
+          cd swe_unix_src_2.10.03/src
+          make libswe.a
+          sudo make install
+          cd ../..
+          rm -rf swe_unix_src_2.10.03*
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r config/requirements/requirements.txt
+          pip install pyswisseph>=2.08.00
+
+      - name: Test earthquake analysis with sample data
+        run: |
+          echo "🔬 Testing earthquake-planetary correlation analysis..."
+          python use_cases/earthquake/scripts/earthquake_planetary_analysis.py
+          echo "✅ Sample data test completed!"
+          
+          # Check if results were generated
+          if [ -f "use_cases/earthquake/data/earthquake_planetary_correlation_analysis.json" ]; then
+            echo "✅ Analysis results generated successfully"
+            echo "📊 Result file size: $(du -h use_cases/earthquake/data/earthquake_planetary_correlation_analysis.json | cut -f1)"
+          else
+            echo "⚠️ Analysis results not found"
+          fi
+
+  # Step 2: Build Documentation Site
+  build:
+    needs: test-sample-data
+    runs-on: ubuntu-latest
+    name: Build Documentation Site
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Setup Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          tinytex: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r config/requirements/requirements.txt
+
+      - name: Build documentation structure
+        run: |
+          echo "📖 Building documentation site..."
+          
+          # Create site structure
+          mkdir -p _site/{docs,reports,visualizations,data,downloads}
+          
+          # Copy documentation
+          echo "📋 Copying documentation..."
+          cp -r docs/* _site/docs/ 2>/dev/null || true
+          
+          # Copy reports
+          echo "📄 Copying reports..."
+          find . -name "*.pdf" -type f ! -path "./.git/*" -exec cp {} _site/reports/ \; 2>/dev/null || true
+          
+          # Copy visualizations
+          echo "📊 Copying visualizations..."
+          find . -name "*.html" -type f ! -path "./.git/*" ! -path "./_site/*" -exec cp {} _site/visualizations/ \; 2>/dev/null || true
+          
+          # Copy analysis results
+          echo "📈 Copying analysis results..."
+          find use_cases -name "*.json" -type f ! -path "*/node_modules/*" -exec cp {} _site/data/ \; 2>/dev/null || true
+          
+          echo "✅ Documentation structure built"
+
+      - name: Create main documentation index
+        run: |
+          cat > _site/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Astro-Research Platform - Documentation Hub</title>
+              <style>
+                  * { margin: 0; padding: 0; box-sizing: border-box; }
+                  body {
+                      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                      min-height: 100vh;
+                      padding: 20px;
+                  }
+                  .container {
+                      max-width: 1200px;
+                      margin: 0 auto;
+                      background: white;
+                      border-radius: 12px;
+                      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                      overflow: hidden;
+                  }
+                  header {
+                      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                      color: white;
+                      padding: 40px;
+                      text-align: center;
+                  }
+                  header h1 { font-size: 2.5em; margin-bottom: 10px; }
+                  header p { font-size: 1.1em; opacity: 0.9; }
+                  .content { padding: 40px; }
+                  .section {
+                      margin-bottom: 40px;
+                  }
+                  .section h2 {
+                      font-size: 1.8em;
+                      color: #667eea;
+                      margin-bottom: 20px;
+                      border-bottom: 3px solid #667eea;
+                      padding-bottom: 10px;
+                  }
+                  .grid {
+                      display: grid;
+                      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                      gap: 20px;
+                      margin-bottom: 30px;
+                  }
+                  .card {
+                      background: #f8f9fa;
+                      border: 1px solid #e9ecef;
+                      border-radius: 8px;
+                      padding: 20px;
+                      transition: all 0.3s ease;
+                  }
+                  .card:hover {
+                      background: white;
+                      border-color: #667eea;
+                      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
+                      transform: translateY(-5px);
+                  }
+                  .card h3 {
+                      color: #333;
+                      margin-bottom: 10px;
+                      font-size: 1.2em;
+                  }
+                  .card p {
+                      color: #666;
+                      font-size: 0.95em;
+                      line-height: 1.5;
+                      margin-bottom: 15px;
+                  }
+                  .card a {
+                      color: #667eea;
+                      text-decoration: none;
+                      font-weight: 500;
+                      display: inline-block;
+                      margin-top: 10px;
+                  }
+                  .card a:hover { text-decoration: underline; }
+                  .links-list {
+                      list-style: none;
+                  }
+                  .links-list li {
+                      margin-bottom: 12px;
+                      padding-left: 24px;
+                      position: relative;
+                  }
+                  .links-list li:before {
+                      content: "▸";
+                      position: absolute;
+                      left: 0;
+                      color: #667eea;
+                      font-weight: bold;
+                  }
+                  .links-list a {
+                      color: #667eea;
+                      text-decoration: none;
+                      font-weight: 500;
+                  }
+                  .links-list a:hover { text-decoration: underline; }
+                  footer {
+                      background: #f8f9fa;
+                      padding: 20px 40px;
+                      text-align: center;
+                      color: #666;
+                      border-top: 1px solid #e9ecef;
+                  }
+                  .status {
+                      display: inline-block;
+                      padding: 4px 12px;
+                      border-radius: 20px;
+                      font-size: 0.85em;
+                      font-weight: 600;
+                      margin-left: 10px;
+                  }
+                  .status.complete { background: #d4edda; color: #155724; }
+                  .status.ready { background: #cfe2ff; color: #084298; }
+                  .status.planned { background: #fff3cd; color: #856404; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <header>
+                      <h1>🌟 Astro-Research Platform</h1>
+                      <p>Data-Driven Analysis of Vedic Astrology & Planetary Correlations</p>
+                  </header>
+                  <div class="content">
+                      <!-- Start Here Section -->
+                      <div class="section">
+                          <h2>🚀 Start Here</h2>
+                          <div class="grid">
+                              <div class="card">
+                                  <h3>Architecture Guide</h3>
+                                  <p>Comprehensive guide to the project structure, organization, and development workflow.</p>
+                                  <a href="docs/architecture/ARCHITECTURE.md">📖 Read Architecture Guide →</a>
+                              </div>
+                              <div class="card">
+                                  <h3>Quick Start</h3>
+                                  <p>Get started with the research platform in minutes with step-by-step instructions.</p>
+                                  <a href="docs/guides/QUICK_START_RESEARCH.md">▶️ Quick Start Guide →</a>
+                              </div>
+                              <div class="card">
+                                  <h3>Project Overview</h3>
+                                  <p>Complete overview of the reorganized project with new folder structure.</p>
+                                  <a href="docs/">📁 Documentation Hub →</a>
+                              </div>
+                          </div>
+                      </div>
+
+                      <!-- Documentation Section -->
+                      <div class="section">
+                          <h2>📚 Documentation</h2>
+                          <div class="grid">
+                              <div class="card">
+                                  <h3>User Guides</h3>
+                                  <p>Step-by-step guides for getting started, visualization, reporting, and deployment.</p>
+                                  <ul class="links-list">
+                                      <li><a href="docs/guides/QUICK_START_RESEARCH.md">Quick Start Research</a></li>
+                                      <li><a href="docs/guides/REAL_TIME_VISUALIZATION_GUIDE.md">Visualization Guide</a></li>
+                                      <li><a href="docs/guides/RESEARCH_REPORT_GUIDE.md">Report Generation</a></li>
+                                      <li><a href="docs/guides/API_DEPLOYMENT.md">API Deployment</a></li>
+                                  </ul>
+                              </div>
+                              <div class="card">
+                                  <h3>Research Findings</h3>
+                                  <p>Detailed research documentation and analysis results.</p>
+                                  <ul class="links-list">
+                                      <li><a href="docs/research/RESEARCH_DATA_REFERENCE.md">Data Reference</a></li>
+                                      <li><a href="docs/research/RESEARCH_PAPER_TEMPLATE.md">Paper Template</a></li>
+                                      <li><a href="docs/research/PLANETARY_STRENGTH_VISUALIZATION.md">Visualizations</a></li>
+                                      <li><a href="docs/research/RESEARCH_COMPLETION_SUMMARY.md">Completion Summary</a></li>
+                                  </ul>
+                              </div>
+                              <div class="card">
+                                  <h3>Framework & Design</h3>
+                                  <p>Technical architecture and framework documentation.</p>
+                                  <ul class="links-list">
+                                      <li><a href="docs/framework/MULTI_USE_CASE_FRAMEWORK.md">Multi-Use Case Framework</a></li>
+                                      <li><a href="docs/framework/EARTHQUAKE_DATA_INTEGRATION.md">Data Integration</a></li>
+                                      <li><a href="docs/framework/QUICK_REFERENCE_CARD.md">Quick Reference</a></li>
+                                      <li><a href="docs/framework/PROJECT_UPDATE_SUMMARY.md">Project Updates</a></li>
+                                  </ul>
+                              </div>
+                          </div>
+                      </div>
+
+                      <!-- Research Results Section -->
+                      <div class="section">
+                          <h2>📊 Research Results & Assets</h2>
+                          <div class="grid">
+                              <div class="card">
+                                  <h3>Reports</h3>
+                                  <p>Generated PDF research reports and analysis documents.</p>
+                                  <a href="reports/">📄 View PDF Reports →</a>
+                              </div>
+                              <div class="card">
+                                  <h3>Visualizations</h3>
+                                  <p>Interactive HTML dashboards and visualization outputs.</p>
+                                  <a href="visualizations/">📈 View Visualizations →</a>
+                              </div>
+                              <div class="card">
+                                  <h3>Analysis Data</h3>
+                                  <p>JSON data files from analysis runs and research computations.</p>
+                                  <a href="data/">💾 View Data Files →</a>
+                              </div>
+                          </div>
+                      </div>
+
+                      <!-- Use Cases Section -->
+                      <div class="section">
+                          <h2>🔬 Research Use Cases</h2>
+                          <div class="grid">
+                              <div class="card">
+                                  <h3>Numerology-Astrology <span class="status complete">✅ Complete</span></h3>
+                                  <p>Analysis of correlation between Vedic Astrology and Numerology systems.</p>
+                                  <p><strong>Finding:</strong> r ≈ 0.12 (independent systems)</p>
+                              </div>
+                              <div class="card">
+                                  <h3>Earthquake-Planetary <span class="status ready">🔄 Framework Ready</span></h3>
+                                  <p>Testing if planetary configurations correlate with earthquake occurrences.</p>
+                                  <p><strong>Status:</strong> Analysis engine ready, awaiting data</p>
+                              </div>
+                              <div class="card">
+                                  <h3>Weather/Climate <span class="status planned">⏳ Planned</span></h3>
+                                  <p>Analyze planetary patterns in weather and climate data.</p>
+                              </div>
+                              <div class="card">
+                                  <h3>Economics <span class="status planned">⏳ Planned</span></h3>
+                                  <p>Test planetary cycles with economic market data.</p>
+                              </div>
+                          </div>
+                      </div>
+
+                      <!-- Project Statistics -->
+                      <div class="section">
+                          <h2>📈 Project Statistics</h2>
+                          <div class="card">
+                              <table style="width: 100%; border-collapse: collapse;">
+                                  <tr style="border-bottom: 1px solid #e9ecef;">
+                                      <td style="padding: 10px;"><strong>Documentation Files</strong></td>
+                                      <td style="padding: 10px;">15 organized in docs/</td>
+                                  </tr>
+                                  <tr style="border-bottom: 1px solid #e9ecef;">
+                                      <td style="padding: 10px;"><strong>Scripts</strong></td>
+                                      <td style="padding: 10px;">5 organized in scripts/</td>
+                                  </tr>
+                                  <tr style="border-bottom: 1px solid #e9ecef;">
+                                      <td style="padding: 10px;"><strong>Source Modules</strong></td>
+                                      <td style="padding: 10px;">2 (API, Web) in src/</td>
+                                  </tr>
+                                  <tr style="border-bottom: 1px solid #e9ecef;">
+                                      <td style="padding: 10px;"><strong>Generated Reports</strong></td>
+                                      <td style="padding: 10px;">3 PDF files in assets/</td>
+                                  </tr>
+                                  <tr style="border-bottom: 1px solid #e9ecef;">
+                                      <td style="padding: 10px;"><strong>Visualizations</strong></td>
+                                      <td style="padding: 10px;">7+ HTML dashboards</td>
+                                  </tr>
+                                  <tr>
+                                      <td style="padding: 10px;"><strong>Use Cases</strong></td>
+                                      <td style="padding: 10px;">5 planned (1 complete, 1 ready)</td>
+                                  </tr>
+                              </table>
+                          </div>
+                      </div>
+                  </div>
+                  <footer>
+                      <p>🌟 Astro-Research Platform | Vedic Astrology Research | Data-Driven Analysis</p>
+                      <p>Built with <strong>Professional Architecture</strong> | Generated: January 2026</p>
+                  </footer>
+              </div>
+          </body>
+          </html>
+          EOF
+          echo "✅ Main index created"
+
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+
+  # Step 3: Deploy to GitHub Pages
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    name: Deploy to GitHub Pages
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Deployment Summary
+        run: |
+          echo "✅ Deployment to GitHub Pages completed!"
+          echo "📱 Your site is available at: ${{ steps.deployment.outputs.page_url }}"
+          echo ""
+          echo "📖 Documentation:"
+          echo "  - Architecture: ${{ steps.deployment.outputs.page_url }}docs/architecture/"
+          echo "  - Guides: ${{ steps.deployment.outputs.page_url }}docs/guides/"
+          echo "  - Reports: ${{ steps.deployment.outputs.page_url }}reports/"
+          echo "  - Visualizations: ${{ steps.deployment.outputs.page_url }}visualizations/"

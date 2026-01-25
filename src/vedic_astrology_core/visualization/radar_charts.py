@@ -78,6 +78,64 @@ def plot_dignity_radar(
 def plot_multi_planet_radar(
     chart: Any,
     planets: List[Planet],
+
+
+def plot_planetary_strength_numerology(
+    chart: Any,
+    planet_strengths: Dict[str, float],  # Dictionary of planet names and their strengths
+    numerology_values: Dict[str, float],  # Dictionary of numerology values
+    use_plotly: bool = True,
+) -> Any:
+    """
+    Create a radar chart showing planetary strengths and numerology values.
+
+    Args:
+        chart: BirthChart object with planetary data
+        planet_strengths: Dictionary of planet strengths
+        numerology_values: Dictionary of numerology values
+        use_plotly: Whether to use Plotly (interactive) or Matplotlib
+
+    Returns:
+        Plot object (Plotly figure or Matplotlib axes)
+    """
+    # Combine strengths and numerology values
+    labels = list(planet_strengths.keys()) + list(numerology_values.keys())
+    values = list(planet_strengths.values()) + list(numerology_values.values())
+
+    # Create a radar chart
+    if use_plotly and PLOTLY_AVAILABLE:
+        fig = go.Figure()
+        fig.add_trace(go.Scatterpolar(
+            r=values + [values[0]],  # Close the loop
+            theta=labels + [labels[0]],
+            fill='toself',
+            name='Strengths & Numerology',
+        ))
+        fig.update_layout(
+            polar=dict(
+                radialaxis=dict(
+                    visible=True,
+                    range=[0, 100],
+                )
+            ),
+            title='Planetary Strengths and Numerology Visualization',
+        )
+        return fig
+    else:
+        # Matplotlib implementation
+        num_vars = len(labels)
+        angles = np.linspace(0, 2 * np.pi, num_vars, endpoint=False).tolist()
+        values += values[:1]  # Close the loop
+        angles += angles[:1]
+
+        fig, ax = plt.subplots(figsize=(10, 8), subplot_kw=dict(polar=True))
+        ax.fill(angles, values, color='blue', alpha=0.25)
+        ax.set_yticklabels([])
+        ax.set_xticks(angles[:-1])
+        ax.set_xticklabels(labels)
+        ax.set_title('Planetary Strengths and Numerology Visualization')
+        return ax
+
     factors: Optional[List[str]] = None,
     use_plotly: bool = True,
 ) -> Any:

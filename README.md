@@ -75,7 +75,81 @@ This platform generates **peer-reviewed research manuscripts** documenting our c
 
 ---
 
-## 🔬 Interactive Research Exploration
+---
+
+## 📁 Project Organization
+
+This project follows a **clean, professional architecture** for scalability and maintainability:
+
+```
+astro-research/
+├── 📖 docs/                    # All documentation
+│   ├── guides/                 # User guides & setup
+│   ├── research/               # Research findings
+│   ├── framework/              # Framework documentation
+│   └── architecture/           # System design
+├── 🔨 scripts/                 # Build & utility scripts
+│   ├── build/                  # Build automation
+│   └── generate/               # Data generation
+├── 🌐 src/                     # Source code
+│   ├── api/                    # REST API
+│   └── web/                    # Web application
+├── ⚙️ config/                  # Configuration files
+│   └── requirements/           # Dependencies
+├── 📊 assets/                  # Generated outputs
+│   ├── reports/                # PDF reports
+│   ├── visualizations/         # HTML dashboards
+│   └── data/                   # Analysis results
+├── 🔬 use_cases/               # Research implementations
+│   ├── numerology/             # ✅ Complete
+│   └── earthquake/             # 🔄 Framework ready
+└── 🧪 tests/                   # Test suite
+```
+
+**For a detailed guide on the project structure, see:** [ARCHITECTURE.md](ARCHITECTURE.md) or [REORGANIZATION_VISUAL_GUIDE.md](REORGANIZATION_VISUAL_GUIDE.md)
+
+---
+
+## � Documentation Navigation
+
+### 🚀 **Quick Links - Start Here**
+| Resource | Purpose | Link |
+|----------|---------|------|
+| **Architecture Guide** | Complete system design | [ARCHITECTURE.md](ARCHITECTURE.md) |
+| **Quick Start** | Getting started in 5 minutes | [docs/guides/QUICK_START_RESEARCH.md](docs/guides/QUICK_START_RESEARCH.md) |
+| **Project Structure** | Understanding the new organization | [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) |
+| **Reorganization Summary** | What changed and why | [FINAL_REORGANIZATION_REPORT.md](FINAL_REORGANIZATION_REPORT.md) |
+
+### 📚 **User Guides** (docs/guides/)
+- [QUICK_START_RESEARCH.md](docs/guides/QUICK_START_RESEARCH.md) - Getting started guide
+- [REAL_TIME_VISUALIZATION_GUIDE.md](docs/guides/REAL_TIME_VISUALIZATION_GUIDE.md) - Interactive visualization tutorial
+- [RESEARCH_REPORT_GUIDE.md](docs/guides/RESEARCH_REPORT_GUIDE.md) - How to generate research reports
+- [API_DEPLOYMENT.md](docs/guides/API_DEPLOYMENT.md) - API deployment instructions
+
+### 🔬 **Research Documentation** (docs/research/)
+- [RESEARCH_DATA_REFERENCE.md](docs/research/RESEARCH_DATA_REFERENCE.md) - Data and findings reference
+- [RESEARCH_PAPER_TEMPLATE.md](docs/research/RESEARCH_PAPER_TEMPLATE.md) - Paper template for publications
+- [PLANETARY_STRENGTH_VISUALIZATION.md](docs/research/PLANETARY_STRENGTH_VISUALIZATION.md) - Visualization specifications
+- [RESEARCH_COMPLETION_SUMMARY.md](docs/research/RESEARCH_COMPLETION_SUMMARY.md) - Project completion status
+
+### 🏗️ **Framework & Architecture** (docs/framework/)
+- [MULTI_USE_CASE_FRAMEWORK.md](docs/framework/MULTI_USE_CASE_FRAMEWORK.md) - Multi-use case framework design
+- [EARTHQUAKE_DATA_INTEGRATION.md](docs/framework/EARTHQUAKE_DATA_INTEGRATION.md) - Data integration guide
+- [QUICK_REFERENCE_CARD.md](docs/framework/QUICK_REFERENCE_CARD.md) - Quick reference for developers
+- [PROJECT_UPDATE_SUMMARY.md](docs/framework/PROJECT_UPDATE_SUMMARY.md) - Latest project updates
+
+### 🎯 **Governance & Contribution** (docs/)
+- [INDEX.md](docs/INDEX.md) - Documentation index and navigation
+- [CONTRIBUTING.md](docs/CONTRIBUTING.md) - Contribution guidelines
+
+### 🚀 **Deployment & CI/CD**
+- [GITHUB_PAGES_DEPLOYMENT.md](GITHUB_PAGES_DEPLOYMENT.md) - GitHub Pages setup and workflow
+- [USGS_EARTHQUAKE_DATA_GUIDE.md](USGS_EARTHQUAKE_DATA_GUIDE.md) - Getting real earthquake data
+- [.github/workflows/build-deploy.yml](.github/workflows/build-deploy.yml) - GitHub Actions workflow
+
+---
+
+## �🔬 Interactive Research Exploration
 
 ### 🌐 **Web Interface (Easiest)**
 Explore planetary strength and numerology timelines instantly:

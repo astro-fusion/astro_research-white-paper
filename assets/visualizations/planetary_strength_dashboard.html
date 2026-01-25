@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vedic Astrology & Numerology Real-Time Strength Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            padding: 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .card-header h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .card-header p {
+            font-size: 0.95em;
+            opacity: 0.95;
+            line-height: 1.5;
+        }
+
+        .card-content {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-description {
+            margin-bottom: 20px;
+            color: #333;
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+
+        .features-list {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .features-list li {
+            padding: 8px 0;
+            color: #666;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+        }
+
+        .features-list li:before {
+            content: "✓";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .data-info {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .data-info strong {
+            color: #333;
+        }
+
+        .info-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            color: #333;
+        }
+
+        .info-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .info-section h3 {
+            color: #764ba2;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .info-section p {
+            line-height: 1.7;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .strength-zones {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .strength-zone {
+            padding: 20px;
+            border-radius: 6px;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .zone-excellent {
+            background: #2ecc71;
+        }
+
+        .zone-good {
+            background: #3498db;
+        }
+
+        .zone-weak {
+            background: #f39c12;
+        }
+
+        .zone-poor {
+            background: #e74c3c;
+        }
+
+        .planet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .planet-item {
+            text-align: center;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .planet-name {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .planet-number {
+            font-size: 1.3em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .timestamp {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .info-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌙 Vedic Astrology & Numerology Dashboard 🌙</h1>
+            <p>Real-Time Planetary Strength & Numerology Visualization System</p>
+            <div class="timestamp">Last Generated: January 25, 2026</div>
+        </header>
+
+        <div class="dashboard">
+            <!-- Card 1: Planetary Strength Timeline -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>📊 Planetary Strength Timeline</h2>
+                    <p>1-Year Comprehensive Overview</p>
+                </div>
+                <div class="card-content">
+                    <div class="card-description">
+                        Track how the strength of all nine Vedic planets fluctuates throughout the year. See daily variations, identify strength peaks, and plan important decisions during favorable periods.
+                    </div>
+                    <ul class="features-list">
+                        <li>All 9 Navagraha planets displayed</li>
+                        <li>Daily strength variations</li>
+                        <li>Support zone indicators</li>
+                        <li>Interactive hover tooltips</li>
+                        <li>Zoom and pan controls</li>
+                    </ul>
+                    <div class="data-info">
+                        <strong>Data Points:</strong> 365 days<br>
+                        <strong>Planets:</strong> SUN, MOON, MARS, MERCURY, JUPITER, VENUS, SATURN, RAHU, KETU<br>
+                        <strong>Update Frequency:</strong> Daily
+                    </div>
+                    <a href="planetary_strength_timeline.html" class="btn btn-full">View Timeline Chart →</a>
+                </div>
+            </div>
+
+            <!-- Card 2: Numerology vs Astrology Comparison -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>⚖️ Numerology vs Astrology</h2>
+                    <p>Alignment & Conflict Analysis</p>
+                </div>
+                <div class="card-content">
+                    <div class="card-description">
+                        Compare how your numerological birth numbers (Mulanka & Bhagyanka) align with actual planetary positions from Vedic Astrology. Identify periods of harmony and conflict.
+                    </div>
+                    <ul class="features-list">
+                        <li>Mulanka (Birth Number) planet tracking</li>
+                        <li>Bhagyanka (Fortune Number) planet tracking</li>
+                        <li>Alignment visualization</li>
+                        <li>Divergence detection</li>
+                        <li>Harmony indices</li>
+                    </ul>
+                    <div class="data-info">
+                        <strong>Comparison Type:</strong> Daily alignment<br>
+                        <strong>Time Period:</strong> 1 year<br>
+                        <strong>Metrics:</strong> Correlation, divergence, harmony
+                    </div>
+                    <a href="numerology_vs_astrology_comparison.html" class="btn btn-full">View Comparison →</a>
+                </div>
+            </div>
+
+            <!-- Card 3: Daily Numerology Changes -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>📅 Daily Numerology Tracker</h2>
+                    <p>30-Day Birth Number Variation</p>
+                </div>
+                <div class="card-content">
+                    <div class="card-description">
+                        Monitor how your Mulanka (Birth Number) changes daily. Unlike planetary positions which change continuously, numerological influence changes discretely. Perfect for daily guidance.
+                    </div>
+                    <ul class="features-list">
+                        <li>Daily Mulanka calculations</li>
+                        <li>Bhagyanka reference line</li>
+                        <li>Discrete change detection</li>
+                        <li>30-day coverage</li>
+                        <li>Numerical symbolism guide</li>
+                    </ul>
+                    <div class="data-info">
+                        <strong>Calculation Method:</strong> Vedic numerology<br>
+                        <strong>Coverage:</strong> 30 consecutive days<br>
+                        <strong>Numbers:</strong> 1-9 (mapped to Navagraha)
+                    </div>
+                    <a href="daily_numerology_changes.html" class="btn btn-full">View Daily Changes →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Information Section -->
+        <div class="info-section">
+            <h2>Understanding Strength Zones</h2>
+            <div class="strength-zones">
+                <div class="strength-zone zone-excellent">
+                    <div style="font-size: 0.9em; margin-bottom: 5px;">Excellent Support</div>
+                    <div>75 - 100</div>
+                </div>
+                <div class="strength-zone zone-good">
+                    <div style="font-size: 0.9em; margin-bottom: 5px;">Good Support</div>
+                    <div>50 - 75</div>
+                </div>
+                <div class="strength-zone zone-weak">
+                    <div style="font-size: 0.9em; margin-bottom: 5px;">Weak Support</div>
+                    <div>25 - 50</div>
+                </div>
+                <div class="strength-zone zone-poor">
+                    <div style="font-size: 0.9em; margin-bottom: 5px;">Poor Support</div>
+                    <div>0 - 25</div>
+                </div>
+            </div>
+
+            <h3>Vedic Numerology: Number-to-Planet Mapping</h3>
+            <div class="planet-grid">
+                <div class="planet-item">
+                    <div class="planet-name">1</div>
+                    <div class="planet-number">☀️</div>
+                    <div style="font-size: 0.85em; color: #666; margin-top: 5px;">SUN</div>
+                </div>
+                <div class="planet-item">
+                    <div class="planet-name">2</div>
+                    <div class="planet-number">🌙</div>
+                    <div style="font-size: 0.85em; color: #666; margin-top: 5px;">MOON</div>
+                </div>
+                <div class="planet-item">
+                    <div class="planet-name">3</div>
+                    <div class="planet-number">🪐</div>
+                    <div style="font-size: 0.85em; color: #666; margin-top: 5px;">JUPITER</div>
+                </div>
+                <div class="planet-item">
+                    <div class="planet-name">4</div>
+                    <div class="planet-number">⚛️</div>
+                    <div style="font-size: 0.85em; color: #666; margin-top: 5px;">RAHU</div>
+                </div>
+                <div class="planet-item">
+                    <div class="planet-name">5</div>
+                    <div class="planet-number">💫</div>
+                    <div style="font-size: 0.85em; color: #666; margin-top: 5px;">MERCURY</div>
+                </div>
+                <div class="planet-item">
+                    <div class="planet-name">6</div>
+                    <div class="planet-number">✨</div>
+                    <div style="font-size: 0.85em; color: #666; margin-top: 5px;">VENUS</div>
+                </div>
+                <div class="planet-item">
+                    <div class="planet-name">7</div>
+                    <div class="planet-number">🌑</div>
+                    <div style="font-size: 0.85em; color: #666; margin-top: 5px;">KETU</div>
+                </div>
+                <div class="planet-item">
+                    <div class="planet-name">8</div>
+                    <div class="planet-number">⏳</div>
+                    <div style="font-size: 0.85em; color: #666; margin-top: 5px;">SATURN</div>
+                </div>
+                <div class="planet-item">
+                    <div class="planet-name">9</div>
+                    <div class="planet-number">🔴</div>
+                    <div style="font-size: 0.85em; color: #666; margin-top: 5px;">MARS</div>
+                </div>
+            </div>
+
+            <h3>Key Insights</h3>
+            <p>
+                <strong>Planetary Strength Variations:</strong> In Vedic Astrology, planetary strength is not static but changes throughout the day, month, and year based on numerous factors including zodiacal positions, dignity (exaltation/debilitation), house placements, and temporal conditions. The visualizations show these continuous variations to help you identify optimal periods for important decisions.
+            </p>
+            <p>
+                <strong>Numerology's Discrete Nature:</strong> Unlike astrology's continuous system, numerology operates on discrete changes. Your Mulanka (birth number) changes only on specific dates, creating a distinct pattern that complements the astronomical variations shown in astrology. The comparison charts help identify periods when both systems are aligned.
+            </p>
+            <p>
+                <strong>Practical Application:</strong> When planning important events (business launches, marriages, travel), identify days when both numerology and astrology show strong support. The convergence of these independent systems often indicates particularly auspicious periods.
+            </p>
+
+            <h3>Technical Specifications</h3>
+            <p>
+                <strong>Data Source:</strong> Swiss Ephemeris (pyswisseph) provides high-precision astronomical data for accurate planetary positions and movements.
+            </p>
+            <p>
+                <strong>Calculation Method:</strong> Planetary strengths are calculated using Vedic astrology principles including dignity factors, temporal conditions, and aspection analysis. Numerology calculations follow traditional Vedic numerology (Anka Jyotish) systems.
+            </p>
+            <p>
+                <strong>Update Frequency:</strong> Charts are generated daily and cover a rolling 365-day period. For updated visualizations with current planetary positions, regenerate the charts using the provided Python script.
+            </p>
+
+            <h3>How to Interpret the Charts</h3>
+            <p>
+                <strong>Green Zones (75-100):</strong> Excellent periods for initiating new projects, making important decisions, and taking action. Planetary support is at its peak.
+            </p>
+            <p>
+                <strong>Blue Zones (50-75):</strong> Good support with favorable conditions. Suitable for most important activities and decisions.
+            </p>
+            <p>
+                <strong>Orange Zones (25-50):</strong> Weak support period. Use caution and avoid critical decisions if possible. Good for planning and preparation rather than action.
+            </p>
+            <p>
+                <strong>Red Zones (0-25):</strong> Poor support with challenging conditions. Avoid major decisions and actions. Focus on maintenance and low-risk activities.
+            </p>
+        </div>
+
+        <footer>
+            <p>Vedic Astrology & Numerology Visualization System v2.0</p>
+            <p>Powered by Swiss Ephemeris | Vedic Astrology Core | Plotly Interactive Charts</p>
+            <p style="margin-top: 15px; opacity: 0.8;">
+                For more information, see <a href="PLANETARY_STRENGTH_VISUALIZATION.md" style="color: white; text-decoration: underline;">PLANETARY_STRENGTH_VISUALIZATION.md</a>
+            </p>
+            <p style="margin-top: 10px;">© 2026 Astro-Research Project | All Rights Reserved</p>
+        </footer>
+    </div>
+</body>
+</html>

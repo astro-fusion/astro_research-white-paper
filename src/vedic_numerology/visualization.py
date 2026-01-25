@@ -13,6 +13,7 @@ import pandas as pd
 
 from vedic_astrology_core.config.constants import Planet
 from vedic_astrology_core.visualization.support_index import plot_temporal_support
+from vedic_astrology_core.visualization.radar_charts import plot_planetary_strength_numerology
 from vedic_astrology_core.visualization.temporal_comparison import (
     plot_all_planets_comparison,
     plot_correlation_analysis,

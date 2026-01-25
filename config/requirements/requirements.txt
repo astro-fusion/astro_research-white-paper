@@ -1,0 +1,23 @@
+# Core dependencies for vedic-numerology-astrology package
+# Install with: pip install -r requirements.txt
+
+# Numerical and scientific computing
+numpy>=1.21.0
+pandas>=1.3.0
+
+# Visualization
+matplotlib>=3.4.0
+seaborn>=0.11.0
+
+# Time and date handling
+pytz>=2021.1
+
+# Configuration
+PyYAML>=6.0
+
+# Sunrise/sunset calculations for Vedic day logic
+suntime>=1.2.5
+
+# Optional: Swiss Ephemeris for astronomical calculations
+# Uncomment the following line if you have pyswisseph installed:
+# pyswisseph>=2.08.00-1
