@@ -93,6 +93,8 @@ jobs:
           ${{ runner.os }}-pip-test-
 
     - name: Install system dependencies
+      env:
+        DEBIAN_FRONTEND: noninteractive
       run: |
         sudo apt-get update
         # Try to install Swiss Ephemeris library (may not be available in standard repos)
@@ -184,6 +186,8 @@ jobs:
           ${{ runner.os }}-pip-manuscript-
 
     - name: Install system dependencies
+      env:
+        DEBIAN_FRONTEND: noninteractive
       run: |
         sudo apt-get update
         # Try to install Swiss Ephemeris library (may not be available in standard repos)
@@ -273,6 +277,8 @@ jobs:
         python-version: "3.10"
 
     - name: Install system dependencies
+      env:
+        DEBIAN_FRONTEND: noninteractive
       run: |
         sudo apt-get update
         # Try to install Swiss Ephemeris library (may not be available in standard repos)
