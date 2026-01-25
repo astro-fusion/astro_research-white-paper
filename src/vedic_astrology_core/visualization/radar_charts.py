@@ -78,6 +78,9 @@ def plot_dignity_radar(
 def plot_multi_planet_radar(
     chart: Any,
     planets: List[Planet],
+) -> Any:
+    """Create multi-planet radar chart."""
+    pass
 
 
 def plot_planetary_strength_numerology(
@@ -136,6 +139,10 @@ def plot_planetary_strength_numerology(
         ax.set_title('Planetary Strengths and Numerology Visualization')
         return ax
 
+
+def plot_dignity_radar(
+    chart: Any,
+    planets: List[Planet],
     factors: Optional[List[str]] = None,
     use_plotly: bool = True,
 ) -> Any:

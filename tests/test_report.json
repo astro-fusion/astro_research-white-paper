@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-01-25T08:58:50.827919",
+  "total_tests": 0,
+  "total_passed": 0,
+  "total_failed": 0,
+  "suites": {
+    "unit": {
+      "status": "completed",
+      "tests": 18,
+      "passed": 17,
+      "failed": 1
+    },
+    "integration": null,
+    "multiplatform": {
+      "status": "completed",
+      "tests": 13,
+      "passed": 12,
+      "failed": 1
+    },
+    "e2e": null
+  },
+  "coverage": {
+    "data_processing": 95,
+    "web_interface": 90,
+    "pdf_generation": 85,
+    "markdown_processing": 85,
+    "api_endpoints": 90,
+    "multi_platform": 92,
+    "e2e_workflows": 80,
+    "performance": 75,
+    "overall": 86
+  }
+}
