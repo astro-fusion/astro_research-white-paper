@@ -20,7 +20,9 @@ import streamlit as st
 # Add the src directory to Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 # Add use cases to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "use_cases", "numerology", "src"))
+sys.path.insert(
+    0, os.path.join(os.path.dirname(__file__), "use_cases", "numerology", "src")
+)
 
 try:
     import matplotlib.pyplot as plt
@@ -29,9 +31,11 @@ try:
     from vedic_astrology_core import VedicAstrologyChart
     from vedic_astrology_core.astrology import EphemerisEngine
     from vedic_astrology_core.dignity import DignityScorer
+
     # Import numerology from use case (optional)
     try:
         from numerology import calculate_complete_numerology
+
         NUMEROLOGY_AVAILABLE = True
     except ImportError:
         NUMEROLOGY_AVAILABLE = False

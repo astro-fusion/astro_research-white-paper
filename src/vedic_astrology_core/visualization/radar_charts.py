@@ -85,7 +85,9 @@ def plot_multi_planet_radar(
 
 def plot_planetary_strength_numerology(
     chart: Any,
-    planet_strengths: Dict[str, float],  # Dictionary of planet names and their strengths
+    planet_strengths: Dict[
+        str, float
+    ],  # Dictionary of planet names and their strengths
     numerology_values: Dict[str, float],  # Dictionary of numerology values
     use_plotly: bool = True,
 ) -> Any:
@@ -108,12 +110,14 @@ def plot_planetary_strength_numerology(
     # Create a radar chart
     if use_plotly and PLOTLY_AVAILABLE:
         fig = go.Figure()
-        fig.add_trace(go.Scatterpolar(
-            r=values + [values[0]],  # Close the loop
-            theta=labels + [labels[0]],
-            fill='toself',
-            name='Strengths & Numerology',
-        ))
+        fig.add_trace(
+            go.Scatterpolar(
+                r=values + [values[0]],  # Close the loop
+                theta=labels + [labels[0]],
+                fill="toself",
+                name="Strengths & Numerology",
+            )
+        )
         fig.update_layout(
             polar=dict(
                 radialaxis=dict(
@@ -121,7 +125,7 @@ def plot_planetary_strength_numerology(
                     range=[0, 100],
                 )
             ),
-            title='Planetary Strengths and Numerology Visualization',
+            title="Planetary Strengths and Numerology Visualization",
         )
         return fig
     else:
@@ -132,11 +136,11 @@ def plot_planetary_strength_numerology(
         angles += angles[:1]
 
         fig, ax = plt.subplots(figsize=(10, 8), subplot_kw=dict(polar=True))
-        ax.fill(angles, values, color='blue', alpha=0.25)
+        ax.fill(angles, values, color="blue", alpha=0.25)
         ax.set_yticklabels([])
         ax.set_xticks(angles[:-1])
         ax.set_xticklabels(labels)
-        ax.set_title('Planetary Strengths and Numerology Visualization')
+        ax.set_title("Planetary Strengths and Numerology Visualization")
         return ax
 
 
