@@ -54,11 +54,30 @@ def iter_dates(
 
     cur = start
     step = timedelta(days=step_days)
-    while cur < end:
-        yield cur
-        cur = cur + step
     if inclusive and cur == end:
         yield cur
+
+
+def iter_datetime_range(
+    start_dt: datetime, end_dt: datetime, step_hours: float = 24.0
+) -> Iterable[datetime]:
+    """
+    Iterate datetimes with a step in hours.
+    
+    Args:
+        start_dt: Start datetime
+        end_dt: End datetime
+        step_hours: Step size in hours (can be float, e.g. 0.5 for 30 mins)
+    """
+    if step_hours <= 0:
+        raise ValueError("step_hours must be > 0")
+    
+    cur = start_dt
+    step = timedelta(hours=step_hours)
+    
+    while cur <= end_dt:
+        yield cur
+        cur += step
 
 
 @dataclass(frozen=True)
@@ -80,50 +99,60 @@ def compute_astrology_strength_series(
     start_date: DateLike,
     end_date: DateLike,
     step_days: int = 1,
+    step_hours: Optional[float] = None, # New: support 2-hour intervals
     planets: Optional[Sequence[Planet]] = None,
     config: Optional[TimeSeriesConfig] = None,
 ) -> pd.DataFrame:
     """
-    Compute dignity score (0-100) per planet across a date range.
-
-    Returns a DataFrame with columns:
-      - date (YYYY-MM-DD string)
-      - astrology_<PLANET> for each planet
+    Compute dignity/strength score (0-100) per planet across a date range.
+    
+    Supports both daily mode (classic) and high-res mode (step_hours).
     """
     cfg = config or TimeSeriesConfig()
-    planets_to_use: Sequence[Planet] = planets or [
-        Planet.SUN,
-        Planet.MOON,
-        Planet.MARS,
-        Planet.MERCURY,
-        Planet.JUPITER,
-        Planet.VENUS,
-        Planet.SATURN,
-        Planet.RAHU,
-        Planet.KETU,
-    ]
-
-    scorer = DignityScorer()
+    # If step_hours is provided, we switch to high-res mode
+    is_high_res = step_hours is not None
+    
+    # Imports inside to avoid circular deps if any
+    from .dignity.global_scorer import GlobalShadbalaScorer
+    
+    # Initialize Engines
     ephemeris = EphemerisEngine()
+    # Use Global Shadbala Scorer for research-grade strength (Chesta/Yuddha included)
+    global_scorer = GlobalShadbalaScorer(ephemeris=ephemeris)
 
     rows: List[Dict[str, Any]] = []
-    for d in iter_dates(start_date, end_date, step_days=step_days, inclusive=True):
-        dt = datetime.combine(d, time(hour=cfg.noon_hour, minute=0, second=0))
-        jd = ephemeris.datetime_to_julian_day(dt)
+    
+    # Determine iteration strategy
+    if is_high_res:
+        # Convert dates to datetimes if needed
+        s_dt = datetime.combine(_to_date(start_date), time(0,0))
+        e_dt = datetime.combine(_to_date(end_date), time(23, 59))
+        iterator = iter_datetime_range(s_dt, e_dt, step_hours=step_hours) # type: ignore
+    else:
+        # Classic daily mode
+        iterator = [
+            datetime.combine(d, time(hour=cfg.noon_hour)) 
+            for d in iter_dates(start_date, end_date, step_days=step_days)
+        ]
 
-        row: Dict[str, Any] = {"date": d.isoformat()}
-        for planet in planets_to_use:
-            try:
-                planet_data = ephemeris.get_planet_position(jd, planet.name.lower())
-                score = scorer.calculate_full_score(
-                    planet,
-                    planet_data["sign"],
-                    planet_data["longitude"],
-                    planet_data=planet_data,
-                )
-            except Exception:
-                score = 0.0
-            row[f"astrology_{planet.name}"] = float(score)
+    for dt in iterator:
+        jd = ephemeris.datetime_to_julian_day(dt)
+        
+        # Use Global Scorer for better quality metrics
+        scores = global_scorer.calculate_global_power(jd)
+        
+        row: Dict[str, Any] = {"date": dt.isoformat()}
+        
+        # Filter for requested planets if needed
+        if planets:
+            # Need to map Planet Enum to string keys used by GlobalScorer
+            for p in planets:
+                row[f"astrology_{p.name}"] = scores.get(p.name, 0.0)
+        else:
+            # Add all
+            for pname, score in scores.items():
+                row[f"astrology_{pname.upper()}"] = score
+                
         rows.append(row)
 
     return pd.DataFrame(rows)

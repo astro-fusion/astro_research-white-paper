@@ -19,12 +19,12 @@ from vedic_numerology.numerology import (  # noqa: E402
     calculate_mulanka,
     reduce_to_single_digit,
 )
-from vedic_numerology.numerology.planet_mapping import (  # noqa: E402
+from vedic_numerology.planet_mapping import (  # noqa: E402
     NUMBER_TO_PLANET,
     Planet,
     get_planet_from_number,
 )
-from vedic_numerology.numerology.sunrise_correction import (  # noqa: E402
+from vedic_numerology.sunrise_correction import (  # noqa: E402
     adjust_date_for_vedic_day,
     get_vedic_day_info,
 )

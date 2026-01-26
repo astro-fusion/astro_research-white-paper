@@ -100,7 +100,7 @@ crossref:
   tbl-title: "Table"
   lst-title: "Listing"
   eq-title: "Equation"
-  title-delim: "."
+  title-delim: "colon"
   fig-prefix: "Figure"
   tbl-prefix: "Table"
   lst-prefix: "Listing"
@@ -124,8 +124,7 @@ jupyter: python3
 
 # Bibliography and citations (shared)
 bibliography:
-  - references.bib
-  - research_paper/references.bib
+  - "/Users/bishalghimire/Documents/WORK/Open Source/astro-research/references.bib"
 
 csl: styles/apa.csl
 

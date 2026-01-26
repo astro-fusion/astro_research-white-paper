@@ -106,19 +106,19 @@ astro-research/
 └── 🧪 tests/                   # Test suite
 ```
 
-**For a detailed guide on the project structure, see:** [ARCHITECTURE.md](ARCHITECTURE.md) or [REORGANIZATION_VISUAL_GUIDE.md](REORGANIZATION_VISUAL_GUIDE.md)
+**For a detailed guide on the project structure, see:** [ARCHITECTURE.md](docs/project_tracking/ARCHITECTURE.md) or [REORGANIZATION_VISUAL_GUIDE.md](docs/project_tracking/REORGANIZATION_VISUAL_GUIDE.md)
 
 ---
 
-## � Documentation Navigation
+##  Documentation Navigation
 
 ### 🚀 **Quick Links - Start Here**
 | Resource | Purpose | Link |
 |----------|---------|------|
-| **Architecture Guide** | Complete system design | [ARCHITECTURE.md](ARCHITECTURE.md) |
+| **Architecture Guide** | Complete system design | [ARCHITECTURE.md](docs/project_tracking/ARCHITECTURE.md) |
 | **Quick Start** | Getting started in 5 minutes | [docs/guides/QUICK_START_RESEARCH.md](docs/guides/QUICK_START_RESEARCH.md) |
-| **Project Structure** | Understanding the new organization | [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) |
-| **Reorganization Summary** | What changed and why | [FINAL_REORGANIZATION_REPORT.md](FINAL_REORGANIZATION_REPORT.md) |
+| **Project Structure** | Understanding the new organization | [PROJECT_STRUCTURE.md](docs/project_tracking/PROJECT_STRUCTURE.md) |
+| **Reorganization Summary** | What changed and why | [FINAL_REORGANIZATION_REPORT.md](docs/reports/FINAL_REORGANIZATION_REPORT.md) |
 
 ### 📚 **User Guides** (docs/guides/)
 - [QUICK_START_RESEARCH.md](docs/guides/QUICK_START_RESEARCH.md) - Getting started guide
@@ -149,8 +149,8 @@ astro-research/
 
 ### 🧪 **Comprehensive Testing Suite** ⭐ NEW
 - [tests/TESTING_GUIDE.md](tests/TESTING_GUIDE.md) - Complete testing manual (46+ tests, 86% coverage)
-- [COMPREHENSIVE_TEST_REPORT.md](COMPREHENSIVE_TEST_REPORT.md) - Detailed test results and analysis
-- [FINAL_DELIVERY.md](FINAL_DELIVERY.md) - Production readiness summary
+- [COMPREHENSIVE_TEST_REPORT.md](docs/reports/COMPREHENSIVE_TEST_REPORT.md) - Detailed test results and analysis
+- [FINAL_DELIVERY.md](docs/reports/FINAL_DELIVERY.md) - Production readiness summary
 - Run tests: `python3 tests/run_all_tests.py`
 - Features: Unit tests (16), Multi-platform (20), E2E (10), 100% pass rate ✅
 
@@ -638,6 +638,17 @@ To share your analysis:
    ```markdown
    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](YOUR_COLAB_LINK)
    ```
+
+### 4. Statistical Validation
+Run rigorous statistical tests (Schuster's Test, Monte Carlo) to validate findings:
+
+```bash
+# Run validation suite
+python3 use_cases/earthquake/scripts/validate_results.py
+
+# Check generated report
+cat validation_report.json
+```
 
 ## 🚀 Deployment & Publishing
 

@@ -13,20 +13,20 @@ from unittest.mock import Mock
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from vedic_numerology.config.constants import Planet  # noqa: E402
-from vedic_numerology.dignity import DignityScorer  # noqa: E402
-from vedic_numerology.dignity.exaltation_matrix import (  # noqa: E402
+from vedic_astrology_core.config.constants import Planet  # noqa: E402
+from vedic_astrology_core.dignity import DignityScorer  # noqa: E402
+from vedic_astrology_core.dignity.exaltation_matrix import (  # noqa: E402
     get_debilitation_sign,
     get_exaltation_sign,
     is_in_exaltation,
     is_in_moolatrikona,
     is_in_own_sign,
 )
-from vedic_numerology.dignity.friendship_matrix import (  # noqa: E402
+from vedic_astrology_core.dignity.friendship_matrix import (  # noqa: E402
     FriendshipType,
     get_natural_friendship,
 )
-from vedic_numerology.dignity.modifiers import (  # noqa: E402
+from vedic_astrology_core.dignity.modifiers import (  # noqa: E402
     apply_combust_penalty,
     apply_retrograde_bonus,
 )

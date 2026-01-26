@@ -108,7 +108,7 @@ class EarthquakeDataFetcher:
             "endtime": end_date,
             "minmagnitude": min_magnitude,
             "format": self.DEFAULT_FORMAT,
-            "orderby": "magnitude-desc"
+            "orderby": "magnitude" # Largest first
         }
         
         try:
@@ -212,7 +212,9 @@ class EarthquakeDataFetcher:
             processed_eq = {
                 "date": eq_date.strftime("%Y-%m-%d"),
                 "time": eq_date.isoformat(),
-                "magnitude": props.get("mag", 0),
+                "magnitude": float(self._homogenize_magnitude(props.get("mag", 0), props.get("magType", ""))),
+                "magnitude_raw": props.get("mag", 0),
+                "magnitude_type": props.get("magType", ""),
                 "place": props.get("place", "Unknown"),
                 "latitude": coords[1] if len(coords) > 1 else 0,
                 "longitude": coords[0] if len(coords) > 0 else 0,
@@ -222,6 +224,166 @@ class EarthquakeDataFetcher:
             processed.append(processed_eq)
         
         return processed
+
+    def _homogenize_magnitude(self, mag: float, mag_type: str) -> float:
+        """
+        Homogenize magnitude to Moment Magnitude (Mw).
+        
+        Uses approximate empirical conversions for the Research Pipeline.
+        Reference: Scordilis (2006) and standard seismological conversions.
+        
+        Args:
+            mag: Original magnitude
+            mag_type: Magnitude type (e.g., 'mb', 'ms', 'md', 'ml')
+            
+        Returns:
+            Homogenized Mw magnitude.
+        """
+        if not mag_type:
+            return mag
+            
+        mt = mag_type.lower()
+        
+        # If already Moment Magnitude, return as is
+        if mt in ('mw', 'mww', 'mwr', 'mwc'):
+            return mag
+            
+        # Body Wave (mb) -> Mw
+        # Proxy formula: Mw = 0.85 * mb + 1.03 (Generalized global approximation)
+        if mt == 'mb':
+            # For small quakes, mb ~= Mw. For large, mb saturates.
+            if mag > 6.0: 
+                # Scordilis correction for saturation
+                return 0.85 * mag + 1.03
+            return mag
+            
+        # Surface Wave (Ms) -> Mw
+        # Proxy: Mw = 0.67 * Ms + 2.07 (Scordilis) for 3.0 < Ms < 6.1
+        if mt == 'ms':
+            if 3.0 <= mag <= 6.1:
+                return 0.67 * mag + 2.07
+            elif mag > 6.1:
+                return 0.99 * mag + 0.08
+            
+        # Default fallback: assume ML/MD ~= Mw for small events
+        return mag
+
+    def decluster_catalog(self, catalog: List[Dict]) -> List[Dict]:
+        """
+        Decluster the earthquake catalog using Gardner-Knopoff algorithm.
+        
+        Removes aftershocks and foreshocks based on space-time windows.
+        
+        Args:
+            catalog: List of earthquake dictionaries (must have 'magnitude', 'time' as datetime or ISO, 'latitude', 'longitude')
+            
+        Returns:
+            List of independent mainshocks.
+        """
+        self._log(f"Declustering {len(catalog)} events...")
+        
+        # Sort by magnitude descending (largest events are mainshocks)
+        # We process largest first, and remove everything in their window.
+        # Note: Standard GK actually sorts by Time, but a simple greedy approach 
+        # is: Pick largest unflagged, mark neighbors as aftershocks.
+        
+        # However, the strict GK algorithm iterates through time.
+        # "Method: Identify the largest event in a sequence. If an event falls within the window of a larger one..."
+        
+        # Simplified implementation:
+        # 1. Sort by Magnitude Descending.
+        # 2. Taking the largest event (Mainshock), remove all smaller events in its T/L window.
+        # 3. Repeat.
+        
+        # Make a copy and ensure datetime objects
+        events = []
+        for eq in catalog:
+            # Parse time if string
+            if isinstance(eq['time'], str):
+                try:
+                    dt = datetime.fromisoformat(eq['time'].replace('Z', '+00:00'))
+                except ValueError:
+                    # Fallback for simple date strings
+                    dt = datetime.strptime(eq['time'][:10], "%Y-%m-%d")
+            else:
+                dt = eq['time']
+                
+            events.append({
+                "data": eq,
+                "magnitude": float(eq['magnitude']),
+                "time": dt,
+                "lat": float(eq['latitude']),
+                "lon": float(eq['longitude']),
+                "id": eq.get('usgs_url', str(hash(str(eq))))
+            })
+            
+        # Sort by magnitude descending
+        events.sort(key=lambda x: x['magnitude'], reverse=True)
+        
+        independent_events = []
+        removed_ids = set()
+        
+        # Gardner-Knopoff Window Table (Approximate)
+        # Mag: [Distance(km), Time(days)]
+        gk_windows = {
+            2.5: [19.5, 6],
+            3.0: [22.5, 11.5],
+            3.5: [26, 22],
+            4.0: [30, 42],
+            4.5: [35, 83],
+            5.0: [40, 155],
+            5.5: [47, 290],
+            6.0: [54, 510],
+            6.5: [61, 790],
+            7.0: [70, 915],
+            7.5: [81, 960],
+            8.0: [94, 985]
+        }
+        
+        def get_window(mag):
+            # Find closest lower bound
+            keys = sorted(gk_windows.keys())
+            for k in reversed(keys):
+                if mag >= k:
+                    return gk_windows[k]
+            return gk_windows[2.5] # Minimum
+            
+        from math import radians, cos, sin, asin, sqrt
+        def haversine(lat1, lon1, lat2, lon2):
+            R = 6371 # Earth radius km
+            dLat = radians(lat2 - lat1)
+            dLon = radians(lon2 - lon1)
+            a = sin(dLat/2)**2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dLon/2)**2
+            c = 2 * asin(sqrt(a))
+            return R * c
+            
+        for i, mainshock in enumerate(events):
+            if mainshock['id'] in removed_ids:
+                continue
+                
+            independent_events.append(mainshock['data'])
+            
+            # Distance/Time Window
+            dist_km, time_days = get_window(mainshock['magnitude'])
+            
+            # Check all other events
+            for j in range(i + 1, len(events)):
+                candidate = events[j]
+                if candidate['id'] in removed_ids:
+                    continue
+                    
+                # Check Time Window (Forward and Backward - Foreshocks/Aftershocks)
+                time_diff = abs((candidate['time'] - mainshock['time']).days)
+                if time_diff > time_days:
+                    continue
+                    
+                # Check Distance Window
+                dist = haversine(mainshock['lat'], mainshock['lon'], candidate['lat'], candidate['lon'])
+                if dist <= dist_km:
+                    removed_ids.add(candidate['id'])
+                    
+        self._log(f"Declustering complete. Reduced from {len(catalog)} to {len(independent_events)} events.")
+        return independent_events
     
     def save_to_file(self, earthquakes: List[Dict], output_path: str) -> None:
         """Save processed earthquakes to JSON file."""
@@ -273,21 +435,37 @@ def main():
     print("\n" + "="*60)
     print("OPTION 2: Fetch from USGS API (Uncomment to use)")
     print("="*60)
-    print("""
-    # Uncomment to fetch real data from USGS
-    # Note: Requires internet connection
+    # ============================================================
+    # OPTION 2: Fetch from USGS API (ENABLED FOR PHASE 7)
+    # ============================================================
+    print("\n" + "="*60)
+    print("PHASE 7: Fetching REAL data from USGS (2020-2023)")
+    print("="*60)
     
     try:
+        # Fetching a larger dataset for real analysis
         raw_data = fetcher.fetch_earthquakes(
             start_date="2020-01-01",
-            end_date="2020-12-31",
-            min_magnitude=5.0,
-            use_usgs_api=True  # Use real USGS data
+            end_date="2023-12-31", 
+            min_magnitude=6.0, # Focus on significant events
+            use_usgs_api=True  # ENABLED
         )
-        print(f"✅ Fetched {len(raw_data.get('features', []))} earthquakes from USGS")
+        
+        # Save to real data path
+        data_dir = os.path.join(os.path.dirname(__file__), "../../data")
+        os.makedirs(data_dir, exist_ok=True)
+        output_file = os.path.join(data_dir, "usgs_real_data_phase7.json")
+        
+        # Process and Save
+        processed_real = fetcher.process_for_analysis(raw_data)
+        
+        with open(output_file, "w") as f:
+            json.dump(processed_real, f, indent=2, default=str)
+            
+        print(f"✅ Fetched and saved {len(processed_real)} real earthquakes to {output_file}")
+        
     except Exception as e:
-        print(f"❌ Error: {e}")
-    """)
+        print(f"❌ Error fetching real data: {e}")
     
     print("\n" + "="*60)
     print("Integration Ready!")

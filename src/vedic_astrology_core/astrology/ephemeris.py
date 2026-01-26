@@ -138,6 +138,83 @@ class EphemerisEngine:
         if isinstance(planet, str):
             planet = self._planet_name_to_constant(planet)
 
+        result = swe.calc_ut(julian_day, planet)
+
+    def get_heliocentric_position(self, julian_day: float, planet: Union[int, str]) -> Dict:
+        """
+        Calculate heliocentric planetary position (Sun-centered).
+        
+        This is used for the "Physical Coupling" hypothesis in the Research Pipeline,
+        where gravitational forces (dependent on true heliocentric distance and position)
+        are tested for correlation with seismic cycles, independent of geocentric
+        retrograde illusions.
+
+        Args:
+            julian_day: Julian day number
+            planet: Planet identifier (int constant or string name)
+
+        Returns:
+            Dictionary with position data:
+            - 'longitude': Heliocentric longitude in degrees (0-360)
+            - 'latitude': Heliocentric latitude in degrees
+            - 'distance': Distance from Sun in AU
+            - 'longitude_speed': Daily speed in longitude (degrees/day)
+        """
+        # Convert planet name to constant if needed
+        if isinstance(planet, str):
+            planet = self._planet_name_to_constant(planet)
+            
+        # Solar system bodies only. Ideally ignore MOON/RAHU/KETU for heliocentric 
+        # as they are geocentric concepts, but swisseph handles the vector math 
+        # (Moon's heliocentric position is Earth's + Moon's vector).
+        
+        # Add HELIOCENTRIC flag
+        flags = swe.FLG_HELCTR | swe.FLG_SPEED
+        
+        # swe.calc_ut returns ((long, lat, dist, speed_long, speed_lat, speed_dist), rflag)
+        result = swe.calc_ut(julian_day, planet, flags)
+        
+        coordinates = result[0]
+        longitude, latitude, distance = coordinates[0], coordinates[1], coordinates[2]
+        speed_longitude = coordinates[3]
+        
+        return {
+            "longitude": longitude % 360,
+            "latitude": latitude,
+            "distance": distance,
+            "longitude_speed": speed_longitude,
+            "x_vector": distance * math.cos(math.radians(longitude)) * math.cos(math.radians(latitude)),
+            "y_vector": distance * math.sin(math.radians(longitude)) * math.cos(math.radians(latitude)),
+            "z_vector": distance * math.sin(math.radians(latitude))
+        }
+
+    def get_planet_position(self, julian_day: float, planet: Union[int, str]) -> Dict:
+        """
+        Calculate planetary position for a given time.
+
+        Args:
+            julian_day: Julian day number
+            planet: Planet identifier (int constant or string name)
+
+        Returns:
+            Dictionary with position data:
+            - 'longitude': Celestial longitude in degrees (0-360)
+            - 'latitude': Celestial latitude in degrees
+            - 'distance': Distance from Earth in AU
+            - 'longitude_speed': Daily speed in longitude (degrees/day)
+            - 'sign': Zodiac sign index (0-11)
+            - 'sign_name': Zodiac sign name
+            - 'degrees_in_sign': Degrees within sign (0-30)
+            - 'retrograde': Boolean indicating retrograde motion
+            - 'combust': Boolean indicating combustion (close to Sun)
+
+        Raises:
+            ValueError: If planet identifier is invalid
+        """
+        # Convert planet name to constant if needed
+        if isinstance(planet, str):
+            planet = self._planet_name_to_constant(planet)
+
         # Calculate position using Swiss Ephemeris
         # swe.calc_ut returns:
         # ((longitude, latitude, distance, speed_long, speed_lat, speed_dist), rflag)

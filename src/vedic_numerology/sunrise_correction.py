@@ -86,9 +86,28 @@ def adjust_date_for_vedic_day(
     return birth_date
 
 
-def validate_coordinates(latitude: float, longitude: float) -> Tuple[bool, str]:
-    if not (-90 <= latitude <= 90):
-        return False, f"Latitude must be between -90 and 90 degrees, got {latitude}"
-    if not (-180 <= longitude <= 180):
-        return False, f"Longitude must be between -180 and 180 degrees, got {longitude}"
     return True, ""
+
+
+def get_vedic_day_info(
+    birth_date: date, birth_time: time, latitude: float, longitude: float
+) -> dict:
+    birth_dt = datetime.combine(birth_date, birth_time)
+    sunrise = get_sunrise_time(birth_date, latitude, longitude)
+    
+    correction_applied = False
+    vedic_date = birth_date
+    
+    if sunrise:
+        if birth_dt.time() < sunrise.time():
+            correction_applied = True
+            vedic_date = birth_date - timedelta(days=1)
+            
+    return {
+        "gregorian_date": birth_date,
+        "vedic_date": vedic_date,
+        "sunrise_time": sunrise,
+        "birth_before_sunrise": correction_applied,
+        "day_number_used": vedic_date.day,
+        "correction_applied": correction_applied,
+    }

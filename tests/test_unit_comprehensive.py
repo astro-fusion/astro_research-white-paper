@@ -18,7 +18,7 @@ except ImportError:
     HAS_NUMEROLOGY = False
 
 
-class TestDataProcessing:
+class DataProcessingSuite:
     """Tests for data processing pipeline."""
 
     def __init__(self):
@@ -145,7 +145,7 @@ class TestDataProcessing:
         self.tests_failed += 1
 
 
-class TestWebInterface:
+class WebInterfaceSuite:
     """Tests for web interface."""
 
     def __init__(self):
@@ -239,7 +239,7 @@ class TestWebInterface:
         self.tests_failed += 1
 
 
-class TestPDFGeneration:
+class PDFGenerationSuite:
     """Tests for PDF generation."""
 
     def __init__(self):
@@ -330,7 +330,7 @@ class TestPDFGeneration:
         self.tests_failed += 1
 
 
-class TestMarkdownProcessing:
+class MarkdownProcessingSuite:
     """Tests for markdown processing."""
 
     def __init__(self):
@@ -440,7 +440,7 @@ code = "example"
         self.tests_failed += 1
 
 
-class TestMultiPlatform:
+class MultiPlatformSuite:
     """Tests for multi-platform compatibility."""
 
     def __init__(self):
@@ -534,11 +534,11 @@ def run_all_unit_tests():
     print("=" * 70)
 
     test_suites = [
-        TestDataProcessing(),
-        TestWebInterface(),
-        TestPDFGeneration(),
-        TestMarkdownProcessing(),
-        TestMultiPlatform(),
+        DataProcessingSuite(),
+        WebInterfaceSuite(),
+        PDFGenerationSuite(),
+        MarkdownProcessingSuite(),
+        MultiPlatformSuite(),
     ]
 
     all_passed = 0

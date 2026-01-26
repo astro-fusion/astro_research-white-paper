@@ -13,14 +13,14 @@ from datetime import datetime
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from vedic_numerology.astrology import AyanamsaSystem  # noqa: E402
-from vedic_numerology.astrology.ayanamsa import (  # noqa: E402
+from vedic_astrology_core.astrology import AyanamsaSystem  # noqa: E402
+from vedic_astrology_core.astrology.ayanamsa import (  # noqa: E402
     convert_sidereal_to_tropical,
     convert_tropical_to_sidereal,
     get_ayanamsa_offset,
     get_zodiac_sign,
 )
-from vedic_numerology.config.constants import Planet  # noqa: E402
+from vedic_astrology_core.config.constants import Planet  # noqa: E402
 
 
 class TestAyanamsaCalculations(unittest.TestCase):
@@ -88,7 +88,7 @@ class TestEphemerisEngine(unittest.TestCase):
     def setUp(self):
         """Set up test fixtures."""
         try:
-            from vedic_numerology.astrology import EphemerisEngine
+            from vedic_astrology_core.astrology import EphemerisEngine
 
             self.ephemeris = EphemerisEngine()
             self.ephemeris_available = True
@@ -157,7 +157,7 @@ class TestEphemerisEngine(unittest.TestCase):
         if self.ephemeris_available:
             self.skipTest("Swiss Ephemeris is available, cannot test error handling")
 
-        from vedic_numerology.astrology import EphemerisEngine
+        from vedic_astrology_core.astrology import EphemerisEngine
 
         with self.assertRaises(ImportError):
             EphemerisEngine()
@@ -168,7 +168,7 @@ class TestBirthChart(unittest.TestCase):
 
     def test_birth_chart_creation(self):
         """Test birth chart object creation."""
-        from vedic_numerology.astrology import BirthChart
+        from vedic_astrology_core.astrology import BirthChart
 
         birth_datetime = datetime(1984, 8, 27, 10, 30, 0)
         latitude = 28.6139
@@ -183,7 +183,7 @@ class TestBirthChart(unittest.TestCase):
 
     def test_chart_properties_lazy_loading(self):
         """Test that chart properties are loaded lazily."""
-        from vedic_numerology.astrology import BirthChart
+        from vedic_astrology_core.astrology import BirthChart
 
         birth_datetime = datetime(1984, 8, 27, 10, 30, 0)
         chart = BirthChart(birth_datetime, 28.6139, 77.1025)
@@ -203,7 +203,7 @@ class TestBirthChart(unittest.TestCase):
         if not hasattr(unittest, "assertLogs"):
             self.skipTest("Cannot test without ephemeris")
 
-        from vedic_numerology.astrology import BirthChart
+        from vedic_astrology_core.astrology import BirthChart
 
         birth_datetime = datetime(1984, 8, 27, 10, 30, 0)
         chart = BirthChart(birth_datetime, 28.6139, 77.1025)
@@ -237,7 +237,7 @@ class TestMars1984Case(unittest.TestCase):
         # According to the document, Mars was in Scorpio in August 1984
         # Let's test the calculation framework
 
-        from vedic_numerology.astrology import EphemerisEngine
+        from vedic_astrology_core.astrology import EphemerisEngine
 
         try:
             ephemeris = EphemerisEngine()
@@ -283,7 +283,7 @@ class TestCoordinateValidation(unittest.TestCase):
 
     def test_valid_coordinates(self):
         """Test valid coordinate ranges."""
-        from vedic_numerology.astrology import BirthChart
+        from vedic_astrology_core.astrology import BirthChart
 
         # Valid coordinates
         birth_datetime = datetime(1984, 8, 27, 10, 30, 0)
@@ -297,7 +297,7 @@ class TestCoordinateValidation(unittest.TestCase):
 
     def test_invalid_coordinates(self):
         """Test invalid coordinate handling."""
-        from vedic_numerology.astrology import BirthChart
+        from vedic_astrology_core.astrology import BirthChart
 
         birth_datetime = datetime(1984, 8, 27, 10, 30, 0)
 
