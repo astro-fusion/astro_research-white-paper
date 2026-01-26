@@ -341,11 +341,15 @@ jobs:
                                   <h3>Numerology-Astrology <span class="status complete">✅ Complete</span></h3>
                                   <p>Analysis of correlation between Vedic Astrology and Numerology systems.</p>
                                   <p><strong>Finding:</strong> r ≈ 0.12 (independent systems)</p>
+                                  <a href="docs/research/track_1_numerology_vs_astrology/research_numerology_correlation.html" style="display:inline-block; margin-top:10px; padding:6px 12px; background:#667eea; color:white; border-radius:4px; text-decoration:none;">📄 Read Report</a>
+                                  <a href="reports/research_numerology_correlation.pdf" style="margin-left:10px; font-size:0.9em;">⬇️ PDF</a>
                               </div>
                               <div class="card">
                                   <h3>Earthquake-Planetary <span class="status ready">🔄 Framework Ready</span></h3>
                                   <p>Testing if planetary configurations correlate with earthquake occurrences.</p>
                                   <p><strong>Status:</strong> Analysis engine ready, awaiting data</p>
+                                  <a href="docs/research/track_2_earthquake_prediction/research_earthquake_prediction.html" style="display:inline-block; margin-top:10px; padding:6px 12px; background:#667eea; color:white; border-radius:4px; text-decoration:none;">📄 Read Report</a>
+                                  <a href="reports/research_earthquake_prediction.pdf" style="margin-left:10px; font-size:0.9em;">⬇️ PDF</a>
                               </div>
                               <div class="card">
                                   <h3>Weather/Climate <span class="status planned">⏳ Planned</span></h3>

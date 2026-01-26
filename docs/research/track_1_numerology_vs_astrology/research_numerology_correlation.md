@@ -6,6 +6,9 @@ date: "2026-01-26"
 keywords: [Vedic Numerology, Shadbala, Variation Mechanics, Discrete vs Continuous, Mulanka, Bhagyanka]
 ---
 
+> [!TIP]
+> **[Download Research Report (PDF)](/reports/research_numerology_correlation.pdf)**
+
 # Abstract
 
 This scientific report deconstructs the variation mechanisms of two predictive systems: Vedic Numerology (Sankhya Sastra) and Vedic Astrology (Parashari Jyotish). Analyzing a concrete dataset for **January 2024**, we map the daily variation of the "Mulanka" (Birth Number) against the hourly variation of "Shadbala" (Planetary Strength). The study aims to visualize how influence "happens" in each system. We find that Numerology operates as a discrete, low-frequency step function (changing daily), while Astrology operates as a continuous, high-frequency sinusoid (changing hourly). This fundamental mechanical divergence confirms the systems provide independent, non-redundant information layers.

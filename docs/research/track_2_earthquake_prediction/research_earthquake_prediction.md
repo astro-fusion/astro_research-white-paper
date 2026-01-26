@@ -6,6 +6,9 @@ date: "2026-01-26"
 keywords: [Earthquakes, India-Nepal, Indian Plate, USGS Data, Prediction, Shadbala, Pattern Matching]
 ---
 
+> [!TIP]
+> **[Download Research Report (PDF)](/reports/research_earthquake_prediction.pdf)**
+
 # Abstract
 
 This research track investigates the potential for Astrological Prediction of seismic activity specifically within the **India-Nepal Tectonic Zone**. We define a strict data collection protocol using USGS records for the region (Lat 20-35N, Lon 75-90E). Analyzing **370 significant events** (Magnitude > 4.5) from 2015 to 2024, we map these occurrences against a "Planetary Stress Index" derived from Vedic Astrology principles (Shadbala and Geometric Aspects). The study aims to compare and contrast the recurrence patterns of Tectonic stress vs. Astrological stress to validate if a predictive signal exists.
