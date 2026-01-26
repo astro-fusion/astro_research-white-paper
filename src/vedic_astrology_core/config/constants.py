@@ -367,7 +367,11 @@ NAKSHATRAS: Dict[int, Dict] = {
     17: {"name": "Jyeshtha", "lord": Planet.MERCURY, "deity": "Indra (Chief)"},
     18: {"name": "Mula", "lord": Planet.KETU, "deity": "Nirriti (Destruction)"},
     19: {"name": "Purva Ashadha", "lord": Planet.VENUS, "deity": "Apah (Water)"},
-    20: {"name": "Uttara Ashadha", "lord": Planet.SUN, "deity": "Vishvedevas (Universal)"},
+    20: {
+        "name": "Uttara Ashadha",
+        "lord": Planet.SUN,
+        "deity": "Vishvedevas (Universal)",
+    },
     21: {"name": "Shravana", "lord": Planet.MOON, "deity": "Vishnu (Preserver)"},
     22: {"name": "Dhanishta", "lord": Planet.MARS, "deity": "Ashta Vasus"},
     23: {"name": "Shatabhisha", "lord": Planet.RAHU, "deity": "Varuna (Cosmic Order)"},

@@ -25,10 +25,11 @@ import os
 import json
 from pathlib import Path
 
+
 def train_models(matrix_path: str = "regression_matrix.csv", target_mag: float = 5.0):
     """
     Train GLMs on the regression matrix.
-    
+
     Args:
         matrix_path: Path to daily CSV.
         target_mag: Minimum magnitude threshold used for counts (meta-data only here).
@@ -39,34 +40,32 @@ def train_models(matrix_path: str = "regression_matrix.csv", target_mag: float =
 
     df = pd.read_csv(matrix_path)
     # Ensure date is datetime
-    df['date'] = pd.to_datetime(df['date'])
-    
+    df["date"] = pd.to_datetime(df["date"])
+
     # Feature Engineering for Baseline
     # Add Day of Year (DOY) for seasonality
-    df['doy'] = df['date'].dt.dayofyear
-    df['year_index'] = df['date'].dt.year - df['date'].dt.year.min()
-    
+    df["doy"] = df["date"].dt.dayofyear
+    df["year_index"] = df["date"].dt.year - df["date"].dt.year.min()
+
     # Harmonic Seasonality (Annual Cycle)
-    df['sin_doy'] = np.sin(2 * np.pi * df['doy'] / 365.25)
-    df['cos_doy'] = np.cos(2 * np.pi * df['doy'] / 365.25)
-    
+    df["sin_doy"] = np.sin(2 * np.pi * df["doy"] / 365.25)
+    df["cos_doy"] = np.cos(2 * np.pi * df["doy"] / 365.25)
+
     print(f"Training models on {len(df)} days. Target: eq_count_m5")
-    
+
     # --- 1. Baseline Model (Poisson) ---
     # Hypothesis: Random process + Seasonal Weather/Tidal stress + Catalog improvement trend
     baseline_formula = "eq_count_m5 ~ year_index + sin_doy + cos_doy"
-    
+
     try:
         baseline_model = smf.glm(
-            formula=baseline_formula,
-            data=df,
-            family=sm.families.Poisson()
+            formula=baseline_formula, data=df, family=sm.families.Poisson()
         ).fit()
-        
-        print("\n" + "="*40)
+
+        print("\n" + "=" * 40)
         print("BASELINE MODEL (Poisson)")
-        print("="*40)
-        print(baseline_model.summary().tables[0]) # Print summary header
+        print("=" * 40)
+        print(baseline_model.summary().tables[0])  # Print summary header
         print(f"AIC: {baseline_model.aic:.2f}")
     except Exception as e:
         print(f"Baseline training failed: {e}")
@@ -76,47 +75,47 @@ def train_models(matrix_path: str = "regression_matrix.csv", target_mag: float =
     # Hypothesis: Astro/Numerology adds signal.
     # We use Negative Binomial to handle overdispersion (Variance > Mean),
     # which is typical for earthquake clusters.
-    
+
     # Predictors:
     # - C(udn): Categorical Universal Day Number (is Day 8 differnet from Day 1?)
     # - Mars Score: Global Strength of Mars (Energy/Violence archetype)
     # - Saturn Score: Global Strength of Saturn (Structure/Tectonic archetype)
     # - Retrograde status is baked into the scores.
-    
+
     research_formula = (
         "eq_count_m5 ~ year_index + sin_doy + cos_doy + "
         "C(udn) + mars_score + saturn_score + sun_score + moon_score"
     )
-    
+
     try:
         # Note: statsmodels NegativeBinomial family defaults to alpha=1 (geometric).
         # ideally we estimate alpha, but fixed alpha is often sufficient for comparison.
         research_model = smf.glm(
             formula=research_formula,
             data=df,
-            family=sm.families.NegativeBinomial(alpha=1.0) 
+            family=sm.families.NegativeBinomial(alpha=1.0),
         ).fit()
-        
-        print("\n" + "="*40)
+
+        print("\n" + "=" * 40)
         print("RESEARCH MODEL (Negative Binomial)")
-        print("="*40)
+        print("=" * 40)
         # Print coefficients for our variables of interest
         print(research_model.summary())
         print(f"AIC: {research_model.aic:.2f}")
-        
+
     except Exception as e:
         print(f"Research model training failed: {e}")
         return
-        
+
     # --- 3. Comparison ---
-    print("\n" + "="*40)
+    print("\n" + "=" * 40)
     print("MODEL COMPARISON")
-    print("="*40)
+    print("=" * 40)
     delta_aic = baseline_model.aic - research_model.aic
     print(f"Baseline AIC: {baseline_model.aic:.2f}")
     print(f"Research AIC: {research_model.aic:.2f}")
     print(f"Delta AIC:    {delta_aic:.2f}")
-    
+
     if delta_aic > 2:
         print("Result: Research Model is statistically superior.")
     elif delta_aic < -2:
@@ -129,22 +128,25 @@ def train_models(matrix_path: str = "regression_matrix.csv", target_mag: float =
         "baseline_aic": baseline_model.aic,
         "research_aic": research_model.aic,
         "delta_aic": delta_aic,
-        "significant_features": []
+        "significant_features": [],
     }
-    
+
     # Check p-values < 0.05
     pvals = research_model.pvalues
     for feature, p in pvals.items():
         if p < 0.05:
-            results["significant_features"].append({
-                "feature": feature,
-                "p_value": p,
-                "coefficient": research_model.params[feature]
-            })
-            
+            results["significant_features"].append(
+                {
+                    "feature": feature,
+                    "p_value": p,
+                    "coefficient": research_model.params[feature],
+                }
+            )
+
     with open("model_results.json", "w") as f:
         json.dump(results, f, indent=2)
     print("\nSaved full results to model_results.json")
+
 
 if __name__ == "__main__":
     train_models()

@@ -360,25 +360,25 @@ def get_nakshatra(longitude: float) -> Dict:
         Dictionary with Nakshatra name, lord, deity, and pada (quarter)
     """
     normalized_long = longitude % 360
-    
+
     # Each Nakshatra spans 13°20' (13.3333... degrees)
     nakshatra_span = 360 / 27
     nakshatra_index = int(normalized_long / nakshatra_span)
-    
+
     # Calculate angular distance into the Nakshatra
     degrees_in_nakshatra = normalized_long % nakshatra_span
-    
+
     # Each Pada (quarter) spans 3°20' (3.3333... degrees)
     # 4 Padas per Nakshatra
     pada = int(degrees_in_nakshatra / (nakshatra_span / 4)) + 1
-    
+
     data = NAKSHATRAS[nakshatra_index]
-    
+
     return {
         "index": nakshatra_index,
         "name": data["name"],
         "lord": data["lord"],
         "deity": data["deity"],
         "pada": pada,
-        "degrees_in_nakshatra": degrees_in_nakshatra
+        "degrees_in_nakshatra": degrees_in_nakshatra,
     }
