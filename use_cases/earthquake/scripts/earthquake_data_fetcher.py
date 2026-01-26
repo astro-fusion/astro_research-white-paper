@@ -46,6 +46,8 @@ class EarthquakeDataFetcher:
         start_date: str,
         end_date: str,
         min_magnitude: float = DEFAULT_MAGNITUDE,
+        latitude_range: Optional[Tuple[float, float]] = None,
+        longitude_range: Optional[Tuple[float, float]] = None,
         use_usgs_api: bool = False
     ) -> Dict:
         """
@@ -55,6 +57,8 @@ class EarthquakeDataFetcher:
             start_date: Start date (YYYY-MM-DD)
             end_date: End date (YYYY-MM-DD)
             min_magnitude: Minimum magnitude to retrieve
+            latitude_range: Optional (min_lat, max_lat)
+            longitude_range: Optional (min_lon, max_lon)
             use_usgs_api: If True, fetch from USGS API; else use local data
             
         Returns:
@@ -65,7 +69,10 @@ class EarthquakeDataFetcher:
         
         if use_usgs_api:
             try:
-                return self._fetch_from_usgs_api(start_date, end_date, min_magnitude)
+                return self._fetch_from_usgs_api(
+                    start_date, end_date, min_magnitude, 
+                    latitude_range, longitude_range
+                )
             except Exception as e:
                 self._log(f"USGS API fetch failed: {e}. Falling back to sample data.")
                 return self._load_sample_data()
@@ -76,7 +83,9 @@ class EarthquakeDataFetcher:
         self,
         start_date: str,
         end_date: str,
-        min_magnitude: float
+        min_magnitude: float,
+        latitude_range: Optional[Tuple[float, float]] = None,
+        longitude_range: Optional[Tuple[float, float]] = None
     ) -> Dict:
         """
         Fetch data from USGS Earthquake API.
@@ -88,6 +97,8 @@ class EarthquakeDataFetcher:
             start_date: Start date (YYYY-MM-DD)
             end_date: End date (YYYY-MM-DD)
             min_magnitude: Minimum magnitude
+            latitude_range: (min_lat, max_lat)
+            longitude_range: (min_lon, max_lon)
             
         Returns:
             GeoJSON formatted earthquake data
@@ -97,11 +108,17 @@ class EarthquakeDataFetcher:
                 starttime=2020-01-01&
                 endtime=2020-12-31&
                 minmagnitude=5.0&
+                minlatitude=20&maxlatitude=35&
+                minlongitude=75&maxlongitude=90&
                 format=geojson
         """
         self._log(f"Fetching earthquakes from USGS API...")
         self._log(f"  Period: {start_date} to {end_date}")
         self._log(f"  Minimum magnitude: {min_magnitude}")
+        if latitude_range:
+            self._log(f"  Latitude: {latitude_range}")
+        if longitude_range:
+            self._log(f"  Longitude: {longitude_range}")
         
         params = {
             "starttime": start_date,
@@ -110,6 +127,14 @@ class EarthquakeDataFetcher:
             "format": self.DEFAULT_FORMAT,
             "orderby": "magnitude" # Largest first
         }
+        
+        if latitude_range:
+            params["minlatitude"] = latitude_range[0]
+            params["maxlatitude"] = latitude_range[1]
+            
+        if longitude_range:
+            params["minlongitude"] = longitude_range[0]
+            params["maxlongitude"] = longitude_range[1]
         
         try:
             response = requests.get(self.USGS_API_BASE, params=params, timeout=10)

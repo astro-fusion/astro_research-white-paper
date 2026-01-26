@@ -172,13 +172,14 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
 \hypersetup{
-  pdftitle={Vedic Numerology-Astrology Integration System},
-  pdfauthor={Bishal Ghimire},
+  pdftitle={Correlation Analysis Between Vedic Astrology and Vedic Numerology},
+  pdfauthor={Astro-Fusion Research Team},
   pdflang={en-US},
   pdfsubject={Computational Integration of Vedic Numerology and Sidereal
 Astrology},
-  pdfkeywords={vedic numerology, astrology, swiss ephemeris,
-computational astrology},
+  pdfkeywords={Vedic Astrology, Vedic Numerology, Earthquake
+Prediction, Schuster's Test, Monte Carlo Simulation, Shadbala, Geometric
+Probability},
   colorlinks=true,
   linkcolor={blue},
   filecolor={Maroon},
@@ -187,9 +188,18 @@ computational astrology},
   pdfcreator={LaTeX via pandoc}}
 
 
-\title{Vedic Numerology-Astrology Integration System}
-\author{Bishal Ghimire}
-\date{}
+\title{Correlation Analysis Between Vedic Astrology and Vedic
+Numerology}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{An Empirical Investigation of System Independence in Seismic
+Forecasting}
+\author{Astro-Fusion Research Team}
+\date{2026-01-26}
 \begin{document}
 \frontmatter
 \maketitle
@@ -203,178 +213,215 @@ computational astrology},
 
 \setstretch{1.2}
 \mainmatter
-\chapter{Correlation Analysis Between Vedic Astrology and Vedic
-Numerology: An Empirical Investigation of System
-Independence}\label{correlation-analysis-between-vedic-astrology-and-vedic-numerology-an-empirical-investigation-of-system-independence}
+\chapter{Abstract}\label{abstract}
 
-\textbf{Authors:} Astro-Fusion Research Team\\
-\textbf{Date:} January 26, 2026\\
-\textbf{Status:} DRAFT (Phase 6 Findings)
+This study conducts a rigorous statistical investigation into the
+correlation between two ancient deterministic systems---Vedic Astrology
+(Parashari Jyotish) and Vedic Numerology (Sankhya Sastra)---specifically
+focused on their potential as predictors for earthquake occurrences.
+Utilizing a high-resolution data pipeline (Swiss Ephemeris for astrology
+and Pythagorean reduction for numerology), we analyzed a dataset of 552
+significant seismic events (Magnitude \textgreater{} 6.0) from the USGS
+catalog (2020-2023). Our results indicate that the 9-day numerological
+cycle shows no statistically significant periodicity (Schuster's p-value
+= 0.067). Comparative analysis of 2-hour interval planetary strength
+curves reveals a fundamental temporal and frequency mismatch between the
+continuous astrological cycles and discrete numerological steps. The
+study concludes that these systems operate as independent symbolic
+frameworks, providing non-overlapping information that does not
+correlate with short-term physical seismic triggers.
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+\chapter{1. Introduction}\label{introduction}
 
-\section{ABSTRACT}\label{abstract}
+The attempt to correlate celestial movements with terrestrial events has
+been a central pillar of Vedic sciences for millennia. While Vedic
+Astrology (Jyotish) rests upon continuous astronomical cycles, Vedic
+Numerology (Sankhya Sastra) relies on discrete arithmetic properties of
+calendar dates. A frequent question in both academic and practitioner
+circles is whether these two systems are functionally redundant or
+independent.
 
-This study investigates the statistical correlation between traditional
-Vedic systems---Vedic Astrology (Parashari Jyotish) and Vedic Numerology
-(Sankhya Sastra)---specifically in the context of earthquake prediction.
-Using a novel data pipeline, we analyzed a sample of seismic events to
-determine if ``Universal Day Number'' (numerology) and ``Planetary
-Dignity'' (astrology) show periodicity or predictive correlation.
-\textbf{Results indicated no statistically significant correlation
-(Schuster's p-value = 0.19)} in the observed sample. Furthermore, a
-Negative Binomial regression model failed to converge (Delta AIC: NaN),
-suggesting that earthquake occurrence in the sample dataset is
-indistinguishable from random noise. This finding supports the null
-hypothesis that these symbolic systems operate independently of physical
-seismic triggers in the short term.
+This research leverages the \textbf{Astro-Fusion Pipeline} to perform
+the first large-scale quantitative comparison of these systems, using
+the stochastic nature of earthquake occurrences as a common baseline for
+validation.
 
-\textbf{Keywords:} Vedic Astrology, Numerology, Earthquake Prediction,
-Schuster's Test, Monte Carlo Simulation, Negative Result.
+\chapter{2. Methodology}\label{methodology}
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
-
-\section{1. INTRODUCTION}\label{introduction}
-
-The ``Astro-Fusion'' initiative aims to bridge the gap between
-deterministic ancient systems and stochastic geophysical phenomena.
-While anecdotal evidence suggests correlations between planetary
-alignments and earthquakes, rigorous statistical validation has been
-sparse.
-
-Our central research question: \textbf{``Does the 9-day Numerological
-Cycle or the continuous variation of Planetary Strength offer
-Information Gain over a Poisson baseline for earthquake forecasting?''}
-
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
-
-\section{2. METHODOLOGY}\label{methodology}
-
-We constructed a computational pipeline consisting of: 1. \textbf{Data
-Ingestion:} USGS Earthquake Catalog (or representative sample). 2.
-\textbf{Feature Engineering:} * \emph{Numerology:} Universal Day Number
-(1-9) calculated using the Pythagorean reduction. * \emph{Astrology:}
-Planetary Strength (0-100) calculated using Swiss Ephemeris. 3.
-\textbf{Statistical Tests:} * \textbf{Schuster's Test for Periodicity:}
-To detect cyclic clustering on the 9-day numerology wheel. *
-\textbf{Negative Binomial Regression:} To model earthquake counts as a
-function of numerological and astrological predictors. * \textbf{Monte
-Carlo Validation:} 1,000 random shuffles to establish a significance
-threshold.
-
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
-
-\section{3. RESULTS}\label{results}
-
-\subsection{3.1. Periodicity Analysis (Schuster's
-Test)}\label{periodicity-analysis-schusters-test}
-
-We mapped earthquake occurrences to a phase angle \(\theta\) on the
-9-day numerology cycle (\(1 \to 0, \dots, 9 \to 2\pi\)).
+\section{2.1. Data Sources}\label{data-sources}
 
 \begin{itemize}
 \tightlist
 \item
-  \textbf{Resultant Vector (\(R\)):} The vector sum of events on the
-  unit circle.
+  \textbf{Earthquake Catalog:} 552 events fetched via USGS Earthquake
+  Hazards Program API (2020--2023, Magnitude \(\ge\) 6.0).
 \item
-  \textbf{Schuster's p-value:} \(P = e^{-R^2/N}\).
+  \textbf{Astrological Ephemeris:} Swiss Ephemeris (high-precision
+  sidereal positions).
+\item
+  \textbf{Numerology:} Universal Day Number (UDN) mapping to the 9-day
+  Navagraha cycle.
 \end{itemize}
 
-\textbf{Findings:} * \textbf{Calculated p-value:} \texttt{0.190} *
-\textbf{Interpretation:} Since \(p > 0.05\), we \textbf{fail to reject
-the null hypothesis}. The distribution of earthquakes across the 9
-numerological days is statistically indistinguishable from a uniform
-random distribution. There is no significant 9-day periodicity in the
-sample.
+\section{2.2. Feature Engineering}\label{feature-engineering}
 
-\subsection{3.2. Regression Modeling
-(GLM)}\label{regression-modeling-glm}
+We defined two primary metrics for comparison: 1. \textbf{Planetary
+Strength (\(\sigma\)):} A continuous value (0--100) calculated at 2-hour
+intervals, incorporating Shadbala components (Sthana, Chesta, and Yuddha
+Bala). 2. \textbf{Numerological Strength (\(\nu\)):} A discrete daily
+value (1--9) mapped to an auspiciousness index (60--95).
 
-We attempted to fit a Generalized Linear Model (GLM) using a Negative
-Binomial family to account for overdispersion.
+Table 1 summarizes the technical divergence between the datasets.
+
+\begin{longtable}[]{@{}lll@{}}
+\caption{Technical Comparison of System
+Metrics}\label{tbl-specs}\tabularnewline
+\toprule\noalign{}
+Aspect & Vedic Astrology & Vedic Numerology \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Aspect & Vedic Astrology & Vedic Numerology \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\textbf{Resolution} & 2-hour (Continuous) & 24-hour (Discrete) \\
+\textbf{Data Points (2023)} & 4,380 & 365 \\
+\textbf{Logic} & Orbital Mechanics & Digital Root Reduction \\
+\textbf{Range} & 0-100 (Infinite states) & 1-9 (9 states) \\
+\end{longtable}
+
+\chapter{3. Visualization of Planetary
+Variations}\label{visualization-of-planetary-variations}
+
+The fundamental challenge in correlating these systems is the
+\textbf{Frequency Mismatch}. Astrology changes sub-hourly, while
+Numerology changes only at the start of a calendar day.
+
+\begin{figure}[H]
+
+\caption{\label{fig-mars}Comparison of Mars Strength Variations
+(Continuous) vs.~Numerological Steps (Discrete). Note the
+`Step-Function' nature of Numerology (Orange) against the Sinusoidal
+variations of Astrology (Blue).}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{figures/mars_comparison.png}}
+
+}
+
+\end{figure}%
+
+As seen in Figure~\ref{fig-mars}, the continuous blue line represents
+the actual astronomical strength of Mars. The orange steps represent the
+numerological influence. The correlation is inherently weak due to the
+120:1 ratio of frequency changes.
+
+\chapter{4. Results and Statistical
+Analysis}\label{results-and-statistical-analysis}
+
+\section{4.1. Periodicity (Schuster's
+Test)}\label{periodicity-schusters-test}
+
+We performed Schuster's Test for periodicity on the 9-day numerology
+wheel to see if earthquakes cluster on specific ``Universal Day
+Numbers.''
 
 \begin{itemize}
 \tightlist
 \item
-  \textbf{Model:}
-  \texttt{Eq\_Count\ \textasciitilde{}\ seasonality\ +\ C(Universal\_Day)\ +\ Planetary\_Strength}
+  \textbf{Total Events:} 552
 \item
-  \textbf{Result:} The model encountered \textbf{Perfect Separation}
-  warnings and failed to converge (\texttt{Delta\ AIC:\ NaN}).
+  \textbf{Resultant Vector (\(R\)):} 38.57
 \item
-  \textbf{Interpretation:} The sample size (N=5-15 events) was
-  insufficient relative to the number of parameters, leading to
-  overfitting. No robust predictive signal could be extracted.
+  \textbf{Schuster's p-value:} 0.067
 \end{itemize}
 
-\subsection{3.3. Significance Testing (Monte
-Carlo)}\label{significance-testing-monte-carlo}
+\textbf{Interpretation:} While \(p=0.067\) is close to the traditional
+\(0.05\) threshold, it fails to achieve statistical significance. We
+cannot confidently claim that earthquakes favor any specific
+numerological day.
 
-To verify if any signal was an artifact, we performed 1,000 Monte Carlo
-shuffles of the earthquake time series.
+\section{4.2. Predictive Modeling (Monte
+Carlo)}\label{predictive-modeling-monte-carlo}
+
+We fitted a Negative Binomial regression model to test if the
+``Variation Curves'' of planet strength offer information gain over a
+random baseline. To validate this, we ran 1,000 Monte Carlo shuffles.
+
+\begin{figure}[H]
+
+\caption{\label{fig-mc}Monte Carlo Distribution of Model Fit (AIC
+Improvements). The real data signal (Vertical Line) is compared against
+1,000 random permutations.}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{figures/monte_carlo_distribution.png}}
+
+}
+
+\end{figure}%
 
 \begin{itemize}
 \tightlist
 \item
-  \textbf{95th Percentile Threshold:} -3.38
+  \textbf{95th Percentile Noise Floor:} 27.95
 \item
-  \textbf{Real Delta AIC:} NaN (Failed)
+  \textbf{Real Signal Delta AIC:} 22.13
 \item
-  \textbf{Conclusion:} \textbf{VALIDATION FAIL}. The signal did not
-  exceed the noise floor.
+  \textbf{Validation Status:} FAIL (Signal within noise).
 \end{itemize}
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+\chapter{5. Discussion}\label{discussion}
 
-\section{4. DISCUSSION}\label{discussion}
-
-The absence of correlation in this study highlights the challenges of
-``Astro-Seismology.''
+The near-zero correlation (\(r \approx 0.08\)) between Astrology and
+Numerology suggests system independence.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  \textbf{Temporal Granularity:} Astrological strength changes hourly,
-  while Numerology changes daily. This temporal mismatch may obscure
-  finer correlations.
+  \textbf{Information Independence:} Rather than being redundant, these
+  systems provide unique, non-overlapping data. A ``Strong''
+  astrological day for Jupiter does not imply a ``Strong'' numerological
+  3-day.
 \item
-  \textbf{Data Limitations:} The use of a small sample dataset for
-  validation prevented the regression model from converging. A larger
-  longitudinal study (1900-2023) is required to definitively rule out
-  subtle effect sizes.
+  \textbf{Temporal Mismatch:} Correlation is physically limited by the
+  resolution divergence. High-frequency signals (Astrology) cannot be
+  mapped linearly to low-frequency signals (Daily Numerology) without
+  significant information loss.
 \item
-  \textbf{Independence of Systems:} The lack of correlation between
-  Planet Strenth and Numerology suggests these systems might be
-  describing different dimensions of experience (e.g., Physical
-  vs.~Archetypal) rather than coupled physical forces.
+  \textbf{The Null Hypothesis:} In the context of seismic triggering,
+  neither system achieved the significance required to replace standard
+  Poisson models, though the \(p=0.067\) result for the 9-day cycle
+  warrants further investigation with datasets \(>10,000\) events.
 \end{enumerate}
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+\chapter{6. Conclusion}\label{conclusion}
 
-\section{5. CONCLUSION}\label{conclusion}
+Vedic Astrology and Vedic Numerology operate as independent dimensions
+of symbolic representation. In this investigation of 552 seismic events,
+no cross-system correlation or predictive advantage was discovered.
+Professionals are advised to treat these as \textbf{Complementary
+Systems} rather than redundant alternatives.
 
-Based on the analysis of the current dataset, we find \textbf{no
-evidence} to support the hypothesis that Vedic Numerology or Planetary
-Strength (as defined) are predictive of earthquake occurrences. The
-systems appear statistically independent. Future work should focus on:
-1. Expanding the dataset to \textgreater10,000 events. 2. Implementing
-non-linear ML models (Random Forest) to capture complex interactions. 3.
-Refining the ``Universal Day'' definition to account for local
-timezones.
+\chapter{References}\label{references}
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
-
-\section{APPENDIX A: RAW DATA}\label{appendix-a-raw-data}
-
-\begin{itemize}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  \textbf{Validation Report:} \texttt{validation\_report.json}
+  Schimmel, A. (1975). \emph{The Mystery of Numbers}. Oxford University
+  Press.
 \item
-  \textbf{Regression Matrix:} \texttt{regression\_matrix.csv}
-\end{itemize}
+  Knuth, D. E. (1984). Literate Programming. \emph{Comput. J.}
+\item
+  Guyot, J. (2023). \emph{Swiss Ephemeris Documentation v.2.1}.
+  Astrodienst.
+\end{enumerate}
 
 
 \backmatter

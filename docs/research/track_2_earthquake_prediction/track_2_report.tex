@@ -1,0 +1,381 @@
+% Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  american,
+  11pt,
+  oneside,
+  openany]{scrbook}
+\usepackage{xcolor}
+\usepackage[top=30mm,left=25mm,right=25mm,bottom=30mm,heightrounded]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage[]{libertine}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage{setspace}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+
+
+\ifLuaTeX
+\usepackage[bidi=basic]{babel}
+\else
+\usepackage[bidi=default]{babel}
+\fi
+% get rid of language-specific shorthands (see #6817):
+\let\LanguageShortHands\languageshorthands
+\def\languageshorthands#1{}
+\ifLuaTeX
+  \usepackage[english]{selnolig} % disable illegal ligatures
+\fi
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
+
+% PDF Header - Custom LaTeX commands for PDF output
+% This file is included in the LaTeX preamble for PDF generation
+
+% Add any custom LaTeX packages or commands here
+% Example: \usepackage{booktabs}
+% Example: \usepackage{longtable}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\captionsetup{labelsep=colon}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Track 2: Astro-Seismology of the Indian Subcontinent},
+  pdfauthor={Astro-Fusion Research Team},
+  pdflang={en-US},
+  pdfsubject={Computational Integration of Vedic Numerology and Sidereal
+Astrology},
+  pdfkeywords={Earthquakes, India-Nepal, Indian Plate, USGS
+Data, Prediction, Shadbala, Pattern Matching},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={green},
+  urlcolor={blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{Track 2: Astro-Seismology of the Indian Subcontinent}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{A Scientific Investigation of Planetary Triggers for
+India-Nepal Earthquakes (2015-2024)}
+\author{Astro-Fusion Research Team}
+\date{2026-01-26}
+\begin{document}
+\frontmatter
+\maketitle
+
+% PDF Before Body - Content to include before document body
+% This file is included before the main document content
+
+% Add any content that should appear before the main document here
+% This could include custom title pages, abstracts, etc.
+
+
+\setstretch{1.2}
+\mainmatter
+\chapter{Abstract}\label{abstract}
+
+This research track investigates the potential for Astrological
+Prediction of seismic activity specifically within the
+\textbf{India-Nepal Tectonic Zone}. We define a strict data collection
+protocol using USGS records for the region (Lat 20-35N, Lon 75-90E).
+Analyzing \textbf{370 significant events} (Magnitude \textgreater{} 4.5)
+from 2015 to 2024, we map these occurrences against a ``Planetary Stress
+Index'' derived from Vedic Astrology principles (Shadbala and Geometric
+Aspects). The study aims to compare and contrast the recurrence patterns
+of Tectonic stress vs.~Astrological stress to validate if a predictive
+signal exists.
+
+\chapter{1. Phase 1: Earthquake Data Definition \&
+Introspection}\label{phase-1-earthquake-data-definition-introspection}
+
+\section{1.1. Data Collection
+Methodology}\label{data-collection-methodology}
+
+To ensure scientific rigor, we define our ``Target Region'' as the
+active collision zone of the Indian Plate.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Source:} United States Geological Survey (USGS) Earthquake
+  Hazards Program API.
+\item
+  \textbf{Region:} India-Nepal Border Area.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{Latitude:} \(20^\circ N\) to \(35^\circ N\)
+  \item
+    \emph{Longitude:} \(75^\circ E\) to \(90^\circ E\)
+  \end{itemize}
+\item
+  \textbf{Period:} January 1, 2015 to January 1, 2024 (9 Years).
+\item
+  \textbf{Threshold:} Moment Magnitude (\(M_w\)) \(\ge 4.5\).
+\end{itemize}
+
+\section{1.2. Introspective Analysis (The
+Dataset)}\label{introspective-analysis-the-dataset}
+
+We successfully fetched and processed \textbf{370 distinct seismic
+events}.
+
+\textbf{Key Characteristics:} - \textbf{Intensity Distribution:} The
+dataset includes major events (Mag \textgreater{} 7.0) and frequent
+moderate tremors (Mag 4.5-5.5). - \textbf{Temporal Clustering:} We
+observe distinct ``swarms'' of activity rather than a uniform
+distribution.
+
+\begin{figure}[H]
+
+\caption{\label{fig-timeline}Phase 1: Seismic Activity Timeline
+(India-Nepal). The bubble size represents Magnitude intensity
+(\(Mag^4\)). Note the high density of events in 2015 (Nepal Earthquake
+sequence) and sporadic activity thereafter.}
+
+\centering{
+
+\includegraphics[width=0.9\linewidth,height=\textheight,keepaspectratio]{figures/phase1_seismic_timeline.png}
+
+}
+
+\end{figure}%
+
+This timeline establishes the \textbf{``Ground Truth''}---the physical
+reality we are attempting to predict.
+
+\chapter{2. Phase 2: Astrology-Based Prediction
+Model}\label{phase-2-astrology-based-prediction-model}
+
+\section{2.1. Defining the
+Combinations}\label{defining-the-combinations}
+
+In this phase, we apply Vedic Astrology principles to define ``Trigger''
+conditions. We hypothesize that earthquakes are more likely during
+periods of high \textbf{``Planetary Stress''}.
+
+\textbf{The Formula:} We utilize the \textbf{Astro-Fusion Stress Index},
+calculated by analyzing: 1. \textbf{Shadbala (6-Fold Strength):} Low
+Aggregate Strength = Instability. 2. \textbf{Graha Yuddha (Planetary
+War):} Conjunctions within \(1^\circ\). 3. \textbf{Malefic Aspects:}
+Saturn-Mars mutual aspects (\(180^\circ\) or \(90^\circ\)).
+
+\section{2.2. Mapping Patterns (The
+Repeater)}\label{mapping-patterns-the-repeater}
+
+We map this ``Stress Index'' (Purple Line) against the actual Earthquake
+events (Red Markers) to visualize potential synchronization.
+
+\begin{figure}[H]
+
+\caption{\label{fig-pattern}Phase 2: Pattern Mapping. The Purple Line
+represents the modeled Astrological Stress. The Red Dashed Lines are
+major earthquakes (Mag \textgreater{} 5.5). We look for alignment
+between the Purple Peaks and Red Lines.}
+
+\centering{
+
+\includegraphics[width=0.9\linewidth,height=\textheight,keepaspectratio]{figures/phase2_astro_pattern_map.png}
+
+}
+
+\end{figure}%
+
+\textbf{Observation:} The goal is to see if the ``Pattern of the Sky''
+(Purple) repeats in sync with the ``Pattern of the Earth'' (Red).
+
+\chapter{3. Phase 3: Validation (Compare \&
+Contrast)}\label{phase-3-validation-compare-contrast}
+
+\section{3.1. Machine Learning
+Validation}\label{machine-learning-validation}
+
+To move beyond visual anecdotal evidence, we perform a statistical
+\textbf{Correlation Check}. We scatter the \emph{Planetary Stress Index}
+(X-axis) against the \emph{Earthquake Magnitude} (Y-axis) for all 370
+events.
+
+\section{3.2. The Logic of Deduction}\label{the-logic-of-deduction}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Hypothesis:} If Astrology predicts earthquakes, large
+  magnitudes (Y-High) should cluster at High Stress (X-High). We expect
+  a \textbf{Linear Trend} (diagonal).
+\item
+  \textbf{Results:}
+\end{itemize}
+
+\begin{figure}[H]
+
+\caption{\label{fig-scatter}Phase 3: Validation Scatter Plot. The
+distribution is uniform/random. There is no clear diagonal clustering.
+High magnitude events occur at both High and Low Astrological Stress
+levels.}
+
+\centering{
+
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{figures/phase3_validation_scatter.png}
+
+}
+
+\end{figure}%
+
+\section{3.3. Conclusion}\label{conclusion}
+
+Comparing the ``Pattern of the Sky'' with the ``Pattern of the Earth''
+reveals: 1. \textbf{No Direct Pattern:} The Astrological Stress model
+acts as a ``Random Number Generator'' relative to the specific
+India-Nepal seismic record. 2. \textbf{Independence:} The placements of
+planets (Saturn/Mars) do not \emph{consistently} trigger earthquakes in
+this specific geographic bounding box. 3. \textbf{Final Verdict:} While
+individual coincidences exist, \textbf{Planetary Positions cannot
+reliably predict earthquake patterns} in this dataset using the current
+linear methodology.
+
+
+\backmatter
+
+
+\end{document}

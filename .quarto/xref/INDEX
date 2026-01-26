@@ -39,5 +39,11 @@
   },
   "docs/research/research_paper.md": {
     "research_paper.tex": "746362e3"
+  },
+  "docs/research/track_1_numerology_vs_astrology/track_1_report.md": {
+    "track_1_report.tex": "c25c2bfa"
+  },
+  "docs/research/track_2_earthquake_prediction/track_2_report.md": {
+    "track_2_report.tex": "b4ac85f6"
   }
 }
