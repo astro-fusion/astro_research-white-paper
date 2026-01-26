@@ -1,0 +1,36 @@
+---
+title: "Astro Research Fusion"
+page-layout: custom
+section-divs: false
+toc: false
+css: styles/landing.css
+---
+
+::: {.hero-section}
+# Bridging Ancient Wisdom & Modern Science
+### A Computational Approach to Vedic Astrology & Numerology
+
+[Explore Reports](reports.qmd){.btn .btn-action .btn-lg role="button"} [View Documentation](README.md){.btn .btn-outline .btn-lg role="button"}
+:::
+
+::: {.features-grid}
+::: {.feature-card}
+## 🪐 Planetary Dynamics
+Analyze continuous planetary strength variations using high-precision astronomical data (Swiss Ephemeris).
+:::
+
+::: {.feature-card}
+## 🔢 Numerological Patterns
+Investigate discrete time-based value changes and their correlations with celestial mechanics.
+:::
+
+::: {.feature-card}
+## 🌍 Predictive Research
+Empirical testing of astrological rules against real-world events like earthquakes and global shifts.
+:::
+:::
+
+::: {.about-section}
+## Why This Research Matters
+Most astrology is anecdotal. We are building a **rigorous, data-driven framework** to test, validate, or debunk traditional claims. By treating ancient systems as *algorithms*, we can apply modern data science to understand their properties.
+:::

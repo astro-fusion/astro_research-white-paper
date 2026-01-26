@@ -2,6 +2,25 @@
 # This file contains shared settings that can be used by all use cases.
 # Individual use cases should copy this file and customize as needed.
 
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Astro Research"
+  navbar:
+    left:
+      - text: "Home"
+        href: index.qmd
+      - text: "Reports"
+        href: reports.qmd
+      - text: "Developer Guide"
+        href: README.md
+    right:
+      - icon: github
+        href: https://github.com/astro-fusion/astro_research-white-paper
+        aria-label: GitHub
+
 # Common format settings for all outputs
 format:
   # Interactive HTML format for web publication
