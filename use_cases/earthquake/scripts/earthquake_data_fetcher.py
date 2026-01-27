@@ -64,9 +64,6 @@ class EarthquakeDataFetcher:
         Returns:
             Dictionary with earthquake data
         """
-        if self.use_sample_data and not use_usgs_api:
-            return self._load_sample_data()
-        
         if use_usgs_api:
             try:
                 return self._fetch_from_usgs_api(
@@ -74,10 +71,19 @@ class EarthquakeDataFetcher:
                     latitude_range, longitude_range
                 )
             except Exception as e:
-                self._log(f"USGS API fetch failed: {e}. Falling back to sample data.")
-                return self._load_sample_data()
+                self._log(f"❌ CRITICAL: USGS API fetch failed: {e}")
+                self._log("Real data fetch failed. Cannot proceed with valid analysis.")
+                raise
         
-        return self._load_sample_data()
+        # If API is not explicitly requested, check consistency
+        # In this strict mode, we should generally default to API usage or require explicit file path
+        # But for this function signature, we'll enforce API if sample data was previously the default
+        self._log("⚠️ USGS API flag not set, but mock data is disabled.")
+        self._log("Attempting API fetch as fallback for real data...")
+        return self._fetch_from_usgs_api(
+             start_date, end_date, min_magnitude, 
+             latitude_range, longitude_range
+        )
     
     def _fetch_from_usgs_api(
         self,
@@ -149,64 +155,8 @@ class EarthquakeDataFetcher:
             self._log(f"❌ Error fetching from USGS API: {e}")
             raise
     
-    def _load_sample_data(self) -> Dict:
-        """Load sample earthquake data for testing."""
-        if self.sample_data_path.exists():
-            self._log(f"Loading sample earthquake data from {self.sample_data_path}")
-            with open(self.sample_data_path, 'r') as f:
-                return json.load(f)
-        else:
-            self._log(f"⚠️  Sample data not found at {self.sample_data_path}")
-            return self._create_mock_data()
-    
-    def _create_mock_data(self) -> Dict:
-        """Create mock earthquake data for testing."""
-        self._log("Creating mock earthquake data...")
-        
-        # Generate 20 mock earthquakes
-        features = []
-        base_date = datetime(2020, 1, 1)
-        
-        locations = [
-            {"name": "Japan (Honshu)", "lon": 139.6, "lat": 37.6},
-            {"name": "Indonesia", "lon": 113.6, "lat": -2.1},
-            {"name": "Chile", "lon": -71.5, "lat": -30.0},
-            {"name": "Peru", "lon": -75.3, "lat": -9.2},
-            {"name": "Mexico", "lon": -96.8, "lat": 15.6},
-        ]
-        
-        for i in range(20):
-            date = base_date + timedelta(days=i*5)
-            location = locations[i % len(locations)]
-            
-            feature = {
-                "type": "Feature",
-                "properties": {
-                    "mag": 5.0 + (i % 3),
-                    "place": location["name"],
-                    "time": int(date.timestamp() * 1000),
-                    "updated": int(date.timestamp() * 1000),
-                    "url": f"https://earthquake.usgs.gov/earthquakes/events/{i}"
-                },
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [location["lon"], location["lat"], 10.0]
-                }
-            }
-            features.append(feature)
-        
-        return {
-            "type": "FeatureCollection",
-            "metadata": {
-                "generated": int(datetime.now().timestamp() * 1000),
-                "url": "MOCK DATA",
-                "title": "USGS Earthquake Data (Mock)",
-                "status": 200,
-                "api": "1.8.1",
-                "count": len(features)
-            },
-            "features": features
-        }
+    # Mock data generation methods removed to ensure production integrity.
+    # No _load_sample_data or _create_mock_data available.
     
     def process_for_analysis(self, earthquake_data: Dict) -> List[Dict]:
         """
@@ -426,81 +376,77 @@ class EarthquakeDataFetcher:
 
 
 def main():
-    """Example usage of the earthquake data fetcher."""
+    """
+    Main workflow: Fetch Real USGS Data for Offline Storage.
+    """
     import sys
     
     # Initialize fetcher
-    fetcher = EarthquakeDataFetcher(use_sample_data=True, verbose=True)
+    # verbose=True to see progress
+    fetcher = EarthquakeDataFetcher(use_sample_data=False, verbose=True)
     
-    # Option 1: Use sample data (default)
-    print("\n" + "="*60)
-    print("OPTION 1: Using Sample Data (Default)")
-    print("="*60)
+    print("\n" + "="*80)
+    print("EARTHQUAKE DATA FETCHER - OFFLINE STORAGE MODE")
+    print("Fetching REAL data to populate local storage (Multiple Datasets).")
+    print("="*80)
     
-    raw_data = fetcher.fetch_earthquakes(
-        start_date="2020-01-01",
-        end_date="2020-12-31",
-        use_usgs_api=False
-    )
-    
-    print(f"✅ Loaded {len(raw_data.get('features', []))} earthquake records")
-    
-    # Process data
-    processed = fetcher.process_for_analysis(raw_data)
-    print(f"✅ Processed {len(processed)} earthquakes for analysis")
-    
-    # Show sample
-    if processed:
-        print("\nSample earthquake:")
-        print(f"  Date: {processed[0]['date']}")
-        print(f"  Magnitude: {processed[0]['magnitude']}")
-        print(f"  Location: {processed[0]['place']}")
-    
-    # Option 2: Fetch from USGS API (requires internet)
-    print("\n" + "="*60)
-    print("OPTION 2: Fetch from USGS API (Uncomment to use)")
-    print("="*60)
-    # ============================================================
-    # OPTION 2: Fetch from USGS API (ENABLED FOR PHASE 7)
-    # ============================================================
-    print("\n" + "="*60)
-    print("PHASE 7: Fetching REAL data from USGS (2020-2023)")
-    print("="*60)
+    base_dir = Path(__file__).parent.parent / "data"
+    base_dir.mkdir(parents=True, exist_ok=True)
     
     try:
-        # Fetching a larger dataset for real analysis
-        raw_data = fetcher.fetch_earthquakes(
+        # ---------------------------------------------------------
+        # DATASET 1: Global Significant Earthquakes (Mag 6.0+)
+        # ---------------------------------------------------------
+        print("\n1. Fetching Global Data (2020-2025, Mag 6.0+)...")
+        global_data = fetcher.fetch_earthquakes(
             start_date="2020-01-01",
-            end_date="2023-12-31", 
-            min_magnitude=6.0, # Focus on significant events
-            use_usgs_api=True  # ENABLED
+            end_date="2025-12-31", 
+            min_magnitude=6.0,
+            use_usgs_api=True
         )
         
-        # Save to real data path
-        data_dir = os.path.join(os.path.dirname(__file__), "../../data")
-        os.makedirs(data_dir, exist_ok=True)
-        output_file = os.path.join(data_dir, "usgs_real_data_phase7.json")
+        global_file = base_dir / "usgs_global_6plus_2020_2025.json"
+        processed_global = fetcher.process_for_analysis(global_data)
         
-        # Process and Save
-        processed_real = fetcher.process_for_analysis(raw_data)
+        with open(global_file, "w") as f:
+            json.dump(processed_global, f, indent=2, default=str)
+        print(f"   ✅ Saved {len(processed_global)} records to {global_file.name}")
+
+
+        # ---------------------------------------------------------
+        # DATASET 2: Indian Subcontinent (Mag 5.0+)
+        # ---------------------------------------------------------
+        # Region: roughly 5N-40N, 60E-100E
+        print("\n2. Fetching Indian Subcontinent Data (2020-2025, Mag 5.0+)...")
+        india_data = fetcher.fetch_earthquakes(
+            start_date="2020-01-01",
+            end_date="2025-12-31", 
+            min_magnitude=5.0,
+            latitude_range=(5.0, 40.0),
+            longitude_range=(60.0, 100.0),
+            use_usgs_api=True
+        )
         
-        with open(output_file, "w") as f:
-            json.dump(processed_real, f, indent=2, default=str)
-            
-        print(f"✅ Fetched and saved {len(processed_real)} real earthquakes to {output_file}")
+        india_file = base_dir / "usgs_india_5plus_2020_2025.json"
+        processed_india = fetcher.process_for_analysis(india_data)
+        
+        with open(india_file, "w") as f:
+            json.dump(processed_india, f, indent=2, default=str)
+        print(f"   ✅ Saved {len(processed_india)} records to {india_file.name}")
+
+
+        print("\n" + "="*80)
+        print("STORAGE COMPLETE")
+        print(f"1. Global Data: {global_file}")
+        print(f"2. Regional Data: {india_file}")
+        print("These files are ready for progressive loading in analysis tools.")
         
     except Exception as e:
-        print(f"❌ Error fetching real data: {e}")
+        print(f"\n❌ ERROR: Failed to fetch data: {e}")
+        sys.exit(1)
     
-    print("\n" + "="*60)
-    print("Integration Ready!")
-    print("="*60)
-    print("""
-    This fetcher integrates with:
-    - use_cases/earthquake/scripts/earthquake_planetary_analysis.py
-    - GitHub Actions workflow (.github/workflows/build-deploy.yml)
-    - USGS Earthquake Hazards Program API
-    """)
+    print("\n" + "="*80)
+
 
 
 if __name__ == "__main__":
