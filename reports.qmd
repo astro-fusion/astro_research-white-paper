@@ -1,0 +1,16 @@
+---
+title: "Research Reports"
+---
+
+Welcome to our research findings. Here we document our empirical investigations into astrological and numerological systems.
+
+| Research Area | Report Title | Status |
+|:---|:---|:---|
+| **Numerology** | [Temporal Discontinuity: A Quantitative Analysis](use_cases/numerology/research_paper/numerology_astrology_correlation.qmd) | ✅ Published |
+| **Earthquake** | [Seismic Activity & Planetary Correlations](use_cases/earthquake/report.qmd) | 🚧 In Progress |
+
+## Upcoming Research
+We are currently expanding our dataset to include:
+- Historical stock market crash cycles
+- Celebrity career path analysis
+- Global weather pattern correlations

@@ -63,7 +63,7 @@ def iter_datetime_range(
 ) -> Iterable[datetime]:
     """
     Iterate datetimes with a step in hours.
-    
+
     Args:
         start_dt: Start datetime
         end_dt: End datetime
@@ -71,10 +71,10 @@ def iter_datetime_range(
     """
     if step_hours <= 0:
         raise ValueError("step_hours must be > 0")
-    
+
     cur = start_dt
     step = timedelta(hours=step_hours)
-    
+
     while cur <= end_dt:
         yield cur
         cur += step
@@ -99,50 +99,50 @@ def compute_astrology_strength_series(
     start_date: DateLike,
     end_date: DateLike,
     step_days: int = 1,
-    step_hours: Optional[float] = None, # New: support 2-hour intervals
+    step_hours: Optional[float] = None,  # New: support 2-hour intervals
     planets: Optional[Sequence[Planet]] = None,
     config: Optional[TimeSeriesConfig] = None,
 ) -> pd.DataFrame:
     """
     Compute dignity/strength score (0-100) per planet across a date range.
-    
+
     Supports both daily mode (classic) and high-res mode (step_hours).
     """
     cfg = config or TimeSeriesConfig()
     # If step_hours is provided, we switch to high-res mode
     is_high_res = step_hours is not None
-    
+
     # Imports inside to avoid circular deps if any
     from .dignity.global_scorer import GlobalShadbalaScorer
-    
+
     # Initialize Engines
     ephemeris = EphemerisEngine()
     # Use Global Shadbala Scorer for research-grade strength (Chesta/Yuddha included)
     global_scorer = GlobalShadbalaScorer(ephemeris=ephemeris)
 
     rows: List[Dict[str, Any]] = []
-    
+
     # Determine iteration strategy
     if is_high_res:
         # Convert dates to datetimes if needed
-        s_dt = datetime.combine(_to_date(start_date), time(0,0))
+        s_dt = datetime.combine(_to_date(start_date), time(0, 0))
         e_dt = datetime.combine(_to_date(end_date), time(23, 59))
-        iterator = iter_datetime_range(s_dt, e_dt, step_hours=step_hours) # type: ignore
+        iterator = iter_datetime_range(s_dt, e_dt, step_hours=step_hours)  # type: ignore
     else:
         # Classic daily mode
         iterator = [
-            datetime.combine(d, time(hour=cfg.noon_hour)) 
+            datetime.combine(d, time(hour=cfg.noon_hour))
             for d in iter_dates(start_date, end_date, step_days=step_days)
         ]
 
     for dt in iterator:
         jd = ephemeris.datetime_to_julian_day(dt)
-        
+
         # Use Global Scorer for better quality metrics
         scores = global_scorer.calculate_global_power(jd)
-        
+
         row: Dict[str, Any] = {"date": dt.isoformat()}
-        
+
         # Filter for requested planets if needed
         if planets:
             # Need to map Planet Enum to string keys used by GlobalScorer
@@ -152,7 +152,7 @@ def compute_astrology_strength_series(
             # Add all
             for pname, score in scores.items():
                 row[f"astrology_{pname.upper()}"] = score
-                
+
         rows.append(row)
 
     return pd.DataFrame(rows)

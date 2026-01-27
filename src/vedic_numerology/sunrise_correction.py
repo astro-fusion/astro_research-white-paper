@@ -85,7 +85,6 @@ def adjust_date_for_vedic_day(
         return birth_date - timedelta(days=1)
     return birth_date
 
-
     return True, ""
 
 
@@ -94,15 +93,15 @@ def get_vedic_day_info(
 ) -> dict:
     birth_dt = datetime.combine(birth_date, birth_time)
     sunrise = get_sunrise_time(birth_date, latitude, longitude)
-    
+
     correction_applied = False
     vedic_date = birth_date
-    
+
     if sunrise:
         if birth_dt.time() < sunrise.time():
             correction_applied = True
             vedic_date = birth_date - timedelta(days=1)
-            
+
     return {
         "gregorian_date": birth_date,
         "vedic_date": vedic_date,

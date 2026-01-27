@@ -14,9 +14,13 @@
 
 ### 📖 Read the Research
 
-**🌐 [View Online](https://astro-fusion.github.io/astro_research-white-paper/)** | **[📄 Download PDF](assets/releases/vedic-numerology-research-manuscript.pdf)** | **[📝 Download DOCX](assets/releases/vedic-numerology-research-manuscript.docx)**
+**🌐 [Visit Research Website](https://astro-fusion.github.io/astro_research-white-paper/)**
 
-> **📁 Local Assets**: The download links above point to locally generated research manuscripts. For the latest automated versions, check GitHub Actions artifacts or run `python3 generate-assets.py` to regenerate.
+Access our growing collection of research reports:
+- **[Numerology Report](https://astro-fusion.github.io/astro_research-white-paper/use_cases/numerology/research_paper/numerology_astrology_correlation.html)**: Temporal discontinuity analysis.
+- **[Earthquake Research](https://astro-fusion.github.io/astro_research-white-paper/use_cases/earthquake/report.html)**: Seismic activity correlations (In Progress).
+
+> **Note**: This repository contains multiple research use cases. Visit the [Reports Section](https://astro-fusion.github.io/astro_research-white-paper/reports.html) of our website for the complete list.
 
 ## 🌟 Core Research Principles
 

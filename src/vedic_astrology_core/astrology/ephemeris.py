@@ -140,10 +140,12 @@ class EphemerisEngine:
 
         result = swe.calc_ut(julian_day, planet)
 
-    def get_heliocentric_position(self, julian_day: float, planet: Union[int, str]) -> Dict:
+    def get_heliocentric_position(
+        self, julian_day: float, planet: Union[int, str]
+    ) -> Dict:
         """
         Calculate heliocentric planetary position (Sun-centered).
-        
+
         This is used for the "Physical Coupling" hypothesis in the Research Pipeline,
         where gravitational forces (dependent on true heliocentric distance and position)
         are tested for correlation with seismic cycles, independent of geocentric
@@ -163,29 +165,33 @@ class EphemerisEngine:
         # Convert planet name to constant if needed
         if isinstance(planet, str):
             planet = self._planet_name_to_constant(planet)
-            
-        # Solar system bodies only. Ideally ignore MOON/RAHU/KETU for heliocentric 
-        # as they are geocentric concepts, but swisseph handles the vector math 
+
+        # Solar system bodies only. Ideally ignore MOON/RAHU/KETU for heliocentric
+        # as they are geocentric concepts, but swisseph handles the vector math
         # (Moon's heliocentric position is Earth's + Moon's vector).
-        
+
         # Add HELIOCENTRIC flag
         flags = swe.FLG_HELCTR | swe.FLG_SPEED
-        
+
         # swe.calc_ut returns ((long, lat, dist, speed_long, speed_lat, speed_dist), rflag)
         result = swe.calc_ut(julian_day, planet, flags)
-        
+
         coordinates = result[0]
         longitude, latitude, distance = coordinates[0], coordinates[1], coordinates[2]
         speed_longitude = coordinates[3]
-        
+
         return {
             "longitude": longitude % 360,
             "latitude": latitude,
             "distance": distance,
             "longitude_speed": speed_longitude,
-            "x_vector": distance * math.cos(math.radians(longitude)) * math.cos(math.radians(latitude)),
-            "y_vector": distance * math.sin(math.radians(longitude)) * math.cos(math.radians(latitude)),
-            "z_vector": distance * math.sin(math.radians(latitude))
+            "x_vector": distance
+            * math.cos(math.radians(longitude))
+            * math.cos(math.radians(latitude)),
+            "y_vector": distance
+            * math.sin(math.radians(longitude))
+            * math.cos(math.radians(latitude)),
+            "z_vector": distance * math.sin(math.radians(latitude)),
         }
 
     def get_planet_position(self, julian_day: float, planet: Union[int, str]) -> Dict:

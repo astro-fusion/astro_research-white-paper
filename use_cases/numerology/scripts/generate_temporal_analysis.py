@@ -24,7 +24,7 @@ from typing import Dict, List, Any, Optional
 import pandas as pd
 
 # Add the src directory to the Python path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from numerology.calculator import calculate_mulanka
 from numerology.planet_mapping import get_planet_from_number
@@ -32,12 +32,15 @@ from vedic_astrology_core.dignity import DignityScorer
 from vedic_astrology_core.astrology import EphemerisEngine
 from vedic_astrology_core.config import Planet
 
+
 class TemporalDataGenerator:
     """
     Generates temporal data comparing numerology and astrology planetary strengths.
     """
 
-    def __init__(self, start_date: date = date(2020, 1, 1), end_date: date = date(2025, 1, 1)):
+    def __init__(
+        self, start_date: date = date(2020, 1, 1), end_date: date = date(2025, 1, 1)
+    ):
         """
         Initialize the data generator.
 
@@ -51,13 +54,22 @@ class TemporalDataGenerator:
         self.ephemeris = EphemerisEngine()
 
         # Create data directory if it doesn't exist
-        self.data_dir = os.path.join(os.path.dirname(__file__), '..', 'data', 'processed')
+        self.data_dir = os.path.join(
+            os.path.dirname(__file__), "..", "data", "processed"
+        )
         os.makedirs(self.data_dir, exist_ok=True)
 
         # All planets to analyze
         self.planets = [
-            Planet.SUN, Planet.MOON, Planet.MARS, Planet.MERCURY,
-            Planet.JUPITER, Planet.VENUS, Planet.SATURN, Planet.RAHU, Planet.KETU
+            Planet.SUN,
+            Planet.MOON,
+            Planet.MARS,
+            Planet.MERCURY,
+            Planet.JUPITER,
+            Planet.VENUS,
+            Planet.SATURN,
+            Planet.RAHU,
+            Planet.KETU,
         ]
 
     def generate_data(self) -> List[Dict[str, Any]]:
@@ -85,13 +97,13 @@ class TemporalDataGenerator:
 
                 # Combine data
                 daily_data = {
-                    'date': current_date.isoformat(),
-                    'day_of_year': current_date.timetuple().tm_yday,
-                    'month': current_date.month,
-                    'day': current_date.day,
-                    'year': current_date.year,
+                    "date": current_date.isoformat(),
+                    "day_of_year": current_date.timetuple().tm_yday,
+                    "month": current_date.month,
+                    "day": current_date.day,
+                    "year": current_date.year,
                     **numerology_data,
-                    **astrology_data
+                    **astrology_data,
                 }
 
                 data.append(daily_data)
@@ -127,15 +139,17 @@ class TemporalDataGenerator:
         mulanka_num, mulanka_planet = calculate_mulanka(target_date)
 
         # Initialize all planets with zero strength
-        numerology_strengths = {f"numerology_{planet.name}": 0.0 for planet in self.planets}
+        numerology_strengths = {
+            f"numerology_{planet.name}": 0.0 for planet in self.planets
+        }
 
         # The active planet gets full strength (100)
         numerology_strengths[f"numerology_{mulanka_planet.name}"] = 100.0
 
         return {
-            'numerology_active_planet': mulanka_planet.name,
-            'numerology_mulanka_number': mulanka_num,
-            **numerology_strengths
+            "numerology_active_planet": mulanka_planet.name,
+            "numerology_mulanka_number": mulanka_num,
+            **numerology_strengths,
         }
 
     def _calculate_astrology_for_date(self, target_date: date) -> Dict[str, Any]:
@@ -160,25 +174,31 @@ class TemporalDataGenerator:
         for planet in self.planets:
             try:
                 # Get planet position
-                planet_data = self.ephemeris.get_planet_position(julian_day, planet.name.lower())
+                planet_data = self.ephemeris.get_planet_position(
+                    julian_day, planet.name.lower()
+                )
 
                 # Calculate full dignity score
                 score = self.scorer.calculate_full_score(
                     planet,
-                    planet_data['sign'],
-                    planet_data['longitude'],
-                    planet_data=planet_data
+                    planet_data["sign"],
+                    planet_data["longitude"],
+                    planet_data=planet_data,
                 )
 
                 astrology_strengths[f"astrology_{planet.name}"] = score
 
             except Exception as e:
-                print(f"Warning: Could not calculate score for {planet.name} on {target_date}: {e}")
+                print(
+                    f"Warning: Could not calculate score for {planet.name} on {target_date}: {e}"
+                )
                 astrology_strengths[f"astrology_{planet.name}"] = 0.0
 
         return astrology_strengths
 
-    def save_data(self, data: List[Dict[str, Any]], output_file: Optional[str] = None) -> str:
+    def save_data(
+        self, data: List[Dict[str, Any]], output_file: Optional[str] = None
+    ) -> str:
         """
         Save the generated data to CSV and JSON files.
 
@@ -193,7 +213,9 @@ class TemporalDataGenerator:
             output_file = "temporal_analysis_5years.csv"
 
         csv_path = os.path.join(self.data_dir, output_file)
-        json_path = os.path.join(self.data_dir, output_file.replace('.csv', '_summary.json'))
+        json_path = os.path.join(
+            self.data_dir, output_file.replace(".csv", "_summary.json")
+        )
 
         # Save CSV
         if data:
@@ -203,7 +225,7 @@ class TemporalDataGenerator:
 
             # Save summary statistics as JSON
             summary = self._generate_summary(data)
-            with open(json_path, 'w') as f:
+            with open(json_path, "w") as f:
                 json.dump(summary, f, indent=2, default=str)
             print(f"Saved summary statistics to {json_path}")
 
@@ -220,51 +242,61 @@ class TemporalDataGenerator:
             Dictionary with summary statistics
         """
         if not data:
-            return {'error': 'No data to summarize'}
+            return {"error": "No data to summarize"}
 
         df = pd.DataFrame(data)
 
         summary = {
-            'metadata': {
-                'start_date': self.start_date.isoformat(),
-                'end_date': self.end_date.isoformat(),
-                'total_days': len(data),
-                'planets_analyzed': [p.name for p in self.planets]
+            "metadata": {
+                "start_date": self.start_date.isoformat(),
+                "end_date": self.end_date.isoformat(),
+                "total_days": len(data),
+                "planets_analyzed": [p.name for p in self.planets],
             },
-            'numerology_stats': {},
-            'astrology_stats': {},
-            'correlation_analysis': {}
+            "numerology_stats": {},
+            "astrology_stats": {},
+            "correlation_analysis": {},
         }
 
         # Numerology statistics (discrete changes)
-        numerology_cols = [col for col in df.columns if col.startswith('numerology_') and not col.endswith('_active_planet') and not col.endswith('_mulanka_number')]
+        numerology_cols = [
+            col
+            for col in df.columns
+            if col.startswith("numerology_")
+            and not col.endswith("_active_planet")
+            and not col.endswith("_mulanka_number")
+        ]
 
         for col in numerology_cols:
-            planet_name = col.replace('numerology_', '')
+            planet_name = col.replace("numerology_", "")
             values = df[col].dropna()
 
-            summary['numerology_stats'][planet_name] = {
-                'mean': float(values.mean()),
-                'std': float(values.std()),
-                'min': float(values.min()),
-                'max': float(values.max()),
-                'unique_values': sorted(values.unique().tolist()),
-                'change_frequency': self._calculate_change_frequency(df['date'], values)
+            summary["numerology_stats"][planet_name] = {
+                "mean": float(values.mean()),
+                "std": float(values.std()),
+                "min": float(values.min()),
+                "max": float(values.max()),
+                "unique_values": sorted(values.unique().tolist()),
+                "change_frequency": self._calculate_change_frequency(
+                    df["date"], values
+                ),
             }
 
         # Astrology statistics (continuous changes)
-        astrology_cols = [col for col in df.columns if col.startswith('astrology_')]
+        astrology_cols = [col for col in df.columns if col.startswith("astrology_")]
 
         for col in astrology_cols:
-            planet_name = col.replace('astrology_', '')
+            planet_name = col.replace("astrology_", "")
             values = df[col].dropna()
 
-            summary['astrology_stats'][planet_name] = {
-                'mean': float(values.mean()),
-                'std': float(values.std()),
-                'min': float(values.min()),
-                'max': float(values.max()),
-                'change_frequency': self._calculate_change_frequency(df['date'], values, threshold=0.1)  # Any change > 0.1
+            summary["astrology_stats"][planet_name] = {
+                "mean": float(values.mean()),
+                "std": float(values.std()),
+                "min": float(values.min()),
+                "max": float(values.max()),
+                "change_frequency": self._calculate_change_frequency(
+                    df["date"], values, threshold=0.1
+                ),  # Any change > 0.1
             }
 
         # Correlation analysis
@@ -274,16 +306,22 @@ class TemporalDataGenerator:
 
             if num_col in df.columns and ast_col in df.columns:
                 correlation = df[num_col].corr(df[ast_col])
-                summary['correlation_analysis'][planet.name] = {
-                    'pearson_correlation': float(correlation) if not pd.isna(correlation) else None,
-                    'numerology_mean': float(df[num_col].mean()),
-                    'astrology_mean': float(df[ast_col].mean()),
-                    'correlation_interpretation': self._interpret_correlation(correlation)
+                summary["correlation_analysis"][planet.name] = {
+                    "pearson_correlation": (
+                        float(correlation) if not pd.isna(correlation) else None
+                    ),
+                    "numerology_mean": float(df[num_col].mean()),
+                    "astrology_mean": float(df[ast_col].mean()),
+                    "correlation_interpretation": self._interpret_correlation(
+                        correlation
+                    ),
                 }
 
         return summary
 
-    def _calculate_change_frequency(self, dates: pd.Series, values: pd.Series, threshold: float = 1.0) -> Dict[str, Any]:
+    def _calculate_change_frequency(
+        self, dates: pd.Series, values: pd.Series, threshold: float = 1.0
+    ) -> Dict[str, Any]:
         """
         Calculate how frequently values change.
 
@@ -296,7 +334,7 @@ class TemporalDataGenerator:
             Dictionary with change frequency statistics
         """
         if len(values) < 2:
-            return {'total_changes': 0, 'avg_days_between_changes': None}
+            return {"total_changes": 0, "avg_days_between_changes": None}
 
         changes = 0
         change_dates = []
@@ -313,13 +351,18 @@ class TemporalDataGenerator:
         if changes > 1:
             # Calculate average days between changes
             change_datetimes = [pd.to_datetime(d) for d in change_dates]
-            intervals = [(change_datetimes[i] - change_datetimes[i-1]).days for i in range(1, len(change_datetimes))]
-            avg_days_between_changes = sum(intervals) / len(intervals) if intervals else None
+            intervals = [
+                (change_datetimes[i] - change_datetimes[i - 1]).days
+                for i in range(1, len(change_datetimes))
+            ]
+            avg_days_between_changes = (
+                sum(intervals) / len(intervals) if intervals else None
+            )
 
         return {
-            'total_changes': changes,
-            'avg_days_between_changes': avg_days_between_changes,
-            'change_percentage': (changes / len(values)) * 100
+            "total_changes": changes,
+            "avg_days_between_changes": avg_days_between_changes,
+            "change_percentage": (changes / len(values)) * 100,
         }
 
     def _interpret_correlation(self, correlation: float) -> str:
@@ -373,7 +416,12 @@ def main():
         print("-" * 30)
 
         # Count numerology changes (should be ~365 per year due to day number changes)
-        numerology_changes = sum(1 for i in range(1, len(data)) if data[i]['numerology_mulanka_number'] != data[i-1]['numerology_mulanka_number'])
+        numerology_changes = sum(
+            1
+            for i in range(1, len(data))
+            if data[i]["numerology_mulanka_number"]
+            != data[i - 1]["numerology_mulanka_number"]
+        )
         print(f"Numerology system changes: {numerology_changes} times over 5 years")
 
         # Calculate astrology volatility
@@ -381,14 +429,22 @@ def main():
         for planet in generator.planets:
             col = f"astrology_{planet.name}"
             if col in df.columns:
-                changes = sum(1 for i in range(1, len(df)) if abs(df[col].iloc[i] - df[col].iloc[i-1]) > 0.1)
+                changes = sum(
+                    1
+                    for i in range(1, len(df))
+                    if abs(df[col].iloc[i] - df[col].iloc[i - 1]) > 0.1
+                )
                 astrology_changes[planet.name] = changes
 
-        print(f"Astrology system - average changes per planet: {sum(astrology_changes.values()) / len(astrology_changes):.0f} times over 5 years")
+        print(
+            f"Astrology system - average changes per planet: {sum(astrology_changes.values()) / len(astrology_changes):.0f} times over 5 years"
+        )
 
         print("\nThis demonstrates the fundamental difference:")
         print("- Numerology: Discrete, date-based changes (~73 changes/year)")
-        print("- Astrology: Continuous, gradual changes (1000+ changes/year per planet)")
+        print(
+            "- Astrology: Continuous, gradual changes (1000+ changes/year per planet)"
+        )
 
 
 if __name__ == "__main__":

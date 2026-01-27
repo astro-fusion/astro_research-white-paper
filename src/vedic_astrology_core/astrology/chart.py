@@ -22,6 +22,7 @@ from .ayanamsa import (
     get_ayanamsa_offset,
     get_zodiac_sign,
 )
+from ..config.constants import NAKSHATRAS
 from .ephemeris import EphemerisEngine
 
 
@@ -227,6 +228,22 @@ class BirthChart:
 
         return planets_in_sign
 
+    def get_planet_nakshatra(self, planet_name: str) -> Optional[Dict]:
+        """
+        Get Nakshatra information for a specific planet.
+
+        Args:
+            planet_name: Name of the planet
+
+        Returns:
+            Dictionary with Nakshatra info or None if planet not found
+        """
+        if planet_name not in self.planets:
+            return None
+
+        longitude = self.planets[planet_name]["longitude"]
+        return get_nakshatra(longitude)
+
     def get_chart_summary(self) -> Dict:
         """
         Generate a summary of the birth chart.
@@ -330,3 +347,38 @@ def get_planet_in_sign(longitude: float) -> Tuple[int, str, float]:
         Tuple of (sign_index, sign_name, degrees_in_sign)
     """
     return get_zodiac_sign(longitude)
+
+
+def get_nakshatra(longitude: float) -> Dict:
+    """
+    Get Nakshatra (lunar mansion) information for a given longitude.
+
+    Args:
+        longitude: Celestial longitude in degrees (0-360)
+
+    Returns:
+        Dictionary with Nakshatra name, lord, deity, and pada (quarter)
+    """
+    normalized_long = longitude % 360
+
+    # Each Nakshatra spans 13°20' (13.3333... degrees)
+    nakshatra_span = 360 / 27
+    nakshatra_index = int(normalized_long / nakshatra_span)
+
+    # Calculate angular distance into the Nakshatra
+    degrees_in_nakshatra = normalized_long % nakshatra_span
+
+    # Each Pada (quarter) spans 3°20' (3.3333... degrees)
+    # 4 Padas per Nakshatra
+    pada = int(degrees_in_nakshatra / (nakshatra_span / 4)) + 1
+
+    data = NAKSHATRAS[nakshatra_index]
+
+    return {
+        "index": nakshatra_index,
+        "name": data["name"],
+        "lord": data["lord"],
+        "deity": data["deity"],
+        "pada": pada,
+        "degrees_in_nakshatra": degrees_in_nakshatra,
+    }
