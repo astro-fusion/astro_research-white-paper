@@ -33,6 +33,7 @@ wheels/
 
 # Data (Generated)
 data/
+!use_cases/**/data/*.json
 docs/_build/
 
 /.quarto/
