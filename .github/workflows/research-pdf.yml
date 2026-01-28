@@ -86,6 +86,7 @@ jobs:
       run: |
         python -c "
         from vedic_astrology_core import create_birth_chart
+        from vedic_numerology.analysis import VedicNumerologyAstrology
         import matplotlib
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt
@@ -93,6 +94,7 @@ jobs:
         sys.path.insert(0, 'use_cases/numerology/src')
         from numerology.calculator import calculate_complete_numerology
         from datetime import datetime
+        import json
 
         # Use workflow inputs or defaults
         birth_date = '${{ github.event.inputs.birth_date || '1984-08-27' }}'
@@ -103,24 +105,18 @@ jobs:
         print(f'Generating analysis for: {birth_date} {birth_time}')
         print(f'Location: {latitude}°N, {longitude}°E')
 
-        # Create astrology chart
-        chart = create_birth_chart(birth_date, birth_time, latitude, longitude)
+        # Create integration analysis
+        vna = VedicNumerologyAstrology(birth_date, birth_time, latitude, longitude)
 
-        # Calculate numerology
-        numerology = calculate_complete_numerology(
-            datetime.strptime(birth_date, '%Y-%m-%d').date(),
-            datetime.strptime(birth_time, '%H:%M').time() if birth_time != 'None' else None,
-            latitude,
-            longitude
-        )
-
-        # Get dignity scores for numerology planets
-        mars_dignity = chart.score_dignity('MARS')
-        venus_dignity = chart.score_dignity('VENUS')
+        # Get comprehensive results
+        numerology = {
+            'mulanka': vna.calculate_mulanka(),
+            'bhagyanka': vna.calculate_bhagyanka()
+        }
+        support_analysis = vna.analyze_support_contradiction()
 
         # Create results file for Quarto to include
         with open('research_results.json', 'w') as f:
-            import json
             json.dump({
                 'birth_data': {
                     'date': birth_date,
@@ -130,16 +126,10 @@ jobs:
                 },
                 'numerology': numerology,
                 'astrology': {
-                    'mars_dignity': mars_dignity,
-                    'venus_dignity': venus_dignity,
-                    'ascendant': chart.chart.ascendant['sign_name'] if isinstance(chart.chart.ascendant, dict) else str(chart.chart.ascendant)
+                    'mars_dignity': vna.score_dignity('MARS'),
+                    'venus_dignity': vna.score_dignity('VENUS'),
                 },
-                'support_analysis': {
-                    'mars_score': mars_dignity['score'],
-                    'venus_score': venus_dignity['score'],
-                    'mars_type': mars_dignity['dignity_type'],
-                    'venus_type': venus_dignity['dignity_type']
-                }
+                'support_analysis': support_analysis
             }, f, indent=2, default=str)
 
         print('Research data generated successfully')
@@ -161,7 +151,7 @@ jobs:
       if: github.event.inputs.generate_reports == 'true' || github.event_name != 'workflow_dispatch'
       run: |
         python -c "
-        from vedic_astrology_core import create_birth_chart
+        from vedic_numerology.analysis import VedicNumerologyAstrology
         import json
 
         # Load the generated research results
@@ -169,7 +159,7 @@ jobs:
             with open('research_results.json', 'r') as f:
                 data = json.load(f)
 
-            analysis = create_birth_chart(
+            vna = VedicNumerologyAstrology(
                 data['birth_data']['date'],
                 data['birth_data']['time'],
                 data['birth_data']['latitude'],
@@ -177,44 +167,46 @@ jobs:
             )
 
             # Generate comprehensive report
-            report = analysis.generate_report()
+            report = vna.generate_report()
             with open('comprehensive_analysis_report.txt', 'w') as f:
                 f.write(report)
 
             # Generate summary statistics
             support_data = data['support_analysis']
-            summary = f'''
-        # Vedic Numerology-Astrology Analysis Summary
+            summary_parts = [
+                '# Vedic Numerology-Astrology Analysis Summary',
+                '',
+                '## Birth Data',
+                '- Date: {}'.format(data['birth_data']['date']),
+                '- Time: {}'.format(data['birth_data']['time']),
+                '- Location: {}°N, {}°E'.format(data['birth_data']['latitude'], data['birth_data']['longitude']),
+                '',
+                '## Numerology Results',
+                '- Mulanka: {} ({})'.format(data['numerology']['mulanka']['number'], data['numerology']['mulanka']['planet']),
+                '- Bhagyanka: {} ({})'.format(data['numerology']['bhagyanka']['number'], data['numerology']['bhagyanka']['planet']),
+                '',
+                '## Support Analysis',
+                '- Mulanka Support: {} ({:.1f}/100)'.format(support_data['mulanka']['support_level'], support_data['mulanka']['score']),
+                '- Bhagyanka Support: {} ({:.1f}/100)'.format(support_data['bhagyanka']['support_level'], support_data['bhagyanka']['score']),
+                '- Overall Harmony: {}'.format(support_data['overall']['harmony_level']),
+                '- Average Score: {:.1f}/100'.format(support_data['overall']['average_score']),
+                '',
+                '## Dignity Details',
+                '### Mulanka ({})'.format(support_data['mulanka']['planet']),
+                '- Dignity Type: {}'.format(support_data['mulanka']['dignity_type']),
+                '- Detailed Score: {:.1f}/100'.format(support_data['mulanka']['score']),
+                '',
+                '### Bhagyanka ({})'.format(support_data['bhagyanka']['planet']),
+                '- Dignity Type: {}'.format(support_data['bhagyanka']['dignity_type']),
+                '- Detailed Score: {:.1f}/100'.format(support_data['bhagyanka']['score']),
+                '',
+                '---',
+                'Generated by Vedic Numerology-Astrology Integration System'
+            ]
+            summary = '\n'.join(summary_parts)
 
-        ## Birth Data
-        - Date: {data['birth_data']['date']}
-        - Time: {data['birth_data']['time']}
-        - Location: {data['birth_data']['latitude']}°N, {data['birth_data']['longitude']}°E
-
-        ## Numerology Results
-        - Mulanka: {data['numerology']['mulanka']['number']} ({data['numerology']['mulanka']['planet']})
-        - Bhagyanka: {data['numerology']['bhagyanka']['number']} ({data['numerology']['bhagyanka']['planet']})
-
-        ## Support Analysis
-        - Mulanka Support: {support_data['mulanka']['support_level']} ({support_data['mulanka']['score']:.1f}/100)
-        - Bhagyanka Support: {support_data['bhagyanka']['support_level']} ({support_data['bhagyanka']['score']:.1f}/100)
-        - Overall Harmony: {support_data['overall']['harmony_level']}
-        - Average Score: {support_data['overall']['average_score']:.1f}/100
-
-        ## Dignity Details
-        ### Mulanka ({support_data['mulanka']['planet']})
-        - Dignity Type: {support_data['mulanka']['dignity_type']}
-        - Detailed Score: {support_data['mulanka']['score']:.1f}/100
-
-        ### Bhagyanka ({support_data['bhagyanka']['planet']})
-        - Dignity Type: {support_data['bhagyanka']['dignity_type']}
-        - Detailed Score: {support_data['bhagyanka']['score']:.1f}/100
-
-        ---
-        Generated by Vedic Numerology-Astrology Integration System
-        Research Date: $(date)
-            '''
-
+            # We must use double-quotes for the string in python -c
+            # or handle multiline carefully.
             with open('analysis_summary.md', 'w') as f:
                 f.write(summary)
 

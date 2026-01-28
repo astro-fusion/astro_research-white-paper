@@ -144,7 +144,7 @@ def plot_planetary_strength_numerology(
         return ax
 
 
-def plot_dignity_radar(
+def plot_multi_dignity_radar(
     chart: Any,
     planets: List[Planet],
     factors: Optional[List[str]] = None,

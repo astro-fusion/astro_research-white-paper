@@ -127,7 +127,7 @@ def compute_astrology_strength_series(
         # Convert dates to datetimes if needed
         s_dt = datetime.combine(_to_date(start_date), time(0, 0))
         e_dt = datetime.combine(_to_date(end_date), time(23, 59))
-        iterator = iter_datetime_range(s_dt, e_dt, step_hours=step_hours)  # type: ignore
+        iterator = iter_datetime_range(s_dt, e_dt, step_hours=step_hours)
     else:
         # Classic daily mode
         iterator = [

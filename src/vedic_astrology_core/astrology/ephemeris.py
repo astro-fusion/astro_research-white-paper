@@ -111,34 +111,6 @@ class EphemerisEngine:
 
         return jd
 
-    def get_planet_position(self, julian_day: float, planet: Union[int, str]) -> Dict:
-        """
-        Calculate planetary position for a given time.
-
-        Args:
-            julian_day: Julian day number
-            planet: Planet identifier (int constant or string name)
-
-        Returns:
-            Dictionary with position data:
-            - 'longitude': Celestial longitude in degrees (0-360)
-            - 'latitude': Celestial latitude in degrees
-            - 'distance': Distance from Earth in AU
-            - 'longitude_speed': Daily speed in longitude (degrees/day)
-            - 'sign': Zodiac sign index (0-11)
-            - 'sign_name': Zodiac sign name
-            - 'degrees_in_sign': Degrees within sign (0-30)
-            - 'retrograde': Boolean indicating retrograde motion
-            - 'combust': Boolean indicating combustion (close to Sun)
-
-        Raises:
-            ValueError: If planet identifier is invalid
-        """
-        # Convert planet name to constant if needed
-        if isinstance(planet, str):
-            planet = self._planet_name_to_constant(planet)
-
-        result = swe.calc_ut(julian_day, planet)
 
     def get_heliocentric_position(
         self, julian_day: float, planet: Union[int, str]
