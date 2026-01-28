@@ -54,7 +54,7 @@ def iter_dates(
 
     cur = start
     step = timedelta(days=step_days)
-    
+
     while cur <= end:
         yield cur
         cur += step
