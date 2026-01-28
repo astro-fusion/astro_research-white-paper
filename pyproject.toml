@@ -48,6 +48,7 @@ dependencies = [
     "pytz>=2021.1",
     "PyYAML>=6.0",
     "suntime>=1.2.5",
+    "requests>=2.25.0",
 ]
 
 [project.scripts]
@@ -71,6 +72,21 @@ colab = [
     "jupyter-widgets>=0.6.0",
 ]
 ephemeris = [
+    "pyswisseph>=2.08.00-1",
+]
+all = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=22.0.0",
+    "isort>=5.10.0",
+    "mypy>=1.0.0",
+    "sphinx>=5.0.0",
+    "sphinx-rtd-theme>=1.0.0",
+    "jupyter>=1.0.0",
+    "notebook>=6.4.0",
+    "plotly>=5.0.0",
+    "ipywidgets>=7.6.0",
+    "jupyter-widgets>=0.6.0",
     "pyswisseph>=2.08.00-1",
 ]
 

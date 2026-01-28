@@ -1,3 +1,11 @@
+import json
+
+
+def plot_planetary_strength_numerology(chart, planet_strengths, numerology_values, use_plotly=True):
+    """Stub function for visualization - implement as needed."""
+    pass
+
+
 def visualize_planetary_strength_and_numerology():
     # Load the research results
     with open("research_results.json", "r") as f:

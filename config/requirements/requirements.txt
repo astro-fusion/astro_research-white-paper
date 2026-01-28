@@ -15,6 +15,9 @@ pytz>=2021.1
 # Configuration
 PyYAML>=6.0
 
+# HTTP requests
+requests>=2.25.0
+
 # Sunrise/sunset calculations for Vedic day logic
 suntime>=1.2.5
 

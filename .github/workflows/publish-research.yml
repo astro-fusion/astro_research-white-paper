@@ -65,6 +65,7 @@ jobs:
         sys.path.insert(0, 'use_cases/numerology/src')
         from numerology.calculator import calculate_complete_numerology
         from vedic_astrology_core import VedicAstrologyChart
+        from vedic_numerology.analysis import VedicNumerologyAstrology
         import matplotlib
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt

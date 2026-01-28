@@ -39,6 +39,9 @@ try:
         NUMEROLOGY_AVAILABLE = True
     except ImportError:
         NUMEROLOGY_AVAILABLE = False
+
+    # Import integration class
+    from vedic_numerology.analysis import VedicNumerologyAstrology
 except ImportError as e:
     st.error(f"Failed to import required modules: {e}")
     st.error("Please ensure the package is properly installed.")

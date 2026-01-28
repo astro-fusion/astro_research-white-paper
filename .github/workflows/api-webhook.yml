@@ -79,6 +79,7 @@ jobs:
         # Run Python calculation
         python3 -c "
         from vedic_astrology_core import VedicAstrologyChart
+        from vedic_numerology.analysis import VedicNumerologyAstrology
         import json
 
         # Create analysis

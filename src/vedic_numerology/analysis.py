@@ -48,6 +48,13 @@ class VedicNumerologyAstrology:
             ayanamsa_system=self.ayanamsa_system.upper(),
         )
 
+    @property
+    def birth_datetime(self) -> datetime:
+        """Get the combined birth date and time."""
+        if self._birth_time:
+            return datetime.combine(self._birth_date, self._birth_time)
+        return datetime.combine(self._birth_date, time.min)
+
     def _parse_birth_date(self, d: Union[str, date]) -> date:
         if isinstance(d, str):
             return datetime.strptime(d, "%Y-%m-%d").date()

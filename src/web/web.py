@@ -88,5 +88,4 @@ def timeline_data():
 
 
 if __name__ == "__main__":
-    visualize_planetary_strength_and_numerology()
     app.run(debug=True, host="0.0.0.0", port=5000)
