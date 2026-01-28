@@ -170,7 +170,7 @@ class TestVisualizationIntegration(unittest.TestCase):
     def test_dignity_analysis_setup(self):
         """Test dignity analysis chart setup."""
         try:
-            chart = self.analysis.plot_dignity_analysis([Planet.MARS], use_plotly=False)
+            chart = self.analysis.plot_dignity_analysis(Planet.MARS, use_plotly=False)
             self.assertIsNotNone(chart)
         except ImportError:
             self.skipTest("Visualization libraries not available")

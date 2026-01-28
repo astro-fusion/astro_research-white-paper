@@ -54,8 +54,10 @@ def iter_dates(
 
     cur = start
     step = timedelta(days=step_days)
-    if inclusive and cur == end:
+    
+    while cur <= end:
         yield cur
+        cur += step
 
 
 def iter_datetime_range(
@@ -141,7 +143,9 @@ def compute_astrology_strength_series(
         # Use Global Scorer for better quality metrics
         scores = global_scorer.calculate_global_power(jd)
 
-        row: Dict[str, Any] = {"date": dt.isoformat()}
+        # Use full ISO format for high-res, but YYYY-MM-DD for daily compatibility
+        date_str = dt.isoformat() if is_high_res else dt.date().isoformat()
+        row: Dict[str, Any] = {"date": date_str}
 
         # Filter for requested planets if needed
         if planets:

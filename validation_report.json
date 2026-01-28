@@ -1,7 +1,0 @@
-{
-  "schuster_p_value": 0.06758416151861237,
-  "monte_carlo_p_value": 0.2887112887112887,
-  "real_delta_aic": 22.13372262327448,
-  "p95_random_delta": 27.95824205383776,
-  "validation_result": "FAIL"
-}
