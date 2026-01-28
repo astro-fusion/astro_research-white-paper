@@ -1,9 +1,10 @@
-import unittest
-import sys
 import os
-import pandas as pd
-import numpy as np
+import sys
+import unittest
 from unittest.mock import MagicMock, patch
+
+import numpy as np
+import pandas as pd
 
 # Add src to path
 sys.path.append(

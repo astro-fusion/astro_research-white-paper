@@ -17,6 +17,7 @@ keywords:
   - Computational Astrology
   - Brihat Samhita
 format:
+  html: {}
   pdf:
     documentclass: article
     geometry:

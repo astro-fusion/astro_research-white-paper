@@ -60,7 +60,7 @@ format:
     css: styles/custom.css
     # Interactive features
     include-after-body:
-      - interactive-components.html
+      - assets/visualizations/interactive-components.html
 
   # PDF format for print publication
   pdf:

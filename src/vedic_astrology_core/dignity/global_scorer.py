@@ -9,10 +9,11 @@ this scorer focuses on components that are consistent globally or geocentrically
 3. Yuddha Bala (Planetary War): Proximity < 1 degree.
 """
 
-from typing import Dict, List, Optional
 import math
-from ..config.constants import Planet
+from typing import Dict, List, Optional
+
 from ..astrology.ephemeris import EphemerisEngine
+from ..config.constants import Planet
 from .scorer import DignityScorer
 
 

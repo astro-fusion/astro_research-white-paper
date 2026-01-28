@@ -21,3 +21,7 @@ suntime>=1.2.5
 # Optional: Swiss Ephemeris for astronomical calculations
 # Uncomment the following line if you have pyswisseph installed:
 # pyswisseph>=2.08.00-1
+
+# Quarto execution caching & kernel
+jupyter-cache
+ipykernel

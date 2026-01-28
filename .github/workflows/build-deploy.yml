@@ -41,14 +41,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential wget
-          # Install Swiss Ephemeris from source
-          wget -q http://www.astro.com/ftp/swisseph/swe_unix_src_2.10.03.tar.gz
-          tar -xzf swe_unix_src_2.10.03.tar.gz
-          cd swe_unix_src_2.10.03/src
-          make libswe.a
-          sudo make install
-          cd ../..
-          rm -rf swe_unix_src_2.10.03*
+          sudo apt-get update
+          sudo apt-get install -y build-essential
 
       - name: Install Python dependencies
         run: |
@@ -101,7 +95,12 @@ jobs:
         run: |
           echo "📖 Building documentation site..."
           
+          # Render Quarto Project
+          echo "🏗️ Rendering Quarto project..."
+          quarto render
+          
           # Create site structure
+
           mkdir -p _site/{docs,reports,visualizations,data,downloads}
           
           # Copy documentation

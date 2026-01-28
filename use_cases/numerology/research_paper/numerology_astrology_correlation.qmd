@@ -18,6 +18,7 @@ keywords:
   - Computational Astrology
 bibliography: ../references.bib
 format:
+  html: {}
   pdf:
     documentclass: article
     geometry:

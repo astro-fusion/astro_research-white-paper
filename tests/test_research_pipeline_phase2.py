@@ -1,9 +1,10 @@
+import os
+import sys
 import unittest
 from datetime import date, datetime
-import sys
-import os
-import pandas as pd
 from unittest.mock import MagicMock, patch
+
+import pandas as pd
 
 # Add src to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
@@ -13,8 +14,8 @@ sys.path.append(
     )
 )
 
-from vedic_astrology_core.dignity.global_scorer import GlobalShadbalaScorer
 from vedic_astrology_core.astrology.ephemeris import EphemerisEngine
+from vedic_astrology_core.dignity.global_scorer import GlobalShadbalaScorer
 
 
 class TestResearchPipelinePhase2(unittest.TestCase):

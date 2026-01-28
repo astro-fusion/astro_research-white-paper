@@ -1,13 +1,13 @@
+import os
+import sys
 import unittest
 from datetime import date, datetime
-import sys
-import os
 
 # Add src to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
 
-from vedic_numerology.engine import NumerologyEngine
 from vedic_astrology_core.astrology.ephemeris import EphemerisEngine
+from vedic_numerology.engine import NumerologyEngine
 
 
 class TestResearchPipelinePhase1(unittest.TestCase):
