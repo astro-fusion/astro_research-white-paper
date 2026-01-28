@@ -69,7 +69,6 @@ dev = [
 colab = [
     "plotly>=5.0.0",
     "ipywidgets>=7.6.0",
-    "jupyter-widgets>=0.6.0",
 ]
 ephemeris = [
     "pyswisseph>=2.08.00-1",
@@ -86,7 +85,6 @@ all = [
     "notebook>=6.4.0",
     "plotly>=5.0.0",
     "ipywidgets>=7.6.0",
-    "jupyter-widgets>=0.6.0",
     "pyswisseph>=2.08.00-1",
 ]
 

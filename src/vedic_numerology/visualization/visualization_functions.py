@@ -1,7 +1,9 @@
 import json
 
 
-def plot_planetary_strength_numerology(chart, planet_strengths, numerology_values, use_plotly=True):
+def plot_planetary_strength_numerology(
+    chart, planet_strengths, numerology_values, use_plotly=True
+):
     """Stub function for visualization - implement as needed."""
     pass
 
