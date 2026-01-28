@@ -50,6 +50,8 @@ jobs:
 
       - name: Test earthquake analysis with sample data
         run: |
+          echo "Did you know? Fetching real earthquake data is crucial before analysis!"
+          python use_cases/earthquake/scripts/earthquake_data_fetcher.py
           echo "🔬 Testing earthquake-planetary correlation analysis..."
           python use_cases/earthquake/scripts/earthquake_planetary_analysis.py
           echo "✅ Sample data test completed!"
