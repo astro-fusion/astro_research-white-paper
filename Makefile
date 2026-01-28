@@ -48,7 +48,12 @@ lint: ## Run code quality checks
 	-black --check --diff src/ tests/
 	-isort --check-only --diff src/ tests/
 	-flake8 src/ tests/ --count --show-source --statistics
+	-bandit -r src/ --exclude tests/
 	-mypy src/vedic_numerology/
+
+security-check: ## Run security vulnerability scan
+	@echo "Running security vulnerability scan..."
+	bandit -r src/ --exclude tests/
 
 format: ## Format code with Black and isort
 	@echo "Formatting code..."
