@@ -111,7 +111,6 @@ class EphemerisEngine:
 
         return jd
 
-
     def get_heliocentric_position(
         self, julian_day: float, planet: Union[int, str]
     ) -> Dict:
