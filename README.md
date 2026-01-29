@@ -18,8 +18,8 @@
 
 Access our growing collection of research reports:
 
-- **[Numerology Report](use_cases/numerology/research_paper/numerology_astrology_correlation.qmd)**: Temporal discontinuity analysis.
-- **[Earthquake Research](use_cases/earthquake/report.qmd)**: Seismic activity correlations (In Progress).
+- **[Numerology Report](docs/research/track_1_numerology_vs_astrology/track_1_report.pdf)**: Temporal discontinuity analysis.
+- **[Earthquake Research](docs/research/track_2_earthquake_prediction/track_2_report.pdf)**: Seismic activity correlations (In Progress).
 
 > **Note**: This repository contains multiple research use cases. Visit the [Reports Section](assets/reports/) for generated PDF reports or browse the [Source Code](src/) for implementation details.
 
@@ -72,7 +72,7 @@ This platform generates **peer-reviewed research manuscripts** documenting our c
 - **Planetary Strength**: Continuous, gradual changes based on astronomical positions
 - **Numerology Changes**: Discrete transitions when date numbers change (approximately 73 times/year)
 - **Correlation Findings**: Preliminary analysis shows **fundamental temporal discontinuity** between systems
-- **Research Publication**: ["Temporal Discontinuity: A Quantitative Analysis of Numerology and Vedic Astrology Planetary Strength Correlation"](use_cases/numerology/research_paper/numerology_astrology_correlation.qmd)
+- **Research Publication**: ["Temporal Discontinuity: A Quantitative Analysis of Numerology and Vedic Astrology Planetary Strength Correlation"](docs/research/track_1_numerology_vs_astrology/track_1_report.pdf)
 
 ### 🌍 **Earthquake Research (In Development)**
 

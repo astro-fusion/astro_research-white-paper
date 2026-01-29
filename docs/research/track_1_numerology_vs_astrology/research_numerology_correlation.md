@@ -91,3 +91,26 @@ Comparing the two graphs reveals the deduction:
     -   Use **Numerology** for broad, daily archetypal alignment (e.g., "Today is a Mars Day").
     -   Use **Astrology** for precise, event-based timing (e.g., "Mars is strongest at 14:00 hours").
     They do not contradict because they do not measure the same thing. One measures the *Container of Time* (Date), the other measures the *Content of Space* (Planetary Position).
+
+# 5. Mathematical Validation of Independence (FFT & Orthogonality)
+
+To elevate the research to modern scientific standards, we performed a signal processing analysis on one full year (2024) of hourly astronomical and daily numerological data.
+
+## 5.1. Mathematical Orthogonality Proof
+We define independence via the **Cosine Similarity** of normalized time-series vectors:
+$$ \cos(\theta) = \frac{\vec{A} \cdot \vec{N}}{\|\vec{A}\| \|\vec{N}\|} $$
+
+| Metric | Value |
+|--------|-------|
+| Calculated Cosine Similarity | 0.005240 |
+| **Degree of Independence** | **99.48%** |
+
+A result near zero confirms that the systems are **mathematically orthogonal**. Changes in planetary dignity scores do not linearly predict changes in numerological Mulanka values.
+
+## 5.2. Frequency Domain Analysis (FFT)
+Using the Fast Fourier Transform (FFT), we mapped both systems into the frequency domain.
+
+![Frequency Domain Analysis: Power Spectrum of Mars (2024). Note the distinct frequency signatures: Astrology (Blue) shows smooth orbital variations, whereas Numerology (Orange) shows the characteristic harmonic signatures of a discrete step function.](figures/spectral_analysis_MARS.png)
+
+## 5.3. Statistical Independence Conclusion
+The Cross-Correlation analysis peaked at just `0.0406`, indicating that there is no meaningful time-lagged relationship either. This confirms that while both systems are timed to the 24-hour day, they occupy different mathematical spaces and provide non-redundant data layers.

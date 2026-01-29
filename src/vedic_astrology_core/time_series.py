@@ -149,9 +149,11 @@ def compute_astrology_strength_series(
 
         # Filter for requested planets if needed
         if planets:
-            # Need to map Planet Enum to string keys used by GlobalScorer
             for p in planets:
-                row[f"astrology_{p.name}"] = scores.get(p.name, 0.0)
+                # Map to Title Case if needed by GlobalScorer (Sun, Moon, etc)
+                # Or just handle it case-insensitively
+                display_name = p.name.capitalize()
+                row[f"astrology_{p.name}"] = scores.get(display_name, scores.get(p.name, 0.0))
         else:
             # Add all
             for pname, score in scores.items():
