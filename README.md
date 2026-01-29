@@ -17,41 +17,49 @@
 **🌐 [Visit Research Website](https://astro-fusion.github.io/astro_research-white-paper/)**
 
 Access our growing collection of research reports:
-- **[Numerology Report](https://astro-fusion.github.io/astro_research-white-paper/use_cases/numerology/research_paper/numerology_astrology_correlation.html)**: Temporal discontinuity analysis.
-- **[Earthquake Research](https://astro-fusion.github.io/astro_research-white-paper/use_cases/earthquake/report.html)**: Seismic activity correlations (In Progress).
 
-> **Note**: This repository contains multiple research use cases. Visit the [Reports Section](https://astro-fusion.github.io/astro_research-white-paper/reports.html) of our website for the complete list.
+- **[Numerology Report](use_cases/numerology/research_paper/numerology_astrology_correlation.qmd)**: Temporal discontinuity analysis.
+- **[Earthquake Research](use_cases/earthquake/report.qmd)**: Seismic activity correlations (In Progress).
+
+> **Note**: This repository contains multiple research use cases. Visit the [Reports Section](assets/reports/) for generated PDF reports or browse the [Source Code](src/) for implementation details.
 
 ## 🌟 Core Research Principles
 
 This research platform explores the **temporal dynamics** of traditional astrological systems through computational analysis. We investigate whether celestial mechanics exhibit meaningful patterns that could predict or correlate with earthly events.
 
 ### 🪐 **Planetary Strength Time Series**
+
 - **Vedic Astrology Analysis**: Track how planetary dignity scores (0-100) change over custom time periods
 - **Continuous vs Discrete Systems**: Compare gradual astronomical movements with date-based numerological transitions
 - **Interactive Timeline Visualization**: Explore planetary strength evolution with configurable date ranges and step sizes
 
 ### 🔢 **Numerology Temporal Patterns**
+
 - **Date-Based Numerology**: Calculate numerological values that change discretely when date numbers transition
 - **Vedic Number Mapping**: 1=Sun, 2=Moon, 3=Jupiter, 4=Rahu, 5=Mercury, 6=Venus, 7=Ketu, 8=Saturn, 9=Mars
 - **Comparative Analysis**: Overlay numerological changes with planetary movements to identify correlations
 
 ### 🔬 **Research Methodology**
+
 We conduct empirical research to determine:
+
 - **Correlation Analysis**: Do planetary positions correlate with numerological transitions?
 - **Pattern Recognition**: Are there predictable cycles in planetary strength?
 - **Predictive Validity**: Can astrological timing predict meaningful life events?
 
 ### 🌍 **Earthquake Research Use Case**
+
 - **Seismic Data Integration**: Analyze planetary positions during top 100 global earthquakes
 - **Complex Planetary Rules**: Apply advanced astrological combinations (yogas, dashas, transits)
 - **Pattern Detection**: Investigate if planetary configurations correlate with seismic activity
 - **Research Results**: Determine if earthquakes follow astrological patterns or occur randomly
 
 ### 📊 **Published Research Findings**
+
 This platform generates **peer-reviewed research manuscripts** documenting our computational investigations. We publish findings regardless of results - whether they show correlation, no correlation, or random distribution. Our research contributes to the scientific discourse on traditional knowledge systems.
 
 **Key Research Questions:**
+
 1. Do planetary strength cycles show predictable patterns?
 2. Is there correlation between numerological transitions and planetary positions?
 3. Can complex astrological rules predict earthquake occurrences?
@@ -60,18 +68,21 @@ This platform generates **peer-reviewed research manuscripts** documenting our c
 ## 🔬 Current Research Status
 
 ### 📈 **Timeline Analysis Results**
+
 - **Planetary Strength**: Continuous, gradual changes based on astronomical positions
 - **Numerology Changes**: Discrete transitions when date numbers change (approximately 73 times/year)
 - **Correlation Findings**: Preliminary analysis shows **fundamental temporal discontinuity** between systems
 - **Research Publication**: ["Temporal Discontinuity: A Quantitative Analysis of Numerology and Vedic Astrology Planetary Strength Correlation"](use_cases/numerology/research_paper/numerology_astrology_correlation.qmd)
 
 ### 🌍 **Earthquake Research (In Development)**
+
 - **Data Collection**: Top 100 global earthquakes (1900-present)
 - **Planetary Mapping**: Complete birth charts for each earthquake date
 - **Complex Rules**: Implementing advanced astrological combinations
 - **Analysis Phase**: Pattern recognition and statistical validation
 
 ### 📊 **Computational Framework**
+
 - **Swiss Ephemeris Backend**: 0.1 arcsecond astronomical precision
 - **Vedic Astrology Engine**: Complete Parashari Jyotish implementation
 - **Time Series Analysis**: Custom date ranges with configurable granularity
@@ -114,47 +125,54 @@ astro-research/
 
 ---
 
-##  Documentation Navigation
+## Documentation Navigation
 
 ### 🚀 **Quick Links - Start Here**
-| Resource | Purpose | Link |
-|----------|---------|------|
-| **Architecture Guide** | Complete system design | [ARCHITECTURE.md](docs/project_tracking/ARCHITECTURE.md) |
-| **Quick Start** | Getting started in 5 minutes | [docs/guides/QUICK_START_RESEARCH.md](docs/guides/QUICK_START_RESEARCH.md) |
-| **Project Structure** | Understanding the new organization | [PROJECT_STRUCTURE.md](docs/project_tracking/PROJECT_STRUCTURE.md) |
-| **Reorganization Summary** | What changed and why | [FINAL_REORGANIZATION_REPORT.md](docs/reports/FINAL_REORGANIZATION_REPORT.md) |
+
+| Resource                   | Purpose                            | Link                                                                          |
+| -------------------------- | ---------------------------------- | ----------------------------------------------------------------------------- |
+| **Architecture Guide**     | Complete system design             | [ARCHITECTURE.md](docs/project_tracking/ARCHITECTURE.md)                      |
+| **Quick Start**            | Getting started in 5 minutes       | [docs/guides/QUICK_START_RESEARCH.md](docs/guides/QUICK_START_RESEARCH.md)    |
+| **Project Structure**      | Understanding the new organization | [PROJECT_STRUCTURE.md](docs/project_tracking/PROJECT_STRUCTURE.md)            |
+| **Reorganization Summary** | What changed and why               | [FINAL_REORGANIZATION_REPORT.md](docs/reports/FINAL_REORGANIZATION_REPORT.md) |
 
 ### 📚 **User Guides** (docs/guides/)
+
 - [QUICK_START_RESEARCH.md](docs/guides/QUICK_START_RESEARCH.md) - Getting started guide
 - [REAL_TIME_VISUALIZATION_GUIDE.md](docs/guides/REAL_TIME_VISUALIZATION_GUIDE.md) - Interactive visualization tutorial
 - [RESEARCH_REPORT_GUIDE.md](docs/guides/RESEARCH_REPORT_GUIDE.md) - How to generate research reports
 - [API_DEPLOYMENT.md](docs/guides/API_DEPLOYMENT.md) - API deployment instructions
 
 ### 🔬 **Research Documentation** (docs/research/)
+
 - [RESEARCH_DATA_REFERENCE.md](docs/research/RESEARCH_DATA_REFERENCE.md) - Data and findings reference
 - [RESEARCH_PAPER_TEMPLATE.md](docs/research/RESEARCH_PAPER_TEMPLATE.md) - Paper template for publications
 - [PLANETARY_STRENGTH_VISUALIZATION.md](docs/research/PLANETARY_STRENGTH_VISUALIZATION.md) - Visualization specifications
 - [RESEARCH_COMPLETION_SUMMARY.md](docs/research/RESEARCH_COMPLETION_SUMMARY.md) - Project completion status
 
 ### 🏗️ **Framework & Architecture** (docs/framework/)
+
 - [MULTI_USE_CASE_FRAMEWORK.md](docs/framework/MULTI_USE_CASE_FRAMEWORK.md) - Multi-use case framework design
 - [EARTHQUAKE_DATA_INTEGRATION.md](docs/framework/EARTHQUAKE_DATA_INTEGRATION.md) - Data integration guide
 - [QUICK_REFERENCE_CARD.md](docs/framework/QUICK_REFERENCE_CARD.md) - Quick reference for developers
 - [PROJECT_UPDATE_SUMMARY.md](docs/framework/PROJECT_UPDATE_SUMMARY.md) - Latest project updates
 
 ### 🎯 **Governance & Contribution** (docs/)
+
 - [INDEX.md](docs/INDEX.md) - Documentation index and navigation
 - [CONTRIBUTING.md](docs/CONTRIBUTING.md) - Contribution guidelines
 
 ### 🚀 **Deployment & CI/CD**
+
 - [GITHUB_PAGES_DEPLOYMENT.md](GITHUB_PAGES_DEPLOYMENT.md) - GitHub Pages setup and workflow
-- [USGS_EARTHQUAKE_DATA_GUIDE.md](USGS_EARTHQUAKE_DATA_GUIDE.md) - Getting real earthquake data
+- [USGS_EARTHQUAKE_DATA_GUIDE.md](docs/guides/USGS_EARTHQUAKE_DATA_GUIDE.md) - Getting real earthquake data
 - [.github/workflows/build-deploy.yml](.github/workflows/build-deploy.yml) - GitHub Actions workflow
 
 ### 🧪 **Comprehensive Testing Suite** ⭐ NEW
+
 - [tests/TESTING_GUIDE.md](tests/TESTING_GUIDE.md) - Complete testing manual (46+ tests, 86% coverage)
 - [COMPREHENSIVE_TEST_REPORT.md](docs/reports/COMPREHENSIVE_TEST_REPORT.md) - Detailed test results and analysis
-- [FINAL_DELIVERY.md](docs/reports/FINAL_DELIVERY.md) - Production readiness summary
+- [FINAL_DELIVERY.md](FINAL_DELIVERY.md) - Production readiness summary
 - Run tests: `python3 tests/run_all_tests.py`
 - Features: Unit tests (16), Multi-platform (20), E2E (10), 100% pass rate ✅
 
@@ -163,6 +181,7 @@ astro-research/
 ## �🔬 Interactive Research Exploration
 
 ### 🌐 **Web Interface (Easiest)**
+
 Explore planetary strength and numerology timelines instantly:
 
 ```bash
@@ -173,6 +192,7 @@ python web.py
 ```
 
 **Features:**
+
 - Select custom date ranges
 - Choose step sizes (daily/weekly/monthly)
 - View three interactive charts:
@@ -181,6 +201,7 @@ python web.py
   - Combined correlation analysis
 
 ### 📓 **Jupyter Research Notebook**
+
 Run the complete timeline analysis:
 
 ```bash
@@ -192,6 +213,7 @@ quarto convert use_cases/numerology/numerology_planet_timeline.qmd --to ipynb
 ```
 
 ### 🔬 **API Research Access**
+
 Access timeline data programmatically:
 
 ```python
@@ -212,32 +234,38 @@ data = compute_planet_strength_series(
 ## 🌟 Key Features
 
 ### 🪐 **Core Vedic Astrology Engine**
+
 - **Swiss Ephemeris Backend**: Astronomical precision with 0.1 arcsecond accuracy
 - **Lahiri Ayanamsa**: Traditional Chitra Paksha ayanamsa system
 - **Complete Birth Charts**: All planets, lunar nodes, houses, and key points
 
 ### 📊 **Dignity & Strength Analysis**
+
 - **Classical Dignity Scoring**: Moolatrikona, own sign, exaltation analysis
 - **Quantitative Strength Metrics**: 0-100 planetary power calculations
 - **Aspect Analysis**: Planetary relationships and influence patterns
 
 ### 📈 **Temporal Dynamics**
+
 - **Transit Analysis**: Current planetary influences on natal positions
 - **Dasha Period Calculations**: Major and sub-period influence mapping
 - **Timeline Visualization**: Interactive charts showing planetary strength & numerology over custom time ranges
 - **Time Series Analysis**: How planetary strengths evolve over time with configurable granularity
 
 ### 🎨 **Advanced Visualizations**
+
 - **Interactive Charts**: Plotly-powered dynamic visualizations
 - **Publication-Ready Graphics**: High-DPI static plots for research papers
 - **Birth Chart Diagrams**: Traditional and modern chart representations
 
 ### 🔧 **Extensible Architecture**
+
 - **Use Case Framework**: Easy to add new research applications
 - **Modular Design**: Core astrology separate from specific analyses
 - **API-First**: REST API and Python library interfaces
 
 ### ☁️ **Multi-Platform Support**
+
 - **Google Colab Ready**: Zero-setup cloud execution
 - **Local Development**: Full local environment support
 - **Container Ready**: Docker and Podman compatibility
@@ -257,13 +285,17 @@ data = compute_planet_strength_series(
 ### ⚡ Quick Setup (3 Options)
 
 #### 1. 🌐 **Google Colab (No Installation)**
+
 Perfect for research exploration:
+
 1. Click the Colab badge above
 2. Run: `!pip install git+https://github.com/astro-fusion/astro_research-white-paper.git`
 3. Start analyzing planetary timelines immediately
 
 #### 2. 🐳 **Docker (Isolated Environment)**
+
 For reproducible research:
+
 ```bash
 git clone https://github.com/astro-fusion/astro_research-white-paper.git
 cd astro_research-white-paper
@@ -273,7 +305,9 @@ docker run -p 5000:5000 vedic-research
 ```
 
 #### 3. 🖥️ **Local Development**
+
 Full research environment:
+
 ```bash
 git clone https://github.com/astro-fusion/astro_research-white-paper.git
 cd astro_research-white-paper
@@ -283,6 +317,7 @@ python web.py  # Start research interface
 ```
 
 **Required Dependencies:**
+
 - Python 3.8+
 - Swiss Ephemeris (astronomical calculations)
 - Quarto (documentation generation)
@@ -344,6 +379,7 @@ print(f"Bhagyanka: {numerology['bhagyanka']['number']}")
 ### 📊 Advanced Data Analysis Workflows
 
 #### Temporal Trend Analysis
+
 ```python
 from vedic_numerology import VedicNumerologyAstrology
 from datetime import datetime
@@ -361,6 +397,7 @@ fig.show()
 ```
 
 #### Comparative Studies
+
 ```python
 # Compare multiple birth charts
 subjects = [
@@ -508,6 +545,7 @@ python web.py
 ```
 
 Features:
+
 - **Date Range Selection**: Choose custom start/end dates
 - **Step Size Control**: Daily, weekly, or monthly granularity
 - **Three Interactive Charts**:
@@ -604,6 +642,7 @@ plt.show()
 1. **Open Google Colab**: Go to [colab.research.google.com](https://colab.research.google.com)
 
 2. **Install the Package**:
+
    ```python
    # Run this in the first Colab cell
    !pip install git+https://github.com/astro-fusion/astro_research-white-paper.git
@@ -626,6 +665,7 @@ plt.show()
 To share your analysis:
 
 1. **Save to GitHub**:
+
    ```bash
    # Upload notebooks to your GitHub repository
    git add notebooks/
@@ -634,6 +674,7 @@ To share your analysis:
    ```
 
 2. **Direct Colab Links**:
+
    ```
    https://colab.research.google.com/github/YOUR_USERNAME/YOUR_REPO/blob/main/notebooks/01_numerology_calculations.ipynb
    ```
@@ -644,6 +685,7 @@ To share your analysis:
    ```
 
 ### 4. Statistical Validation
+
 Run rigorous statistical tests (Schuster's Test, Monte Carlo) to validate findings:
 
 ```bash
@@ -661,16 +703,19 @@ cat validation_report.json
 Your research platform supports **three deployment channels** for maximum reach:
 
 #### 1. 📖 **Static Research Site** (GitHub Pages)
+
 - **Purpose**: Primary research dissemination
 - **Content**: Manuscripts, documentation, interactive components
 - **Access**: `https://astro-fusion.github.io/astro_research-white-paper/`
 
 #### 2. 🎮 **Interactive Web App** (Streamlit Cloud)
+
 - **Purpose**: Real-time exploration and analysis
 - **Features**: Live calculators, dynamic visualizations, data export
 - **Access**: `https://share.streamlit.io/astro-fusion/numerology-app/main/app.py`
 
 #### 3. 📚 **Academic Publications**
+
 - **PDF**: Traditional research paper format
 - **HTML**: Web-optimized with cross-references
 - **DOCX**: Collaborative editing format
@@ -680,12 +725,14 @@ Your research platform supports **three deployment channels** for maximum reach:
 #### GitHub Actions Workflows
 
 **Deploy Static Site:**
+
 ```yaml
 # .github/workflows/deploy-platform.yml
 # Deploys to GitHub Pages automatically on main branch push
 ```
 
 **Manual Deployment Options:**
+
 ```bash
 # Deploy everything
 gh workflow run deploy-platform.yml -f deploy_target=both
@@ -700,6 +747,7 @@ gh workflow run deploy-platform.yml -f deploy_target=app-only
 #### Local Deployment Testing
 
 **Test Static Site Locally:**
+
 ```bash
 # Build all content
 make build-all
@@ -710,6 +758,7 @@ cd _site && python -m http.server 8000
 ```
 
 **Test Streamlit App Locally:**
+
 ```bash
 # Install Streamlit
 pip install streamlit
@@ -747,6 +796,7 @@ pip install -e ".[dev]"
 ### Build Commands
 
 #### Using Make (Recommended)
+
 ```bash
 # Show all available commands
 make help
@@ -771,6 +821,7 @@ make docs         # Build API documentation
 ```
 
 #### Using Build Scripts
+
 ```bash
 # Simple single-format build
 ./build.sh html
@@ -788,6 +839,7 @@ make docs         # Build API documentation
 ### Development Workflow
 
 #### 1. **Local Development**
+
 ```bash
 # Start with fresh environment
 make setup-dev
@@ -803,6 +855,7 @@ quarto preview manuscript.qmd
 ```
 
 #### 2. **Code Quality**
+
 ```bash
 # Auto-format code
 make format
@@ -816,6 +869,7 @@ mypy src/vedic_numerology/calculator.py
 ```
 
 #### 3. **Testing Strategy**
+
 ```bash
 # Unit tests
 pytest tests/test_numerology.py -v
@@ -831,6 +885,7 @@ open htmlcov/index.html
 ```
 
 #### 4. **Documentation**
+
 ```bash
 # Build API docs
 make docs
@@ -845,6 +900,7 @@ quarto preview manuscript.qmd
 ### Advanced Development
 
 #### Running Notebooks
+
 ```bash
 # Execute all notebooks
 make build-notebooks
@@ -857,6 +913,7 @@ jupyter notebook
 ```
 
 #### Performance Profiling
+
 ```bash
 # Profile specific function
 python -c "
@@ -867,6 +924,7 @@ cProfile.run('analyze_birth_chart(\"1984-08-27\", \"10:30\", 28.6139, 77.1025)')
 ```
 
 #### Debugging
+
 ```bash
 # Debug specific test
 pytest tests/test_numerology.py::TestNumerologyCalculations::test_calculate_mulanka -s -v
@@ -898,6 +956,7 @@ build-report-*.md   # Build logs and reports
 ### Troubleshooting
 
 #### Build Issues
+
 ```bash
 # Check Quarto installation
 quarto check
@@ -910,6 +969,7 @@ python -c "from vedic_numerology import analyze_birth_chart"
 ```
 
 #### PDF Build Problems
+
 ```bash
 # Install/update TinyTeX
 quarto install tinytex
@@ -922,6 +982,7 @@ quarto render manuscript.qmd --to pdf --log-level debug
 ```
 
 #### Test Failures
+
 ```bash
 # Run with detailed output
 pytest -v --tb=long
@@ -938,16 +999,19 @@ pip check
 Your project now supports **multiple deployment formats** for maximum accessibility and engagement:
 
 ### 📊 **1. Static Research Publications**
+
 - **PDF Downloads**: Traditional academic paper format for citations and printing
 - **HTML Manuscripts**: Web-optimized versions with cross-references and navigation
 - **DOCX Format**: Microsoft Word compatible for collaborative editing
 
 ### 🎮 **2. Interactive Web Experience**
+
 - **Embedded Interactive Components**: Live calculators and visualizations in the manuscript
 - **Streamlit Web App**: Full-featured application with real-time controls
 - **Dynamic Visualizations**: Plotly-powered charts that respond to user input
 
 ### 🔧 **3. Developer Resources**
+
 - **API Documentation**: Complete Sphinx-generated documentation
 - **Jupyter Notebooks**: Executable computational narratives
 - **Google Colab Integration**: Zero-setup cloud execution
@@ -955,6 +1019,7 @@ Your project now supports **multiple deployment formats** for maximum accessibil
 ## 📄 Research Content Formats
 
 ### Academic Publications
+
 ```bash
 # Generate all formats
 make build
@@ -966,6 +1031,7 @@ make build-docx    # Word document
 ```
 
 ### Interactive Experience
+
 ```bash
 # Run local Streamlit app
 streamlit run app.py
@@ -975,6 +1041,7 @@ streamlit run app.py
 ```
 
 ### Developer Documentation
+
 ```bash
 # Build API docs
 make docs
@@ -989,6 +1056,7 @@ make docs
 The project includes Quarto integration for generating scientific PDF reports.
 
 #### Prerequisites
+
 ```bash
 # Install Quarto
 # Download from: https://quarto.org/docs/get-started/
@@ -1003,12 +1071,14 @@ conda install -c conda-forge quarto
 #### Generate PDF Report
 
 1. **Update Manuscript**:
+
    ```bash
    # Edit manuscript.qmd with your analysis
    # Include code chunks and visualizations
    ```
 
 2. **Render PDF**:
+
    ```bash
    # Generate PDF from manuscript
    quarto render manuscript.qmd --to pdf
@@ -1018,7 +1088,8 @@ conda install -c conda-forge quarto
    ```
 
 3. **Include Dynamic Results**:
-   ```qmd
+
+   ````qmd
    # manuscript.qmd
 
    ```{python}
@@ -1026,15 +1097,18 @@ conda install -c conda-forge quarto
 
    analysis = analyze_birth_chart("1984-08-27")
    results = analysis.analyze_support_contradiction()
-   ```
+   ````
 
    The analysis shows that Mulanka support is `{python} results['mulanka']['support_level']`
    and Bhagyanka support is `{python} results['bhagyanka']['support_level']`.
+
+   ```
+
    ```
 
 #### Embed Visualizations in PDF
 
-```qmd
+````qmd
 # manuscript.qmd
 
 ```{python}
@@ -1045,8 +1119,9 @@ from vedic_numerology import VedicNumerologyAstrology
 
 vna = VedicNumerologyAstrology("1984-08-27", "10:30", 28.6139, 77.1025)
 vna.plot_temporal_support("2024-01-01", "2024-06-01")
-```
-```
+````
+
+````
 
 ### Using Python Directly
 
@@ -1068,7 +1143,7 @@ plt.savefig('comparison.pdf')
 report = vna.generate_report()
 with open('analysis_report.txt', 'w') as f:
     f.write(report)
-```
+````
 
 ## 📊 Generated Reports and PDFs
 
@@ -1077,24 +1152,28 @@ with open('analysis_report.txt', 'w') as f:
 This repository includes automated workflows that generate research manuscripts and analysis reports. The following artifacts are available as GitHub Actions outputs:
 
 #### 📋 Research Manuscript PDF
+
 - **File**: `manuscript.pdf`
 - **Workflow**: [Research PDF Generation](https://github.com/astro-fusion/astro_research-white-paper/actions/workflows/research-pdf.yml)
 - **Contents**: Complete research paper with integrated analysis results
 - **Download**: Available as workflow artifact `research-manuscript-pdf`
 
 #### 📈 Analysis Reports
+
 - **File**: `research_results.json`
 - **Workflow**: [Research PDF Generation](https://github.com/astro-fusion/astro_research-white-paper/actions/workflows/research-pdf.yml)
 - **Contents**: Raw analysis data and computational results
 - **Download**: Available as workflow artifact `research-data-reports`
 
 #### 📊 Research Summary
+
 - **File**: `RESEARCH_SUMMARY.md`
 - **Workflow**: [Publish Research](https://github.com/astro-fusion/astro_research-white-paper/actions/workflows/publish-research.yml)
 - **Contents**: Executive summary of research findings and methodology
 - **Download**: Available as workflow artifact `research-release-artifacts`
 
 #### 📉 Data Analysis Results
+
 - **File**: `analysis_results/` (directory)
 - **Workflow**: [Data Analysis](https://github.com/astro-fusion/astro_research-white-paper/actions/workflows/data-analysis.yml)
 - **Contents**: Statistical analysis and research data processing results
@@ -1103,17 +1182,21 @@ This repository includes automated workflows that generate research manuscripts 
 ### Accessing Generated Files
 
 #### From GitHub Actions
+
 1. Go to the [Actions tab](https://github.com/astro-fusion/astro_research-white-paper/actions)
 2. Click on the latest successful workflow run
 3. Scroll down to the "Artifacts" section
 4. Download the desired artifact files
 
 #### From Latest Release
+
 - Visit the [Releases page](https://github.com/astro-fusion/astro_research-white-paper/releases)
 - Download the latest release assets which include compiled PDFs and reports
 
 #### Automated Generation
+
 Workflows automatically generate these files on:
+
 - Push to `main` branch (research PDFs)
 - Manual workflow dispatch (custom analysis)
 - Release creation (comprehensive research packages)
@@ -1168,6 +1251,7 @@ vedic-astrology-research/
 The project is designed to easily accommodate new research applications. To add a new use case:
 
 1. **Create Use Case Structure**:
+
    ```bash
    mkdir -p use_cases/your_use_case/{src,manuscripts,notebooks,scripts,data,figures}
    ```
@@ -1188,6 +1272,7 @@ The project is designed to easily accommodate new research applications. To add 
    ```
 
 ### 📚 **Example Use Cases**
+
 - **Numerology**: Planetary correlations with numerological numbers
 - **Earthquake Studies**: Astrological patterns in seismic activity
 - **Financial Markets**: Planetary influences on market trends
@@ -1291,6 +1376,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 The Vedic Numerology-Astrology API is available through multiple deployment options:
 
 #### 🚀 **FastAPI on Render** (Recommended)
+
 ```bash
 # Deployed at: https://your-app-name.onrender.com
 curl https://your-app-name.onrender.com/api/v1/health
@@ -1300,6 +1386,7 @@ curl https://your-app-name.onrender.com/api/v1/health
 ```
 
 #### ⚡ **GitHub Actions Webhook API** (Free)
+
 ```bash
 # Trigger calculation via GitHub Actions
 curl -X POST \
@@ -1311,6 +1398,7 @@ curl -X POST \
 > **⚠️ Security Note**: Use fine-grained personal access tokens with minimum required scopes. See [API_DEPLOYMENT.md](API_DEPLOYMENT.md) for detailed security guidelines.
 
 #### 🎮 **Streamlit Web App**
+
 ```bash
 # Interactive web application
 # Visit: https://share.streamlit.io/astro-fusion/numerology-app/main/app.py
@@ -1319,6 +1407,7 @@ curl -X POST \
 ### API Usage Examples
 
 #### Calculate Complete Analysis
+
 ```python
 import requests
 
@@ -1334,36 +1423,38 @@ print(f"Mulanka: {result['numerology']['mulanka']['number']}")
 ```
 
 #### JavaScript Integration
+
 ```html
 <script src="api-client.js"></script>
 <script>
-const vedicAPI = new VedicNumerologyAPI();
+  const vedicAPI = new VedicNumerologyAPI();
 
-const result = await vedicAPI.completeAnalysis({
-    birth_date: "1984-08-27",
-    birth_time: "10:30",
-    latitude: 28.6139,
-    longitude: 77.1025
-});
+  const result = await vedicAPI.completeAnalysis({
+      birth_date: "1984-08-27",
+      birth_time: "10:30",
+      latitude: 28.6139,
+      longitude: 77.1025
+  });
 
-console.log("Results:", result);
+  console.log("Results:", result);
 </script>
 ```
 
 ### Research API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/v1/health` | API health check |
-| `GET` | `/api/v1/planet-strength-series` | Planetary strength timeline (custom date ranges) |
-| `GET` | `/api/v1/numerology-series` | Numerology transitions timeline |
-| `GET` | `/api/v1/combined-series` | Normalized correlation analysis |
-| `POST` | `/api/v1/analysis` | Complete birth chart analysis |
-| `POST` | `/api/v1/numerology` | Numerology calculations only |
-| `POST` | `/api/v1/astrology` | Astrology calculations only |
-| `GET` | `/docs` | Interactive API documentation |
+| Method | Endpoint                         | Description                                      |
+| ------ | -------------------------------- | ------------------------------------------------ |
+| `GET`  | `/api/v1/health`                 | API health check                                 |
+| `GET`  | `/api/v1/planet-strength-series` | Planetary strength timeline (custom date ranges) |
+| `GET`  | `/api/v1/numerology-series`      | Numerology transitions timeline                  |
+| `GET`  | `/api/v1/combined-series`        | Normalized correlation analysis                  |
+| `POST` | `/api/v1/analysis`               | Complete birth chart analysis                    |
+| `POST` | `/api/v1/numerology`             | Numerology calculations only                     |
+| `POST` | `/api/v1/astrology`              | Astrology calculations only                      |
+| `GET`  | `/docs`                          | Interactive API documentation                    |
 
 **Timeline Parameters:**
+
 - `start_date`: Start date (YYYY-MM-DD)
 - `end_date`: End date (YYYY-MM-DD)
 - `step_days`: Analysis granularity (1=daily, 7=weekly, 30=monthly)

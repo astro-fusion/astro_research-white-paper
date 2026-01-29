@@ -107,7 +107,7 @@ jobs:
                 # Perform analysis based on type
                 if analysis_type == 'numerology-only':
                     # Basic numerology analysis
-                    analysis = analyze_birth_chart(birth_date)
+                    analysis = create_birth_chart(birth_date)
                     numerology = {
                         'mulanka': analysis.calculate_mulanka(),
                         'bhagyanka': analysis.calculate_bhagyanka()
@@ -120,7 +120,7 @@ jobs:
 
                 elif analysis_type == 'astrology-only':
                     # Astrology only (would need time/location)
-                    analysis = analyze_birth_chart(birth_date, '12:00', 28.6139, 77.1025)
+                    analysis = create_birth_chart(birth_date, '12:00', 28.6139, 77.1025)
                     chart = analysis.chart
                     result = {
                         'birth_date': birth_date,
@@ -134,7 +134,7 @@ jobs:
                     analyses = []
 
                     # Standard analysis
-                    std_analysis = analyze_birth_chart(birth_date, '12:00', 28.6139, 77.1025)
+                    std_analysis = create_birth_chart(birth_date, '12:00', 28.6139, 77.1025)
                     analyses.append({
                         'method': 'standard',
                         'results': std_analysis.analyze_support_contradiction()
@@ -158,7 +158,7 @@ jobs:
 
                 else:  # comprehensive
                     # Full analysis
-                    analysis = analyze_birth_chart(birth_date, '12:00', 28.6139, 77.1025)
+                    analysis = create_birth_chart(birth_date, '12:00', 28.6139, 77.1025)
                     full_results = analysis.analyze_support_contradiction()
                     report = analysis.generate_report()
 

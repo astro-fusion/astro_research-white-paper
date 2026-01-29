@@ -2,6 +2,7 @@
 # Install with: pip install -r requirements.txt
 
 # Numerical and scientific computing
+tqdm>=4.60.0
 numpy>=1.21.0
 pandas>=1.3.0
 
