@@ -143,7 +143,7 @@ jupyter: python3
 
 # Bibliography and citations (shared)
 bibliography:
-  - "/Users/bishalghimire/Documents/WORK/Open Source/astro-research/references.bib"
+  - "references.bib"
 
 csl: styles/apa.csl
 

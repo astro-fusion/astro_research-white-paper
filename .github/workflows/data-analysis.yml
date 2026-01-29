@@ -160,7 +160,7 @@ jobs:
                     # Full analysis
                     analysis = create_birth_chart(birth_date, '12:00', 28.6139, 77.1025)
                     full_results = analysis.analyze_support_contradiction()
-                    report = analysis.generate_report()
+                    report = analysis.generate_chart_report()
 
                     result = {
                         'birth_date': birth_date,
