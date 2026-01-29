@@ -49,6 +49,7 @@ dependencies = [
     "PyYAML>=6.0",
     "suntime>=1.2.5",
     "requests>=2.25.0",
+    "statsmodels>=0.13.0",
 ]
 
 [project.scripts]
