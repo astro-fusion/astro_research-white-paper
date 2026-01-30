@@ -1,0 +1,29 @@
+{
+    "Mars": {
+        "Target": "Gold_Log_Ret",
+        "Predictors": "Mars_Sin, Mars_Cos",
+        "Best Lag (AIC)": 1,
+        "F-Statistic": 2.6134,
+        "p-value": 0.0734550062695752,
+        "Bonferroni Threshold": 0.016666666666666666,
+        "Significant": "No"
+    },
+    "Saturn": {
+        "Target": "Gold_Log_Ret",
+        "Predictors": "Saturn_Sin, Saturn_Cos",
+        "Best Lag (AIC)": 1,
+        "F-Statistic": 0.7444,
+        "p-value": 0.4751043713588376,
+        "Bonferroni Threshold": 0.016666666666666666,
+        "Significant": "No"
+    },
+    "Jupiter": {
+        "Target": "Gold_Log_Ret",
+        "Predictors": "Jupiter_Sin, Jupiter_Cos",
+        "Best Lag (AIC)": 1,
+        "F-Statistic": 0.6917,
+        "p-value": 0.5007998343149577,
+        "Bonferroni Threshold": 0.016666666666666666,
+        "Significant": "No"
+    }
+}

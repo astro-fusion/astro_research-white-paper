@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving
+and Interchange DTD v1.2 20190208//EN" "JATS-archivearticle1.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.2" article-type="other">
+  <front>
+    <article-meta>
+      <title-group>
+        <article-title>Track 1: Scientific Analysis of Systemic
+Variation</article-title>
+        <subtitle>A Comparative Study of Numerological vs. Astrological
+Mechanics (Jan 2024)</subtitle>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Team</surname>
+            <given-names>Astro-Fusion Research</given-names>
+          </name>
+          <string-name>Astro-Fusion Research Team</string-name>
+        </contrib>
+      </contrib-group>
+      <history/>
+      <kwd-group kwd-group-type="author">
+        <kwd>Vedic Numerology</kwd>
+        <kwd>Shadbala</kwd>
+        <kwd>Variation Mechanics</kwd>
+        <kwd>Discrete vs Continuous</kwd>
+        <kwd>Mulanka</kwd>
+        <kwd>Bhagyanka</kwd>
+      </kwd-group>
+    </article-meta>
+  </front>
+  <body>
+    <disp-quote>
+      <p>[!TIP]
+  <bold><ext-link ext-link-type="uri" xlink:href="../../../reports/research_numerology_correlation.pdf">Download
+  Research Report (PDF)</ext-link></bold></p>
+    </disp-quote>
+    <sec id="abstract">
+      <title>Abstract</title>
+      <p>This scientific report deconstructs the variation mechanisms of two
+  predictive systems: Vedic Numerology (Sankhya Sastra) and Vedic
+  Astrology (Parashari Jyotish). Analyzing a concrete dataset for
+  <bold>January 2024</bold>, we map the daily variation of the “Mulanka”
+  (Birth Number) against the hourly variation of “Shadbala” (Planetary
+  Strength). The study aims to visualize how influence “happens” in each
+  system. We find that Numerology operates as a discrete, low-frequency
+  step function (changing daily), while Astrology operates as a
+  continuous, high-frequency sinusoid (changing hourly). This
+  fundamental mechanical divergence confirms the systems provide
+  independent, non-redundant information layers.</p>
+    </sec>
+    <sec id="introduction">
+      <title>1. Introduction</title>
+      <p>The objective of this research is to scientifically validate and
+  visualize “how variation happens” in two ancient systems. To do this,
+  we analyze a specific time period: <bold>January 1, 2024 to February
+  1, 2024</bold>.</p>
+      <p>We address three key phases: 1. <bold>Phase 1:</bold> How
+  Numerology defines variation over time. 2. <bold>Phase 2:</bold> How
+  Vedic Astrology defines variation (Strength) over time. 3. <bold>Phase
+  3:</bold> A comparative synthesis of the two signals.</p>
+    </sec>
+    <sec id="phase-1-vedic-numerology-discrete-variation">
+      <title>2. Phase 1: Vedic Numerology (Discrete Variation)</title>
+      <sec id="methodology-calculation">
+        <title>2.1. Methodology &amp; Calculation</title>
+        <p>Vedic Numerology posits that time has a qualitative value derived
+    from calendar dates. The primary variable is the
+    <bold>Mulanka</bold> (Root Number), calculated from the digital root
+    of the day.</p>
+        <p><bold>Formula:</bold><disp-formula><alternatives><tex-math><![CDATA[ Mulanka = ((DaySum - 1) \pmod 9) + 1 ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mrow><mml:mi>M</mml:mi><mml:mi>u</mml:mi><mml:mi>l</mml:mi><mml:mi>a</mml:mi><mml:mi>n</mml:mi><mml:mi>k</mml:mi><mml:mi>a</mml:mi><mml:mo>=</mml:mo><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:mi>D</mml:mi><mml:mi>a</mml:mi><mml:mi>y</mml:mi><mml:mi>S</mml:mi><mml:mi>u</mml:mi><mml:mi>m</mml:mi><mml:mo>−</mml:mo><mml:mn>1</mml:mn><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow><mml:mrow><mml:mspace width="0.222em"/><mml:mo stretchy="false" form="prefix">(</mml:mo><mml:mo>mod</mml:mo><mml:mspace width="0.222em"/><mml:mn>9</mml:mn><mml:mo stretchy="false" form="postfix">)</mml:mo></mml:mrow><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow><mml:mo>+</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:math></alternatives></disp-formula>
+    Where <inline-formula><alternatives><tex-math><![CDATA[DaySum]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mi>D</mml:mi><mml:mi>a</mml:mi><mml:mi>y</mml:mi><mml:mi>S</mml:mi><mml:mi>u</mml:mi><mml:mi>m</mml:mi></mml:mrow></mml:math></alternatives></inline-formula>
+    is the sum of digits of the calendar day.</p>
+        <p><bold>Example Application (Jan 2024):</bold> - <bold>Jan 1,
+    2024:</bold> Day = 1. Mulanka = 1 (Sun). - <bold>Jan 9, 2024:</bold>
+    Day = 9. Mulanka = 9 (Mars). - <bold>Jan 18, 2024:</bold> Day = 1+8
+    = 9. Mulanka = 9 (Mars).</p>
+      </sec>
+      <sec id="variation-analysis-one-month-data">
+        <title>2.2. Variation Analysis (One Month Data)</title>
+        <p>We mapped the influence of <bold>Mars (Number 9)</bold> across
+    January 2024. Mars is considered “Strong” (100%) on Day 9, 18, and
+    27. It is “Neutral/Friendly” on dates summing to 1, 3, or 5.</p>
+        <fig id="fig-num">
+          <caption>
+            <p>Figure 3.1colon Phase 1: Variation of Numerological
+      Strength for Mars (Jan 2024). Note the “Step Function” shape. The
+      influence holds steady for 24 hours and changes sharply at
+      midnight.</p>
+          </caption>
+          <graphic mimetype="image" mime-subtype="png" xlink:href="figures/phase1_numerology_step.png"/>
+        </fig>
+        <p><bold>Observation:</bold> The variation is <bold>Discrete</bold>.
+    The signal state (High/Medium/Low) persists for exactly 24 hours.
+    The change happens instantaneously at the date boundary. It follows
+    a rigid, repeating cycle (<inline-formula><alternatives><tex-math><![CDATA[1 \to 9 \to 1]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="inline"><mml:mrow><mml:mn>1</mml:mn><mml:mo>→</mml:mo><mml:mn>9</mml:mn><mml:mo>→</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:math></alternatives></inline-formula>).</p>
+      </sec>
+    </sec>
+    <sec id="phase-2-vedic-astrology-continuous-variation">
+      <title>3. Phase 2: Vedic Astrology (Continuous Variation)</title>
+      <sec id="methodology-the-six-fold-strength-shadbala">
+        <title>3.1. Methodology: The Six-Fold Strength (Shadbala)</title>
+        <p>Vedic Astrology defines “Strength” (Bala) as a composite of six
+    distinct astronomical vectors. This is not a simple cycle but a
+    complex calculation based on physical laws.</p>
+        <p><bold>The Six Strengths (Briefly):</bold> 1. <bold>Sthana Bala
+    (Positional):</bold> Strength due to Zodiac Sign
+    (Exaltation/Debilitation). 2. <bold>Dig Bala (Directional):</bold>
+    Strength due to position in the sky (e.g., Sun strongest at Noon).
+    3. <bold>Chesta Bala (Motional):</bold> Strength due to speed and
+    retrograde motion. 4. <bold>Kala Bala (Temporal):</bold> Strength
+    due to Time of Day, Year, and Lunar Phase. 5. <bold>Drik Bala
+    (Aspectual):</bold> Strength modified by “glances” from other
+    planets. 6. <bold>Naisargika Bala (Natural):</bold> Intrinsic
+    luminosity (Sun &gt; Moon &gt; … &gt; Saturn).</p>
+      </sec>
+      <sec id="variation-analysis-one-month-data-1">
+        <title>3.2. Variation Analysis (One Month Data)</title>
+        <p>We calculated the aggregate <bold>Shadbala</bold> for Mars over
+    the same period (Jan 2024).</p>
+        <fig id="fig-astro">
+          <caption>
+            <p>Figure 4.1colon Phase 2: Variation of Astrological
+      Strength for Mars (Jan 2024). Note the “Continuous Curve”. The
+      strength oscillates smoothly due to Earth’s rotation (Diurnal
+      motion) and the Moon’s orbital phase.</p>
+          </caption>
+          <graphic mimetype="image" mime-subtype="png" xlink:href="figures/phase2_astrology_curve.png"/>
+        </fig>
+        <p><bold>Observation:</bold> The variation is
+    <bold>Continuous</bold>. The signal never “holds” a value; it is
+    always in flux. - <bold>High Frequency:</bold> Small ripples caused
+    by the 24-hour rotation of the Earth (Dig Bala changes every
+    minute). - <bold>Low Frequency:</bold> The broader wave caused by
+    Mars moving through the Zodiac sign (Sthana Bala).</p>
+      </sec>
+    </sec>
+    <sec id="phase-3-comparative-comparison-logic">
+      <title>4. Phase 3: Comparative Comparison &amp; Logic</title>
+      <sec id="the-superimposed-graph">
+        <title>4.1. The Superimposed Graph</title>
+        <p>To deduce the relationship logic, we overlay the two signals.</p>
+        <fig id="fig-compare">
+          <caption>
+            <p>Figure 5.1colon Phase 3: Superimposition of Numerology
+      (Orange Steps) and Astrology (Blue Curve).</p>
+          </caption>
+          <graphic mimetype="image" mime-subtype="png" xlink:href="figures/phase3_comparison_overlay.png"/>
+        </fig>
+      </sec>
+      <sec id="logic-of-contrast">
+        <title>4.2. Logic of Contrast</title>
+        <p>Comparing the two graphs reveals the deduction:</p>
+        <list list-type="order">
+          <list-item>
+            <p>
+              <bold>Independence of Origin:</bold>
+            </p>
+            <list list-type="bullet">
+              <list-item>
+                <p>The <bold>Blue Line</bold> (Astrology) is driven by
+            <italic>Gravity and Geometry</italic>. It peaks when Mars is
+            geographically High in the sky or Retrograde.</p>
+              </list-item>
+              <list-item>
+                <p>The <bold>Orange Line</bold> (Numerology) is driven by
+            <italic>Symbolism</italic>. It peaks simply because the
+            calendar shows a “9”.</p>
+              </list-item>
+            </list>
+          </list-item>
+          <list-item>
+            <p>
+              <bold>Temporal Mismatch:</bold>
+            </p>
+            <list list-type="bullet">
+              <list-item>
+                <p>Astrology captures “Micro-Time” (hours/minutes). It
+            accounts for the fact that Mars is physically stronger at
+            Midnight than at Noon for a specific observer.</p>
+              </list-item>
+              <list-item>
+                <p>Numerology captures “Macro-Time” (Days). It treats the
+            entire 24-hour block as uniform.</p>
+              </list-item>
+            </list>
+          </list-item>
+          <list-item>
+            <p><bold>Conclusion:</bold> They are <bold>Orthogonal
+        Systems</bold>. They characterize different dimensions of
+        time.</p>
+            <list list-type="bullet">
+              <list-item>
+                <p>Use <bold>Numerology</bold> for broad, daily archetypal
+            alignment (e.g., “Today is a Mars Day”).</p>
+              </list-item>
+              <list-item>
+                <p>Use <bold>Astrology</bold> for precise, event-based
+            timing (e.g., “Mars is strongest at 14:00 hours”). They do
+            not contradict because they do not measure the same thing.
+            One measures the <italic>Container of Time</italic> (Date),
+            the other measures the <italic>Content of Space</italic>
+            (Planetary Position).</p>
+              </list-item>
+            </list>
+          </list-item>
+        </list>
+      </sec>
+    </sec>
+    <sec id="mathematical-validation-of-independence-fft-orthogonality">
+      <title>5. Mathematical Validation of Independence (FFT &amp;
+  Orthogonality)</title>
+      <p>To elevate the research to modern scientific standards, we
+  performed a signal processing analysis on one full year (2024) of
+  hourly astronomical and daily numerological data.</p>
+      <sec id="mathematical-orthogonality-proof">
+        <title>5.1. Mathematical Orthogonality Proof</title>
+        <p>We define independence via the <bold>Cosine Similarity</bold> of
+    normalized time-series vectors: <disp-formula><alternatives><tex-math><![CDATA[ \cos(\theta) = \frac{\vec{A} \cdot \vec{N}}{\|\vec{A}\| \|\vec{N}\|} ]]></tex-math><mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block"><mml:mrow><mml:mo>cos</mml:mo><mml:mrow><mml:mo stretchy="true" form="prefix">(</mml:mo><mml:mi>θ</mml:mi><mml:mo stretchy="true" form="postfix">)</mml:mo></mml:mrow><mml:mo>=</mml:mo><mml:mfrac><mml:mrow><mml:mover><mml:mi>A</mml:mi><mml:mo accent="true">→</mml:mo></mml:mover><mml:mo>⋅</mml:mo><mml:mover><mml:mi>N</mml:mi><mml:mo accent="true">→</mml:mo></mml:mover></mml:mrow><mml:mrow><mml:mo stretchy="false" form="postfix">∥</mml:mo><mml:mover><mml:mi>A</mml:mi><mml:mo accent="true">→</mml:mo></mml:mover><mml:mo stretchy="false" form="postfix">∥</mml:mo><mml:mo stretchy="false" form="postfix">∥</mml:mo><mml:mover><mml:mi>N</mml:mi><mml:mo accent="true">→</mml:mo></mml:mover><mml:mo stretchy="false" form="postfix">∥</mml:mo></mml:mrow></mml:mfrac></mml:mrow></mml:math></alternatives></disp-formula></p>
+        <table-wrap>
+          <table>
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Calculated Cosine Similarity</td>
+                <td>0.005240</td>
+              </tr>
+              <tr>
+                <td>
+                  <bold>Degree of Independence</bold>
+                </td>
+                <td>
+                  <bold>99.48%</bold>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </table-wrap>
+        <p>A result near zero confirms that the systems are
+    <bold>mathematically orthogonal</bold>. Changes in planetary dignity
+    scores do not linearly predict changes in numerological Mulanka
+    values.</p>
+      </sec>
+      <sec id="frequency-domain-analysis-fft">
+        <title>5.2. Frequency Domain Analysis (FFT)</title>
+        <p>Using the Fast Fourier Transform (FFT), we mapped both systems
+    into the frequency domain.</p>
+        <fig>
+          <caption>
+            <p>Frequency Domain Analysis: Power Spectrum of Mars
+      (2024). Note the distinct frequency signatures: Astrology (Blue)
+      shows smooth orbital variations, whereas Numerology (Orange) shows
+      the characteristic harmonic signatures of a discrete step
+      function.</p>
+          </caption>
+          <graphic mimetype="image" mime-subtype="png" xlink:href="figures/spectral_analysis_MARS.png"/>
+        </fig>
+      </sec>
+      <sec id="statistical-independence-conclusion">
+        <title>5.3. Statistical Independence Conclusion</title>
+        <p>The Cross-Correlation analysis peaked at just
+    <monospace>0.0406</monospace>, indicating that there is no
+    meaningful time-lagged relationship either. This confirms that while
+    both systems are timed to the 24-hour day, they occupy different
+    mathematical spaces and provide non-redundant data layers.</p>
+      </sec>
+    </sec>
+  </body>
+  <back>
+</back>
+</article>

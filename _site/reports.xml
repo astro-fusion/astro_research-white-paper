@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving
+and Interchange DTD v1.2 20190208//EN" "JATS-archivearticle1.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.2" article-type="other">
+  <front>
+    <article-meta>
+      <title-group>
+        <article-title>Research Reports</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Ghimire</surname>
+            <given-names>Bishal</given-names>
+          </name>
+          <string-name>Bishal Ghimire</string-name>
+        </contrib>
+      </contrib-group>
+      <history/>
+      <kwd-group kwd-group-type="author">
+        <kwd>vedic numerology, astrology, swiss ephemeris, computational
+astrology</kwd>
+      </kwd-group>
+    </article-meta>
+  </front>
+  <body>
+    <p>Welcome to our research findings. Here we document our empirical
+investigations into astrological and numerological systems.</p>
+    <table-wrap>
+      <table>
+        <colgroup>
+          <col width="33%"/>
+          <col width="33%"/>
+          <col width="33%"/>
+        </colgroup>
+        <thead>
+          <tr>
+            <th align="left">Research Area</th>
+            <th align="left">Report Title</th>
+            <th align="left">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td align="left">
+              <bold>Numerology</bold>
+            </td>
+            <td align="left">
+              <ext-link ext-link-type="uri" xlink:href="use_cases/numerology/research_paper/numerology_astrology_correlation.qmd">Temporal
+        Discontinuity: A Quantitative Analysis</ext-link>
+            </td>
+            <td align="left">✅ Published</td>
+          </tr>
+          <tr>
+            <td align="left">
+              <bold>Earthquake</bold>
+            </td>
+            <td align="left">
+              <ext-link ext-link-type="uri" xlink:href="use_cases/earthquake/report.qmd">Seismic
+        Activity &amp; Planetary Correlations</ext-link>
+            </td>
+            <td align="left">🚧 In Progress</td>
+          </tr>
+        </tbody>
+      </table>
+    </table-wrap>
+    <sec id="upcoming-research">
+      <title>Upcoming Research</title>
+      <p>We are currently expanding our dataset to include: - Historical
+  stock market crash cycles - Celebrity career path analysis - Global
+  weather pattern correlations</p>
+    </sec>
+  </body>
+  <back>
+</back>
+</article>

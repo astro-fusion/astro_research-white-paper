@@ -52,5 +52,54 @@
   },
   "reports/manuscript.qmd": {
     "manuscript.tex": "c82c81bc"
+  },
+  "PHASE_3_COMPLETION.md": {
+    "PHASE_3_COMPLETION.html": "c5070d98",
+    "PHASE_3_COMPLETION.tex": "e8a9166e",
+    "PHASE_3_COMPLETION.docx": "bd7cc869",
+    "PHASE_3_COMPLETION.epub": "adaee7f0",
+    "PHASE_3_COMPLETION.xml": "ac13a79b"
+  },
+  "FINAL_DELIVERY.md": {
+    "FINAL_DELIVERY.html": "096ab6b9",
+    "FINAL_DELIVERY.tex": "6c03ec42",
+    "FINAL_DELIVERY.docx": "19c8c100",
+    "FINAL_DELIVERY.epub": "74bc38fb",
+    "FINAL_DELIVERY.xml": "3eac1560"
+  },
+  "tests/TESTING_GUIDE.md": {
+    "TESTING_GUIDE.html": "c69ee367",
+    "TESTING_GUIDE.tex": "627c835c",
+    "TESTING_GUIDE.docx": "8a6f70b0",
+    "TESTING_GUIDE.epub": "ed0322a2",
+    "TESTING_GUIDE.xml": "3cbdf95a"
+  },
+  "tests/test.qmd": {
+    "test.html": "e6a7c05f",
+    "test.tex": "62958617",
+    "test.docx": "154bba6b",
+    "test.epub": "febed2a6",
+    "test.xml": "74013286"
+  },
+  "reports.qmd": {
+    "reports.html": "281fc053",
+    "reports.tex": "353fa60e",
+    "reports.docx": "d2dfe06c",
+    "reports.epub": "0fa0577e",
+    "reports.xml": "aca31fc0"
+  },
+  "docs/research/RESEARCH_PAPER_TEMPLATE.md": {
+    "RESEARCH_PAPER_TEMPLATE.html": "86c6d104",
+    "RESEARCH_PAPER_TEMPLATE.tex": "fdbd74fc",
+    "RESEARCH_PAPER_TEMPLATE.docx": "745e10b8",
+    "RESEARCH_PAPER_TEMPLATE.epub": "eb9f2108",
+    "RESEARCH_PAPER_TEMPLATE.xml": "d0dc80ad"
+  },
+  "docs/research/track_1_numerology_vs_astrology/research_numerology_correlation.md": {
+    "research_numerology_correlation.html": "2ffcfd12",
+    "research_numerology_correlation.tex": "092c9800",
+    "research_numerology_correlation.docx": "9fb70d5c",
+    "research_numerology_correlation.epub": "2b555c5a",
+    "research_numerology_correlation.xml": "1f4e56b7"
   }
 }

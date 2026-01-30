@@ -104,7 +104,7 @@ format:
 
   # EPUB format for e-readers
   epub:
-    cover-image: images/cover.png
+    # cover-image: images/cover.png
     number-sections: true
     fig-cap-location: top
     tbl-cap-location: top
