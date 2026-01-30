@@ -169,7 +169,8 @@ class AstroResearchE2ETester:
             await self.page.goto(self.base_url)
 
             # Execute JavaScript to get page info
-            result = await self.page.evaluate("""
+            result = await self.page.evaluate(
+                """
                 () => ({
                     url: window.location.href,
                     title: document.title,
@@ -177,7 +178,8 @@ class AstroResearchE2ETester:
                     bodySize: document.body.offsetHeight,
                     headings: document.querySelectorAll('h1, h2, h3').length
                 })
-            """)
+            """
+            )
 
             assert result["ready"] in ["interactive", "complete"], "Page not ready"
             assert result["headings"] >= 0, "Heading detection failed"
@@ -269,14 +271,16 @@ class AstroResearchE2ETester:
             await self.page.goto(self.base_url)
 
             # Get performance metrics
-            metrics = await self.page.evaluate("""
+            metrics = await self.page.evaluate(
+                """
                 () => ({
                     navigation: performance.timing.navigationStart,
                     loadComplete: performance.timing.loadEventEnd - performance.timing.navigationStart,
                     domInteractive: performance.timing.domInteractive - performance.timing.navigationStart,
                     resourceCount: performance.getEntriesByType('resource').length
                 })
-            """)
+            """
+            )
 
             load_time = metrics["loadComplete"] / 1000  # Convert to seconds
 
@@ -299,7 +303,8 @@ class AstroResearchE2ETester:
             await self.page.goto(self.base_url)
 
             # Check accessibility attributes
-            accessibility = await self.page.evaluate("""
+            accessibility = await self.page.evaluate(
+                """
                 () => ({
                     headings: document.querySelectorAll('h1, h2, h3, h4, h5, h6').length,
                     images: document.querySelectorAll('img[alt]').length,
@@ -308,7 +313,8 @@ class AstroResearchE2ETester:
                     labels: document.querySelectorAll('label').length,
                     inputs: document.querySelectorAll('input[aria-label], input[id]').length
                 })
-            """)
+            """
+            )
 
             issues = []
             if accessibility["images"] == 0:

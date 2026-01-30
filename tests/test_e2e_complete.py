@@ -112,9 +112,7 @@ class AstroResearchE2ETester:
                 self._record_test(test_name, True)
                 return True
             else:
-                print(
-                    "⚠️  No navigation elements found (may be valid for some layouts)"
-                )
+                print("⚠️  No navigation elements found (may be valid for some layouts)")
                 self._record_test(test_name, True)  # Not critical
                 return True
 
@@ -298,7 +296,8 @@ class AstroResearchE2ETester:
             await self.page.goto(self.base_url, wait_until="load")
 
             # Get performance metrics
-            metrics = await self.page.evaluate("""
+            metrics = await self.page.evaluate(
+                """
                 () => {
                     const timing = performance.timing;
                     return {
@@ -310,7 +309,8 @@ class AstroResearchE2ETester:
                         total: timing.loadEventEnd - timing.navigationStart
                     };
                 }
-            """)
+            """
+            )
 
             print(f"✅ Performance metrics collected:")
             print(f"   - Total load time: {metrics['total']}ms")

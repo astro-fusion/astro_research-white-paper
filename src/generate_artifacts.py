@@ -10,23 +10,24 @@ It orchestrates the data flow:
 4. Saves them to 'reports/artifacts/' for Quarto consumption.
 """
 
-import os
-import sys
 import json
 import logging
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+import os
+import sys
+
 import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
 # Add src to path
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), "src"))
 
 from models.statistics import (
-    check_stationarity,
-    run_lomb_scargle,
-    run_granger_causality,
     calculate_molchan_trajectory,
+    check_stationarity,
+    run_granger_causality,
+    run_lomb_scargle,
     run_monte_carlo_permutation_test,
 )
 

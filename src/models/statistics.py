@@ -14,17 +14,18 @@ Key Components:
 """
 
 import logging
+from typing import Any, Dict, List, Optional, Tuple
+
 import numpy as np
 import pandas as pd
-from typing import Dict, List, Tuple, Optional, Any
-from scipy import stats
-
-# Econometrics
-from statsmodels.tsa.stattools import adfuller, kpss, grangercausalitytests
-from statsmodels.tsa.api import VAR
 
 # Astrophysics / Signal Processing
 from astropy.timeseries import LombScargle
+from scipy import stats
+from statsmodels.tsa.api import VAR
+
+# Econometrics
+from statsmodels.tsa.stattools import adfuller, grangercausalitytests, kpss
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
