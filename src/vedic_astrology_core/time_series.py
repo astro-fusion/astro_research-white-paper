@@ -153,7 +153,9 @@ def compute_astrology_strength_series(
                 # Map to Title Case if needed by GlobalScorer (Sun, Moon, etc)
                 # Or just handle it case-insensitively
                 display_name = p.name.capitalize()
-                row[f"astrology_{p.name}"] = scores.get(display_name, scores.get(p.name, 0.0))
+                row[f"astrology_{p.name}"] = scores.get(
+                    display_name, scores.get(p.name, 0.0)
+                )
         else:
             # Add all
             for pname, score in scores.items():
