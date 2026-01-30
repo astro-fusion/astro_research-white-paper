@@ -1,0 +1,76 @@
+name: Automated Scientific Reporting
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/**'
+      - 'reports/manuscript.qmd'
+      - 'reports/styles/**'
+      - 'reports/references.bib'
+      - 'data/raw/**'
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  scientific-report:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Quarto
+      run: |
+        wget -q https://github.com/quarto-dev/quarto-cli/releases/download/v1.4.554/quarto-1.4.554-linux-amd64.deb
+        sudo dpkg -i quarto-1.4.554-linux-amd64.deb || sudo apt-get install -f -y
+        quarto install tinytex
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Install System Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential libswe-dev || {
+          wget -q http://www.astro.com/ftp/swisseph/swe_unix_src_2.10.03.tar.gz
+          tar -xzf swe_unix_src_2.10.03.tar.gz
+          cd swe_unix_src_2.10.03/src && make libswe.a && sudo make install
+        }
+
+    - name: Install Python Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+        pip install yfinance pandas numpy matplotlib statsmodels astropy scipy jupyter notebook
+
+    - name: Run Artifact Generation Pipeline
+      run: |
+        # Generate the data artifacts (MODEL -> CONTROLLER)
+        python3 src/generate_artifacts.py
+
+    - name: Run Smoke Tests
+      run: |
+        # Validate artifacts and rendering logic
+        python3 -m pytest tests/test_scientific_report_smoke.py -v
+
+    - name: Render Scientific Manuscript (Nature Style)
+      run: |
+        # Render the final VIEW
+        quarto render reports/manuscript.qmd --to pdf -o manuscript_nature.pdf
+
+    - name: Render Scientific Manuscript (IEEE Style)
+      run: |
+        # Render polymorphic output
+        quarto render reports/manuscript.qmd --to pdf -M csl=reports/styles/ieee.csl -o manuscript_ieee.pdf
+
+    - name: Upload Research Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: scientific-reports
+        path: |
+          manuscript_nature.pdf
+          manuscript_ieee.pdf
+          reports/artifacts/

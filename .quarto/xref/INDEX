@@ -49,5 +49,8 @@
   "use_cases/earthquake/report.qmd": {
     "report.tex": "ff52c581",
     "report.html": "d1764364"
+  },
+  "reports/manuscript.qmd": {
+    "manuscript.tex": "c82c81bc"
   }
 }

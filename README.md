@@ -16,10 +16,11 @@
 
 **🌐 [Visit Research Website](https://astro-fusion.github.io/astro_research-white-paper/)**
 
-Access our growing collection of research reports:
+Access our latest scientifically rigorous manuscripts (Generated via CI/CD):
 
-- **[Numerology Report](docs/research/track_1_numerology_vs_astrology/track_1_report.pdf)**: Temporal discontinuity analysis.
-- **[Earthquake Research](docs/research/track_2_earthquake_prediction/track_2_report.pdf)**: Seismic activity correlations (In Progress).
+- **[Nature-Style Manuscript (PDF)](_site/manuscript_nature.pdf)**: Rigorous falsification of planetary predictors.
+- **[IEEE-Style Manuscript (PDF)](_site/manuscript_ieee.pdf)**: Technical evaluation in IEEE format.
+- **[Numerology Report (PDF)](docs/research/track_1_numerology_vs_astrology/track_1_report.pdf)**: Temporal discontinuity analysis.
 
 > **Note**: This repository contains multiple research use cases. Visit the [Reports Section](assets/reports/) for generated PDF reports or browse the [Source Code](src/) for implementation details.
 
@@ -81,13 +82,15 @@ This platform generates **peer-reviewed research manuscripts** documenting our c
 - **Complex Rules**: Implementing advanced astrological combinations
 - **Analysis Phase**: Pattern recognition and statistical validation
 
-### 📊 **Computational Framework**
+### 🛡️ **Severe Testing & Statistical Rigor**
 
-- **Swiss Ephemeris Backend**: 0.1 arcsecond astronomical precision
-- **Vedic Astrology Engine**: Complete Parashari Jyotish implementation
-- **Time Series Analysis**: Custom date ranges with configurable granularity
-- **Interactive Visualizations**: Plotly-powered charts for research exploration
+We emphasize falsification over confirmation. Every research track is subjected to:
+- **Stationarity Validation**: ADF & KPSS tests to ensure time-series integrity.
+- **Spectral Analysis**: Lomb-Scargle periodograms for detect cyclic signals in uneven data.
+- **Causal Inference**: Granger Causality within a VAR framework, guarded by **Bonferroni corrections**.
+- **Monte Carlo Permutation**: Empirical baseline generation (1,000+ shuffles) to prove results are not due to random chance.
 
+---
 ---
 
 ---
@@ -98,27 +101,21 @@ This project follows a **clean, professional architecture** for scalability and 
 
 ```
 astro-research/
-├── 📖 docs/                    # All documentation
-│   ├── guides/                 # User guides & setup
-│   ├── research/               # Research findings
-│   ├── framework/              # Framework documentation
-│   └── architecture/           # System design
-├── 🔨 scripts/                 # Build & utility scripts
-│   ├── build/                  # Build automation
-│   └── generate/               # Data generation
-├── 🌐 src/                     # Source code
-│   ├── api/                    # REST API
-│   └── web/                    # Web application
-├── ⚙️ config/                  # Configuration files
-│   └── requirements/           # Dependencies
-├── 📊 assets/                  # Generated outputs
-│   ├── reports/                # PDF reports
-│   ├── visualizations/         # HTML dashboards
-│   └── data/                   # Analysis results
-├── 🔬 use_cases/               # Research implementations
-│   ├── numerology/             # ✅ Complete
-│   └── earthquake/             # 🔄 Framework ready
-└── 🧪 tests/                   # Test suite
+├── 📊 data/                    # [MODEL] Data Layer
+│   ├── raw/                    # Immutable source data (Gold, Earthquakes)
+│   └── processed/              # Aligned/Cleaned datasets for analysis
+├── 🌐 src/                     # [CONTROLLER] Logic Layer
+│   ├── data/                   # Data Ingestion & Alignment
+│   ├── models/                 # Statistical Engines (Granger, Monte Carlo)
+│   └── generate_artifacts.py   # Pipeline orchestrator
+├── 📖 reports/                 # [VIEW] Presentation Layer
+│   ├── artifacts/              # Auto-generated PDFs, PNGs, and CSVs
+│   ├── styles/                 # Journal-specific CSL (Nature, IEEE)
+│   ├── references.bib          # Bibliography
+│   └── manuscript.qmd          # Dynamic "Living" Manuscript (Quarto)
+├── 🔨 scripts/                 # CLI wrappers and build utilities
+├── 🧪 tests/                   # Test suite (Unit & Smoke Tests)
+└── 🔬 use_cases/               # Legacy & sandbox research modules
 ```
 
 **For a detailed guide on the project structure, see:** [ARCHITECTURE.md](docs/project_tracking/ARCHITECTURE.md) or [REORGANIZATION_VISUAL_GUIDE.md](docs/project_tracking/REORGANIZATION_VISUAL_GUIDE.md)
@@ -228,6 +225,36 @@ data = compute_planet_strength_series(
 ```
 
 ---
+
+## 🔬 Scientific Reporting Pipeline
+
+The platform includes a fully automated pipeline for generating international-level scientific reports. This ensures that every finding is reproducible and statistically sound.
+
+### 1. Data Ingestion & Transformation
+Models fetch raw data (e.g., Gold prices from Yahoo Finance) and align it with high-precision planetary ephemerides, accounting for market holidays and time zones.
+
+### 2. Automated Artifact Generation
+Run the following to generate all statistical tables and figures:
+```bash
+python3 src/generate_artifacts.py
+```
+This produces `reports/artifacts/` containing:
+- **`tbl_stationarity.csv`**: Unit root test results.
+- **`stats_granger.json`**: p-values for causal inference.
+- **`fig_permutation_dist.pdf`**: Monte Carlo distribution visualization.
+
+### 3. Dynamic Narrative Rendering
+Render the "Living Manuscript" which automatically injects statistics from the artifacts into the text.
+
+**Nature Style:**
+```bash
+quarto render reports/manuscript.qmd --to pdf -o manuscript_nature.pdf
+```
+
+**IEEE Style:**
+```bash
+quarto render reports/manuscript.qmd --to pdf -M csl=reports/styles/ieee.csl -o manuscript_ieee.pdf
+```
 
 ## 🛠️ Technical Setup & Development
 

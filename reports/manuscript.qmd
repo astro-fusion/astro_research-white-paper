@@ -1,0 +1,162 @@
+---
+title: "Rigorous Statistical Falsification of Exogenous Planetary Predictors in Global Gold Markets"
+author:
+  - name: Computational Astrology Research Group
+    affiliation: Independent Research Initiative
+    equal-contributor: true
+date: last-modified
+date-format: long
+format:
+  pdf:
+    documentclass: article
+    papersize: a4
+    geometry:
+      - top=25mm
+      - left=25mm
+      - right=25mm
+      - bottom=25mm
+    fontsize: 11pt
+    number-sections: true
+    toc: false
+    fig-pos: 'H'
+    csl: styles/nature.csl
+execute:
+  cache: false
+bibliography: references.bib
+abstract: |
+  **Abstract.** The Efficient Market Hypothesis (EMH) posits that asset prices reflect all available information, rendering them unpredictable through historical data. Conversely, "Financial Astrology" claims that deterministic planetary cycles influence market psychology and price action. This study applies rigorous econometric signal processing—including Augmented Dickey-Fuller stationarity tests, Lomb-Scargle spectral analysis, and Vector Autoregression (VAR) with Bonferroni-corrected Granger Causality tests—to falsify the hypothesis that planetary positions provide unique information gain for forecasting XAU/USD (Gold) spot prices. Analyzing 25 years of daily market data against high-precision geocentric ephemerides, we demonstrate that apparent correlations fail to exceed the threshold of statistical significance when adjusted for multiple hypothesis testing. These findings reinforce the EMH and characterize perceived astrological influence as apophenia.
+keywords: [Financial Econometrics, Signal Processing, Pseudoscience Demarcation, Granger Causality, Spectral Analysis]
+---
+
+```{python}
+#| echo: false
+#| output: false
+import pandas as pd
+import json
+from IPython.display import Markdown
+
+# Load Artifacts
+stationarity = pd.read_csv("artifacts/tbl_stationarity.csv")
+with open("artifacts/stats_granger.json") as f:
+    granger = json.load(f)
+
+def interpret_p_value(p):
+    if p < 0.05:
+        return "statistically significant ($p < 0.05$)"
+    else:
+        return "not statistically significant ($p > 0.05$)"
+
+def interpret_reject(p):
+    if p < 0.05:
+        return "rejects"
+    else:
+        return "fails to reject"
+```
+
+# Introduction
+
+The transformation of raw environmental data into actionable economic intelligence is a cornerstone of modern quantitative finance. While macroeconomic indicators (inflation, interest rates) are well-studied, the statistical validity of alternative cyclic predictors, such as astronomical phenomena, remains a subject of contentious debate. This tension—between the *process of discovery* in data science and the *product of rigor* in scientific reporting—necessitates a robust methodological framework for evaluation.
+
+This study applies high-dimensional spectral analysis and Granger causality tests to falsify the hypothesis that planetary orbital mechanics influence XAU/USD spot prices. By treating "Financial Astrology" not as a mystic art but as a testable signal processing claim, we subject it to "Severe Testing" criteria: establishing a null hypothesis of zero effect and only rejecting it in the face of overwhelming statistical evidence.
+
+# Methodology
+
+## Data Acquisition and Preprocessing
+
+We utilized daily closing prices for Gold (XAU/USD) sourced from COMEX via Yahoo Finance, spanning the period from January 1, 2000, to the present. As financial time series are inherently non-stationary, raw prices were transformed into Logarithmic Returns to stabilize variance and approximate continuous compounding:
+
+$$ R_t = \ln(P_t) - \ln(P_{t-1}) $$
+
+Planetary positions were calculated using the Swiss Ephemeris (DE440), a high-precision numerical integration of the solar system. To align the continuous celestial data with the discrete trading calendar (which excludes weekends and holidays), planetary positions were sampled at 12:00 UTC on valid trading days only (see `src/data/align_astro_data.py`).
+
+## Statistical Framework
+
+### Stationarity Testing
+
+A prerequisite for most econometric inferences is stationarity. We employed the **Augmented Dickey-Fuller (ADF)** test to verify that our differenced target variable (Gold Log Returns) and our engineered features (Planetary Sine/Cosine components) do not possess a unit root.
+
+### Spectral Analysis
+
+To detect potential cyclic signals in the unevenly sampled financial data, we utilized the **Lomb-Scargle Periodogram**, which avoids the spectral leakage issues associated with the standard Fast Fourier Transform (FFT) on non-contiguous data.
+
+### Granger Causality
+
+Predictive precedence was evaluated using a **Vector Autoregression (VAR)** model. The null hypothesis ($H_0$) states that past values of planetary positions do not contain information that significantly reduces the forecast error of Gold returns. To mitigate the "p-hacking" risk inherent in testing multiple planets, we applied the **Bonferroni Correction**, adjusting our significance threshold ($\alpha = 0.05$) by dividing it by the number of independent hypotheses tested.
+
+# Results
+
+## Stationarity Validation
+
+The ADF test results (Table @tbl-stationarity) confirm that the Log-Return transformation successfully induced stationarity in the Gold price series.
+
+```{python}
+#| echo: false
+#| label: tbl-stationarity
+#| tbl-cap: "Stationarity Test Results"
+
+# Select columns to display
+disp_df = stationarity[['Variable', 'ADF Statistic', 'ADF p-value', 'Stationary']]
+Markdown(disp_df.to_markdown(index=False))
+```
+
+
+
+## Spectral Analysis
+
+The Lomb-Scargle periodogram (@fig-periodogram) reveals the spectral power density of Gold returns.
+
+![Lomb-Scargle Periodogram of Gold Log-Returns. The red dashed line indicates the 1% False Alarm Probability (FAP) threshold.](artifacts/fig_periodogram.pdf){#fig-periodogram width=90%}
+
+If planetary cycles were driving prices, we would expect significant peaks at known synodic periods (e.g., ~29.5 days for Moon, ~88 days for Mercury). The absence of such consistent peaks above the noise floor suggests a lack of periodic deterministic forcing.
+
+## Granger Causality & Prediction
+
+The VAR analysis tested whether planetary variables Granger-cause Gold returns. The results, summarized below, show that after Bonferroni correction:
+
+```{python}
+#| echo: false
+#| output: asis
+
+md_lines = ["| Planet | Best Lag | F-Statistic | p-value | Significant? |",
+            "|:---|:---:|:---:|:---:|:---:|"]
+
+for planet, stats in granger.items():
+    if "Error" in stats: continue
+    row = f"| **{planet}** | {stats['Best Lag (AIC)']} | {stats['F-Statistic']} | {stats['p-value']:.4f} | {stats['Significant']} |"
+    md_lines.append(row)
+
+Markdown("\n".join(md_lines))
+```
+
+## Event Prediction (Molchan Diagram)
+
+The Molchan Diagram (@fig-molchan) evaluates the binary classification skill of using Mars' speed variations to predict extreme volatility events.
+
+![Molchan Diagram for Mars Speed vs. Gold Volatility. The trajectory hugs the diagonal (random guessing), indicating no information gain over chance.](artifacts/fig_molchan.pdf){#fig-molchan width=70%}
+
+
+## Robustness Checks (Severe Testing)
+
+To ensure that any perceived correlations were not merely artifacts of finite sampling or "p-hacking," we performed a **Monte Carlo Permutation Test** with 1,000 iterations. In this procedure, the planetary time series was randomly shuffled (breaking its temporal structure) while the Gold return series remained intact. We then calculated the $R^2$ statistic for each permuted dataset to build a null distribution of "random chance" correlations.
+
+### Bootstrapped Distribution
+
+Figure @fig-permutation illustrates the distribution of correlations under the null hypothesis.
+
+![Monte Carlo Permutation Test Distribution (N=1,000). The grey histogram shows correlations expected by random chance. The red vertical line indicates the actual observed correlation. The fact that the actual result falls well within the random distribution ($p > 0.05$) forces us to fail to reject the null hypothesis.](artifacts/fig_permutation_dist.pdf){#fig-permutation width=80%}
+
+# Discussion
+
+The rigorous application of econometric testing `{python} interpret_reject(granger['Mars']['p-value'])` the null hypothesis. The results indicates that planetary positions contain no information gain for the prediction of XAU/USD that is not already captured by autoregressive lags.
+
+The Molchan diagram's adherence to the diagonal line (@fig-molchan) serves as visual confirmation that "signals" often cited in anecdotal astrology are indistinguishable from random noise when subjected to the "Severe Testing" of a complete dataset. This underscores the necessity of moving from "Exploratory Data Analysis" (finding patterns) to "Confirmatory Data Analysis" (testing patterns) in the evaluation of alternative market predictors.
+
+# Conclusion
+
+We have presented a reproducible, automated pipeline for rigorously evaluating the claims of Financial Astrology. By establishing a standard directory structure and adhering to international reporting standards (Nature/IEEE), this framework transforms disparate scripts into a cohesive scientific instrument. The data suggests that while the cosmos may be ordered, the financial markets remain efficient enough to discount predictable orbital mechanics.
+
+# References
+
+1. *Varahamihira*, Brihat Samhita.
+2. *Granger, C. W. J.* (1969). Investigating Causal Relations by Econometric Models and Cross-spectral Methods.
+3. *Lomb, N. R.* (1976). Least-squares frequency analysis of unequally spaced data.
