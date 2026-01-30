@@ -1,196 +1,95 @@
 ---
-title: "Seismic Sensitivity: A Computational Approach to Medini Jyotish"
-subtitle: "An investigation into planetary positions during major seismic events (Work in Progress)"
-date: 2024-10-24
-date-format: "MMMM DD, YYYY"
+title: "Statistical Validation of Astrological and Numerological Precursors in Global Seismic Activity"
+subtitle: "A Negative Binomial Regression Analysis of the USGS Catalog (1900-2023)"
+date: 2026-01-30
 authors:
-  - name: Computational Astrology Research Group
+  - name: Astro-Fusion Research Team
     affiliation: Independent Research Initiative
-    roles: [research, software]
-    corresponding: true
 abstract: |
-  This research paper outlines our ongoing empirical investigation into the correlation between planetary configurations and high-magnitude seismic events, framed within the principles of Medini Jyotish (Mundane Astrology). Unlike previous attempts that rely on anecdotal evidence, this paper presents a data-driven framework using the Swiss Ephemeris to test classical Vedic rules against global earthquake datasets. We detail our current algorithmic approach for detecting planetary conjunctions, malefic clusters, and gravitational triggers. While our initial global screening reveals that not all earthquakes follow a single pattern, specific high-magnitude events (such as the 2015 Nepal Earthquake) demonstrate a striking alignment with classical "Yoga" principles, suggesting that Medini Jyotish may offer valid indicators for specific subsets of seismic activity.
+  This study conducts a rigorous statistical audit of the "Astro-Fusion" hypothesis, which posits that discrete numerological time cycles and planetary configurations (specifically Vedic *Shadbala*) act as exogenous triggers for global seismicity. Using a Negative Binomial Generalized Linear Model (GLM) to account for overdispersion in the USGS earthquake catalog, we test whether these variables provide information gain over a standard Poisson baseline of seismicity (Trend + Seasonality). Our analysis focuses on the prediction of daily earthquake counts (M5.0+) and employs a "Look-Elsewhere" effect methodology (Monte Carlo randomization) to control for false discoveries. The results indicate that while certain high-magnitude events align with classical astrological "Yogas," the global statistical signal for numerological precursors remains weak when controlled for multiple hypothesis testing.
 keywords:
-  - Medini Jyotish
-  - Seismic Activity
-  - Planetary Conjunctions
-  - Computational Astrology
-  - Brihat Samhita
+  - Seismology
+  - Generalized Linear Models
+  - Numerology
+  - Monte Carlo Verification
+  - Anomaly Detection
 format:
-  html: {}
   pdf:
     documentclass: article
-    geometry:
-      - top=25mm
-      - left=20mm
-      - right=20mm
-      - bottom=25mm
-    fontsize: 11pt
     number-sections: true
     toc: true
-    keep-tex: true
 ---
-
-::: {.callout-warning}
-## Research in Progress
-This document represents an active research pipeline. Algorithms and preliminary findings are subject to change as more data is integrated.
-:::
 
 # Introduction
 
-The prediction of earthquakes remains one of the most challenging frontiers in modern science. While seismology focuses on subterranean tectonic stress, ancient Indo-Aryan traditions, specifically **Medini Jyotish** (Mundane Astrology), have long posited that cosmic vibrations and planetary alignments influence terrestrial stability. 
+The prediction of earthquakes remains one of the most persistent challenges in geophysical science. The "Prediction Gap"—the inability to deterministically forecast the time, location, and magnitude of rupture—stems from the non-linear, chaotic nature of crustal stress accumulation.
 
-This research aims to bridge these two worlds. We treat the planet Earth not as an isolated rock, but as a sensitive receiver of gravitational and electromagnetic signals from the solar system. By applying computational modeling to classical Vedic rules, we seek to determine if "Seismic Windows" can be identified with statistical significance.
+This paper investigates a novel set of candidate features derived from "Astro-Fusion" variables, specifically:
+1.  **Universal Day Numbers (UDN):** A cyclic base-9 numerological time series.
+2.  **Planetary Force Vectors:** Quantified "Shadbala" strength scores for major planets (Mars, Saturn) derived from the Swiss Ephemeris.
 
-# Theoretical Foundation: Medini Jyotish
+We do not presuppose the physical mechanism but treat these as potential exogenous regressors in an Exploratory Data Analysis (EDA) framework.
 
-Our research is grounded in the classical texts of Vedic Astrology, primarily the **Brihat Samhita** of Varahamihira (6th century CE).
+# Data & Methodology
 
-## The Source of the Formula
+## Data Preprocessing
+We utilized the USGS Comprehensive Earthquake Catalog (ComCat), filtering for events with $Magnitude \ge 5.0$ from 1900 to 2023. Key preprocessing steps included:
+-   **Magnitude Homogenization:** Converting all magnitudes to Moment Magnitude ($M_w$) to ensure consistency.
+-   **Declustering:** Applying the Gardner-Knopoff algorithm to remove aftershocks, isolating independent mainshocks.
 
-The *Brihat Samhita* dedicates multiple chapters (Adhyayas) to natural phenomena. Specifically, Chapter 32 (*Bhukampa-lakshana-adhyaya*) describes signs of impending earthquakes.
+## Statistical Framework: Negative Binomial Regression
+Earthquake counts are discrete, non-negative integers. Traditional OLS regression is inappropriate. We employ a **Generalized Linear Model (GLM)**. Because earthquake counts exhibit overdispersion ($Variance > Mean$) due to clustering, we utilize the Negative Binomial distribution rather than the Poisson distribution.
 
-### Key Astrological Rules
+The model specification is:
+$$ \ln(\mu_t) = \beta_0 + \beta_{trend} t + \beta_{season} \sin(\frac{2\pi t}{365}) + \beta_{astro} X_{astro} $$
 
-1.  **Planetary Conjunctions (Yuti)**: The proximity of malefic planets in specific "sensitive" signs is a primary trigger.
-    *   **Mars-Ketu Conjunction**: Mars represents fire and raw energy; Ketu (South Node) represents sudden, explosive release. Their union is often cited as a precursor to violent volcanic or seismic activity.
-    *   **Saturn-Mars Aspects**: The conflict between Shani (compression/pressure) and Mangal (expansive heat) creates tectonic tension.
-2.  **Eclipses (Grahana)**: Solar and lunar eclipses within 15 days of each other create high gravitational tidal stress, which may act as a trigger for fault lines already under pressure.
-3.  **Zodiacal Ingress (Sankranti)**: The entry of major planets (Saturn, Jupiter) into fixed signs (*Sthira Rashis*) or earth signs (*Prithvi Rashis*) is tested for correlation with increased seismic activity.
+## The Null Hypothesis ($H_0$)
+The Null Hypothesis states that earthquake occurrence is a random Poisson process influenced only by:
+-   Long-term catalog detection improvement (Trend).
+-   Seasonal tidal stress (Annual Seasonality).
+-   Random noise.
 
-## The Koorma Chakra
+Any significant deviation in $\beta_{astro}$ would suggest a signal.
 
-A central concept in our future roadmap is the **Koorma Chakra** (The Tortoise Chart), which maps the zodiac onto the geography of the Earth. This allows for the personalization of seismic predictions to specific regions (e.g., Aries ruling certain mountainous terrains).
+# Results
 
-# Mathematical Methodology & Algorithms
+## Regression Analysis
+Table 1 presents the estimated coefficients from the GLM.
 
-Our framework abstracts these rules into computable functions.
+: Table 1: Regression Coefficients {tbl-colwidths="[40,20,20,20]"}
 
-## The Detection Pipeline
+| Variable | Coefficient | Standard Error | P-Value |
+|:---|:---|:---|:---|
+| Intercept | -0.900 | 0.388 | 0.02 |
+| Year Index | 0.011 | 0.062 | 0.86 |
+| Universal Day 8 | 0.143 | 0.213 | 0.50 |
+| Mars Strength | -0.005 | 0.003 | 0.10 |
+| Saturn Strength | 0.000 | 0.003 | 0.99 |
 
-The following diagram illustrates how we process raw astronomical data into correlation reports:
+*(Note: See `tables/regression_coefficients.csv` for full model output)*
 
-```mermaid
-graph TD
-    A[USGS Seismic Data] --> B[Filter Magnitude >= 7.0]
-    C[Swiss Ephemeris] --> D[Daily Planetary Positions]
-    B & D --> E[Correlation Engine]
-    E --> F{Combination Found?}
-    F -- Yes --> G[Statistical Validation Chi-Square]
-    F -- No --> H[Background Noise Analysis]
-    G --> I[WIP Report Generation]
-```
+## Temporal Prediction
+Figure 1 below illustrates the model's ability to track the aggregate monthly seismic rate. The "Prediction Gap" is visible where the model captures the trend but misses extreme outliers (Mega-Quakes).
 
-## Core Algorithmic Logic
+![Figure 1: Time series of Predicted Rate vs. Actual Rate (Monthly Aggregated). The red dashed line represents the Negative Binomial model fit.](../figures/predicted_vs_actual.png)
 
-The primary function in our codebase, `identify_planetary_conjunction`, uses the following mathematical logic:
+## "Look-Elsewhere" Analysis
+To ensure any detected signal is not a result of p-hacking (finding a pattern by checking thousands of combinations), we performed a Monte Carlo Shuffle Test (N=1000). We destroyed the time-link between astrology and earthquakes while preserving the internal structure of both series.
 
-1.  **Normalization**: Longitude $\lambda$ is normalized to $0-360^\circ$.
-2.  **Angular Distance**: The separation $\theta$ between two planets $P_1$ and $P_2$ is:
-    $$\theta = \min(|\lambda_{P_1} - \lambda_{P_2}|, 360 - |\lambda_{P_1} - \lambda_{P_2}|)$$
-3.  **Tolerance Check**: A conjunction is flagged if $\theta \le \delta$, where $\delta$ is usually $8.0^\circ$ (the classical *Deeptansha* orb).
+![Figure 2: The "Look-Elsewhere" Analysis. The histogram shows the distribution of Delta-AIC values for random shuffles. The red line marks the Real Data performance. If the red line is within the gray mass, the result is indistinguishable from noise.](../figures/monte_carlo_distribution.png)
 
-### Python Implementation Detail
+# Discussion
 
-```{python}
-#| label: logic-preview
-#| echo: true
-# Simplified logic from use_cases/earthquake/scripts/earthquake_planetary_analysis.py
+## Interpretation
+The coefficient for **Mars Strength** shows a non-significant negative correlation ($p=0.10$), suggesting that the signal is indistinguishable from noise in this dataset. Similarly, the **Universal Day Number** variables (including Day 8) did not reach the threshold of statistical significance ($p > 0.05$). The **Year Index** also showed no significant trend ($p=0.86$), indicating the seismic rate in the filtered dataset is relatively stable over time or the variance is too high to detect a trend.
 
-def detect_conjunction(pos1, pos2, tolerance=8.0):
-    diff = abs(pos1 - pos2)
-    if diff > 180:
-        diff = 360 - diff
-    return diff <= tolerance
-```
+## Confounders
+Potential confounders include:
+-   **Solar Cycle:** The 11-year solar maximum cycle may overlap with planetary periods (Jupiter).
+-   **Tidal Stress:** Lunar phases (syzygy) are known physical triggers but are often conflated with "astrology."
 
-# Empirical Case Studies: Validation & Divergence
+## Critical Self-Assessment
+The Monte Carlo analysis (Figure 2) reveals that the improvement in model fit (Delta-AIC) provided by the Astro-Fusion variables falls within the 95% confidence interval of random noise. Therefore, strictly speaking, **we fail to reject the Null Hypothesis** for the global dataset. The signal provided by these variables is not strong enough to be used as a standalone predictor for global seismicity.
 
-A key finding of this preliminary research is that Medini Jyotish rules do not act as a universal trigger for *every* earthquake. Instead, they appear to describe specific **types** of seismic release.
-
-## Successes: Principle Validation
-
-The following table highlights major historical earthquakes where our algorithms correctly identified the corresponding astrological signatures (Yogas).
-
-| Date | Location | Magnitude | Principle Validated | Astrological Configuration |
-|:---|:---|:---|:---|:---|
-| **2015-04-25** | Nepal (Gorkha) | 7.8 | **Malefic Cluster** | Mars, Mercury, Sun in Taurus (Earth Sign) with Saturn Aspect. |
-| **2011-03-11** | Japan (Tohoku) | 9.1 | **Deep Ingress** | Uranus ingress into Aries (0°) + New Moon. |
-| **2001-01-26** | India (Gujarat) | 7.7 | **Eclipse + Yuti** | Major Solar Eclipse 2 weeks prior + Saturn-Jupiter conjunction. |
-| **1934-01-15** | Nepal-Bihar | 8.0 | **Mars-Saturn** | Direct opposition (180°) of Saturn (Capricorn) and Mars (Cancer). |
-| **2023-02-06** | Turkey-Syria | 7.8 | **Moon-Node** | Full Moon with heavy Rahu/Ketu axis affliction. |
-
-These "Hits" affirm that when the specific conditions of **Mass Density** (multiple planets) or **Gravitational Peak** (Eclipses) are met, the probability of a high-magnitude event increases significantly.
-
-## Nuanced Analysis: The "Misses"
-
-It is equally important to report where the formula was silent. In our dataset of top 20 earthquakes (Mag 8.0+) from 1950-2020:
-*   **12 out of 20** events matched at least one major Medini rule.
-*   **8 out of 20** events occurred during relatively "quiet" astrological periods.
-
-**Example of a Miss:**
-*   **1964 Alaska Earthquake (Mag 9.2)**: While the second largest quake ever recorded, our standard "Mars-Ketu" or "Saturn-Mars" algorithms did not flag this date as critical.
-
-### Investigating the Divergence
-The existence of "Misses" suggests two possibilities:
-1.  **Incomplete Rule Set**: We may need to incorporate more subtle factors like **Koorma Chakra** (regional sensitivity) or **Sanghatta Rashi** (Vedha/Obstruction points).
-2.  **Different Mechanisms**: Some earthquakes may be purely tectonic "slips" with no cosmic trigger, whereas others are "cosmically induced."
-
-# Principle-Specific Success Mapping
-
-Our analysis allows us to map specific principles to the types of events they predict:
-
-### 1. The "Explosive Release" (Mars-Ketu)
-*   **Prediction**: Sudden, violent, shallow earthquakes.
-*   **Status**: **VALIDATED** in Turkey (2023) and Nepal (2015).
-*   **Mechanism**: Mars (Fire/Force) amplifies Ketu's (Breakage) tendency for structural failure.
-
-### 2. The "Compression Stress" (Saturn-Mars)
-*   **Prediction**: Deep, grinding earthquakes along major fault lines.
-*   **Status**: **PARTIALLY VALIDATED**. Strong correlation with Himalayan plate movement (1934 Bihar), but less predictive for subduction zones (e.g., Alaska).
-
-### 3. The "Gravitational Trigger" (Eclipses)
-*   **Prediction**: Events within +/- 7 days of a major eclipse.
-*   **Status**: **HIGHLY VALIDATED**. Consistently appears in the timeline of "Mega-Quakes" (Mag 8.5+), suggesting tidal differentiation plays a physical role.
-
-# 5. Quantitative Seismological Validation (Rigor Analysis)
-
-To move beyond anecdotal "Hits," we subjected the Mars-Seismic hypothesis to rigorous seismological testing using the **Molchan Diagram**, a standard tool in earthquake prediction evaluation since 1990.
-
-## 5.1. The Molchan Diagram (The "Gold Standard")
-
-We mapped one full five-year cycle (2020-2025) of Global M6.0+ events against the daily **Global Shadbala** (Astrological Strength) of Mars.
-
-![Figure: Molchan Diagram and Time-Lagged Cross-Correlation for Mars Strength. The Molchan curve (left) stays significantly above the diagonal, indicating that Mars strength alone, while possessing philosophical significance, does not meet the "Predictive Skill" threshold for a global dataset without further geographic filtering (Regional Koorma Chakra).](figures/earthquake_molchan_lag.png)
-
-| Rigor Metric | Mars Strength Result | Benchmark (Random) |
-|:---:|:---:|:---:|
-| **Area Under Molchan Curve (AUC)** | `0.9706` | `0.5000` |
-| **Peak Cross-Correlation ($r$)** | `-0.034` | `0.000` |
-| **Statistical Skill** | **LOW / RANDOM** | - |
-
-## 5.2. Analysis of the Divergence
-
-The high AUC (0.97) confirms that a naive "Global Strength" trigger creates a high number of "Misses" and "False Alarms." This aligns with our finding in Section 4.2: astrology holds true for specific *types* of events but lacks global predictive power when analyzed as a uniform signal.
-
-## 5.3. Time-Lagged Insights
-
-The cross-correlation analysis peaked at a lag of **3 days**, suggesting that if a trigger exists, it operates on a very short temporal window, reinforcing the "Sudden Release" nature of the Mars archetypal influence.
-
-# 6. Conclusion & Future Roadmap
-
-This research establishes that Medini Jyotish provides a testable, albeit complex, framework for seismic correlation.
-
-**Key Findings:**
-1.  **Selective Validity**: While historical case studies show striking alignment (e.g., Nepal 2015), the **Molchan Rigor Test** proves that "Global Strength" is not a direct linear predictor of global earthquake frequency.
-2.  **Principle Specificity**: Different planetary combinations appear to trigger different *kinds* of seismic events, requiring a more multi-variate approach beyond single planetary scores.
-3.  **The "Silent" Quakes**: The 40% of "missed" events and the low statistical skill factor indicate the need for a more granular model, specifically the **Koorma Chakra** to account for local terrestrial conditions where cosmic signals are actually received.
-
-Our future work will focus on codifying the **Koorma Chakra** and **Heliocentric Torques** to bridge the gap between universal planetary signals and specific geographic impact zones.
-
-# Bibliography
-
-1.  **Varahamihira**, *Brihat Samhita*, Chapter 32: Bhukampa-lakshana.
-2.  **B.V. Raman**, *Planetary Influences on Earthquakes*. Raman Publications.
-3.  **USGS Earthquake Hazards Program**, *Comprehensive Earthquake Catalog*.
-4.  **Swiss Ephemeris Documentation**, *Programming Interface for Astronomical Calculations*.
+# Conclusion
+This study provides a reproducible computational framework for testing "fringe" scientific hypotheses. While we found anecdotal correlations in individual high-magnitude events, the aggregate statistical analysis suggests that "Universal Day Numbers" and "Global Planetary Strength" do not possess significant predictive power for global earthquake rates. Future work should focus on regionalized hypotheses (Koorma Chakra) rather than global aggregates.

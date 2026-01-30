@@ -17,13 +17,18 @@ Output: Summary of regression coefficients and AIC/BIC comparison.
 """
 
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
 import numpy as np
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 import sys
 import os
 import json
+import json
 from pathlib import Path
+import matplotlib.pyplot as plt
+
 
 
 def train_models(matrix_path: str = "regression_matrix.csv", target_mag: float = 5.0):
@@ -146,6 +151,43 @@ def train_models(matrix_path: str = "regression_matrix.csv", target_mag: float =
     with open("model_results.json", "w") as f:
         json.dump(results, f, indent=2)
     print("\nSaved full results to model_results.json")
+
+    # --- 4. Generate Paper Artifacts ---
+
+    # Table 1: Coefficients
+    # Extract coefficients, standard errors, z-scores, p-values, and confidence intervals
+    summary_df = pd.DataFrame({
+        "Variable": research_model.params.index,
+        "Coefficient": research_model.params.values,
+        "Std Error": research_model.bse.values,
+        "z": research_model.tvalues.values,
+        "P>|z|": research_model.pvalues.values,
+        "[0.025": research_model.conf_int()[0].values,
+        "0.975]": research_model.conf_int()[1].values
+    })
+    summary_df.to_csv("regression_coefficients.csv", index=False)
+    print("Saved regression_coefficients.csv")
+
+    # Figure 1: Predicted vs Actual Rate
+    # We aggregate to monthly to make the plot readable (daily is too noisy)
+    df["predicted"] = research_model.fittedvalues
+    df["month"] = df["date"].dt.to_period("M")
+    
+    monthly = df.groupby("month")[["eq_count_m5", "predicted"]].sum()
+    monthly.index = monthly.index.to_timestamp()
+
+    plt.figure(figsize=(12, 6))
+    plt.plot(monthly.index, monthly["eq_count_m5"], label="Actual Earthquakes (M5+)", color="black", alpha=0.6)
+    plt.plot(monthly.index, monthly["predicted"], label="Model Prediction (NegBin)", color="red", linestyle="--")
+    plt.title("Figure 1: Observed vs. Predicted Global Earthquake Rate (Monthly Aggregated)")
+    plt.xlabel("Year")
+    plt.ylabel("Monthly Count")
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.savefig("predicted_vs_actual.png")
+    print("Saved predicted_vs_actual.png")
+
 
 
 if __name__ == "__main__":

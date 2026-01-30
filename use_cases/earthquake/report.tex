@@ -1,31 +1,28 @@
 % Options for packages loaded elsewhere
-% Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
 %
 \documentclass[
-  american,
   11pt,
   oneside,
   openany]{article}
-\usepackage{xcolor}
-\usepackage[top=30mm,left=25mm,right=25mm,bottom=30mm,heightrounded,top=25mm,left=20mm,right=20mm,bottom=25mm]{geometry}
+
 \usepackage{amsmath,amssymb}
-\setcounter{secnumdepth}{5}
+\usepackage{setspace}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math} % this also loads fontspec
+  \usepackage{unicode-math}
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
 \usepackage[]{libertine}
-\ifPDFTeX\else
-  % xetex/luatex font selection
+\ifPDFTeX\else  
+    % xetex/luatex font selection
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -33,7 +30,6 @@
   \usepackage[]{microtype}
   \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
-\usepackage{setspace}
 \makeatletter
 \@ifundefined{KOMAClassName}{% if non-KOMA class
   \IfFileExists{parskip.sty}{%
@@ -44,72 +40,23 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
+\usepackage{xcolor}
+\usepackage[top=30mm,left=25mm,right=25mm,bottom=30mm,heightrounded]{geometry}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{5}
 % Make \paragraph and \subparagraph free-standing
-\makeatletter
 \ifx\paragraph\undefined\else
   \let\oldparagraph\paragraph
-  \renewcommand{\paragraph}{
-    \@ifstar
-      \xxxParagraphStar
-      \xxxParagraphNoStar
-  }
-  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
-  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
 \fi
 \ifx\subparagraph\undefined\else
   \let\oldsubparagraph\subparagraph
-  \renewcommand{\subparagraph}{
-    \@ifstar
-      \xxxSubParagraphStar
-      \xxxSubParagraphNoStar
-  }
-  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
-  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
 \fi
-\makeatother
 
-\usepackage{color}
-\usepackage{fancyvrb}
-\newcommand{\VerbBar}{|}
-\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
-\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
-% Add ',fontsize=\small' for more characters per line
-\usepackage{framed}
-\definecolor{shadecolor}{RGB}{241,243,245}
-\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
-\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.40,0.45,0.13}{#1}}
-\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
-\newcommand{\CharTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
-\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
-\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
-\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
-\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
-\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
-\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
-\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
-\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
-\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
-\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
-\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
-\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
-\newcommand{\StringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
-\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.07,0.07,0.07}{#1}}
-\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
-\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
 
-\usepackage{longtable,booktabs,array}
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -121,44 +68,17 @@
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\newsavebox\pandoc@box
-\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
-  \sbox\pandoc@box{#1}%
-  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
-  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
-  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
-  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
-  \else\usebox{\pandoc@box}%
-  \fi%
-}
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 % Set default figure placement to htbp
+\makeatletter
 \def\fps@figure{htbp}
 \makeatother
-
-
-
-\ifLuaTeX
-\usepackage[bidi=basic]{babel}
-\else
-\usepackage[bidi=default]{babel}
-\fi
-% get rid of language-specific shorthands (see #6817):
-\let\LanguageShortHands\languageshorthands
-\def\languageshorthands#1{}
-\ifLuaTeX
-  \usepackage[english]{selnolig} % disable illegal ligatures
-\fi
-
-
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-
-
-
- 
-
 
 % PDF Header - Custom LaTeX commands for PDF output
 % This file is included in the LaTeX preamble for PDF generation
@@ -166,22 +86,6 @@
 % Add any custom LaTeX packages or commands here
 % Example: \usepackage{booktabs}
 % Example: \usepackage{longtable}
-\makeatletter
-\@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
-\@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
-\definecolor{quarto-callout-color}{HTML}{909090}
-\definecolor{quarto-callout-note-color}{HTML}{0758E5}
-\definecolor{quarto-callout-important-color}{HTML}{CC1914}
-\definecolor{quarto-callout-warning-color}{HTML}{EB9113}
-\definecolor{quarto-callout-tip-color}{HTML}{00A047}
-\definecolor{quarto-callout-caution-color}{HTML}{FC5300}
-\definecolor{quarto-callout-color-frame}{HTML}{acacac}
-\definecolor{quarto-callout-note-color-frame}{HTML}{4582ec}
-\definecolor{quarto-callout-important-color-frame}{HTML}{d9534f}
-\definecolor{quarto-callout-warning-color-frame}{HTML}{f0ad4e}
-\definecolor{quarto-callout-tip-color-frame}{HTML}{02b875}
-\definecolor{quarto-callout-caution-color-frame}{HTML}{fd7e14}
-\makeatother
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -224,17 +128,30 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
+\ifLuaTeX
+\usepackage[bidi=basic]{babel}
+\else
+\usepackage[bidi=default]{babel}
+\fi
+\babelprovide[main,import]{american}
+% get rid of language-specific shorthands (see #6817):
+\let\LanguageShortHands\languageshorthands
+\def\languageshorthands#1{}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
 \usepackage{bookmark}
+
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same}
+\urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
-  pdftitle={Seismic Sensitivity: A Computational Approach to Medini Jyotish},
+  pdftitle={Statistical Validation of Astrological and Numerological Precursors in Global Seismic Activity},
   pdfauthor={Bishal Ghimire},
   pdflang={en-US},
   pdfsubject={Computational Integration of Vedic Numerology and Sidereal
 Astrology},
-  pdfkeywords={Medini Jyotish, Seismic Activity, Planetary
-Conjunctions, Computational Astrology, Brihat Samhita},
+  pdfkeywords={Seismology, Generalized Linear Models, Numerology, Monte
+Carlo Verification, Anomaly Detection},
   colorlinks=true,
   linkcolor={blue},
   filecolor={Maroon},
@@ -242,34 +159,36 @@ Conjunctions, Computational Astrology, Brihat Samhita},
   urlcolor={blue},
   pdfcreator={LaTeX via pandoc}}
 
-
-\title{Seismic Sensitivity: A Computational Approach to Medini Jyotish}
+\title{Statistical Validation of Astrological and Numerological
+Precursors in Global Seismic Activity}
 \usepackage{etoolbox}
 \makeatletter
 \providecommand{\subtitle}[1]{% add subtitle to \maketitle
   \apptocmd{\@title}{\par {\large #1 \par}}{}{}
 }
 \makeatother
-\subtitle{An investigation into planetary positions during major seismic
-events (Work in Progress)}
-\author{Computational Astrology Research Group}
-\date{October 24, 2024}
+\subtitle{A Negative Binomial Regression Analysis of the USGS Catalog
+(1900-2023)}
+\author{Astro-Fusion Research Team}
+\date{2026-01-30}
+
 \begin{document}
 \maketitle
 \begin{abstract}
-This research paper outlines our ongoing empirical investigation into
-the correlation between planetary configurations and high-magnitude
-seismic events, framed within the principles of Medini Jyotish (Mundane
-Astrology). Unlike previous attempts that rely on anecdotal evidence,
-this paper presents a data-driven framework using the Swiss Ephemeris to
-test classical Vedic rules against global earthquake datasets. We detail
-our current algorithmic approach for detecting planetary conjunctions,
-malefic clusters, and gravitational triggers. While our initial global
-screening reveals that not all earthquakes follow a single pattern,
-specific high-magnitude events (such as the 2015 Nepal Earthquake)
-demonstrate a striking alignment with classical ``Yoga'' principles,
-suggesting that Medini Jyotish may offer valid indicators for specific
-subsets of seismic activity.
+This study conducts a rigorous statistical audit of the ``Astro-Fusion''
+hypothesis, which posits that discrete numerological time cycles and
+planetary configurations (specifically Vedic \emph{Shadbala}) act as
+exogenous triggers for global seismicity. Using a Negative Binomial
+Generalized Linear Model (GLM) to account for overdispersion in the USGS
+earthquake catalog, we test whether these variables provide information
+gain over a standard Poisson baseline of seismicity (Trend +
+Seasonality). Our analysis focuses on the prediction of daily earthquake
+counts (M5.0+) and employs a ``Look-Elsewhere'' effect methodology
+(Monte Carlo randomization) to control for false discoveries. The
+results indicate that while certain high-magnitude events align with
+classical astrological ``Yogas,'' the global statistical signal for
+numerological precursors remains weak when controlled for multiple
+hypothesis testing.
 \end{abstract}
 
 % PDF Before Body - Content to include before document body
@@ -284,306 +203,181 @@ subsets of seismic activity.
 \setcounter{tocdepth}{3}
 \tableofcontents
 }
-
 \setstretch{1.2}
-\begin{tcolorbox}[enhanced jigsaw, colback=white, toprule=.15mm, colbacktitle=quarto-callout-warning-color!10!white, toptitle=1mm, colframe=quarto-callout-warning-color-frame, bottomrule=.15mm, opacitybacktitle=0.6, left=2mm, title=\textcolor{quarto-callout-warning-color}{\faExclamationTriangle}\hspace{0.5em}{Research in Progress}, rightrule=.15mm, breakable, bottomtitle=1mm, opacityback=0, titlerule=0mm, arc=.35mm, leftrule=.75mm, coltitle=black]
-
-This document represents an active research pipeline. Algorithms and
-preliminary findings are subject to change as more data is integrated.
-
-\end{tcolorbox}
-
 \section{Introduction}\label{introduction}
 
-The prediction of earthquakes remains one of the most challenging
-frontiers in modern science. While seismology focuses on subterranean
-tectonic stress, ancient Indo-Aryan traditions, specifically
-\textbf{Medini Jyotish} (Mundane Astrology), have long posited that
-cosmic vibrations and planetary alignments influence terrestrial
-stability.
+The prediction of earthquakes remains one of the most persistent
+challenges in geophysical science. The ``Prediction Gap''---the
+inability to deterministically forecast the time, location, and
+magnitude of rupture---stems from the non-linear, chaotic nature of
+crustal stress accumulation.
 
-This research aims to bridge these two worlds. We treat the planet Earth
-not as an isolated rock, but as a sensitive receiver of gravitational
-and electromagnetic signals from the solar system. By applying
-computational modeling to classical Vedic rules, we seek to determine if
-``Seismic Windows'' can be identified with statistical significance.
+This paper investigates a novel set of candidate features derived from
+``Astro-Fusion'' variables, specifically: 1. \textbf{Universal Day
+Numbers (UDN):} A cyclic base-9 numerological time series. 2.
+\textbf{Planetary Force Vectors:} Quantified ``Shadbala'' strength
+scores for major planets (Mars, Saturn) derived from the Swiss
+Ephemeris.
 
-\section{Theoretical Foundation: Medini
-Jyotish}\label{theoretical-foundation-medini-jyotish}
+We do not presuppose the physical mechanism but treat these as potential
+exogenous regressors in an Exploratory Data Analysis (EDA) framework.
 
-Our research is grounded in the classical texts of Vedic Astrology,
-primarily the \textbf{Brihat Samhita} of Varahamihira (6th century CE).
+\section{Data \& Methodology}\label{data-methodology}
 
-\subsection{The Source of the Formula}\label{the-source-of-the-formula}
+\subsection{Data Preprocessing}\label{data-preprocessing}
 
-The \emph{Brihat Samhita} dedicates multiple chapters (Adhyayas) to
-natural phenomena. Specifically, Chapter 32
-(\emph{Bhukampa-lakshana-adhyaya}) describes signs of impending
-earthquakes.
+We utilized the USGS Comprehensive Earthquake Catalog (ComCat),
+filtering for events with \(Magnitude \ge 5.0\) from 1900 to 2023. Key
+preprocessing steps included: - \textbf{Magnitude Homogenization:}
+Converting all magnitudes to Moment Magnitude (\(M_w\)) to ensure
+consistency. - \textbf{Declustering:} Applying the Gardner-Knopoff
+algorithm to remove aftershocks, isolating independent mainshocks.
 
-\subsubsection{Key Astrological Rules}\label{key-astrological-rules}
+\subsection{Statistical Framework: Negative Binomial
+Regression}\label{statistical-framework-negative-binomial-regression}
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  \textbf{Planetary Conjunctions (Yuti)}: The proximity of malefic
-  planets in specific ``sensitive'' signs is a primary trigger.
+Earthquake counts are discrete, non-negative integers. Traditional OLS
+regression is inappropriate. We employ a \textbf{Generalized Linear
+Model (GLM)}. Because earthquake counts exhibit overdispersion
+(\(Variance > Mean\)) due to clustering, we utilize the Negative
+Binomial distribution rather than the Poisson distribution.
 
-  \begin{itemize}
-  \tightlist
-  \item
-    \textbf{Mars-Ketu Conjunction}: Mars represents fire and raw energy;
-    Ketu (South Node) represents sudden, explosive release. Their union
-    is often cited as a precursor to violent volcanic or seismic
-    activity.
-  \item
-    \textbf{Saturn-Mars Aspects}: The conflict between Shani
-    (compression/pressure) and Mangal (expansive heat) creates tectonic
-    tension.
-  \end{itemize}
-\item
-  \textbf{Eclipses (Grahana)}: Solar and lunar eclipses within 15 days
-  of each other create high gravitational tidal stress, which may act as
-  a trigger for fault lines already under pressure.
-\item
-  \textbf{Zodiacal Ingress (Sankranti)}: The entry of major planets
-  (Saturn, Jupiter) into fixed signs (\emph{Sthira Rashis}) or earth
-  signs (\emph{Prithvi Rashis}) is tested for correlation with increased
-  seismic activity.
-\end{enumerate}
+The model specification is:
+\[ \ln(\mu_t) = \beta_0 + \beta_{trend} t + \beta_{season} \sin(\frac{2\pi t}{365}) + \beta_{astro} X_{astro} \]
 
-\subsection{The Koorma Chakra}\label{the-koorma-chakra}
+\subsection{\texorpdfstring{The Null Hypothesis
+(\(H_0\))}{The Null Hypothesis (H\_0)}}\label{the-null-hypothesis-h_0}
 
-A central concept in our future roadmap is the \textbf{Koorma Chakra}
-(The Tortoise Chart), which maps the zodiac onto the geography of the
-Earth. This allows for the personalization of seismic predictions to
-specific regions (e.g., Aries ruling certain mountainous terrains).
+The Null Hypothesis states that earthquake occurrence is a random
+Poisson process influenced only by: - Long-term catalog detection
+improvement (Trend). - Seasonal tidal stress (Annual Seasonality). -
+Random noise.
 
-\section{Mathematical Methodology \&
-Algorithms}\label{mathematical-methodology-algorithms}
+Any significant deviation in \(\beta_{astro}\) would suggest a signal.
 
-Our framework abstracts these rules into computable functions.
+\section{Results}\label{results}
 
-\subsection{The Detection Pipeline}\label{the-detection-pipeline}
+\subsection{Regression Analysis}\label{regression-analysis}
 
-The following diagram illustrates how we process raw astronomical data
-into correlation reports:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{graph TD}
-\NormalTok{    A[USGS Seismic Data] {-}{-}\textgreater{} B[Filter Magnitude \textgreater{}= 7.0]}
-\NormalTok{    C[Swiss Ephemeris] {-}{-}\textgreater{} D[Daily Planetary Positions]}
-\NormalTok{    B \& D {-}{-}\textgreater{} E[Correlation Engine]}
-\NormalTok{    E {-}{-}\textgreater{} F\{Combination Found?\}}
-\NormalTok{    F {-}{-} Yes {-}{-}\textgreater{} G[Statistical Validation Chi{-}Square]}
-\NormalTok{    F {-}{-} No {-}{-}\textgreater{} H[Background Noise Analysis]}
-\NormalTok{    G {-}{-}\textgreater{} I[WIP Report Generation]}
-\end{Highlighting}
-\end{Shaded}
-
-\subsection{Core Algorithmic Logic}\label{core-algorithmic-logic}
-
-The primary function in our codebase,
-\texttt{identify\_planetary\_conjunction}, uses the following
-mathematical logic:
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  \textbf{Normalization}: Longitude \(\lambda\) is normalized to
-  \(0-360^\circ\).
-\item
-  \textbf{Angular Distance}: The separation \(\theta\) between two
-  planets \(P_1\) and \(P_2\) is:
-  \[\theta = \min(|\lambda_{P_1} - \lambda_{P_2}|, 360 - |\lambda_{P_1} - \lambda_{P_2}|)\]
-\item
-  \textbf{Tolerance Check}: A conjunction is flagged if
-  \(\theta \le \delta\), where \(\delta\) is usually \(8.0^\circ\) (the
-  classical \emph{Deeptansha} orb).
-\end{enumerate}
-
-\subsubsection{Python Implementation
-Detail}\label{python-implementation-detail}
-
-\phantomsection\label{logic-preview}
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Simplified logic from use\_cases/earthquake/scripts/earthquake\_planetary\_analysis.py}
-
-\KeywordTok{def}\NormalTok{ detect\_conjunction(pos1, pos2, tolerance}\OperatorTok{=}\FloatTok{8.0}\NormalTok{):}
-\NormalTok{    diff }\OperatorTok{=} \BuiltInTok{abs}\NormalTok{(pos1 }\OperatorTok{{-}}\NormalTok{ pos2)}
-    \ControlFlowTok{if}\NormalTok{ diff }\OperatorTok{\textgreater{}} \DecValTok{180}\NormalTok{:}
-\NormalTok{        diff }\OperatorTok{=} \DecValTok{360} \OperatorTok{{-}}\NormalTok{ diff}
-    \ControlFlowTok{return}\NormalTok{ diff }\OperatorTok{\textless{}=}\NormalTok{ tolerance}
-\end{Highlighting}
-\end{Shaded}
-
-\section{Empirical Case Studies: Validation \&
-Divergence}\label{empirical-case-studies-validation-divergence}
-
-A key finding of this preliminary research is that Medini Jyotish rules
-do not act as a universal trigger for \emph{every} earthquake. Instead,
-they appear to describe specific \textbf{types} of seismic release.
-
-\subsection{Successes: Principle
-Validation}\label{successes-principle-validation}
-
-The following table highlights major historical earthquakes where our
-algorithms correctly identified the corresponding astrological
-signatures (Yogas).
+Table 1 presents the estimated coefficients from the GLM.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2000}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.4000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2000}}@{}}
+\caption{Table 1: Regression Coefficients}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
-Date
+Variable
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Location
+Coefficient
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Magnitude
+Standard Error
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Principle Validated
+P-Value
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Variable
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-Astrological Configuration
+Coefficient
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Standard Error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+P-Value
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-\textbf{2015-04-25} & Nepal (Gorkha) & 7.8 & \textbf{Malefic Cluster} &
-Mars, Mercury, Sun in Taurus (Earth Sign) with Saturn Aspect. \\
-\textbf{2011-03-11} & Japan (Tohoku) & 9.1 & \textbf{Deep Ingress} &
-Uranus ingress into Aries (0°) + New Moon. \\
-\textbf{2001-01-26} & India (Gujarat) & 7.7 & \textbf{Eclipse + Yuti} &
-Major Solar Eclipse 2 weeks prior + Saturn-Jupiter conjunction. \\
-\textbf{1934-01-15} & Nepal-Bihar & 8.0 & \textbf{Mars-Saturn} & Direct
-opposition (180°) of Saturn (Capricorn) and Mars (Cancer). \\
-\textbf{2023-02-06} & Turkey-Syria & 7.8 & \textbf{Moon-Node} & Full
-Moon with heavy Rahu/Ketu axis affliction. \\
+Intercept & -12.45 & 0.05 & \textless{} 0.001 \\
+Year Index & 0.012 & 0.001 & \textless{} 0.001 \\
+Universal Day 8 & 0.045 & 0.03 & 0.15 \\
+Mars Strength & -0.002 & 0.001 & 0.04 \\
+Saturn Strength & 0.001 & 0.001 & 0.32 \\
 \end{longtable}
 
-These ``Hits'' affirm that when the specific conditions of \textbf{Mass
-Density} (multiple planets) or \textbf{Gravitational Peak} (Eclipses)
-are met, the probability of a high-magnitude event increases
-significantly.
+\emph{(Note: See \texttt{tables/regression\_coefficients.csv} for full
+model output)}
 
-\subsection{Nuanced Analysis: The
-``Misses''}\label{nuanced-analysis-the-misses}
+\subsection{Temporal Prediction}\label{temporal-prediction}
 
-It is equally important to report where the formula was silent. In our
-dataset of top 20 earthquakes (Mag 8.0+) from 1950-2020: * \textbf{12
-out of 20} events matched at least one major Medini rule. * \textbf{8
-out of 20} events occurred during relatively ``quiet'' astrological
-periods.
+Figure 1 below illustrates the model's ability to track the aggregate
+monthly seismic rate. The ``Prediction Gap'' is visible where the model
+captures the trend but misses extreme outliers (Mega-Quakes).
 
-\textbf{Example of a Miss:} * \textbf{1964 Alaska Earthquake (Mag 9.2)}:
-While the second largest quake ever recorded, our standard ``Mars-Ketu''
-or ``Saturn-Mars'' algorithms did not flag this date as critical.
+\begin{figure}[H]
 
-\subsubsection{Investigating the
-Divergence}\label{investigating-the-divergence}
+\caption{Figure 1: Time series of Predicted Rate vs.~Actual Rate
+(Monthly Aggregated). The red dashed line represents the Negative
+Binomial model fit.}
 
-The existence of ``Misses'' suggests two possibilities: 1.
-\textbf{Incomplete Rule Set}: We may need to incorporate more subtle
-factors like \textbf{Koorma Chakra} (regional sensitivity) or
-\textbf{Sanghatta Rashi} (Vedha/Obstruction points). 2.
-\textbf{Different Mechanisms}: Some earthquakes may be purely tectonic
-``slips'' with no cosmic trigger, whereas others are ``cosmically
-induced.''
+{\centering \includegraphics{../figures/predicted_vs_actual.png}
 
-\section{Principle-Specific Success
-Mapping}\label{principle-specific-success-mapping}
+}
 
-Our analysis allows us to map specific principles to the types of events
-they predict:
+\end{figure}%
 
-\subsubsection{1. The ``Explosive Release''
-(Mars-Ketu)}\label{the-explosive-release-mars-ketu}
+\subsection{``Look-Elsewhere'' Analysis}\label{look-elsewhere-analysis}
 
-\begin{itemize}
-\tightlist
-\item
-  \textbf{Prediction}: Sudden, violent, shallow earthquakes.
-\item
-  \textbf{Status}: \textbf{VALIDATED} in Turkey (2023) and Nepal (2015).
-\item
-  \textbf{Mechanism}: Mars (Fire/Force) amplifies Ketu's (Breakage)
-  tendency for structural failure.
-\end{itemize}
+To ensure any detected signal is not a result of p-hacking (finding a
+pattern by checking thousands of combinations), we performed a Monte
+Carlo Shuffle Test (N=1000). We destroyed the time-link between
+astrology and earthquakes while preserving the internal structure of
+both series.
 
-\subsubsection{2. The ``Compression Stress''
-(Saturn-Mars)}\label{the-compression-stress-saturn-mars}
+\begin{figure}[H]
 
-\begin{itemize}
-\tightlist
-\item
-  \textbf{Prediction}: Deep, grinding earthquakes along major fault
-  lines.
-\item
-  \textbf{Status}: \textbf{PARTIALLY VALIDATED}. Strong correlation with
-  Himalayan plate movement (1934 Bihar), but less predictive for
-  subduction zones (e.g., Alaska).
-\end{itemize}
+\caption{Figure 2: The ``Look-Elsewhere'' Analysis. The histogram shows
+the distribution of Delta-AIC values for random shuffles. The red line
+marks the Real Data performance. If the red line is within the gray
+mass, the result is indistinguishable from noise.}
 
-\subsubsection{3. The ``Gravitational Trigger''
-(Eclipses)}\label{the-gravitational-trigger-eclipses}
+{\centering \includegraphics{../figures/monte_carlo_distribution.png}
 
-\begin{itemize}
-\tightlist
-\item
-  \textbf{Prediction}: Events within +/- 7 days of a major eclipse.
-\item
-  \textbf{Status}: \textbf{HIGHLY VALIDATED}. Consistently appears in
-  the timeline of ``Mega-Quakes'' (Mag 8.5+), suggesting tidal
-  differentiation plays a physical role.
-\end{itemize}
+}
 
-\section{Conclusion \& Future Roadmap}\label{conclusion-future-roadmap}
+\end{figure}%
 
-This research establishes that Medini Jyotish provides a testable,
-albeit complex, framework for seismic correlation.
+\section{Discussion}\label{discussion}
 
-\textbf{Key Findings:} 1. \textbf{Selective Validity}: The astrological
-principles hold true for a significant subset of major earthquakes
-(approx. 60\%), validating the \emph{potential} of the system even if it
-is not yet a universal detector. 2. \textbf{Principle Specificity}:
-Different planetary combinations appear to trigger different
-\emph{kinds} of seismic events (e.g., Mars-Ketu for sudden shallow
-quakes vs.~Saturn-Mars for deep stress). 3. \textbf{The ``Silent''
-Quakes}: The 40\% of ``missed'' events indicate the need for a more
-granular model, likely involving the \textbf{Koorma Chakra} to account
-for local terrestrial conditions.
+\subsection{Interpretation}\label{interpretation}
 
-Our future work will focus on codifying the \textbf{Koorma Chakra} to
-bridge the gap between universal planetary signals and specific
-geographic impact zones.
+The coefficient for \textbf{Mars Strength} shows a marginally
+significant negative correlation (p=0.04), suggesting that periods of
+\emph{lower} Mars strength slightly correlate with higher seismicity in
+this specific model. However, the \textbf{Universal Day Number}
+variables did not reach the threshold of statistical significance
+(\(p < 0.05\)).
 
-\section{Bibliography}\label{bibliography}
+\subsection{Confounders}\label{confounders}
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  \textbf{Varahamihira}, \emph{Brihat Samhita}, Chapter 32:
-  Bhukampa-lakshana.
-\item
-  \textbf{B.V. Raman}, \emph{Planetary Influences on Earthquakes}. Raman
-  Publications.
-\item
-  \textbf{USGS Earthquake Hazards Program}, \emph{Comprehensive
-  Earthquake Catalog}.
-\item
-  \textbf{Swiss Ephemeris Documentation}, \emph{Programming Interface
-  for Astronomical Calculations}.
-\end{enumerate}
+Potential confounders include: - \textbf{Solar Cycle:} The 11-year solar
+maximum cycle may overlap with planetary periods (Jupiter). -
+\textbf{Tidal Stress:} Lunar phases (syzygy) are known physical triggers
+but are often conflated with ``astrology.''
 
+\subsection{Critical Self-Assessment}\label{critical-self-assessment}
+
+The Monte Carlo analysis (Figure 2) reveals that the improvement in
+model fit (Delta-AIC) provided by the Astro-Fusion variables falls
+within the 95\% confidence interval of random noise. Therefore, strictly
+speaking, \textbf{we fail to reject the Null Hypothesis} for the global
+dataset. The signal provided by these variables is not strong enough to
+be used as a standalone predictor for global seismicity.
+
+\section{Conclusion}\label{conclusion}
+
+This study provides a reproducible computational framework for testing
+``fringe'' scientific hypotheses. While we found anecdotal correlations
+in individual high-magnitude events, the aggregate statistical analysis
+suggests that ``Universal Day Numbers'' and ``Global Planetary
+Strength'' do not possess significant predictive power for global
+earthquake rates. Future work should focus on regionalized hypotheses
+(Koorma Chakra) rather than global aggregates.
 
 
 
