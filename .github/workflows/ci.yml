@@ -183,9 +183,13 @@ jobs:
       run: python -m build
 
     - name: Publish to PyPI
-      if: github.repository_owner == 'astro-fusion' && secrets.PYPI_API_TOKEN != ''
+      if: github.repository_owner == 'astro-fusion'
       run: |
-        twine upload dist/* -u __token__ -p ${{ secrets.PYPI_API_TOKEN }}
+        if [ -n "${{ secrets.PYPI_API_TOKEN }}" ]; then
+          twine upload dist/* -u __token__ -p ${{ secrets.PYPI_API_TOKEN }}
+        else
+          echo "PYPI_API_TOKEN secret not configured, skipping PyPI upload"
+        fi
 
     - name: Create GitHub Release
       id: create_release
