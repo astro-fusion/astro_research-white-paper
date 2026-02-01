@@ -16,13 +16,24 @@
 
 **🌐 [Visit Research Website](https://astro-fusion.github.io/astro_research-white-paper/)**
 
-Access our latest scientifically rigorous manuscripts (Generated via CI/CD):
+Access our comprehensively referenced, peer-ready research manuscripts:
 
-- **[Nature-Style Manuscript (PDF)](_site/manuscript_nature.pdf)**: Rigorous falsification of planetary predictors.
-- **[IEEE-Style Manuscript (PDF)](_site/manuscript_ieee.pdf)**: Technical evaluation in IEEE format.
-- **[Numerology Report (PDF)](docs/research/track_1_numerology_vs_astrology/track_1_report.pdf)**: Temporal discontinuity analysis.
+#### 🔬 Complete Research Collection
+
+| Research Paper | Format | Description |
+|----------------|--------|-------------|
+| **[Master Research Report](https://astro-fusion.github.io/astro_research-white-paper/VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.pdf)** | PDF | Consolidated 30+ page paper covering all research tracks |
+| **[Numerology-Astrology Correlation](https://astro-fusion.github.io/astro_research-white-paper/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.pdf)** | PDF | Temporal discontinuity analysis between discrete and continuous systems |
+| **[Earthquake Prediction Analysis](https://astro-fusion.github.io/astro_research-white-paper/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf)** | PDF | India-Nepal seismic pattern investigation |
+| **[Gold Market Correlation](https://astro-fusion.github.io/astro_research-white-paper/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.pdf)** | PDF | XAU/USD price prediction analysis |
+
+#### 📄 Journal Styles (Generated via CI/CD)
+
+- **[Nature-Style Manuscript](https://astro-fusion.github.io/astro_research-white-paper/manuscript_nature.pdf)**: Rigorous falsification of planetary predictors
+- **[IEEE-Style Manuscript](https://astro-fusion.github.io/astro_research-white-paper/manuscript_ieee.pdf)**: Technical evaluation in IEEE format
 
 > **Note**: This repository contains multiple research use cases. Visit the [Reports Section](assets/reports/) for generated PDF reports or browse the [Source Code](src/) for implementation details.
+
 
 ## 🌟 Core Research Principles
 

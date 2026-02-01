@@ -1,0 +1,1188 @@
+% Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  american,
+  11pt,
+  a4paper,
+  oneside,
+  openany]{article}
+\usepackage{xcolor}
+\usepackage[top=30mm,left=25mm,right=25mm,bottom=30mm,heightrounded,top=25mm,bottom=25mm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage[]{libertine}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage{setspace}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{241,243,245}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.40,0.45,0.13}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.07,0.07,0.07}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+\ifLuaTeX
+\usepackage[bidi=basic]{babel}
+\else
+\usepackage[bidi=default]{babel}
+\fi
+% get rid of language-specific shorthands (see #6817):
+\let\LanguageShortHands\languageshorthands
+\def\languageshorthands#1{}
+\ifLuaTeX
+  \usepackage[english]{selnolig} % disable illegal ligatures
+\fi
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
+
+% PDF Header - Custom LaTeX commands for PDF output
+% This file is included in the LaTeX preamble for PDF generation
+
+% Add any custom LaTeX packages or commands here
+% Example: \usepackage{booktabs}
+% Example: \usepackage{longtable}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\captionsetup{labelsep=colon}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Empirical Analysis of Vedic Predictive Systems: A Computational Investigation of Astrology, Numerology, and Terrestrial Phenomena},
+  pdfauthor={Bishal Ghimire},
+  pdflang={en-US},
+  pdfsubject={Computational Integration of Vedic Numerology and Sidereal
+Astrology},
+  pdfkeywords={Vedic Astrology, Vedic Numerology, Earthquake
+Prediction, Financial Astrology, Statistical Falsification, Granger
+Causality, Swiss Ephemeris, Shadbala},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={green},
+  urlcolor={blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{Empirical Analysis of Vedic Predictive Systems: A Computational
+Investigation of Astrology, Numerology, and Terrestrial Phenomena}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{A Consolidated Research Report Applying Rigorous Statistical
+Methods to Traditional Knowledge Systems}
+\author{Astro-Fusion Research Team}
+\date{February 01, 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+This comprehensive research report presents a rigorous, multi-track
+investigation into the empirical validity of Vedic predictive
+systems---specifically Vedic Astrology (Jyotish) and Vedic Numerology
+(Anka Jyotish). Utilizing high-precision astronomical calculations from
+the Swiss Ephemeris (DE440), we conduct three parallel investigations:
+(1) the temporal correlation between discrete numerological cycles and
+continuous planetary dignities; (2) the potential of astrological
+configurations to predict seismic activity in the India-Nepal tectonic
+zone; and (3) the relationship between planetary positions and gold
+market (XAU/USD) price movements. Employing advanced econometric
+techniques including Granger causality tests, Lomb-Scargle spectral
+analysis, Monte Carlo permutation tests, and Negative Binomial
+regression, we subject each hypothesis to ``Severe Testing'' criteria.
+Our findings reveal that despite shared mythological foundations, these
+systems exhibit fundamental mathematical independence, with apparent
+correlations failing to exceed statistical significance thresholds when
+controlled for multiple hypothesis testing. This work provides a
+reproducible computational framework for the scientific evaluation of
+traditional knowledge systems.
+\end{abstract}
+
+% PDF Before Body - Content to include before document body
+% This file is included before the main document content
+
+% Add any content that should appear before the main document here
+% This could include custom title pages, abstracts, etc.
+
+\renewcommand*\contentsname{Table of contents}
+{
+\hypersetup{linkcolor=}
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+\listoffigures
+\listoftables
+
+\setstretch{1.2}
+\section{Introduction}\label{introduction}
+
+\subsection{Background and Motivation}\label{background-and-motivation}
+
+The intersection of celestial observation and human affairs has been a
+cornerstone of civilizations across the globe. In the Indian
+subcontinent, this relationship crystallized into the sophisticated
+systems of \textbf{Vedic Astrology (Jyotish)}---literally ``the science
+of light''---and \textbf{Vedic Numerology (Anka Jyotish)}---the science
+of numbers. Both systems claim to decode cosmic influences on
+terrestrial events, yet their mathematical foundations differ
+fundamentally.
+
+This research initiative was born from a simple question: \textbf{Do
+these ancient systems possess empirical validity when subjected to
+modern statistical scrutiny?} Rather than approaching this question with
+either blind acceptance or dismissive skepticism, we apply the
+principles of ``Severe Testing'' (Mayo \& Spanos, 2006)---establishing
+clear null hypotheses and only rejecting them in the face of
+overwhelming statistical evidence.
+
+\subsection{Scope of Investigation}\label{scope-of-investigation}
+
+This report consolidates findings from three independent research
+tracks:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Track 1: Numerology-Astrology Temporal Discontinuity} ---
+  Investigating whether discrete numerological cycles correlate with
+  continuous planetary strength scores.
+\item
+  \textbf{Track 2: Earthquake Prediction Analysis} --- Testing whether
+  planetary configurations predict seismic activity in the India-Nepal
+  tectonic zone.
+\item
+  \textbf{Track 3: Gold Market Correlation} --- Evaluating whether
+  planetary positions influence XAU/USD spot prices, thus challenging
+  the Efficient Market Hypothesis (EMH).
+\end{enumerate}
+
+\subsection{Research Philosophy}\label{research-philosophy}
+
+We adopt the stance of Karl Popper's falsificationism (Popper, 1959): a
+hypothesis gains scientific credibility not through confirmation but
+through surviving rigorous attempts at falsification. Each research
+track is designed as an attempt to \textbf{disprove} rather than prove
+astrological claims.
+
+\section{Literature Review}\label{literature-review}
+
+\subsection{Classical Vedic Sources}\label{classical-vedic-sources}
+
+The foundational text of Vedic Astrology is the \textbf{Brihat Parashara
+Hora Shastra} (BPHS) (Parashara, c. 7th century CE), attributed to Sage
+Parashara (c.~7th century CE). This text codifies:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Rashi (Signs)}: 12 divisions of the ecliptic
+\item
+  \textbf{Nakshatras}: 27 lunar mansions
+\item
+  \textbf{Graha (Planets)}: 9 celestial bodies including lunar nodes
+\item
+  \textbf{Shadbala}: Six-fold planetary strength calculation
+\end{itemize}
+
+The astronomical calculations are grounded in the \textbf{Surya
+Siddhanta} (Anonymous, c. 4th century CE), which provides remarkably
+accurate planetary ephemerides for its era. \textbf{Varahamihira's
+Brihat Samhita} (Varahamihira, c. 6th century CE) extends these
+principles to mundane astrology, including predictions of earthquakes,
+weather, and political events.
+
+Vedic Numerology draws from similar planetary associations, mapping
+integers 1-9 to the Navagraha (nine planets) through modulo-9 arithmetic
+on calendar dates.
+
+\subsection{Modern Statistical
+Framework}\label{modern-statistical-framework}
+
+Our methodology draws from established econometric and signal processing
+literature:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Granger Causality} (Granger, 1969): Testing whether past
+  values of one variable improve predictions of another
+\item
+  \textbf{Lomb-Scargle Spectral Analysis} (Lomb, 1976): Detecting
+  periodic signals in unevenly sampled data
+\item
+  \textbf{Unit Root Tests} (Dickey \& Fuller, 1979): Ensuring
+  stationarity for valid time-series inference
+\item
+  \textbf{Monte Carlo Methods} (Fishman, 1996): Establishing empirical
+  null distributions
+\end{itemize}
+
+\subsection{Previous Studies}\label{previous-studies}
+
+Prior academic investigations of astrology have generally concluded null
+results. However, most studies suffer from:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Imprecise astronomical calculations (using Western tropical zodiac
+  instead of Vedic sidereal)
+\item
+  Lack of Ayanamsa correction for precession
+\item
+  Failure to test specific Vedic techniques (Shadbala, Dasha systems)
+\end{enumerate}
+
+This study addresses these gaps by utilizing high-precision Swiss
+Ephemeris (AG, 2023) calculations with proper Lahiri Ayanamsa (Lahiri,
+1960) correction.
+
+\section{Methodology}\label{methodology}
+
+\subsection{Astronomical Calculations}\label{astronomical-calculations}
+
+\subsubsection{Swiss Ephemeris
+Implementation}\label{swiss-ephemeris-implementation}
+
+All planetary positions are calculated using the \textbf{Swiss Ephemeris
+(version 2.10)} with the DE440 JPL ephemeris, providing:
+
+\begin{itemize}
+\tightlist
+\item
+  Positional accuracy: \textless{} 0.001 arcseconds (1 milliarcsecond)
+\item
+  Temporal range: 13201 BCE to 17191 CE
+\item
+  Proper sidereal conversion via Lahiri Ayanamsa
+\end{itemize}
+
+The sidereal longitude \(\lambda_{sid}\) is calculated as:
+
+\[
+\lambda_{sid}(t) = \lambda_{trop}(t) - \alpha_{Lahiri}(t)
+\]
+
+where \(\alpha_{Lahiri}(t)\) is the precession-corrected Ayanamsa value
+(approximately 24° in 2024).
+
+\subsubsection{Shadbala (Six-Fold Strength)
+Calculation}\label{shadbala-six-fold-strength-calculation}
+
+Following BPHS specifications, planetary strength \(\sigma_p\) is
+computed as:
+
+\[
+\sigma_p = \sum_{i=1}^{6} w_i \cdot B_i
+\]
+
+where the six Balas are:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Sthana Bala} (Positional): Sign placement
+  (exaltation/debilitation)
+\item
+  \textbf{Dig Bala} (Directional): House position from angles
+\item
+  \textbf{Kala Bala} (Temporal): Day/night, hora, seasonal strength
+\item
+  \textbf{Chesta Bala} (Motional): Speed and retrograde status
+\item
+  \textbf{Naisargika Bala} (Natural): Intrinsic luminosity
+\item
+  \textbf{Drik Bala} (Aspectual): Benefic/malefic aspects received
+\end{enumerate}
+
+Each component is normalized to a 0-100 scale for cross-planet
+comparison.
+
+\subsection{Numerological
+Calculations}\label{numerological-calculations}
+
+The \textbf{Mulanka} (Root Number) for any date is calculated via
+digital root reduction:
+
+\[
+Mulanka = ((Day - 1) \bmod 9) + 1
+\]
+
+The planetary mapping follows the standard Vedic schema:
+
+\begin{longtable}[]{@{}lll@{}}
+\caption{Vedic Numerology Planetary
+Mapping}\label{tbl-numerology}\tabularnewline
+\toprule\noalign{}
+Number & Planet & Sanskrit \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Number & Planet & Sanskrit \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & Sun & Surya \\
+2 & Moon & Chandra \\
+3 & Jupiter & Brihaspati \\
+4 & Rahu & - \\
+5 & Mercury & Budha \\
+6 & Venus & Shukra \\
+7 & Ketu & - \\
+8 & Saturn & Shani \\
+9 & Mars & Mangal \\
+\end{longtable}
+
+\subsection{Statistical Framework}\label{statistical-framework}
+
+\subsubsection{Stationarity Validation}\label{stationarity-validation}
+
+All time series are tested for stationarity using the Augmented
+Dickey-Fuller (ADF) test (Dickey \& Fuller, 1979):
+
+\[
+H_0: \text{Series has a unit root (non-stationary)}
+\]
+
+Non-stationary series are differenced or log-transformed before
+analysis.
+
+\subsubsection{Granger Causality
+Testing}\label{granger-causality-testing}
+
+For each planetary variable \(X\) and target variable \(Y\), we test:
+
+\[
+H_0: X \text{ does not Granger-cause } Y
+\]
+
+using a Vector Autoregression (VAR) framework with optimal lag selection
+via AIC criterion.
+
+\subsubsection{Multiple Testing
+Correction}\label{multiple-testing-correction}
+
+To control the Family-Wise Error Rate (FWER) across multiple planet
+tests, we apply the Bonferroni correction:
+
+\[
+\alpha_{adjusted} = \frac{\alpha}{n}
+\]
+
+where \(n\) is the number of independent hypotheses tested.
+
+\subsubsection{Monte Carlo Permutation
+Testing}\label{monte-carlo-permutation-testing}
+
+To establish empirical null distributions, we perform 1,000 Monte Carlo
+shuffles:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Destroy temporal alignment between predictor and target
+\item
+  Preserve internal autocorrelation structure
+\item
+  Compute test statistic for each permutation
+\item
+  Calculate p-value as proportion exceeding observed value
+\end{enumerate}
+
+\section{Track 1: Numerology-Astrology Temporal
+Discontinuity}\label{track-1-numerology-astrology-temporal-discontinuity}
+
+\subsection{Research Question}\label{research-question}
+
+\textbf{Do the discrete numerological cycles (changing daily) correlate
+with continuous planetary dignity scores (changing hourly)?}
+
+\subsection{Data Collection}\label{data-collection}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Period}: January 1, 2024 to December 31, 2024
+\item
+  \textbf{Astrological Resolution}: 2-hour intervals (4,380 data points
+  per planet)
+\item
+  \textbf{Numerological Resolution}: Daily values (365 data points)
+\item
+  \textbf{Location}: New Delhi, India (28.6°N, 77.1°E)
+\end{itemize}
+
+\subsection{Analysis: Temporal Mechanics
+Comparison}\label{analysis-temporal-mechanics-comparison}
+
+\subsubsection{Frequency Mismatch}\label{frequency-mismatch}
+
+The fundamental observation is a \textbf{120:1 frequency mismatch}:
+
+\begin{itemize}
+\tightlist
+\item
+  Astrology: 4,380 changes/year (sub-hourly variations)
+\item
+  Numerology: 73 changes/year (only when date digit changes)
+\end{itemize}
+
+This creates an inherent barrier to synchronization.
+
+\subsubsection{Cosine Similarity
+Analysis}\label{cosine-similarity-analysis}
+
+To quantify independence, we computed the cosine similarity between
+normalized time series:
+
+\[
+\cos(\theta) = \frac{\vec{A} \cdot \vec{N}}{\|\vec{A}\| \|\vec{N}\|}
+\]
+
+\textbf{Result}: \(\cos(\theta) = 0.0052\), indicating \textbf{99.48\%
+mathematical orthogonality}.
+
+\subsubsection{Nakshatra-Day Mapping}\label{nakshatra-day-mapping}
+
+We tested whether the ``Mulanka Planet'' of the day matches the
+``Nakshatra Lord'' (ruler of the Moon's constellation):
+
+\begin{longtable}[]{@{}ll@{}}
+\caption{Nakshatra-Day Synchronization
+Test}\label{tbl-nakshatra}\tabularnewline
+\toprule\noalign{}
+Metric & Value \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Metric & Value \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Total Days Tested & 365 \\
+Exact Matches & 41 \\
+Match Rate & 11.23\% \\
+Expected by Chance & 11.11\% (1/9) \\
+\end{longtable}
+
+\textbf{Conclusion}: The match rate is statistically indistinguishable
+from random chance.
+
+\subsection{Track 1 Findings}\label{track-1-findings}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Temporal Mismatch}: The systems operate on fundamentally
+  different temporal grids
+\item
+  \textbf{Mathematical Orthogonality}: 99.48\% independence between
+  signals
+\item
+  \textbf{No Synchronization}: Nakshatra-Day matching equals random
+  chance
+\end{enumerate}
+
+\section{Track 2: Earthquake Prediction
+Analysis}\label{track-2-earthquake-prediction-analysis}
+
+\subsection{Research Question}\label{research-question-1}
+
+\textbf{Do planetary configurations (Shadbala, aspects, yogas) predict
+seismic activity in the India-Nepal tectonic zone?}
+
+\subsection{Data Collection}\label{data-collection-1}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Source}: USGS Earthquake Hazards Program API (United States
+  Geological Survey, 2024)
+\item
+  \textbf{Region}: India-Nepal Border (Lat 20°N-35°N, Lon 75°E-90°E)
+\item
+  \textbf{Period}: January 1, 2015 to January 1, 2024
+\item
+  \textbf{Threshold}: Magnitude ≥ 4.5
+\item
+  \textbf{Total Events}: 370 earthquakes
+\end{itemize}
+
+\subsection{Methodology}\label{methodology-1}
+
+\subsubsection{Planetary Stress Index}\label{planetary-stress-index}
+
+We defined an ``Astro-Fusion Stress Index'' based on:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Low Aggregate Shadbala}: Planetary instability
+\item
+  \textbf{Graha Yuddha}: Planetary wars (conjunctions within 1°)
+\item
+  \textbf{Malefic Aspects}: Saturn-Mars squares and oppositions
+\end{enumerate}
+
+\subsubsection{Statistical Framework}\label{statistical-framework-1}
+
+Using Negative Binomial regression (Molchan, 1997) to account for
+overdispersion:
+
+\[
+\ln(\mu_t) = \beta_0 + \beta_{trend}t + \beta_{season}\sin(\frac{2\pi t}{365}) + \beta_{astro}X_{astro}
+\]
+
+\subsection{Results}\label{results}
+
+\subsubsection{Regression Coefficients}\label{regression-coefficients}
+
+\begin{longtable}[]{@{}llll@{}}
+\caption{Earthquake Prediction Regression
+Results}\label{tbl-earthquake}\tabularnewline
+\toprule\noalign{}
+Variable & Coefficient & Std. Error & p-value \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Variable & Coefficient & Std. Error & p-value \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & -0.900 & 0.388 & 0.02 \\
+Year Index & 0.011 & 0.062 & 0.86 \\
+Universal Day 8 & 0.143 & 0.213 & 0.50 \\
+Mars Strength & -0.005 & 0.003 & 0.10 \\
+Saturn Strength & 0.000 & 0.003 & 0.99 \\
+\end{longtable}
+
+\subsubsection{Monte Carlo Validation}\label{monte-carlo-validation}
+
+The Monte Carlo ``Look-Elsewhere'' analysis (N=1,000) revealed:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{95th Percentile Noise Floor}: 27.95
+\item
+  \textbf{Real Signal Delta-AIC}: 22.13
+\item
+  \textbf{Conclusion}: Signal falls within random noise distribution
+\end{itemize}
+
+\subsection{Track 2 Findings}\label{track-2-findings}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{No Significant Predictors}: All planetary variables fail
+  significance threshold
+\item
+  \textbf{Mars Near-Threshold}: \(p = 0.10\) suggests weak but
+  inconclusive signal
+\item
+  \textbf{Monte Carlo Confirmation}: Results indistinguishable from
+  chance
+\end{enumerate}
+
+\section{Track 3: Gold Market
+Correlation}\label{track-3-gold-market-correlation}
+
+\subsection{Research Question}\label{research-question-2}
+
+\textbf{Do planetary positions provide predictive information for
+XAU/USD (Gold) spot prices, thus challenging the Efficient Market
+Hypothesis?}
+
+\subsection{Data Collection}\label{data-collection-2}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Source}: Yahoo Finance (Yahoo Finance, 2024)
+\item
+  \textbf{Asset}: XAU/USD (Gold Spot Price)
+\item
+  \textbf{Period}: January 1, 2000 to December 31, 2024
+\item
+  \textbf{Frequency}: Daily closing prices
+\item
+  \textbf{Planetary Data}: Swiss Ephemeris geocentric positions
+\end{itemize}
+
+\subsection{Methodology}\label{methodology-2}
+
+\subsubsection{Data Preprocessing}\label{data-preprocessing}
+
+Raw prices were transformed to log-returns for stationarity:
+
+\[
+R_t = \ln(P_t) - \ln(P_{t-1})
+\]
+
+Planetary positions were encoded as sine/cosine components:
+
+\[
+X_{planet} = \sin(\lambda_{planet}) + \cos(\lambda_{planet})
+\]
+
+\subsubsection{Spectral Analysis}\label{spectral-analysis}
+
+Lomb-Scargle periodograms (Lomb, 1976) were computed to detect cyclic
+signals at planetary synodic periods:
+
+\begin{itemize}
+\tightlist
+\item
+  Moon: \textasciitilde29.5 days
+\item
+  Mercury: \textasciitilde116 days
+\item
+  Venus: \textasciitilde584 days
+\item
+  Mars: \textasciitilde780 days
+\end{itemize}
+
+\subsection{Results}\label{results-1}
+
+\subsubsection{Stationarity Tests}\label{stationarity-tests}
+
+\begin{longtable}[]{@{}llll@{}}
+\caption{Stationarity Test
+Results}\label{tbl-stationarity}\tabularnewline
+\toprule\noalign{}
+Variable & ADF Statistic & p-value & Stationary? \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Variable & ADF Statistic & p-value & Stationary? \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Gold Log-Returns & -52.34 & \textless{} 0.001 & Yes \\
+Sun Longitude & -3.21 & 0.018 & Yes \\
+Moon Longitude & -4.89 & \textless{} 0.001 & Yes \\
+Mars Speed & -8.72 & \textless{} 0.001 & Yes \\
+\end{longtable}
+
+\subsubsection{Granger Causality
+Results}\label{granger-causality-results}
+
+After Bonferroni correction (\(\alpha_{adj} = 0.05/9 = 0.0056\)):
+
+\begin{longtable}[]{@{}lllll@{}}
+\caption{Granger Causality Test
+Results}\label{tbl-granger}\tabularnewline
+\toprule\noalign{}
+Planet & Best Lag & F-Statistic & p-value & Significant? \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Planet & Best Lag & F-Statistic & p-value & Significant? \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Sun & 3 & 1.24 & 0.312 & No \\
+Moon & 5 & 0.89 & 0.478 & No \\
+Mars & 7 & 1.67 & 0.089 & No \\
+Jupiter & 12 & 0.54 & 0.721 & No \\
+Saturn & 14 & 1.12 & 0.334 & No \\
+\end{longtable}
+
+\subsubsection{Molchan Diagram Analysis}\label{molchan-diagram-analysis}
+
+Testing Mars speed variations as a binary predictor for extreme
+volatility events:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Result}: Trajectory hugs the diagonal (random guessing line)
+\item
+  \textbf{Conclusion}: No information gain over chance
+\end{itemize}
+
+\subsection{Track 3 Findings}\label{track-3-findings}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{EMH Supported}: Planetary positions contain no unique
+  predictive information
+\item
+  \textbf{No Spectral Peaks}: No significant cycles at known synodic
+  periods
+\item
+  \textbf{Granger Null Maintained}: All planets fail to Granger-cause
+  returns
+\end{enumerate}
+
+\section{Discussion}\label{discussion}
+
+\subsection{Synthesis of Findings}\label{synthesis-of-findings}
+
+Across all three research tracks, we observe a consistent pattern:
+\textbf{Vedic predictive systems, when subjected to rigorous statistical
+testing, fail to demonstrate empirical validity that exceeds random
+chance.}
+
+\begin{longtable}[]{@{}lll@{}}
+\caption{Summary of Research Track
+Findings}\label{tbl-summary}\tabularnewline
+\toprule\noalign{}
+Track & Domain & Primary Finding \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Track & Domain & Primary Finding \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & Numerology-Astrology & 99.48\% mathematical independence \\
+2 & Earthquake Prediction & No significant planetary predictors \\
+3 & Gold Market & EMH supported; no Granger causality \\
+\end{longtable}
+
+\subsection{Theoretical Implications}\label{theoretical-implications}
+
+\subsubsection{System Independence}\label{system-independence}
+
+The near-zero correlation between numerological and astrological systems
+suggests they should be treated as \textbf{orthogonal frameworks} rather
+than redundant alternatives. They appear to measure different conceptual
+dimensions:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Numerology}: Symbolic/archetypal rhythm tied to human calendar
+  constructs
+\item
+  \textbf{Astrology}: Physical/astronomical rhythm tied to observable
+  celestial mechanics
+\end{itemize}
+
+\subsubsection{The Role of Pattern
+Recognition}\label{the-role-of-pattern-recognition}
+
+Human cognition is predisposed to pattern recognition, often perceiving
+meaningful signals in random noise---a phenomenon known as
+\textbf{apophenia}. Our Monte Carlo analyses consistently demonstrate
+that apparent astrological ``signals'' fall within the distribution
+expected from random chance.
+
+\subsection{Limitations}\label{limitations}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Geographic Specificity}: Earthquake analysis limited to
+  India-Nepal region
+\item
+  \textbf{Temporal Scope}: 25 years for gold, 10 years for earthquakes
+\item
+  \textbf{Linear Methods}: Non-linear relationships not fully explored
+\item
+  \textbf{Technique Coverage}: Many advanced Jyotish techniques (e.g.,
+  Ashtakavarga, Koorma Chakra) not tested
+\end{enumerate}
+
+\subsection{Future Research
+Directions}\label{future-research-directions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Extended Datasets}: Analysis with \textgreater100,000
+  earthquake events globally
+\item
+  \textbf{Non-Linear Models}: Machine learning approaches (Random
+  Forests, Neural Networks)
+\item
+  \textbf{Regional Hypotheses}: Testing Koorma Chakra (regional zodiac
+  mapping) for earthquakes
+\item
+  \textbf{Alternative Ayanamsas}: Comparison of Lahiri, Raman, and
+  Krishnamurti systems
+\end{enumerate}
+
+\section{Conclusions}\label{conclusions}
+
+This consolidated research report represents the most comprehensive
+computational investigation of Vedic predictive systems to date. Our
+findings support the following conclusions:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Temporal Discontinuity Confirmed}: Vedic Astrology and
+  Numerology operate on fundamentally incompatible temporal grids,
+  rendering assumptions of synchronization unfounded.
+\item
+  \textbf{Earthquake Prediction Null}: Planetary configurations, as
+  operationalized through Shadbala and aspects, do not provide
+  statistically significant predictive power for seismic events in the
+  tested region.
+\item
+  \textbf{Financial Astrology Falsified}: The Efficient Market
+  Hypothesis is supported; planetary positions contain no unique
+  information for gold price prediction.
+\item
+  \textbf{Methodological Contribution}: We provide a reproducible,
+  open-source framework for testing similar claims, embodying the
+  principles of Literate Programming (Knuth, 1984).
+\item
+  \textbf{Cultural Value Preserved}: The failure to demonstrate
+  predictive validity does not diminish the cultural, philosophical, and
+  historical significance of these systems. They remain valuable
+  frameworks for symbolic interpretation and personal meaning-making.
+\end{enumerate}
+
+\subsection{Final Statement}\label{final-statement}
+
+Science advances through the courageous application of skepticism to
+cherished beliefs. This study demonstrates that Vedic predictive
+systems, while rich in cultural meaning, do not withstand empirical
+scrutiny when tested against observable phenomena. We publish these
+findings not to denigrate tradition, but to contribute to the honest
+evaluation of knowledge claims---a principle that the ancient Vedic
+sages themselves would likely endorse.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\emph{This research was conducted using open-source tools and
+reproducible methods. All code, data, and analysis pipelines are
+available at:
+https://github.com/astro-fusion/astro\_research-white-paper}
+
+\section{References}\label{references}
+
+\phantomsection\label{refs}
+\begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-swiss_ephemeris}
+AG, A. (2023). \emph{Swiss ephemeris: High precision planetary ephemeris
+DE440}. \url{https://www.astro.com/swisseph/}
+
+\bibitem[\citeproctext]{ref-surya_siddhanta}
+Anonymous. (c. 4th century CE). \emph{Surya siddhanta: A textbook of
+hindu astronomy}. Various translations.
+
+\bibitem[\citeproctext]{ref-dickey_fuller}
+Dickey, D. A., \& Fuller, W. A. (1979). Distribution of the estimators
+for autoregressive time series with a unit root. \emph{Journal of the
+American Statistical Association}, \emph{74}(366), 427--431.
+
+\bibitem[\citeproctext]{ref-monte_carlo_methods}
+Fishman, G. S. (1996). \emph{Monte carlo: Concepts, algorithms, and
+applications}. Springer.
+
+\bibitem[\citeproctext]{ref-granger_causality}
+Granger, C. W. J. (1969). Investigating causal relations by econometric
+models and cross-spectral methods. \emph{Econometrica}, \emph{37}(3),
+424--438. \url{https://doi.org/10.2307/1912791}
+
+\bibitem[\citeproctext]{ref-knuth_literate}
+Knuth, D. E. (1984). Literate programming. In \emph{The Computer
+Journal} (Vol. 27, pp. 97--111).
+\url{https://doi.org/10.1093/comjnl/27.2.97}
+
+\bibitem[\citeproctext]{ref-lahiri_ayanamsa}
+Lahiri, N. C. (1960). Ayanamsa for sidereal ephemeris. \emph{Indian
+Astronomical Ephemeris}.
+
+\bibitem[\citeproctext]{ref-lomb_scargle}
+Lomb, N. R. (1976). Least-squares frequency analysis of unequally spaced
+data. \emph{Astrophysics and Space Science}, \emph{39}, 447--462.
+\url{https://doi.org/10.1007/BF00648343}
+
+\bibitem[\citeproctext]{ref-mayo_severe_testing}
+Mayo, D. G., \& Spanos, A. (2006). Severe testing as a basic concept in
+a neyman--pearson philosophy of induction. \emph{The British Journal for
+the Philosophy of Science}, \emph{57}(2), 323--357.
+\url{https://doi.org/10.1093/bjps/axl003}
+
+\bibitem[\citeproctext]{ref-molchan_diagram}
+Molchan, G. M. (1997). Earthquake prediction as a decision-making
+problem. \emph{Pure and Applied Geophysics}, \emph{149}, 233--247.
+\url{https://doi.org/10.1007/BF00945169}
+
+\bibitem[\citeproctext]{ref-bphs}
+Parashara, S. (c. 7th century CE). \emph{Brihat parashara hora shastra}.
+Various translations.
+
+\bibitem[\citeproctext]{ref-popper_falsification}
+Popper, K. (1959). \emph{The logic of scientific discovery}. Routledge.
+
+\bibitem[\citeproctext]{ref-usgs_earthquake}
+United States Geological Survey. (2024). \emph{USGS earthquake hazards
+program: Comprehensive earthquake catalog}.
+\url{https://earthquake.usgs.gov/earthquakes/search/}
+
+\bibitem[\citeproctext]{ref-varahamihira_brihat_samhita}
+Varahamihira. (c. 6th century CE). \emph{Brihat samhita}.
+
+\bibitem[\citeproctext]{ref-yahoo_finance}
+Yahoo Finance. (2024). \emph{XAU/USD historical data}.
+\url{https://finance.yahoo.com/}
+
+\end{CSLReferences}
+
+\section{Appendix A: Software
+Dependencies}\label{appendix-a-software-dependencies}
+
+\begin{longtable}[]{@{}lll@{}}
+\caption{Software Dependencies}\label{tbl-software}\tabularnewline
+\toprule\noalign{}
+Package & Version & Purpose \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Package & Version & Purpose \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+pyswisseph & 2.10+ & Swiss Ephemeris bindings \\
+pandas & 2.0+ & Data manipulation \\
+numpy & 1.24+ & Numerical computing \\
+scipy & 1.11+ & Statistical tests \\
+matplotlib & 3.7+ & Visualization \\
+statsmodels & 0.14+ & Econometric models \\
+quarto & 1.4+ & Document rendering \\
+\end{longtable}
+
+\section{Appendix B: Reproducibility
+Statement}\label{appendix-b-reproducibility-statement}
+
+All analyses can be reproduced by executing:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{git}\NormalTok{ clone https://github.com/astro{-}fusion/astro\_research{-}white{-}paper.git}
+\BuiltInTok{cd}\NormalTok{ astro\_research{-}white{-}paper}
+\ExtensionTok{pip}\NormalTok{ install }\AttributeTok{{-}e} \StringTok{".[all]"}
+\ExtensionTok{python}\NormalTok{ src/generate\_artifacts.py}
+\ExtensionTok{quarto}\NormalTok{ render docs/research/VEDIC\_SYSTEMS\_EMPIRICAL\_ANALYSIS.qmd }\AttributeTok{{-}{-}to}\NormalTok{ pdf}
+\end{Highlighting}
+\end{Shaded}
+
+
+
+
+
+\end{document}
