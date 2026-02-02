@@ -1,0 +1,983 @@
+% Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  american,
+  11pt,
+  a4paper,
+  oneside,
+  openany]{article}
+\usepackage{xcolor}
+\usepackage[top=30mm,left=25mm,right=25mm,bottom=30mm,heightrounded,top=25mm,bottom=25mm]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage[]{libertine}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage{setspace}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{241,243,245}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.40,0.45,0.13}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.07,0.07,0.07}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+\ifLuaTeX
+\usepackage[bidi=basic]{babel}
+\else
+\usepackage[bidi=default]{babel}
+\fi
+% get rid of language-specific shorthands (see #6817):
+\let\LanguageShortHands\languageshorthands
+\def\languageshorthands#1{}
+\ifLuaTeX
+  \usepackage[english]{selnolig} % disable illegal ligatures
+\fi
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
+
+% PDF Header - Custom LaTeX commands for PDF output
+% This file is included in the LaTeX preamble for PDF generation
+
+% Add any custom LaTeX packages or commands here
+% Example: \usepackage{booktabs}
+% Example: \usepackage{longtable}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\captionsetup{labelsep=colon}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Rigorous Statistical Falsification of Planetary Predictors in Gold Markets: Testing Financial Astrology Against the Efficient Market Hypothesis},
+  pdfauthor={Bishal Ghimire},
+  pdflang={en-US},
+  pdfsubject={Computational Integration of Vedic Numerology and Sidereal
+Astrology},
+  pdfkeywords={Financial Astrology, Efficient Market Hypothesis, Gold
+Price Prediction, Granger Causality, Spectral Analysis, Monte Carlo
+Methods, Swiss Ephemeris},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={green},
+  urlcolor={blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{Rigorous Statistical Falsification of Planetary Predictors in
+Gold Markets: Testing Financial Astrology Against the Efficient Market
+Hypothesis}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{A 25-Year Econometric Analysis Using Granger Causality,
+Spectral Analysis, and Monte Carlo Methods}
+\author{Astro-Fusion Research Team}
+\date{February 01, 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+This study applies rigorous econometric signal processing to falsify the
+hypothesis that planetary positions provide unique predictive
+information for XAU/USD (Gold) spot prices. The Efficient Market
+Hypothesis (EMH) posits that asset prices reflect all available
+information, rendering them unpredictable through exogenous variables.
+Conversely, ``Financial Astrology'' claims that deterministic planetary
+cycles influence market psychology and price action. Analyzing 25 years
+of daily COMEX Gold prices (2000-2024) against high-precision Swiss
+Ephemeris geocentric positions, we employ Augmented Dickey-Fuller
+stationarity tests, Lomb-Scargle spectral analysis to detect cyclic
+signals at planetary synodic periods, and Vector Autoregression with
+Bonferroni-corrected Granger Causality tests. A Monte Carlo permutation
+test (N=1,000) establishes empirical null distributions. Our findings
+demonstrate that apparent correlations fail to exceed the threshold of
+statistical significance when adjusted for multiple hypothesis testing,
+with all planetary variables showing p-values well above 0.05. The
+Molchan diagram analysis confirms that planetary-based binary
+classifiers perform no better than random guessing. These findings
+reinforce the EMH and characterize perceived astrological influence on
+markets as apophenia.
+\end{abstract}
+
+% PDF Before Body - Content to include before document body
+% This file is included before the main document content
+
+% Add any content that should appear before the main document here
+% This could include custom title pages, abstracts, etc.
+
+\renewcommand*\contentsname{Table of contents}
+{
+\hypersetup{linkcolor=}
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+\listoffigures
+\listoftables
+
+\setstretch{1.2}
+\section{Introduction}\label{introduction}
+
+\subsection{The Financial Astrology
+Claim}\label{the-financial-astrology-claim}
+
+The transformation of raw environmental data into actionable economic
+intelligence is a cornerstone of modern quantitative finance. While
+macroeconomic indicators (inflation, interest rates, employment) are
+well-established predictors, the statistical validity of alternative
+cyclic predictors---particularly astronomical phenomena---remains
+contentious.
+
+\textbf{Financial Astrology} makes specific, testable claims:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Mercury Retrograde}: Communication breakdowns cause market
+  volatility
+\item
+  \textbf{Saturn-Pluto Conjunctions}: Major economic recessions
+\item
+  \textbf{Lunar Cycles}: Monthly trading patterns following Moon phases
+\item
+  \textbf{Solar Transits}: Sector rotations based on zodiacal signs
+\end{enumerate}
+
+This study treats these claims not as mystical propositions but as
+\textbf{testable signal processing hypotheses}.
+
+\subsection{Research Framework}\label{research-framework}
+
+We adopt the ``Severe Testing'' philosophy (Mayo \& Spanos, 2006):
+
+\begin{itemize}
+\tightlist
+\item
+  Establish clear null hypotheses
+\item
+  Apply multiple independent statistical tests
+\item
+  Only reject null in face of overwhelming evidence
+\item
+  Control for multiple comparison bias
+\end{itemize}
+
+\subsection{Objectives}\label{objectives}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Test whether planetary positions Granger-cause Gold returns
+\item
+  Detect cyclic signals at known planetary synodic periods
+\item
+  Evaluate binary classification skill of planetary predictors
+\item
+  Establish empirical null distributions via Monte Carlo
+\end{enumerate}
+
+\section{Literature Review}\label{literature-review}
+
+\subsection{The Efficient Market
+Hypothesis}\label{the-efficient-market-hypothesis}
+
+Eugene Fama's EMH (Fama, 1970) proposes three forms of market
+efficiency:
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.1667}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.4722}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3611}}@{}}
+\caption{Forms of Market Efficiency}\label{tbl-emh}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Form
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Information Set
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Implication
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Form
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Information Set
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Implication
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Weak & Past prices & Technical analysis fails \\
+Semi-Strong & All public information & Fundamental analysis fails \\
+Strong & All information (including private) & No excess returns
+possible \\
+\end{longtable}
+
+If planetary positions were predictive, they would violate at least
+weak-form efficiency, as astronomical ephemerides are publicly available
+and deterministically calculable centuries in advance.
+
+\subsection{Prior Studies on Financial
+Astrology}\label{prior-studies-on-financial-astrology}
+
+Most academic studies find null results:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Dichev \& Janes (2003)}: Lunar cycle effects not robust to
+  controls
+\item
+  \textbf{Yuan et al.~(2006)}: Full Moon correlates with lower returns
+  (weak effect)
+\item
+  \textbf{Kramer \& Runde (2010)}: Mercury Retrograde has no significant
+  impact
+\end{itemize}
+
+Our study advances this literature by:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Using high-precision sidereal (Vedic) calculations
+\item
+  Testing specific Shadbala strength variables
+\item
+  Applying modern Monte Carlo validation
+\end{enumerate}
+
+\section{Data and Methodology}\label{data-and-methodology}
+
+\subsection{Data Sources}\label{data-sources}
+
+\subsubsection{Gold Price Data}\label{gold-price-data}
+
+\begin{longtable}[]{@{}ll@{}}
+\caption{Gold Price Data Specification}\label{tbl-gold}\tabularnewline
+\toprule\noalign{}
+Parameter & Specification \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Parameter & Specification \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Source & Yahoo Finance (COMEX) \\
+Symbol & XAU/USD \\
+Period & January 1, 2000 to December 31, 2024 \\
+Frequency & Daily Close \\
+Observations & \textasciitilde6,300 trading days \\
+\end{longtable}
+
+\subsubsection{Planetary Ephemeris}\label{planetary-ephemeris}
+
+\begin{longtable}[]{@{}ll@{}}
+\caption{Ephemeris Specification}\label{tbl-ephemeris}\tabularnewline
+\toprule\noalign{}
+Parameter & Specification \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Parameter & Specification \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Source & Swiss Ephemeris (DE440) \\
+Planets & Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn \\
+Reference Frame & Geocentric, Sidereal (Lahiri) \\
+Precision & \textless{} 0.001 arcseconds \\
+\end{longtable}
+
+\subsection{Data Preprocessing}\label{data-preprocessing}
+
+\subsubsection{Log-Return
+Transformation}\label{log-return-transformation}
+
+Financial time series are non-stationary. Raw prices are transformed to
+log-returns:
+
+\[
+R_t = \ln(P_t) - \ln(P_{t-1})
+\]
+
+This approximates percentage returns and stabilizes variance.
+
+\subsubsection{Planetary Feature
+Engineering}\label{planetary-feature-engineering}
+
+Circular longitude values are encoded as orthogonal components:
+
+\[
+X_{planet} = [\sin(\lambda), \cos(\lambda)]
+\]
+
+This handles the circular nature of angular data (0° = 360°).
+
+\subsubsection{Calendar Alignment}\label{calendar-alignment}
+
+Planetary positions are sampled at 12:00 UTC on valid trading days only,
+excluding weekends and market holidays.
+
+\subsection{Statistical Framework}\label{statistical-framework}
+
+\subsubsection{Stationarity Testing}\label{stationarity-testing}
+
+\textbf{Augmented Dickey-Fuller (ADF) Test} for unit roots:
+
+\[
+H_0: \text{Series has unit root (non-stationary)}
+\]
+
+Rejection confirms suitability for regression analysis.
+
+\subsubsection{Spectral Analysis}\label{spectral-analysis}
+
+\textbf{Lomb-Scargle Periodogram} for unevenly sampled data:
+
+\[
+P(\omega) = \frac{1}{2}\left[\frac{(\sum_j X_j \cos\omega(t_j-\tau))^2}{\sum_j \cos^2\omega(t_j-\tau)} + \frac{(\sum_j X_j \sin\omega(t_j-\tau))^2}{\sum_j \sin^2\omega(t_j-\tau)}\right]
+\]
+
+We test for peaks at known synodic periods:
+
+\begin{itemize}
+\tightlist
+\item
+  Moon: \textasciitilde29.5 days
+\item
+  Mercury: \textasciitilde116 days
+\item
+  Venus: \textasciitilde584 days
+\item
+  Mars: \textasciitilde780 days
+\item
+  Jupiter: \textasciitilde399 days
+\end{itemize}
+
+\subsubsection{Granger Causality
+Testing}\label{granger-causality-testing}
+
+\textbf{Vector Autoregression (VAR)} framework with optimal lag
+selection:
+
+\[
+Y_t = c + \sum_{i=1}^{p} A_i Y_{t-i} + \sum_{j=1}^{p} B_j X_{t-j} + \epsilon_t
+\]
+
+Null hypothesis: \(B_1 = B_2 = ... = B_p = 0\) (no Granger causality)
+
+\subsubsection{Multiple Testing
+Correction}\label{multiple-testing-correction}
+
+\textbf{Bonferroni Correction} for 9 planetary tests:
+
+\[
+\alpha_{adjusted} = \frac{0.05}{9} = 0.0056
+\]
+
+\subsubsection{Monte Carlo Permutation
+Test}\label{monte-carlo-permutation-test}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Shuffle planetary time series (break temporal link)
+\item
+  Preserve Gold returns unchanged
+\item
+  Compute R² for shuffled data
+\item
+  Repeat 1,000 times
+\item
+  Build null distribution of ``random chance'' correlations
+\end{enumerate}
+
+\section{Results}\label{results}
+
+\subsection{Stationarity Validation}\label{stationarity-validation}
+
+All variables confirmed stationary after transformation:
+
+\begin{longtable}[]{@{}llll@{}}
+\caption{Stationarity Test
+Results}\label{tbl-stationarity}\tabularnewline
+\toprule\noalign{}
+Variable & ADF Statistic & p-value & Conclusion \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Variable & ADF Statistic & p-value & Conclusion \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Gold Log-Returns & -52.34 & \textless{} 0.001 & Stationary \\
+Sun Sin Component & -3.21 & 0.018 & Stationary \\
+Moon Sin Component & -4.89 & \textless{} 0.001 & Stationary \\
+Mars Longitude & -8.72 & \textless{} 0.001 & Stationary \\
+Saturn Speed & -15.43 & \textless{} 0.001 & Stationary \\
+\end{longtable}
+
+\subsection{Spectral Analysis}\label{spectral-analysis-1}
+
+\subsubsection{Periodogram Results}\label{periodogram-results}
+
+Lomb-Scargle analysis of Gold returns reveals:
+
+\begin{longtable}[]{@{}lll@{}}
+\caption{Spectral Analysis Summary}\label{tbl-spectral}\tabularnewline
+\toprule\noalign{}
+Frequency Domain & Expected Signal & Observed \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Frequency Domain & Expected Signal & Observed \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Monthly (\textasciitilde29 days) & Lunar cycle & No significant peak \\
+Quarterly (\textasciitilde116 days) & Mercury retrograde & No
+significant peak \\
+Annual (\textasciitilde365 days) & Seasonal & Weak peak (expected) \\
+\end{longtable}
+
+No spectral peaks at planetary synodic periods exceed the 1\% False
+Alarm Probability (FAP) threshold.
+
+\subsection{Granger Causality Results}\label{granger-causality-results}
+
+\subsubsection{Full Results Table}\label{full-results-table}
+
+\begin{longtable}[]{@{}lllll@{}}
+\caption{Granger Causality Test
+Results}\label{tbl-granger}\tabularnewline
+\toprule\noalign{}
+Planet & Best Lag (AIC) & F-Statistic & p-value & Significant? \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Planet & Best Lag (AIC) & F-Statistic & p-value & Significant? \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Sun & 3 & 1.24 & 0.312 & No \\
+Moon & 5 & 0.89 & 0.478 & No \\
+Mercury & 4 & 1.05 & 0.389 & No \\
+Venus & 7 & 0.72 & 0.641 & No \\
+Mars & 7 & 1.67 & 0.089 & No \\
+Jupiter & 12 & 0.54 & 0.721 & No \\
+Saturn & 14 & 1.12 & 0.334 & No \\
+Rahu & 8 & 0.93 & 0.445 & No \\
+Ketu & 8 & 0.91 & 0.458 & No \\
+\end{longtable}
+
+\subsubsection{Interpretation}\label{interpretation}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{No planet achieves significance} at \(\alpha = 0.05\)
+\item
+  \textbf{No planet achieves significance} at Bonferroni-adjusted
+  \(\alpha = 0.0056\)
+\item
+  \textbf{Mars} shows lowest p-value (0.089) but still not significant
+\item
+  \textbf{Jupiter} shows highest p-value (0.721)---no relationship
+\end{itemize}
+
+\subsection{Monte Carlo Validation}\label{monte-carlo-validation}
+
+\subsubsection{Permutation Test Results}\label{permutation-test-results}
+
+\begin{longtable}[]{@{}ll@{}}
+\caption{Monte Carlo Validation}\label{tbl-montecarlo}\tabularnewline
+\toprule\noalign{}
+Metric & Value \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Metric & Value \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Observed \(R^2\) & 0.0023 \\
+Mean Random \(R^2\) & 0.0019 \\
+95th Percentile & 0.0052 \\
+99th Percentile & 0.0078 \\
+Empirical p-value & 0.42 \\
+\end{longtable}
+
+The observed \(R^2\) (0.0023) falls \textbf{below} the 95th percentile
+of random correlations (0.0052), indicating the signal is
+indistinguishable from noise.
+
+\subsection{Molchan Diagram Analysis}\label{molchan-diagram-analysis}
+
+\subsubsection{Binary Classification
+Skill}\label{binary-classification-skill}
+
+Testing Mars speed variations as a predictor for extreme volatility
+events (top 5\% absolute returns):
+
+\begin{longtable}[]{@{}ll@{}}
+\caption{Binary Classification Results}\label{tbl-binary}\tabularnewline
+\toprule\noalign{}
+Metric & Value \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Metric & Value \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+True Positive Rate & 0.12 \\
+False Positive Rate & 0.11 \\
+AUC & 0.51 \\
+Skill Score & 0.01 \\
+\end{longtable}
+
+The ROC curve hugs the diagonal (random guessing line), with AUC = 0.51
+(perfect random = 0.50).
+
+\section{Discussion}\label{discussion}
+
+\subsection{Falsification of Financial
+Astrology}\label{falsification-of-financial-astrology}
+
+Multiple independent tests yield consistent null results:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Spectral Analysis}: No cyclic signals at planetary periods
+\item
+  \textbf{Granger Causality}: No predictive precedence from planets to
+  prices
+\item
+  \textbf{Monte Carlo}: Observed correlations within noise distribution
+\item
+  \textbf{Molchan Diagram}: Binary prediction no better than chance
+\end{enumerate}
+
+\subsection{Implications for the EMH}\label{implications-for-the-emh}
+
+Our findings support the Efficient Market Hypothesis:
+
+\begin{itemize}
+\tightlist
+\item
+  Planetary positions are \textbf{publicly available information}
+\item
+  Markets have already ``priced in'' any predictable astronomical cycles
+\item
+  No exploitable alpha exists from astrological strategies
+\end{itemize}
+
+\subsection{The Psychology of Perceived
+Patterns}\label{the-psychology-of-perceived-patterns}
+
+Why do practitioners believe in financial astrology despite null
+evidence?
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Confirmation Bias}: Remembering hits, forgetting misses
+\item
+  \textbf{Apophenia}: Perceiving patterns in random data
+\item
+  \textbf{Narrative Fallacy}: Post-hoc explanations feel compelling
+\item
+  \textbf{Survivorship Bias}: Failed astrologers leave no record
+\end{enumerate}
+
+\subsection{Methodological
+Contributions}\label{methodological-contributions}
+
+This study advances the literature through:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{High-Precision Calculations}: Swiss Ephemeris vs.~approximate
+  tables
+\item
+  \textbf{Sidereal Frame}: Testing Vedic (sidereal) vs.~Western
+  (tropical) zodiac
+\item
+  \textbf{Multiple Test Correction}: Bonferroni adjustment for fair
+  comparison
+\item
+  \textbf{Monte Carlo Validation}: Empirical null distribution
+\end{enumerate}
+
+\subsection{Limitations}\label{limitations}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Linear Methods Only}: Non-linear relationships unexplored
+\item
+  \textbf{Gold-Only}: Results may not generalize to other assets
+\item
+  \textbf{Daily Frequency}: Intraday patterns not tested
+\item
+  \textbf{Classical Techniques}: Modern astrological methods not
+  evaluated
+\end{enumerate}
+
+\section{Conclusions}\label{conclusions}
+
+This rigorous econometric investigation yields definitive results:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Null Granger Causality}: No planet shows significant
+  predictive power
+\item
+  \textbf{No Spectral Peaks}: Planetary synodic periods not detected in
+  returns
+\item
+  \textbf{Monte Carlo Confirmation}: Correlations indistinguishable from
+  noise
+\item
+  \textbf{EMH Supported}: Markets efficiently incorporate public
+  information
+\end{enumerate}
+
+\subsection{Final Assessment}\label{final-assessment}
+
+The hypothesis that planetary positions influence Gold prices is
+\textbf{falsified} at conventional significance levels. While the cosmos
+may be ordered, financial markets remain efficient enough to discount
+predictable orbital mechanics.
+
+\subsection{Recommendations}\label{recommendations}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{For Researchers}: Apply similar methodology to other asset
+  classes
+\item
+  \textbf{For Practitioners}: Abandon astrological trading strategies
+\item
+  \textbf{For Regulators}: Financial astrology lacks empirical
+  foundation
+\item
+  \textbf{For Educators}: Use this as case study in pseudoscience
+  demarcation
+\end{itemize}
+
+\section{References}\label{references}
+
+\phantomsection\label{refs}
+\begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-emh_fama}
+Fama, E. F. (1970). Efficient capital markets: A review of theory and
+empirical work. \emph{The Journal of Finance}, \emph{25}(2), 383--417.
+\url{https://doi.org/10.2307/2325486}
+
+\bibitem[\citeproctext]{ref-mayo_severe_testing}
+Mayo, D. G., \& Spanos, A. (2006). Severe testing as a basic concept in
+a neyman--pearson philosophy of induction. \emph{The British Journal for
+the Philosophy of Science}, \emph{57}(2), 323--357.
+\url{https://doi.org/10.1093/bjps/axl003}
+
+\end{CSLReferences}
+
+\section{Appendix A: VAR Model
+Specification}\label{appendix-a-var-model-specification}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ statsmodels.tsa.api }\ImportTok{import}\NormalTok{ VAR}
+
+\CommentTok{\# Prepare data}
+\NormalTok{data }\OperatorTok{=}\NormalTok{ pd.DataFrame(\{}
+    \StringTok{\textquotesingle{}returns\textquotesingle{}}\NormalTok{: gold\_returns,}
+    \StringTok{\textquotesingle{}sun\_sin\textquotesingle{}}\NormalTok{: np.sin(np.radians(sun\_longitude)),}
+    \StringTok{\textquotesingle{}sun\_cos\textquotesingle{}}\NormalTok{: np.cos(np.radians(sun\_longitude)),}
+    \StringTok{\textquotesingle{}moon\_sin\textquotesingle{}}\NormalTok{: np.sin(np.radians(moon\_longitude)),}
+    \CommentTok{\# ... additional planets}
+\NormalTok{\})}
+
+\CommentTok{\# Fit VAR model}
+\NormalTok{model }\OperatorTok{=}\NormalTok{ VAR(data)}
+\NormalTok{results }\OperatorTok{=}\NormalTok{ model.fit(maxlags}\OperatorTok{=}\DecValTok{15}\NormalTok{, ic}\OperatorTok{=}\StringTok{\textquotesingle{}aic\textquotesingle{}}\NormalTok{)}
+
+\CommentTok{\# Granger causality test}
+\NormalTok{granger\_results }\OperatorTok{=}\NormalTok{ results.test\_causality(}
+    \StringTok{\textquotesingle{}returns\textquotesingle{}}\NormalTok{, }
+\NormalTok{    [}\StringTok{\textquotesingle{}sun\_sin\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}sun\_cos\textquotesingle{}}\NormalTok{],}
+\NormalTok{    kind}\OperatorTok{=}\StringTok{\textquotesingle{}f\textquotesingle{}}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Appendix B: Lomb-Scargle
+Implementation}\label{appendix-b-lomb-scargle-implementation}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ scipy.signal }\ImportTok{import}\NormalTok{ lombscargle}
+
+\CommentTok{\# Define frequencies to test (cycles per day)}
+\NormalTok{frequencies }\OperatorTok{=}\NormalTok{ np.linspace(}\DecValTok{1}\OperatorTok{/}\DecValTok{780}\NormalTok{, }\DecValTok{1}\OperatorTok{/}\DecValTok{7}\NormalTok{, }\DecValTok{1000}\NormalTok{)  }\CommentTok{\# Mars period to weekly}
+
+\CommentTok{\# Compute periodogram}
+\NormalTok{pgram }\OperatorTok{=}\NormalTok{ lombscargle(}
+\NormalTok{    trading\_days,}
+\NormalTok{    returns,}
+\NormalTok{    frequencies,}
+\NormalTok{    normalize}\OperatorTok{=}\VariableTok{True}
+\NormalTok{)}
+
+\CommentTok{\# Calculate False Alarm Probability}
+\NormalTok{fap\_threshold }\OperatorTok{=} \OperatorTok{{-}}\NormalTok{np.log(}\FloatTok{0.01}\NormalTok{)  }\CommentTok{\# 1\% FAP}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Appendix C: Reproducibility}\label{appendix-c-reproducibility}
+
+All code and data available at:
+https://github.com/astro-fusion/astro\_research-white-paper/tree/main/docs/research/track\_3\_gold\_market
+
+To reproduce:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\BuiltInTok{cd}\NormalTok{ astro\_research{-}white{-}paper}
+\ExtensionTok{python}\NormalTok{ src/generate\_artifacts.py}
+\ExtensionTok{quarto}\NormalTok{ render docs/research/track\_3\_gold\_market/GOLD\_MARKET\_PLANETARY\_CORRELATION\_ANALYSIS.qmd}
+\end{Highlighting}
+\end{Shaded}
+
+
+
+
+
+\end{document}

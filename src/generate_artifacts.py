@@ -180,6 +180,52 @@ def generate_molchan_plot(df: pd.DataFrame):
     logger.info(f"Saved {output_path}")
 
 
+def generate_planetary_variation_plots(df: pd.DataFrame):
+    """Generates Planetary Variation Plots (Speed, Motion)."""
+    logger.info("Generating Planetary Variation Plots...")
+
+    # 1. Mars Speed / Retrograde
+    plt.figure(figsize=(12, 5))
+    plt.plot(df["Date"], df["Mars_Speed"], color="#d62728", label="Mars Speed", linewidth=1)
+    plt.axhline(0, color="black", linestyle="--", linewidth=0.8)
+    # Highlight Retrograde (Speed < 0)
+    plt.fill_between(
+        df["Date"],
+        df["Mars_Speed"],
+        0,
+        where=(df["Mars_Speed"] < 0),
+        color="red",
+        alpha=0.1,
+        label="Retrograde",
+    )
+    plt.ylabel("Daily Motion (deg)")
+    plt.title("Mars Planetary Motion & Retrograde Cycles (2020-2023)")
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    
+    output_path = os.path.join(ARTIFACTS_DIR, "fig_mars_variation.pdf")
+    plt.savefig(output_path, bbox_inches="tight")
+    plt.close()
+    logger.info(f"Saved {output_path}")
+
+    # 2. Multi-Planet Cycles (first 2 years to avoid clutter)
+    subset = df[df["Date"] < df["Date"].min() + pd.Timedelta(days=730)]
+    plt.figure(figsize=(12, 5))
+    plt.plot(subset["Date"], subset["Jupiter_Sin"], label="Jupiter Cycle", alpha=0.8)
+    plt.plot(subset["Date"], subset["Saturn_Sin"], label="Saturn Cycle", alpha=0.8)
+    plt.plot(subset["Date"], subset["Mars_Sin"], label="Mars Cycle", alpha=0.6, linestyle="--")
+    
+    plt.title("Comparative Planetary Cycles (Normalized Sine Components)")
+    plt.ylabel("Cyclic Phase")
+    plt.legend(loc="upper right")
+    plt.grid(True, alpha=0.3)
+
+    output_path = os.path.join(ARTIFACTS_DIR, "fig_multi_planet_cycles.pdf")
+    plt.savefig(output_path, bbox_inches="tight")
+    plt.close()
+    logger.info(f"Saved {output_path}")
+
+
 def main():
     """Main execution flow."""
     logger.info("Loading processed data...")
@@ -222,7 +268,11 @@ def main():
     generate_periodogram_plot(df)
     generate_granger_stats(df)
     generate_molchan_plot(df)
+    generate_periodogram_plot(df)
+    generate_granger_stats(df)
+    generate_molchan_plot(df)
     generate_monte_carlo_plot(df)
+    generate_planetary_variation_plots(df)
 
     logger.info("Artifact generation complete.")
 

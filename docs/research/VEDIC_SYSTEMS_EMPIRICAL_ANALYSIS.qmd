@@ -221,6 +221,12 @@ To establish empirical null distributions, we perform 1,000 Monte Carlo shuffles
 - **Numerological Resolution**: Daily values (365 data points)
 - **Location**: New Delhi, India (28.6°N, 77.1°E)
 
+### Visualizing Planetary Cycles
+
+The following figure illustrates the normalized cyclic variations of key planets over the study period. Note the distinct frequencies of Mars vs. Saturn, highlighting the temporal complexity.
+
+![Planetary Cycles](../../reports/artifacts/fig_multi_planet_cycles.pdf){#fig-cycles width=100%}
+
 ## Analysis: Temporal Mechanics Comparison
 
 ### Frequency Mismatch
@@ -287,6 +293,8 @@ We defined an "Astro-Fusion Stress Index" based on:
 2. **Graha Yuddha**: Planetary wars (conjunctions within 1°)
 3. **Malefic Aspects**: Saturn-Mars squares and oppositions
 
+![Mars Retrograde Cycles and Daily Motion](../../reports/artifacts/fig_mars_variation.pdf){#fig-mars width=100%}
+
 ### Statistical Framework
 
 Using Negative Binomial regression [@molchan_diagram] to account for overdispersion:
@@ -322,6 +330,8 @@ The Monte Carlo "Look-Elsewhere" analysis (N=1,000) revealed:
 1. **No Significant Predictors**: All planetary variables fail significance threshold
 2. **Mars Near-Threshold**: $p = 0.10$ suggests weak but inconclusive signal
 3. **Monte Carlo Confirmation**: Results indistinguishable from chance
+
+![Monte Carlo Permutation Distribution](../../reports/artifacts/fig_permutation_dist.pdf){#fig-monte-carlo width=80%}
 
 # Track 3: Gold Market Correlation
 
@@ -362,6 +372,8 @@ Lomb-Scargle periodograms [@lomb_scargle] were computed to detect cyclic signals
 - Venus: ~584 days
 - Mars: ~780 days
 
+![Lomb-Scargle Periodogram of Gold log-returns. No significant peaks observed at planetary frequencies.](../../reports/artifacts/fig_periodogram.pdf){#fig-periodogram width=100%}
+
 ## Results
 
 ### Stationarity Tests
@@ -395,6 +407,8 @@ Testing Mars speed variations as a binary predictor for extreme volatility event
 
 - **Result**: Trajectory hugs the diagonal (random guessing line)
 - **Conclusion**: No information gain over chance
+
+![Molchan Diagram for Mars Speed vs Extreme Volatility](../../reports/artifacts/fig_molchan.pdf){#fig-molchan width=80%}
 
 ## Track 3 Findings
 
