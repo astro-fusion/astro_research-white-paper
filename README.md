@@ -22,15 +22,15 @@ Access our comprehensively referenced, peer-ready research manuscripts:
 
 | Research Paper | Format | Description |
 |----------------|--------|-------------|
-| **[Master Research Report](https://astro-fusion.github.io/astro_research-white-paper/VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.pdf)** | PDF | Consolidated 30+ page paper covering all research tracks |
-| **[Numerology-Astrology Correlation](https://astro-fusion.github.io/astro_research-white-paper/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.pdf)** | PDF | Temporal discontinuity analysis between discrete and continuous systems |
-| **[Earthquake Prediction Analysis](https://astro-fusion.github.io/astro_research-white-paper/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf)** | PDF | India-Nepal seismic pattern investigation |
-| **[Gold Market Correlation](https://astro-fusion.github.io/astro_research-white-paper/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.pdf)** | PDF | XAU/USD price prediction analysis |
+| **[Master Research Report](pdfs/VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.pdf)** | PDF | Consolidated 30+ page paper covering all research tracks |
+| **[Numerology-Astrology Correlation](pdfs/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.pdf)** | PDF | Temporal discontinuity analysis between discrete and continuous systems |
+| **[Earthquake Prediction Analysis](pdfs/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf)** | PDF | India-Nepal seismic pattern investigation |
+| **[Gold Market Correlation](pdfs/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.pdf)** | PDF | XAU/USD price prediction analysis |
 
 #### 📄 Journal Styles (Generated via CI/CD)
 
-- **[Nature-Style Manuscript](https://astro-fusion.github.io/astro_research-white-paper/manuscript_nature.pdf)**: Rigorous falsification of planetary predictors
-- **[IEEE-Style Manuscript](https://astro-fusion.github.io/astro_research-white-paper/manuscript_ieee.pdf)**: Technical evaluation in IEEE format
+- **[Nature-Style Manuscript](pdfs/manuscript_nature.pdf)**: Rigorous falsification of planetary predictors
+- **IEEE-Style Manuscript** (Coming Soon): Technical evaluation in IEEE format
 
 > **Note**: This repository contains multiple research use cases. Visit the [Reports Section](assets/reports/) for generated PDF reports or browse the [Source Code](src/) for implementation details.
 
@@ -129,7 +129,7 @@ astro-research/
 └── 🔬 use_cases/               # Legacy & sandbox research modules
 ```
 
-**For a detailed guide on the project structure, see:** [ARCHITECTURE.md](docs/project_tracking/ARCHITECTURE.md) or [REORGANIZATION_VISUAL_GUIDE.md](docs/project_tracking/REORGANIZATION_VISUAL_GUIDE.md)
+**For a detailed guide on the project structure, see:** [ARCHITECTURE.md](docs/project_tracking/ARCHITECTURE.md) or [REORGANIZATION_VISUAL_GUIDE.md](docs/guides/REORGANIZATION_VISUAL_GUIDE.md)
 
 ---
 
@@ -172,7 +172,7 @@ astro-research/
 
 ### 🚀 **Deployment & CI/CD**
 
-- [GITHUB_PAGES_DEPLOYMENT.md](GITHUB_PAGES_DEPLOYMENT.md) - GitHub Pages setup and workflow
+- [GITHUB_PAGES_DEPLOYMENT.md](docs/project_management/GITHUB_PAGES_DEPLOYMENT.md) - GitHub Pages setup and workflow
 - [USGS_EARTHQUAKE_DATA_GUIDE.md](docs/guides/USGS_EARTHQUAKE_DATA_GUIDE.md) - Getting real earthquake data
 - [.github/workflows/build-deploy.yml](.github/workflows/build-deploy.yml) - GitHub Actions workflow
 
@@ -180,7 +180,7 @@ astro-research/
 
 - [tests/TESTING_GUIDE.md](tests/TESTING_GUIDE.md) - Complete testing manual (46+ tests, 86% coverage)
 - [COMPREHENSIVE_TEST_REPORT.md](docs/reports/COMPREHENSIVE_TEST_REPORT.md) - Detailed test results and analysis
-- [FINAL_DELIVERY.md](FINAL_DELIVERY.md) - Production readiness summary
+- [FINAL_DELIVERY.md](docs/project_management/FINAL_DELIVERY.md) - Production readiness summary
 - Run tests: `python3 tests/run_all_tests.py`
 - Features: Unit tests (16), Multi-platform (20), E2E (10), 100% pass rate ✅
 
