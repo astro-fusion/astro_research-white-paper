@@ -32,7 +32,13 @@ format:
     toc: true
     lof: true
     lot: true
+    fig-pos: 'H'
     keep-tex: true
+    include-in-header:
+      text: |
+        \usepackage{float}
+        \usepackage{placeins}
+jupyter: astro-research-venv
 ---
 
 # Introduction
@@ -53,13 +59,43 @@ To understand why these systems are often conflated, one must examine their shar
 *   **8 - Saturn (Shani)**: The judge ($Karmakaraka$), representing discipline, delay, and truth ($Satya$).
 *   **9 - Mars (Mangal)**: The commander, representing energy ($Shakti$), logic, and aggression.
 
+## Literature Review
+
+Historical and cultural discussions of numerology emphasize symbolic meaning and cross-cultural number mysticism, framing numbers as archetypal carriers of meaning rather than empirically testable signals [@schimmel1975]. Sociological work has examined numerological associations in everyday life and how people integrate numeric symbolism into personal decision-making [@benigeri1992]. Media and cultural studies have documented numerology and related occult practices as durable features of popular culture, reinforcing persistent narratives of meaningful numeric patterns [@berger2006; @mcclelland2009].
+
+From a psychological perspective, superstition and belief can measurably influence behavior and performance, suggesting that numeric belief systems can create real-world behavioral effects even when causal mechanisms are symbolic [@damisch2010]. Statistical history and philosophy highlight the human tendency to impose structure on randomness, underscoring the importance of rigor when interpreting pattern-like signals [@hacking1990; @stigler1986].
+
+Methodologically, computational pattern analysis and signal comparison draw on modern statistical learning and data science foundations [@bishop2006]. The analysis pipeline in this study leverages standard scientific computing tools for reproducibility and visualization [@mckinney2010; @hunter2007; @pedregosa2011], and follows a literate, transparent reporting approach for replicable research workflows [@knuth84].
+
+This paper extends prior interpretive narratives by framing numerology and astrology as **distinct time-domain signals**, subject to the same alignment and frequency tests used in empirical time-series analysis.
+
 ## The Research Problem
 
 Practitioners often assume that if a person is in a "Sun period" in numerology (e.g., a date summing to 1), the astrological Sun must also be strong or prominent. **This study challenges that assumption.** We propose that the *algorithms* driving these systems are fundamentally mismatched in the time domain, leading to a "Temporal Discontinuity" where a planet can be numerologically "King" while astrologically "Debilitated."
 
+## Research Questions & Hypotheses
+
+We formalize the investigation into testable hypotheses:
+
+*   **RQ1**: How often does the numerological ruling planet match the Moon's Nakshatra lord on the same day?
+*   **RQ2**: Are any months or seasons more aligned than others?
+*   **RQ3**: Do numerology and astrology exhibit similar frequency signatures in the time domain?
+
+**H1 (Null)**: Numerology-astrology alignment occurs at random chance (~11.1%).
+**H2 (Alternative)**: Alignment is significantly higher than chance, indicating synchronous operation.
+
 # Mathematical & Computational Methodology
 
 Our research employs a rigorous computational pipeline to model both systems simultaneously.
+
+## Data Sources & Experimental Design
+
+*   **Timeframe**: January 1, 2024 to December 31, 2024 (365 days).
+*   **Location**: New Delhi, India (28.6°N, 77.1°E).
+*   **Astrology Engine**: Swiss Ephemeris (DE431) with Lahiri Ayanamsa.
+*   **Sampling Resolution**: Daily (numerology) and noon-time lunar position (astrology).
+
+We intentionally use **daily sampling** to respect numerology's discrete granularity and compare it directly to the Moon's ruling Nakshatra lord.
 
 ## Numerology Algorithm: Modulo-9 Arithmetic
 
@@ -99,6 +135,41 @@ $$
 
 Each Nakshatra is ruled by a planet (Lord) in a specific sequence (Ketu $\to$ Venus $\to$ Sun...). This creates a **Nakshatra-based planetary cycle** that generates the astrological "mood" of the day, which can be directly compared to the Numerological ruling planet.
 
+## Derived Variables
+
+The computational pipeline produces the following core variables per day:
+
+| Variable | Definition | Type |
+| --- | --- | --- |
+| `mulanka` | Digital root of day (1-9) | Discrete |
+| `numerology_lord` | Planet mapped from `mulanka` | Categorical |
+| `nakshatra_lord` | Planet ruling the Moon's Nakshatra | Categorical |
+| `match` | 1 if lords align, else 0 | Binary |
+
+## Methodology Pipeline & Algorithm
+
+The full pipeline is designed to be deterministic and reproducible from raw dates and location.
+
+```{mermaid}
+flowchart TD
+  A["Date (YYYY-MM-DD)"] --> B["Mulanka via digital root"]
+  A --> C["Moon longitude (Swiss Ephemeris)"]
+  C --> D["Nakshatra index"]
+  D --> E["Nakshatra lord"]
+  B --> F["Numerology lord"]
+  F --> G["Match?"]
+  E --> G
+  G --> H["Metrics + Figures"]
+```
+
+**Algorithm 1: Daily Alignment Pipeline**
+
+1. **Input**: Date range, latitude, longitude, and ayanamsa system.
+2. **Compute Numerology**: For each date, compute Mulanka $V = (D-1) \bmod 9 + 1$ and map to a numerology lord.
+3. **Compute Astrology**: For each date, compute Moon longitude at local noon and map to Nakshatra lord.
+4. **Align**: Record whether numerology lord equals Nakshatra lord.
+5. **Analyze**: Compute alignment rate, confusion matrix, monthly trends, and spectral signatures.
+
 # Data Analysis & Results
 
 We analyzed the daily planetary status for the full year of 2024.
@@ -106,7 +177,18 @@ We analyzed the daily planetary status for the full year of 2024.
 ```{python}
 #| label: setup
 #| echo: false
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
+from pathlib import Path
+import sys
+
+cwd = Path.cwd().resolve()
+repo_root = None
+for parent in [cwd] + list(cwd.parents):
+    if (parent / "pyproject.toml").exists():
+        repo_root = parent
+        break
+if repo_root:
+    sys.path.insert(0, str(repo_root / "src"))
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -121,12 +203,13 @@ days = (end_date - start_date).days + 1
 data = []
 for i in range(days):
     curr_date = start_date + timedelta(days=i)
+    curr_dt = datetime(curr_date.year, curr_date.month, curr_date.day, 12, 0, 0)
     # Numerology
     day_num = curr_date.day
     mulanka = (day_num - 1) % 9 + 1
     
     # Astrology (Moon at Noon)
-    chart = calculate_chart(curr_date, 28.6, 77.1) # New Delhi
+    chart = calculate_chart(curr_dt, 28.6, 77.1) # New Delhi
     moon_long = chart.planets["Moon"]["longitude"]
     nakshatra = get_nakshatra(moon_long)
     
@@ -163,6 +246,7 @@ Note the **irregularity** of the Red Dots compared to the **step-wise** Blue Lin
 #| fig-cap: "Temporal Discontinuity: Numerology (Blue) vs Astrology (Red) over 2 months"
 #| fig-width: 10
 #| fig-height: 5
+#| fig-pos: 'H'
 
 subset = df.head(60).copy()
 lord_to_num = {"Sun": 1, "Moon": 2, "Jupiter": 3, "Rahu": 4, "Mercury": 5, 
@@ -179,7 +263,33 @@ plt.legend()
 plt.show()
 ```
 
-## 2. Statistical Probability of Alignment
+## 2. Distribution of Numerological vs Astrological Lords
+
+To understand baseline behavior, we visualize how often each planet appears in both systems across the year.
+
+```{python}
+#| label: fig-distributions
+#| fig-cap: "Distribution of Numerology Lords vs Nakshatra Lords (2024)"
+#| fig-width: 10
+#| fig-height: 5
+#| fig-pos: 'H'
+
+df_counts = pd.DataFrame({
+    "Numerology": df["numerology_lord"].value_counts(),
+    "Nakshatra": df["nakshatra_lord"].value_counts()
+}).fillna(0)
+
+df_counts = df_counts.loc[["Sun","Moon","Mars","Mercury","Jupiter","Venus","Saturn","Rahu","Ketu"]]
+
+df_counts.plot(kind="bar", figsize=(12,5))
+plt.title("Planetary Frequency Comparison")
+plt.ylabel("Days in 2024")
+plt.grid(axis="y", alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+## 3. Statistical Probability of Alignment
 
 If these systems were synchronized, we would expect a high degree of matching. However, our analysis shows:
 
@@ -194,7 +304,84 @@ print(f"Synchronization Rate: {pct:.2f}%")
 
 The synchronization rate is approximately **${python} f"{pct:.2f}" %**, which is statistically indistinguishable from random chance ($1/9 \approx 11.1\%$). This confirms that **there is no inherent causal link** between the Gregorian date number and the actual lunar position.
 
-## 3. Detailed Moon Phase Variation
+## 4. Confusion Matrix: Numerology vs Nakshatra Lord
+
+The following heatmap shows how often each numerology lord coincides with each Nakshatra lord.
+
+```{python}
+#| label: fig-confusion
+#| fig-cap: "Confusion Matrix of Numerology vs Nakshatra Lords"
+#| fig-width: 7
+#| fig-height: 6
+#| fig-pos: 'H'
+
+matrix = pd.crosstab(df["numerology_lord"], df["nakshatra_lord"])
+
+plt.figure(figsize=(8,6))
+sns.heatmap(matrix, annot=True, fmt="d", cmap="Blues")
+plt.title("Numerology vs Nakshatra Lord Alignment")
+plt.xlabel("Nakshatra Lord")
+plt.ylabel("Numerology Lord")
+plt.tight_layout()
+plt.show()
+```
+
+## 5. Statistical Association Metrics
+
+We quantify association strength using chi-square statistics, Cramer's V, and mutual information.
+
+```{python}
+#| label: stats-metrics
+
+import numpy as np
+
+obs = matrix.values
+total = obs.sum()
+row_sums = obs.sum(axis=1, keepdims=True)
+col_sums = obs.sum(axis=0, keepdims=True)
+exp = row_sums @ col_sums / total
+
+chi2 = ((obs - exp) ** 2 / exp).sum()
+df_chi = (obs.shape[0] - 1) * (obs.shape[1] - 1)
+
+cramers_v = np.sqrt(chi2 / (total * (min(obs.shape) - 1)))
+
+p = obs / total
+pi = p.sum(axis=1, keepdims=True)
+pj = p.sum(axis=0, keepdims=True)
+mi = np.nansum(p * np.log((p + 1e-12) / (pi @ pj)))
+
+print(f"Chi-square: {chi2:.2f} (df={df_chi})")
+print(f"Cramer's V: {cramers_v:.4f}")
+print(f"Mutual Information: {mi:.4f}")
+```
+
+## 6. Alignment Over Time (Monthly)
+
+We compute monthly alignment rates to check for seasonal or calendar patterns.
+
+```{python}
+#| label: fig-monthly
+#| fig-cap: "Monthly Alignment Rate (2024)"
+#| fig-width: 9
+#| fig-height: 4
+#| fig-pos: 'H'
+
+df_time = df.copy()
+df_time["date"] = pd.to_datetime(df_time["date"])
+df_time["month"] = df_time["date"].dt.to_period("M")
+monthly = df_time.groupby("month")["match"].mean() * 100
+
+plt.figure(figsize=(10,4))
+monthly.plot(marker="o", color="teal")
+plt.title("Monthly Alignment Rate (%)")
+plt.ylabel("Match %")
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+## 7. Detailed Moon Phase Variation
 
 Beyond just the Nakshatra, the Moon's "mood" is heavily influenced by its phase (Paksha). Numerology treats every "2" (Moon number) day as identical. However, Astrology distinguishes between:
 *   **Shukla Paksha (Waxing)**: Growth, accumulation (Positive Moon).
@@ -207,10 +394,13 @@ The following chart tracks the Moon's longitude over the year, showing the rapid
 #| fig-cap: "The Continuous Wave: Moon's Journey through the Zodiac"
 #| fig-width: 10
 #| fig-height: 4
+#| fig-pos: 'H'
 
 chart_data = []
 for i in range(days):
-    chart = calculate_chart(start_date + timedelta(days=i), 28.6, 77.1)
+    curr_date = start_date + timedelta(days=i)
+    curr_dt = datetime(curr_date.year, curr_date.month, curr_date.day, 12, 0, 0)
+    chart = calculate_chart(curr_dt, 28.6, 77.1)
     chart_data.append(chart.planets["Moon"]["longitude"])
 
 plt.figure(figsize=(12, 4))
@@ -221,6 +411,41 @@ plt.xlabel("Date")
 plt.grid(True, alpha=0.2)
 plt.show()
 ```
+
+## 8. Frequency-Domain Signature (Spectral Analysis)
+
+We compare the frequency spectrum of numerology (discrete step function) vs. astrology (nakshatra lord changes).
+
+```{python}
+#| label: fig-spectral
+#| fig-cap: "Frequency Domain: Numerology vs Nakshatra Lords"
+#| fig-width: 9
+#| fig-height: 4
+#| fig-pos: 'H'
+
+import numpy as np
+
+num_series = df["numerology_val"].values.astype(float)
+nak_series = df["nakshatra_lord"].map(lord_to_num).values.astype(float)
+
+num_fft = np.abs(np.fft.rfft(num_series - num_series.mean()))
+nak_fft = np.abs(np.fft.rfft(nak_series - nak_series.mean()))
+
+freq = np.fft.rfftfreq(len(num_series), d=1)  # daily sampling
+
+plt.figure(figsize=(10,4))
+plt.plot(freq[1:], num_fft[1:], label="Numerology", color="orange")
+plt.plot(freq[1:], nak_fft[1:], label="Nakshatra", color="blue")
+plt.title("Power Spectrum (Daily Sampling)")
+plt.xlabel("Frequency (cycles/day)")
+plt.ylabel("Amplitude")
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+\FloatBarrier
 
 # The Illusion of Strength: Pattern Repetition vs. Celestial Reality
 
@@ -255,12 +480,13 @@ planet_map = {
 # Run loop 
 for i in range(days):
     curr_date = start_date + timedelta(days=i)
+    curr_dt = datetime(curr_date.year, curr_date.month, curr_date.day, 12, 0, 0)
     date_str = curr_date.strftime("%Y-%m-%d")
     
     # Count digits
     counts = {d: date_str.count(str(d)) for d in range(1, 10)}
     
-    chart = calculate_chart(curr_date, 28.6, 77.1)
+    chart = calculate_chart(curr_dt, 28.6, 77.1)
     
     for digit, count in counts.items():
         if count >= 3: # High Repetition
@@ -325,6 +551,64 @@ If the date `2022-02-22` (or similar) occurred while the Moon was in Scorpio (it
 *   **Astrology says**: "Protect your energy, avoid paranoia."
 
 This **negative correlation** is dangerous. Following numerological advice to "open up" during a debilitated Moon transit could lead to psychological distress.
+
+# Robustness Checks
+
+We test sensitivity to time-of-day and location. If numerology were genuinely synchronized with astrology, match rates should remain stable across observation conditions.
+
+```{python}
+#| label: robustness
+#| tbl-cap: "Robustness Checks: Match Rates Across Locations & Times"
+
+test_points = [
+    ("New Delhi", 28.6, 77.1),
+    ("Kathmandu", 27.7, 85.3),
+    ("New York", 40.7, -74.0),
+]
+
+def daily_match_rate(lat, lon, hour=12):
+    matches = 0
+    for i in range(days):
+        curr_date = start_date + timedelta(days=i)
+        curr_dt = datetime(curr_date.year, curr_date.month, curr_date.day, hour, 0, 0)
+        chart = calculate_chart(curr_dt, lat, lon)
+        moon_long = chart.planets["Moon"]["longitude"]
+        nakshatra = get_nakshatra(moon_long)
+        nak_lord = seq[nakshatra["index"] % 9]
+        mulanka = (curr_date.day - 1) % 9 + 1
+        if num_lords[mulanka] == nak_lord:
+            matches += 1
+    return (matches / days) * 100
+
+rows = []
+for label, lat, lon in test_points:
+    rows.append({
+        "Location": label,
+        "Noon Match %": round(daily_match_rate(lat, lon, hour=12), 2),
+        "Midnight Match %": round(daily_match_rate(lat, lon, hour=0), 2),
+    })
+
+pd.DataFrame(rows)
+```
+
+# Ethical & Practical Considerations
+
+This study evaluates symbolic systems using quantitative methods. Results should not be used to override medical, legal, or safety-critical decision-making. The objective is **methodological clarity**, not prescriptive or determinist prediction.
+
+# Limitations
+
+*   **Sampling Resolution**: Astrology varies hourly; our daily sampling compresses this variability.
+*   **Single-Year Data**: 2024 provides a clean baseline but does not cover multi-year cycles.
+*   **Simplified Dignity Checks**: Debilitation logic uses sign-based conditions only; full shadbala would refine this.
+*   **Cultural Variants**: Numerology traditions differ (Vedic vs. Pythagorean), which may affect mapping.
+
+# Reproducibility & Availability
+
+*   **Codebase**: All algorithms used in this paper are implemented in the repository under `src/`.
+*   **Data Generation**: Daily series are generated programmatically from Swiss Ephemeris.
+*   **Reproducibility Target**: Exact replication of 2024 results should be deterministic given identical settings.
+
+\FloatBarrier
 
 # Conclusion
 
