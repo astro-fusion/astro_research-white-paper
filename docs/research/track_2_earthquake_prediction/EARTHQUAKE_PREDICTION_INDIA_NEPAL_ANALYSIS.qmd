@@ -33,350 +33,77 @@ format:
     lof: true
     lot: true
     colorlinks: true
+    fig-pos: 'H'
+    include-in-header:
+      text: |
+        \usepackage{float}
+        \usepackage{placeins}
   html:
     toc: true
     number-sections: true
 execute:
   echo: false
   warning: false
+jupyter: astro-research-venv
 ---
 
-# Introduction
 
-## The Earthquake Prediction Challenge
+# Master Structure
 
-The prediction of earthquakes remains one of the most persistent challenges in geophysical science. Despite decades of research, no reliable deterministic earthquake prediction method exists. The "Prediction Gap"—the inability to forecast the time, location, and magnitude of rupture—stems from the non-linear, chaotic nature of crustal stress accumulation.
-
-## Astrological Claims
-
-Traditional astrology, particularly the school of **Mundane Astrology** described in Varahamihira's Brihat Samhita [@varahamihira_brihat_samhita], has long claimed the ability to predict natural disasters including earthquakes through planetary configurations. Specific claims include:
-
-- **Mars-Saturn Conjunctions**: Trigger catastrophic events
-- **Eclipses in Cardinal Signs**: Activate seismic stress
-- **Malefic Transits through 4th House**: Destabilize foundations
-
-This study tests these claims using modern statistical methods on a well-defined geographic region.
-
-## Research Objectives
-
-1. Define a quantitative "Planetary Stress Index" from Vedic principles
-2. Collect and process USGS earthquake data for India-Nepal region
-3. Apply regression analysis to test predictive relationships
-4. Validate findings using Monte Carlo "Look-Elsewhere" analysis
-
-# Background: The India-Nepal Tectonic Zone
-
-## Geological Context
-
-The India-Nepal border sits atop one of Earth's most dramatic tectonic features—the collision zone between the Indian Plate and the Eurasian Plate. This ongoing collision, which began ~50 million years ago, creates the Himalayan mountain range and generates significant seismic hazard.
-
-### Key Geological Features
-
-| Feature | Description |
-|---------|-------------|
-| Plate Boundary | Indian Plate subducting beneath Eurasian Plate |
-| Collision Rate | ~45-50 mm/year |
-| Major Fault | Main Himalayan Thrust (MHT) |
-| Seismic Gap | Central Nepal (locked since 1505 CE) |
-
-: India-Nepal Tectonic Features {#tbl-geology}
-
-## Historical Seismicity
-
-The region has experienced devastating earthquakes:
-
-- **1934 Bihar-Nepal Earthquake**: M8.0, ~10,700 deaths
-- **2015 Gorkha Earthquake**: M7.8, ~9,000 deaths
-- **2023 West Nepal Earthquake**: M5.6, 150+ deaths
-
-The persistence of seismic hazard makes this an important test case for any prediction system.
-
-# Data and Methodology
-
-## Phase 1: Earthquake Data Collection
-
-### Data Source
-
-We utilized the **USGS Earthquake Hazards Program** Comprehensive Earthquake Catalog (ComCat), accessed via the official API.
-
-### Filter Criteria
-
-| Parameter | Value |
-|-----------|-------|
-| **Latitude Range** | 20°N to 35°N |
-| **Longitude Range** | 75°E to 90°E |
-| **Time Period** | January 1, 2015 to January 1, 2024 |
-| **Magnitude Threshold** | M ≥ 4.5 |
-| **Catalog** | USGS/NEIC |
-
-: Data Collection Parameters {#tbl-params}
-
-### Dataset Summary
-
-After filtering and quality control:
-
-| Statistic | Value |
-|-----------|-------|
-| Total Events | 370 |
-| Magnitude Range | 4.5 to 7.8 |
-| Depth Range | 5 km to 100 km |
-| Peak Year | 2015 (Nepal earthquake sequence) |
-
-: Dataset Summary {#tbl-dataset}
-
-## Phase 2: Astrological Feature Engineering
-
-### The Planetary Stress Index
-
-We developed a quantitative "Astro-Fusion Stress Index" based on three classical Vedic principles:
-
-#### 1. Aggregate Shadbala (Planetary Weakness)
-
-Low combined Shadbala scores indicate planetary "instability":
-
-$$
-Stress_{Shadbala} = 100 - \frac{1}{n}\sum_{p}^{planets} \sigma_p
-$$
-
-#### 2. Graha Yuddha (Planetary Wars)
-
-Conjunctions within 1° longitude create tension:
-
-$$
-Stress_{Yuddha} = \sum_{i,j} \mathbb{1}[|\lambda_i - \lambda_j| < 1°]
-$$
-
-#### 3. Malefic Aspects
-
-Saturn-Mars squares (90°) and oppositions (180°):
-
-$$
-Stress_{Aspect} = \mathbb{1}[|(\lambda_{Saturn} - \lambda_{Mars})| \in \{90° \pm 5°, 180° \pm 5°\}]
-$$
-
-### Combined Index
-
-$$
-Stress_{Total} = w_1 \cdot Stress_{Shadbala} + w_2 \cdot Stress_{Yuddha} + w_3 \cdot Stress_{Aspect}
-$$
-
-## Phase 3: Statistical Framework
-
-### Negative Binomial Regression
-
-Earthquake counts exhibit **overdispersion** ($Variance > Mean$) due to clustering. Standard Poisson regression is inappropriate. We employ a Negative Binomial Generalized Linear Model (GLM):
-
-$$
-\ln(\mu_t) = \beta_0 + \beta_{trend}t + \beta_{season}\sin(\frac{2\pi t}{365}) + \beta_{astro}X_{astro}
-$$
-
-### The Null Hypothesis
-
-$$
-H_0: \text{Planetary variables provide no information gain over baseline model}
-$$
-
-The baseline model includes only:
-- Long-term catalog improvement trend
-- Annual seasonal cycle (tidal effects)
-- Random Poisson noise
-
-### Monte Carlo "Look-Elsewhere" Analysis
-
-To guard against false discoveries from testing multiple variables:
-
-1. Destroy temporal alignment (shuffle planetary data)
-2. Preserve internal autocorrelation structure
-3. Compute Delta-AIC for 1,000 permutations
-4. Build empirical null distribution
-5. Calculate p-value as fraction exceeding observed value
-
-# Results
-
-## Seismic Activity Timeline
-
-The dataset reveals distinct patterns:
-
-- **2015**: Massive clustering due to Gorkha earthquake sequence
-- **2016-2022**: Sporadic moderate activity
-- **2023**: Renewed activity in western Nepal
-
-The non-uniform distribution confirms the need for overdispersion-corrected models.
-
-## Regression Analysis Results
-
-### Model Coefficients
-
-| Variable | Coefficient | Std. Error | p-value | Significant? |
-|----------|-------------|------------|---------|--------------|
-| Intercept | -0.900 | 0.388 | 0.02 | Yes |
-| Year Index | 0.011 | 0.062 | 0.86 | No |
-| Universal Day 8 (Saturn) | 0.143 | 0.213 | 0.50 | No |
-| Mars Strength | -0.005 | 0.003 | 0.10 | No |
-| Saturn Strength | 0.000 | 0.003 | 0.99 | No |
-
-: Regression Coefficients {#tbl-regression}
-
-### Interpretation
-
-- **Mars Strength**: Shows weak negative correlation ($p = 0.10$)—marginally suggestive but fails significance threshold
-- **Saturn Strength**: No relationship whatsoever ($p = 0.99$)
-- **Universal Day 8**: No numerological signal ($p = 0.50$)
-- **Year Index**: No significant trend in seismic rate
-
-## Monte Carlo Validation
-
-The "Look-Elsewhere" analysis tested whether observed results could arise by chance:
-
-| Metric | Value |
-|--------|-------|
-| Real Signal Delta-AIC | 22.13 |
-| 95th Percentile Noise Floor | 27.95 |
-| 99th Percentile Noise Floor | 35.21 |
-| Empirical p-value | 0.38 |
-
-: Monte Carlo Results {#tbl-montecarlo}
-
-**Result**: The real data signal (22.13) falls **below** the 95th percentile of random noise (27.95), indicating the observed "signal" is indistinguishable from chance.
-
-## Pattern Mapping Visualization
-
-Overlaying the Planetary Stress Index with actual earthquake occurrences reveals:
-
-- No consistent alignment between "High Stress" periods and major earthquakes
-- The 2015 Gorkha sequence occurred during a moderate (not extreme) stress period
-- Several "High Stress" periods passed without significant seismicity
-
-## Scatter Plot Analysis
-
-Plotting Earthquake Magnitude against Planetary Stress Index:
-
-| Expected (if predictive) | Observed |
-|--------------------------|----------|
-| Diagonal clustering | Random scatter |
-| High Mag → High Stress | Uniform distribution |
-
-: Scatter Analysis {#tbl-scatter}
-
-Large magnitude events occur at both high and low stress levels with equal probability.
-
-# Discussion
-
-## Failure to Reject Null Hypothesis
-
-Based on three independent lines of evidence, we **fail to reject the null hypothesis**:
-
-1. **Regression p-values**: All planetary variables > 0.05
-2. **Monte Carlo validation**: Signal within noise distribution
-3. **Visual inspection**: No consistent pattern matching
-
-## Potential Confounders
-
-### Solar Cycle
-
-The 11-year solar maximum cycle may overlap with certain planetary periods (particularly Jupiter's 12-year orbit). Future studies should include solar activity as a covariate.
-
-### Tidal Stress
-
-Lunar phases (syzygy) are **known physical triggers** for earthquake initiation. However, these represent actual gravitational effects, not "astrological" influences. Our analysis separated these mechanisms.
-
-### Regional vs. Global
-
-This study focused on a single tectonic region. Different results might emerge for:
-- Subduction zones (Pacific Ring of Fire)
-- Transform boundaries (San Andreas)
-- Intraplate earthquakes (New Madrid)
-
-## The Near-Threshold Mars Signal
-
-The Mars coefficient ($p = 0.10$) warrants comment. While not statistically significant:
-
-- Could represent Type II error with small sample
-- May indicate weak but real tidal influence (Mars affects Earth's tides, though minimally)
-- More likely: random fluctuation near threshold
-
-Future research with larger datasets (>10,000 events) could resolve this ambiguity.
-
-## Methodological Strengths
-
-1. **Precise Geographic Focus**: Well-defined tectonic region with known characteristics
-2. **Proper Statistical Framework**: Negative Binomial for overdispersion
-3. **Multiple Testing Control**: Bonferroni and Monte Carlo methods
-4. **Reproducible Pipeline**: Open-source code and data
-
-## Limitations
-
-1. **Sample Size**: 370 events may be insufficient for detecting weak signals
-2. **Temporal Scope**: 9 years may miss long-period planetary cycles
-3. **Linear Assumptions**: Non-linear relationships not explored
-4. **Technique Coverage**: Many Jyotish techniques untested (Koorma Chakra, Ashtakavarga)
-
-# Conclusions
-
-This rigorous investigation of earthquake prediction using Vedic Astrology yields definitive results:
-
-1. **No Significant Predictors**: All tested planetary variables failed statistical significance
-2. **Monte Carlo Confirmation**: Observed "signals" fall within random noise distribution
-3. **Null Hypothesis Maintained**: Planetary configurations do not predict earthquakes in this dataset
-4. **Mars Marginal Effect**: Weak signal warrants further investigation with larger samples
-5. **Saturn Non-Effect**: Complete absence of relationship ($p = 0.99$)
-
-## Implications
-
-For practitioners and researchers:
-
-- **Astrological prediction of specific earthquake timing is not supported** by this analysis
-- Planetary configurations may have value for other purposes but not seismic forecasting
-- **Standard seismological methods** remain the appropriate approach for hazard assessment
-
-## Future Research Directions
-
-1. **Extended Dataset**: Analysis with USGS global catalog (>100,000 events)
-2. **Koorma Chakra Testing**: Regional zodiac mapping as per classical texts
-3. **Machine Learning**: Non-linear approaches (Random Forests, Neural Networks)
-4. **Multi-Region Comparison**: Testing across different tectonic environments
-
-# References
-
-::: {#refs}
+:::{.callout-note}
+This report is assembled from modular sections for maintainability.
 :::
 
-# Appendix A: Data Processing Pipeline
+:::{include="sections/00_overview.qmd"}
+:::
 
-```python
-# USGS API Query
-import requests
+:::{include="sections/01_sources.qmd"}
+:::
 
-url = "https://earthquake.usgs.gov/fdsnws/event/1/query"
-params = {
-    "format": "geojson",
-    "starttime": "2015-01-01",
-    "endtime": "2024-01-01",
-    "minlatitude": 20,
-    "maxlatitude": 35,
-    "minlongitude": 75,
-    "maxlongitude": 90,
-    "minmagnitude": 4.5
-}
-response = requests.get(url, params=params)
-earthquakes = response.json()["features"]
-```
+:::{include="sections/02_taxonomy.qmd"}
+:::
 
-# Appendix B: Negative Binomial Model Specification
+:::{include="sections/03_malefics_aspects.qmd"}
+:::
 
-```python
-import statsmodels.api as sm
+:::{include="sections/04_conjunctions_graha_yuddha.qmd"}
+:::
 
-# Model specification
-model = sm.GLM(
-    earthquake_counts,
-    features,
-    family=sm.families.NegativeBinomial()
-)
-results = model.fit()
-```
+:::{include="sections/05_shadbala_components.qmd"}
+:::
 
-# Appendix C: Data Availability
+:::{include="sections/06_combustion_retrograde.qmd"}
+:::
 
-All earthquake data, planetary calculations, and analysis code are available at:
-https://github.com/astro-fusion/astro_research-white-paper/tree/main/docs/research/track_2_earthquake_prediction
+:::{include="sections/07_eclipses_syzygy.qmd"}
+:::
+
+:::{include="sections/08_nakshatra_lords.qmd"}
+:::
+
+:::{include="sections/09_houses_signs_bhavas.qmd"}
+:::
+
+:::{include="sections/10_yogas_tithi_karana.qmd"}
+:::
+
+:::{include="sections/11_combination_catalog.qmd"}
+:::
+
+:::{include="sections/12_algorithms_examples.qmd"}
+:::
+
+:::{include="sections/13_graphs_frequency.qmd"}
+:::
+
+:::{include="sections/14_graphs_alignment_windows.qmd"}
+:::
+
+:::{include="sections/15_discussion_limits.qmd"}
+:::
+
+:::{include="sections/16_appendix_full_definitions.qmd"}
+:::
+
+:::{include="sections/90_legacy_content.qmd"}
+:::

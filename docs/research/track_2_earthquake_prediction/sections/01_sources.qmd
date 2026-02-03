@@ -1,0 +1,15 @@
+# Classical Sources
+
+This section enumerates the authoritative classical sources used as **primary references** for mundane astrology principles included in this report.
+
+## Covered Sources (Primary Canon)
+
+- **Brihat Samhita** [@varahamihira_brihat_samhita]
+- **Brihat Parashara Hora Shastra (BPHS)** [@bphs]
+- **Surya Siddhanta** [@surya_siddhanta]
+- **Jataka Parijata** [@jataka_parijata]
+- **Saravali** [@saravali]
+
+## Coverage Policy
+
+All mundane principles that can be translated into **testable astronomical combinations** are included. If a classical rule is symbolic or qualitative, it is still recorded in the catalog with a note describing the limitation.

@@ -1,0 +1,17 @@
+# Conjunctions and Graha Yuddha
+
+Classical texts describe **Graha Yuddha** (planetary war) as a critical indicator when two planets occupy nearly the same longitude [@bphs].
+
+## Conjunction Rule
+
+For any planet pair $(i,j)$:
+
+$$
+|\lambda_i - \lambda_j| \leq \epsilon
+$$
+
+We evaluate conjunctions at multiple orbs, and Graha Yuddha specifically at **1°**.
+
+## Exhaustive Coverage
+
+All planet pairs are tested. Malefic-only conjunctions are highlighted as a dedicated subset in the catalog.

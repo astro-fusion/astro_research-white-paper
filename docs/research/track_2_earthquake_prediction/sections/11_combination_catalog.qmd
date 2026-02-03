@@ -1,0 +1,37 @@
+# Master Combination Catalog
+
+This section presents the **exhaustive combination catalog**, generated programmatically from the taxonomy. Each rule has a stable ID for reproducibility and downstream graphing.
+
+```{python}
+#| label: combo-catalog
+#| echo: false
+import pandas as pd
+from pathlib import Path
+
+data_dir = Path.cwd().resolve()
+while data_dir and not (data_dir / "pyproject.toml").exists():
+    data_dir = data_dir.parent
+data_dir = (data_dir or Path.cwd()) / "docs" / "research" / "track_2_earthquake_prediction" / "data"
+catalog_path = data_dir / "combination_catalog.csv"
+
+if not catalog_path.exists():
+    # Generate if missing
+    import subprocess, sys
+    script = Path.cwd().resolve()
+    while script and not (script / "pyproject.toml").exists():
+        script = script.parent
+    script = (script or Path.cwd()) / "docs" / "research" / "track_2_earthquake_prediction" / "scripts" / "generate_combination_catalog.py"
+    subprocess.check_call([sys.executable, str(script)])
+
+catalog = pd.read_csv(catalog_path)
+catalog.head(20)
+```
+
+```{python}
+#| label: combo-counts
+#| tbl-cap: "Combination Counts by Category"
+
+catalog.groupby("category").size().reset_index(name="count").sort_values("count", ascending=False)
+```
+
+The full catalog is stored at `docs/research/track_2_earthquake_prediction/data/combination_catalog.csv`.

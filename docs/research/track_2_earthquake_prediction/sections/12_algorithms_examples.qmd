@@ -1,0 +1,52 @@
+# Algorithms and Worked Examples
+
+This section formalizes each rule class into a concrete algorithmic procedure.
+
+## Algorithm A: Daily Astro Feature Generation
+
+1. Compute planetary longitudes at local noon for each day.
+2. Derive retrograde and combustion status.
+3. Compute Panchanga elements (tithi, karana, yoga).
+4. Compute houses using ascendant at the same timestamp.
+5. Store a daily feature table for downstream combination evaluation.
+
+Implementation lives in `docs/research/track_2_earthquake_prediction/scripts/generate_daily_astro_features.py`.
+
+## Algorithm B: Combination Evaluation
+
+1. Load the daily feature table.
+2. For each combination in the catalog, evaluate its rule across all days.
+3. Compute activation frequency and overlap with earthquake event windows.
+4. Store results for graphing and significance testing.
+
+## Example: Aspect Rule (Mars–Saturn square)
+
+Let $\Delta = |\lambda_{Mars} - \lambda_{Saturn}| \bmod 360$.
+
+Rule triggers if:
+
+$$
+|\Delta - 90^\circ| \leq 5^\circ
+$$
+
+## Example: Graha Yuddha
+
+For any planet pair $(i,j)$:
+
+$$
+|\lambda_i - \lambda_j| < 1^\circ
+$$
+
+## Example: Combustion
+
+For planet $p$:
+
+$$
+|\lambda_p - \lambda_{Sun}| < 8^\circ
+$$
+
+## Example: Tithi
+
+$$
+Tithi = \left\lfloor \frac{(\lambda_{Moon}-\lambda_{Sun}) \bmod 360}{12} \\right\rfloor + 1
+$$

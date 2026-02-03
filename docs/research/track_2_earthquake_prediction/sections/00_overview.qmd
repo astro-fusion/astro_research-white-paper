@@ -1,0 +1,19 @@
+# Overview
+
+This report provides an **exhaustive Classical Jyotish Mundane** coverage for earthquake prediction claims. The intent is to **include every combination and trigger described in the classical corpus** so the analysis cannot be dismissed for missing principles. The report is organized as a modular catalogue, followed by algorithmic definitions and a large-scale empirical evaluation against the India-Nepal seismic dataset.
+
+## Scope Commitments
+
+- **All Classical Sources**: Brihat Samhita, BPHS, Surya Siddhanta, Jataka Parijata, Saravali.
+- **All Combination Classes**: malefic aspects, conjunctions, Graha Yuddha, Shadbala components, combustion, retrograde, nakshatra lords, Panchanga elements (tithi/karana/yoga), houses and signs, eclipses and syzygy windows.
+- **All Time Windows**: same-day, ±1, ±3, ±7, ±14, ±30 days around seismic events.
+- **All Results Reported**: frequency, event-alignment rate, and statistical significance where applicable.
+
+## Structure
+
+1. **Sources**: Classical texts and canonical principles.
+2. **Taxonomy**: A formal ontology of all trigger classes and variables.
+3. **Combination Catalog**: Machine-generated, exhaustive list with stable IDs.
+4. **Algorithms & Examples**: Formal definitions and step-by-step calculations.
+5. **Graphs & Results**: Frequency and alignment diagnostics for every category.
+6. **Appendix**: Full definitions and parameter defaults.

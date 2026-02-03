@@ -1,0 +1,45 @@
+# Frequency Graphs
+
+Activation frequency for each astrology principle category across gold trading days.
+
+```{python}
+#| label: gold-astro-metrics
+#| echo: false
+from pathlib import Path
+import pandas as pd
+import matplotlib.pyplot as plt
+import subprocess, sys
+
+root = Path.cwd().resolve()
+while root and not (root / "pyproject.toml").exists():
+    root = root.parent
+data_dir = (root or Path.cwd()) / "docs" / "research" / "track_3_gold_market" / "data"
+
+metrics_path = data_dir / "gold_astro_metrics.csv"
+if not metrics_path.exists():
+    gen_features = (root or Path.cwd()) / "docs" / "research" / "track_3_gold_market" / "scripts" / "generate_gold_astro_features.py"
+    gen_catalog = (root or Path.cwd()) / "docs" / "research" / "track_3_gold_market" / "scripts" / "generate_gold_astro_catalog.py"
+    gen_metrics = (root or Path.cwd()) / "docs" / "research" / "track_3_gold_market" / "scripts" / "compute_gold_astro_metrics.py"
+    subprocess.check_call([sys.executable, str(gen_features)])
+    subprocess.check_call([sys.executable, str(gen_catalog)])
+    subprocess.check_call([sys.executable, str(gen_metrics)])
+
+metrics = pd.read_csv(metrics_path)
+```
+
+```{python}
+#| label: fig-gold-astro-category
+#| fig-cap: "Total Activation Days by Astrology Category"
+#| fig-width: 8
+#| fig-height: 4.5
+#| fig-pos: 'H'
+
+cat = metrics.groupby("category")["total_active_days"].sum().sort_values(ascending=False)
+plt.figure(figsize=(8.5,4.5))
+cat.plot(kind="bar", color="slateblue")
+plt.title("Activation Days by Category")
+plt.ylabel("Total Active Days")
+plt.grid(axis="y", alpha=0.3)
+plt.tight_layout()
+plt.show()
+```

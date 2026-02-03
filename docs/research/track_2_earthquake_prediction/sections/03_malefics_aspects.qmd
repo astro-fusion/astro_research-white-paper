@@ -1,0 +1,33 @@
+# Malefics, Aspects, and Angular Stress
+
+Classical mundane astrology emphasizes malefic angular relationships as destabilizing triggers [@bphs; @varahamihira_brihat_samhita].
+
+## Malefic Set
+
+We define malefics as:
+
+**Mars, Saturn, Rahu, Ketu**
+
+## Aspect Definitions
+
+All **major aspects** are included:
+
+- Conjunction (0°)
+- Sextile (60°)
+- Square (90°)
+- Trine (120°)
+- Opposition (180°)
+
+## Formal Rule
+
+For planet pair $(i,j)$ and aspect angle $\theta$:
+
+$$
+|(\lambda_i - \lambda_j) \bmod 360 - \theta| \leq \epsilon
+$$
+
+We evaluate all orbs $\epsilon \in \{1^\circ, 3^\circ, 5^\circ, 8^\circ\}$.
+
+## Exhaustive Coverage
+
+All malefic–malefic, malefic–benefic, and all-planet pairs are enumerated in the Master Combination Catalog.

@@ -1,0 +1,31 @@
+# Astrology Principles Catalog (Vedic + Western)
+
+This section provides an **exhaustive catalog** of astrology‑based indicators used for gold price prediction claims (Vedic + Western).
+
+```{python}
+#| label: gold-astro-catalog
+#| echo: false
+from pathlib import Path
+import pandas as pd
+import subprocess, sys
+
+root = Path.cwd().resolve()
+while root and not (root / "pyproject.toml").exists():
+    root = root.parent
+data_dir = (root or Path.cwd()) / "docs" / "research" / "track_3_gold_market" / "data"
+catalog_path = data_dir / "gold_astro_catalog.csv"
+
+if not catalog_path.exists():
+    script = (root or Path.cwd()) / "docs" / "research" / "track_3_gold_market" / "scripts" / "generate_gold_astro_catalog.py"
+    subprocess.check_call([sys.executable, str(script)])
+
+catalog = pd.read_csv(catalog_path)
+catalog.head(25)
+```
+
+```{python}
+#| label: gold-astro-catalog-counts
+#| tbl-cap: "Astrology Principle Counts by Category"
+
+catalog.groupby("category").size().reset_index(name="count").sort_values("count", ascending=False)
+```

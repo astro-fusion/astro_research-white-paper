@@ -1,0 +1,22 @@
+# Shadbala Components (Sixfold Strength)
+
+Shadbala is a composite measure of planetary strength described in classical Jyotish [@bphs]. We include each component and the total aggregated score.
+
+## Components
+
+1. **Sthana Bala** (positional)
+2. **Dig Bala** (directional)
+3. **Kala Bala** (temporal)
+4. **Chesta Bala** (motional)
+5. **Naisargika Bala** (natural)
+6. **Drik Bala** (aspectual)
+
+## Rule Bands
+
+Each planet is categorized into **low / medium / high** strength bands:
+
+- Low: 0–33
+- Medium: 34–66
+- High: 67–100
+
+These bands are applied to **all planets** daily.

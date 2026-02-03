@@ -1,0 +1,11 @@
+# Nakshatra-Based Mundane Triggers
+
+The Moon’s Nakshatra lord is used as a daily classifier of cosmic mood [@bphs]. We evaluate all **9 planetary lords** across the full date range.
+
+## Rule
+
+$$
+NakshatraLord = f(\lambda_{Moon})
+$$
+
+Each Nakshatra is mapped to its classical ruler; all lords are included in the catalog.

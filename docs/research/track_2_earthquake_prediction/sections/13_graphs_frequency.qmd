@@ -1,0 +1,64 @@
+# Frequency Graphs (All Combinations)
+
+This section plots **activation frequencies** for every combination in the catalog.
+
+```{python}
+#| label: combo-metrics
+#| echo: false
+from pathlib import Path
+import pandas as pd
+import matplotlib.pyplot as plt
+
+root = Path.cwd().resolve()
+while root and not (root / "pyproject.toml").exists():
+    root = root.parent
+data_dir = (root or Path.cwd()) / "docs" / "research" / "track_2_earthquake_prediction" / "data"
+
+metrics_path = data_dir / "combination_metrics.csv"
+if not metrics_path.exists():
+    import subprocess, sys
+    gen_daily = (root or Path.cwd()) / "docs" / "research" / "track_2_earthquake_prediction" / "scripts" / "generate_daily_astro_features.py"
+    gen_catalog = (root or Path.cwd()) / "docs" / "research" / "track_2_earthquake_prediction" / "scripts" / "generate_combination_catalog.py"
+    gen_metrics = (root or Path.cwd()) / "docs" / "research" / "track_2_earthquake_prediction" / "scripts" / "compute_combination_metrics.py"
+    if not (data_dir / "daily_astro_base.csv").exists():
+        subprocess.check_call([sys.executable, str(gen_daily)])
+    if not (data_dir / "combination_catalog.csv").exists():
+        subprocess.check_call([sys.executable, str(gen_catalog)])
+    subprocess.check_call([sys.executable, str(gen_metrics)])
+
+metrics = pd.read_csv(metrics_path)
+```
+
+```{python}
+#| label: fig-category-activation
+#| fig-cap: "Activation Days by Combination Category"
+#| fig-width: 8.5
+#| fig-height: 4.5
+#| fig-pos: 'H'
+
+cat = metrics.groupby("category")["total_active_days"].sum().sort_values(ascending=False)
+plt.figure(figsize=(9,4.5))
+cat.plot(kind="bar", color="slateblue")
+plt.title("Total Activation Days by Category")
+plt.ylabel("Total Active Days (2015-2024)")
+plt.grid(axis="y", alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+#| label: fig-top-activation
+#| fig-cap: "Top 25 Most Frequent Combinations"
+#| fig-width: 8.5
+#| fig-height: 6
+#| fig-pos: 'H'
+
+top = metrics.sort_values("total_active_days", ascending=False).head(25)
+plt.figure(figsize=(9,6))
+plt.barh(top["combo_id"], top["total_active_days"], color="teal")
+plt.gca().invert_yaxis()
+plt.title("Top 25 Most Frequent Combinations")
+plt.xlabel("Active Days")
+plt.tight_layout()
+plt.show()
+```

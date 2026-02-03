@@ -1,0 +1,19 @@
+# Houses, Signs, and Bhava-Based Mundane Rules
+
+Classical mundane astrology associates specific houses with land stability and catastrophe [@bphs]. We test **all planet-in-house** and **planet-in-sign** combinations, with emphasis on critical houses (4, 8, 12).
+
+## House Occupancy
+
+For each planet $p$:
+
+$$
+House(p) = \left\lfloor \frac{(\lambda_p - \lambda_{Asc}) \bmod 360}{30} \right\rfloor + 1
+$$
+
+## Sign Occupancy
+
+Each planet’s zodiac sign is derived from its longitude and mapped to the sidereal sign index.
+
+## Coverage
+
+All planets × all houses and signs are enumerated in the master catalog.

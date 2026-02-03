@@ -1,0 +1,21 @@
+# Combustion, Retrograde, and Visibility
+
+Combustion and retrograde status are classical modifiers of planetary efficacy [@bphs].
+
+## Combustion
+
+A planet is combust when within a defined orb of the Sun. We use **8°** as the standard orb:
+
+$$
+|\lambda_p - \lambda_{Sun}| < 8^\circ
+$$
+
+## Retrograde
+
+A planet is retrograde when its longitudinal speed is negative:
+
+$$
+\dot{\lambda}_p(t) < 0
+$$
+
+All planets are evaluated daily for both conditions.

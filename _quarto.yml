@@ -164,3 +164,67 @@ filters:
 environment:
   QUARTO_PROJECT_DIR: "."
   PYTHONPATH: "src"
+
+# Global PDF submission profiles (journal-style presets)
+profiles:
+  generic_journal:
+    format:
+      pdf:
+        documentclass: article
+        geometry:
+          - top=30mm
+          - left=25mm
+          - right=25mm
+          - bottom=30mm
+        fontsize: 11pt
+        linestretch: 1.2
+
+  ieee_like:
+    format:
+      pdf:
+        documentclass: article
+        classoption:
+          - twocolumn
+        geometry:
+          - top=20mm
+          - left=18mm
+          - right=18mm
+          - bottom=22mm
+        fontsize: 9pt
+        linestretch: 1.1
+
+  springer_like:
+    format:
+      pdf:
+        documentclass: article
+        geometry:
+          - top=25mm
+          - left=20mm
+          - right=20mm
+          - bottom=25mm
+        fontsize: 10pt
+        linestretch: 1.15
+
+  elsevier_like:
+    format:
+      pdf:
+        documentclass: article
+        geometry:
+          - top=25mm
+          - left=20mm
+          - right=20mm
+          - bottom=25mm
+        fontsize: 10pt
+        linestretch: 1.1
+
+  nature_like:
+    format:
+      pdf:
+        documentclass: article
+        geometry:
+          - top=28mm
+          - left=22mm
+          - right=22mm
+          - bottom=28mm
+        fontsize: 10pt
+        linestretch: 1.2

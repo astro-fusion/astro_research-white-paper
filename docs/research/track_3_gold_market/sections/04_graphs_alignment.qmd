@@ -1,0 +1,23 @@
+# Alignment Graphs
+
+Overlap between indicator activation and gold return spikes (top 5% absolute daily returns).
+
+```{python}
+#| label: fig-gold-overlap
+#| fig-cap: "Mean Overlap Rate by Category (±3 days)"
+#| fig-width: 8
+#| fig-height: 4.5
+#| fig-pos: 'H'
+
+metrics = metrics.copy()
+metrics["overlap_rate_w3"] = metrics["overlap_w3"] / metrics["total_active_days"].replace(0, pd.NA)
+cat_rate = metrics.groupby("category")["overlap_rate_w3"].mean().sort_values(ascending=False)
+
+plt.figure(figsize=(8.5,4.5))
+cat_rate.plot(kind="bar", color="darkorange")
+plt.title("Mean Overlap Rate by Category (±3 days)")
+plt.ylabel("Overlap Rate")
+plt.grid(axis="y", alpha=0.3)
+plt.tight_layout()
+plt.show()
+```

@@ -1,0 +1,27 @@
+# Algorithms & Worked Examples
+
+This section formalizes the Vedic + Western astrology indicators used in the gold report.
+
+## Algorithm A: Trading-Day Ephemeris Alignment
+
+1. Load gold trading dates from the local cache.
+2. Compute planetary longitudes at **12:00 UTC** for each trading day.
+3. Derive retrograde, combustion, sign ingress, and lunar phase indicators.
+
+Implementation: `docs/research/track_3_gold_market/scripts/generate_gold_astro_features.py`
+
+## Algorithm B: Aspect Trigger
+
+For planets $i,j$ and target angle $\theta$:
+
+$$
+|(\lambda_i - \lambda_j) \bmod 360 - \theta| \leq \epsilon
+$$
+
+We evaluate **all major + minor aspects** across all planet pairs.
+
+## Algorithm C: Event Overlap
+
+Define **event days** as top 5% absolute log-returns. Compute overlap between indicator activation and event windows (±1, ±3, ±7, ±14, ±30 days).
+
+Implementation: `docs/research/track_3_gold_market/scripts/compute_gold_astro_metrics.py`

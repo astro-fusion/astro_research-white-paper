@@ -1,0 +1,23 @@
+# Yogas, Tithi, Karana, and Panchanga Combinations
+
+Panchanga elements are daily time-structure variables derived from Sun–Moon dynamics [@surya_siddhanta]. All combinations are included.
+
+## Tithi
+
+$$
+Tithi = \left\lfloor \frac{(\lambda_{Moon}-\lambda_{Sun}) \bmod 360}{12} \right\rfloor + 1
+$$
+
+## Karana
+
+$$
+KaranaIndex = \left\lfloor \frac{(\lambda_{Moon}-\lambda_{Sun}) \bmod 360}{6} \right\rfloor + 1
+$$
+
+## Yoga
+
+$$
+Yoga = \left\lfloor \frac{(\lambda_{Moon}+\lambda_{Sun}) \bmod 360}{13.3333} \right\rfloor + 1
+$$
+
+All 30 tithis, 11 karana types, and 27 yogas are enumerated in the catalog.

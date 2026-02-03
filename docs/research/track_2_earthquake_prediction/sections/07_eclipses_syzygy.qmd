@@ -1,0 +1,20 @@
+# Eclipses, Syzygy, and Temporal Windows
+
+Classical texts emphasize eclipse windows and syzygy as periods of heightened instability [@surya_siddhanta; @varahamihira_brihat_samhita].
+
+## Syzygy
+
+- **New Moon (Amavasya)**: $Tithi = 30$
+- **Full Moon (Purnima)**: $Tithi = 15$
+
+## Eclipse Proxy
+
+We flag eclipse windows when syzygy coincides with proximity to lunar nodes (Rahu/Ketu):
+
+$$
+\min(|\lambda_{Moon}-\lambda_{Rahu}|, |\lambda_{Moon}-\lambda_{Ketu}|) \leq 12^\circ
+$$
+
+## Windows
+
+All combinations are evaluated in time windows: **0, ±1, ±3, ±7, ±14, ±30 days**.

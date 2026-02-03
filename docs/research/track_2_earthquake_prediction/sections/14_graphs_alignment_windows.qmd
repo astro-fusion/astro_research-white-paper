@@ -1,0 +1,62 @@
+# Alignment Windows vs Earthquakes
+
+This section compares **combination activation** against earthquake windows (same day and ±N days).
+
+```{python}
+#| label: fig-window-overlap
+#| fig-cap: "Average Overlap Rate by Category (±3 days)"
+#| fig-width: 8
+#| fig-height: 4.5
+#| fig-pos: 'H'
+
+metrics = metrics.copy()
+metrics["overlap_rate_w3"] = metrics["overlap_w3"] / metrics["total_active_days"].replace(0, pd.NA)
+
+cat_rate = metrics.groupby("category")["overlap_rate_w3"].mean().sort_values(ascending=False)
+plt.figure(figsize=(8.5,4.5))
+cat_rate.plot(kind="bar", color="darkorange")
+plt.title("Mean Overlap Rate by Category (±3 days)")
+plt.ylabel("Overlap Rate")
+plt.grid(axis="y", alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+#| label: fig-window-compare
+#| fig-cap: "Overlap Rates by Window Size (All Combinations)"
+#| fig-width: 8
+#| fig-height: 4.5
+#| fig-pos: 'H'
+
+metrics["overlap_rate_w0"] = metrics["overlap_w0"] / metrics["total_active_days"].replace(0, pd.NA)
+metrics["overlap_rate_w7"] = metrics["overlap_w7"] / metrics["total_active_days"].replace(0, pd.NA)
+metrics["overlap_rate_w14"] = metrics["overlap_w14"] / metrics["total_active_days"].replace(0, pd.NA)
+metrics["overlap_rate_w30"] = metrics["overlap_w30"] / metrics["total_active_days"].replace(0, pd.NA)
+
+rates = metrics[["overlap_rate_w0","overlap_rate_w3","overlap_rate_w7","overlap_rate_w14","overlap_rate_w30"]].mean()
+plt.figure(figsize=(8,4.5))
+rates.plot(marker="o")
+plt.title("Average Overlap Rate by Window Size")
+plt.ylabel("Overlap Rate")
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+#| label: fig-top-overlap
+#| fig-cap: "Top 25 Combinations by ±3 Day Overlap"
+#| fig-width: 8.5
+#| fig-height: 6
+#| fig-pos: 'H'
+
+top_overlap = metrics.sort_values("overlap_rate_w3", ascending=False).head(25)
+plt.figure(figsize=(9,6))
+plt.barh(top_overlap["combo_id"], top_overlap["overlap_rate_w3"], color="maroon")
+plt.gca().invert_yaxis()
+plt.title("Top 25 Combinations by ±3 Day Overlap")
+plt.xlabel("Overlap Rate")
+plt.tight_layout()
+plt.show()
+```

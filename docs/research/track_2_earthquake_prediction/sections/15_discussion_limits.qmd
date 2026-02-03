@@ -1,0 +1,13 @@
+# Discussion, Limitations, and Interpretive Notes
+
+This report aims for **exhaustive classical coverage**. The combination catalog is exhaustive within the defined ontology, but any rule not expressible in astronomical terms is documented qualitatively rather than computed.
+
+## Limitations
+
+- Some classical rules are symbolic and do not map cleanly to numerical thresholds.
+- House-based rules depend on a chosen location and time reference; we use the regional centroid at local noon for daily evaluation.
+- “All combinations” grows rapidly; we present aggregated results and provide machine-readable tables for inspection.
+
+## Interpretation Policy
+
+We do not treat any alignment as causal. All findings are evaluated against baseline earthquake rates and statistical noise floors.

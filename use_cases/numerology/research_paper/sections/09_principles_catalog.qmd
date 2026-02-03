@@ -1,0 +1,31 @@
+# Numerology Principles Catalog
+
+This section provides an **exhaustive catalog** of numerology principles included in the report: Lo Shu grid, Vedic numerology mapping, missing numbers, master numbers, karmic debt, compound numbers, date‑based transits, **name-based numerology** (Pythagorean and Chaldean mappings), plus personal cycles (Life Path, Destiny, Pinnacles, Challenges, Karmic Lessons, Hidden Passion).
+
+```{python}
+#| label: num-catalog
+#| echo: false
+from pathlib import Path
+import pandas as pd
+import subprocess, sys
+
+root = Path.cwd().resolve()
+while root and not (root / "pyproject.toml").exists():
+    root = root.parent
+data_dir = (root or Path.cwd()) / "use_cases" / "numerology" / "research_paper" / "data"
+catalog_path = data_dir / "numerology_catalog.csv"
+
+if not catalog_path.exists():
+    script = (root or Path.cwd()) / "use_cases" / "numerology" / "research_paper" / "scripts" / "generate_numerology_catalog.py"
+    subprocess.check_call([sys.executable, str(script)])
+
+catalog = pd.read_csv(catalog_path)
+catalog.head(25)
+```
+
+```{python}
+#| label: num-catalog-counts
+#| tbl-cap: "Principle Counts by Category"
+
+catalog.groupby("category").size().reset_index(name="count").sort_values("count", ascending=False)
+```

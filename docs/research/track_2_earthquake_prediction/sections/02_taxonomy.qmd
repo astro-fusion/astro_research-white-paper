@@ -1,0 +1,55 @@
+# Mundane Jyotish Taxonomy (Exhaustive Scope)
+
+This section defines the **complete combination space** used in the report. All combinations are derived from the canonical sources listed in Section 1 and formalized into a machine-readable taxonomy.
+
+## Core Entities
+
+- **Planets (Grahas)**: Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn, Rahu, Ketu.
+- **Lunar Elements**: Tithi, Nakshatra, Karana, Yoga.
+- **Houses (Bhavas)**: 1–12 with emphasis on 4th (land), 8th (catastrophe), 12th (loss).
+- **Signs (Rashi)**: 12 zodiac signs (sidereal).
+- **Angular Relations**: Conjunction (0°), square (90°), opposition (180°), trine (120°), sextile (60°).
+- **Temporal Windows**: {0, ±1, ±3, ±7, ±14, ±30} days.
+
+## Combination Classes (All Included)
+
+1. **Malefic Aspects**: Mars/Saturn/Rahu/Ketu hard aspects.
+2. **Graha Yuddha**: Close conjunctions (<1°) between any pair.
+3. **Shadbala Components**: Each component and total combined strength.
+4. **Combustion & Retrograde**: Planet visibility and motion states.
+5. **Eclipses & Syzygy**: Solar/lunar eclipses; new/full moon windows.
+6. **Nakshatra Lords**: Lunar mansion rulerships and transitions.
+7. **House/Sign Triggers**: Malefics in critical houses or signs.
+8. **Panchanga**: Tithi/Karana/Yoga combinations.
+9. **Compound Rules**: Multi-factor conjunctions (e.g., Mars+Saturn conjunction during eclipse window in 4th house).
+
+## Ontology Fields (Catalog Columns)
+
+| Field | Description |
+| --- | --- |
+| `combo_id` | Stable unique ID |
+| `category` | Combination class |
+| `rule` | Formal rule definition |
+| `window_days` | Event window |
+| `sources` | Classical references |
+| `parameters` | Orbs, thresholds, rule-specific values |
+
+## Formal Notation
+
+- **Planetary longitude**: $\lambda_p(t)$
+- **Aspect condition**: $|\lambda_i - \lambda_j| \in \{0°, 60°, 90°, 120°, 180°\} \pm \epsilon$
+- **Conjunction (Graha Yuddha)**: $|\lambda_i - \lambda_j| < 1°$
+- **Combustion**: $|\lambda_p - \lambda_{Sun}| < 8°$
+- **Retrograde**: $\dot{\lambda}_p(t) < 0$
+
+## Combination Explosion Control
+
+To ensure “all combinations” is **computationally tractable**, we define a complete but finite rule system:
+
+- All planet pairs/triples within the rule set.
+- All major aspects with configurable orbs.
+- All critical houses and signs with malefic occupancy.
+- All Panchanga elements for daily classification.
+- All defined time windows.
+
+The master catalog is generated from these rules, guaranteeing exhaustive coverage without ambiguity.
