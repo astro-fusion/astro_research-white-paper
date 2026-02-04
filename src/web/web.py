@@ -9,13 +9,15 @@ Provides interactive timeline visualization of planetary strength and numerology
 
 import os
 import sys
+from pathlib import Path
 from datetime import datetime, timedelta
 
 from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
 
-# Add src to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
+# Add project src to path for local execution without installation
+repo_root = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(repo_root / "src"))
 
 # Import our time series utilities
 from vedic_astrology_core.time_series import (

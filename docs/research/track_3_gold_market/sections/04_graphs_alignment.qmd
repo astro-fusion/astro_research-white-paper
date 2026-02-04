@@ -21,3 +21,33 @@ plt.grid(axis="y", alpha=0.3)
 plt.tight_layout()
 plt.show()
 ```
+
+```{python}
+#| label: tbl-gold-significance
+#| tbl-cap: "Top 15 Astrology Indicators by FDR-Adjusted p-value (±3 days)"
+
+if "pval_w3_fdr" in metrics.columns:
+    top_sig = metrics.sort_values("pval_w3_fdr").head(15)[
+        ["combo_id", "category", "pval_w3", "pval_w3_fdr", "pval_w3_bonferroni", "total_active_days"]
+    ]
+    top_sig
+```
+
+```{python}
+#| label: fig-gold-zscore-hist
+#| fig-cap: "Distribution of Z-Scores for Overlap vs Random Baseline (±3 days)"
+#| fig-width: 8
+#| fig-height: 4.5
+#| fig-pos: 'H'
+
+if "zscore_w3" in metrics.columns:
+    plt.figure(figsize=(8.5,4.5))
+    metrics["zscore_w3"].dropna().hist(bins=40, color="slateblue", alpha=0.85)
+    plt.axvline(0, color="black", linewidth=1)
+    plt.title("Z-Score Distribution (Overlap vs Random Baseline)")
+    plt.xlabel("Z-Score (w3)")
+    plt.ylabel("Count")
+    plt.grid(axis="y", alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+```

@@ -106,6 +106,13 @@ python3 tests/test_e2e_playwright.py
 # Core dependencies (already installed)
 python3 --version  # 3.9+
 
+# Dev testing tools (pytest + coverage)
+venv/bin/pip install ".[dev]"
+# or: venv/bin/pip install pytest pytest-cov
+
+# Web app dependencies (Flask/Streamlit)
+venv/bin/pip install -r requirements-app.txt
+
 # For E2E testing (optional but recommended)
 pip install playwright
 playwright install
@@ -118,6 +125,11 @@ python3 tests/test_unit_comprehensive.py --version
 
 # Check if Playwright is available
 python3 -c "import playwright; print(f'Playwright {playwright.__version__}')"
+```
+
+### Pytest With Coverage
+```bash
+venv/bin/python -m pytest
 ```
 
 ## ✨ Features

@@ -34,6 +34,77 @@ Access our comprehensively referenced, peer-ready research manuscripts:
 
 > **Note**: This repository contains multiple research use cases. Visit the [Reports Section](assets/reports/) for generated PDF reports or browse the [Source Code](src/) for implementation details.
 
+---
+
+## ✅ Recent Updates (2026)
+
+### 🔢 Numerology Report (Expanded + Modular)
+
+- Modular structure with sectioned QMD files under:
+  - `use_cases/numerology/research_paper/sections/`
+- Expanded numerology catalog (Lo Shu, Vedic mapping, missing numbers, master numbers, karmic debt, compound numbers, name‑based systems, pinnacles, challenges, etc.)
+- New datasets (local cache):
+  - `use_cases/numerology/research_paper/data/numerology_catalog.csv`
+  - `use_cases/numerology/research_paper/data/numerology_daily_metrics.csv`
+  - `use_cases/numerology/research_paper/data/name_numerology_metrics.csv`
+  - `use_cases/numerology/research_paper/data/personal_numerology_metrics.csv`
+  - `use_cases/numerology/research_paper/data/athletes_sample.csv`
+  - `use_cases/numerology/research_paper/data/athlete_name_birth_metrics.csv`
+  - `use_cases/numerology/research_paper/data/athlete_name_birth_correlation.csv`
+- Scripts:
+  - `use_cases/numerology/research_paper/scripts/generate_numerology_catalog.py`
+  - `use_cases/numerology/research_paper/scripts/generate_numerology_metrics.py`
+  - `use_cases/numerology/research_paper/scripts/generate_name_numerology_metrics.py`
+  - `use_cases/numerology/research_paper/scripts/generate_personal_numerology_metrics.py`
+  - `use_cases/numerology/research_paper/scripts/compute_athlete_name_birth_correlation.py`
+  - `use_cases/numerology/research_paper/scripts/fetch_athletes_sample.py`
+
+### 🌍 Earthquake Report (Classical Jyotish Exhaustive)
+
+- Fully modularized with category sections:
+  - `docs/research/track_2_earthquake_prediction/sections/`
+- Generated combo catalog, daily astro features, and metrics:
+  - `docs/research/track_2_earthquake_prediction/data/combination_catalog.csv`
+  - `docs/research/track_2_earthquake_prediction/data/daily_astro_base.csv`
+  - `docs/research/track_2_earthquake_prediction/data/combination_metrics.csv`
+- Scripts:
+  - `docs/research/track_2_earthquake_prediction/scripts/generate_daily_astro_features.py`
+  - `docs/research/track_2_earthquake_prediction/scripts/generate_combination_catalog.py`
+  - `docs/research/track_2_earthquake_prediction/scripts/compute_combination_metrics.py`
+
+### 🪙 Gold Market Report (Vedic + Western Exhaustive)
+
+- Fully modularized with catalog + graph sections:
+  - `docs/research/track_3_gold_market/sections/`
+- Local gold price cache (offline):
+  - `docs/research/track_3_gold_market/data/gold_prices.csv`
+  - `docs/research/track_3_gold_market/data/gold_prices_meta.json`
+- Astrology catalog + features + metrics:
+  - `docs/research/track_3_gold_market/data/gold_astro_catalog.csv`
+  - `docs/research/track_3_gold_market/data/gold_astro_features.csv`
+  - `docs/research/track_3_gold_market/data/gold_astro_metrics.csv`
+- Scripts:
+  - `docs/research/track_3_gold_market/scripts/fetch_gold_data.py`
+  - `docs/research/track_3_gold_market/scripts/generate_gold_astro_catalog.py`
+  - `docs/research/track_3_gold_market/scripts/generate_gold_astro_features.py`
+  - `docs/research/track_3_gold_market/scripts/compute_gold_astro_metrics.py`
+
+### 📄 Multi-Journal PDF Profiles (Global)
+
+Global Quarto profiles for multiple submission styles:
+
+- `generic_journal`
+- `ieee_like`
+- `springer_like`
+- `elsevier_like`
+- `nature_like`
+
+Example:
+```bash
+quarto render docs/research/track_3_gold_market/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.qmd --profile=ieee_like
+```
+
+---
 
 ## 🌟 Core Research Principles
 
@@ -1143,6 +1214,26 @@ conda install -c conda-forge quarto
    ```
 
    ```
+
+#### Unified Build Script (Numerology / Earthquake / Gold)
+
+```bash
+# Build all three research reports with the default profile
+./scripts/build_all_reports.sh generic_journal
+
+# Build all profiles (generic_journal, ieee_like, springer_like, elsevier_like, nature_like)
+./scripts/build_all_reports.sh all
+
+# Force regeneration of datasets even if cached files exist
+FORCE=1 ./scripts/build_all_reports.sh generic_journal
+```
+
+This script regenerates required datasets (only if missing), recomputes significance metrics,
+and renders the numerology, earthquake, and gold reports using a shared Quarto profile.
+
+Shared Vedic coverage assets:
+- `data/vedic_principles_catalog.csv` (master catalog)
+- `data/vedic_principles_coverage.csv` (per-report coverage matrix)
 
 #### Embed Visualizations in PDF
 

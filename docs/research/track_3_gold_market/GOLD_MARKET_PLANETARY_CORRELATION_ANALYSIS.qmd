@@ -53,6 +53,12 @@ This report is assembled from modular sections for maintainability.
 :::{include="sections/01_principles_catalog.qmd"}
 :::
 
+:::{include="sections/01a_vedic_principles_coverage.qmd"}
+:::
+
+:::{include="sections/02a_dasha.qmd"}
+:::
+
 :::{include="sections/02_algorithms_examples.qmd"}
 :::
 

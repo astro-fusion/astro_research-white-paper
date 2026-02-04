@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Astro Research Timeline</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 24px; color: #1f2937; }
+      nav a { margin-right: 16px; color: #2563eb; text-decoration: none; }
+      nav a:hover { text-decoration: underline; }
+      .card { margin-top: 24px; padding: 16px; border: 1px solid #e5e7eb; border-radius: 8px; }
+      .muted { color: #6b7280; }
+    </style>
+  </head>
+  <body>
+    <h1>Astro Research Timeline</h1>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/timeline">Timeline</a>
+      <a href="/api/health">Health</a>
+      <a href="/api/timeline-data">Data</a>
+    </nav>
+
+    <div class="card">
+      <p>This dashboard serves the baseline timeline used by the E2E tests.</p>
+      <p class="muted">Use the API endpoints above to retrieve the time-series payload.</p>
+    </div>
+  </body>
+</html>

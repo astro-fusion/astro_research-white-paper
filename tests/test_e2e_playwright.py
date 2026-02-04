@@ -6,6 +6,7 @@ Comprehensive validation across multiple platforms
 
 import asyncio
 import json
+import os
 from datetime import datetime
 from pathlib import Path
 
@@ -17,7 +18,7 @@ class AstroResearchE2ETester:
         self.browser = None
         self.context = None
         self.page = None
-        self.base_url = "http://localhost:5000"
+        self.base_url = os.environ.get("BASE_URL", "http://127.0.0.1:5000")
         self.results = {"passed": 0, "failed": 0, "total": 0, "tests": []}
         self.playwright = None
 
@@ -31,7 +32,7 @@ class AstroResearchE2ETester:
             self.context = await self.browser.new_context()
             self.page = await self.context.new_page()
 
-            print("✅ Playwright browser initialized")
+            print(f"✅ Playwright browser initialized (base_url={self.base_url})")
             return True
         except ImportError:
             print("⚠️  Playwright not installed. Install with: pip install playwright")

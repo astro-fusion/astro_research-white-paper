@@ -166,6 +166,23 @@ def compute_astrology_strength_series(
     return pd.DataFrame(rows)
 
 
+def compute_planet_strength_series(
+    start_date: DateLike,
+    end_date: DateLike,
+    step_days: int = 1,
+    planets: Optional[Sequence[Planet]] = None,
+    config: Optional[TimeSeriesConfig] = None,
+) -> pd.DataFrame:
+    """Backward-compatible wrapper for compute_astrology_strength_series."""
+    return compute_astrology_strength_series(
+        start_date=start_date,
+        end_date=end_date,
+        step_days=step_days,
+        planets=planets,
+        config=config,
+    )
+
+
 def compute_numerology_series(
     start_date: DateLike,
     end_date: DateLike,

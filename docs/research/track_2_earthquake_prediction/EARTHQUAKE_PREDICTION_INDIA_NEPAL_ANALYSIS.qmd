@@ -60,6 +60,9 @@ This report is assembled from modular sections for maintainability.
 :::{include="sections/01_sources.qmd"}
 :::
 
+:::{include="sections/02a_vedic_principles_coverage.qmd"}
+:::
+
 :::{include="sections/02_taxonomy.qmd"}
 :::
 
@@ -73,6 +76,9 @@ This report is assembled from modular sections for maintainability.
 :::
 
 :::{include="sections/06_combustion_retrograde.qmd"}
+:::
+
+:::{include="sections/06a_dasha.qmd"}
 :::
 
 :::{include="sections/07_eclipses_syzygy.qmd"}

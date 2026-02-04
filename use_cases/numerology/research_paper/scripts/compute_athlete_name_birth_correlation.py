@@ -3,6 +3,7 @@
 from pathlib import Path
 import pandas as pd
 import numpy as np
+from scipy.stats import chi2
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 athletes = pd.read_csv(DATA_DIR / "athletes_sample.csv")
@@ -89,6 +90,48 @@ summary = pd.DataFrame([
     {"metric":"cramers_v_pyth", "value": cramers_v(ct_pyth)},
     {"metric":"cramers_v_chald", "value": cramers_v(ct_chald)},
 ])
-summary.to_csv(DATA_DIR / "athlete_name_birth_correlation.csv", index=False)
+
+# Chi-square p-values
+def chi_square_p(ct):
+    n = ct.values.sum()
+    if n == 0:
+        return 1.0
+    row_sums = ct.sum(axis=1).values.reshape(-1,1)
+    col_sums = ct.sum(axis=0).values.reshape(1,-1)
+    expected = row_sums @ col_sums / n
+    if np.any(expected == 0):
+        return 1.0
+    chi2_stat = ((ct.values - expected) ** 2 / expected).sum()
+    df = (ct.shape[0]-1) * (ct.shape[1]-1)
+    return float(chi2.sf(chi2_stat, df))
+
+pvals = pd.DataFrame([
+    {"metric":"pval_pyth", "value": chi_square_p(ct_pyth)},
+    {"metric":"pval_chald", "value": chi_square_p(ct_chald)},
+])
+
+combined = pd.concat([summary, pvals], ignore_index=True)
+
+# Multiple comparison correction (2 tests)
+pv = pvals["value"].values
+m = len(pv)
+bonf = np.minimum(pv * m, 1.0)
+order = np.argsort(pv)
+q = np.empty_like(pv)
+prev = 1.0
+for rank, idx in enumerate(order[::-1], start=1):
+    qval = min(prev, pv[idx] * m / (m - rank + 1))
+    q[idx] = qval
+    prev = qval
+
+adj = pd.DataFrame([
+    {"metric":"pval_pyth_bonferroni", "value": bonf[0]},
+    {"metric":"pval_chald_bonferroni", "value": bonf[1]},
+    {"metric":"pval_pyth_fdr", "value": q[0]},
+    {"metric":"pval_chald_fdr", "value": q[1]},
+])
+
+out = pd.concat([combined, adj], ignore_index=True)
+out.to_csv(DATA_DIR / "athlete_name_birth_correlation.csv", index=False)
 
 print("Wrote athlete_name_birth_metrics.csv and athlete_name_birth_correlation.csv")

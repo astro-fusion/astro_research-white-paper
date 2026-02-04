@@ -1,0 +1,52 @@
+# Vedic Principles Coverage (Master Catalog)
+
+This report anchors its methodology in a shared **Vedic Principles Catalog** derived from classical Jyotish sources. Every computable principle is enumerated and mapped to a reproducible algorithm; non-computable rules are still documented to maintain completeness and avoid selective omission. [@bphs; @varahamihira_brihat_samhita; @saravali; @jataka_parijata; @surya_siddhanta]
+
+```{python}
+#| label: eq-vedic-catalog-counts
+#| fig-cap: "Vedic Principles Catalog: Counts by Family"
+#| fig-width: 8
+#| fig-height: 4
+#| fig-pos: 'H'
+
+from pathlib import Path
+import os
+import pandas as pd
+import matplotlib.pyplot as plt
+
+root = Path(os.getenv("QUARTO_PROJECT_DIR") or Path.cwd())
+catalog = pd.read_csv(root / "data" / "vedic_principles_catalog.csv")
+
+counts = catalog.groupby("family").size().sort_values(ascending=False).head(20)
+plt.figure(figsize=(8.5, 4))
+counts.plot(kind="bar", color="darkslateblue")
+plt.ylabel("Count")
+plt.title("Top Vedic Principle Families")
+plt.grid(axis="y", alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+#| label: tbl-eq-vedic-coverage
+#| tbl-cap: "Coverage Matrix for Earthquake Report"
+
+coverage = pd.read_csv(root / "data" / "vedic_principles_coverage.csv")
+eq_cov = coverage[coverage["report"] == "earthquake"]
+summary = (
+    eq_cov.groupby(["family", "scope", "coverage_status"])
+    .size()
+    .unstack(fill_value=0)
+    .reset_index()
+)
+summary["coverage_ratio"] = summary.get("computed", 0) / summary[[c for c in ["computed", "documented", "not_included"] if c in summary]].sum(axis=1)
+summary.sort_values(["scope", "family"])  
+```
+
+```{python}
+#| label: tbl-eq-vedic-master
+#| tbl-cap: "Master Vedic Principles Catalog (Core + Extended)"
+
+catalog_sorted = catalog.sort_values(["family", "item_type", "name"])
+catalog_sorted[["family", "item_type", "name", "scope", "computable", "description"]]
+```

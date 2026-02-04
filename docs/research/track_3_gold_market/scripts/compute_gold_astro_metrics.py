@@ -4,6 +4,7 @@ from datetime import timedelta
 from pathlib import Path
 import pandas as pd
 import numpy as np
+from scipy.stats import chi2
 
 base = Path(__file__).resolve().parents[1]
 data_dir = base / "data"
@@ -40,6 +41,27 @@ for w in WINDOWS:
             days.add(d + timedelta(days=delta))
     window_sets[w] = days
 
+window_sizes = {w: len(dayset) for w, dayset in window_sets.items()}
+
+def chi_square_p(a, b, c, d):
+    obs = np.array([a, b, c, d], dtype=float)
+    if obs.sum() == 0:
+        return 1.0
+    row1 = a + b
+    row2 = c + d
+    col1 = a + c
+    col2 = b + d
+    expected = np.array([
+        row1 * col1 / obs.sum(),
+        row1 * col2 / obs.sum(),
+        row2 * col1 / obs.sum(),
+        row2 * col2 / obs.sum(),
+    ])
+    if np.any(expected == 0):
+        return 1.0
+    chi2_stat = ((obs - expected) ** 2 / expected).sum()
+    return float(chi2.sf(chi2_stat, df=1))
+
 # helpers
 
 def ang_diff(a, b):
@@ -48,6 +70,7 @@ def ang_diff(a, b):
 
 # Precompute arrays
 feat_days = feat["date"].dt.date.values
+total_days = len(feat_days)
 
 # Precompute for phases
 moon = feat["Moon_lon"].values
@@ -114,6 +137,10 @@ for _, row in catalog.iterrows():
     elif cat == "nakshatra_lord":
         active = feat["nakshatra_lord"].values == row["lord"]
 
+    elif cat == "dasha":
+        col = "global_vimshottari_lord"
+        active = feat[col].values == row["lord"] if col in feat.columns else np.zeros(len(feat), dtype=bool)
+
     elif cat == "compound":
         active = np.zeros(len(feat), dtype=bool)
 
@@ -123,17 +150,49 @@ for _, row in catalog.iterrows():
     total_active = int(active.sum())
 
     overlaps = {}
+    pvals = {}
     for w, dayset in window_sets.items():
         overlap = int(sum(1 for i, d in enumerate(feat_days) if active[i] and d in dayset))
         overlaps[f"overlap_w{w}"] = overlap
+        a = overlap
+        b = total_active - a
+        c = window_sizes[w] - a
+        d = total_days - (a + b + c)
+        pvals[f"pval_w{w}"] = chi_square_p(a, b, c, d)
+        if w == 3:
+            expected = (total_active * window_sizes[w]) / total_days if total_days else 0
+            var = 0
+            if total_days > 1:
+                var = (total_active * window_sizes[w] * (total_days - total_active) * (total_days - window_sizes[w])) / (
+                    total_days**2 * (total_days - 1)
+                )
+            z = (a - expected) / np.sqrt(var) if var > 0 else 0.0
+            overlaps["expected_overlap_w3"] = expected
+            overlaps["zscore_w3"] = z
 
     results.append({
         "combo_id": row["combo_id"],
         "category": cat,
         "total_active_days": total_active,
         **overlaps,
+        **pvals,
     })
 
+metrics = pd.DataFrame(results)
+
+if "pval_w3" in metrics.columns:
+    p = metrics["pval_w3"].fillna(1.0).values
+    m = len(p)
+    metrics["pval_w3_bonferroni"] = np.minimum(p * m, 1.0)
+    order = np.argsort(p)
+    q = np.empty_like(p)
+    prev = 1.0
+    for rank, idx in enumerate(order[::-1], start=1):
+        qval = min(prev, p[idx] * m / (m - rank + 1))
+        q[idx] = qval
+        prev = qval
+    metrics["pval_w3_fdr"] = q
+
 out_path = data_dir / "gold_astro_metrics.csv"
-pd.DataFrame(results).to_csv(out_path, index=False)
+metrics.to_csv(out_path, index=False)
 print(f"Wrote {out_path} with {len(results)} rows")

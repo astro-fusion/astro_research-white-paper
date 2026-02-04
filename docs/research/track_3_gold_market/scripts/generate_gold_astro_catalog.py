@@ -87,6 +87,10 @@ add("eclipse", "Lunar eclipse window", "syzygy + node proximity", eclipse_type="
 for lord in ["Ketu","Venus","Sun","Moon","Mars","Rahu","Jupiter","Saturn","Mercury"]:
     add("nakshatra_lord", f"Moon in nakshatra ruled by {lord}", lord=lord)
 
+# Vimshottari dasha (global baseline)
+for lord in ["Ketu","Venus","Sun","Moon","Mars","Rahu","Jupiter","Saturn","Mercury"]:
+    add("dasha", f"Global Vimshottari Mahadasha: {lord}", "system=vimshottari", lord=lord)
+
 # Windowed compound examples
 for w in WINDOWS:
     add("compound", "Mars-Saturn hard aspect within window", "aspect=square/opposition; windowed", window_days=w)

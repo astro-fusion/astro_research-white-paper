@@ -101,6 +101,32 @@ add("eclipse", "Lunar eclipse window", "syzygy + node proximity", eclipse_type="
 add("syzygy", "New Moon (Amavasya)", phase="new")
 add("syzygy", "Full Moon (Purnima)", phase="full")
 
+# Vimshottari dasha (India + Nepal reference charts)
+for lord in PLANETS:
+    add("india_dasha", f"India Vimshottari Mahadasha: {lord}", "system=vimshottari", lord=lord)
+    add("india_antardasha", f"India Vimshottari Antardasha: {lord}", "system=vimshottari", sub_lord=lord)
+
+for lord in PLANETS:
+    add("nepal_dasha", f"Nepal Vimshottari Mahadasha: {lord}", "system=vimshottari", lord=lord)
+    add("nepal_antardasha", f"Nepal Vimshottari Antardasha: {lord}", "system=vimshottari", sub_lord=lord)
+
+for india_lord in PLANETS:
+    for nepal_lord in PLANETS:
+        add(
+            "india_nepal_dasha_pair",
+            f"India {india_lord} Mahadasha with Nepal {nepal_lord} Mahadasha",
+            "pair=mahadasha",
+            india_lord=india_lord,
+            nepal_lord=nepal_lord,
+        )
+        add(
+            "india_nepal_antardasha_pair",
+            f"India {india_lord} Antardasha with Nepal {nepal_lord} Antardasha",
+            "pair=antardasha",
+            india_lord=india_lord,
+            nepal_lord=nepal_lord,
+        )
+
 # Compound examples (pairwise triggers with windows)
 for window in WINDOWS:
     add("compound", "Malefic conjunction during eclipse window", "Mars/Saturn/Rahu/Ketu within orb; eclipse window", window, compound="malefic_conj_eclipse")

@@ -94,6 +94,14 @@ if cor_path.exists():
 ```
 
 ```{python}
+#| label: tbl-athlete-correlation
+#| tbl-cap: "Name vs Birth Numerology Significance (Athlete Sample)"
+
+if cor_path.exists():
+    corr
+```
+
+```{python}
 #| label: fig-missing-heatmap
 #| fig-cap: "Missing Number Heatmap by Month"
 #| fig-width: 8

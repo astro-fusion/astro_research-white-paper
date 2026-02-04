@@ -23,6 +23,35 @@ plt.show()
 ```
 
 ```{python}
+#| label: tbl-earthquake-significance
+#| tbl-cap: "Top 15 Combinations by FDR-Adjusted p-value (±3 days)"
+
+if "pval_w3_fdr" in metrics.columns:
+    top_sig = metrics.sort_values("pval_w3_fdr").head(15)[
+        ["combo_id", "category", "pval_w3", "pval_w3_fdr", "pval_w3_bonferroni", "total_active_days"]
+    ]
+    top_sig
+```
+
+```{python}
+#| label: fig-earthquake-zscores
+#| fig-cap: "Z-score Distribution vs Random Baseline (±3 days)"
+#| fig-width: 7.5
+#| fig-height: 4
+#| fig-pos: 'H'
+
+if "zscore_w3" in metrics.columns:
+    plt.figure(figsize=(8,4))
+    plt.hist(metrics["zscore_w3"].dropna(), bins=40, color="slategray", alpha=0.8)
+    plt.title("Z-score Distribution (Random Baseline)")
+    plt.xlabel("Z-score")
+    plt.ylabel("Count")
+    plt.grid(axis="y", alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+```
+
+```{python}
 #| label: fig-window-compare
 #| fig-cap: "Overlap Rates by Window Size (All Combinations)"
 #| fig-width: 8

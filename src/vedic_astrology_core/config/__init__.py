@@ -9,6 +9,7 @@ Handles configuration management including:
 
 from .constants import PLANET_NAMES, PLANETS, SIGNS, Planet
 from .settings import Config, load_config
+from .reference_charts import ReferenceChart, get_reference_chart, get_reference_charts
 
 __all__ = [
     # constants
@@ -19,4 +20,7 @@ __all__ = [
     # settings
     "Config",
     "load_config",
+    "ReferenceChart",
+    "get_reference_chart",
+    "get_reference_charts",
 ]

@@ -1,0 +1,30 @@
+# Vimshottari Dasha Overlay (Global Baseline)
+
+For the phase‑1 global analysis, we compute the **Vimshottari Mahadasha** using a global baseline chart (2000‑01‑01 00:00 UTC at 0°N, 0°E). This provides a long‑cycle macro timing feature that can be compared against gold return spikes without country‑specific assumptions.
+
+```{python}
+#| label: fig-gold-dasha-days
+#| fig-cap: "Global Vimshottari Mahadasha: Day Counts in Dataset"
+#| fig-width: 7
+#| fig-height: 4
+#| fig-pos: 'H'
+
+from pathlib import Path
+import os
+import pandas as pd
+import matplotlib.pyplot as plt
+
+root = Path(os.getenv("QUARTO_PROJECT_DIR") or Path.cwd())
+feat_path = root / "docs" / "research" / "track_3_gold_market" / "data" / "gold_astro_features.csv"
+feat = pd.read_csv(feat_path)
+
+if "global_vimshottari_lord" in feat.columns:
+    counts = feat["global_vimshottari_lord"].value_counts().sort_index()
+    plt.figure(figsize=(7, 4))
+    counts.plot(kind="bar", color="goldenrod")
+    plt.ylabel("Days")
+    plt.title("Global Vimshottari Mahadasha Distribution")
+    plt.grid(axis="y", alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+```

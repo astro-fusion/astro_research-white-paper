@@ -1,0 +1,102 @@
+# Vimshottari Dasha Overlay (India + Nepal)
+
+To address **phase‑2 country‑specific triggers**, we overlay the **India Independence Chart** (1947‑08‑15 00:00 IST, Delhi) and a **Nepal reference chart** (2015‑09‑20 00:00 NPT, Kathmandu) and compute the active **Vimshottari Mahadasha** for each day in the earthquake dataset. This allows the analysis to test whether regional dasha cycles contribute to event clustering beyond the global planetary configurations. [@bphs]
+
+```{python}
+#| label: fig-eq-dasha-days
+#| fig-cap: "India vs Nepal Vimshottari Mahadasha: Day Counts"
+#| fig-width: 7
+#| fig-height: 4
+#| fig-pos: 'H'
+
+from pathlib import Path
+import os
+import pandas as pd
+import matplotlib.pyplot as plt
+
+root = Path(os.getenv("QUARTO_PROJECT_DIR") or Path.cwd())
+base_path = root / "docs" / "research" / "track_2_earthquake_prediction" / "data" / "daily_astro_base.csv"
+base = pd.read_csv(base_path)
+
+if "india_vimshottari_lord" in base.columns and "nepal_vimshottari_lord" in base.columns:
+    india_counts = base["india_vimshottari_lord"].value_counts().sort_index()
+    nepal_counts = base["nepal_vimshottari_lord"].value_counts().sort_index()
+    counts = pd.DataFrame({"India": india_counts, "Nepal": nepal_counts}).fillna(0)
+    plt.figure(figsize=(7, 4))
+    counts.plot(kind="bar", color=["indianred", "teal"])
+    plt.ylabel("Days")
+    plt.title("India vs Nepal Vimshottari Mahadasha Distribution")
+    plt.grid(axis="y", alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+```
+
+```{python}
+#| label: fig-eq-dasha-timeline
+#| fig-cap: "Mahadasha Timeline: India vs Nepal (2015-2024)"
+#| fig-width: 8
+#| fig-height: 4
+#| fig-pos: 'H'
+
+if "india_vimshottari_lord" in base.columns and "nepal_vimshottari_lord" in base.columns:
+    seq = ["Ketu","Venus","Sun","Moon","Mars","Rahu","Jupiter","Saturn","Mercury"]
+    mapping = {name: i+1 for i, name in enumerate(seq)}
+    df = base.copy()
+    df["date"] = pd.to_datetime(df["date"])
+    df["india_lord_idx"] = df["india_vimshottari_lord"].map(mapping)
+    df["nepal_lord_idx"] = df["nepal_vimshottari_lord"].map(mapping)
+
+    plt.figure(figsize=(9, 4))
+    plt.plot(df["date"], df["india_lord_idx"], label="India", color="indianred", alpha=0.7)
+    plt.plot(df["date"], df["nepal_lord_idx"], label="Nepal", color="teal", alpha=0.7)
+    plt.yticks(list(mapping.values()), list(mapping.keys()))
+    plt.title("Mahadasha Timeline (Encoded Lords)")
+    plt.xlabel("Date")
+    plt.ylabel("Mahadasha Lord")
+    plt.legend()
+    plt.grid(axis="y", alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+```
+
+```{python}
+#| label: fig-eq-dasha-heatmap
+#| fig-cap: "Mahadasha Co-Occurrence: India vs Nepal"
+#| fig-width: 6.5
+#| fig-height: 5
+#| fig-pos: 'H'
+
+import numpy as np
+
+if "india_vimshottari_lord" in base.columns and "nepal_vimshottari_lord" in base.columns:
+    seq = ["Ketu","Venus","Sun","Moon","Mars","Rahu","Jupiter","Saturn","Mercury"]
+    ctab = pd.crosstab(base["india_vimshottari_lord"], base["nepal_vimshottari_lord"]).reindex(index=seq, columns=seq, fill_value=0)
+    plt.figure(figsize=(6.5, 5))
+    plt.imshow(ctab.values, cmap="viridis")
+    plt.xticks(range(len(seq)), seq, rotation=45, ha="right")
+    plt.yticks(range(len(seq)), seq)
+    plt.colorbar(label="Days")
+    plt.title("Mahadasha Co-Occurrence Heatmap")
+    plt.tight_layout()
+    plt.show()
+```
+
+```{python}
+#| label: fig-eq-antardasha-heatmap
+#| fig-cap: "Antardasha Co-Occurrence: India vs Nepal"
+#| fig-width: 6.5
+#| fig-height: 5
+#| fig-pos: 'H'
+
+if "india_vimshottari_sublord" in base.columns and "nepal_vimshottari_sublord" in base.columns:
+    seq = ["Ketu","Venus","Sun","Moon","Mars","Rahu","Jupiter","Saturn","Mercury"]
+    ctab = pd.crosstab(base["india_vimshottari_sublord"], base["nepal_vimshottari_sublord"]).reindex(index=seq, columns=seq, fill_value=0)
+    plt.figure(figsize=(6.5, 5))
+    plt.imshow(ctab.values, cmap="magma")
+    plt.xticks(range(len(seq)), seq, rotation=45, ha="right")
+    plt.yticks(range(len(seq)), seq)
+    plt.colorbar(label="Days")
+    plt.title("Antardasha Co-Occurrence Heatmap")
+    plt.tight_layout()
+    plt.show()
+```
