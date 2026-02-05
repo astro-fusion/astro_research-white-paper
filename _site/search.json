@@ -1,0 +1,226 @@
+[
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "",
+    "text": "Note\n\n\n\nThis report is assembled from modular sections to provide detailed analysis and interactive visualizations."
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#mythological-archetypal-foundations",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#mythological-archetypal-foundations",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "2.1 Mythological & Archetypal Foundations",
+    "text": "2.1 Mythological & Archetypal Foundations\nTo understand why these systems are often conflated, one must examine their shared mythological roots. Each number in Vedic numerology is not merely a quantity but a symbol for a planetary deity’s energy pattern:\n\n1 - The Sun (Surya): The soul (\\(Atman\\)), the king, the ego. Just as the Sun is the center of the solar system, the number 1 represents unity, leadership, and the self. Mythologically, Surya rides a chariot of seven horses (colors of light), representing the source of all vitality.\n2 - The Moon (Chandra): The mind (\\(Manas\\)), emotions, and fluidity. Chandra is the queen, reflecting the light of the Sun. As the Moon waxes and wanes, so does the mind fluctuate.\n3 - Jupiter (Brihaspati): The Guru of the Devas. Represents wisdom, expansion, and ether (\\(Akasha\\)).\n4 - Rahu (North Node): The head of the demon, representing illusion (\\(Maya\\)), innovation, and unorthodoxy.\n5 - Mercury (Budha): The prince, representing intellect (\\(Buddhi\\)), communication, and trade.\n6 - Venus (Shukra): The Guru of the Asuras. Represents desire (\\(Kama\\)), beauty, and relationships.\n7 - Ketu (South Node): The headless body, representing spiritual liberation (\\(Moksha\\)), detachment, and mystery.\n8 - Saturn (Shani): The judge (\\(Karmakaraka\\)), representing discipline, delay, and truth (\\(Satya\\)).\n9 - Mars (Mangal): The commander, representing energy (\\(Shakti\\)), logic, and aggression."
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#the-research-problem",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#the-research-problem",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "2.2 The Research Problem",
+    "text": "2.2 The Research Problem\nPractitioners often assume that if a person is in a “Sun period” in numerology (e.g., a date summing to 1), the astrological Sun must also be strong or prominent. This study challenges that assumption. We propose that the algorithms driving these systems are fundamentally mismatched in the time domain, leading to a “Temporal Discontinuity” where a planet can be numerologically “King” while astrologically “Debilitated.”"
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#literature-review",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#literature-review",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "2.3 Literature Review",
+    "text": "2.3 Literature Review\nHistorical and cultural discussions of numerology emphasize symbolic meaning and cross-cultural number mysticism, framing numbers as archetypal carriers of meaning rather than empirically testable signals (schimmel1975?). Sociological work has examined numerological associations in everyday life and how people integrate numeric symbolism into personal decision-making (benigeri1992?). Media and cultural studies have documented numerology and related occult practices as durable features of popular culture, reinforcing persistent narratives of meaningful numeric patterns (berger2006?; mcclelland2009?).\nFrom a psychological perspective, superstition and belief can measurably influence behavior and performance, suggesting that numeric belief systems can create real-world behavioral effects even when causal mechanisms are symbolic (damisch2010?). Statistical history and philosophy highlight the human tendency to impose structure on randomness, underscoring the importance of rigor when interpreting pattern-like signals (hacking1990?; stigler1986?).\nMethodologically, computational pattern analysis and signal comparison draw on modern statistical learning and data science foundations (bishop2006?). The analysis pipeline in this study leverages standard scientific computing tools for reproducibility and visualization (mckinney2010?; hunter2007?; pedregosa2011?), and follows a literate, transparent reporting approach for replicable research workflows (knuth84?).\nThis paper extends prior interpretive narratives by framing numerology and astrology as distinct time-domain signals, subject to the same alignment and frequency tests used in empirical time-series analysis."
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#research-questions-hypotheses",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#research-questions-hypotheses",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "2.4 Research Questions & Hypotheses",
+    "text": "2.4 Research Questions & Hypotheses\nWe formalize the investigation into testable hypotheses:\n\nRQ1: How often does the numerological ruling planet match the Moon’s Nakshatra lord on the same day?\nRQ2: Are any months or seasons more aligned than others?\nRQ3: Do numerology and astrology exhibit similar frequency signatures in the time domain?\n\nH1 (Null): Numerology-astrology alignment occurs at random chance (~11.1%). H2 (Alternative): Alignment is significantly higher than chance, indicating synchronous operation."
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#data-sources-experimental-design",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#data-sources-experimental-design",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "3.1 Data Sources & Experimental Design",
+    "text": "3.1 Data Sources & Experimental Design\n\nTimeframe: January 1, 2024 to December 31, 2024 (365 days).\nLocation: New Delhi, India (28.6°N, 77.1°E).\nAstrology Engine: Swiss Ephemeris (DE431) with Lahiri Ayanamsa.\nSampling Resolution: Daily (numerology) and noon-time lunar position (astrology).\n\nWe intentionally use daily sampling to respect numerology’s discrete granularity and compare it directly to the Moon’s ruling Nakshatra lord."
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#athlete-name-birthdate-dataset",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#athlete-name-birthdate-dataset",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "3.2 Athlete Name + Birthdate Dataset",
+    "text": "3.2 Athlete Name + Birthdate Dataset\nTo test name-based numerology against birth-based numerology, we use a sampled athlete dataset with name and birth date fields (N=500). This enables correlation analysis between expression numbers and life-path numbers.\nDataset: use_cases/numerology/research_paper/data/athletes_sample.csv (source: (athletes_dataset_stat408?))"
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#numerology-algorithm-modulo-9-arithmetic",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#numerology-algorithm-modulo-9-arithmetic",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "3.3 Numerology Algorithm: Modulo-9 Arithmetic",
+    "text": "3.3 Numerology Algorithm: Modulo-9 Arithmetic\nVedic numerology uses a base-9 system. The “Mulanka” (Root Number) is the most rapidly changing daily indicator. It is derived from the day of the month (\\(D\\)) using digital root summation, which is mathematically equivalent to modulo-9 arithmetic (with 9 replacing 0).\nThe algorithm for the Ruling Planet \\(P_{num}\\) on day \\(D\\) is:\n\\[\nV = (D - 1) \\bmod 9 + 1\n\\]\nWhere \\(V\\) maps to the planet list: \\(\\{1 \\to Sun, 2 \\to Moon, \\dots, 9 \\to Mars\\}\\). This function is a discrete step function \\(f(t)\\) that holds a constant integer value for 24 hours (or until the next calendar sunrise)."
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#astrology-algorithm-continuous-celestial-mechanics",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#astrology-algorithm-continuous-celestial-mechanics",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "3.4 Astrology Algorithm: Continuous Celestial Mechanics",
+    "text": "3.4 Astrology Algorithm: Continuous Celestial Mechanics\nVedic Astrology requires determining the precise position of planets on the Ecliptic. We utilize the Swiss Ephemeris (DE431) for high-precision calculations.\nThe continuous position function \\(\\lambda_p(t)\\) for a planet \\(p\\) at time \\(t\\) involves: 1. Heliocentric Calculation: \\(r(t)\\) vector from Sun to Planet. 2. Geocentric Conversion: Adjusting for Earth’s position. 3. Sidereal Adjustment (Ayanamsa): Subtracting the precession of equinoxes using the Lahiri Ayanamsa (\\(\\alpha \\approx 24^\\circ\\)).\n\\[\n\\lambda_{sidereal}(t) = \\lambda_{tropical}(t) - \\alpha(t)\n\\]\n\n3.4.1 The Moon’s Vital Role: Nakshatras\nThe Moon is the fastest-moving body, traversing the zodiac in ~27.3 days. In Vedic Astrology, the zodiac is divided into 27 Nakshatras (Lunar Mansions) of \\(13^\\circ 20'\\) each.\nThe Nakshatra index \\(N\\) is calculated as:\n\\[\nN = \\lfloor \\frac{\\lambda_{Moon}}{13.333^\\circ} \\rfloor\n\\]\nEach Nakshatra is ruled by a planet (Lord) in a specific sequence (Ketu \\(\\to\\) Venus \\(\\to\\) Sun…). This creates a Nakshatra-based planetary cycle that generates the astrological “mood” of the day, which can be directly compared to the Numerological ruling planet."
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#derived-variables",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#derived-variables",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "3.5 Derived Variables",
+    "text": "3.5 Derived Variables\nThe computational pipeline produces the following core variables per day:\n\n\n\nVariable\nDefinition\nType\n\n\n\n\nmulanka\nDigital root of day (1-9)\nDiscrete\n\n\nnumerology_lord\nPlanet mapped from mulanka\nCategorical\n\n\nnakshatra_lord\nPlanet ruling the Moon’s Nakshatra\nCategorical\n\n\nmatch\n1 if lords align, else 0\nBinary"
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#methodology-pipeline-algorithm",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#methodology-pipeline-algorithm",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "3.6 Methodology Pipeline & Algorithm",
+    "text": "3.6 Methodology Pipeline & Algorithm\nThe full pipeline is designed to be deterministic and reproducible from raw dates and location.\n\n\n\n\n\nflowchart TD\n  A[\"Date (YYYY-MM-DD)\"] --&gt; B[\"Mulanka via digital root\"]\n  A --&gt; C[\"Moon longitude (Swiss Ephemeris)\"]\n  C --&gt; D[\"Nakshatra index\"]\n  D --&gt; E[\"Nakshatra lord\"]\n  B --&gt; F[\"Numerology lord\"]\n  F --&gt; G[\"Match?\"]\n  E --&gt; G\n  G --&gt; H[\"Metrics + Figures\"]\n\n\n\n\n\n\nAlgorithm 1: Daily Alignment Pipeline\n\nInput: Date range, latitude, longitude, and ayanamsa system.\nCompute Numerology: For each date, compute Mulanka \\(V = (D-1) \\bmod 9 + 1\\) and map to a numerology lord.\nCompute Astrology: For each date, compute Moon longitude at local noon and map to Nakshatra lord.\nAlign: Record whether numerology lord equals Nakshatra lord.\nAnalyze: Compute alignment rate, confusion matrix, monthly trends, and spectral signatures."
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#the-temporal-mismatch",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#the-temporal-mismatch",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "4.1 1. The Temporal Mismatch",
+    "text": "4.1 1. The Temporal Mismatch\nThe graph below visualizes the fundamental disconnect. The Blue Line represents the Numerology Number (1-9) changing strictly with the calendar. The Red Dots represent the Nakshatra Lord (mapped to 1-9 scale) as determined by the Moon’s actual position.\nNote the irregularity of the Red Dots compared to the step-wise Blue Line. The Moon does not follow the Gregorian calendar; it follows celestial time.\n\n\n\n\n\nFigure 4.1colon Temporal Discontinuity: Numerology (Blue) vs Astrology (Red) over 2 months"
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#distribution-of-numerological-vs-astrological-lords",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#distribution-of-numerological-vs-astrological-lords",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "4.2 2. Distribution of Numerological vs Astrological Lords",
+    "text": "4.2 2. Distribution of Numerological vs Astrological Lords\nTo understand baseline behavior, we visualize how often each planet appears in both systems across the year.\n\n\n\n\n\nFigure 4.2colon Distribution of Numerology Lords vs Nakshatra Lords (2024)"
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#statistical-probability-of-alignment",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#statistical-probability-of-alignment",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "4.3 3. Statistical Probability of Alignment",
+    "text": "4.3 3. Statistical Probability of Alignment\nIf these systems were synchronized, we would expect a high degree of matching. However, our analysis shows:\n\n\nTotal Matches in 2024: 38/366\nSynchronization Rate: 10.38%\n\n\nThe synchronization rate is approximately ${python} f”{pct:.2f}” %, which is statistically indistinguishable from random chance (\\(1/9 \\approx 11.1\\%\\)). This confirms that there is no inherent causal link between the Gregorian date number and the actual lunar position."
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#confusion-matrix-numerology-vs-nakshatra-lord",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#confusion-matrix-numerology-vs-nakshatra-lord",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "4.4 4. Confusion Matrix: Numerology vs Nakshatra Lord",
+    "text": "4.4 4. Confusion Matrix: Numerology vs Nakshatra Lord\nThe following heatmap shows how often each numerology lord coincides with each Nakshatra lord.\n\n\n\n\n\nFigure 4.3colon Confusion Matrix of Numerology vs Nakshatra Lords"
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#statistical-association-metrics",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#statistical-association-metrics",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "4.5 5. Statistical Association Metrics",
+    "text": "4.5 5. Statistical Association Metrics\nWe quantify association strength using chi-square statistics, Cramer’s V, and mutual information.\n\n\nChi-square: 61.41 (df=64)\nCramer's V: 0.1448\nMutual Information: 0.0935"
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#alignment-over-time-monthly",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#alignment-over-time-monthly",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "4.6 6. Alignment Over Time (Monthly)",
+    "text": "4.6 6. Alignment Over Time (Monthly)\nWe compute monthly alignment rates to check for seasonal or calendar patterns.\n\n\n\n\n\nFigure 4.4colon Monthly Alignment Rate (2024)"
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#detailed-moon-phase-variation",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#detailed-moon-phase-variation",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "4.7 7. Detailed Moon Phase Variation",
+    "text": "4.7 7. Detailed Moon Phase Variation\nBeyond just the Nakshatra, the Moon’s “mood” is heavily influenced by its phase (Paksha). Numerology treats every “2” (Moon number) day as identical. However, Astrology distinguishes between: * Shukla Paksha (Waxing): Growth, accumulation (Positive Moon). * Krishna Paksha (Waning): Decay, release (Negative/Weak Moon).\nThe following chart tracks the Moon’s longitude over the year, showing the rapid, continuous cycle that numerology flattens into a single digit.\n\n\n\n\n\nFigure 4.5colon The Continuous Wave: Moon’s Journey through the Zodiac"
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#frequency-domain-signature-spectral-analysis",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#frequency-domain-signature-spectral-analysis",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "4.8 8. Frequency-Domain Signature (Spectral Analysis)",
+    "text": "4.8 8. Frequency-Domain Signature (Spectral Analysis)\nWe compare the frequency spectrum of numerology (discrete step function) vs. astrology (nakshatra lord changes).\n\n\n\n\n\nFigure 4.6colon Frequency Domain: Numerology vs Nakshatra Lords"
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#methodology",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#methodology",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "5.1 Methodology",
+    "text": "5.1 Methodology\n\nDigit Frequency (\\(F_d\\)): We count the occurrences of digits 1-9 in the date string (YYYY-MM-DD). If \\(F_d \\ge 3\\), we consider it a “Numerologically Strong” day for that number.\nAstrological Dignity (\\(D_p\\)): We calculate the dignity score (0-100) for the corresponding planet. If \\(D_p \\le 30\\), we consider it “Astrologically Weak”.\nDivergence: A match occurs when \\(F_d \\ge 3\\) AND \\(D_p \\le 30\\)."
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#case-studies-of-divergence",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#case-studies-of-divergence",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "5.2 Case Studies of Divergence",
+    "text": "5.2 Case Studies of Divergence\nThe following analysis scans our 5-year dataset to expose these illusions.\n\n\n\nCritical Divergence Dates: High Repetition vs Low Strength {#cell-divergence-analysis}\n\n\n\n\n\n\n\n\n\nDate\nNumber\nPlanet\nRepetition\nAstro State\n\n\n\n\n2024-02-02\n2\nMoon\n4 times\nDebilitated in Scorpio\n\n\n2024-02-03\n2\nMoon\n3 times\nDebilitated in Scorpio\n\n\n2024-02-29\n2\nMoon\n4 times\nDebilitated in Scorpio\n\n\n2024-03-02\n2\nMoon\n3 times\nDebilitated in Scorpio\n\n\n2024-03-27\n2\nMoon\n3 times\nDebilitated in Scorpio\n\n\n2024-03-28\n2\nMoon\n3 times\nDebilitated in Scorpio\n\n\n2024-03-29\n2\nMoon\n3 times\nDebilitated in Scorpio\n\n\n2024-04-24\n2\nMoon\n3 times\nDebilitated in Scorpio\n\n\n2024-04-25\n2\nMoon\n3 times\nDebilitated in Scorpio\n\n\n2024-05-21\n2\nMoon\n3 times\nDebilitated in Scorpio\n\n\n\n\n\n\n5.2.1 Analysis of Findings\nThe table above (if populated) highlights dates where users might be misled by the calendar.\nHypothetical Example: The Moon in Scorpio Trap If the date 2022-02-22 (or similar) occurred while the Moon was in Scorpio (its sign of debilitation), numerology would predict a “Dual Master Number” day of immense intuition and connection (2). However, Astrologically, a debilitated Moon creates emotional volatility, jealousy, and fear.\n\nNumerology says: “Connect, feel, unite.”\nAstrology says: “Protect your energy, avoid paranoia.”\n\nThis negative correlation is dangerous. Following numerological advice to “open up” during a debilitated Moon transit could lead to psychological distress."
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#digital-root-core-reduction",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#digital-root-core-reduction",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "15.1 Digital Root (Core Reduction)",
+    "text": "15.1 Digital Root (Core Reduction)\n\\[\nDR(n) = (n - 1) \\bmod 9 + 1\n\\]"
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#universal-day-number-udn",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#universal-day-number-udn",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "15.2 Universal Day Number (UDN)",
+    "text": "15.2 Universal Day Number (UDN)\n\\[\nUDN = DR(day + month + sum(year\\_digits))\n\\]"
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#universal-month-number-umn",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#universal-month-number-umn",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "15.3 Universal Month Number (UMN)",
+    "text": "15.3 Universal Month Number (UMN)\n\\[\nUMN = DR(month + sum(year\\_digits))\n\\]"
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#universal-year-number-uyn",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#universal-year-number-uyn",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "15.4 Universal Year Number (UYN)",
+    "text": "15.4 Universal Year Number (UYN)\n\\[\nUYN = DR(sum(year\\_digits))\n\\]"
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#missing-number-analysis-lo-shu",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#missing-number-analysis-lo-shu",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "15.5 Missing Number Analysis (Lo Shu)",
+    "text": "15.5 Missing Number Analysis (Lo Shu)\nCount digits 1–9 in the date string (YYYYMMDD). A number is missing if count = 0."
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#pythagorean-name-numerology-expression-soul-urge-personality",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#pythagorean-name-numerology-expression-soul-urge-personality",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "15.6 Pythagorean Name Numerology (Expression, Soul Urge, Personality)",
+    "text": "15.6 Pythagorean Name Numerology (Expression, Soul Urge, Personality)\nMap letters to 1–9 using the Pythagorean table and reduce:\n1: A J S\n2: B K T\n3: C L U\n4: D M V\n5: E N W\n6: F O X\n7: G P Y\n8: H Q Z\n9: I R\n\nExpression: sum of all letter values\nSoul Urge: sum of vowels only\nPersonality: sum of consonants only"
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#chaldean-name-numerology",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#chaldean-name-numerology",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "15.7 Chaldean Name Numerology",
+    "text": "15.7 Chaldean Name Numerology\nMap letters to 1–8 using the Chaldean table and reduce:\n1: A I J Q Y\n2: B K R\n3: C G L S\n4: D M T\n5: E H N X\n6: U V W\n7: O Z\n8: F P"
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#master-numbers",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#master-numbers",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "15.8 Master Numbers",
+    "text": "15.8 Master Numbers\nMaster numbers (11, 22, 33) are optionally preserved instead of reduction."
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#karmic-debt-numbers",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#karmic-debt-numbers",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "15.9 Karmic Debt Numbers",
+    "text": "15.9 Karmic Debt Numbers\nIf compound numbers 13, 14, 16, 19 appear, they are flagged as special karmic patterns."
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#life-path-number-birth-date",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#life-path-number-birth-date",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "15.10 Life Path Number (Birth Date)",
+    "text": "15.10 Life Path Number (Birth Date)\nSum all digits of the birth date (YYYYMMDD) and reduce."
+  },
+  {
+    "objectID": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#pinnacles-challenges",
+    "href": "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html#pinnacles-challenges",
+    "title": "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence",
+    "section": "15.11 Pinnacles & Challenges",
+    "text": "15.11 Pinnacles & Challenges\nLet: - \\(M = DR(month)\\), \\(D = DR(day)\\), \\(Y = DR(year)\\)\nPinnacles: - \\(P1 = DR(M + D)\\) - \\(P2 = DR(D + Y)\\) - \\(P3 = DR(P1 + P2)\\) - \\(P4 = DR(M + Y)\\)\nChallenges: - \\(C1 = |M - D|\\) - \\(C2 = |D - Y|\\) - \\(C3 = |C1 - C2|\\) - \\(C4 = |M - Y|\\)"
+  }
+]

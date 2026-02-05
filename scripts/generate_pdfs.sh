@@ -15,14 +15,14 @@ render_and_move() {
     local source=$1
     local output_name=$2
     local output_dir="pdfs"
-    
+
     echo "Rendering $output_name from $source..."
     quarto render "$source" --to pdf -o "$output_name"
-    
+
     # Move the generated PDF to pdfs folder
     # Note: quarto output path behavior might vary, it usually outputs to CWD or next to source.
     # We specified -o, so it should be in CWD if no path given, or we can just move it.
-    
+
         if [ -f "$output_name" ]; then
             mv "$output_name" "$output_dir/"
             echo "✅ Moved $output_name to $output_dir/"
@@ -57,10 +57,11 @@ render_and_move "docs/research/track_2_earthquake_prediction/EARTHQUAKE_PREDICTI
 # 4. Track 3
 render_and_move "docs/research/track_3_gold_market/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.qmd" "GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.pdf"
 
-# 5. Manuscripts
+# 5. Manuscripts & Consolidated Binder
+render_and_move "docs/research/COMPREHENSIVE_RESEARCH_THESIS.qmd" "COMPREHENSIVE_RESEARCH_THESIS.pdf"
 render_and_move "reports/manuscript.qmd" "manuscript_nature.pdf"
 
-# For IEEE, we need to specify CSL. 
+# For IEEE, we need to specify CSL.
 # We'll just run the command directly for this one to handle the extra arg
 echo "Rendering manuscript_ieee.pdf..."
 quarto render reports/manuscript.qmd --to pdf -M csl=reports/styles/ieee.csl -o manuscript_ieee.pdf

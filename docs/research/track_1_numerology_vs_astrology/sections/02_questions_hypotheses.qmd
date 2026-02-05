@@ -1,0 +1,10 @@
+## Research Questions & Hypotheses
+
+We formalize the investigation into testable hypotheses:
+
+*   **RQ1**: How often does the numerological ruling planet match the Moon's Nakshatra lord on the same day?
+*   **RQ2**: Are any months or seasons more aligned than others?
+*   **RQ3**: Do numerology and astrology exhibit similar frequency signatures in the time domain?
+
+**H1 (Null)**: Numerology-astrology alignment occurs at random chance (~11.1%).
+**H2 (Alternative)**: Alignment is significantly higher than chance, indicating synchronous operation.

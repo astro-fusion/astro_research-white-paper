@@ -1,0 +1,111 @@
+# Frequency & Distribution Graphs
+
+This section plots **frequency and distribution** of numerological patterns (UDN/UMN/UYN, missing numbers).
+
+```{python}
+#| label: num-metrics
+#| echo: false
+from pathlib import Path
+import pandas as pd
+import matplotlib.pyplot as plt
+import subprocess, sys
+
+root = Path.cwd().resolve()
+while root and not (root / "pyproject.toml").exists():
+    root = root.parent
+data_dir = (root or Path.cwd()) / "use_cases" / "numerology" / "research_paper" / "data"
+metrics_path = data_dir / "numerology_daily_metrics.csv"
+
+if not metrics_path.exists():
+    script = (root or Path.cwd()) / "use_cases" / "numerology" / "research_paper" / "scripts" / "generate_numerology_metrics.py"
+    subprocess.check_call([sys.executable, str(script)])
+
+metrics = pd.read_csv(metrics_path)
+
+# Optional name-based metrics
+name_metrics_path = data_dir / "name_numerology_metrics.csv"
+if name_metrics_path.exists():
+    name_metrics = pd.read_csv(name_metrics_path)
+else:
+    name_metrics = None
+
+# Optional personal metrics from birth dates
+personal_metrics_path = data_dir / "personal_numerology_metrics.csv"
+if personal_metrics_path.exists():
+    personal_metrics = pd.read_csv(personal_metrics_path)
+else:
+    personal_metrics = None
+```
+
+```{python}
+#| label: fig-udn
+#| fig-cap: "Universal Day Number (UDN) Frequency"
+#| fig-width: 7.5
+#| fig-height: 4
+#| fig-pos: 'H'
+
+udn_counts = metrics["udn"].value_counts().sort_index()
+plt.figure(figsize=(8,4))
+plt.bar(udn_counts.index.astype(str), udn_counts.values, color="steelblue")
+plt.title("UDN Frequency (2024)")
+plt.xlabel("UDN")
+plt.ylabel("Days")
+plt.grid(axis="y", alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+#| label: fig-life-path
+#| fig-cap: "Life Path Distribution (Birth Dataset)"
+#| fig-width: 7.5
+#| fig-height: 4
+#| fig-pos: 'H'
+
+if personal_metrics is not None:
+    dist = personal_metrics["life_path"].value_counts().sort_index()
+    plt.figure(figsize=(8,4))
+    plt.bar(dist.index.astype(str), dist.values, color="darkgreen")
+    plt.title("Life Path Number Distribution")
+    plt.xlabel("Life Path")
+    plt.ylabel("Count")
+    plt.grid(axis="y", alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+```
+```{python}
+#| label: fig-name-expression
+#| fig-cap: "Name-Based Expression Number Distribution (Pythagorean)"
+#| fig-width: 7.5
+#| fig-height: 4
+#| fig-pos: 'H'
+
+if name_metrics is not None:
+    dist = name_metrics["pyth_expression"].value_counts().sort_index()
+    plt.figure(figsize=(8,4))
+    plt.bar(dist.index.astype(str), dist.values, color="purple")
+    plt.title("Pythagorean Expression Number Distribution")
+    plt.xlabel("Expression Number")
+    plt.ylabel("Count")
+    plt.grid(axis="y", alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+```
+```{python}
+#| label: fig-missing
+#| fig-cap: "Missing Number Frequency (Lo Shu)"
+#| fig-width: 8
+#| fig-height: 4
+#| fig-pos: 'H'
+
+missing_cols = [c for c in metrics.columns if c.startswith("missing_")]
+missing_counts = metrics[missing_cols].sum()
+plt.figure(figsize=(8,4))
+plt.bar([c.split("_")[1] for c in missing_counts.index], missing_counts.values, color="teal")
+plt.title("Missing Number Frequency (2024)")
+plt.xlabel("Number")
+plt.ylabel("Days Missing")
+plt.grid(axis="y", alpha=0.3)
+plt.tight_layout()
+plt.show()
+```

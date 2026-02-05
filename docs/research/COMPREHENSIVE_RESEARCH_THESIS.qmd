@@ -1,0 +1,113 @@
+---
+title: "The Computational Unified Theory of Vedic Predictive Frameworks"
+subtitle: "A Comprehensive 10-Year Empirical Investigation into Astrology, Numerology, and Terrestrial Dynamics"
+date: last-modified
+date-format: "MMMM DD, YYYY"
+authors:
+  - name: Astro-Fusion Research Team
+    affiliation: Computational Astrology Research Initiative
+    corresponding: true
+abstract: |
+  This document serves as the consolidated master thesis of the Astro-Fusion Research Initiative, encompassing over a decade of computational data and thousands of algorithmic calculations. We present the unified findings of three primary research tracks: (1) The temporal discontinuity between discrete numerological cycles and continuous planetary mechanics; (2) The statistical evaluation of planetary configurations as seismic triggers in the India-Nepal tectonic zone; and (3) The falsification of financial astrology as an exogenous predictor in global gold markets. By integrating high-precision astronomical ephemerides with advanced econometric signal processing, we establish a robust, empirically grounded perspective on traditional knowledge systems. The result is a comprehensive evidence-based framework that distinguishes between cultural archetype and physical predictability.
+format:
+  pdf:
+    documentclass: report
+    papersize: a4
+    geometry:
+      - top=25mm
+      - left=25mm
+      - right=25mm
+      - bottom=25mm
+    fontsize: 11pt
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    lof: true
+    lot: true
+    colorlinks: true
+    keep-tex: true
+    include-in-header:
+      text: |
+        \usepackage{placeins}
+        \usepackage{float}
+execute:
+  echo: false
+  warning: false
+jupyter: python3
+---
+
+# Preface: The Scale of Investigation
+
+This consolidated thesis represents the culmination of months of computational effort, involving the generation of over 100,000 spectral data points and the execution of thousands of statistical tests. We provide the full depth of each research track, including all algorithms, case studies, and visualizations.
+
+\newpage
+
+# Track 1: Numerology-Astrology Temporal Discontinuity
+
+{{< include track_1_numerology_vs_astrology/sections/00_overview.qmd >}}
+{{< include track_1_numerology_vs_astrology/sections/01_literature_review.qmd >}}
+{{< include track_1_numerology_vs_astrology/sections/02_questions_hypotheses.qmd >}}
+{{< include track_1_numerology_vs_astrology/sections/03_methods_data.qmd >}}
+{{< include track_1_numerology_vs_astrology/sections/04_algorithms_pipeline.qmd >}}
+{{< include track_1_numerology_vs_astrology/sections/05_results_graphs.qmd >}}
+{{< include track_1_numerology_vs_astrology/sections/06_robustness_limits_ethics.qmd >}}
+{{< include track_1_numerology_vs_astrology/sections/07_reproducibility.qmd >}}
+{{< include track_1_numerology_vs_astrology/sections/08_conclusion.qmd >}}
+{{< include track_1_numerology_vs_astrology/sections/09_principles_catalog.qmd >}}
+{{< include track_1_numerology_vs_astrology/sections/09a_vedic_principles.qmd >}}
+{{< include track_1_numerology_vs_astrology/sections/11_graphs_frequency.qmd >}}
+{{< include track_1_numerology_vs_astrology/sections/12_graphs_alignment_windows.qmd >}}
+
+\newpage
+
+# Track 2: Earthquake Prediction Analysis
+
+{{< include track_2_earthquake_prediction/sections/00_overview.qmd >}}
+{{< include track_2_earthquake_prediction/sections/01_sources.qmd >}}
+{{< include track_2_earthquake_prediction/sections/02_taxonomy.qmd >}}
+{{< include track_2_earthquake_prediction/sections/02a_vedic_principles_coverage.qmd >}}
+{{< include track_2_earthquake_prediction/sections/03_malefics_aspects.qmd >}}
+{{< include track_2_earthquake_prediction/sections/04_conjunctions_graha_yuddha.qmd >}}
+{{< include track_2_earthquake_prediction/sections/05_shadbala_components.qmd >}}
+{{< include track_2_earthquake_prediction/sections/06_combustion_retrograde.qmd >}}
+{{< include track_2_earthquake_prediction/sections/06a_dasha.qmd >}}
+{{< include track_2_earthquake_prediction/sections/07_eclipses_syzygy.qmd >}}
+{{< include track_2_earthquake_prediction/sections/08_nakshatra_lords.qmd >}}
+{{< include track_2_earthquake_prediction/sections/09_houses_signs_bhavas.qmd >}}
+{{< include track_2_earthquake_prediction/sections/10_yogas_tithi_karana.qmd >}}
+{{< include track_2_earthquake_prediction/sections/11_combination_catalog.qmd >}}
+{{< include track_2_earthquake_prediction/sections/13_graphs_frequency.qmd >}}
+{{< include track_2_earthquake_prediction/sections/14_graphs_alignment_windows.qmd >}}
+{{< include track_2_earthquake_prediction/sections/15_discussion_limits.qmd >}}
+{{< include track_2_earthquake_prediction/sections/16_appendix_full_definitions.qmd >}}
+
+\newpage
+
+# Track 3: Gold Market Correlation
+
+{{< include track_3_gold_market/sections/00_overview.qmd >}}
+{{< include track_3_gold_market/sections/01_principles_catalog.qmd >}}
+{{< include track_3_gold_market/sections/01a_vedic_principles_coverage.qmd >}}
+{{< include track_3_gold_market/sections/02a_dasha.qmd >}}
+{{< include track_3_gold_market/sections/03_graphs_frequency.qmd >}}
+{{< include track_3_gold_market/sections/04_graphs_alignment.qmd >}}
+
+\newpage
+
+# Consolidated Discussion and Synthesis
+
+The combined weight of these investigations establishes a clear boundary between the symbolic utility of traditional systems and their predictive accuracy in physical domains.
+
+\newpage
+
+# Appendix: Master Algorithm Catalog
+
+{{< include track_1_numerology_vs_astrology/sections/10_algorithms_examples.qmd >}}
+{{< include track_2_earthquake_prediction/sections/12_algorithms_examples.qmd >}}
+{{< include track_3_gold_market/sections/02_algorithms_examples.qmd >}}
+
+# Legacy Content Archive
+
+{{< include track_2_earthquake_prediction/sections/90_legacy_content.qmd >}}
+{{< include track_3_gold_market/sections/90_legacy_content.qmd >}}
+{{< include track_1_numerology_vs_astrology/sections/90_legacy_content.qmd >}}

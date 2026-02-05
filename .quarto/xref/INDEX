@@ -106,7 +106,8 @@
     "VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.tex": "449aa225"
   },
   "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.qmd": {
-    "NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.tex": "0efb8505"
+    "NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.tex": "0efb8505",
+    "NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html": "42e796e6"
   },
   "docs/research/track_2_earthquake_prediction/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.qmd": {
     "EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.tex": "8aa16605"
@@ -116,5 +117,8 @@
   },
   "use_cases/numerology/research_paper/numerology_astrology_correlation.qmd": {
     "numerology_astrology_correlation.tex": "64398052"
+  },
+  "docs/research/COMPREHENSIVE_RESEARCH_THESIS.qmd": {
+    "COMPREHENSIVE_RESEARCH_THESIS.tex": "db01ee76"
   }
 }
