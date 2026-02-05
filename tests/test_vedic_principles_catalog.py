@@ -1,7 +1,7 @@
 """Tests for shared Vedic principles catalog."""
 
-from pathlib import Path
 import importlib.util
+from pathlib import Path
 
 import pandas as pd
 

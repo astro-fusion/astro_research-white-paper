@@ -57,6 +57,7 @@ This consolidated thesis represents the culmination of months of computational e
 {{< include track_1_numerology_vs_astrology/sections/09a_vedic_principles.qmd >}}
 {{< include track_1_numerology_vs_astrology/sections/11_graphs_frequency.qmd >}}
 {{< include track_1_numerology_vs_astrology/sections/12_graphs_alignment_windows.qmd >}}
+{{< include track_1_numerology_vs_astrology/sections/13_individual_planet_variations.qmd >}}
 
 \newpage
 

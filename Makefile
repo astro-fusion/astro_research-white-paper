@@ -25,9 +25,11 @@ install:
 	pre-commit install
 
 format:
+	isort src/ tests/
 	black src/ tests/
 
 lint:
+	isort --check-only --diff src/ tests/
 	black --check src/ tests/
 
 test:

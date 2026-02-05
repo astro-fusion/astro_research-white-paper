@@ -8,8 +8,8 @@ Handles configuration management including:
 """
 
 from .constants import PLANET_NAMES, PLANETS, SIGNS, Planet
-from .settings import Config, load_config
 from .reference_charts import ReferenceChart, get_reference_chart, get_reference_charts
+from .settings import Config, load_config
 
 __all__ = [
     # constants

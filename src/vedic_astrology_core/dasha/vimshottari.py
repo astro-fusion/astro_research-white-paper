@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import List, Optional, Tuple, Dict
 from enum import Enum
+from typing import Dict, List, Optional, Tuple
 
 from ..astrology.chart import get_nakshatra
 
