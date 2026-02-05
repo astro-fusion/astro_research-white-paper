@@ -1,6 +1,6 @@
 Variable,ADF Statistic,ADF p-value,KPSS Statistic,KPSS p-value,Stationary
-Gold Log Returns,-31.678,0.0,0.2097,0.1,Yes
-Sun_Sin,-22.1963,0.0,0.0081,0.1,Yes
-Sun_Cos,-21.9765,0.0,0.0075,0.1,Yes
-Moon_Sin,-9.7732,0.0,0.0468,0.1,Yes
-Moon_Cos,-8.4714,0.0,0.1147,0.1,Yes
+Gold Log Returns,-31.7893,0.0,0.1924,0.1,Yes
+Mars_Sin,-14.1846,0.0,0.9881,0.01,No
+Mars_Cos,-14.1444,0.0,0.6022,0.0224,No
+Saturn_Sin,-7.3582,0.0,5.1028,0.01,No
+Saturn_Cos,10.8858,1.0,4.8754,0.01,No
