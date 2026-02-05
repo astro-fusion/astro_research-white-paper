@@ -1,4 +1,5 @@
 """Shared reference charts for mundane and global analyses."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

@@ -1,5 +1,9 @@
 """Tests for shared reference charts."""
-from vedic_astrology_core.config.reference_charts import get_reference_chart, get_reference_charts
+
+from vedic_astrology_core.config.reference_charts import (
+    get_reference_chart,
+    get_reference_charts,
+)
 
 
 def test_reference_chart_keys():

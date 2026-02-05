@@ -186,7 +186,9 @@ def generate_planetary_variation_plots(df: pd.DataFrame):
 
     # 1. Mars Speed / Retrograde
     plt.figure(figsize=(12, 5))
-    plt.plot(df["Date"], df["Mars_Speed"], color="#d62728", label="Mars Speed", linewidth=1)
+    plt.plot(
+        df["Date"], df["Mars_Speed"], color="#d62728", label="Mars Speed", linewidth=1
+    )
     plt.axhline(0, color="black", linestyle="--", linewidth=0.8)
     # Highlight Retrograde (Speed < 0)
     plt.fill_between(
@@ -202,7 +204,7 @@ def generate_planetary_variation_plots(df: pd.DataFrame):
     plt.title("Mars Planetary Motion & Retrograde Cycles (2020-2023)")
     plt.legend()
     plt.grid(True, alpha=0.3)
-    
+
     output_path = os.path.join(ARTIFACTS_DIR, "fig_mars_variation.pdf")
     plt.savefig(output_path, bbox_inches="tight")
     plt.close()
@@ -213,8 +215,14 @@ def generate_planetary_variation_plots(df: pd.DataFrame):
     plt.figure(figsize=(12, 5))
     plt.plot(subset["Date"], subset["Jupiter_Sin"], label="Jupiter Cycle", alpha=0.8)
     plt.plot(subset["Date"], subset["Saturn_Sin"], label="Saturn Cycle", alpha=0.8)
-    plt.plot(subset["Date"], subset["Mars_Sin"], label="Mars Cycle", alpha=0.6, linestyle="--")
-    
+    plt.plot(
+        subset["Date"],
+        subset["Mars_Sin"],
+        label="Mars Cycle",
+        alpha=0.6,
+        linestyle="--",
+    )
+
     plt.title("Comparative Planetary Cycles (Normalized Sine Components)")
     plt.ylabel("Cyclic Phase")
     plt.legend(loc="upper right")

@@ -1,4 +1,5 @@
 """Vimshottari dasha computations (core engine)."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -173,7 +174,13 @@ def compute_vimshottari_nested_periods(
 
     results: List[Dict] = []
 
-    def expand_period(start: datetime, years: float, start_index: int, level: int, lords_prefix: Tuple[str, ...]):
+    def expand_period(
+        start: datetime,
+        years: float,
+        start_index: int,
+        level: int,
+        lords_prefix: Tuple[str, ...],
+    ):
         if level == 0:
             results.append(
                 {
@@ -188,7 +195,9 @@ def compute_vimshottari_nested_periods(
 
         current = start
         for offset in range(len(VIMSHOTTARI_SEQUENCE)):
-            sub_lord = VIMSHOTTARI_SEQUENCE[(start_index + offset) % len(VIMSHOTTARI_SEQUENCE)]
+            sub_lord = VIMSHOTTARI_SEQUENCE[
+                (start_index + offset) % len(VIMSHOTTARI_SEQUENCE)
+            ]
             sub_years = years * (VIMSHOTTARI_YEARS[sub_lord] / 120.0)
             sub_start = current
             sub_end = sub_start + timedelta(days=sub_years * SIDEREAL_YEAR_DAYS)
