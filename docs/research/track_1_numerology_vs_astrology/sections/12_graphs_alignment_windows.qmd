@@ -1,0 +1,120 @@
+# Alignment & Window Graphs
+
+This section compares **numerology transits** to astrological alignment windows and provides windowed overlap charts.
+
+```{python}
+#| label: fig-udn-monthly
+#| fig-cap: "Monthly UDN Distribution"
+#| fig-width: 8
+#| fig-height: 4
+#| fig-pos: 'H'
+
+metrics["date"] = pd.to_datetime(metrics["date"])
+metrics["month"] = metrics["date"].dt.to_period("M")
+monthly_udn = metrics.groupby("month")["udn"].value_counts().unstack().fillna(0)
+
+plt.figure(figsize=(9,4))
+monthly_udn.plot(kind="line", marker="o")
+plt.title("UDN Monthly Distribution (2024)")
+plt.ylabel("Days")
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+#| label: fig-name-soul-urge
+#| fig-cap: "Name-Based Soul Urge Distribution (Pythagorean vs Chaldean)"
+#| fig-width: 8
+#| fig-height: 4
+#| fig-pos: 'H'
+
+if name_metrics is not None:
+    dist_py = name_metrics["pyth_soul_urge"].value_counts().sort_index()
+    dist_ch = name_metrics["chald_soul_urge"].value_counts().sort_index()
+    idx = sorted(set(dist_py.index) | set(dist_ch.index))
+    py_vals = [dist_py.get(i, 0) for i in idx]
+    ch_vals = [dist_ch.get(i, 0) for i in idx]
+    x = range(len(idx))
+    plt.figure(figsize=(8.5,4))
+    plt.bar(x, py_vals, width=0.4, label="Pythagorean")
+    plt.bar([i+0.4 for i in x], ch_vals, width=0.4, label="Chaldean")
+    plt.xticks([i+0.2 for i in x], [str(i) for i in idx])
+    plt.title("Soul Urge Distribution by System")
+    plt.xlabel("Number")
+    plt.ylabel("Count")
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+```
+
+```{python}
+#| label: fig-pinnacle
+#| fig-cap: "Pinnacle Distributions (Birth Dataset)"
+#| fig-width: 8
+#| fig-height: 4
+#| fig-pos: 'H'
+
+if personal_metrics is not None:
+    dist_p1 = personal_metrics["pinnacle_1"].value_counts().sort_index()
+    dist_p2 = personal_metrics["pinnacle_2"].value_counts().sort_index()
+    plt.figure(figsize=(8.5,4))
+    plt.plot(dist_p1.index, dist_p1.values, marker="o", label="P1")
+    plt.plot(dist_p2.index, dist_p2.values, marker="o", label="P2")
+    plt.title("Pinnacle Number Distributions")
+    plt.xlabel("Number")
+    plt.ylabel("Count")
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+```
+
+```{python}
+#| label: fig-athlete-correlation
+#| fig-cap: "Name vs Birth Numerology Correlation (Athletes Sample)"
+#| fig-width: 7.5
+#| fig-height: 4
+#| fig-pos: 'H'
+
+from pathlib import Path
+import pandas as pd
+
+data_dir = (root or Path.cwd()) / "use_cases" / "numerology" / "research_paper" / "data"
+cor_path = data_dir / "athlete_name_birth_correlation.csv"
+
+if cor_path.exists():
+    corr = pd.read_csv(cor_path)
+    plt.figure(figsize=(7,4))
+    plt.bar(corr["metric"], corr["value"], color="crimson")
+    plt.title("Cramer's V (Name vs Birth Numbers)")
+    plt.ylabel("Cramer's V")
+    plt.ylim(0, 1)
+    plt.grid(axis="y", alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+```
+
+```{python}
+#| label: tbl-athlete-correlation
+#| tbl-cap: "Name vs Birth Numerology Significance (Athlete Sample)"
+
+if cor_path.exists():
+    corr
+```
+
+```{python}
+#| label: fig-missing-heatmap
+#| fig-cap: "Missing Number Heatmap by Month"
+#| fig-width: 8
+#| fig-height: 4
+#| fig-pos: 'H'
+
+missing_by_month = metrics.groupby("month")[missing_cols].sum()
+plt.figure(figsize=(9,4))
+plt.imshow(missing_by_month.values, aspect="auto", cmap="viridis")
+plt.title("Missing Number Counts by Month")
+plt.yticks(range(len(missing_by_month.index)), missing_by_month.index.astype(str))
+plt.xticks(range(len(missing_cols)), [c.split('_')[1] for c in missing_cols])
+plt.colorbar(label="Days Missing")
+plt.tight_layout()
+plt.show()
+```

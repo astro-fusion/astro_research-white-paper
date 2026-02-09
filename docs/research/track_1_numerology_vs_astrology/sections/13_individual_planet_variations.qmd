@@ -1,0 +1,239 @@
+# Individual Planet Variations (Annual Analysis)
+
+This section presents the detailed daily traversal of each of the 9 Grahas (Planets) for the year 2024.
+
+For each planet, we visualize:
+1.  **Top Chart (Astrological Reality)**: The continuous fluctuation of planetary dignity/strength (Shadbala-proxy) based on astronomical position, retrograde motion, and sign placement.
+2.  **Bottom Chart (Numerological Projection)**: The discrete "influence" as projected by daily numerology (Mulanka).
+
+This direct visual comparison exposes the granularity mismatch: while the Planet (Top) moves in complex, non-linear harmonic waves, the Numerology (Bottom) forces a rigid, low-resolution step function.
+
+```{python}
+#| label: setup-planet-graphs
+#| echo: false
+from datetime import date, timedelta, datetime
+from pathlib import Path
+import sys
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.dates import DateFormatter
+
+# Add src to path
+cwd = Path.cwd().resolve()
+repo_root = None
+for parent in [cwd] + list(cwd.parents):
+    if (parent / "pyproject.toml").exists():
+        repo_root = parent
+        break
+if repo_root:
+    sys.path.insert(0, str(repo_root / "src"))
+
+from vedic_astrology_core.astrology.chart import calculate_chart
+from vedic_astrology_core.astrology.divisional import calculate_d9, get_navamsa_sign
+from vedic_astrology_core.dignity.scorer import calculate_full_score
+from vedic_astrology_core.config.constants import Planet
+
+# Configuration
+start_date = date(2024, 1, 1)
+end_date = date(2024, 12, 31)
+days = (end_date - start_date).days + 1
+lat, lon = 28.6, 77.1 # New Delhi
+
+# Planet Mapping
+planet_map_num = {
+    "Sun": 1, "Moon": 2, "Jupiter": 3, "Rahu": 4, "Mercury": 5,
+    "Venus": 6, "Ketu": 7, "Saturn": 8, "Mars": 9
+}
+planet_names = list(planet_map_num.keys())
+
+# Generate Data
+dates = [start_date + timedelta(days=i) for i in range(days)]
+chart_data = {p: [] for p in planet_names}
+numerology_data = {p: [] for p in planet_names}
+d9_data = {p: [] for p in planet_names} # Stores 1 for Vargottama, 0 otherwise
+d9_signs = {p: [] for p in planet_names} # Stores D9 sign names
+
+for i, curr_date in enumerate(dates):
+    curr_dt = datetime(curr_date.year, curr_date.month, curr_date.day, 12, 0, 0)
+
+    # Numerology
+    day_num = curr_date.day
+    mulanka = (day_num - 1) % 9 + 1
+
+    # Astrology Calculation
+    chart = calculate_chart(curr_dt, lat, lon)
+
+    for p_name in planet_names:
+        # Numerology Match
+        is_ruler = 1 if planet_map_num[p_name] == mulanka else 0
+        numerology_data[p_name].append(is_ruler * 100)
+
+        # Astrology Strength & D9
+        final_score = 0
+        final_d9_status = 0
+        final_d9_sign = ''
+
+        try:
+            p_enum = Planet[p_name.upper()]
+            p_data = chart.planets.get(p_name)
+
+            if p_data:
+                # D1 Strength
+                final_score = calculate_full_score(
+                    p_enum,
+                    p_data['sign'],
+                    p_data['longitude'],
+                    chart,
+                    p_data
+                )
+
+                # D9 Calculation
+                d9_res = calculate_d9(p_data['longitude'])
+                final_d9_sign = d9_res['sign_name']
+
+                # Vargottama Check (D1 Sign == D9 Sign)
+                if d9_res['index'] == p_data['sign']:
+                    final_d9_status = 100
+
+        except Exception as e:
+             # Keep defaults (0) if any error occurs
+             pass
+
+        # Append finalized values ONCE
+        chart_data[p_name].append(final_score)
+        d9_data[p_name].append(final_d9_status)
+        d9_signs[p_name].append(final_d9_sign)
+
+# Function to Plot
+def plot_planet_variation(planet_name):
+    fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(10, 8), sharex=True, gridspec_kw={'height_ratios': [2, 1, 1]})
+
+    # Panel 1: D1 Strength (Astrology)
+    ax1.plot(dates, chart_data[planet_name], color='royalblue', linewidth=1.5, label='D1 Dignity Score')
+    ax1.fill_between(dates, chart_data[planet_name], alpha=0.1, color='royalblue')
+    ax1.set_ylabel("Dignity (0-100)")
+    ax1.set_title(f"{planet_name}: Integrated Strength Analysis (D1 + D9 vs Numerology)")
+    ax1.grid(True, alpha=0.3)
+    ax1.legend(loc="upper right")
+    ax1.set_ylim(0, 110)
+
+    # Zones for D1
+    ax1.axhspan(75, 100, color='green', alpha=0.05)
+    ax1.axhspan(25, 50, color='orange', alpha=0.05)
+    ax1.axhspan(0, 25, color='red', alpha=0.05)
+
+    # Panel 2: D9 Vargottama Status
+    # We plot this as a filled step area
+    ax2.step(dates, d9_data[planet_name], color='purple', where='mid', label='Vargottama (D1=D9)')
+    ax2.fill_between(dates, d9_data[planet_name], step='mid', alpha=0.3, color='purple')
+    ax2.set_ylabel("Navamsa Power")
+    ax2.set_yticks([0, 100])
+    ax2.set_yticklabels(['Normal', 'Vargottama'])
+    ax2.grid(True, alpha=0.3)
+    ax2.legend(loc="upper right")
+
+    # Panel 3: Numerology
+    ax3.step(dates, numerology_data[planet_name], color='darkorange', where='mid', label=f'Numerology (Rule of {planet_map_num[planet_name]})')
+    ax3.fill_between(dates, numerology_data[planet_name], step='mid', alpha=0.2, color='darkorange')
+    ax3.set_ylabel("Numerology")
+    ax3.set_yticks([0, 100])
+    ax3.set_yticklabels(['Inactive', 'Active'])
+    ax3.grid(True, alpha=0.3)
+    ax3.legend(loc="upper right")
+
+    # Formatting
+    date_form = DateFormatter("%b")
+    ax3.xaxis.set_major_formatter(date_form)
+    plt.tight_layout()
+    plt.show()
+
+```
+
+## The Sun (Surya) - Number 1
+
+```{python}
+#| label: fig-var-sun
+#| fig-cap: "Sun: Annual Transit vs Number 1 Days"
+plot_planet_variation("Sun")
+```
+
+\newpage
+
+## The Moon (Chandra) - Number 2
+
+```{python}
+#| label: fig-var-moon
+#| fig-cap: "Moon: Monthly Cycles vs Number 2 Days"
+plot_planet_variation("Moon")
+```
+
+\newpage
+
+## Jupiter (Brihaspati) - Number 3
+
+```{python}
+#| label: fig-var-jupiter
+#| fig-cap: "Jupiter: Annual Progress vs Number 3 Days"
+plot_planet_variation("Jupiter")
+```
+
+\newpage
+
+## Rahu (North Node) - Number 4
+
+```{python}
+#| label: fig-var-rahu
+#| fig-cap: "Rahu: 18-Year Cycle Component vs Number 4 Days"
+plot_planet_variation("Rahu")
+```
+
+\newpage
+
+## Mercury (Budha) - Number 5
+
+```{python}
+#| label: fig-var-mercury
+#| fig-cap: "Mercury: Rapid Transits vs Number 5 Days"
+plot_planet_variation("Mercury")
+```
+
+\newpage
+
+## Venus (Shukra) - Number 6
+
+```{python}
+#| label: fig-var-venus
+#| fig-cap: "Venus: Transit Cycle vs Number 6 Days"
+plot_planet_variation("Venus")
+```
+
+\newpage
+
+## Ketu (South Node) - Number 7
+
+```{python}
+#| label: fig-var-ketu
+#| fig-cap: "Ketu: Karmic Axis vs Number 7 Days"
+plot_planet_variation("Ketu")
+```
+
+\newpage
+
+## Saturn (Shani) - Number 8
+
+```{python}
+#| label: fig-var-saturn
+#| fig-cap: "Saturn: Slow Transit vs Number 8 Days"
+plot_planet_variation("Saturn")
+```
+
+\newpage
+
+## Mars (Mangal) - Number 9
+
+```{python}
+#| label: fig-var-mars
+#| fig-cap: "Mars: Energy Cycle vs Number 9 Days"
+plot_planet_variation("Mars")
+```

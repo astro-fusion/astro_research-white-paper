@@ -1,0 +1,9 @@
+## Literature Review
+
+Historical and cultural discussions of numerology emphasize symbolic meaning and cross-cultural number mysticism, framing numbers as archetypal carriers of meaning rather than empirically testable signals [@schimmel1975]. Sociological work has examined numerological associations in everyday life and how people integrate numeric symbolism into personal decision-making [@benigeri1992]. Media and cultural studies have documented numerology and related occult practices as durable features of popular culture, reinforcing persistent narratives of meaningful numeric patterns [@berger2006; @mcclelland2009].
+
+From a psychological perspective, superstition and belief can measurably influence behavior and performance, suggesting that numeric belief systems can create real-world behavioral effects even when causal mechanisms are symbolic [@damisch2010]. Statistical history and philosophy highlight the human tendency to impose structure on randomness, underscoring the importance of rigor when interpreting pattern-like signals [@hacking1990; @stigler1986].
+
+Methodologically, computational pattern analysis and signal comparison draw on modern statistical learning and data science foundations [@bishop2006]. The analysis pipeline in this study leverages standard scientific computing tools for reproducibility and visualization [@mckinney2010; @hunter2007; @pedregosa2011], and follows a literate, transparent reporting approach for replicable research workflows [@knuth84].
+
+This paper extends prior interpretive narratives by framing numerology and astrology as **distinct time-domain signals**, subject to the same alignment and frequency tests used in empirical time-series analysis.

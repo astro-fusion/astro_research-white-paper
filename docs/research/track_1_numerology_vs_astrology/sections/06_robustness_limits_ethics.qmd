@@ -1,0 +1,57 @@
+# Robustness Checks
+
+We test sensitivity to time-of-day and location. If numerology were genuinely synchronized with astrology, match rates should remain stable across observation conditions.
+
+```{python}
+#| label: robustness
+#| tbl-cap: "Robustness Checks: Match Rates Across Locations & Times"
+
+test_points = [
+    ("New Delhi", 28.6, 77.1),
+    ("Kathmandu", 27.7, 85.3),
+    ("New York", 40.7, -74.0),
+]
+
+def daily_match_rate(lat, lon, hour=12):
+    matches = 0
+    for i in range(days):
+        curr_date = start_date + timedelta(days=i)
+        curr_dt = datetime(curr_date.year, curr_date.month, curr_date.day, hour, 0, 0)
+        chart = calculate_chart(curr_dt, lat, lon)
+        moon_long = chart.planets["Moon"]["longitude"]
+        nakshatra = get_nakshatra(moon_long)
+        nak_lord = seq[nakshatra["index"] % 9]
+        mulanka = (curr_date.day - 1) % 9 + 1
+        if num_lords[mulanka] == nak_lord:
+            matches += 1
+    return (matches / days) * 100
+
+rows = []
+for label, lat, lon in test_points:
+    rows.append({
+        "Location": label,
+        "Noon Match %": round(daily_match_rate(lat, lon, hour=12), 2),
+        "Midnight Match %": round(daily_match_rate(lat, lon, hour=0), 2),
+    })
+
+pd.DataFrame(rows)
+```
+
+# Ethical & Practical Considerations
+
+This study evaluates symbolic systems using quantitative methods. Results should not be used to override medical, legal, or safety-critical decision-making. The objective is **methodological clarity**, not prescriptive or determinist prediction.
+
+# Limitations
+
+*   **Sampling Resolution**: Astrology varies hourly; our daily sampling compresses this variability.
+*   **Single-Year Data**: 2024 provides a clean baseline but does not cover multi-year cycles.
+*   **Simplified Dignity Checks**: Debilitation logic uses sign-based conditions only; full shadbala would refine this.
+*   **Cultural Variants**: Numerology traditions differ (Vedic vs. Pythagorean), which may affect mapping.
+
+# Reproducibility & Availability
+
+*   **Codebase**: All algorithms used in this paper are implemented in the repository under `src/`.
+*   **Data Generation**: Daily series are generated programmatically from Swiss Ephemeris.
+*   **Reproducibility Target**: Exact replication of 2024 results should be deterministic given identical settings.
+
+\FloatBarrier

@@ -1,0 +1,67 @@
+# Mathematical & Computational Methodology
+
+Our research employs a rigorous computational pipeline to model both systems simultaneously.
+
+## Data Sources & Experimental Design
+
+*   **Timeframe**: January 1, 2024 to December 31, 2024 (365 days).
+*   **Location**: New Delhi, India (28.6°N, 77.1°E).
+*   **Astrology Engine**: Swiss Ephemeris (DE431) with Lahiri Ayanamsa.
+*   **Sampling Resolution**: Daily (numerology) and noon-time lunar position (astrology).
+
+We intentionally use **daily sampling** to respect numerology's discrete granularity and compare it directly to the Moon's ruling Nakshatra lord.
+
+## Athlete Name + Birthdate Dataset
+
+To test **name-based numerology** against **birth-based numerology**, we use a sampled athlete dataset with name and birth date fields (N=500). This enables correlation analysis between expression numbers and life-path numbers.
+
+Dataset: `use_cases/numerology/research_paper/data/athletes_sample.csv` (source: @athletes_dataset_stat408)
+
+## Numerology Algorithm: Modulo-9 Arithmetic
+
+Vedic numerology uses a base-9 system. The "Mulanka" (Root Number) is the most rapidly changing daily indicator. It is derived from the day of the month ($D$) using digital root summation, which is mathematically equivalent to modulo-9 arithmetic (with 9 replacing 0).
+
+The algorithm for the Ruling Planet $P_{num}$ on day $D$ is:
+
+$$
+V = (D - 1) \bmod 9 + 1
+$$
+
+Where $V$ maps to the planet list: $\{1 \to Sun, 2 \to Moon, \dots, 9 \to Mars\}$.
+This function is a **discrete step function** $f(t)$ that holds a constant integer value for 24 hours (or until the next calendar sunrise).
+
+## Astrology Algorithm: Continuous Celestial Mechanics
+
+Vedic Astrology requires determining the precise position of planets on the Ecliptic. We utilize the **Swiss Ephemeris (DE431)** for high-precision calculations.
+
+The continuous position function $\lambda_p(t)$ for a planet $p$ at time $t$ involves:
+1.  **Heliocentric Calculation**: $r(t)$ vector from Sun to Planet.
+2.  **Geocentric Conversion**: Adjusting for Earth's position.
+3.  **Sidereal Adjustment (Ayanamsa)**: Subtracting the precession of equinoxes using the Lahiri Ayanamsa ($\alpha \approx 24^\circ$).
+
+$$
+\lambda_{sidereal}(t) = \lambda_{tropical}(t) - \alpha(t)
+$$
+
+### The Moon's Vital Role: Nakshatras
+
+The Moon is the fastest-moving body, traversing the zodiac in ~27.3 days. In Vedic Astrology, the zodiac is divided into 27 **Nakshatras** (Lunar Mansions) of $13^\circ 20'$ each.
+
+The Nakshatra index $N$ is calculated as:
+
+$$
+N = \lfloor \frac{\lambda_{Moon}}{13.333^\circ} \rfloor
+$$
+
+Each Nakshatra is ruled by a planet (Lord) in a specific sequence (Ketu $\to$ Venus $\to$ Sun...). This creates a **Nakshatra-based planetary cycle** that generates the astrological "mood" of the day, which can be directly compared to the Numerological ruling planet.
+
+## Derived Variables
+
+The computational pipeline produces the following core variables per day:
+
+| Variable | Definition | Type |
+| --- | --- | --- |
+| `mulanka` | Digital root of day (1-9) | Discrete |
+| `numerology_lord` | Planet mapped from `mulanka` | Categorical |
+| `nakshatra_lord` | Planet ruling the Moon's Nakshatra | Categorical |
+| `match` | 1 if lords align, else 0 | Binary |

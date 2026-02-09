@@ -18,3 +18,28 @@ release: pdfs
 
 clean:
 	rm -rf pdfs/*.pdf
+
+install:
+	pip install -r config/requirements/requirements.txt
+	pip install pre-commit
+	pre-commit install
+
+format:
+	isort src/ tests/
+	black src/ tests/
+
+lint:
+	isort --check-only --diff src/ tests/
+	black --check src/ tests/
+
+test:
+	pytest
+
+validate: lint test
+	@echo "Running local validation..."
+	@if command -v act >/dev/null 2>&1; then \
+		echo "Running GitHub Actions locally with act..."; \
+		act -j test-sample-data; \
+	else \
+		echo "act not found, skipping local CI simulation."; \
+	fi

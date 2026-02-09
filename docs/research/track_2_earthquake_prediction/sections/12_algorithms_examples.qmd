@@ -48,5 +48,5 @@ $$
 ## Example: Tithi
 
 $$
-Tithi = \left\lfloor \frac{(\lambda_{Moon}-\lambda_{Sun}) \bmod 360}{12} \\right\rfloor + 1
+Tithi = \left\lfloor \frac{(\lambda_{Moon}-\lambda_{Sun}) \bmod 360}{12} \right\rfloor + 1
 $$

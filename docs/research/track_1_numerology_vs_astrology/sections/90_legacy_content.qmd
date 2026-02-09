@@ -1,0 +1,3 @@
+# Legacy Content (Migrated)
+
+All content has been migrated into the modular section files.

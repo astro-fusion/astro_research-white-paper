@@ -1,0 +1,95 @@
+# Algorithms & Worked Examples
+
+This section formalizes each numerology principle as a reproducible algorithm.
+
+## Digital Root (Core Reduction)
+
+$$
+DR(n) = (n - 1) \bmod 9 + 1
+$$
+
+## Universal Day Number (UDN)
+
+$$
+UDN = DR(day + month + sum(year\_digits))
+$$
+
+## Universal Month Number (UMN)
+
+$$
+UMN = DR(month + sum(year\_digits))
+$$
+
+## Universal Year Number (UYN)
+
+$$
+UYN = DR(sum(year\_digits))
+$$
+
+## Missing Number Analysis (Lo Shu)
+
+Count digits 1–9 in the date string (YYYYMMDD). A number is **missing** if count = 0.
+
+## Pythagorean Name Numerology (Expression, Soul Urge, Personality)
+
+Map letters to 1–9 using the Pythagorean table and reduce:
+
+```
+1: A J S
+2: B K T
+3: C L U
+4: D M V
+5: E N W
+6: F O X
+7: G P Y
+8: H Q Z
+9: I R
+```
+
+- **Expression**: sum of all letter values
+- **Soul Urge**: sum of vowels only
+- **Personality**: sum of consonants only
+
+## Chaldean Name Numerology
+
+Map letters to 1–8 using the Chaldean table and reduce:
+
+```
+1: A I J Q Y
+2: B K R
+3: C G L S
+4: D M T
+5: E H N X
+6: U V W
+7: O Z
+8: F P
+```
+
+## Master Numbers
+
+Master numbers (11, 22, 33) are optionally preserved instead of reduction.
+
+## Karmic Debt Numbers
+
+If compound numbers 13, 14, 16, 19 appear, they are flagged as special karmic patterns.
+
+## Life Path Number (Birth Date)
+
+Sum all digits of the birth date (YYYYMMDD) and reduce.
+
+## Pinnacles & Challenges
+
+Let:
+- $M = DR(month)$, $D = DR(day)$, $Y = DR(year)$
+
+Pinnacles:
+- $P1 = DR(M + D)$
+- $P2 = DR(D + Y)$
+- $P3 = DR(P1 + P2)$
+- $P4 = DR(M + Y)$
+
+Challenges:
+- $C1 = |M - D|$
+- $C2 = |D - Y|$
+- $C3 = |C1 - C2|$
+- $C4 = |M - Y|$
