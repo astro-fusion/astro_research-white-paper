@@ -1,0 +1,51 @@
+flowchart LR
+    subgraph Ingestion["1️⃣ Data Ingestion"]
+        A1["Raw CSV/JSON<br/>from APIs"]
+        A2["Swiss Ephemeris<br/>Planetary Positions"]
+        A3["USGS Earthquake<br/>JSON Feed"]
+    end
+
+    subgraph Processing["2️⃣ Data Processing"]
+        B1["Timestamp Alignment<br/>UTC Normalization"]
+        B2["Log-Return<br/>Transformation"]
+        B3["Vedic Calendar<br/>Mapping"]
+        B4["Missing Data<br/>Interpolation"]
+    end
+
+    subgraph Analysis["3️⃣ Statistical Analysis"]
+        C1["Stationarity Tests<br/>(ADF)"]
+        C2["Correlation Matrix"]
+        C3["Spectral Decomposition<br/>(Lomb-Scargle)"]
+        C4["Granger Causality<br/>(VAR Model)"]
+        C5["Monte Carlo<br/>Permutation"]
+        C6["Chi-Square & FDR"]
+    end
+
+    subgraph Artifacts["4️⃣ Artifact Generation"]
+        D1["tables/*.csv"]
+        D2["figures/*.pdf"]
+        D3["stats/*.json"]
+    end
+
+    subgraph Report["5️⃣ Report Rendering"]
+        E1["Quarto .qmd"]
+        E2["LaTeX/PDF"]
+        E3["GitHub Pages<br/>HTML"]
+    end
+
+    A1 --> B1
+    A2 --> B1
+    A3 --> B1
+    B1 --> B2 & B3
+    B2 --> B4
+    B3 --> B4
+    B4 --> C1 --> C2 --> C3 --> C4 --> C5 --> C6
+    C5 & C6 --> D1 & D2 & D3
+    D1 & D2 & D3 --> E1
+    E1 --> E2 & E3
+
+    style Ingestion fill:#bbdefb
+    style Processing fill:#c8e6c9
+    style Analysis fill:#fff9c4
+    style Artifacts fill:#ffccbc
+    style Report fill:#e1bee7

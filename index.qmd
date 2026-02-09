@@ -15,6 +15,22 @@ css: styles/landing.css
 
 ::: {.features-grid}
 ::: {.feature-card}
+## 🤖 AI-Powered Methodology
+Automatic generation of research pipeline diagrams using **PaperBanana** and Gemini models.
+![Methodology Flow](reports/artifacts/fig_methodology_ai.png){width=100%}
+
+### Technical Architecture (Mermaid)
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#ffcc00'}}}%%
+%% file: reports/artifacts/fig_architecture.mmd
+```
+*(Note: requires Quarto Mermaid support or embedding the .mmd content directly. For now, we assume the file exists for review.)*
+
+### Mathematical Model (LaTeX)
+See `reports/artifacts/fig_math_model.tex` for the rigorous TikZ formulation.
+:::
+
+::: {.feature-card}
 ## 🪐 Planetary Dynamics
 Analyze continuous planetary strength variations using high-precision astronomical data (Swiss Ephemeris).
 :::

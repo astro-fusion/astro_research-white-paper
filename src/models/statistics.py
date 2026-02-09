@@ -285,3 +285,109 @@ def run_monte_carlo_permutation_test(
         "permuted_scores": permuted_scores.tolist(),
         "p_value": float(p_value),
     }
+
+
+def calculate_chi_square(a: int, b: int, c: int, d: int) -> float:
+    """
+    Calculates the p-value for a 2x2 Chi-Square test (1 degree of freedom).
+
+    Contingency Table:
+    | a | b |
+    | c | d |
+
+    Args:
+        a: Value at (0,0)
+        b: Value at (0,1)
+        c: Value at (1,0)
+        d: Value at (1,1)
+
+    Returns:
+        p-value (float). Returns 1.0 if calculation is impossible.
+    """
+    from scipy.stats import chi2
+
+    obs = np.array([a, b, c, d], dtype=float)
+    total = obs.sum()
+
+    if total == 0:
+        return 1.0
+
+    # Calculate Expected Frequencies
+    row1 = a + b
+    row2 = c + d
+    col1 = a + c
+    col2 = b + d
+
+    expected = np.array(
+        [
+            row1 * col1 / total,
+            row1 * col2 / total,
+            row2 * col1 / total,
+            row2 * col2 / total,
+        ]
+    )
+
+    if np.any(expected == 0):
+        return 1.0
+
+    # Chi-Square Statistic
+    chi2_stat = ((obs - expected) ** 2 / expected).sum()
+
+    # Survival Function (1 - CDF) to get p-value
+    return float(chi2.sf(chi2_stat, df=1))
+
+
+def apply_fdr_correction(
+    p_values: np.ndarray, method: str = "fdr_bh", alpha: float = 0.05
+) -> np.ndarray:
+    """
+    Applies False Discovery Rate (FDR) correction for multiple hypothesis testing.
+    Default method is Benjamini-Hochberg (BH).
+
+    Args:
+        p_values: 1D array of raw p-values.
+        method: Correction method (currently only 'fdr_bh' supported).
+        alpha: Significance level (default 0.05).
+
+    Returns:
+        1D array of adjusted p-values (q-values).
+    """
+    p = np.array(p_values)
+    m = len(p)
+
+    if m == 0:
+        return p
+
+    if method == "fdr_bh":
+        # Sort p-values
+        order = np.argsort(p)
+        reverse_order = np.argsort(order)
+
+        q = np.empty_like(p)
+        prev = 1.0
+
+        # Calculate BH critical values from largest to smallest
+        for rank, idx in enumerate(order[::-1], start=1):
+            # q = min(prev_q, p * m / rank)
+            # rank is from 1 to m (largest p-value has rank 1 in this loop logic? No.)
+            # BH Formula: q[i] = p[i] * m / i
+            # where i is the rank (1 = smallest p-value, m = largest)
+
+            # Let's align with the standard implementation:
+            # i counts from m down to 1
+            i = m - rank + 1
+
+            # Adjusted p-value
+            q_val = p[idx] * m / i
+
+            # Enforce monotonicity (step-up procedure)
+            q_val = min(prev, q_val)
+            q_val = min(1.0, q_val)  # Cap at 1.0
+
+            q[idx] = q_val
+            prev = q_val
+
+        return q
+    else:
+        logger.warning(f"Method {method} not supported. Returning raw p-values.")
+        return p

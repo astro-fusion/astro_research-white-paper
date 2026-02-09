@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, TypedDict, cast
 
 from ..astrology.chart import get_nakshatra
 
@@ -45,13 +45,21 @@ class DashaPeriod:
     balance_years: float
 
 
+class VimshottariPeriodDict(TypedDict):
+    lords: Tuple[str, ...]
+    start: datetime
+    end: datetime
+    years: float
+    level: int
+
+
 def get_vimshottari_start_lord(moon_longitude: float) -> str:
     """Return the starting mahadasha lord based on Moon's nakshatra."""
-    nak = get_nakshatra(moon_longitude)
+    nak = cast(Dict[str, object], get_nakshatra(moon_longitude))
     return _normalize_lord(nak["lord"])
 
 
-def _normalize_lord(lord) -> str:
+def _normalize_lord(lord: object) -> str:
     if isinstance(lord, Enum):
         return lord.name.title()
     if isinstance(lord, str):
@@ -61,10 +69,10 @@ def _normalize_lord(lord) -> str:
 
 def _balance_years_in_start_dasha(moon_longitude: float) -> float:
     """Compute remaining years of the starting mahadasha from Moon longitude."""
-    nak = get_nakshatra(moon_longitude)
+    nak = cast(Dict[str, object], get_nakshatra(moon_longitude))
     lord = _normalize_lord(nak["lord"])
     nak_span = 360 / 27
-    remaining = nak_span - nak["degrees_in_nakshatra"]
+    remaining = nak_span - float(nak["degrees_in_nakshatra"])
     fraction = remaining / nak_span
     return VIMSHOTTARI_YEARS[lord] * fraction
 
@@ -156,7 +164,7 @@ def compute_vimshottari_nested_periods(
     moon_longitude: float,
     depth: int = 2,
     total_years: float = 120,
-) -> List[Dict]:
+) -> List[VimshottariPeriodDict]:
     """Compute nested Vimshottari periods up to a given depth.
 
     depth=1 -> mahadasha only
@@ -172,7 +180,7 @@ def compute_vimshottari_nested_periods(
         total_years=total_years,
     )
 
-    results: List[Dict] = []
+    results: List[VimshottariPeriodDict] = []
 
     def expand_period(
         start: datetime,
@@ -180,7 +188,7 @@ def compute_vimshottari_nested_periods(
         start_index: int,
         level: int,
         lords_prefix: Tuple[str, ...],
-    ):
+    ) -> None:
         if level == 0:
             results.append(
                 {
@@ -248,7 +256,7 @@ def compute_vimshottari_nested_periods(
 
 def get_vimshottari_chain_at(
     target_datetime: datetime,
-    nested_periods: List[Dict],
+    nested_periods: List[VimshottariPeriodDict],
 ) -> Tuple[str, ...]:
     """Return the lords tuple for a target datetime from nested periods."""
     for period in nested_periods:

@@ -1,13 +1,21 @@
-# Discussion, Limitations, and Interpretive Notes
+## Discussion and Synthesis
 
-This report aims for **exhaustive classical coverage**. The combination catalog is exhaustive within the defined ontology, but any rule not expressible in astronomical terms is documented qualitatively rather than computed.
+## 15.1 Null Hypothesis Interpretation
 
-## Limitations
+This study was designed to falsify the hypothesis that specific planetary configurations act as precursors to major seismic events.
+- **Null Hypothesis ($H_0$)**: The frequency of earthquakes during specific planetary alignments is not significantly different from the frequency expected by random chance.
+- **Alternative Hypothesis ($H_1$)**: Specific alignments show a statistically significant deviation in earthquake frequency.
 
-- Some classical rules are symbolic and do not map cleanly to numerical thresholds.
-- House-based rules depend on a chosen location and time reference; we use the regional centroid at local noon for daily evaluation.
-- “All combinations” grows rapidly; we present aggregated results and provide machine-readable tables for inspection.
+Our analysis of the FDR-adjusted p-values (Table @tbl-earthquake-significance) indicates that for the vast majority of tested combinations, we **fail to reject the Null Hypothesis**. The few correlations that appear significant in isolation often vanish when corrected for multiple comparisons, suggesting they are likely statistical artifacts rather than physical signals.
 
-## Interpretation Policy
+## 15.2 Limitations
 
-We do not treat any alignment as causal. All findings are evaluated against baseline earthquake rates and statistical noise floors.
+While this study represents one of the most exhaustive computational investigations into this topic, several limitations persist:
+
+1.  **Catalog Completeness**: The analysis is limited to the USGS NEIC catalog (M > 6.0) for the defined region. Smaller magnitude events or historical events prior to reliable instrumentation were excluded.
+2.  **Epistemic constraints**: We tested *classical* Vedic constraints (e.g., specific aspects, Yogas). It remains theoretically possible that a non-classical, highly complex, or non-linear combination exists that was not covered by our ontology.
+3.  **Physical Mechanism**: This study is purely statistical; it does not model potential physical mechanisms like tidal stress changes, which are generally considered too weak to trigger faults by orders of magnitude.
+
+## 15.3 Conclusion for Track 2
+
+The comprehensive screening of classical astrological configurations against the India-Nepal earthquake record yields no robust evidence of predictive utility. The severe testing framework reinforces the consensus that earthquakes are stochastic processes with respect to celestial mechanics.

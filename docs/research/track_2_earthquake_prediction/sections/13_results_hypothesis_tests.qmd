@@ -1,9 +1,9 @@
-# Frequency Graphs (All Combinations)
+# Results: Hypothesis Testing (Combination Frequencies)
 
-This section plots **activation frequencies** for every combination in the catalog.
+## 13.1 Observed vs. Expected Frequencies
 
-```{python}
-#| label: combo-metrics
+To test the hypothesis that specific planetary combinations occur more frequently during seismic windows, we calculated the **Activation Frequency** for every combination in our catalog.
+
 #| echo: false
 from pathlib import Path
 import pandas as pd
@@ -39,8 +39,8 @@ metrics = pd.read_csv(metrics_path)
 cat = metrics.groupby("category")["total_active_days"].sum().sort_values(ascending=False)
 plt.figure(figsize=(9,4.5))
 cat.plot(kind="bar", color="slateblue")
-plt.title("Total Activation Days by Category")
-plt.ylabel("Total Active Days (2015-2024)")
+plt.title("Observed Frequency by Category (2015-2024)")
+plt.ylabel("Days Active")
 plt.grid(axis="y", alpha=0.3)
 plt.tight_layout()
 plt.show()

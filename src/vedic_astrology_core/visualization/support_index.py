@@ -414,9 +414,9 @@ def analyze_support_periods(
         return {"error": "No data to analyze"}
 
     # Calculate statistics
-    avg_score = np.mean(scores)
-    max_score = np.max(scores)
-    min_score = np.min(scores)
+    avg_score: float = float(np.mean(scores))
+    max_score: float = float(np.max(scores))
+    min_score: float = float(np.min(scores))
 
     # Find best and worst periods
     best_idx = np.argmax(scores)

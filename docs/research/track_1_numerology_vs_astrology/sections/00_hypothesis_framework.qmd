@@ -1,0 +1,21 @@
+# Research Framework: The Temporal Discontinuity
+
+## 1.1 Introduction
+
+The intersection of mathematics and mythology forms the backbone of ancient predictive sciences. In the Vedic tradition, two primary systems evolved to interpret celestial influence:
+1.  **Vedic Astrology (Jyotish)**: A continuous system based on the astronomical position of celestial bodies ($0^\circ-360^\circ$).
+2.  **Vedic Numerology (Anka Jyotish)**: A discrete system based on the digital root summation of calendar dates ($1-9$).
+
+## 1.2 The Research Problem
+
+Practitioners often assume a functional equivalence between these systems—e.g., that a "Number 1 Day" (Ruled by Sun) implies a strong "Solar influence," regardless of the actual astronomical position of the Sun.
+
+**This study challenges that assumption.** We propose the **Hypothesis of Temporal Discontinuity**:
+> *The algorithms driving Vedic Astrology and Vedic Numerology are fundamentally mismatched in the time domain, leading to a frequency ratio (120:1) that precludes any linear correlation.*
+
+## 1.3 Methodology
+
+We test this hypothesis by:
+1.  Calculating daily **Shadbala** (astrological strength) for all 9 planets over a 10-year period (2015-2025).
+2.  Calculating daily **Mulanka/Bhagyanka** (numerological values) for the same period.
+3.  Performing **Cross-Correlation Analysis** to measure the degree of synchronization between the two signals.

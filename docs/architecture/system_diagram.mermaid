@@ -1,0 +1,54 @@
+flowchart TB
+    subgraph DataSources["📥 Data Sources"]
+        SE[("Swiss Ephemeris<br/>DE440")]
+        USGS[("USGS NEIC<br/>Earthquake Catalog")]
+        COMEX[("COMEX/Yahoo Finance<br/>Gold Prices")]
+        BirthData[("Birth Data<br/>User Inputs")]
+    end
+
+    subgraph Core["🔧 Core Computational Engine"]
+        subgraph Vedic["Vedic Astrology Core"]
+            Ephemeris["Ephemeris Calculator"]
+            Strength["Shadbala Engine"]
+            Dignity["Dignity Analyzer"]
+            Dasha["Dasha Calculator"]
+        end
+        subgraph Numerology["Vedic Numerology"]
+            Mulanka["Mulanka Calculator"]
+            Bhagyanka["Bhagyanka Engine"]
+            Temporal["Temporal Mapper"]
+        end
+    end
+
+    subgraph Analysis["📊 Statistical Analysis Layer"]
+        Granger["Granger Causality"]
+        Monte["Monte Carlo Permutation"]
+        Spectral["Lomb-Scargle Spectral"]
+        ADF["Stationarity Testing"]
+        FDR["FDR Correction"]
+        Chi["Chi-Square Testing"]
+    end
+
+    subgraph Output["📄 Output Generation"]
+        Quarto["Quarto Rendering"]
+        PDF["PDF Reports"]
+        HTML["Interactive HTML"]
+        API["REST API"]
+    end
+
+    SE --> Ephemeris
+    USGS --> Analysis
+    COMEX --> Analysis
+    BirthData --> Vedic
+
+    Vedic --> Analysis
+    Numerology --> Analysis
+
+    Analysis --> Quarto
+    Quarto --> PDF & HTML
+    Core --> API
+
+    style DataSources fill:#e1f5fe
+    style Core fill:#fff3e0
+    style Analysis fill:#f3e5f5
+    style Output fill:#e8f5e9

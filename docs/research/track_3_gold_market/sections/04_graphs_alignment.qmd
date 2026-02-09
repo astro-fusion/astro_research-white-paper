@@ -26,11 +26,30 @@ plt.show()
 #| label: tbl-gold-significance
 #| tbl-cap: "Top 15 Astrology Indicators by FDR-Adjusted p-value (±3 days)"
 
+
 if "pval_w3_fdr" in metrics.columns:
-    top_sig = metrics.sort_values("pval_w3_fdr").head(15)[
-        ["combo_id", "category", "pval_w3", "pval_w3_fdr", "pval_w3_bonferroni", "total_active_days"]
-    ]
-    top_sig
+    # Rename columns for report
+    disp_df = metrics.sort_values("pval_w3_fdr").head(15).copy()
+    disp_df = disp_df.rename(columns={
+        "combo_id": "Combination",
+        "category": "Category",
+        "pval_w3": "Raw p-value",
+        "pval_w3_fdr": "FDR Adjusted p-value",
+        "pval_w3_bonferroni": "Bonferroni p-value",
+        "total_active_days": "Active Days"
+    })
+
+    # Format p-values
+    for col in ["Raw p-value", "FDR Adjusted p-value", "Bonferroni p-value"]:
+        disp_df[col] = disp_df[col].apply(lambda x: f"{x:.4f}" if x >= 0.0001 else "< 0.0001")
+
+    # Markdown output for Quarto
+    from IPython.display import Markdown
+    Markdown(disp_df[[
+        "Combination", "Category", "Active Days",
+        "Raw p-value", "FDR Adjusted p-value", "Bonferroni p-value"
+    ]].to_markdown(index=False))
+
 ```
 
 ```{python}

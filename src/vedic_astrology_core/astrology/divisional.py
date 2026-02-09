@@ -7,7 +7,7 @@ planetary strength and specific life areas.
 
 from typing import Dict, Tuple
 
-from ..config.constants import SIGNS
+from ..config.constants import SIGN_NAMES, ZodiacSign
 
 
 def get_navamsa_sign(longitude: float) -> Tuple[int, str]:
@@ -55,8 +55,9 @@ def get_navamsa_sign(longitude: float) -> Tuple[int, str]:
 
     # Calculate Navamsa sign index
     d9_sign_index = (start_index + pada_index) % 12
+    d9_sign = list(ZodiacSign)[d9_sign_index]
 
-    return d9_sign_index, SIGNS[d9_sign_index]
+    return d9_sign_index, SIGN_NAMES[d9_sign]
 
 
 def calculate_d9(longitude: float) -> Dict:

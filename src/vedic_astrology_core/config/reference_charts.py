@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from typing import Dict
 from zoneinfo import ZoneInfo
 
 
@@ -18,12 +19,12 @@ class ReferenceChart:
     description: str
 
 
-def get_reference_charts() -> dict:
+def get_reference_charts() -> Dict[str, ReferenceChart]:
     """Return the default reference charts catalog."""
     india_tz = ZoneInfo("Asia/Kolkata")
     utc = timezone.utc
 
-    charts = {
+    charts: Dict[str, ReferenceChart] = {
         "india_independence": ReferenceChart(
             key="india_independence",
             name="India Independence Chart",

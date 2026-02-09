@@ -16,7 +16,11 @@ flowchart TD
 
 **Algorithm 1: Daily Alignment Pipeline**
 
-1. **Input**: Date range, latitude, longitude, and ayanamsa system.
+1. **Input**: Date range (2015-2025), Geo-coordinates (New Delhi: 28.61°N, 77.20°E).
+2. **Ephemeris Configuration**:
+    -   **Engine**: Swiss Ephemeris (v2.10) via `pyswisseph`
+    -   **Ayanamsa**: Lahiri (Chitrapaksha, `SIDM_LAHIRI`)
+    -   **Node Type**: True Node (`SE_TRUE_NODE`)
 2. **Compute Numerology**: For each date, compute Mulanka $V = (D-1) \bmod 9 + 1$ and map to a numerology lord.
 3. **Compute Astrology**: For each date, compute Moon longitude at local noon and map to Nakshatra lord.
 4. **Align**: Record whether numerology lord equals Nakshatra lord.
