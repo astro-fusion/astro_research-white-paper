@@ -10,7 +10,7 @@ This script automates the end-to-end research flow:
 """
 
 import logging
-import subprocess
+import subprocess  # nosec B404
 import sys
 from pathlib import Path
 
@@ -46,7 +46,7 @@ TRACKS = {
 def run_script(script_path: Path):
     logger.info(f"Running: {script_path.name}")
     try:
-        subprocess.check_call([sys.executable, str(script_path)])
+        subprocess.check_call([sys.executable, str(script_path)])  # nosec B603
     except subprocess.CalledProcessError as e:
         logger.error(f"Error running {script_path}: {e}")
         sys.exit(1)
