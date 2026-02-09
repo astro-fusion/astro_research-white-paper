@@ -18,6 +18,17 @@ render_one() {
   QUARTO_PYTHON="$PY" quarto render "$ROOT/use_cases/numerology/research_paper/numerology_astrology_correlation.qmd" --to pdf --profile "$profile"
   QUARTO_PYTHON="$PY" quarto render "$ROOT/docs/research/track_2_earthquake_prediction/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.qmd" --to pdf --profile "$profile"
   QUARTO_PYTHON="$PY" quarto render "$ROOT/docs/research/track_3_gold_market/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.qmd" --to pdf --profile "$profile"
+
+  if [[ "$profile" == "generic_journal" ]]; then
+    echo "==> Syncing PDFs to $ROOT/pdfs"
+    mkdir -p "$ROOT/pdfs"
+    cp -f "$ROOT/_site/use_cases/numerology/research_paper/numerology_astrology_correlation.pdf" \
+      "$ROOT/pdfs/numerology_astrology_correlation.pdf"
+    cp -f "$ROOT/_site/docs/research/track_2_earthquake_prediction/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf" \
+      "$ROOT/pdfs/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf"
+    cp -f "$ROOT/_site/docs/research/track_3_gold_market/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.pdf" \
+      "$ROOT/pdfs/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.pdf"
+  fi
 }
 
 run_if_missing() {

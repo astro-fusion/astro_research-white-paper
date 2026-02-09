@@ -47,47 +47,32 @@ jupyter: astro-research-venv
 This report is assembled from modular sections for maintainability.
 :::
 
-:::{include="sections/00_overview.qmd"}
-:::
+{{< include sections/00_overview.qmd >}}
 
-:::{include="sections/01_literature_review.qmd"}
-:::
+{{< include sections/01_literature_review.qmd >}}
 
-:::{include="sections/02_questions_hypotheses.qmd"}
-:::
+{{< include sections/02_questions_hypotheses.qmd >}}
 
-:::{include="sections/03_methods_data.qmd"}
-:::
+{{< include sections/03_methods_data.qmd >}}
 
-:::{include="sections/04_algorithms_pipeline.qmd"}
-:::
+{{< include sections/04_algorithms_pipeline.qmd >}}
 
-:::{include="sections/05_results_graphs.qmd"}
-:::
+{{< include sections/05_results_graphs.qmd >}}
 
-:::{include="sections/06_robustness_limits_ethics.qmd"}
-:::
+{{< include sections/06_robustness_limits_ethics.qmd >}}
 
-:::{include="sections/07_reproducibility.qmd"}
-:::
+{{< include sections/07_reproducibility.qmd >}}
 
-:::{include="sections/08_conclusion.qmd"}
-:::
+{{< include sections/08_conclusion.qmd >}}
 
-:::{include="sections/09_principles_catalog.qmd"}
-:::
+{{< include sections/09_principles_catalog.qmd >}}
 
-:::{include="sections/09a_vedic_principles.qmd"}
-:::
+{{< include sections/09a_vedic_principles.qmd >}}
 
-:::{include="sections/10_algorithms_examples.qmd"}
-:::
+{{< include sections/10_algorithms_examples.qmd >}}
 
-:::{include="sections/11_graphs_frequency.qmd"}
-:::
+{{< include sections/11_graphs_frequency.qmd >}}
 
-:::{include="sections/12_graphs_alignment_windows.qmd"}
-:::
+{{< include sections/12_graphs_alignment_windows.qmd >}}
 
-:::{include="sections/90_legacy_content.qmd"}
-:::
+{{< include sections/90_legacy_content.qmd >}}

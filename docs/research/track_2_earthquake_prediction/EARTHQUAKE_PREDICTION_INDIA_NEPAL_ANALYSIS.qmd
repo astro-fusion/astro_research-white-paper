@@ -54,62 +54,42 @@ jupyter: astro-research-venv
 This report is assembled from modular sections for maintainability.
 :::
 
-:::{include="sections/00_overview.qmd"}
-:::
+{{< include sections/00_overview.qmd >}}
 
-:::{include="sections/01_sources.qmd"}
-:::
+{{< include sections/01_sources.qmd >}}
 
-:::{include="sections/02a_vedic_principles_coverage.qmd"}
-:::
+{{< include sections/02a_vedic_principles_coverage.qmd >}}
 
-:::{include="sections/02_taxonomy.qmd"}
-:::
+{{< include sections/02_taxonomy.qmd >}}
 
-:::{include="sections/03_malefics_aspects.qmd"}
-:::
+{{< include sections/03_malefics_aspects.qmd >}}
 
-:::{include="sections/04_conjunctions_graha_yuddha.qmd"}
-:::
+{{< include sections/04_conjunctions_graha_yuddha.qmd >}}
 
-:::{include="sections/05_shadbala_components.qmd"}
-:::
+{{< include sections/05_shadbala_components.qmd >}}
 
-:::{include="sections/06_combustion_retrograde.qmd"}
-:::
+{{< include sections/06_combustion_retrograde.qmd >}}
 
-:::{include="sections/06a_dasha.qmd"}
-:::
+{{< include sections/06a_dasha.qmd >}}
 
-:::{include="sections/07_eclipses_syzygy.qmd"}
-:::
+{{< include sections/07_eclipses_syzygy.qmd >}}
 
-:::{include="sections/08_nakshatra_lords.qmd"}
-:::
+{{< include sections/08_nakshatra_lords.qmd >}}
 
-:::{include="sections/09_houses_signs_bhavas.qmd"}
-:::
+{{< include sections/09_houses_signs_bhavas.qmd >}}
 
-:::{include="sections/10_yogas_tithi_karana.qmd"}
-:::
+{{< include sections/10_yogas_tithi_karana.qmd >}}
 
-:::{include="sections/11_combination_catalog.qmd"}
-:::
+{{< include sections/11_combination_catalog.qmd >}}
 
-:::{include="sections/12_algorithms_examples.qmd"}
-:::
+{{< include sections/12_algorithms_examples.qmd >}}
 
-:::{include="sections/13_graphs_frequency.qmd"}
-:::
+{{< include sections/13_graphs_frequency.qmd >}}
 
-:::{include="sections/14_graphs_alignment_windows.qmd"}
-:::
+{{< include sections/14_graphs_alignment_windows.qmd >}}
 
-:::{include="sections/15_discussion_limits.qmd"}
-:::
+{{< include sections/15_discussion_limits.qmd >}}
 
-:::{include="sections/16_appendix_full_definitions.qmd"}
-:::
+{{< include sections/16_appendix_full_definitions.qmd >}}
 
-:::{include="sections/90_legacy_content.qmd"}
-:::
+{{< include sections/90_legacy_content.qmd >}}

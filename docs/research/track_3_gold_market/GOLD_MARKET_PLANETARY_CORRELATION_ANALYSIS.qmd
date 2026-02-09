@@ -47,26 +47,18 @@ execute:
 This report is assembled from modular sections for maintainability.
 :::
 
-:::{include="sections/00_overview.qmd"}
-:::
+{{< include sections/00_overview.qmd >}}
 
-:::{include="sections/01_principles_catalog.qmd"}
-:::
+{{< include sections/01_principles_catalog.qmd >}}
 
-:::{include="sections/01a_vedic_principles_coverage.qmd"}
-:::
+{{< include sections/01a_vedic_principles_coverage.qmd >}}
 
-:::{include="sections/02a_dasha.qmd"}
-:::
+{{< include sections/02a_dasha.qmd >}}
 
-:::{include="sections/02_algorithms_examples.qmd"}
-:::
+{{< include sections/02_algorithms_examples.qmd >}}
 
-:::{include="sections/03_graphs_frequency.qmd"}
-:::
+{{< include sections/03_graphs_frequency.qmd >}}
 
-:::{include="sections/04_graphs_alignment.qmd"}
-:::
+{{< include sections/04_graphs_alignment.qmd >}}
 
-:::{include="sections/90_legacy_content.qmd"}
-:::
+{{< include sections/90_legacy_content.qmd >}}

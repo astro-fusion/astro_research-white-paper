@@ -120,6 +120,16 @@ def main() -> None:
     start_year = args.start_year
     end_year = args.end_year
 
+    # If yearly cache already covers the range and no refresh requested, avoid network calls.
+    required_years = set(range(start_year, end_year + 1))
+    cached_years = {
+        int(p.stem.split("_")[-1])
+        for p in yearly_dir.glob("gold_prices_*.csv")
+        if p.stem.split("_")[-1].isdigit()
+    }
+    if required_years.issubset(cached_years) and not (args.update or args.update_all):
+        args.merge_only = True
+
     symbol_used = None
     updated_years = []
 

@@ -8,9 +8,9 @@
 
 ## 📥 Downloads
 
-[![Download PDF](https://img.shields.io/badge/PDF-Download-blue?logo=adobe-acrobat-reader)](assets/releases/vedic-numerology-research-manuscript.pdf)
-[![Download DOCX](https://img.shields.io/badge/DOCX-Download-blue?logo=microsoft-word)](assets/releases/vedic-numerology-research-manuscript.docx)
-[![Download HTML](https://img.shields.io/badge/HTML-Download-blue?logo=html5)](assets/releases/vedic-numerology-research-manuscript.html)
+[![Download PDF](https://img.shields.io/badge/PDF-Open-blue?logo=adobe-acrobat-reader)](https://github.com/astro-fusion/astro_research-white-paper/blob/main/pdfs/numerology_astrology_correlation.pdf)
+[![Download DOCX](https://img.shields.io/badge/DOCX-Open-blue?logo=microsoft-word)](https://github.com/astro-fusion/astro_research-white-paper/blob/main/assets/releases/vedic-numerology-research-manuscript.docx)
+[![Download HTML](https://img.shields.io/badge/HTML-Open-blue?logo=html5)](https://github.com/astro-fusion/astro_research-white-paper/blob/main/assets/releases/vedic-numerology-research-manuscript.html)
 
 ### 📖 Read the Research
 
@@ -18,18 +18,18 @@
 
 Access our comprehensively referenced, peer-ready research manuscripts:
 
-#### 🔬 Complete Research Collection
+#### 🔬 Complete Research Collection (Direct PDF View)
 
 | Research Paper | Format | Description |
 |----------------|--------|-------------|
-| **[Master Research Report](pdfs/VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.pdf)** | PDF | Consolidated 30+ page paper covering all research tracks |
-| **[Numerology-Astrology Correlation](pdfs/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.pdf)** | PDF | Temporal discontinuity analysis between discrete and continuous systems |
-| **[Earthquake Prediction Analysis](pdfs/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf)** | PDF | India-Nepal seismic pattern investigation |
-| **[Gold Market Correlation](pdfs/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.pdf)** | PDF | XAU/USD price prediction analysis |
+| **[Master Research Report](https://github.com/astro-fusion/astro_research-white-paper/blob/main/pdfs/VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.pdf)** | PDF | Consolidated 30+ page paper covering all research tracks |
+| **[Numerology-Astrology Correlation](https://github.com/astro-fusion/astro_research-white-paper/blob/main/pdfs/numerology_astrology_correlation.pdf)** | PDF | Temporal discontinuity analysis between discrete and continuous systems |
+| **[Earthquake Prediction Analysis](https://github.com/astro-fusion/astro_research-white-paper/blob/main/pdfs/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf)** | PDF | India-Nepal seismic pattern investigation |
+| **[Gold Market Correlation](https://github.com/astro-fusion/astro_research-white-paper/blob/main/pdfs/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.pdf)** | PDF | XAU/USD price prediction analysis |
 
 #### 📄 Journal Styles (Generated via CI/CD)
 
-- **[Nature-Style Manuscript](pdfs/manuscript_nature.pdf)**: Rigorous falsification of planetary predictors
+- **[Nature-Style Manuscript](https://github.com/astro-fusion/astro_research-white-paper/blob/main/pdfs/manuscript_nature.pdf)**: Rigorous falsification of planetary predictors
 - **IEEE-Style Manuscript** (Coming Soon): Technical evaluation in IEEE format
 
 > **Note**: This repository contains multiple research use cases. Visit the [Reports Section](assets/reports/) for generated PDF reports or browse the [Source Code](src/) for implementation details.
