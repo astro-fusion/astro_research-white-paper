@@ -4,14 +4,12 @@ import unittest
 from datetime import date, datetime
 
 # Add src to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../libs")))
 
-from vedic_astrology_core.astrology.ephemeris import EphemerisEngine
-from vedic_numerology.engine import NumerologyEngine
-
+from vedic_astrology_core.astrology.ephemeris import EphemerisEngine  # noqa: E402
+from vedic_numerology.numerology_engine import NumerologyEngine  # noqa: E402
 
 class TestResearchPipelinePhase1(unittest.TestCase):
-
     def setUp(self):
         self.num_engine = NumerologyEngine()
         self.eph_engine = EphemerisEngine()

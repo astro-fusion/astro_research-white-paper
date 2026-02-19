@@ -7,9 +7,11 @@ import pytest
 
 # Paths
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-ARTIFACTS_DIR = os.path.join(BASE_DIR, "reports", "artifacts")
-MANUSCRIPT_QMD = os.path.join(BASE_DIR, "reports", "manuscript.qmd")
-GENERATE_ARTIFACTS_SCRIPT = os.path.join(BASE_DIR, "src", "generate_artifacts.py")
+ARTIFACTS_DIR = os.path.join(BASE_DIR, "research", "reports", "artifacts")
+MANUSCRIPT_QMD = os.path.join(BASE_DIR, "research", "reports", "manuscript.qmd")
+GENERATE_ARTIFACTS_SCRIPT = os.path.join(
+    BASE_DIR, "research", "scripts", "generate_artifacts.py"
+)
 
 
 def test_artifact_generation():

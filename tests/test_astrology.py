@@ -11,7 +11,7 @@ import unittest
 from datetime import datetime
 
 # Add src to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "libs"))
 
 from vedic_astrology_core.astrology import AyanamsaSystem  # noqa: E402
 from vedic_astrology_core.astrology.ayanamsa import (  # noqa: E402

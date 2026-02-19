@@ -1,0 +1,45 @@
+{
+  "birth_data": {
+    "date": "1984-08-27",
+    "time": "10:30",
+    "latitude": 28.6139,
+    "longitude": 77.1025
+  },
+  "numerology": {
+    "mulanka": {
+      "number": 9,
+      "planet": "Planet.MARS",
+      "corrected": true
+    },
+    "bhagyanka": {
+      "number": 3,
+      "planet": "Planet.JUPITER"
+    },
+    "sunrise_corrected": true
+  },
+  "astrology": {
+    "mars_dignity": {
+      "score": 0.0,
+      "base_score": 0.0,
+      "dignity_type": "Not found",
+      "sign_lord": null,
+      "friendship": null,
+      "modifiers": "Planet position not available"
+    },
+    "venus_dignity": {
+      "score": 0.0,
+      "base_score": 0.0,
+      "dignity_type": "Not found",
+      "sign_lord": null,
+      "friendship": null,
+      "modifiers": "Planet position not available"
+    },
+    "ascendant": "Capricorn"
+  },
+  "support_analysis": {
+    "mars_score": 0.0,
+    "venus_score": 0.0,
+    "mars_type": "Not found",
+    "venus_type": "Not found"
+  }
+}

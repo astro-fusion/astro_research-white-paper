@@ -7,19 +7,17 @@ from unittest.mock import MagicMock, patch
 import pandas as pd
 
 # Add src to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../libs")))
 sys.path.append(
     os.path.abspath(
         os.path.join(os.path.dirname(__file__), "../use_cases/earthquake/scripts")
     )
 )
 
-from vedic_astrology_core.astrology.ephemeris import EphemerisEngine
-from vedic_astrology_core.dignity.global_scorer import GlobalShadbalaScorer
-
+from vedic_astrology_core.astrology.ephemeris import EphemerisEngine  # noqa: E402
+from vedic_astrology_core.dignity.global_scorer import GlobalShadbalaScorer  # noqa: E402
 
 class TestResearchPipelinePhase2(unittest.TestCase):
-
     def setUp(self):
         self.eph = EphemerisEngine()
         self.scorer = GlobalShadbalaScorer(self.eph)

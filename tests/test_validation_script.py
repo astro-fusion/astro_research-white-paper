@@ -9,13 +9,14 @@ import pandas as pd
 # Add src to path
 sys.path.append(
     os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "../use_cases/earthquake/scripts")
+        os.path.join(
+            os.path.dirname(__file__), "../research/use_cases/earthquake/scripts"
+        )
     )
 )
 
 
 class TestValidationScript(unittest.TestCase):
-
     def setUp(self):
         # Create a dummy regression matrix for testing
         self.test_matrix_path = "test_validation_matrix.csv"
@@ -43,11 +44,10 @@ class TestValidationScript(unittest.TestCase):
 
     def test_validation_execution(self):
         """Test that run_validation runs with small N shuffles."""
-        import validate_results
-
         # Use small number of shuffles for speed
         try:
-            validate_results.run_validation(self.test_matrix_path, n_shuffles=10)
+            from run_validation import run_validation  # noqa: E402
+            run_validation(self.test_matrix_path, n_shuffles=10)
         except Exception as e:
             self.fail(f"run_validation failed with: {e}")
 

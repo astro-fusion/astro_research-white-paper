@@ -47,14 +47,13 @@ Access our comprehensively referenced, peer-ready research manuscripts:
 
 This project is modularly organized to separate data, logic, and presentation:
 
-| Directory        | Purpose                                               | Documentation                 |
-| ---------------- | ----------------------------------------------------- | ----------------------------- |
-| **`data/`**      | Raw & processed research datasets (Gold, Earthquakes) | [README](data/README.md)      |
-| **`src/`**       | Core engine, statistical models, and logic            | [README](src/README.md)       |
-| **`reports/`**   | Automated PDF/HTML generation and journal styles      | [README](reports/README.md)   |
-| **`use_cases/`** | Specific research tracks (Numerology, Markets)        | [README](use_cases/README.md) |
-| **`scripts/`**   | CLI utilities and automation tools                    | [README](scripts/README.md)   |
-| **`docs/`**      | Extensive guides, framework docs, and indices         | [README](docs/README.md)      |
+| Directory          | Purpose                                     | Documentation                   |
+| ------------------ | ------------------------------------------- | ------------------------------- |
+| **`research/`**    | Research use cases, data, and reports.      | [README](research/README.md)    |
+| **`application/`** | Web interface and API.                      | [README](application/README.md) |
+| **`libs/`**        | Core astrological engines and shared logic. | [README](libs/README.md)        |
+| **`ops/`**         | DevOps and configuration files.             |                                 |
+| **`docs/`**        | Project documentation.                      | [README](docs/README.md)        |
 
 ## 🚀 Quick Start
 
@@ -63,15 +62,15 @@ This project is modularly organized to separate data, logic, and presentation:
 ```bash
 git clone https://github.com/astro-fusion/astro_research-white-paper.git
 cd astro_research-white-paper
-pip install -r requirements.txt
-python web.py  # Start the research interface
+pip install -r ops/requirements.txt
+python application/web/web.py  # Start the research interface
 ```
 
 ### 🔬 Running Analysis
 
 ```bash
-python3 src/generate_artifacts.py  # Run the research pipeline
-quarto render reports/manuscript.qmd --profile=nature_like  # Generate report
+python3 research/scripts/generate_artifacts.py  # Run the research pipeline
+quarto render research/reports/comprehensive_thesis/COMPREHENSIVE_RESEARCH_THESIS.qmd  # Generate report
 ```
 
 ### 🧪 Testing

@@ -1,0 +1,384 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  11pt,
+  oneside,
+  openany]{article}
+
+\usepackage{amsmath,amssymb}
+\usepackage{setspace}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage[]{libertine}
+\ifPDFTeX\else
+    % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[top=30mm,left=25mm,right=25mm,bottom=30mm,heightrounded]{geometry}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{5}
+% Make \paragraph and \subparagraph free-standing
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+% PDF Header - Custom LaTeX commands for PDF output
+% This file is included in the LaTeX preamble for PDF generation
+
+% Add any custom LaTeX packages or commands here
+% Example: \usepackage{booktabs}
+% Example: \usepackage{longtable}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\captionsetup{labelsep=colon}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\ifLuaTeX
+\usepackage[bidi=basic]{babel}
+\else
+\usepackage[bidi=default]{babel}
+\fi
+\babelprovide[main,import]{american}
+% get rid of language-specific shorthands (see #6817):
+\let\LanguageShortHands\languageshorthands
+\def\languageshorthands#1{}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Statistical Validation of Astrological and Numerological Precursors in Global Seismic Activity},
+  pdfauthor={Bishal Ghimire},
+  pdflang={en-US},
+  pdfsubject={Computational Integration of Vedic Numerology and Sidereal
+Astrology},
+  pdfkeywords={Seismology, Generalized Linear Models, Numerology, Monte
+Carlo Verification, Anomaly Detection},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={green},
+  urlcolor={blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Statistical Validation of Astrological and Numerological
+Precursors in Global Seismic Activity}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{A Negative Binomial Regression Analysis of the USGS Catalog
+(1900-2023)}
+\author{Astro-Fusion Research Team}
+\date{2026-01-30}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+This study conducts a rigorous statistical audit of the ``Astro-Fusion''
+hypothesis, which posits that discrete numerological time cycles and
+planetary configurations (specifically Vedic \emph{Shadbala}) act as
+exogenous triggers for global seismicity. Using a Negative Binomial
+Generalized Linear Model (GLM) to account for overdispersion in the USGS
+earthquake catalog, we test whether these variables provide information
+gain over a standard Poisson baseline of seismicity (Trend +
+Seasonality). Our analysis focuses on the prediction of daily earthquake
+counts (M5.0+) and employs a ``Look-Elsewhere'' effect methodology
+(Monte Carlo randomization) to control for false discoveries. The
+results indicate that while certain high-magnitude events align with
+classical astrological ``Yogas,'' the global statistical signal for
+numerological precursors remains weak when controlled for multiple
+hypothesis testing.
+\end{abstract}
+
+% PDF Before Body - Content to include before document body
+% This file is included before the main document content
+
+% Add any content that should appear before the main document here
+% This could include custom title pages, abstracts, etc.
+
+\renewcommand*\contentsname{Table of contents}
+{
+\hypersetup{linkcolor=}
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+\setstretch{1.2}
+\section{Introduction}\label{introduction}
+
+The prediction of earthquakes remains one of the most persistent
+challenges in geophysical science. The ``Prediction Gap''---the
+inability to deterministically forecast the time, location, and
+magnitude of rupture---stems from the non-linear, chaotic nature of
+crustal stress accumulation.
+
+This paper investigates a novel set of candidate features derived from
+``Astro-Fusion'' variables, specifically: 1. \textbf{Universal Day
+Numbers (UDN):} A cyclic base-9 numerological time series. 2.
+\textbf{Planetary Force Vectors:} Quantified ``Shadbala'' strength
+scores for major planets (Mars, Saturn) derived from the Swiss
+Ephemeris.
+
+We do not presuppose the physical mechanism but treat these as potential
+exogenous regressors in an Exploratory Data Analysis (EDA) framework.
+
+\section{Data \& Methodology}\label{data-methodology}
+
+\subsection{Data Preprocessing}\label{data-preprocessing}
+
+We utilized the USGS Comprehensive Earthquake Catalog (ComCat),
+filtering for events with \(Magnitude \ge 5.0\) from 1900 to 2023. Key
+preprocessing steps included: - \textbf{Magnitude Homogenization:}
+Converting all magnitudes to Moment Magnitude (\(M_w\)) to ensure
+consistency. - \textbf{Declustering:} Applying the Gardner-Knopoff
+algorithm to remove aftershocks, isolating independent mainshocks.
+
+\subsection{Statistical Framework: Negative Binomial
+Regression}\label{statistical-framework-negative-binomial-regression}
+
+Earthquake counts are discrete, non-negative integers. Traditional OLS
+regression is inappropriate. We employ a \textbf{Generalized Linear
+Model (GLM)}. Because earthquake counts exhibit overdispersion
+(\(Variance > Mean\)) due to clustering, we utilize the Negative
+Binomial distribution rather than the Poisson distribution.
+
+The model specification is:
+\[ \ln(\mu_t) = \beta_0 + \beta_{trend} t + \beta_{season} \sin(\frac{2\pi t}{365}) + \beta_{astro} X_{astro} \]
+
+\subsection{\texorpdfstring{The Null Hypothesis
+(\(H_0\))}{The Null Hypothesis (H\_0)}}\label{the-null-hypothesis-h_0}
+
+The Null Hypothesis states that earthquake occurrence is a random
+Poisson process influenced only by: - Long-term catalog detection
+improvement (Trend). - Seasonal tidal stress (Annual Seasonality). -
+Random noise.
+
+Any significant deviation in \(\beta_{astro}\) would suggest a signal.
+
+\section{Results}\label{results}
+
+\subsection{Regression Analysis}\label{regression-analysis}
+
+Table 1 presents the estimated coefficients from the GLM.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.4000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2000}}@{}}
+\caption{Table 1: Regression Coefficients}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Variable
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Coefficient
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Standard Error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+P-Value
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Variable
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Coefficient
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Standard Error
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+P-Value
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & -12.45 & 0.05 & \textless{} 0.001 \\
+Year Index & 0.012 & 0.001 & \textless{} 0.001 \\
+Universal Day 8 & 0.045 & 0.03 & 0.15 \\
+Mars Strength & -0.002 & 0.001 & 0.04 \\
+Saturn Strength & 0.001 & 0.001 & 0.32 \\
+\end{longtable}
+
+\emph{(Note: See \texttt{tables/regression\_coefficients.csv} for full
+model output)}
+
+\subsection{Temporal Prediction}\label{temporal-prediction}
+
+Figure 1 below illustrates the model's ability to track the aggregate
+monthly seismic rate. The ``Prediction Gap'' is visible where the model
+captures the trend but misses extreme outliers (Mega-Quakes).
+
+\begin{figure}[H]
+
+\caption{Figure 1: Time series of Predicted Rate vs.~Actual Rate
+(Monthly Aggregated). The red dashed line represents the Negative
+Binomial model fit.}
+
+{\centering \includegraphics{../figures/predicted_vs_actual.png}
+
+}
+
+\end{figure}%
+
+\subsection{``Look-Elsewhere'' Analysis}\label{look-elsewhere-analysis}
+
+To ensure any detected signal is not a result of p-hacking (finding a
+pattern by checking thousands of combinations), we performed a Monte
+Carlo Shuffle Test (N=1000). We destroyed the time-link between
+astrology and earthquakes while preserving the internal structure of
+both series.
+
+\begin{figure}[H]
+
+\caption{Figure 2: The ``Look-Elsewhere'' Analysis. The histogram shows
+the distribution of Delta-AIC values for random shuffles. The red line
+marks the Real Data performance. If the red line is within the gray
+mass, the result is indistinguishable from noise.}
+
+{\centering \includegraphics{../figures/monte_carlo_distribution.png}
+
+}
+
+\end{figure}%
+
+\section{Discussion}\label{discussion}
+
+\subsection{Interpretation}\label{interpretation}
+
+The coefficient for \textbf{Mars Strength} shows a marginally
+significant negative correlation (p=0.04), suggesting that periods of
+\emph{lower} Mars strength slightly correlate with higher seismicity in
+this specific model. However, the \textbf{Universal Day Number}
+variables did not reach the threshold of statistical significance
+(\(p < 0.05\)).
+
+\subsection{Confounders}\label{confounders}
+
+Potential confounders include: - \textbf{Solar Cycle:} The 11-year solar
+maximum cycle may overlap with planetary periods (Jupiter). -
+\textbf{Tidal Stress:} Lunar phases (syzygy) are known physical triggers
+but are often conflated with ``astrology.''
+
+\subsection{Critical Self-Assessment}\label{critical-self-assessment}
+
+The Monte Carlo analysis (Figure 2) reveals that the improvement in
+model fit (Delta-AIC) provided by the Astro-Fusion variables falls
+within the 95\% confidence interval of random noise. Therefore, strictly
+speaking, \textbf{we fail to reject the Null Hypothesis} for the global
+dataset. The signal provided by these variables is not strong enough to
+be used as a standalone predictor for global seismicity.
+
+\section{Conclusion}\label{conclusion}
+
+This study provides a reproducible computational framework for testing
+``fringe'' scientific hypotheses. While we found anecdotal correlations
+in individual high-magnitude events, the aggregate statistical analysis
+suggests that ``Universal Day Numbers'' and ``Global Planetary
+Strength'' do not possess significant predictive power for global
+earthquake rates. Future work should focus on regionalized hypotheses
+(Koorma Chakra) rather than global aggregates.
+
+
+
+\end{document}

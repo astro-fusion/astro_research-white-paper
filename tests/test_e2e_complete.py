@@ -298,7 +298,8 @@ class AstroResearchE2ETester:
             await self.page.goto(self.base_url, wait_until="load")
 
             # Get performance metrics
-            metrics = await self.page.evaluate("""
+            metrics = await self.page.evaluate(
+                """
                 () => {
                     const timing = performance.timing;
                     return {
@@ -310,7 +311,8 @@ class AstroResearchE2ETester:
                         total: timing.loadEventEnd - timing.navigationStart
                     };
                 }
-            """)
+            """
+            )
 
             print(f"✅ Performance metrics collected:")
             print(f"   - Total load time: {metrics['total']}ms")
@@ -477,7 +479,7 @@ async def main():
     except Exception as e:
         print(f"\n❌ E2E Testing Error: {e}")
         print("\n💡 Tip: Make sure the application is running on http://localhost:5000")
-        print("       Run: python src/web/web.py")
+        print("       Run: python application/web/web.py")
         return 1
 
 

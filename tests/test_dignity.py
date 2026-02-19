@@ -11,7 +11,7 @@ import unittest
 from unittest.mock import Mock
 
 # Add src to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "libs"))
 
 from vedic_astrology_core.config.constants import Planet  # noqa: E402
 from vedic_astrology_core.dignity import DignityScorer  # noqa: E402

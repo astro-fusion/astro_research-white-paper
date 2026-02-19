@@ -9,13 +9,14 @@ import pandas as pd
 # Add src to path
 sys.path.append(
     os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "../use_cases/earthquake/scripts")
+        os.path.join(
+            os.path.dirname(__file__), "../research/use_cases/earthquake/scripts"
+        )
     )
 )
 
 
 class TestResearchPipelinePhase3(unittest.TestCase):
-
     def setUp(self):
         # Create a dummy regression matrix for testing
         self.test_matrix_path = "test_regression_matrix.csv"
@@ -40,8 +41,9 @@ class TestResearchPipelinePhase3(unittest.TestCase):
             os.remove(self.test_matrix_path)
 
     def test_model_training_execution(self):
-        """Test that train_models runs without crashing on valid data."""
-        import train_models
+        """Test thatfrom train_models import run_training  # noqa: E402
+ on valid data."""
+        from train_models import run_training  # noqa: E402
 
         # Capture stdout to check for success messages
         # We just want to ensure it calls fit() and produces output

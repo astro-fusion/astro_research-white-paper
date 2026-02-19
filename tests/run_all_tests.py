@@ -148,7 +148,7 @@ class MasterTestRunner:
             return {"status": "skipped", "tests": 0, "passed": 0, "failed": 0}
 
         print("\n📌 Note: Ensure application is running on http://localhost:5000")
-        print("   Command: python3 src/web/web.py (or equivalent)")
+        print("   Command: python3 application/web/web.py (or equivalent)")
 
         try:
             result = subprocess.run(

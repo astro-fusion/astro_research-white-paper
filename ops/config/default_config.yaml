@@ -1,0 +1,109 @@
+# Default Configuration for Vedic Numerology-Astrology System
+# This file contains all default settings for the system.
+# Copy this file and modify as needed for custom configurations.
+
+# Astrology settings
+astrology:
+  # Ayanamsa system for sidereal zodiac calculations
+  ayanamsa_system: lahiri  # Options: lahiri, raman, yukteshwar, fagan, deluce, djwhal_khul
+
+  # House calculation system
+  house_system: placidus  # Options: placidus, koch, equal, whole_sign
+
+  # Use sidereal zodiac (required for Vedic astrology)
+  sidereal_zodiac: true
+
+  # Default location (Delhi, India) - override for specific calculations
+  default_latitude: 28.6139
+  default_longitude: 77.1025
+  default_timezone: "Asia/Kolkata"
+
+# Numerology settings
+numerology:
+  # Apply sunrise correction for Vedic day calculation
+  sunrise_correction: true
+
+  # Use Vedic day calculation (sunrise-based)
+  vedic_day_calculation: true
+
+  # Reduce master numbers (11, 22, 33) to single digits
+  master_numbers_reduced: true
+
+# Dignity scoring settings
+dignity:
+  # Scoring scale for planetary dignity
+  scoring_scale: "0-100"
+
+  # Include retrograde bonus in scoring
+  include_retrograde_bonus: true
+
+  # Include combustion penalty in scoring
+  include_combustion_penalty: true
+
+  # Include advanced Shad Bala calculations (experimental)
+  include_shadbala: false
+
+  # Friendship matrix type
+  friendship_matrix: traditional  # Options: traditional, modern
+
+# Visualization settings
+visualization:
+  # Default plotting library
+  default_library: plotly  # Options: plotly, matplotlib
+
+  # Color scheme for charts
+  color_scheme: default  # Options: default, vedic, modern
+
+  # Default figure size [width, height] in inches
+  figure_size: [10, 6]
+
+  # Resolution for saved figures (DPI)
+  dpi: 150
+
+  # Enable interactive charts (when supported)
+  interactive_charts: true
+
+# Performance settings
+performance:
+  # Cache ephemeris calculations to improve performance
+  cache_ephemeris: true
+
+  # Cache timeout in hours
+  cache_timeout_hours: 24
+
+  # Enable batch processing for multiple calculations
+  batch_processing: true
+
+  # Maximum cache size in MB
+  max_cache_size_mb: 100
+
+# Logging settings
+logging:
+  # Logging level
+  level: INFO  # Options: DEBUG, INFO, WARNING, ERROR, CRITICAL
+
+  # Enable file logging
+  file_logging: false
+
+  # Directory for log files
+  log_directory: logs
+
+  # Maximum number of log files to keep
+  max_log_files: 30
+
+  # Log message format
+  log_format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# Output settings
+output:
+  # Decimal precision for numerical outputs
+  decimal_precision: 2
+
+  # Include astrological symbols in output
+  include_symbols: true
+
+  # Output language
+  language: en  # Options: en, hi (Hindi), sa (Sanskrit - limited support)
+
+  # Default report format
+  report_format: text  # Options: text, html, json
