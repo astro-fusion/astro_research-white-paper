@@ -1,20 +1,19 @@
-"""
-Playwright E2E Testing Suite for Astro Research Platform
+"""Playwright E2E Testing Suite for Astro Research Platform.
+
 Tests web interface, APIs, and user workflows
 Comprehensive validation across multiple platforms
 """
 
 import asyncio
-import json
 import os
 from datetime import datetime
-from pathlib import Path
 
 
 class AstroResearchE2ETester:
     """End-to-end testing using Playwright."""
 
     def __init__(self):
+        """Initialize the AstroResearchE2ETester."""
         self.browser = None
         self.context = None
         self.page = None
@@ -116,7 +115,8 @@ class AstroResearchE2ETester:
                 return True
             else:
                 print(
-                    f"⚠️  Health endpoint not available (status: {response.status if response else 'N/A'})"
+                    f"⚠️  Health endpoint not available (status: "
+                    f"{response.status if response else 'N/A'})"
                 )
                 self._record_test(test_name, True)  # Non-critical
                 return True
@@ -153,7 +153,7 @@ class AstroResearchE2ETester:
                 await page.close()
                 await context.close()
 
-            print(f"✅ Responsiveness - All viewports working")
+            print("✅ Responsiveness - All viewports working")
             self._record_test(test_name, True)
             return True
         except Exception as e:
@@ -186,7 +186,8 @@ class AstroResearchE2ETester:
             assert result["headings"] >= 0, "Heading detection failed"
 
             print(
-                f"✅ JS Execution - Headings: {result['headings']}, Body Height: {result['bodySize']}px"
+                f"✅ JS Execution - Headings: {result['headings']}, "
+                f"Body Height: {result['bodySize']}px"
             )
             self._record_test(test_name, True)
             return True
@@ -234,7 +235,8 @@ class AstroResearchE2ETester:
             button_count = await self.page.locator("button").count()
 
             print(
-                f"✅ Forms found - Forms: {form_count}, Inputs: {input_count}, Buttons: {button_count}"
+                f"✅ Forms found - Forms: {form_count}, Inputs: "
+                f"{input_count}, Buttons: {button_count}"
             )
             self._record_test(test_name, True)
             return True
@@ -276,8 +278,10 @@ class AstroResearchE2ETester:
                 """
                 () => ({
                     navigation: performance.timing.navigationStart,
-                    loadComplete: performance.timing.loadEventEnd - performance.timing.navigationStart,
-                    domInteractive: performance.timing.domInteractive - performance.timing.navigationStart,
+                    loadComplete: performance.timing.loadEventEnd
+                    - performance.timing.navigationStart,
+                    domInteractive: performance.timing.domInteractive
+                    - performance.timing.navigationStart,
                     resourceCount: performance.getEntriesByType('resource').length
                 })
             """
@@ -286,7 +290,8 @@ class AstroResearchE2ETester:
             load_time = metrics["loadComplete"] / 1000  # Convert to seconds
 
             print(
-                f"✅ Performance - Load: {load_time:.2f}s, Resources: {metrics['resourceCount']}"
+                f"✅ Performance - Load: {load_time:.2f}s, "
+                f"Resources: {metrics['resourceCount']}"
             )
             self._record_test(test_name, True)
             return True
@@ -309,10 +314,14 @@ class AstroResearchE2ETester:
                 () => ({
                     headings: document.querySelectorAll('h1, h2, h3, h4, h5, h6').length,
                     images: document.querySelectorAll('img[alt]').length,
-                    imagesNoAlt: document.querySelectorAll('img:not([alt])').length,
+                    imagesNoAlt: document.querySelectorAll(
+                        "img:not([alt])"  # noqa: E501
+                    ).length,
                     buttons: document.querySelectorAll('button').length,
                     labels: document.querySelectorAll('label').length,
-                    inputs: document.querySelectorAll('input[aria-label], input[id]').length
+                    inputs: document.querySelectorAll(
+                        'input[aria-label], input[id]'
+                    ).length
                 })
             """
             )
@@ -322,7 +331,8 @@ class AstroResearchE2ETester:
                 issues.append("Images without alt text")
 
             print(
-                f"✅ Accessibility - Headings: {accessibility['headings']}, Alt text: {accessibility['images']}"
+                f"✅ Accessibility - Headings: {accessibility['headings']}, "
+                f"Alt text: {accessibility['images']}"
             )
             self._record_test(test_name, True)
             return True
@@ -411,7 +421,7 @@ class AstroResearchE2ETester:
 
 
 async def main():
-    """Main entry point."""
+    """Run main entry point."""
     tester = AstroResearchE2ETester()
     success = await tester.run_all_tests()
     return success

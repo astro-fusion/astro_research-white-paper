@@ -1,7 +1,16 @@
-# Configuration file for the Sphinx documentation builder.
-#
-# For the full list of built-in configuration values, see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
+"""
+Configuration file for the Sphinx documentation builder.
+
+For the full list of built-in configuration values, see the documentation:
+https://www.sphinx-doc.org/en/master/usage/configuration.html
+"""
+
+import os
+import sys
+
+# Add the project root to the path so we can import modules
+sys.path.insert(0, os.path.abspath(".."))
+sys.path.insert(0, os.path.abspath("../src"))
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -176,12 +185,6 @@ texinfo_documents = [
 todo_include_todos = True
 
 # -- Path setup ---------------------------------------------------------------
-import os
-import sys
-
-# Add the project root to the path so we can import modules
-sys.path.insert(0, os.path.abspath(".."))
-sys.path.insert(0, os.path.abspath("../src"))
 
 # -- Custom event handlers ----------------------------------------------------
 
@@ -200,7 +203,11 @@ def autodoc_skip_member(app, what, name, obj, skip, options):
 
 
 def setup(app):
-    """Setup function for Sphinx extensions."""
+    """Register Sphinx extensions and custom CSS.
+
+    Args:
+        app: The Sphinx application object.
+    """
     app.connect("autodoc-skip-member", autodoc_skip_member)
 
     # Add custom CSS

@@ -1,6 +1,6 @@
-"""
-Comprehensive End-to-End Testing Suite
-Playwright-based E2E tests for astro-research platform
+"""Comprehensive End-to-End Testing Suite.
+
+Playwright-based E2E tests for astro-research platform.
 
 Tests coverage:
 - Web interface (Flask/Streamlit)
@@ -12,13 +12,9 @@ Tests coverage:
 """
 
 import asyncio
-import json
-import os
-from pathlib import Path
-from typing import Dict, List, Optional
 
 try:
-    from playwright.async_api import Browser, BrowserContext, Page, async_playwright
+    from playwright.async_api import async_playwright
 
     HAS_PLAYWRIGHT = True
 except ImportError:
@@ -45,7 +41,7 @@ class AstroResearchE2ETester:
         self.test_results = {"passed": 0, "failed": 0, "total": 0, "tests": []}
 
     async def setup(self):
-        """Setup browser and context."""
+        """Set up browser and context."""
         if not HAS_PLAYWRIGHT:
             raise RuntimeError("Playwright not installed")
 
@@ -105,7 +101,7 @@ class AstroResearchE2ETester:
                         nav_found = True
                         print(f"✅ Found navigation: {selector}")
                         break
-                except:
+                except Exception:
                     pass
 
             if nav_found:
@@ -147,7 +143,7 @@ class AstroResearchE2ETester:
                             print(f"✅ Content found: {len(text)} characters")
                             self._record_test(test_name, True)
                             return True
-                except:
+                except Exception:
                     pass
 
             print("⚠️  No content found")
@@ -181,7 +177,8 @@ class AstroResearchE2ETester:
                     path=f"/tmp/screenshot_{viewport['name'].lower()}.png"
                 )
                 print(
-                    f"✅ Rendered on {viewport['name']}: {viewport['width']}x{viewport['height']}"
+                    f"✅ Rendered on {viewport['name']}: "
+                    f"{viewport['width']}x{viewport['height']}"
                 )
 
             self._record_test(test_name, True)
@@ -244,10 +241,10 @@ class AstroResearchE2ETester:
                     content = await self.page.content()
                     # Check if response contains valid JSON
                     if "error" not in content.lower() or response.status == 200:
-                        print(f"✅ Data processing endpoint responsive")
+                        print("✅ Data processing endpoint responsive")
                         self._record_test(test_name, True)
                         return True
-                except:
+                except Exception:
                     pass
 
             self._record_test(
@@ -278,7 +275,8 @@ class AstroResearchE2ETester:
                 return True
             else:
                 print(
-                    f"⚠️  Unexpected status: {response.status if response else 'No response'}"
+                    f"⚠️  Unexpected status: "
+                    f"{response.status if response else 'No response'}"
                 )
                 self._record_test(test_name, True)  # Non-critical
                 return True
@@ -314,7 +312,7 @@ class AstroResearchE2ETester:
             """
             )
 
-            print(f"✅ Performance metrics collected:")
+            print("✅ Performance metrics collected:")
             print(f"   - Total load time: {metrics['total']}ms")
             print(f"   - DNS: {metrics['dns']}ms")
             print(f"   - DOM Parse: {metrics['domparse']}ms")
@@ -343,7 +341,7 @@ class AstroResearchE2ETester:
                 "form_labels": len(await self.page.query_selector_all("label")),
             }
 
-            print(f"✅ Accessibility features found:")
+            print("✅ Accessibility features found:")
             for feature, count in checks.items():
                 print(f"   - {feature}: {count}")
 

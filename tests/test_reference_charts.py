@@ -7,6 +7,7 @@ from vedic_astrology_core.config.reference_charts import (
 
 
 def test_reference_chart_keys():
+    """Test that all expected reference chart keys are present."""
     charts = get_reference_charts()
     assert "india_independence" in charts
     assert "nepal_constitution_2015" in charts
@@ -14,6 +15,7 @@ def test_reference_chart_keys():
 
 
 def test_reference_chart_metadata():
+    """Test that reference chart metadata corresponds to expected values."""
     india = get_reference_chart("india_independence")
     nepal = get_reference_chart("nepal_constitution_2015")
     global_chart = get_reference_chart("global_baseline_2000")

@@ -1,3 +1,5 @@
+"""Test suite for research pipeline phase 3."""
+
 import os
 import sys
 import unittest
@@ -16,7 +18,10 @@ sys.path.append(
 
 
 class TestResearchPipelinePhase3(unittest.TestCase):
+    """Tests for Phase 3 pipeline."""
+
     def setUp(self):
+        """Initialize fixtures."""
         # Create a dummy regression matrix for testing
         self.test_matrix_path = "test_regression_matrix.csv"
 
@@ -36,6 +41,7 @@ class TestResearchPipelinePhase3(unittest.TestCase):
         df.to_csv(self.test_matrix_path, index=False)
 
     def tearDown(self):
+        """Clean up fixtures."""
         if os.path.exists(self.test_matrix_path):
             os.remove(self.test_matrix_path)
 

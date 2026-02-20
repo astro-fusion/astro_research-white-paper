@@ -12,11 +12,13 @@ from vedic_astrology_core.dasha.vimshottari import (
 
 
 def test_start_lord_from_moon_longitude():
+    """Test start lord calculation from moon longitude."""
     # 0° falls in Ashwini, which is ruled by Ketu
     assert get_vimshottari_start_lord(0.0) == "Ketu"
 
 
 def test_periods_sum_to_total_years():
+    """Test if the periods correctly sum to the total specified years."""
     birth = datetime(2000, 1, 1)
     moon_long = 0.0  # Ashwini (Ketu)
     periods = compute_vimshottari_periods(birth, moon_long, total_years=120)
@@ -25,6 +27,7 @@ def test_periods_sum_to_total_years():
 
 
 def test_first_period_balance_years():
+    """Test the balance of years for the first period."""
     birth = datetime(2000, 1, 1)
     moon_long = 0.0  # start of nakshatra
     periods = compute_vimshottari_periods(birth, moon_long, total_years=120)
@@ -34,6 +37,7 @@ def test_first_period_balance_years():
 
 
 def test_lord_at_target_date():
+    """Test retrieval of the lord at a specific target date."""
     birth = datetime(2000, 1, 1)
     moon_long = 0.0
     target = birth + timedelta(days=365.2425 * 8)  # year 8 should be Venus

@@ -61,6 +61,7 @@ rows = []
 
 
 def add(category, rule, parameters=None, window=None, **fields):
+    """Add a new combination rule to the catalog."""
     combo_id = f"{category}:{len(rows)+1:06d}"
     row = {
         "combo_id": combo_id,

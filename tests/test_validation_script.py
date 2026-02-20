@@ -1,3 +1,5 @@
+"""Test suite for the Phase 4 validation script."""
+
 import os
 import sys
 import unittest
@@ -16,7 +18,10 @@ sys.path.append(
 
 
 class TestValidationScript(unittest.TestCase):
+    """Test cases for the validation script."""
+
     def setUp(self):
+        """Set up test fixtures."""
         # Create a dummy regression matrix for testing
         self.test_matrix_path = "test_validation_matrix.csv"
 
@@ -34,6 +39,7 @@ class TestValidationScript(unittest.TestCase):
         df.to_csv(self.test_matrix_path, index=False)
 
     def tearDown(self):
+        """Clean up test fixtures and generated files."""
         if os.path.exists(self.test_matrix_path):
             os.remove(self.test_matrix_path)
         if os.path.exists("validation_report.json"):

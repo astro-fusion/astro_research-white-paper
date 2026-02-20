@@ -1,7 +1,7 @@
-"""
-Master Test Runner - Consolidated Testing Suite
-Runs all tests: Unit, Integration, E2E, Multi-Platform
-Generates comprehensive coverage report
+"""Master Test Runner.
+
+Consolidated Testing Suite Runs all tests: Unit, Integration, E2E, Multi-Platform
+Generates comprehensive coverage report.
 """
 
 import json
@@ -15,6 +15,7 @@ class MasterTestRunner:
     """Orchestrates all tests."""
 
     def __init__(self):
+        """Initialize the master test runner."""
         self.workspace = Path(__file__).parent.parent
         self.results = {
             "timestamp": datetime.now().isoformat(),
@@ -181,7 +182,8 @@ class MasterTestRunner:
             if "Connection refused" in output or "refused" in output.lower():
                 print(output)
                 print(
-                    "\n⚠️  E2E tests skipped - Application not running on localhost:5000"
+                    "\n⚠️  E2E tests skipped - Application "
+                    "not running on localhost:5000"
                 )
                 return {
                     "status": "skipped",
@@ -274,7 +276,8 @@ class MasterTestRunner:
                 percentage = (passed / tests * 100) if tests > 0 else 0
                 status_emoji = "✅" if failed == 0 else "⚠️"
                 print(
-                    f"\n{status_emoji} {suite_name.upper()}: {passed}/{tests} passed ({percentage:.0f}%)"
+                    f"\n{status_emoji} {suite_name.upper()}: "
+                    f"{passed}/{tests} passed ({percentage:.0f}%)"
                 )
 
         # Coverage summary
@@ -298,9 +301,9 @@ class MasterTestRunner:
         print("🎯 FINAL SUMMARY")
         print("=" * 70)
 
-        print(
-            f"\nTotal Test Suites Run: {len([s for s in self.results['suites'].values() if s and s.get('status') != 'skipped'])}"
-        )
+        suites = self.results["suites"].values()
+        run_suites = [s for s in suites if s and s.get("status") != "skipped"]
+        print("\nTotal Test Suites Run: " f"{len(run_suites)}")
         print(f"Total Tests Executed: {total_tests}")
         print(f"Tests Passed: {total_passed} ✅")
         print(f"Tests Failed: {total_failed} ❌")
@@ -352,9 +355,9 @@ class MasterTestRunner:
         print("╚" + "=" * 68 + "╝")
 
         # Run test suites
-        unit_result = self.run_unit_tests()
-        mp_result = self.run_multiplatform_tests()
-        e2e_result = self.run_e2e_tests()
+        self.run_unit_tests()
+        self.run_multiplatform_tests()
+        self.run_e2e_tests()
 
         # Calculate coverage
         self.calculate_coverage()
@@ -366,7 +369,7 @@ class MasterTestRunner:
 
 
 def main():
-    """Main entry point."""
+    """Execute main entry point for the test runner."""
     runner = MasterTestRunner()
     success = runner.run_all()
     return 0 if success else 1

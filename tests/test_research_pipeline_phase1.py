@@ -1,3 +1,5 @@
+"""Test suite for Phase 1 of the astrology research pipeline."""
+
 import os
 import sys
 import unittest
@@ -11,7 +13,10 @@ from vedic_numerology.engine import NumerologyEngine  # noqa: E402
 
 
 class TestResearchPipelinePhase1(unittest.TestCase):
+    """Test cases for Phase 1 numerical and astronomical engines."""
+
     def setUp(self):
+        """Initialize the test environment with needed engines."""
         self.num_engine = NumerologyEngine()
         self.eph_engine = EphemerisEngine()
 

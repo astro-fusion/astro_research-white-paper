@@ -3,8 +3,6 @@
 import importlib.util
 from pathlib import Path
 
-import pandas as pd
-
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG_PATH = ROOT / "libs" / "vedic_astrology_core" / "principles" / "catalog.py"
 
@@ -17,6 +15,7 @@ else:
 
 
 def test_catalog_schema_and_uniqueness():
+    """Test the schema and uniqueness of the catalog."""
     df = module.build_vedic_principles_catalog()
     expected_cols = {
         "principle_id",
@@ -34,6 +33,7 @@ def test_catalog_schema_and_uniqueness():
 
 
 def test_catalog_core_counts():
+    """Test the core counts inside the catalog."""
     df = module.build_vedic_principles_catalog()
     graha_members = df[(df["family"] == "graha") & (df["item_type"] == "member")]
     nak_members = df[(df["family"] == "nakshatra") & (df["item_type"] == "member")]
