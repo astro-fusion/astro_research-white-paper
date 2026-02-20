@@ -99,10 +99,10 @@ Repository = "https://github.com/astro-fusion/astro_research-white-paper"
 "Source" = "https://github.com/astro-fusion/astro_research-white-paper"
 
 [tool.setuptools]
-package-dir = {"" = "src"}
+package-dir = {"" = "libs"}
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["libs"]
 include = ["vedic_astrology_core*", "vedic_numerology*"]
 
 [tool.setuptools.package-data]

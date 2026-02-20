@@ -46,19 +46,19 @@ jobs:
         pip install black isort flake8 mypy bandit safety
 
     - name: Check code formatting (Black)
-      run: black --check --diff src/ tests/
+      run: black --check --diff libs/ tests/
 
     - name: Check import sorting (isort)
-      run: isort --check-only --diff src/ tests/
+      run: isort --check-only --diff libs/ tests/
 
     - name: Lint code (flake8)
-      run: flake8 src/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
+      run: flake8 libs/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
 
     - name: Type checking (mypy)
-      run: mypy src/vedic_astrology_core/
+      run: mypy libs/vedic_astrology_core/
 
     - name: Security scan (bandit)
-      run: bandit -r src/ --exclude tests
+      run: bandit -r libs/ --exclude tests
 
     - name: Check dependencies security (safety)
       run: safety check --full-report
@@ -205,7 +205,7 @@ jobs:
         release_name: Release v${{ github.run_number }}
         body: |
           Automated release of Vedic Numerology-Astrology Integration System.
-          
+
           ## Artifacts
           - Python Package (PyPI)
           - Documentation (GitHub Pages)
