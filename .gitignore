@@ -40,4 +40,41 @@ docs/_build/
 
 # macOS
 .DS_Store
-.DS_Store
+
+# ==========================================
+# Quarto Build Outputs (LARGE — do not commit)
+# ==========================================
+# Rendered HTML site, PDFs, figures output by Quarto
+_site/
+# Frozen execution cache (auto-generated, not source)
+_freeze/
+
+# ==========================================
+# Generated Research Figures (Large Binaries)
+# ==========================================
+# Figures produced by analysis scripts are generated artefacts
+research/use_cases/**/figures/*.png
+research/use_cases/**/figures/*.svg
+research/use_cases/**/figures/*.jpg
+
+# ==========================================
+# LaTeX Build Artifacts
+# ==========================================
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# ==========================================
+# IDE / Editor
+# ==========================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

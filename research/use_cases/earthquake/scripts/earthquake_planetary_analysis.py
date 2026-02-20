@@ -1,5 +1,5 @@
 """
-Earthquake-Planetary Correlation Analysis Framework
+Earthquake-Planetary Correlation Analysis Framework.
 
 Data-driven approach to analyze if certain planetary combinations
 (e.g., Mangal-Ketu conjunction) correlate with earthquake events.
@@ -11,18 +11,18 @@ import json
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Dict, List, Tuple, Optional
 import os
 import sys
 
 # Ensure src is in path to import vedic_astrology_core
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../libs"))
+sys.path.insert(
+    0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../libs"))
 )
 
 from vedic_astrology_core.astrology.ephemeris import EphemerisEngine  # noqa: E402
+
 
 class EarthquakeAstrologicalAnalysis:
     """
@@ -41,39 +41,8 @@ class EarthquakeAstrologicalAnalysis:
         self.planetary_data = None
         self.correlation_results = {}
 
-        # Define planetary combinations to test
-        self.COMBINATIONS_TO_TEST = {
-            "mangal_ketu": {
-                "planets": ["MARS", "KETU"],
-                "type": "conjunction",
-                "description": "Mars-Ketu conjunction (Mars + South Node)",
-            },
-            "mangal_saturn": {
-                "planets": ["MARS", "SATURN"],
-                "type": "conjunction",
-                "description": "Mars-Saturn conjunction",
-            },
-            "rahu_ketu": {
-                "planets": ["RAHU", "KETU"],
-                "type": "opposition",
-                "description": "Rahu-Ketu axis (always opposite)",
-            },
-            "saturn_outer": {
-                "planets": ["SATURN", "RAHU", "KETU"],
-                "type": "any_two",
-                "description": "Saturn with any outer planet",
-            },
-            "mars_activation": {
-                "planets": ["MARS"],
-                "type": "strength_trigger",
-                "description": "Mars in high strength positions",
-            },
-            "malefic_cluster": {
-                "planets": ["MARS", "SATURN", "RAHU"],
-                "type": "clustering",
-                "description": "Cluster of malefic planets",
-            },
-        }
+        # Combinations now handled dynamically by
+        # vedic_astrology_core.combinations.registry
 
     def _load_earthquake_data(self, filename: Optional[str]) -> pd.DataFrame:
         """
@@ -86,8 +55,8 @@ class EarthquakeAstrologicalAnalysis:
         if not filename or not os.path.exists(filename):
             raise FileNotFoundError(
                 "CRITICAL: Real earthquake data is required for production reports. "
-                "No mock data allowed. Please provide a valid 'usgs_real_data_phase7.json' "
-                "or other valid dataset."
+                "No mock data allowed. Please provide a valid dataset file "
+                "like 'usgs_real_data_phase7.json'."
             )
 
         if filename.endswith(".json"):
@@ -120,7 +89,8 @@ class EarthquakeAstrologicalAnalysis:
             DataFrame with planetary positions
         """
         print(
-            f"Generating planetary data from {start_date.date()} to {end_date.date()}..."
+            f"Generating planetary data from {start_date.date()} "
+            f"to {end_date.date()}..."
         )
 
         # Initialize Ephemeris Engine
@@ -167,9 +137,7 @@ class EarthquakeAstrologicalAnalysis:
     def identify_planetary_conjunction(
         self, planet1: str, planet2: str, tolerance_deg: float = 8.0
     ) -> List[Tuple]:
-        """
-        Identify when two planets are in conjunction (close proximity).
-        """
+        """Identify when two planets are in conjunction (close proximity)."""
         if self.planetary_data is None:
             return []
 
@@ -192,9 +160,7 @@ class EarthquakeAstrologicalAnalysis:
     def analyze_conjunction_earthquake_correlation(
         self, planet1: str, planet2: str, window_days: int = 30
     ) -> Dict:
-        """
-        Analyze if earthquakes are more likely within N days of a conjunction.
-        """
+        """Analyze if earthquakes are more likely near a conjunction."""
         conjunctions = self.identify_planetary_conjunction(planet1, planet2)
         if not conjunctions:
             return {"status": "no_conjunctions_found", "details": {}}
@@ -256,9 +222,7 @@ class EarthquakeAstrologicalAnalysis:
     def analyze_planetary_strength_trigger(
         self, planet: str, strength_threshold: float = 75.0
     ) -> Dict:
-        """
-        Analyze if earthquakes are more likely when a planet is in high strength.
-        """
+        """Analyze if earthquakes correlate with high planetary strength."""
         if self.planetary_data is None:
             return {"status": "no_planetary_data"}
 
@@ -311,37 +275,71 @@ class EarthquakeAstrologicalAnalysis:
         }
 
     def run_all_correlations(self) -> Dict:
-        """Run all defined correlation tests."""
+        """Run all defined correlation tests using the Modular Registry."""
+        try:
+            from vedic_astrology_core.combinations.evaluator import CombinationEvaluator
+            from vedic_astrology_core.combinations.registry import get_registry
+            from vedic_astrology_core.astrology.ephemeris import EphemerisEngine
+        except ImportError as e:
+            print(f"Error importing combination engine: {e}")
+            return {}
+
+        registry = get_registry()
+        rules = registry.get_rules_by_usecase("seismic")
+
+        if not rules:
+            print("No seismic combinations found in YAML catalog.")
+            return {}
+
+        evaluator = CombinationEvaluator(EphemerisEngine(), rules)
+
+        start_date = self.earthquakes["datetime"].min().to_pydatetime()
+        end_date = self.earthquakes["datetime"].max().to_pydatetime()
+
+        print(
+            f"Evaluating {len(rules)} YAML combinations from "
+            f"{start_date.date()} to {end_date.date()}..."
+        )
+        ts_df = evaluator.evaluate_timeseries(start_date, end_date, step_days=1.0)
+
         results = {
             "analysis_timestamp": datetime.now().isoformat(),
             "earthquake_count": len(self.earthquakes),
-            "analysis_period": {
-                "start": self.earthquakes["datetime"].min().isoformat(),
-                "end": self.earthquakes["datetime"].max().isoformat(),
-            },
-            "conjunction_analysis": {},
-            "strength_trigger_analysis": {},
+            "combinations_tested": [r.name for r in rules],
+            "details": {},
         }
 
-        for combo_name, combo_info in self.COMBINATIONS_TO_TEST.items():
-            if combo_info["type"] == "conjunction" and len(combo_info["planets"]) == 2:
-                planet1, planet2 = combo_info["planets"]
-                result = self.analyze_conjunction_earthquake_correlation(
-                    planet1, planet2
-                )
-                results["conjunction_analysis"][combo_name] = {
-                    "description": combo_info["description"],
-                    "result": result,
-                }
+        total_period_days = len(ts_df)
+        window_days = 15
 
-        for combo_name, combo_info in self.COMBINATIONS_TO_TEST.items():
-            if combo_info["type"] == "strength_trigger":
-                planet = combo_info["planets"][0]
-                result = self.analyze_planetary_strength_trigger(planet)
-                results["strength_trigger_analysis"][combo_name] = {
-                    "description": combo_info["description"],
-                    "result": result,
-                }
+        for rule in rules:
+            active_mask = ts_df[f"{rule.name}_active"] == 1
+            active_dates_df = ts_df[active_mask]
+
+            eq_near = 0
+            for eq_date in self.earthquakes["datetime"].values:
+                eq_dt = pd.Timestamp(eq_date)
+                if not active_dates_df.empty:
+                    diffs = (active_dates_df["date"] - eq_dt).abs().dt.days
+                    if diffs.min() <= window_days:
+                        eq_near += 1
+
+            active_days = len(active_dates_df)
+
+            # Very rough expected vs actual
+            window_fraction = min(
+                1.0, active_days * (window_days * 2) / max(1, total_period_days)
+            )
+            expected_in_window = len(self.earthquakes) * window_fraction
+
+            results["details"][rule.name] = {
+                "description": rule.description,
+                "source": rule.source,
+                "active_days": active_days,
+                "earthquakes_in_window": eq_near,
+                "expected_random": round(expected_in_window, 2),
+                "ratio": round(eq_near / max(1.0, expected_in_window), 2),
+            }
 
         self.correlation_results = results
         return results
@@ -353,74 +351,36 @@ class EarthquakeAstrologicalAnalysis:
         print(f"Results exported to {output_file}")
 
     def generate_analysis_summary(self) -> str:
-        """Generate human-readable summary of findings."""
+        """Generate human-readable summary of modular combination findings."""
         if not self.correlation_results:
             return "No correlation analysis results available"
 
         summary = []
         summary.append("=" * 80)
-        summary.append("EARTHQUAKE-PLANETARY CORRELATION ANALYSIS SUMMARY")
+        summary.append("MODULAR EARTHQUAKE-PLANETARY CORRELATION ANALYSIS SUMMARY")
         summary.append("=" * 80)
-        summary.append("")
         summary.append(
-            f"Analysis Period: {self.correlation_results['analysis_period']['start']}"
+            f"Total Earthquakes Analyzed: "
+            f"{self.correlation_results['earthquake_count']}"
         )
         summary.append(
-            f"                 to {self.correlation_results['analysis_period']['end']}"
+            f"Combinations Tested via YAML: "
+            f"{len(self.correlation_results.get('combinations_tested', []))}"
         )
-        summary.append(
-            f"Total Earthquakes Analyzed: {self.correlation_results['earthquake_count']}"
-        )
-        summary.append("")
-
-        summary.append("PLANETARY CONJUNCTION ANALYSIS")
         summary.append("-" * 80)
 
-        for combo_name, combo_data in self.correlation_results[
-            "conjunction_analysis"
-        ].items():
-            summary.append(f"\n{combo_data['description']}")
-            result = combo_data["result"]
+        details = self.correlation_results.get("details", {})
+        for name, data in details.items():
+            summary.append(f"\n[{name}]")
+            summary.append(f"  Description: {data['description']}")
+            summary.append(f"  Source: {data['source']}")
+            summary.append(f"  Active Days in Period: {data['active_days']}")
+            summary.append(f"  Earthquakes in Window: {data['earthquakes_in_window']}")
+            summary.append(f"  Expected (Random): {data['expected_random']}")
+            summary.append(f"  Ratio (Observed/Expected): {data['ratio']}")
 
-            if "status" in result:
-                summary.append(f"  Status: {result['status']}")
-            else:
-                summary.append(f"  Conjunctions Found: {result['conjunctions_found']}")
-                summary.append(
-                    f"  Earthquakes near conjunction: {result['earthquakes_near_conjunction']}"
-                )
-                summary.append(f"  Expected (random): {result['expected_earthquakes']}")
-                summary.append(
-                    f"  Ratio (observed/expected): {result['ratio_near_vs_expected']}"
-                )
-                summary.append(f"  Chi-square: {result['chi_square_statistic']}")
-
-                if result["chi_square_statistic"] > 3.841:  # p < 0.05
-                    summary.append(f"  ⚠️  POTENTIALLY SIGNIFICANT CORRELATION")
-                else:
-                    summary.append(f"  → No statistically significant correlation")
-
-        summary.append("\n\nPLANETARY STRENGTH TRIGGER ANALYSIS")
-        summary.append("-" * 80)
-
-        for combo_name, combo_data in self.correlation_results[
-            "strength_trigger_analysis"
-        ].items():
-            summary.append(f"\n{combo_data['description']}")
-            result = combo_data["result"]
-
-            if "status" in result:
-                summary.append(f"  Status: {result['status']}")
-            else:
-                summary.append(
-                    f"  Earthquakes during high strength: {result['earthquakes_during_high_strength']}"
-                )
-                summary.append(
-                    f"  Expected (random): {result['expected_earthquakes_during_high']}"
-                )
-                summary.append(
-                    f"  Ratio (observed/expected): {result['ratio_observed_vs_expected']}"
-                )
+            if data["ratio"] > 1.2:
+                summary.append("  ⚠️  ELEVATED SIGNAL DETECTED")
 
         summary.append("\n" + "=" * 80)
         return "\n".join(summary)
@@ -428,9 +388,7 @@ class EarthquakeAstrologicalAnalysis:
     def get_conjunction_intervals(
         self, planet1: str, planet2: str, threshold_deg: float = 13.0
     ) -> List[Tuple[datetime, datetime]]:
-        """
-        Identify start and end dates of conjunction periods.
-        """
+        """Identify start and end dates of conjunction periods."""
         if self.planetary_data is None:
             return []
 
@@ -478,9 +436,7 @@ class EarthquakeAstrologicalAnalysis:
         threshold_deg: float = 13.0,
         output_path: str = None,
     ) -> None:
-        """
-        Plot the angular separation between two planets and overlay earthquake events.
-        """
+        """Plot angular separation and overlay earthquake events."""
         if self.planetary_data is None:
             print("No planetary data available. Run generate_planetary_data first.")
             return
@@ -581,7 +537,7 @@ class EarthquakeAstrologicalAnalysis:
 
 
 def main():
-    """Main analysis workflow."""
+    """Execute main analysis workflow."""
     print("=" * 80)
     print("EARTHQUAKE-PLANETARY CORRELATION ANALYSIS (SWISS EPHEMERIS)")
     print("Data-driven framework for multi-use-case validation")
@@ -615,7 +571,8 @@ def main():
     else:
         print("❌ CRITICAL: No real earthquake data found.")
         print(
-            f"Please run 'python3 use_cases/earthquake/scripts/earthquake_data_fetcher.py' first"
+            "Please run 'python3 research/use_cases/earthquake/scripts/"
+            "earthquake_data_fetcher.py' first"
         )
         print("to fetch real USGS data.")
         sys.exit(1)
@@ -627,7 +584,9 @@ def main():
     analyzer.generate_planetary_data(start_date, end_date, frequency="daily")
 
     print("\n2. Genering Conjunction Graphs...")
-    output_dir = "use_cases/earthquake/figures"
+    # Use relative path from script location for robustness
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    output_dir = os.path.abspath(os.path.join(script_dir, "../figures"))
     os.makedirs(output_dir, exist_ok=True)
 
     print("   - Generating Mars-Ketu Analysis...")
@@ -646,14 +605,16 @@ def main():
     )
 
     print("\n3. Running full correlation analyses statistics...")
-    results = analyzer.run_all_correlations()
+    analyzer.run_all_correlations()
 
     print("4. Generating summary...")
     summary = analyzer.generate_analysis_summary()
     print(summary)
 
-    output_file = (
-        "use_cases/earthquake/data/earthquake_planetary_correlation_analysis.json"
+    output_file = os.path.abspath(
+        os.path.join(
+            script_dir, "../data/earthquake_planetary_correlation_analysis.json"
+        )
     )
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     analyzer.export_results_json(output_file)

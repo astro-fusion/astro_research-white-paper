@@ -12,11 +12,11 @@ import subprocess, sys
 root = Path.cwd().resolve()
 while root and not (root / "pyproject.toml").exists():
     root = root.parent
-data_dir = (root or Path.cwd()) / "docs" / "research" / "track_3_gold_market" / "data"
+data_dir = root / "research" / "use_cases" / "gold_market" / "data"
 catalog_path = data_dir / "gold_astro_catalog.csv"
 
 if not catalog_path.exists():
-    script = (root or Path.cwd()) / "docs" / "research" / "track_3_gold_market" / "scripts" / "generate_gold_astro_catalog.py"
+    script = root / "research" / "use_cases" / "gold_market" / "scripts" / "generate_gold_astro_catalog.py"
     subprocess.check_call([sys.executable, str(script)])
 
 catalog = pd.read_csv(catalog_path)

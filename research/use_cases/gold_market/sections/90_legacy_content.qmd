@@ -79,7 +79,7 @@ Our study advances this literature by:
 
 This report reads gold prices from a **local cached CSV** to enable offline rendering and reproducibility. The cache is generated via:
 
-`docs/research/track_3_gold_market/scripts/fetch_gold_data.py`
+`research/use_cases/gold_market/scripts/fetch_gold_data.py`
 
 ```{python}
 #| label: load-gold
@@ -91,7 +91,7 @@ import numpy as np
 root = Path.cwd().resolve()
 while root and not (root / "pyproject.toml").exists():
     root = root.parent
-data_path = (root or Path.cwd()) / "docs" / "research" / "track_3_gold_market" / "data" / "gold_prices.csv"
+data_path = root / "research" / "use_cases" / "gold_market" / "data" / "gold_prices.csv"
 
 if not data_path.exists():
     raise FileNotFoundError(
@@ -426,11 +426,11 @@ fap_threshold = -np.log(0.01)  # 1% FAP
 # Appendix C: Reproducibility
 
 All code and data available at:
-https://github.com/astro-fusion/astro_research-white-paper/tree/main/docs/research/track_3_gold_market
+https://github.com/astro-fusion/astro_research-white-paper/tree/main/research/use_cases/gold_market
 
 To reproduce:
 ```bash
 cd astro_research-white-paper
 python src/generate_artifacts.py
-quarto render docs/research/track_3_gold_market/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.qmd
+quarto render research/use_cases/gold_market/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.qmd
 ```

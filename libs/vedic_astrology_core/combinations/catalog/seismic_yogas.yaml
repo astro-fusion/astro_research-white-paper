@@ -1,0 +1,100 @@
+# Earthquake Triggers Catalog
+# Defines combinations to test against the seismic dataset
+
+- name: "Mangal-Ketu-Primary"
+  use_case: "seismic"
+  source: "Brihat Samhita Ch. 17"
+  description: "Classic Mars-Ketu Conjunction (≤13 degree orb) indicating sudden release of martial energy."
+  conditions:
+    logic: "ALL_OF"
+    items:
+      - type: "CONJUNCTION"
+        planet1: "Mars"
+        planet2: "Ketu"
+        orb_deg: 13.0
+
+- name: "Mangal-Ketu-Fire-Sign"
+  use_case: "seismic"
+  source: "Brihat Samhita + Elemental Amplification"
+  description: "Mars-Ketu conjunction amplified by placement in a fire sign (Aries, Leo, Sagittarius)."
+  conditions:
+    logic: "ALL_OF"
+    items:
+      - type: "CONJUNCTION"
+        planet1: "Mars"
+        planet2: "Ketu"
+        orb_deg: 13.0
+      - type: "SIGNELEMENT"
+        planet: "Mars"
+        element: "FIRE"
+
+- name: "Mangal-Shani-Malefic"
+  use_case: "seismic"
+  source: "Phaladeepika Ch. 3"
+  description: "Mars-Saturn Conjunction (≤15 degree orb)."
+  conditions:
+    logic: "ALL_OF"
+    items:
+      - type: "CONJUNCTION"
+        planet1: "Mars"
+        planet2: "Saturn"
+        orb_deg: 15.0
+
+- name: "Mangal-8th-Aspect-Ketu"
+  use_case: "seismic"
+  source: "Parashara Hora Shastra"
+  description: "Mars casting its special 8th aspect onto Ketu's position."
+  conditions:
+    logic: "ALL_OF"
+    items:
+      - type: "ASPECT"
+        aspect_planet: "Mars"
+        target_planet: "Ketu"
+        house_aspect: 8
+        orb_deg: 15.0
+
+- name: "Shani-10th-Aspect-Mars"
+  use_case: "seismic"
+  source: "Parashara Hora Shastra"
+  description: "Saturn casting its special 10th aspect onto Mars."
+  conditions:
+    logic: "ALL_OF"
+    items:
+      - type: "ASPECT"
+        aspect_planet: "Saturn"
+        target_planet: "Mars"
+        house_aspect: 10
+        orb_deg: 15.0
+
+- name: "Shrapit-Yoga"
+  use_case: "seismic"
+  source: "Classical Tradition"
+  description: "Saturn-Rahu conjunction (Cursed Yoga)."
+  conditions:
+    logic: "ALL_OF"
+    items:
+      - type: "CONJUNCTION"
+        planet1: "Saturn"
+        planet2: "Rahu"
+        orb_deg: 12.0
+
+- name: "Mars-Retrograde-Tension"
+  use_case: "seismic"
+  source: "Modern Mundane Astrology"
+  description: "Mars is in retrograde motion, building internal crustal tension."
+  conditions:
+    logic: "ALL_OF"
+    items:
+      - type: "RETROGRADE"
+        planet: "Mars"
+
+- name: "Saturn-Stationary"
+  use_case: "seismic"
+  source: "Modern Mundane Astrology"
+  description: "Saturn is near stationary before changing direction."
+  conditions:
+    logic: "ALL_OF"
+    items:
+      - type: "STATIONARY"
+        planet: "Saturn"
+        speed_threshold: 0.05

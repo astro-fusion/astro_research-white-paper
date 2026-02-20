@@ -56,8 +56,8 @@ format:
     tbl-pos: 'H'
     pdf-engine: lualatex
     pdf-engine-opts: ["-shell-escape"]
-    include-in-header: ../../../styles/pdf-header.tex
-    include-before-body: ../../../styles/pdf-before-body.tex
+    include-in-header: ../../../reports/styles/pdf-header.tex
+    include-before-body: ../../../reports/styles/pdf-before-body.tex
 
 # Cross-referencing configuration
 crossref:
@@ -90,19 +90,16 @@ jupyter: python3
 
 # Bibliography and citations
 bibliography:
-  - ../../../use_cases/numerology/references.bib
+  - ../../../data/master_references.bib
 
-csl: ../../../styles/apa.csl
+csl: ../../../reports/styles/apa.csl
 
 # Language and localization
 lang: en-US
 
 # Metadata for different formats
 metadata-files:
-  - ../../../styles/html-metadata.yml
-  - ../../../styles/pdf-metadata.yml
+  - ../../../reports/styles/html-metadata.yml
+  - ../../../reports/styles/pdf-metadata.yml
 
-# Custom filters and extensions
-filters:
-  - ../../../styles/conditional-content.lua
-  - ../../../styles/format-specific.lua
+# Custom filters and extensions removed due to missing files (conditional-content.lua, format-specific.lua)

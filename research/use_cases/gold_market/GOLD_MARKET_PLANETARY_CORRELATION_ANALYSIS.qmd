@@ -17,7 +17,7 @@ keywords:
   - Spectral Analysis
   - Monte Carlo Methods
   - Swiss Ephemeris
-bibliography: ../references.bib
+bibliography: ../../data/master_references.bib
 format:
   pdf:
     documentclass: article

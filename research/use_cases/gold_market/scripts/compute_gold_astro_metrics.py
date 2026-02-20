@@ -2,14 +2,13 @@
 """Compute activation metrics for astrology principles vs gold return spikes."""
 
 import sys
-import os
 from datetime import timedelta
 from pathlib import Path
 import pandas as pd
 import numpy as np
 
 # Add src to path
-# Script: REPO/docs/research/track_3_gold_market/scripts/script.py
+# Script: REPO/research/use_cases/gold_market/scripts/script.py
 # Root: REPO/
 root = Path(__file__).resolve().parents[4]
 sys.path.insert(0, str(root / "libs"))
@@ -18,7 +17,8 @@ try:
     from models.statistics import calculate_chi_square, apply_fdr_correction
 except ImportError:
     print(
-        f"Warning: Could not import from models.statistics. Path added: {str(root / 'libs')}"
+        "Warning: Could not import from models.statistics. "
+        f"Path added: {str(root / 'libs')}"
     )
     raise
 
@@ -63,6 +63,7 @@ window_sizes = {w: len(dayset) for w, dayset in window_sets.items()}
 
 
 def ang_diff(a, b):
+    """Calculate the shortest angular distance between two longitudes."""
     diff = np.abs(a - b) % 360.0
     return np.minimum(diff, 360.0 - diff)
 
