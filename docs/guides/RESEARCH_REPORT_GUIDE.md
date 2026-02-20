@@ -335,7 +335,7 @@ generator.generate_pdf_report(
 
 ---
 
-**Report Generated:** January 25, 2026  
-**Analysis Period:** 365 days  
-**Planets Analyzed:** 9 Navagraha (Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn, Rahu, Ketu)  
+**Report Generated:** January 25, 2026
+**Analysis Period:** 365 days
+**Planets Analyzed:** 9 Navagraha (Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn, Rahu, Ketu)
 **Research Status:** ✅ Complete and Ready for Publication

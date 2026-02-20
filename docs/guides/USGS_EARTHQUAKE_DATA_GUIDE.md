@@ -1,8 +1,8 @@
 # 📍 USGS Earthquake Data Integration Guide
 
-**Status**: ✅ Ready to Use  
-**Data Source**: USGS Earthquake Hazards Program  
-**Format**: CSV  
+**Status**: ✅ Ready to Use
+**Data Source**: USGS Earthquake Hazards Program
+**Format**: CSV
 
 ---
 
@@ -91,42 +91,42 @@ import requests
 def download_usgs_earthquakes(start_date, end_date, min_magnitude=3.0):
     """
     Download earthquake data from USGS API
-    
+
     Parameters:
     - start_date: "YYYY-MM-DD" format
     - end_date: "YYYY-MM-DD" format
     - min_magnitude: minimum magnitude threshold
-    
+
     Returns: pandas DataFrame with earthquake data
     """
-    
+
     url = "https://earthquake.usgs.gov/fdsnws/event/1/query"
-    
+
     params = {
         'format': 'csv',
         'starttime': start_date,
         'endtime': end_date,
         'minmagnitude': min_magnitude
     }
-    
+
     print(f"📥 Downloading USGS earthquake data...")
     print(f"   Period: {start_date} to {end_date}")
     print(f"   Minimum Magnitude: {min_magnitude}")
-    
+
     response = requests.get(url, params=params)
     response.raise_for_status()
-    
+
     # Save to file
     csv_path = 'use_cases/earthquake/data/raw/earthquakes.csv'
     with open(csv_path, 'w') as f:
         f.write(response.text)
-    
+
     # Load into dataframe
     df = pd.read_csv(csv_path)
-    
+
     print(f"✅ Downloaded {len(df)} earthquakes")
     print(f"   Saved to: {csv_path}")
-    
+
     return df
 
 # Example usage
@@ -136,7 +136,7 @@ if __name__ == "__main__":
         end_date="2024-12-31",
         min_magnitude=3.0
     )
-    
+
     print("\n📊 Data Summary:")
     print(f"   Date range: {df['time'].min()} to {df['time'].max()}")
     print(f"   Magnitude range: {df['magnitude'].min()} to {df['magnitude'].max()}")
@@ -348,14 +348,14 @@ from pathlib import Path
 
 def download_usgs_data(start_year=1990, min_magnitude=3.0):
     """Download USGS earthquake data"""
-    
+
     start_date = f"{start_year}-01-01"
     end_date = datetime.now().strftime("%Y-%m-%d")
-    
+
     print(f"📥 Downloading earthquake data from USGS...")
     print(f"   Period: {start_date} to {end_date}")
     print(f"   Minimum Magnitude: {min_magnitude}")
-    
+
     url = "https://earthquake.usgs.gov/fdsnws/event/1/query"
     params = {
         'format': 'csv',
@@ -363,32 +363,32 @@ def download_usgs_data(start_year=1990, min_magnitude=3.0):
         'endtime': end_date,
         'minmagnitude': min_magnitude
     }
-    
+
     try:
         response = requests.get(url, params=params, timeout=30)
         response.raise_for_status()
     except requests.exceptions.RequestException as e:
         print(f"❌ Download failed: {e}")
         return False
-    
+
     # Ensure directory exists
     data_dir = Path("use_cases/earthquake/data/raw")
     data_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Save to file
     csv_path = data_dir / "earthquakes.csv"
     with open(csv_path, 'w') as f:
         f.write(response.text)
-    
+
     # Verify download
     df = pd.read_csv(csv_path)
-    
+
     print(f"✅ Download successful!")
     print(f"   Records: {len(df)}")
     print(f"   Date range: {df['time'].min()} to {df['time'].max()}")
     print(f"   Magnitude range: {df['magnitude'].min():.1f} - {df['magnitude'].max():.1f}")
     print(f"   File saved: {csv_path}")
-    
+
     return True
 
 if __name__ == "__main__":

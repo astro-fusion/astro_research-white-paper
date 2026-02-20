@@ -15,7 +15,10 @@ sys.path.append(
 )
 
 from vedic_astrology_core.astrology.ephemeris import EphemerisEngine  # noqa: E402
-from vedic_astrology_core.dignity.global_scorer import GlobalShadbalaScorer  # noqa: E402
+from vedic_astrology_core.dignity.global_scorer import (
+    GlobalShadbalaScorer,
+)  # noqa: E402
+
 
 class TestResearchPipelinePhase2(unittest.TestCase):
     def setUp(self):

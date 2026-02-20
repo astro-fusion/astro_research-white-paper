@@ -3,8 +3,18 @@
 from pathlib import Path
 import pandas as pd
 
-PLANETS = ["Sun","Moon","Mars","Mercury","Jupiter","Venus","Saturn","Rahu","Ketu"]
-MALEFICS = ["Mars","Saturn","Rahu","Ketu"]
+PLANETS = [
+    "Sun",
+    "Moon",
+    "Mars",
+    "Mercury",
+    "Jupiter",
+    "Venus",
+    "Saturn",
+    "Rahu",
+    "Ketu",
+]
+MALEFICS = ["Mars", "Saturn", "Rahu", "Ketu"]
 ASPECTS = {
     "conjunction": 0,
     "sextile": 60,
@@ -15,13 +25,32 @@ ASPECTS = {
 ORBS = [1, 3, 5, 8]
 HOUSES = list(range(1, 13))
 SIGNS = [
-    "Aries","Taurus","Gemini","Cancer","Leo","Virgo",
-    "Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces",
+    "Aries",
+    "Taurus",
+    "Gemini",
+    "Cancer",
+    "Leo",
+    "Virgo",
+    "Libra",
+    "Scorpio",
+    "Sagittarius",
+    "Capricorn",
+    "Aquarius",
+    "Pisces",
 ]
 TITHI = list(range(1, 31))
 KARANAS = [
-    "Bava","Balava","Kaulava","Taitila","Gara","Vanija","Vishti",
-    "Shakuni","Chatushpada","Naga","Kimstughna",
+    "Bava",
+    "Balava",
+    "Kaulava",
+    "Taitila",
+    "Gara",
+    "Vanija",
+    "Vishti",
+    "Shakuni",
+    "Chatushpada",
+    "Naga",
+    "Kimstughna",
 ]
 YOGAS = list(range(1, 28))
 WINDOWS = [0, 1, 3, 7, 14, 30]
@@ -29,6 +58,7 @@ WINDOWS = [0, 1, 3, 7, 14, 30]
 SOURCES = "Brihat Samhita; BPHS; Surya Siddhanta; Jataka Parijata; Saravali"
 
 rows = []
+
 
 def add(category, rule, parameters=None, window=None, **fields):
     combo_id = f"{category}:{len(rows)+1:06d}"
@@ -43,28 +73,54 @@ def add(category, rule, parameters=None, window=None, **fields):
     row.update(fields)
     rows.append(row)
 
+
 # Planetary aspects (all pairs, all major aspects, all orbs)
 for i, p1 in enumerate(PLANETS):
-    for p2 in PLANETS[i+1:]:
+    for p2 in PLANETS[i + 1 :]:
         for asp_name, asp_deg in ASPECTS.items():
             for orb in ORBS:
                 rule = f"Aspect {asp_name} between {p1} and {p2}"
                 params = f"angle={asp_deg}±{orb}°"
-                add("aspects", rule, params, p1=p1, p2=p2, aspect=asp_name, aspect_deg=asp_deg, orb=orb)
+                add(
+                    "aspects",
+                    rule,
+                    params,
+                    p1=p1,
+                    p2=p2,
+                    aspect=asp_name,
+                    aspect_deg=asp_deg,
+                    orb=orb,
+                )
 
 # Malefic aspects (subset)
 for i, p1 in enumerate(MALEFICS):
-    for p2 in MALEFICS[i+1:]:
+    for p2 in MALEFICS[i + 1 :]:
         for asp_name, asp_deg in ASPECTS.items():
             for orb in ORBS:
                 rule = f"Malefic aspect {asp_name} between {p1} and {p2}"
                 params = f"angle={asp_deg}±{orb}°"
-                add("malefic_aspects", rule, params, p1=p1, p2=p2, aspect=asp_name, aspect_deg=asp_deg, orb=orb)
+                add(
+                    "malefic_aspects",
+                    rule,
+                    params,
+                    p1=p1,
+                    p2=p2,
+                    aspect=asp_name,
+                    aspect_deg=asp_deg,
+                    orb=orb,
+                )
 
 # Graha Yuddha (close conjunction)
 for i, p1 in enumerate(PLANETS):
-    for p2 in PLANETS[i+1:]:
-        add("graha_yuddha", f"Graha Yuddha between {p1} and {p2}", "orb<=1°", p1=p1, p2=p2, orb=1)
+    for p2 in PLANETS[i + 1 :]:
+        add(
+            "graha_yuddha",
+            f"Graha Yuddha between {p1} and {p2}",
+            "orb<=1°",
+            p1=p1,
+            p2=p2,
+            orb=1,
+        )
 
 # Combustion & retrograde
 for p in PLANETS:
@@ -73,8 +129,14 @@ for p in PLANETS:
 
 # Shadbala thresholds (low/medium/high)
 for p in PLANETS:
-    for band in ["low","medium","high"]:
-        add("shadbala", f"{p} shadbala {band}", "band=0-33/34-66/67-100", p1=p, band=band)
+    for band in ["low", "medium", "high"]:
+        add(
+            "shadbala",
+            f"{p} shadbala {band}",
+            "band=0-33/34-66/67-100",
+            p1=p,
+            band=band,
+        )
 
 # Houses and signs (all planets in all houses/signs)
 for p in PLANETS:
@@ -103,12 +165,32 @@ add("syzygy", "Full Moon (Purnima)", phase="full")
 
 # Vimshottari dasha (India + Nepal reference charts)
 for lord in PLANETS:
-    add("india_dasha", f"India Vimshottari Mahadasha: {lord}", "system=vimshottari", lord=lord)
-    add("india_antardasha", f"India Vimshottari Antardasha: {lord}", "system=vimshottari", sub_lord=lord)
+    add(
+        "india_dasha",
+        f"India Vimshottari Mahadasha: {lord}",
+        "system=vimshottari",
+        lord=lord,
+    )
+    add(
+        "india_antardasha",
+        f"India Vimshottari Antardasha: {lord}",
+        "system=vimshottari",
+        sub_lord=lord,
+    )
 
 for lord in PLANETS:
-    add("nepal_dasha", f"Nepal Vimshottari Mahadasha: {lord}", "system=vimshottari", lord=lord)
-    add("nepal_antardasha", f"Nepal Vimshottari Antardasha: {lord}", "system=vimshottari", sub_lord=lord)
+    add(
+        "nepal_dasha",
+        f"Nepal Vimshottari Mahadasha: {lord}",
+        "system=vimshottari",
+        lord=lord,
+    )
+    add(
+        "nepal_antardasha",
+        f"Nepal Vimshottari Antardasha: {lord}",
+        "system=vimshottari",
+        sub_lord=lord,
+    )
 
 for india_lord in PLANETS:
     for nepal_lord in PLANETS:
@@ -129,7 +211,13 @@ for india_lord in PLANETS:
 
 # Compound examples (pairwise triggers with windows)
 for window in WINDOWS:
-    add("compound", "Malefic conjunction during eclipse window", "Mars/Saturn/Rahu/Ketu within orb; eclipse window", window, compound="malefic_conj_eclipse")
+    add(
+        "compound",
+        "Malefic conjunction during eclipse window",
+        "Mars/Saturn/Rahu/Ketu within orb; eclipse window",
+        window,
+        compound="malefic_conj_eclipse",
+    )
 
 out_dir = Path(__file__).resolve().parents[1] / "data"
 out_dir.mkdir(parents=True, exist_ok=True)

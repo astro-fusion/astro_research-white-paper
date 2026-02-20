@@ -9,7 +9,7 @@ This template shows how to structure your research paper using the generated cor
 ## 📄 Paper Structure Template
 
 ```
-TITLE: Correlation Analysis Between Vedic Astrology and Vedic Numerology: 
+TITLE: Correlation Analysis Between Vedic Astrology and Vedic Numerology:
        An Empirical Investigation of System Independence
 
 ABSTRACT
@@ -18,7 +18,7 @@ ABSTRACT
 
 KEYWORDS
 --------
-Vedic Astrology, Vedic Numerology, Correlation Analysis, Planetary Strength, 
+Vedic Astrology, Vedic Numerology, Correlation Analysis, Planetary Strength,
 Mulanka, Bhagyanka, Statistical Validation
 
 1. INTRODUCTION
@@ -64,9 +64,9 @@ For EACH of the 9 planets:
 [INSERT PAGE 1 FROM planet_individual_variations.pdf]
 
 **Analysis of The Sun:**
-The Sun exhibits [describe astrology pattern] with a complete cycle approximately 
-every [period]. In contrast, Mulanka strength shows [describe numerology pattern] 
-with only [number] discrete changes annually. The measured correlation between 
+The Sun exhibits [describe astrology pattern] with a complete cycle approximately
+every [period]. In contrast, Mulanka strength shows [describe numerology pattern]
+with only [number] discrete changes annually. The measured correlation between
 Sun strength and Mulanka is [value], indicating [interpretation].
 
 ### 4.2 The Moon
@@ -177,8 +177,8 @@ Interpret your findings in context:
 ---------------
 [INSERT CONTENT FROM: vedic_correlation_research_report.pdf → "Conclusions" section]
 
-**Research Question Answer:** 
-Based on analysis of [period], the evidence indicates NO significant correlation 
+**Research Question Answer:**
+Based on analysis of [period], the evidence indicates NO significant correlation
 between Vedic Astrology planetary strength and Vedic Numerology values.
 
 **Academic Significance:**
@@ -240,8 +240,8 @@ pdftotext vedic_correlation_research_report.pdf research_report.txt
 ### Step 3: Create Figure Captions
 ```
 Figure 1: The Sun - Vedic Astrology (blue, continuous) vs Numerology (orange, discrete)
-The line graph shows hourly-to-daily aggregated astrology strength variations 
-compared to daily numerology Mulanka strength. The step pattern indicates discrete 
+The line graph shows hourly-to-daily aggregated astrology strength variations
+compared to daily numerology Mulanka strength. The step pattern indicates discrete
 daily numerology changes.
 ```
 
@@ -256,16 +256,16 @@ We analyzed planetary strengths and found low correlation.
 
 ### After (Specific from Report)
 ```
-We analyzed 9 Navagraha planets over 365 days, generating 8,760 hourly 
-astrology readings and 365 daily numerology values. Daily aggregation 
-yielded 365 comparable data points per planet. 
+We analyzed 9 Navagraha planets over 365 days, generating 8,760 hourly
+astrology readings and 365 daily numerology values. Daily aggregation
+yielded 365 comparable data points per planet.
 
 The correlation analysis revealed:
 - Average absolute correlation across all planets: 0.12
 - Range: -0.18 to 0.22
 - All values within -0.3 to 0.3 range indicating negligible correlation
 
-This stark contrast between the systems' temporal mechanics (8,760 changes 
+This stark contrast between the systems' temporal mechanics (8,760 changes
 vs 73 changes annually) and calculation methods suggests fundamental independence.
 ```
 
@@ -278,21 +278,21 @@ vs 73 changes annually) and calculation methods suggests fundamental independenc
 ```markdown
 ### 4.1 The Sun
 
-Figure 4.1 presents the strength variation patterns for The Sun over 
+Figure 4.1 presents the strength variation patterns for The Sun over
 the 365-day analysis period.
 
 [HERE INSERT: Page 1 from planet_individual_variations.pdf]
 
 **Figure 4.1 Caption:**
-The Sun's strength variation pattern comparing Vedic Astrology 
-(top panel, blue line with shading showing min-max daily range) 
-and Vedic Numerology Mulanka influence (bottom panel, orange 
-step function showing discrete daily changes). The astrology 
-system shows 24 complete cycles while numerology shows only 
-discrete jumps, reflecting their fundamentally different temporal 
+The Sun's strength variation pattern comparing Vedic Astrology
+(top panel, blue line with shading showing min-max daily range)
+and Vedic Numerology Mulanka influence (bottom panel, orange
+step function showing discrete daily changes). The astrology
+system shows 24 complete cycles while numerology shows only
+discrete jumps, reflecting their fundamentally different temporal
 resolution and calculation methods.
 
-The correlation coefficient between Sun strength and Mulanka 
+The correlation coefficient between Sun strength and Mulanka
 is r = [value], indicating negligible linear relationship.
 ```
 
@@ -302,29 +302,29 @@ is r = [value], indicating negligible linear relationship.
 
 ### 1. Explain Your Research Question Clearly
 ```
-"Our central research question: Given that Vedic Astrology strength 
-measurements change hourly while Vedic Numerology values change daily, 
+"Our central research question: Given that Vedic Astrology strength
+measurements change hourly while Vedic Numerology values change daily,
 is there a measurable correlation between these two independent systems?"
 ```
 
 ### 2. Justify Your Methodology
 ```
-"To enable direct comparison of these systems with different temporal 
-granularities, we aggregated the 24 hourly astrology readings to produce 
+"To enable direct comparison of these systems with different temporal
+granularities, we aggregated the 24 hourly astrology readings to produce
 daily average values, creating aligned datasets suitable for correlation analysis."
 ```
 
 ### 3. Present Your Findings Objectively
 ```
-"Our analysis of [period] reveals low correlation coefficients 
-averaging [value] across all planets, with 95% of values falling 
+"Our analysis of [period] reveals low correlation coefficients
+averaging [value] across all planets, with 95% of values falling
 in the -0.3 to 0.3 range indicating negligible correlation."
 ```
 
 ### 4. Discuss Implications
 ```
-"The absence of significant correlation suggests these systems 
-operate on fundamentally different principles and should be understood 
+"The absence of significant correlation suggests these systems
+operate on fundamentally different principles and should be understood
 as providing complementary rather than redundant information."
 ```
 
@@ -336,7 +336,7 @@ as providing complementary rather than redundant information."
 
 **Methodology Section** (for your Methods chapter)
 - Data Collection paragraph
-- Temporal Comparison paragraph  
+- Temporal Comparison paragraph
 - Correlation Analysis paragraph
 
 **Correlation Results Table** (for your Results chapter)
@@ -370,7 +370,7 @@ as providing complementary rather than redundant information."
 Using these reports, ensure your paper includes:
 
 - [ ] Introduction explaining both Vedic systems
-- [ ] Literature review of existing comparative studies  
+- [ ] Literature review of existing comparative studies
 - [ ] Clear research question statement
 - [ ] Methodology section (copied/adapted from PDF)
 - [ ] All 9 planet analysis sections with graphs
@@ -392,20 +392,20 @@ Using these reports, ensure your paper includes:
 
 **Instead of:** "The systems don't match up"
 
-**Write:** "The quantitative analysis reveals negligible linear correlation 
-between the continuous astrology system and the discrete numerology system, 
+**Write:** "The quantitative analysis reveals negligible linear correlation
+between the continuous astrology system and the discrete numerology system,
 with correlation coefficients concentrated in the -0.3 to 0.3 range."
 
 **Instead of:** "Numbers were different"
 
-**Write:** "The fundamental difference in temporal granularity (8,760 hourly 
-astrology measurements vs 73 annual numerology changes) combined with distinct 
+**Write:** "The fundamental difference in temporal granularity (8,760 hourly
+astrology measurements vs 73 annual numerology changes) combined with distinct
 calculation methodologies yields statistically independent variables."
 
 **Instead of:** "They probably work separately"
 
-**Write:** "These findings corroborate the traditional Vedic approach of 
-treating astrology and numerology as complementary systems providing 
+**Write:** "These findings corroborate the traditional Vedic approach of
+treating astrology and numerology as complementary systems providing
 non-redundant insights into cosmic influence."
 
 ---
@@ -435,7 +435,7 @@ All generated content is yours to use:
 
 ---
 
-**Template Created:** January 25, 2026  
-**For Use With:** vedic_correlation_research_report.pdf + planet_individual_variations.pdf  
-**Documentation:** RESEARCH_REPORT_GUIDE.md + RESEARCH_DATA_REFERENCE.md  
+**Template Created:** January 25, 2026
+**For Use With:** vedic_correlation_research_report.pdf + planet_individual_variations.pdf
+**Documentation:** RESEARCH_REPORT_GUIDE.md + RESEARCH_DATA_REFERENCE.md
 **Status:** ✅ Ready for Publication

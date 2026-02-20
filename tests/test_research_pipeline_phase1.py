@@ -7,7 +7,8 @@ from datetime import date, datetime
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../libs")))
 
 from vedic_astrology_core.astrology.ephemeris import EphemerisEngine  # noqa: E402
-from vedic_numerology.numerology_engine import NumerologyEngine  # noqa: E402
+from vedic_numerology.engine import NumerologyEngine  # noqa: E402
+
 
 class TestResearchPipelinePhase1(unittest.TestCase):
     def setUp(self):
@@ -97,7 +98,8 @@ class TestResearchPipelinePhase1(unittest.TestCase):
 
         fetcher = EarthquakeDataFetcher(use_sample_data=True)
 
-        # Create mock sequence: Mainshock (7.0) -> Aftershock (5.0, near, soon) -> Independent (6.0, far)
+        # Create mock sequence: Mainshock (7.0) -> Aftershock (5.0, near, soon) ->
+        # Independent (6.0, far)
         catalog = [
             {
                 "magnitude": 7.0,  # Mainshock

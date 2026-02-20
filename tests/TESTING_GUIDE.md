@@ -242,7 +242,7 @@ python3 src/web/web.py
 
 # To test all platforms:
 # - Run on Windows for Windows tests
-# - Run on macOS for macOS tests  
+# - Run on macOS for macOS tests
 # - Run on Linux for Linux tests
 ```
 
@@ -379,7 +379,7 @@ For issues or questions:
 
 ---
 
-**Last Updated**: 2026-01-25  
-**Test Suite Version**: 2.0  
-**Coverage Target**: 90%+  
+**Last Updated**: 2026-01-25
+**Test Suite Version**: 2.0
+**Coverage Target**: 90%+
 **Platform Support**: Windows, macOS, Linux

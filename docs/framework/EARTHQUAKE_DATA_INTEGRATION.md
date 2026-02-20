@@ -129,7 +129,7 @@ data = []
 
 for date in dates:
     jd = swe.utc_to_jd(date.year, date.month, date.day, 12, 0, 0)[0]
-    
+
     # Calculate planets
     planets = {
         'SUN': swe.SUN,
@@ -137,14 +137,14 @@ for date in dates:
         'MARS': swe.MARS,
         # ... etc
     }
-    
+
     row = {'datetime': date}
     for name, planet_id in planets.items():
         pos, speed = swe.calc_ut(jd, planet_id)
         row[f'{name}_position'] = pos[0]
         # Calculate strength...
         row[f'{name}_strength'] = calculate_strength(pos[0], jd)
-    
+
     data.append(row)
 
 df = pd.DataFrame(data)
@@ -368,11 +368,11 @@ bibliography: references.bib
 This study analyzes the correlation between planetary positions and earthquake occurrence.
 
 ## 1. Introduction
-Vedic astrology suggests that certain planetary combinations (e.g., Mars-Ketu) may 
+Vedic astrology suggests that certain planetary combinations (e.g., Mars-Ketu) may
 influence tectonic activity. This data-driven study tests this hypothesis.
 
 ## 2. Methodology
-We analyzed X years of earthquake data (N = 5000 events) against daily planetary 
+We analyzed X years of earthquake data (N = 5000 events) against daily planetary
 positions using:
 - Conjunction analysis (Mars-Ketu within 8 degrees)
 - Strength trigger analysis (Mars strength > 75)
@@ -407,4 +407,3 @@ positions using:
 ---
 
 **Next Step:** Download earthquake data and prepare CSV file for analysis!
-

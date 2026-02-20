@@ -1,7 +1,6 @@
 import os
 import sys
 import unittest
-from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pandas as pd
@@ -41,9 +40,8 @@ class TestResearchPipelinePhase3(unittest.TestCase):
             os.remove(self.test_matrix_path)
 
     def test_model_training_execution(self):
-        """Test thatfrom train_models import run_training  # noqa: E402
- on valid data."""
-        from train_models import run_training  # noqa: E402
+        """Test that train_models.train_models runs on valid data."""
+        import train_models  # noqa: E402
 
         # Capture stdout to check for success messages
         # We just want to ensure it calls fit() and produces output

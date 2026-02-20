@@ -1,7 +1,6 @@
 import os
 import sys
 import unittest
-from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pandas as pd
@@ -46,15 +45,16 @@ class TestValidationScript(unittest.TestCase):
         """Test that run_validation runs with small N shuffles."""
         # Use small number of shuffles for speed
         try:
-            from run_validation import run_validation  # noqa: E402
+            from validate_results import run_validation  # noqa: E402
+
             run_validation(self.test_matrix_path, n_shuffles=10)
         except Exception as e:
             self.fail(f"run_validation failed with: {e}")
 
         # Check outputs
         self.assertTrue(os.path.exists("validation_report.json"))
-        # Plot might not generate in headless env without display, but code catches exception
-        # so mostly checking script finished.
+        # Plot might not generate in headless env without display,
+        # but code catches exception so mostly checking script finished.
 
 
 if __name__ == "__main__":
