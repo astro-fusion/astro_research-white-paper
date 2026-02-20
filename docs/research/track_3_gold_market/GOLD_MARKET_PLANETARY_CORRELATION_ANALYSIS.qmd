@@ -1,0 +1,69 @@
+---
+title: "Rigorous Statistical Falsification of Planetary Predictors in Gold Markets: Testing Financial Astrology Against the Efficient Market Hypothesis"
+subtitle: "A 25-Year Econometric Analysis Using Granger Causality, Spectral Analysis, and Monte Carlo Methods"
+date: last-modified
+date-format: "MMMM DD, YYYY"
+authors:
+  - name: Astro-Fusion Research Team
+    affiliation: Computational Astrology Research Initiative
+    corresponding: true
+abstract: |
+  This study applies rigorous econometric signal processing to falsify the hypothesis that planetary positions provide unique predictive information for XAU/USD (Gold) spot prices. The Efficient Market Hypothesis (EMH) posits that asset prices reflect all available information, rendering them unpredictable through exogenous variables. Conversely, "Financial Astrology" claims that deterministic planetary cycles influence market psychology and price action. Analyzing 25 years of daily COMEX Gold prices (2000-2024) against high-precision Swiss Ephemeris geocentric positions, we employ Augmented Dickey-Fuller stationarity tests, Lomb-Scargle spectral analysis to detect cyclic signals at planetary synodic periods, and Vector Autoregression with Bonferroni-corrected Granger Causality tests. A Monte Carlo permutation test (N=1,000) establishes empirical null distributions. Our findings demonstrate that apparent correlations fail to exceed the threshold of statistical significance when adjusted for multiple hypothesis testing, with all planetary variables showing p-values well above 0.05. The Molchan diagram analysis confirms that planetary-based binary classifiers perform no better than random guessing. These findings reinforce the EMH and characterize perceived astrological influence on markets as apophenia.
+keywords:
+  - Financial Astrology
+  - Efficient Market Hypothesis
+  - Gold Price Prediction
+  - Granger Causality
+  - Spectral Analysis
+  - Monte Carlo Methods
+  - Swiss Ephemeris
+bibliography: ../../../research/data/master_references.bib
+format:
+  pdf:
+    documentclass: article
+    papersize: a4
+    geometry:
+      - top=25mm
+      - left=25mm
+      - right=25mm
+      - bottom=25mm
+    fontsize: 11pt
+    number-sections: true
+    toc: true
+    lof: true
+    lot: true
+    colorlinks: true
+    include-in-header:
+      text: |
+        \usepackage{placeins}
+        \usepackage{float}
+  html:
+    toc: true
+    number-sections: true
+execute:
+  echo: false
+  warning: false
+jupyter: python3
+---
+
+# Master Structure
+
+:::{.callout-note}
+This report is assembled from modular sections for maintainability.
+:::
+
+{{< include sections/00_overview.qmd >}}
+
+{{< include sections/01_principles_catalog.qmd >}}
+
+{{< include sections/01a_vedic_principles_coverage.qmd >}}
+
+{{< include sections/02a_dasha.qmd >}}
+
+{{< include sections/02_algorithms_examples.qmd >}}
+
+{{< include sections/03_graphs_frequency.qmd >}}
+
+{{< include sections/04_graphs_alignment.qmd >}}
+
+{{< include sections/90_legacy_content.qmd >}}

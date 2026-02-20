@@ -46,6 +46,7 @@ docs/_build/
 # ==========================================
 # Rendered HTML site, PDFs, figures output by Quarto
 _site/
+pdfs/
 # Frozen execution cache (auto-generated, not source)
 _freeze/
 

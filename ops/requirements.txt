@@ -28,3 +28,9 @@ suntime>=1.2.5
 # AI Diagram Generation
 paperbanana>=0.1.0
 google-generativeai>=0.3.0
+
+# PDF Generation (Required for Quarto Jupyter kernels)
+jupyter>=1.0.0
+nbformat>=5.0.0
+nbclient>=0.5.0
+jupyter-cache>=0.6.0

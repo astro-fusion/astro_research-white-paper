@@ -72,17 +72,17 @@ Prior studies by *Geller et al. (1997)* in seismology and *Fama (1970)* in finan
 
 To ensure reproducibility and rigor, we developed the **AstroFusion Research Platform**, a modular computational engine. The development timeline (@fig-research-timeline) spanned five years of data collection, algorithm codification, and statistical validation.
 
-![Research Timeline](../architecture/research_timeline.mermaid){#fig-research-timeline}
+
 
 ### 3.1 High-Level Platform Overview
 
-![System Architecture Diagram](../architecture/system_diagram.mermaid){#fig-system-arch}
+
 
 The system integrates high-precision astronomical data (Swiss Ephemeris) with terrestrial datasets (USGS, COMEX), processing them through a unified statistical engine. As illustrated in @fig-system-arch, the architecture is designed for high modularity.
 
 ### 3.2 Computational Pipeline
 
-![Data Pipeline Flowchart](../architecture/data_pipeline.mermaid){#fig-data-pipeline}
+
 
 Our pipeline (see @fig-data-pipeline) adheres to strict "Severe Testing" protocols:
 1.  **Ingestion**: Raw data normalization.
@@ -96,7 +96,7 @@ Our pipeline (see @fig-data-pipeline) adheres to strict "Severe Testing" protoco
 
 {{< include track_1_numerology_vs_astrology/sections/00_hypothesis_framework.qmd >}}
 
-![Temporal Mismatch: Continuous vs Discrete Domains](../architecture/temporal_mapping.mermaid){#fig-temporal-mapping}
+
 
 The fundamental challenge in aligning these systems lies in their temporal resolution mismatch, as visualized in @fig-temporal-mapping.
 {{< include track_1_numerology_vs_astrology/sections/01_literature_review.qmd >}}
@@ -194,6 +194,4 @@ The "Demarcation Problem" for Vedic systems is resolved not by dismissal, but by
 
 # Legacy Content Archive
 
-{{< include track_2_earthquake_prediction/sections/90_legacy_content.qmd >}}
-{{< include track_3_gold_market/sections/90_legacy_content.qmd >}}
-{{< include track_1_numerology_vs_astrology/sections/90_legacy_content.qmd >}}
+*(Legacy content sections have been omitted from the consolidated thesis to preserve asset path integrity. Please refer to the individual track reports for historical and legacy data.)*

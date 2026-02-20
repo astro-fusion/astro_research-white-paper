@@ -84,7 +84,7 @@ This report is assembled from modular sections for maintainability.
 
 {{< include sections/12_algorithms_examples.qmd >}}
 
-{{< include sections/13_graphs_frequency.qmd >}}
+{{< include sections/13_results_hypothesis_tests.qmd >}}
 
 {{< include sections/14_graphs_alignment_windows.qmd >}}
 

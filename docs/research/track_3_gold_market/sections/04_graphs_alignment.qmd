@@ -1,0 +1,72 @@
+# Alignment Graphs
+
+Overlap between indicator activation and gold return spikes (top 5% absolute daily returns).
+
+```{python}
+#| label: fig-gold-overlap
+#| fig-cap: "Mean Overlap Rate by Category (±3 days)"
+#| fig-width: 8
+#| fig-height: 4.5
+#| fig-pos: 'H'
+
+metrics = metrics.copy()
+metrics["overlap_rate_w3"] = metrics["overlap_w3"] / metrics["total_active_days"].replace(0, pd.NA)
+cat_rate = metrics.groupby("category")["overlap_rate_w3"].mean().sort_values(ascending=False)
+
+plt.figure(figsize=(8.5,4.5))
+cat_rate.plot(kind="bar", color="darkorange")
+plt.title("Mean Overlap Rate by Category (±3 days)")
+plt.ylabel("Overlap Rate")
+plt.grid(axis="y", alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+#| label: tbl-gold-significance
+#| tbl-cap: "Top 15 Astrology Indicators by FDR-Adjusted p-value (±3 days)"
+
+
+if "pval_w3_fdr" in metrics.columns:
+    # Rename columns for report
+    disp_df = metrics.sort_values("pval_w3_fdr").head(15).copy()
+    disp_df = disp_df.rename(columns={
+        "combo_id": "Combination",
+        "category": "Category",
+        "pval_w3": "Raw p-value",
+        "pval_w3_fdr": "FDR Adjusted p-value",
+        "pval_w3_bonferroni": "Bonferroni p-value",
+        "total_active_days": "Active Days"
+    })
+
+    # Format p-values
+    for col in ["Raw p-value", "FDR Adjusted p-value", "Bonferroni p-value"]:
+        disp_df[col] = disp_df[col].apply(lambda x: f"{x:.4f}" if x >= 0.0001 else "< 0.0001")
+
+    # Markdown output for Quarto
+    from IPython.display import Markdown
+    Markdown(disp_df[[
+        "Combination", "Category", "Active Days",
+        "Raw p-value", "FDR Adjusted p-value", "Bonferroni p-value"
+    ]].to_markdown(index=False))
+
+```
+
+```{python}
+#| label: fig-gold-zscore-hist
+#| fig-cap: "Distribution of Z-Scores for Overlap vs Random Baseline (±3 days)"
+#| fig-width: 8
+#| fig-height: 4.5
+#| fig-pos: 'H'
+
+if "zscore_w3" in metrics.columns:
+    plt.figure(figsize=(8.5,4.5))
+    metrics["zscore_w3"].dropna().hist(bins=40, color="slateblue", alpha=0.85)
+    plt.axvline(0, color="black", linewidth=1)
+    plt.title("Z-Score Distribution (Overlap vs Random Baseline)")
+    plt.xlabel("Z-Score (w3)")
+    plt.ylabel("Count")
+    plt.grid(axis="y", alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+```

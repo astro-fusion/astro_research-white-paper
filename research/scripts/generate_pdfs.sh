@@ -8,7 +8,7 @@ echo "Starting PDF Generation..."
 
 # Generate Python Artifacts first
 echo "Generating Python Artifacts (Plots & Tables)..."
-python3 src/generate_artifacts.py || { echo "❌ Stats/Artifact generation failed"; exit 1; }
+python3 research/scripts/generate_artifacts.py || { echo "❌ Stats/Artifact generation failed"; exit 1; }
 
 # Function to render and move
 render_and_move() {
@@ -59,13 +59,19 @@ render_and_move "docs/research/track_3_gold_market/GOLD_MARKET_PLANETARY_CORRELA
 
 # 5. Manuscripts & Consolidated Binder
 render_and_move "docs/research/COMPREHENSIVE_RESEARCH_THESIS.qmd" "COMPREHENSIVE_RESEARCH_THESIS.pdf"
-render_and_move "reports/manuscript.qmd" "manuscript_nature.pdf"
+render_and_move "research/reports/manuscript.qmd" "manuscript_nature.pdf"
 
 # For IEEE, we need to specify CSL.
 # We'll just run the command directly for this one to handle the extra arg
 echo "Rendering manuscript_ieee.pdf..."
-quarto render reports/manuscript.qmd --to pdf -M csl=reports/styles/ieee.csl -o manuscript_ieee.pdf
-mv manuscript_ieee.pdf pdfs/
+quarto render research/reports/manuscript.qmd --to pdf -M csl=styles/ieee.csl -o manuscript_ieee.pdf
+if [ -f "manuscript_ieee.pdf" ]; then
+    mv manuscript_ieee.pdf pdfs/
+elif [ -f "_site/manuscript_ieee.pdf" ]; then
+    mv _site/manuscript_ieee.pdf pdfs/
+elif [ -f "research/reports/manuscript_ieee.pdf" ]; then
+    mv research/reports/manuscript_ieee.pdf pdfs/
+fi
 echo "✅ Moved manuscript_ieee.pdf to pdfs/"
 
 echo "🎉 All PDFs generated in pdfs/ directory."

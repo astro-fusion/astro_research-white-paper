@@ -1,0 +1,21 @@
+# Introduction
+
+The intersection of mathematics and mythology forms the backbone of ancient predictive sciences. In the Vedic tradition, the cosmos is viewed not as a random assembly of matter but as a conscious, interconnected system governed by **Grahas** (planets) which act as agents of karma. Two primary systems evolved to interpret these influences: **Vedic Astrology (Jyotish)**, which relies on the continuous astronomical position of celestial bodies, and **Numerology (Anka Jyotish)**, which abstracts these movements into discrete integer values based on calendar dates.
+
+## Mythological & Archetypal Foundations
+
+To understand why these systems are often conflated, one must examine their shared mythological roots. Each number in Vedic numerology is not merely a quantity but a symbol for a planetary deity's energy pattern:
+
+*   **1 - The Sun (Surya)**: The soul ($Atman$), the king, the ego. Just as the Sun is the center of the solar system, the number 1 represents unity, leadership, and the self. Mythologically, Surya rides a chariot of seven horses (colors of light), representing the source of all vitality.
+*   **2 - The Moon (Chandra)**: The mind ($Manas$), emotions, and fluidity. Chandra is the queen, reflecting the light of the Sun. As the Moon waxes and wanes, so does the mind fluctuate.
+*   **3 - Jupiter (Brihaspati)**: The Guru of the Devas. Represents wisdom, expansion, and ether ($Akasha$).
+*   **4 - Rahu (North Node)**: The head of the demon, representing illusion ($Maya$), innovation, and unorthodoxy.
+*   **5 - Mercury (Budha)**: The prince, representing intellect ($Buddhi$), communication, and trade.
+*   **6 - Venus (Shukra)**: The Guru of the Asuras. Represents desire ($Kama$), beauty, and relationships.
+*   **7 - Ketu (South Node)**: The headless body, representing spiritual liberation ($Moksha$), detachment, and mystery.
+*   **8 - Saturn (Shani)**: The judge ($Karmakaraka$), representing discipline, delay, and truth ($Satya$).
+*   **9 - Mars (Mangal)**: The commander, representing energy ($Shakti$), logic, and aggression.
+
+## The Research Problem
+
+Practitioners often assume that if a person is in a "Sun period" in numerology (e.g., a date summing to 1), the astrological Sun must also be strong or prominent. **This study challenges that assumption.** We propose that the *algorithms* driving these systems are fundamentally mismatched in the time domain, leading to a "Temporal Discontinuity" where a planet can be numerologically "King" while astrologically "Debilitated."

@@ -1,9 +1,9 @@
 # Vedic Principles Coverage (Master Catalog)
 
-The project maintains a shared **Vedic Principles Catalog** that enumerates the core and extended Jyotish concepts described in classical texts such as **BPHS**, **Brihat Samhita**, **Saravali**, **Jataka Parijata**, and **Surya Siddhanta**. This numerology report uses a focused subset (planetary lords, dignity, and nakshatra mapping) and documents the rest for completeness. This guarantees future expansion without altering the report structure. [@bphs; @varahamihira_brihat_samhita; @saravali; @jataka_parijata; @surya_siddhanta]
+To ensure scientific completeness, this report references a shared **Vedic Principles Catalog** derived from classical Jyotish texts. Computable indicators are evaluated quantitatively; non-computable principles are documented for transparency and future extensibility. [@bphs; @varahamihira_brihat_samhita; @saravali; @jataka_parijata; @surya_siddhanta]
 
 ```{python}
-#| label: num-vedic-catalog-counts
+#| label: gold-vedic-catalog-counts
 #| fig-cap: "Vedic Principles Catalog: Counts by Family"
 #| fig-width: 8
 #| fig-height: 4
@@ -19,7 +19,7 @@ catalog = pd.read_csv(root / "research" / "data" / "vedic_principles_catalog.csv
 
 counts = catalog.groupby("family").size().sort_values(ascending=False).head(20)
 plt.figure(figsize=(8.5, 4))
-counts.plot(kind="bar", color="steelblue")
+counts.plot(kind="bar", color="seagreen")
 plt.ylabel("Count")
 plt.title("Top Vedic Principle Families")
 plt.grid(axis="y", alpha=0.3)
@@ -28,13 +28,13 @@ plt.show()
 ```
 
 ```{python}
-#| label: tbl-num-vedic-coverage
-#| tbl-cap: "Coverage Matrix for Numerology Report"
+#| label: tbl-gold-vedic-coverage
+#| tbl-cap: "Coverage Matrix for Gold Report"
 
 coverage = pd.read_csv(root / "research" / "data" / "vedic_principles_coverage.csv")
-num_cov = coverage[coverage["report"] == "numerology"]
+gold_cov = coverage[coverage["report"] == "gold"]
 summary = (
-    num_cov.groupby(["family", "scope", "coverage_status"])
+    gold_cov.groupby(["family", "scope", "coverage_status"])
     .size()
     .unstack(fill_value=0)
     .reset_index()
@@ -44,7 +44,7 @@ summary.sort_values(["scope", "family"])
 ```
 
 ```{python}
-#| label: tbl-num-vedic-master
+#| label: tbl-gold-vedic-master
 #| tbl-cap: "Master Vedic Principles Catalog (Core + Extended)"
 
 catalog_sorted = catalog.sort_values(["family", "item_type", "name"])

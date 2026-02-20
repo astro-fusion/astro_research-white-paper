@@ -16,7 +16,7 @@ for parent in [cwd] + list(cwd.parents):
         repo_root = parent
         break
 if repo_root:
-    sys.path.insert(0, str(repo_root / "src"))
+    sys.path.insert(0, str(repo_root / "libs"))
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns

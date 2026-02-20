@@ -154,12 +154,6 @@
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
-% PDF Header - Custom LaTeX commands for PDF output
-% This file is included in the LaTeX preamble for PDF generation
-
-% Add any custom LaTeX packages or commands here
-% Example: \usepackage{booktabs}
-% Example: \usepackage{longtable}
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -220,10 +214,7 @@
 \urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
   pdftitle={Empirical Analysis of Vedic Predictive Systems: A Computational Investigation of Astrology, Numerology, and Terrestrial Phenomena},
-  pdfauthor={Bishal Ghimire},
   pdflang={en-US},
-  pdfsubject={Computational Integration of Vedic Numerology and Sidereal
-Astrology},
   pdfkeywords={Vedic Astrology, Vedic Numerology, Earthquake
 Prediction, Financial Astrology, Statistical Falsification, Granger
 Causality, Swiss Ephemeris, Shadbala},
@@ -245,7 +236,7 @@ Investigation of Astrology, Numerology, and Terrestrial Phenomena}
 \subtitle{A Consolidated Research Report Applying Rigorous Statistical
 Methods to Traditional Knowledge Systems}
 \author{Astro-Fusion Research Team}
-\date{February 05, 2026}
+\date{February 20, 2026}
 
 \begin{document}
 \maketitle
@@ -270,12 +261,6 @@ controlled for multiple hypothesis testing. This work provides a
 reproducible computational framework for the scientific evaluation of
 traditional knowledge systems.
 \end{abstract}
-
-% PDF Before Body - Content to include before document body
-% This file is included before the main document content
-
-% Add any content that should appear before the main document here
-% This could include custom title pages, abstracts, etc.
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -303,7 +288,7 @@ This research initiative was born from a simple question: \textbf{Do
 these ancient systems possess empirical validity when subjected to
 modern statistical scrutiny?} Rather than approaching this question with
 either blind acceptance or dismissive skepticism, we apply the
-principles of ``Severe Testing'' (Mayo \& Spanos, 2006)---establishing
+principles of ``Severe Testing'' (Mayo and Spanos 2006)---establishing
 clear null hypotheses and only rejecting them in the face of
 overwhelming statistical evidence.
 
@@ -330,7 +315,7 @@ tracks:
 
 \subsection{Research Philosophy}\label{research-philosophy}
 
-We adopt the stance of Karl Popper's falsificationism (Popper, 1959): a
+We adopt the stance of Karl Popper's falsificationism (Popper 1959): a
 hypothesis gains scientific credibility not through confirmation but
 through surviving rigorous attempts at falsification. Each research
 track is designed as an attempt to \textbf{disprove} rather than prove
@@ -341,7 +326,7 @@ astrological claims.
 \subsection{Classical Vedic Sources}\label{classical-vedic-sources}
 
 The foundational text of Vedic Astrology is the \textbf{Brihat Parashara
-Hora Shastra} (BPHS) (Parashara, c. 7th century CE), attributed to Sage
+Hora Shastra} (BPHS) (Parashara c. 7th century CE), attributed to Sage
 Parashara (c.~7th century CE). This text codifies:
 
 \begin{itemize}
@@ -357,9 +342,9 @@ Parashara (c.~7th century CE). This text codifies:
 \end{itemize}
 
 The astronomical calculations are grounded in the \textbf{Surya
-Siddhanta} (Anonymous, c. 4th century CE), which provides remarkably
+Siddhanta} (Anonymous c. 4th century CE), which provides remarkably
 accurate planetary ephemerides for its era. \textbf{Varahamihira's
-Brihat Samhita} (Varahamihira, c. 6th century CE) extends these
+Brihat Samhita} (Varahamihira c. 6th century CE) extends these
 principles to mundane astrology, including predictions of earthquakes,
 weather, and political events.
 
@@ -376,16 +361,16 @@ literature:
 \begin{itemize}
 \tightlist
 \item
-  \textbf{Granger Causality} (Granger, 1969): Testing whether past
-  values of one variable improve predictions of another
+  \textbf{Granger Causality} (Granger 1969): Testing whether past values
+  of one variable improve predictions of another
 \item
-  \textbf{Lomb-Scargle Spectral Analysis} (Lomb, 1976): Detecting
+  \textbf{Lomb-Scargle Spectral Analysis} (Lomb 1976): Detecting
   periodic signals in unevenly sampled data
 \item
-  \textbf{Unit Root Tests} (Dickey \& Fuller, 1979): Ensuring
+  \textbf{Unit Root Tests} (Dickey and Fuller 1979): Ensuring
   stationarity for valid time-series inference
 \item
-  \textbf{Monte Carlo Methods} (Fishman, 1996): Establishing empirical
+  \textbf{Monte Carlo Methods} (Fishman 1996): Establishing empirical
   null distributions
 \end{itemize}
 
@@ -407,7 +392,7 @@ results. However, most studies suffer from:
 \end{enumerate}
 
 This study addresses these gaps by utilizing high-precision Swiss
-Ephemeris (AG, 2023) calculations with proper Lahiri Ayanamsa (Lahiri,
+Ephemeris (AG 2023) calculations with proper Lahiri Ayanamsa (Lahiri
 1960) correction.
 
 \section{Methodology}\label{methodology}
@@ -513,7 +498,7 @@ Number & Planet & Sanskrit \\
 \subsubsection{Stationarity Validation}\label{stationarity-validation}
 
 All time series are tested for stationarity using the Augmented
-Dickey-Fuller (ADF) test (Dickey \& Fuller, 1979):
+Dickey-Fuller (ADF) test (Dickey and Fuller 1979):
 
 \[
 H_0: \text{Series has a unit root (non-stationary)}
@@ -601,7 +586,7 @@ vs.~Saturn, highlighting the temporal complexity.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{../../reports/artifacts/fig_multi_planet_cycles.pdf}
+\includegraphics[width=1\textwidth,height=\textheight]{../../research/reports/artifacts/fig_multi_planet_cycles.pdf}
 
 }
 
@@ -694,7 +679,7 @@ seismic activity in the India-Nepal tectonic zone?}
 \tightlist
 \item
   \textbf{Source}: USGS Earthquake Hazards Program API (United States
-  Geological Survey, 2024)
+  Geological Survey 2024)
 \item
   \textbf{Region}: India-Nepal Border (Lat 20°N-35°N, Lon 75°E-90°E)
 \item
@@ -728,7 +713,7 @@ We defined an ``Astro-Fusion Stress Index'' based on:
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{../../reports/artifacts/fig_mars_variation.pdf}
+\includegraphics[width=1\textwidth,height=\textheight]{../../research/reports/artifacts/fig_mars_variation.pdf}
 
 }
 
@@ -736,7 +721,7 @@ We defined an ``Astro-Fusion Stress Index'' based on:
 
 \subsubsection{Statistical Framework}\label{statistical-framework-1}
 
-Using Negative Binomial regression (Molchan, 1997) to account for
+Using Negative Binomial regression (Molchan 1997) to account for
 overdispersion:
 
 \[
@@ -803,7 +788,7 @@ The Monte Carlo ``Look-Elsewhere'' analysis (N=1,000) revealed:
 
 \centering{
 
-\includegraphics[width=0.8\textwidth,height=\textheight]{../../reports/artifacts/fig_permutation_dist.pdf}
+\includegraphics[width=0.8\textwidth,height=\textheight]{../../research/reports/artifacts/fig_permutation_dist.pdf}
 
 }
 
@@ -823,7 +808,7 @@ Hypothesis?}
 \begin{itemize}
 \tightlist
 \item
-  \textbf{Source}: Yahoo Finance (Yahoo Finance, 2024)
+  \textbf{Source}: Yahoo Finance (Yahoo Finance 2024)
 \item
   \textbf{Asset}: XAU/USD (Gold Spot Price)
 \item
@@ -852,7 +837,7 @@ X_{planet} = \sin(\lambda_{planet}) + \cos(\lambda_{planet})
 
 \subsubsection{Spectral Analysis}\label{spectral-analysis}
 
-Lomb-Scargle periodograms (Lomb, 1976) were computed to detect cyclic
+Lomb-Scargle periodograms (Lomb 1976) were computed to detect cyclic
 signals at planetary synodic periods:
 
 \begin{itemize}
@@ -874,7 +859,7 @@ log-returns. No significant peaks observed at planetary frequencies.}
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{../../reports/artifacts/fig_periodogram.pdf}
+\includegraphics[width=1\textwidth,height=\textheight]{../../research/reports/artifacts/fig_periodogram.pdf}
 
 }
 
@@ -948,7 +933,7 @@ Volatility}
 
 \centering{
 
-\includegraphics[width=0.8\textwidth,height=\textheight]{../../reports/artifacts/fig_molchan.pdf}
+\includegraphics[width=0.8\textwidth,height=\textheight]{../../research/reports/artifacts/fig_molchan.pdf}
 
 }
 
@@ -1086,7 +1071,7 @@ findings support the following conclusions:
 \item
   \textbf{Methodological Contribution}: We provide a reproducible,
   open-source framework for testing similar claims, embodying the
-  principles of Literate Programming (Knuth, 1984).
+  principles of Literate Programming (Knuth 1984).
 \item
   \textbf{Cultural Value Preserved}: The failure to demonstrate
   predictive validity does not diminish the cultural, philosophical, and
@@ -1116,70 +1101,69 @@ https://github.com/astro-fusion/astro\_research-white-paper}
 \phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
 \bibitem[\citeproctext]{ref-swiss_ephemeris}
-AG, A. (2023). \emph{Swiss ephemeris: High precision planetary ephemeris
-DE440}. \url{https://www.astro.com/swisseph/}
+AG, Astrodienst. 2023. {``Swiss Ephemeris: High Precision Planetary
+Ephemeris DE440.''} \url{https://www.astro.com/swisseph/}.
 
 \bibitem[\citeproctext]{ref-surya_siddhanta}
-Anonymous. (c. 4th century CE). \emph{Surya siddhanta: A textbook of
-hindu astronomy}. Various translations.
+Anonymous. c. 4th century CE. \emph{Surya Siddhanta: A Textbook of Hindu
+Astronomy}. Various translations.
 
 \bibitem[\citeproctext]{ref-dickey_fuller}
-Dickey, D. A., \& Fuller, W. A. (1979). Distribution of the estimators
-for autoregressive time series with a unit root. \emph{Journal of the
-American Statistical Association}, \emph{74}(366), 427--431.
+Dickey, D. A., and W. A. Fuller. 1979. {``Distribution of the Estimators
+for Autoregressive Time Series with a Unit Root.''} \emph{Journal of the
+American Statistical Association} 74 (366): 427--31.
 
 \bibitem[\citeproctext]{ref-monte_carlo_methods}
-Fishman, G. S. (1996). \emph{Monte carlo: Concepts, algorithms, and
-applications}. Springer.
+Fishman, George S. 1996. \emph{Monte Carlo: Concepts, Algorithms, and
+Applications}. Springer.
 
 \bibitem[\citeproctext]{ref-granger_causality}
-Granger, C. W. J. (1969). Investigating causal relations by econometric
-models and cross-spectral methods. \emph{Econometrica}, \emph{37}(3),
-424--438. \url{https://doi.org/10.2307/1912791}
+Granger, C. W. J. 1969. {``Investigating Causal Relations by Econometric
+Models and Cross-Spectral Methods.''} \emph{Econometrica} 37 (3):
+424--38. \url{https://doi.org/10.2307/1912791}.
 
 \bibitem[\citeproctext]{ref-knuth_literate}
-Knuth, D. E. (1984). Literate programming. In \emph{The Computer
-Journal} (Vol. 27, pp. 97--111).
-\url{https://doi.org/10.1093/comjnl/27.2.97}
+Knuth, Donald E. 1984. \emph{Literate Programming}. \emph{The Computer
+Journal}. Vol. 27. 2. \url{https://doi.org/10.1093/comjnl/27.2.97}.
 
 \bibitem[\citeproctext]{ref-lahiri_ayanamsa}
-Lahiri, N. C. (1960). Ayanamsa for sidereal ephemeris. \emph{Indian
+Lahiri, N. C. 1960. {``Ayanamsa for Sidereal Ephemeris.''} \emph{Indian
 Astronomical Ephemeris}.
 
 \bibitem[\citeproctext]{ref-lomb_scargle}
-Lomb, N. R. (1976). Least-squares frequency analysis of unequally spaced
-data. \emph{Astrophysics and Space Science}, \emph{39}, 447--462.
-\url{https://doi.org/10.1007/BF00648343}
+Lomb, N. R. 1976. {``Least-Squares Frequency Analysis of Unequally
+Spaced Data.''} \emph{Astrophysics and Space Science} 39: 447--62.
+\url{https://doi.org/10.1007/BF00648343}.
 
 \bibitem[\citeproctext]{ref-mayo_severe_testing}
-Mayo, D. G., \& Spanos, A. (2006). Severe testing as a basic concept in
-a neyman--pearson philosophy of induction. \emph{The British Journal for
-the Philosophy of Science}, \emph{57}(2), 323--357.
-\url{https://doi.org/10.1093/bjps/axl003}
+Mayo, Deborah G., and Aris Spanos. 2006. {``Severe Testing as a Basic
+Concept in a Neyman--Pearson Philosophy of Induction.''} \emph{The
+British Journal for the Philosophy of Science} 57 (2): 323--57.
+\url{https://doi.org/10.1093/bjps/axl003}.
 
 \bibitem[\citeproctext]{ref-molchan_diagram}
-Molchan, G. M. (1997). Earthquake prediction as a decision-making
-problem. \emph{Pure and Applied Geophysics}, \emph{149}, 233--247.
-\url{https://doi.org/10.1007/BF00945169}
+Molchan, G. M. 1997. {``Earthquake Prediction as a Decision-Making
+Problem.''} \emph{Pure and Applied Geophysics} 149: 233--47.
+\url{https://doi.org/10.1007/BF00945169}.
 
 \bibitem[\citeproctext]{ref-bphs}
-Parashara, S. (c. 7th century CE). \emph{Brihat parashara hora shastra}.
-Various translations.
+Parashara, Sage. c. 7th century CE. \emph{Brihat Parashara Hora
+Shastra}. Various translations.
 
 \bibitem[\citeproctext]{ref-popper_falsification}
-Popper, K. (1959). \emph{The logic of scientific discovery}. Routledge.
+Popper, Karl. 1959. \emph{The Logic of Scientific Discovery}. Routledge.
 
 \bibitem[\citeproctext]{ref-usgs_earthquake}
-United States Geological Survey. (2024). \emph{USGS earthquake hazards
-program: Comprehensive earthquake catalog}.
-\url{https://earthquake.usgs.gov/earthquakes/search/}
+United States Geological Survey. 2024. {``USGS Earthquake Hazards
+Program: Comprehensive Earthquake Catalog.''}
+\url{https://earthquake.usgs.gov/earthquakes/search/}.
 
 \bibitem[\citeproctext]{ref-varahamihira_brihat_samhita}
-Varahamihira. (c. 6th century CE). \emph{Brihat samhita}.
+Varahamihira. c. 6th century CE. \emph{Brihat Samhita}.
 
 \bibitem[\citeproctext]{ref-yahoo_finance}
-Yahoo Finance. (2024). \emph{XAU/USD historical data}.
-\url{https://finance.yahoo.com/}
+Yahoo Finance. 2024. {``XAU/USD Historical Data.''}
+\url{https://finance.yahoo.com/}.
 
 \end{CSLReferences}
 
@@ -1217,7 +1201,7 @@ All analyses can be reproduced by executing:
 \FunctionTok{git}\NormalTok{ clone https://github.com/astro{-}fusion/astro\_research{-}white{-}paper.git}
 \BuiltInTok{cd}\NormalTok{ astro\_research{-}white{-}paper}
 \ExtensionTok{pip}\NormalTok{ install }\AttributeTok{{-}e} \StringTok{".[all]"}
-\ExtensionTok{python}\NormalTok{ src/generate\_artifacts.py}
+\ExtensionTok{python3}\NormalTok{ research/scripts/generate\_artifacts.py}
 \ExtensionTok{quarto}\NormalTok{ render docs/research/VEDIC\_SYSTEMS\_EMPIRICAL\_ANALYSIS.qmd }\AttributeTok{{-}{-}to}\NormalTok{ pdf}
 \end{Highlighting}
 \end{Shaded}

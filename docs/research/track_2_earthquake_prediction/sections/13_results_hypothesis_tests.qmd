@@ -4,6 +4,7 @@
 
 To test the hypothesis that specific planetary combinations occur more frequently during seismic windows, we calculated the **Activation Frequency** for every combination in our catalog.
 
+```{python}
 #| echo: false
 from pathlib import Path
 import pandas as pd
