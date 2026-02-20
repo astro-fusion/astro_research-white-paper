@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Research Discussions
+    url: https://github.com/astro-fusion/astro_research-white-paper/discussions
+    about: Ask questions, share findings, or propose research ideas
+  - name: 📖 Documentation
+    url: https://astro-fusion.github.io/astro_research-white-paper/
+    about: Project documentation and research website
+  - name: 🔐 Security Vulnerabilities
+    url: https://github.com/astro-fusion/astro_research-white-paper/blob/main/SECURITY.md
+    about: Report security issues privately (do NOT use public issues)
