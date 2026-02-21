@@ -1,5 +1,5 @@
 """
-USGS Earthquake Data Fetcher
+USGS Earthquake Data Fetcher.
 
 Payload-driven system to fetch earthquake data from the USGS API
 and store it locally for offline research analysis.
@@ -7,7 +7,7 @@ and store it locally for offline research analysis.
 
 import json
 import requests
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import List, Dict, Optional, Tuple
 import os
 from pathlib import Path
@@ -71,8 +71,10 @@ class EarthquakeDataFetcher:
                 raise
 
         # If API is not explicitly requested, check consistency
-        # In this strict mode, we should generally default to API usage or require explicit file path
-        # But for this function signature, we'll enforce API if sample data was previously the default
+        # In this strict mode, we should generally default to API usage
+        # or require explicit file path
+        # But for this function signature, we'll enforce API if sample
+        # data was previously the default
         self._log("⚠️ USGS API flag not set, but mock data is disabled.")
         self._log("Attempting API fetch as fallback for real data...")
         return self._fetch_from_usgs_api(
@@ -87,10 +89,8 @@ class EarthquakeDataFetcher:
         latitude_range: Optional[Tuple[float, float]] = None,
         longitude_range: Optional[Tuple[float, float]] = None,
     ) -> Dict:
-        """
-        Fetch data from USGS Earthquake API.
-        """
-        self._log(f"Fetching earthquakes from USGS API...")
+        """Fetch data from USGS Earthquake API."""
+        self._log("Fetching earthquakes from USGS API...")
         self._log(f"  Period: {start_date} to {end_date}")
         self._log(f"  Minimum magnitude: {min_magnitude}")
         if latitude_range:
@@ -131,9 +131,7 @@ class EarthquakeDataFetcher:
     # No _load_sample_data or _create_mock_data available.
 
     def process_for_analysis(self, earthquake_data: Dict) -> List[Dict]:
-        """
-        Process USGS GeoJSON data into analysis format.
-        """
+        """Process USGS GeoJSON data into analysis format."""
         processed = []
 
         for feature in earthquake_data.get("features", []):
@@ -165,9 +163,7 @@ class EarthquakeDataFetcher:
         return processed
 
     def _homogenize_magnitude(self, mag: float, mag_type: str) -> float:
-        """
-        Homogenize magnitude to Mw.
-        """
+        """Homogenize magnitude to Mw."""
         if not mag_type:
             return mag
 
@@ -189,9 +185,7 @@ class EarthquakeDataFetcher:
         return mag
 
     def decluster_catalog(self, catalog: List[Dict]) -> List[Dict]:
-        """
-        Decluster the earthquake catalog using Gardner-Knopoff algorithm.
-        """
+        """Decluster the earthquake catalog using Gardner-Knopoff algorithm."""
         self._log(f"Declustering {len(catalog)} events...")
 
         events = []
@@ -281,7 +275,8 @@ class EarthquakeDataFetcher:
                     removed_ids.add(candidate["id"])
 
         self._log(
-            f"Declustering complete. Reduced from {len(catalog)} to {len(independent_events)} events."
+            "Declustering complete. Reduced from "
+            f"{len(catalog)} to {len(independent_events)} events."
         )
         return independent_events
 
@@ -299,9 +294,7 @@ class EarthquakeDataFetcher:
 
 
 def main():
-    """
-    Main workflow: Fetch Real USGS Data for Offline Storage.
-    """
+    """Main workflow: Fetch Real USGS Data for Offline Storage."""  # noqa: D401
     import sys
 
     # Initialize fetcher

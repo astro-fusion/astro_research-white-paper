@@ -1,5 +1,5 @@
 """
-Planetary Friendship Matrices
+Planetary Friendship Matrices.
 
 Implements Naisargika Maitri (Natural Friendship) and Tatkalika Maitri
 (Temporary Friendship) systems used in Vedic astrology for determining

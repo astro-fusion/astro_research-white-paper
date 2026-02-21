@@ -1,5 +1,5 @@
 """
-Utilities Module
+Utilities Module.
 
 Provides utility functions including:
 - Date/time handling and timezone conversions

@@ -1,5 +1,5 @@
 """
-Datetime Utilities
+Datetime Utilities.
 
 Provides functions for date/time parsing, timezone conversion, and
 Julian Day calculation.

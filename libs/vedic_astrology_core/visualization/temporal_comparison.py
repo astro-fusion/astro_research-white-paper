@@ -1,5 +1,5 @@
 """
-Temporal Comparison Visualization
+Temporal Comparison Visualization.
 
 Creates visualizations comparing numerology and Vedic astrology temporal patterns.
 Demonstrates the fundamental difference between discrete numerological changes
@@ -134,7 +134,8 @@ def plot_correlation_analysis(
     save_path: Optional[str] = None,
 ) -> Any:
     """
-    Create correlation analysis plots showing the lack of relationship
+    Create correlation analysis plots showing the lack of relationship.
+
     between numerology and astrology strength values.
 
     Args:

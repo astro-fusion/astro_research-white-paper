@@ -4,15 +4,21 @@ from datetime import datetime
 from pathlib import Path
 import sys
 import pandas as pd
-import numpy as np
 
 repo_root = Path(__file__).resolve().parents[4]
 sys.path.insert(0, str(repo_root / "src"))
 
-from vedic_astrology_core.astrology.ephemeris import EphemerisEngine
-from vedic_astrology_core.astrology.chart import calculate_chart, get_nakshatra
-from vedic_astrology_core.config.reference_charts import get_reference_chart
-from vedic_astrology_core.dasha.vimshottari import compute_vimshottari_periods
+from vedic_astrology_core.astrology.chart import (  # noqa: E402
+    calculate_chart,
+    get_nakshatra,
+)  # noqa: E402
+from vedic_astrology_core.astrology.ephemeris import EphemerisEngine  # noqa: E402
+from vedic_astrology_core.config.reference_charts import (  # noqa: E402
+    get_reference_chart,
+)  # noqa: E402
+from vedic_astrology_core.dasha.vimshottari import (  # noqa: E402
+    compute_vimshottari_periods,
+)  # noqa: E402
 
 # Paths
 base = Path(__file__).resolve().parents[1]
@@ -42,6 +48,7 @@ ref_periods = compute_vimshottari_periods(
 
 
 def get_dasha_lord(periods, target_dt, tzinfo):
+    """Docstring."""
     if target_dt.tzinfo is None:
         target_dt = target_dt.replace(tzinfo=tzinfo)
     for period in periods:

@@ -1,5 +1,5 @@
 """
-Configuration Management
+Configuration Management.
 
 Handles application settings and configuration management with YAML support.
 Provides centralized configuration for all modules in the system.
@@ -261,7 +261,7 @@ class Config:
         return self.get(key) is not None
 
     def __repr__(self) -> str:
-        """String representation of configuration."""
+        """String representation of configuration."""  # noqa: D401
         return f"Config({self.config_file or 'defaults'})"
 
 

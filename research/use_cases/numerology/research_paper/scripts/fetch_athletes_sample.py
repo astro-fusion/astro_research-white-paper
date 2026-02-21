@@ -20,6 +20,7 @@ births_path = out_dir / "births.csv"
 
 
 def parse_args() -> argparse.Namespace:
+    """Docstring."""
     parser = argparse.ArgumentParser(description="Fetch athlete dataset sample.")
     parser.add_argument(
         "--refresh",
@@ -35,10 +36,12 @@ def parse_args() -> argparse.Namespace:
 
 
 def cached_files_exist() -> bool:
+    """Docstring."""
     return athletes_path.exists() and names_path.exists() and births_path.exists()
 
 
 def ensure_cached_or_exit(offline: bool) -> None:
+    """Docstring."""
     if cached_files_exist():
         print(f"Using cached athletes data in {out_dir}")
         raise SystemExit(0)
@@ -47,6 +50,7 @@ def ensure_cached_or_exit(offline: bool) -> None:
 
 
 def main() -> None:
+    """Docstring."""
     args = parse_args()
     if not args.refresh:
         ensure_cached_or_exit(args.offline)

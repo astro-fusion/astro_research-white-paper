@@ -1,5 +1,5 @@
 """
-Vedic Planetary Number Mapping
+Vedic Planetary Number Mapping.
 
 Implements the Vedic numerology system where numbers 1-9 are mapped to planets.
 Unlike Western systems, Vedic numerology assigns 4 to Rahu and 7 to Ketu.

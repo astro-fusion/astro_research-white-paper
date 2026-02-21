@@ -1,5 +1,5 @@
 """
-Numerology Module
+Numerology Module.
 
 Handles Vedic numerological calculations including:
 - Mulanka (Birth Number) calculations with sunrise correction

@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """
-Command Line Interface for Vedic Astrology Core Library
+Command Line Interface for Vedic Astrology Core Library.
 
 Provides a simple CLI for basic astrological calculations.
 """
 
 import argparse
 import sys
-from typing import Optional
 
 from . import create_birth_chart
 
@@ -39,7 +38,7 @@ def create_birth_chart_command(args: argparse.Namespace) -> None:
         for planet_name, planet_data in chart.chart.planets.items():
             dignity_score = chart.score_dignity(planet_name)
             print(
-                f"  {planet_name}: {planet_data['sign_name']} {planet_data['degrees_in_sign']:.1f}°"
+                f"  {planet_name}: {planet_data['sign_name']} {planet_data['degrees_in_sign']:.1f}°"  # noqa: E501
             )
             print(f"    Dignity Score: {dignity_score['score']:.1f}/100")
 
@@ -51,7 +50,7 @@ def create_birth_chart_command(args: argparse.Namespace) -> None:
 
 
 def main() -> None:
-    """Main CLI entry point."""
+    """Main CLI entry point."""  # noqa: D401
     parser = argparse.ArgumentParser(
         description="Vedic Astrology Core Library CLI",
         formatter_class=argparse.RawDescriptionHelpFormatter,

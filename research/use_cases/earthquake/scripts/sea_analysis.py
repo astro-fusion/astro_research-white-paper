@@ -27,7 +27,8 @@ def perform_sea_analysis(
     """
     if not os.path.exists(matrix_path):
         print(
-            f"Matrix file {matrix_path} not found. Run build_regression_matrix.py first."
+            f"Matrix file {matrix_path} not found. "
+            "Run build_regression_matrix.py first."
         )
         return
 

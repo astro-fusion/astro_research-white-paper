@@ -23,12 +23,12 @@
 
 ### 📄 Research Papers (PDF)
 
-| Paper                                                                                                     | Description                                                             |
-| --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| [Master Research Report](research/reports/pdfs/VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.pdf)                      | Consolidated 30+ page paper covering all research tracks                |
-| [Numerology-Astrology Correlation](research/reports/pdfs/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.pdf) | Temporal discontinuity analysis between discrete and continuous systems |
-| [Earthquake Prediction Analysis](research/reports/pdfs/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf)    | India-Nepal seismic pattern investigation                               |
-| [Gold Market Correlation](research/reports/pdfs/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.pdf)           | XAU/USD price prediction analysis                                       |
+| Paper                                                                                               | Description                                                             |
+| --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| [Master Research Report](research_papers/VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.pdf)                      | Consolidated 30+ page paper covering all research tracks                |
+| [Numerology-Astrology Correlation](research_papers/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.pdf) | Temporal discontinuity analysis between discrete and continuous systems |
+| [Earthquake Prediction Analysis](research_papers/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf)    | India-Nepal seismic pattern investigation                               |
+| [Gold Market Correlation](research_papers/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.pdf)           | XAU/USD price prediction analysis                                       |
 
 ---
 

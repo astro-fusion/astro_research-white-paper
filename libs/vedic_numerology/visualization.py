@@ -12,9 +12,6 @@ from typing import Any, Optional, Union
 import pandas as pd
 
 from vedic_astrology_core.config.constants import Planet
-from vedic_astrology_core.visualization.radar_charts import (
-    plot_planetary_strength_numerology,
-)
 from vedic_astrology_core.visualization.support_index import plot_temporal_support
 from vedic_astrology_core.visualization.temporal_comparison import (
     plot_all_planets_comparison,
@@ -30,19 +27,25 @@ def plot_numerology_comparison(
     use_plotly: bool = True,
     save_path: Optional[str] = None,
 ) -> Any:
+    """Plot ratio."""
     return plot_numerology_vs_astrology(
         data=data, planet=planet, use_plotly=use_plotly, save_path=save_path
     )
 
 
 def plot_dignity_analysis(*args: Any, **kwargs: Any) -> Any:  # pragma: no cover
-    # Backwards-compatible name: this is provided by vedic_astrology_core via VedicAstrologyChart.
-    from vedic_astrology_core.visualization.radar_charts import plot_dignity_radar
+    """Docstring."""
+    # Backwards-compatible name: this is provided by vedic_astrology_core
+    # via VedicAstrologyChart.
+    from vedic_astrology_core.visualization.radar_charts import (
+        plot_dignity_radar,
+    )
 
     return plot_dignity_radar(*args, **kwargs)
 
 
 def create_support_index_chart(*args: Any, **kwargs: Any) -> Any:  # pragma: no cover
+    """Docstring."""
     # Compatibility shim for docs. If you need a stable API here, we can formalize it.
     return plot_temporal_support(*args, **kwargs)
 

@@ -1,5 +1,5 @@
 """
-Test Suite for Vedic Numerology-Astrology Integration System
+Test Suite for Vedic Numerology-Astrology Integration System.
 
 Includes unit tests, integration tests, and reference case validations.
 """

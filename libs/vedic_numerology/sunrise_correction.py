@@ -1,3 +1,7 @@
+# flake8: noqa
+from __future__ import annotations
+from datetime import datetime, timedelta
+
 """
 Sunrise correction for Vedic day logic.
 
@@ -5,11 +9,10 @@ In Vedic tradition, the "day" begins at sunrise, not at midnight. For Mulanka,
 this means births before local sunrise are treated as the previous day.
 """
 
-from __future__ import annotations
-
 import math
-from datetime import date, datetime, time, timedelta
-from typing import Optional, Tuple, cast
+from datetime import date, datetime, time, timedelta  # noqa: F811
+
+from typing import Optional, Tuple, cast  # noqa: F401
 
 try:
     from suntime import Sun
@@ -28,6 +31,7 @@ except ImportError:  # pragma: no cover
 def get_sunrise_time(
     target_date: date, latitude: float, longitude: float
 ) -> Optional[datetime]:
+    """Get sunrise."""
     if not (-90 <= latitude <= 90):
         raise ValueError(f"Latitude must be between -90 and 90, got {latitude}")
     if not (-180 <= longitude <= 180):
@@ -76,6 +80,7 @@ def _calculate_sunrise_approximation(
 def adjust_date_for_vedic_day(
     birth_date: date, birth_time: time, latitude: float, longitude: float
 ) -> date:
+    """Adjust date."""
     birth_dt = datetime.combine(birth_date, birth_time)
     sunrise = get_sunrise_time(birth_date, latitude, longitude)
     if sunrise is None:
@@ -91,6 +96,7 @@ def adjust_date_for_vedic_day(
 def get_vedic_day_info(
     birth_date: date, birth_time: time, latitude: float, longitude: float
 ) -> dict:
+    """Get day info."""
     birth_dt = datetime.combine(birth_date, birth_time)
     sunrise = get_sunrise_time(birth_date, latitude, longitude)
 

@@ -1,3 +1,4 @@
+"""Module docstring."""
 import logging
 import os
 
@@ -16,12 +17,14 @@ class MermaidGenerator(DiagramGenerator):
     """Generates Mermaid diagrams using Gemini."""
 
     def __init__(self, output_dir: str):
+        """Docstring."""
         self.output_dir = output_dir
         self.api_key = os.environ.get("GOOGLE_API_KEY")
         if self.api_key and GENAI_AVAILABLE:
             genai.configure(api_key=self.api_key)
 
     async def generate(self, request: DiagramRequest) -> str:
+        """Docstring."""
         logger.info(f"Generating Mermaid diagram: {request.output_filename}")
 
         if not GENAI_AVAILABLE:

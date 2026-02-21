@@ -14,21 +14,21 @@ Tests Implemented:
 2. Monte Carlo Shuffle Test (The "Look-Elsewhere" Defense):
    - Randomly shuffles the earthquake time series 1000 times.
    - Re-runs the Negative Binomial Regression for each shuffle.
-   - Compares the "Real" AIC improvement against the distribution of "Random" AIC improvements.
-   - If Real Delta-AIC is not in the top 5% (p < 0.05) of random shuffles, the result is noise.
+   - Compares the "Real" AIC improvement against the distribution of
+   - "Random" AIC improvements. If Real Delta-AIC is not in the top 5%
+   - (p < 0.05) of random shuffles, the result is noise.
 """
 
-import pandas as pd
-import numpy as np
-import statsmodels.api as sm
-import statsmodels.formula.api as smf
-import matplotlib
-
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
 import json
 import os
-import sys
+
+# import sys
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
 from tqdm import tqdm
 
 
@@ -130,7 +130,7 @@ def run_validation(matrix_path: str = "regression_matrix.csv", n_shuffles: int =
     random_deltas = []
 
     # Shuffle Loop
-    # We shuffle the TARGET variable (earthquake counts) relative to the PREDICTORS (Planets/Numbers)
+    # We shuffle the TARGET variable (earthquake counts) relative to the PREDICTORS (Planets/Numbers)  # noqa: E501
     # This preserves the auto-correlation of planets but breaks the link to earthquakes.
     target_series = df["eq_count_m5"].values.copy()
 
@@ -140,10 +140,6 @@ def run_validation(matrix_path: str = "regression_matrix.csv", n_shuffles: int =
 
         try:
             # Re-train
-            # Note: Baseline must also be re-trained on shuffled data because Year/Seasonality correlation changes
-            # Wait, Year/Seasonality are predictors. If we shuffle count, we break Year trend too.
-            # That's fair for Null Hypothesis: "Earthquakes are random time-independent processes" (mostly).
-            # But technically we want to preserve seasonality in the null?
             # Standard MC usually just breaks the link we care about.
 
             base_shuf = smf.glm(
@@ -155,7 +151,10 @@ def run_validation(matrix_path: str = "regression_matrix.csv", n_shuffles: int =
             )  # Suppress convergence warnings
 
             res_shuf = smf.glm(
-                formula="shuffled_count ~ year_index + sin_doy + cos_doy + C(udn) + mars_score + saturn_score",
+                formula=(
+                    "shuffled_count ~ year_index + sin_doy + cos_doy + "
+                    "C(udn) + mars_score + saturn_score"
+                ),
                 data=df,
                 family=sm.families.NegativeBinomial(alpha=1.0),
             ).fit(disp=0)
@@ -163,7 +162,7 @@ def run_validation(matrix_path: str = "regression_matrix.csv", n_shuffles: int =
             delta = base_shuf.aic - res_shuf.aic
             random_deltas.append(delta)
 
-        except:
+        except Exception:
             continue
 
     random_deltas = np.array(random_deltas)
@@ -185,7 +184,8 @@ def run_validation(matrix_path: str = "regression_matrix.csv", n_shuffles: int =
     if real_delta_aic > percentile_95:
         result = "PASS"
         print(
-            ">> VALIDATION SUCCESS: The signal is statistically distinguishable from noise."
+            ">> VALIDATION SUCCESS: The signal is statistically "
+            "distinguishable from noise."
         )
     else:
         print(">> VALIDATION FAIL: The signal is indistinguishable from random chance.")
@@ -223,7 +223,7 @@ def run_validation(matrix_path: str = "regression_matrix.csv", n_shuffles: int =
         plt.legend()
         plt.savefig("monte_carlo_distribution.png")
         print("Saved monte_carlo_distribution.png")
-    except:
+    except Exception:
         pass
 
 

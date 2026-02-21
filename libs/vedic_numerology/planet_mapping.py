@@ -1,6 +1,4 @@
-"""
-Vedic number-to-planet mapping (1-9) used by numerology.
-"""
+"""Vedic number-to-planet mapping (1-9) used by numerology."""
 
 from __future__ import annotations
 
@@ -26,14 +24,17 @@ PLANET_TO_NUMBER: Dict[Planet, int] = {
 
 
 def get_planet_from_number(number: int) -> Planet:
+    """Docstring."""
     if not isinstance(number, int) or number < 1 or number > 9:
         raise ValueError(f"Number must be an integer between 1 and 9, got {number}")
     return NUMBER_TO_PLANET[number]
 
 
 def get_number_from_planet(planet: Planet) -> int:
+    """Docstring."""
     return PLANET_TO_NUMBER[planet]
 
 
 def get_planet_name(planet: Planet) -> str:
+    """Docstring."""
     return PLANET_NAMES[planet]

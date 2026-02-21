@@ -12,13 +12,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta
-from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple, Union
+from typing import Any, Dict, Iterable, List, Optional, Sequence, Union
 
 import pandas as pd
 
 from .astrology import EphemerisEngine
 from .config.constants import Planet
-from .dignity import DignityScorer
 
 DateLike = Union[str, date, datetime]
 
@@ -246,7 +245,7 @@ def compute_combined_series(
     """
     Compute a combined numerology + astrology dataset over time.
 
-    The resulting DataFrame matches what `vedic_astrology_core.visualization.temporal_comparison`
+    The resulting DataFrame matches what `vedic_astrology_core.visualization.temporal_comparison`  # noqa: E501
     expects (date + numerology_* + astrology_* columns).
     """
     num_df = compute_numerology_series(

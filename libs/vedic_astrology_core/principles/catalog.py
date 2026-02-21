@@ -236,7 +236,7 @@ def _add_many(
     sources: str = SOURCES_CORE,
 ) -> None:
     for name in names:
-        pid = f"{prefix}_{name.lower().replace(' ', '_').replace('(', '').replace(')', '')}"
+        pid = f"{prefix}_{name.lower().replace(' ', '_').replace('(', '').replace(')', '')}"  # noqa: E501
         desc = description_template.format(name=name)
         _add(rows, pid, family, "member", name, desc, scope, computable, sources)
 
@@ -555,6 +555,7 @@ def build_vedic_principles_catalog() -> pd.DataFrame:
 
 
 def write_vedic_principles_catalog(path: Path) -> Path:
+    """Docstring."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     df = build_vedic_principles_catalog()

@@ -1,5 +1,5 @@
 """
-Exaltation and Debilitation Matrices
+Exaltation and Debilitation Matrices.
 
 Contains the classical Vedic astrology exaltation and debilitation positions
 for all planets, along with Moolatrikona ranges and sign rulership data.
@@ -13,6 +13,8 @@ from ..config.constants import Planet
 
 # Zodiac signs
 class ZodiacSign(Enum):
+    """Docstring."""
+
     ARIES = 0
     TAURUS = 1
     GEMINI = 2

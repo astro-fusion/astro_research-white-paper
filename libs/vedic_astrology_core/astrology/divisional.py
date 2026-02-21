@@ -1,5 +1,5 @@
 """
-Divisional Chart Calculations (Vargas)
+Divisional Chart Calculations (Vargas).
 
 Handles calculation of divisional charts used in Vedic astrology to refine
 planetary strength and specific life areas.

@@ -1,6 +1,10 @@
-import sys
+"""Spectral Analysis Script.
+
+Analyzes the frequency components of numerology and astrology systems.
+"""
+
 import os
-from datetime import datetime
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -25,18 +29,19 @@ except ImportError as e:
 
 
 def perform_spectral_analysis(planet=Planet.MARS):
+    """Perform spectral density analysis for a given planet."""
     print(f"--- Starting Spectral Analysis for {planet.name} ---")
 
     # 1. Data Generation (1 year, hourly)
     start_date = "2024-01-01"
     end_date = "2024-12-31"
 
-    print(f"Generating hourly astrology data for 2024...")
+    print("Generating hourly astrology data for 2024...")
     ast_df = compute_astrology_strength_series(
         start_date=start_date, end_date=end_date, step_hours=1.0, planets=[planet]
     )
 
-    print(f"Generating daily numerology data for 2024...")
+    print("Generating daily numerology data for 2024...")
     num_df_daily = compute_numerology_series(
         start_date=start_date, end_date=end_date, step_days=1, planets=[planet]
     )
@@ -97,7 +102,7 @@ def perform_spectral_analysis(planet=Planet.MARS):
     best_lag = lags[max_corr_idx]
 
     # 6. Visualization
-    print("Generating plots...")
+    print("Generating spectral plots...")
     fig, axes = plt.subplots(3, 1, figsize=(12, 12))
 
     # Time Domain Plot (Detail)
@@ -118,7 +123,7 @@ def perform_spectral_analysis(planet=Planet.MARS):
         color="#ff7f0e",
     )
     axes[0].set_title(
-        f"Time Domain Analysis (Detail: First 30 Days) - Planet: {planet.name}",
+        f"Time Domain Analysis - Planet: {planet.name}",
         fontsize=14,
     )
     axes[0].set_ylabel("Normalized Strength (σ)")
@@ -148,7 +153,7 @@ def perform_spectral_analysis(planet=Planet.MARS):
         x=1 / 24, color="red", linestyle="--", alpha=0.5, label="24h Period"
     )
 
-    axes[1].set_title("Frequency Domain Analysis (FFT Power Spectrum)", fontsize=14)
+    axes[1].set_title("Frequency Domain Analysis (FFT)", fontsize=14)
     axes[1].set_xlabel("Frequency (Cycles/Hour)")
     axes[1].set_ylabel("Amplitude")
     axes[1].grid(True, alpha=0.3)
@@ -177,14 +182,17 @@ def perform_spectral_analysis(planet=Planet.MARS):
 **Sample Size**: {n} hours (Full Year 2024)
 
 ## 1. Mathematical Orthogonality Proof
-The independence of the two systems is measured via the **Cosine Similarity** of their normalized time-series vectors.
+The independence of the two systems is measured via the **Cosine Similarity**
+of their normalized time-series vectors.
 
-$$ \\cos(\\theta) = \\frac{{\\vec{{A}} \\cdot \\vec{{N}}}}{{\\|\\vec{{A}}\\| \\|\\vec{{N}}\\|}} $$
+$$ \\cos(\\theta) = \\frac{{\\vec{{A}} \\cdot \\vec{{N}}}}{{\\|\\vec{{A}}\\| \\|\\vec{{N}}\\|}} $$  # noqa: E501
 
 - **Calculated Cosine Similarity**: `{cos_theta:.6f}`
 - **Degree of Independence**: `{(1 - abs(cos_theta))*100:.2f}%`
 
-**Analytical Conclusion**: A cosine similarity near zero (typically < 0.1) confirms that the systems are mathematically orthogonal, meaning changes in one do not linearly predict changes in the other.
+**Analytical Conclusion**: A cosine similarity near zero (typically < 0.1)
+confirms that the systems are mathematically orthogonal, meaning changes
+in one do not linearly predict changes in the other.
 
 ## 2. Statistical Metrics
 - **Pearson Correlation ($r$)**: `{np.corrcoef(ast_signal, num_signal)[0, 1]:.6f}`
@@ -194,9 +202,10 @@ $$ \\cos(\\theta) = \\frac{{\\vec{{A}} \\cdot \\vec{{N}}}}{{\\|\\vec{{A}}\\| \\|
 
 ## 3. Frequency Domain Insights (FFT)
 Power Spectrum analysis reveals:
-- **Astrology Peaks**: Primary peaks observed at $f \\approx 1/24$ (diurnal cycle) and low-frequency orbital components.
+- **Astrology Peaks**: Primary peaks observed at $f \\approx 1/24$ (diurnal cycle) and low-frequency orbital components.  # noqa: E501
 - **Numerology Peaks**: Multiple harmonics of the 24h step function.
-- **Spectral Overlap**: The systems operate in distinct frequency modes, further validating their functional independence.
+- **Spectral Overlap**: The systems operate in distinct frequency modes,
+  further validating their functional independence.
 
 ## 4. Visual Evidence
 ![Spectral Analysis Plot](../figures/spectral_analysis_{planet.name}.png)

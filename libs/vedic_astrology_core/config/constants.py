@@ -1,5 +1,5 @@
 """
-Vedic Astrology Constants
+Vedic Astrology Constants.
 
 This module defines all the fundamental constants used throughout the
 Vedic Numerology-Astrology integration system, including planet definitions,

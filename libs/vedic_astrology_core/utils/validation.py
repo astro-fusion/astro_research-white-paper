@@ -1,5 +1,5 @@
 """
-Validation Utilities
+Validation Utilities.
 
 Provides functions for validating inputs such as birth data, coordinates,
 and date ranges.

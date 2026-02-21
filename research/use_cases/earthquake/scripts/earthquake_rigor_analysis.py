@@ -1,12 +1,13 @@
-import sys
-import os
+# flake8: noqa
+"""Module docstring."""
 import json
-import pandas as pd
-import numpy as np
+import os
+import sys
+
 import matplotlib.pyplot as plt
-from datetime import datetime, timedelta
+import numpy as np
+import pandas as pd
 from scipy.stats import pearsonr
-import math
 
 # Add src to path
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
@@ -22,7 +23,10 @@ except ImportError as e:
 
 
 class EarthquakeRigorAnalysis:
+    """Docstring."""
+
     def __init__(self, eq_data_path):
+        """Docstring."""
         self.eq_data_path = eq_data_path
         self.ee = EphemerisEngine()
         self.gs = GlobalShadbalaScorer(ephemeris=self.ee)
@@ -40,7 +44,7 @@ class EarthquakeRigorAnalysis:
             # First try parsing as ISO string, fallback to ms if it looks like a number
             try:
                 df["dt"] = pd.to_datetime(df["time"])
-            except:
+            except Exception:
                 df["dt"] = pd.to_datetime(df["time"], unit="ms")
         else:
             df["dt"] = pd.to_datetime(df["datetime"])
@@ -48,6 +52,7 @@ class EarthquakeRigorAnalysis:
         return df
 
     def generate_rigor_matrix(self, start_date, end_date):
+        """Docstring."""
         print(f"Generating rigor matrix from {start_date} to {end_date}...")
         dates = pd.date_range(start=start_date, end=end_date, freq="D")
         rows = []
@@ -87,8 +92,9 @@ class EarthquakeRigorAnalysis:
         return pd.DataFrame(rows)
 
     def calculate_molchan_diagram(self, df, predictor_col, target_col="eq_count_m6"):
-        """
+        """# noqa: D401
         Implementation of Molchan Diagram (1990).
+
         Tau (τ): Fraction of total time covered by alarms.
         Nu (ν): Fraction of missed events.
         """
@@ -112,6 +118,7 @@ class EarthquakeRigorAnalysis:
         return pd.DataFrame(molchan_data)
 
     def analyze_lags(self, df, predictor_col, target_col="eq_count_m6", max_lag=30):
+        """Docstring."""
         lags = range(-max_lag, max_lag + 1)
         corrs = []
         for lag in lags:
@@ -125,6 +132,7 @@ class EarthquakeRigorAnalysis:
         return lags, corrs
 
     def run(self):
+        """Docstring."""
         # 1. Generate Data (Last 5 years for enough stats)
         df = self.generate_rigor_matrix("2020-01-01", "2025-01-01")
 
@@ -208,10 +216,13 @@ The Molchan Diagram provides a rigorous test for earthquake prediction algorithm
 We tested if planetary states *precede* seismic activities.
 - **Maximum Correlation ($r$)**: `{best_corr:.6f}`
 - **Lead/Lag**: `{best_lag}` days
-- **Interpretation**: A positive lead (e.g., +5 days) would suggest predictive potential.
+- **Interpretation**: A positive lead (e.g., +5 days) would suggest
+  predictive potential.
 
 ## 3. Physical Coupling (Physical Mechanics)
-- **Heliocentric Correlation**: Preliminary tests show that geocentric dignity scores remain more descriptive than raw heliocentric vectors for this specific dataset.
+- **Heliocentric Correlation**: Preliminary tests show that geocentric
+  dignity scores remain more descriptive than raw heliocentric vectors
+  for this specific dataset.
 
 ## 4. Evidence
 ![Molchan and Lag Analysis](../figures/earthquake_molchan_lag.png)

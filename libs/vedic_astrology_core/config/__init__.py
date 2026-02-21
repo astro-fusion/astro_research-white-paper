@@ -1,5 +1,5 @@
 """
-Configuration Module
+Configuration Module.
 
 Handles configuration management including:
 - Vedic constants (planets, signs, numbers)

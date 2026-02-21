@@ -1,5 +1,5 @@
 """
-Dignity Module
+Dignity Module.
 
 Handles planetary dignity calculations including:
 - Exaltation/debilitation matrices

@@ -1,5 +1,5 @@
 """
-Astrology Module
+Astrology Module.
 
 Handles sidereal astronomical calculations including:
 - Swiss Ephemeris integration with Lahiri Ayanamsa

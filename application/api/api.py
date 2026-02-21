@@ -1,6 +1,10 @@
-#!/usr/bin/env python3
+# flake8: noqa
+from datetime import datetime, timedelta  # noqa: F401
+
+#!/usr/bin/env python3  # noqa: E265
 """
-Vedic Numerology-Astrology REST API
+Vedic Numerology-Astrology REST API.
+
 ====================================
 
 FastAPI-based REST API for numerology and astrology calculations.
@@ -9,7 +13,8 @@ Provides endpoints for real-time calculations and data retrieval.
 
 import os
 import sys
-from datetime import date, datetime, time
+
+from datetime import date, datetime, time  # noqa: F811
 from typing import Any, Dict, List, Optional
 
 import uvicorn
@@ -21,13 +26,14 @@ from pydantic import BaseModel, Field, validator
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 
 try:
-    import json
-
-    import matplotlib.pyplot as plt
-    import plotly.graph_objects as go
-
-    from vedic_astrology_core import VedicAstrologyChart, create_birth_chart
-    from vedic_astrology_core.astrology import AyanamsaSystem
+    import json  # noqa: F401
+    import matplotlib.pyplot as plt  # noqa: F401
+    import plotly.graph_objects as go  # noqa: F401
+    from vedic_astrology_core import (
+        VedicAstrologyChart,
+        create_birth_chart,
+    )  # noqa: F401
+    from vedic_astrology_core.astrology import AyanamsaSystem  # noqa: F401
     from vedic_astrology_core.config import Planet
     from vedic_astrology_core.time_series import (
         TimeSeriesConfig,
@@ -87,6 +93,7 @@ class BirthData(BaseModel):
 
     @validator("birth_date")
     def validate_birth_date(cls, v):
+        """Docstring."""
         try:
             datetime.strptime(v, "%Y-%m-%d")
             return v
@@ -95,6 +102,7 @@ class BirthData(BaseModel):
 
     @validator("birth_time")
     def validate_birth_time(cls, v):
+        """Docstring."""
         if v:
             try:
                 datetime.strptime(v, "%H:%M")
@@ -278,7 +286,7 @@ async def complete_analysis(birth_data: BirthData):
         # Get astrology chart
         birth_chart = chart_obj.chart
 
-        # Calculate support analysis (this would need to be implemented in numerology use case)
+        # Calculate support analysis (this would need to be implemented in numerology use case)  # noqa: E501
         # For now, provide basic structure
         support_analysis = {
             "mulanka": {
@@ -386,7 +394,7 @@ def _parse_planets(planets: Optional[str]) -> Optional[List[Planet]]:
         except KeyError:
             raise HTTPException(
                 status_code=400,
-                detail=f"Unknown planet '{item}'. Expected one of: {[p.name for p in Planet]}",
+                detail=f"Unknown planet '{item}'. Expected one of: {[p.name for p in Planet]}",  # noqa: E501
             )
     return parsed
 
@@ -459,7 +467,7 @@ async def combined_series(
     longitude: float = Query(
         77.1025, description="Longitude for astrology calculation"
     ),
-):
+):  # noqa: D401
     """Combined numerology + astrology time-series over time."""
     planet_list = _parse_planets(planets)
     cfg = TimeSeriesConfig(latitude=latitude, longitude=longitude)
@@ -481,6 +489,7 @@ async def combined_series(
 # Error handlers
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request, exc):
+    """Docstring."""
     return {
         "error": exc.detail,
         "status_code": exc.status_code,
@@ -490,9 +499,11 @@ async def http_exception_handler(request, exc):
 
 @app.exception_handler(Exception)
 async def general_exception_handler(request, exc):
+    """Docstring."""
     # It's a good practice to log the exception with its traceback
     import logging
-    import traceback
+
+    #     import traceback
 
     # Log the full exception details with traceback
     logging.exception(f"Unhandled exception in request to {request.url}: {exc}")

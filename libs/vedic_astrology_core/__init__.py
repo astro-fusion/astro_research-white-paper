@@ -1,5 +1,5 @@
 """
-Vedic Astrology Core Library
+Vedic Astrology Core Library.
 
 A comprehensive Python package for Vedic Astrology (Parashari Jyotish)
 calculations using Swiss Ephemeris. This is the core library providing
@@ -291,7 +291,7 @@ class VedicAstrologyChart:
             report_lines.append(f"    Degrees: {planet_data['degrees_in_sign']:.2f}°")
             report_lines.append(f"    Longitude: {planet_data['longitude']:.2f}°")
             report_lines.append(
-                f"    Dignity Score: {dignity_score['score']:.1f}/100 ({dignity_score['dignity_type']})"
+                f"    Dignity Score: {dignity_score['score']:.1f}/100 ({dignity_score['dignity_type']})"  # noqa: E501
             )
             if planet_data.get("retrograde"):
                 report_lines.append("    Retrograde: Yes")
@@ -301,7 +301,7 @@ class VedicAstrologyChart:
         report_lines.append("HOUSE CUSPS:")
         for i, house_data in enumerate(chart.houses):
             report_lines.append(
-                f"  House {i+1}: {house_data['sign_name']} {house_data['degrees_in_sign']:.2f}°"
+                f"  House {i+1}: {house_data['sign_name']} {house_data['degrees_in_sign']:.2f}°"  # noqa: E501
             )
         report_lines.append("")
 
@@ -310,7 +310,7 @@ class VedicAstrologyChart:
         return "\n".join(report_lines)
 
     def __repr__(self) -> str:
-        """String representation of the analysis object."""
+        """String representation of the analysis object."""  # noqa: D401
         return (
             f"VedicAstrologyChart("
             f"birth_date={self.birth_date}, "

@@ -1,5 +1,6 @@
 """
-Artifact Generation Controller
+Artifact Generation Controller.
+
 ===============================
 
 This script acts as the "Controller" in the MVC architecture.
@@ -15,7 +16,7 @@ import logging
 import os
 import sys
 
-import matplotlib.dates as mdates
+# import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -54,7 +55,7 @@ if not os.path.exists(ARTIFACTS_DIR):
 
 
 def generate_stationarity_table(df: pd.DataFrame):
-    """Generates Unit Root Test Table."""
+    """Generate Unit Root Test Table."""
     logger.info("Generating Stationarity Table...")
 
     variables = ["Close"]
@@ -82,7 +83,7 @@ def generate_stationarity_table(df: pd.DataFrame):
 
 
 def generate_periodogram_plot(df: pd.DataFrame):
-    """Generates Lomb-Scargle Periodogram Figure."""
+    """Generate Lomb-Scargle Periodogram Figure."""
     logger.info("Generating Periodogram...")
 
     series = df.set_index("Date")["Gold_Log_Ret"].dropna()
@@ -108,7 +109,7 @@ def generate_periodogram_plot(df: pd.DataFrame):
 
 
 def generate_granger_stats(df: pd.DataFrame):
-    """Generates Granger Causality Statistics JSON."""
+    """Generate Granger Causality Statistics JSON."""
     logger.info("Generating Granger Stats...")
 
     # Target: Gold Log Returns
@@ -140,7 +141,7 @@ def generate_granger_stats(df: pd.DataFrame):
 
 
 def generate_molchan_plot(df: pd.DataFrame):
-    """Generates Molchan Diagram."""
+    """Generate Molchan Diagram."""
     logger.info("Generating Molchan Plot...")
 
     # Define "Event": Large absolute return (> 2 std dev)
@@ -183,7 +184,7 @@ def generate_molchan_plot(df: pd.DataFrame):
 
 
 def generate_planetary_variation_plots(df: pd.DataFrame):
-    """Generates Planetary Variation Plots (Speed, Motion)."""
+    """Generate Planetary Variation Plot (Speed, Motion)."""
     logger.info("Generating Planetary Variation Plots...")
 
     # 1. Mars Speed / Retrograde
@@ -237,11 +238,11 @@ def generate_planetary_variation_plots(df: pd.DataFrame):
 
 
 def main():
-    """Main execution flow."""
+    """Main execution flow."""  # noqa: D401
     logger.info("Loading processed data...")
     if not os.path.exists(PROCESSED_DATA_PATH):
         logger.warning(
-            f"Data file not found: {PROCESSED_DATA_PATH}. Generating MOCK data for smoke testing."
+            f"Data file not found: {PROCESSED_DATA_PATH}. Generating MOCK data for smoke testing."  # noqa: E501
         )
 
         # Ensure directory exists
@@ -288,7 +289,7 @@ def main():
 
 
 def generate_monte_carlo_plot(df: pd.DataFrame):
-    """Generates Monte Carlo Permutation Distribution Plot."""
+    """Generate Monte Carlo Permutation Distribution Plot."""
     logger.info("Generating Monte Carlo Plot...")
 
     # Target: Gold Log Returns
@@ -296,7 +297,7 @@ def generate_monte_carlo_plot(df: pd.DataFrame):
 
     # Test correlation with Mars Speed (as a proxy for activity)
     # or use Mars_Sin/Cos for a regression R^2 test.
-    # Let's use Mars Speed for simplicity in this visualization to match the Molchan logic.
+    # Let's use Mars Speed for simplicity in this visualization to match the Molchan logic.  # noqa: E501
     target_col = "Gold_Log_Ret"
     exog_cols = ["Mars_Speed"]
 

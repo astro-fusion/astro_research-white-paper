@@ -1,5 +1,5 @@
 """
-Ayanamsa Calculations for Vedic Astrology
+Ayanamsa Calculations for Vedic Astrology.
 
 Handles the precession of the equinoxes (Ayanamsa) calculations required
 for converting Tropical (Western) zodiac to Sidereal (Vedic) zodiac.

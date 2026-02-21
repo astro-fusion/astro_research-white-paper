@@ -1,5 +1,5 @@
 """
-Dignity Modifiers
+Dignity Modifiers.
 
 Implements modifiers that adjust planetary dignity scores based on:
 - Retrograde motion (Neecha Bhanga - cancellation of debilitation)

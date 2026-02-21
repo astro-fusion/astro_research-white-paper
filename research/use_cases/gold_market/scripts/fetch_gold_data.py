@@ -31,6 +31,7 @@ yearly_dir.mkdir(parents=True, exist_ok=True)
 
 
 def parse_args() -> argparse.Namespace:
+    """Docstring."""
     parser = argparse.ArgumentParser(description="Fetch and cache gold price data.")
     parser.add_argument("--start-year", type=int, default=START_YEAR)
     parser.add_argument("--end-year", type=int, default=datetime.utcnow().year)
@@ -59,6 +60,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def normalize_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """Docstring."""
     df = df.reset_index()
     if isinstance(df.columns, pd.MultiIndex):
         df.columns = [str(c[0]).lower().replace(" ", "_") for c in df.columns]
@@ -75,6 +77,7 @@ def normalize_columns(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def select_symbol(preferred: str, start: str, end: str) -> str:
+    """Docstring."""
     candidates = [preferred] if preferred else []
     candidates += [sym for sym in SYMBOLS if sym not in candidates]
     for sym in candidates:
@@ -97,6 +100,7 @@ def select_symbol(preferred: str, start: str, end: str) -> str:
 
 
 def download_range(symbol: str, start: str, end: str) -> pd.DataFrame:
+    """Docstring."""
     df = yf.download(
         symbol, start=start, end=end, interval="1d", auto_adjust=False, progress=False
     )
@@ -106,6 +110,7 @@ def download_range(symbol: str, start: str, end: str) -> pd.DataFrame:
 
 
 def load_yearly_files(start_year: int, end_year: int) -> list[Path]:
+    """Docstring."""
     files = []
     for year in range(start_year, end_year + 1):
         path = yearly_dir / f"gold_prices_{year}.csv"
@@ -115,6 +120,7 @@ def load_yearly_files(start_year: int, end_year: int) -> list[Path]:
 
 
 def merge_yearly_files(files: list[Path]) -> pd.DataFrame:
+    """Docstring."""
     frames = []
     for path in sorted(files):
         df = pd.read_csv(path)
@@ -130,11 +136,13 @@ def merge_yearly_files(files: list[Path]) -> pd.DataFrame:
 
 
 def main() -> None:
+    """Docstring."""
     args = parse_args()
     start_year = args.start_year
     end_year = args.end_year
 
-    # If yearly cache already covers the range and no refresh requested, avoid network calls.
+    # If yearly cache already covers the range and no refresh requested,
+    # avoid network calls.
     required_years = set(range(start_year, end_year + 1))
     cached_years = {
         int(p.stem.split("_")[-1])

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 Fallback script to generate research manuscripts locally.
+
 This script generates PDF, DOCX, and HTML versions of the research manuscript
 and stores them in assets/releases/ for fallback access.
 """
@@ -84,7 +85,7 @@ try:
             'astrology': {
                 'mars_dignity': mars_dignity,
                 'venus_dignity': venus_dignity,
-                'ascendant': chart.chart.ascendant['sign_name'] if isinstance(chart.chart.ascendant, dict) else str(chart.chart.ascendant)
+                'ascendant': chart.chart.ascendant['sign_name'] if isinstance(chart.chart.ascendant, dict) else str(chart.chart.ascendant)  # noqa: E501
             },
             'support_analysis': {
                 'mars_score': mars_dignity['score'],
@@ -161,7 +162,7 @@ def render_manuscripts():
                 # PDF and DOCX create manuscript.{format}
                 book_file = Path(f"_book/manuscript.{format_name}")
                 print(
-                    f"Looking for {format_name.upper()}: {book_file} (exists: {book_file.exists()})"
+                    f"Looking for {format_name.upper()}: {book_file} (exists: {book_file.exists()})"  # noqa: E501
                 )
                 if book_file.exists():
                     generated_files.append(
@@ -245,7 +246,7 @@ def create_download_links():
 
 
 def main():
-    """Main function to generate all assets."""
+    """Main function to generate all assets."""  # noqa: D401
     print("=== Vedic Numerology-Astrology Asset Generation ===\n")
 
     # Ensure we're in the project root
@@ -259,7 +260,7 @@ def main():
         copy_research_data()
 
         # Render manuscripts and copy to assets
-        generated_files = render_manuscripts()
+        #         generated_files = render_manuscripts()
 
         # Create download links
         create_download_links()

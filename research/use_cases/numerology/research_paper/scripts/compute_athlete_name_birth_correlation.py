@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compute correlation between name-based numerology and birth numerology for athletes."""
+"""Compute correlation between name and birth numerology for athletes."""
 from pathlib import Path
 import pandas as pd
 import numpy as np
@@ -51,12 +51,14 @@ VEDIC_PLANETS = {
 
 
 def digital_root(n: int, preserve_master: bool = True) -> int:
+    """Docstring."""
     if preserve_master and n in MASTER:
         return n
     return (n - 1) % 9 + 1 if n > 0 else 0
 
 
 def name_value(name: str, mapping: dict) -> int:
+    """Docstring."""
     total = 0
     for ch in name.upper():
         if ch.isalpha():
@@ -101,6 +103,7 @@ ct_chald = pd.crosstab(out["life_path"], out["chald_expression"])
 
 
 def cramers_v(ct):
+    """Docstring."""
     n = ct.values.sum()
     if n == 0:
         return 0
@@ -122,6 +125,7 @@ summary = pd.DataFrame(
 
 # Chi-square p-values
 def chi_square_p(ct):
+    """Docstring."""
     n = ct.values.sum()
     if n == 0:
         return 1.0

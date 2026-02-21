@@ -1,3 +1,4 @@
+"""Module docstring."""
 import logging
 import os
 
@@ -19,9 +20,11 @@ class PaperBananaGenerator(DiagramGenerator):
     """Generates diagrams using PaperBanana."""
 
     def __init__(self, output_dir: str):
+        """Docstring."""
         self.output_dir = output_dir
 
     async def generate(self, request: DiagramRequest) -> str:
+        """Docstring."""
         logger.info(f"Generating PaperBanana diagram: {request.output_filename}")
 
         if not PAPERBANANA_AVAILABLE:

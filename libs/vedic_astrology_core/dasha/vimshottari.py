@@ -38,6 +38,8 @@ SIDEREAL_YEAR_DAYS = 365.2425
 
 @dataclass(frozen=True)
 class DashaPeriod:
+    """Docstring."""
+
     lord: str
     start: datetime
     end: datetime
@@ -46,6 +48,8 @@ class DashaPeriod:
 
 
 class VimshottariPeriodDict(TypedDict):
+    """Docstring."""
+
     lords: Tuple[str, ...]
     start: datetime
     end: datetime

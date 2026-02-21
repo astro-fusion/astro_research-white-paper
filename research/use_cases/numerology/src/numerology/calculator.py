@@ -1,5 +1,5 @@
 """
-Numerology Calculator
+Numerology Calculator.
 
 Implements Vedic numerological calculations including:
 - Mulanka (Birth Number/Psychic Number) with sunrise correction

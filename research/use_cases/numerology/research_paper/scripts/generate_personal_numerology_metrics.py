@@ -21,6 +21,7 @@ MASTER = {11, 22, 33}
 
 
 def digital_root(n: int, preserve_master: bool = True) -> int:
+    """Docstring."""
     if preserve_master and n in MASTER:
         return n
     return (n - 1) % 9 + 1 if n > 0 else 0

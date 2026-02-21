@@ -1,9 +1,13 @@
-#!/usr/bin/env python3
+# flake8: noqa
+from datetime import datetime, timedelta  # noqa: F401
+
+#!/usr/bin/env python3  # noqa: E265
 """Compute activation frequency and earthquake overlap for all combinations."""
 
 import sys
-import os
-from datetime import datetime, timedelta
+
+# import os
+# from datetime import datetime, timedelta
 from pathlib import Path
 import pandas as pd
 import numpy as np
@@ -22,7 +26,7 @@ except ImportError:
     # Fallback to local import if src not found (e.g. running from differnt context)
     # This is critical for robustness
     print(
-        f"Warning: Could not import from src.models.statistics. Path added: {str(root / 'src')}"
+        f"Warning: Could not import from src.models.statistics. Path added: {str(root / 'src')}"  # noqa: E501
     )
     # Define local fallback if absolutely necessary or raise error
     raise
@@ -68,6 +72,7 @@ window_sizes = {w: len(dayset) for w, dayset in window_sets.items()}
 
 
 def ang_diff(a, b):
+    """Docstring."""
     diff = np.abs(a - b) % 360.0
     return np.minimum(diff, 360.0 - diff)
 

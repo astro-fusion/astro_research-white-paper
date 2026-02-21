@@ -1,5 +1,5 @@
 """
-Comparison Charts
+Comparison Charts.
 
 Creates visualizations comparing Mulanka (Birth Number) and Bhagyanka (Destiny Number)
 planetary dignity scores and relationships.

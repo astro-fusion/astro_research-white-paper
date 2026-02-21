@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-AstroFusion Research Automation Pipeline
+AstroFusion Research Automation Pipeline.
+
 =======================================
 This script automates the end-to-end research flow:
 1. Data Ingestion/Generation
@@ -44,6 +45,7 @@ TRACKS = {
 
 
 def run_script(script_path: Path):
+    """Docstring."""
     logger.info(f"Running: {script_path.name}")
     try:
         subprocess.check_call([sys.executable, str(script_path)])  # nosec B603
@@ -53,6 +55,7 @@ def run_script(script_path: Path):
 
 
 def main():
+    """Docstring."""
     logger.info("Starting AstroFusion Research Pipeline...")
 
     # 1. Run Global Artifact Generator

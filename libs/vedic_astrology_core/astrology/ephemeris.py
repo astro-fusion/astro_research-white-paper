@@ -1,5 +1,5 @@
 """
-Swiss Ephemeris Engine
+Swiss Ephemeris Engine.
 
 Provides a high-level interface to the Swiss Ephemeris (pyswisseph) for
 calculating planetary positions, retrograde status, and combustion.
@@ -62,7 +62,7 @@ class EphemerisEngine:
         try:
             swe.set_ephe_path()
         except Exception:
-            pass  # nosec B110 - Default path usually works, intentional exception handling
+            pass  # nosec B110 - Default path usually works, intentional exception handling  # noqa: E501
 
         # Set sidereal mode
         pyswisseph_constant = get_pyswisseph_ayanamsa_constant(self.ayanamsa_system)
@@ -118,7 +118,7 @@ class EphemerisEngine:
         Calculate heliocentric planetary position (Sun-centered).
 
         This is used for the "Physical Coupling" hypothesis in the Research Pipeline,
-        where gravitational forces (dependent on true heliocentric distance and position)
+        where gravitational forces (dependent on true heliocentric distance and position)  # noqa: E501
         are tested for correlation with seismic cycles, independent of geocentric
         retrograde illusions.
 
@@ -144,7 +144,7 @@ class EphemerisEngine:
         # Add HELIOCENTRIC flag
         flags = swe.FLG_HELCTR | swe.FLG_SPEED
 
-        # swe.calc_ut returns ((long, lat, dist, speed_long, speed_lat, speed_dist), rflag)
+        # swe.calc_ut returns ((long, lat, dist, speed_long, speed_lat, speed_dist), rflag)  # noqa: E501
         result = swe.calc_ut(julian_day, planet, flags)
 
         coordinates = result[0]

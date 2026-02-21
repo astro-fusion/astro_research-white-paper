@@ -1,3 +1,4 @@
+"""Module docstring."""
 import json
 
 
@@ -9,6 +10,7 @@ def plot_planetary_strength_numerology(
 
 
 def visualize_planetary_strength_and_numerology():
+    """Docstring."""
     # Load the research results
     with open("research_results.json", "r") as f:
         results = json.load(f)

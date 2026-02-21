@@ -16,19 +16,17 @@ It trains two types of Generalized Linear Models (GLM):
 Output: Summary of regression coefficients and AIC/BIC comparison.
 """
 
-import pandas as pd
-import matplotlib
+import json
+import os
 
-matplotlib.use("Agg")
+import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
-import sys
-import os
-import json
-import json
-from pathlib import Path
-import matplotlib.pyplot as plt
+
+matplotlib.use("Agg")
 
 
 def train_models(matrix_path: str = "regression_matrix.csv", target_mag: float = 5.0):
@@ -59,7 +57,8 @@ def train_models(matrix_path: str = "regression_matrix.csv", target_mag: float =
     print(f"Training models on {len(df)} days. Target: eq_count_m5")
 
     # --- 1. Baseline Model (Poisson) ---
-    # Hypothesis: Random process + Seasonal Weather/Tidal stress + Catalog improvement trend
+    # Hypothesis: Random process + Seasonal Weather/Tidal stress + Catalog
+    # improvement trend
     baseline_formula = "eq_count_m5 ~ year_index + sin_doy + cos_doy"
 
     try:
@@ -155,7 +154,8 @@ def train_models(matrix_path: str = "regression_matrix.csv", target_mag: float =
     # --- 4. Generate Paper Artifacts ---
 
     # Table 1: Coefficients
-    # Extract coefficients, standard errors, z-scores, p-values, and confidence intervals
+    # Extract coefficients, standard errors, z-scores, p-values,
+    # and confidence intervals
     summary_df = pd.DataFrame(
         {
             "Variable": research_model.params.index,

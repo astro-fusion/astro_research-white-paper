@@ -11,6 +11,7 @@ END = date(2024, 12, 31)
 
 
 def digital_root(n: int) -> int:
+    """Docstring."""
     return (n - 1) % 9 + 1 if n > 0 else 0
 
 

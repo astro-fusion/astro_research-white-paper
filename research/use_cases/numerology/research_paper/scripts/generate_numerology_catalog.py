@@ -62,6 +62,7 @@ rows = []
 
 
 def add(category, rule, parameters=None, **fields):
+    """Docstring."""
     combo_id = f"{category}:{len(rows)+1:06d}"
     row = {
         "combo_id": combo_id,

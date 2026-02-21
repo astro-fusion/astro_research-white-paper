@@ -74,7 +74,8 @@ REPORT_DOCUMENTED_FAMILIES = {
 
 if not MASTER_PATH.exists():
     raise SystemExit(
-        f"Missing master catalog: {MASTER_PATH}. Run generate_vedic_principles_catalog.py"
+        f"Missing master catalog: {MASTER_PATH}. "
+        "Run generate_vedic_principles_catalog.py"
     )
 
 master = pd.read_csv(MASTER_PATH)

@@ -1,5 +1,5 @@
 """
-Test Suite for Earthquake Analysis Pipeline
+Test Suite for Earthquake Analysis Pipeline.
 
 Validates the complete workflow:
 1. Data fetching (sample & USGS API)
@@ -8,15 +8,14 @@ Validates the complete workflow:
 4. Report generation
 """
 
-import sys
-import json
 from pathlib import Path
-from datetime import datetime
+
+import sys
 
 # Add parent to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-from earthquake_data_fetcher import EarthquakeDataFetcher
+from earthquake_data_fetcher import EarthquakeDataFetcher  # noqa: E402
 
 
 class EarthquakeAnalysisTester:
@@ -43,7 +42,7 @@ class EarthquakeAnalysisTester:
         """Test 1: Initialize data fetcher."""
         self._log("Test 1: Initialize earthquake data fetcher", "TEST")
         try:
-            fetcher = EarthquakeDataFetcher(use_sample_data=True, verbose=False)
+            EarthquakeDataFetcher(use_sample_data=True, verbose=False)
             self._log("✅ Data fetcher initialized successfully", "PASS")
             self.results["tests_passed"] += 1
             return True
@@ -108,7 +107,8 @@ class EarthquakeAnalysisTester:
                     f"✅ Processed {len(processed)} earthquakes successfully", "PASS"
                 )
                 self._log(
-                    f"   Sample: {sample['date']} - Mag {sample['magnitude']} - {sample['place']}",
+                    f"   Sample: {sample['date']} - Mag {sample['magnitude']} "
+                    f"- {sample['place']}",
                     "INFO",
                 )
                 self.results["tests_passed"] += 1

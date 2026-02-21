@@ -1,12 +1,11 @@
+"""Module docstring."""
 import os
 import sys
 import json
 from pathlib import Path
-import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-from datetime import datetime
+import numpy as np
+import pandas as pd
 
 # cartopy removed to avoid dependency issues
 
@@ -24,7 +23,8 @@ def generate_track2_assets(
     output_dir: str = "docs/research/track_2_earthquake_prediction/figures",
 ):
     """
-    Generates Scientific Assets for Track 2 (Earthquake Prediction):
+    Generate Scientific Assets for Track 2 (Earthquake Prediction):.
+
     1. Phase 1: Data Collection & Introspection (Map/Timeline of India-Nepal)
     2. Phase 2: Astrology Mapping (Planetary Trigger Timeline)
     3. Phase 3: Validation (Correlation Scatter)
@@ -87,7 +87,8 @@ def generate_track2_assets(
 
     plt.colorbar(label="Magnitude (Mw)")
     plt.title(
-        f"Phase 1: Seismic Activity in India-Nepal Region (2015-2024)\nN={len(df)} Events (Mag > 4.5)",
+        "Phase 1: Seismic Activity in India-Nepal Region (2015-2024)\n"
+        f"N={len(df)} Events (Mag > 4.5)",
         fontsize=14,
     )
     plt.ylabel("Magnitude")
@@ -107,7 +108,8 @@ def generate_track2_assets(
     dates = pd.date_range("2015-01-01", "2024-01-01", freq="W")  # Weekly samples
 
     # Simulate Stress Index (Mock of Saturn-Mars Aspect)
-    # Real calc would be heavy, simulating sine wave pattern for 'Pattern Matching' section explanation
+    # Real calc would be heavy, simulating sine wave pattern
+    # for 'Pattern Matching' section explanation
     stress_index = (
         50
         + 30 * np.sin(np.arange(len(dates)) / 20)

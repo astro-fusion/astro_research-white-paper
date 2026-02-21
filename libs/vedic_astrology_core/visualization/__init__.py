@@ -1,5 +1,5 @@
 """
-Visualization Module
+Visualization Module.
 
 Handles data visualization including:
 - Temporal support graphs (time series)

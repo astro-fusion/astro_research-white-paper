@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Temporal Analysis Data Generation Script
+Temporal Analysis Data Generation Script.
 
 Generates 5-year time series data comparing numerology and Vedic astrology
 planetary strength calculations. This data demonstrates the fundamental
@@ -18,7 +18,6 @@ Output:
 import sys
 import os
 import json
-import csv
 from datetime import datetime, timedelta, date
 from typing import Dict, List, Any, Optional
 import pandas as pd
@@ -26,17 +25,14 @@ import pandas as pd
 # Add the src directory to the Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from numerology.calculator import calculate_mulanka
-from numerology.planet_mapping import get_planet_from_number
-from vedic_astrology_core.dignity import DignityScorer
-from vedic_astrology_core.astrology import EphemerisEngine
-from vedic_astrology_core.config import Planet
+from numerology.calculator import calculate_mulanka  # noqa: E402
+from vedic_astrology_core.astrology import EphemerisEngine  # noqa: E402
+from vedic_astrology_core.config import Planet  # noqa: E402
+from vedic_astrology_core.dignity import DignityScorer  # noqa: E402
 
 
 class TemporalDataGenerator:
-    """
-    Generates temporal data comparing numerology and astrology planetary strengths.
-    """
+    """Generates temporal data comparing numerology and astrology planetary strengths."""  # noqa: E501
 
     def __init__(
         self, start_date: date = date(2020, 1, 1), end_date: date = date(2025, 1, 1)
@@ -111,7 +107,7 @@ class TemporalDataGenerator:
                 day_count += 1
                 if day_count % 365 == 0:  # Progress update every year
                     progress = (day_count / total_days) * 100
-                    print(".1f")
+                    print(f"Progress: {progress:.1f}%")
 
             except Exception as e:
                 print(f"Error processing date {current_date}: {e}")
@@ -190,7 +186,7 @@ class TemporalDataGenerator:
 
             except Exception as e:
                 print(
-                    f"Warning: Could not calculate score for {planet.name} on {target_date}: {e}"
+                    f"Warning: Could not calculate score for {planet.name} on {target_date}: {e}"  # noqa: E501
                 )
                 astrology_strengths[f"astrology_{planet.name}"] = 0.0
 
@@ -392,7 +388,7 @@ class TemporalDataGenerator:
 
 
 def main():
-    """Main execution function."""
+    """Main execution function."""  # noqa: D401
     print("Vedic Numerology-Astrology Temporal Correlation Analysis")
     print("=" * 60)
 
@@ -405,7 +401,7 @@ def main():
     # Save data
     output_file = generator.save_data(data)
 
-    print(f"\nData generation complete!")
+    print("\nData generation complete!")
     print(f"Output saved to: {output_file}")
 
     # Print key insights
@@ -436,8 +432,10 @@ def main():
                 )
                 astrology_changes[planet.name] = changes
 
+        avg_ast_changes = sum(astrology_changes.values()) / len(astrology_changes)
         print(
-            f"Astrology system - average changes per planet: {sum(astrology_changes.values()) / len(astrology_changes):.0f} times over 5 years"
+            "Astrology system - average changes per planet: "
+            f"{avg_ast_changes:.0f} times over 5 years"
         )
 
         print("\nThis demonstrates the fundamental difference:")

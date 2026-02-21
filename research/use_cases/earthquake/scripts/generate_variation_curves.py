@@ -9,24 +9,22 @@ Output:
     assets/data/planetary_strength_curves_2h.csv
 """
 
-import sys
 import os
-import pandas as pd
-from datetime import datetime, timedelta
+import sys
 
 # Ensure src is in path
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../src"))
 )
 
-from vedic_astrology_core.time_series import compute_astrology_strength_series
-from vedic_astrology_core.config.constants import Planet
+# from vedic_astrology_core.config.constants import Planet  # noqa: E402
+from vedic_astrology_core.time_series import (  # noqa: E402
+    compute_astrology_strength_series,
+)  # noqa: E402
 
 
 def generate_curves(year: int = 2023):
-    """
-    Generate 2-hour resolution curves for a full year.
-    """
+    """Generate 2-hour resolution curves for a full year."""
     print(f"Generating 2-hour strength curves for {year}...")
 
     start_date = f"{year}-01-01"

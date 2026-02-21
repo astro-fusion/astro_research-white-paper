@@ -1,5 +1,6 @@
 """
-AI Visuals Generator
+AI Visuals Generator.
+
 ====================
 
 This script uses the PaperBanana library to generate academic-quality diagrams
@@ -38,7 +39,7 @@ os.makedirs(ARTIFACTS_DIR, exist_ok=True)
 
 
 async def generate_methodology_diagram():
-    """Generates a methodology diagram using PaperBanana."""
+    """Generate a methodology diagram using PaperBanana."""
     logger.info("Generating AI Methodology Diagram...")
 
     settings = Settings(
@@ -56,13 +57,18 @@ async def generate_methodology_diagram():
     Our research pipeline consists of three main stages:
     1. Data Ingestion: Fetching market data (Gold XAUUSD) and astronomical ephemerides.
     2. Data Alignment: Merging time-series data and calculating planetary positions.
-    3. Statistical Analysis: Running Granger Causality, Lomb-Scargle Periodograms, and Molchan trajectories to test correlations between planetary movements and gold price volatility.
+    3. Statistical Analysis: Running Granger Causality, Lomb-Scargle
+       Periodograms, and Molchan trajectories to test correlations
+       between planetary movements and gold price volatility.
     The final output is a rendered Quarto research report.
     """
 
     input_data = GenerationInput(
         source_context=context,
-        communicative_intent="A flow diagram showing the data processing pipeline from raw data to final analysis.",
+        communicative_intent=(
+            "A flow diagram showing the data processing pipeline "
+            "from raw data to final analysis."
+        ),
         diagram_type=DiagramType.METHODOLOGY,
         caption="Automated Research Pipeline Flow",
     )
@@ -89,6 +95,7 @@ async def generate_methodology_diagram():
 
 
 def main():
+    """Docstring."""
     asyncio.run(generate_methodology_diagram())
 
 

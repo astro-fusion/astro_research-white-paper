@@ -1,5 +1,5 @@
 """
-Radar Charts for Multi-Factor Analysis
+Radar Charts for Multi-Factor Analysis.
 
 Creates radar/spider charts to visualize multiple dignity factors
 and provide comprehensive planetary strength analysis.

@@ -10,6 +10,8 @@ from zoneinfo import ZoneInfo
 
 @dataclass(frozen=True)
 class ReferenceChart:
+    """Docstring."""
+
     key: str
     name: str
     datetime: datetime
@@ -57,6 +59,7 @@ def get_reference_charts() -> Dict[str, ReferenceChart]:
 
 
 def get_reference_chart(key: str) -> ReferenceChart:
+    """Docstring."""
     charts = get_reference_charts()
     if key not in charts:
         raise KeyError(f"Unknown reference chart key: {key}")

@@ -1,24 +1,20 @@
 #!/usr/bin/env python3
 """
-PDF Generation Script for Research Paper
+PDF Generation Script for Research Paper.
 
 Renders the Quarto research paper document to PDF format.
 Handles figure generation, data paths, and Quarto rendering.
 """
 
-import sys
 import os
-import subprocess
 import shutil
-from pathlib import Path
-from typing import Optional, Dict, Any
-import json
+import subprocess
+import sys
+from typing import Optional
 
 
 class PDFGenerator:
-    """
-    Generates PDF from Quarto research paper document.
-    """
+    """Generates PDF from Quarto research paper document."""
 
     def __init__(
         self, paper_path: Optional[str] = None, output_dir: Optional[str] = None
@@ -121,6 +117,7 @@ class PDFGenerator:
     def prepare_data_links(self) -> None:
         """
         Prepare data file links for the research paper.
+
         Copy or link data files to the research paper directory.
         """
         data_dir = os.path.join(self.output_dir, "data")
@@ -151,6 +148,7 @@ class PDFGenerator:
     def generate_figures(self) -> None:
         """
         Generate figures for the research paper.
+
         This runs the Python code embedded in the Quarto document.
         """
         print("Generating figures for research paper...")
@@ -159,7 +157,11 @@ class PDFGenerator:
         sys.path.insert(0, os.path.join(self.project_root, "src"))
 
         try:
-            from vedic_astrology_core.visualization import plot_temporal_support
+            from vedic_astrology_core.visualization import (
+                plot_correlation_analysis,
+                plot_moon_movement_highlight,
+                plot_numerology_vs_astrology,
+            )
 
             # Load data
             data_path = os.path.join(
@@ -184,7 +186,7 @@ class PDFGenerator:
 
             from vedic_astrology_core.config import Planet
 
-            fig = plot_numerology_vs_astrology(
+            plot_numerology_vs_astrology(
                 plot_data,
                 Planet.MARS,
                 use_plotly=False,
@@ -195,7 +197,7 @@ class PDFGenerator:
             print("Generating moon movement figure...")
             # Generate moon movement analysis (first 3 months)
             moon_data = df.head(90)
-            fig = plot_moon_movement_highlight(
+            plot_moon_movement_highlight(
                 moon_data,
                 use_plotly=False,
                 save_path=os.path.join(figures_dir, "moon_movement.png"),
@@ -205,7 +207,7 @@ class PDFGenerator:
             print("Generating correlation analysis figures...")
             # Generate correlation analysis (first year for manageability)
             corr_data = df.head(365)
-            fig = plot_correlation_analysis(
+            plot_correlation_analysis(
                 corr_data,
                 use_plotly=False,
                 save_path=os.path.join(figures_dir, "correlation_analysis.png"),
@@ -304,7 +306,7 @@ class PDFGenerator:
             # Print file size
             if os.path.exists(pdf_path):
                 size_mb = os.path.getsize(pdf_path) / (1024 * 1024)
-                print(".2f")
+                print(f"File size: {size_mb:.2f} MB")
         else:
             print("Error: PDF generation failed")
 
@@ -328,7 +330,7 @@ class PDFGenerator:
 
 
 def main():
-    """Main execution function."""
+    """Main execution function."""  # noqa: D401
     print("Research Paper PDF Generator")
     print("=" * 40)
 
@@ -351,11 +353,11 @@ def main():
         print("\nTroubleshooting:")
         print("1. Ensure Quarto is installed: https://quarto.org/docs/get-started/")
         print(
-            "2. Install required Python packages: pip install pandas matplotlib seaborn plotly scipy numpy"
+            "2. Install required Python packages: pip install pandas matplotlib seaborn plotly scipy numpy"  # noqa: E501
         )
         print("3. Check that data files exist in data/processed/")
         print(
-            "4. Verify Quarto document exists: research_paper/numerology_astrology_correlation.qmd"
+            "4. Verify Quarto document exists: research_paper/numerology_astrology_correlation.qmd"  # noqa: E501
         )
 
 

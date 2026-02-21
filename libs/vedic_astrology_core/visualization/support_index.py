@@ -1,5 +1,5 @@
 """
-Temporal Support Index Visualization
+Temporal Support Index Visualization.
 
 Creates time series graphs showing how numerological planetary support
 changes over time (transits). Shows the relationship between static

@@ -9,8 +9,7 @@ this scorer focuses on components that are consistent globally or geocentrically
 3. Yuddha Bala (Planetary War): Proximity < 1 degree.
 """
 
-import math
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 from ..astrology.ephemeris import EphemerisEngine
 from ..config.constants import Planet
@@ -18,11 +17,10 @@ from .scorer import DignityScorer
 
 
 class GlobalShadbalaScorer:
-    """
-    Calculates global planetary strength (0-100) for research matrix.
-    """
+    """Calculates global planetary strength (0-100) for research matrix."""
 
     def __init__(self, ephemeris: Optional[EphemerisEngine] = None):
+        """Docstring."""
         self.ephemeris = ephemeris or EphemerisEngine()
         self.dignity_scorer = DignityScorer()
 
@@ -79,7 +77,7 @@ class GlobalShadbalaScorer:
 
         # 3. Yuddha Bala (Planetary War)
         # If two planets are within 1 degree, they are at war.
-        # In research, we penalize BOTH for stress/volatility, or check declination for winner.
+        # In research, we penalize BOTH for stress/volatility, or check declination for winner.  # noqa: E501
         # Simplified for Global Index: Penalize both slightly to represent "Conflict".
         keys = list(scores.keys())
         for i in range(len(keys)):

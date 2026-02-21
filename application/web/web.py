@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Vedic Numerology-Astrology Web Interface
+Vedic Numerology-Astrology Web Interface.
+
 =======================================
 
 Flask-based web interface for the Vedic Numerology-Astrology system.
@@ -20,7 +21,7 @@ repo_root = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(repo_root / "libs"))
 
 # Import our time series utilities
-from vedic_astrology_core.time_series import (
+from vedic_astrology_core.time_series import (  # noqa: E402
     compute_combined_series,
     compute_numerology_series,
     compute_planet_strength_series,

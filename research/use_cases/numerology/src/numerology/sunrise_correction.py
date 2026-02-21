@@ -1,5 +1,5 @@
 """
-Sunrise Correction for Vedic Numerology
+Sunrise Correction for Vedic Numerology.
 
 Implements Vedic day calculation logic where the day begins at sunrise,
 not at midnight (Gregorian convention). This is crucial for accurate

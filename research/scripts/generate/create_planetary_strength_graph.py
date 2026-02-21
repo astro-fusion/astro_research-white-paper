@@ -10,12 +10,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime, timedelta
-from typing import Dict, List, Tuple
+from typing import Dict
 import numpy as np
 
 try:
     import plotly.graph_objects as go
-    import plotly.express as px
 
     PLOTLY_AVAILABLE = True
 except ImportError:
@@ -109,9 +108,6 @@ class PlanetaryStrengthVisualizer:
         df = pd.DataFrame(data)
 
         # Add numerology influence as cyclic variation
-        mulanka_num = self.results["numerology"]["mulanka"]["number"]
-        bhagyanka_num = self.results["numerology"]["bhagyanka"]["number"]
-
         # Add a sine wave component to represent numerology influence
         df["numerology_mulanka_influence"] = 50 + 20 * np.sin(
             2 * np.pi * np.arange(days) / 365
@@ -156,7 +152,7 @@ class PlanetaryStrengthVisualizer:
                         y=df[planet],
                         name=planet,
                         line=dict(color=colors.get(planet, "#1f77b4")),
-                        hovertemplate=f"<b>{planet}</b><br>Date: %{{x|%Y-%m-%d}}<br>Strength: %{{y:.2f}}<extra></extra>",
+                        hovertemplate=f"<b>{planet}</b><br>Date: %{{x|%Y-%m-%d}}<br>Strength: %{{y:.2f}}<extra></extra>",  # noqa: E501
                     )
                 )
 
@@ -296,7 +292,7 @@ class PlanetaryStrengthVisualizer:
                     y=df[mulanka_planet],
                     name=f"Mulanka Planet ({mulanka_planet})",
                     line=dict(color="#FF4500", width=3),
-                    hovertemplate="<b>Mulanka Planet</b><br>Date: %{x|%Y-%m-%d}<br>Strength: %{y:.2f}<extra></extra>",
+                    hovertemplate="<b>Mulanka Planet</b><br>Date: %{x|%Y-%m-%d}<br>Strength: %{y:.2f}<extra></extra>",  # noqa: E501
                 )
             )
 
@@ -307,7 +303,7 @@ class PlanetaryStrengthVisualizer:
                     y=df[bhagyanka_planet],
                     name=f"Bhagyanka Planet ({bhagyanka_planet})",
                     line=dict(color="#4169E1", width=3),
-                    hovertemplate="<b>Bhagyanka Planet</b><br>Date: %{x|%Y-%m-%d}<br>Strength: %{y:.2f}<extra></extra>",
+                    hovertemplate="<b>Bhagyanka Planet</b><br>Date: %{x|%Y-%m-%d}<br>Strength: %{y:.2f}<extra></extra>",  # noqa: E501
                 )
             )
 
@@ -318,7 +314,7 @@ class PlanetaryStrengthVisualizer:
                     y=df["numerology_mulanka_influence"],
                     name="Mulanka Numerical Influence",
                     line=dict(color="#FF4500", width=2, dash="dash"),
-                    hovertemplate="<b>Mulanka Influence</b><br>Date: %{x|%Y-%m-%d}<br>Influence: %{y:.2f}<extra></extra>",
+                    hovertemplate="<b>Mulanka Influence</b><br>Date: %{x|%Y-%m-%d}<br>Influence: %{y:.2f}<extra></extra>",  # noqa: E501
                 )
             )
 
@@ -328,7 +324,7 @@ class PlanetaryStrengthVisualizer:
                     y=df["numerology_bhagyanka_influence"],
                     name="Bhagyanka Numerical Influence",
                     line=dict(color="#4169E1", width=2, dash="dash"),
-                    hovertemplate="<b>Bhagyanka Influence</b><br>Date: %{x|%Y-%m-%d}<br>Influence: %{y:.2f}<extra></extra>",
+                    hovertemplate="<b>Bhagyanka Influence</b><br>Date: %{x|%Y-%m-%d}<br>Influence: %{y:.2f}<extra></extra>",  # noqa: E501
                 )
             )
 
@@ -443,7 +439,7 @@ class PlanetaryStrengthVisualizer:
                     mode="lines+markers",
                     line=dict(color="#FF4500", width=2),
                     marker=dict(size=8),
-                    hovertemplate="<b>Mulanka</b><br>Date: %{x|%Y-%m-%d}<br>Number: %{y}<extra></extra>",
+                    hovertemplate="<b>Mulanka</b><br>Date: %{x|%Y-%m-%d}<br>Number: %{y}<extra></extra>",  # noqa: E501
                 )
             )
 
@@ -516,7 +512,7 @@ class PlanetaryStrengthVisualizer:
 
 
 def main():
-    """Main entry point for the visualization script."""
+    """Main entry point for the visualization script."""  # noqa: D401
     print("=" * 60)
     print("Planetary Strength & Numerology Visualization Generator")
     print("=" * 60)

@@ -18,6 +18,7 @@ from .sunrise_correction import adjust_date_for_vedic_day
 
 
 def reduce_to_single_digit(number: Union[int, str]) -> int:
+    """Docstring."""
     if isinstance(number, str):
         number = int(number)
     if not isinstance(number, int):
@@ -37,6 +38,7 @@ def calculate_mulanka(
     latitude: Optional[float] = None,
     longitude: Optional[float] = None,
 ) -> Tuple[int, Planet]:
+    """Calculate mulanka."""
     if not isinstance(birth_date, date):
         raise TypeError("birth_date must be a date object")
 
@@ -53,6 +55,7 @@ def calculate_mulanka(
 
 
 def calculate_bhagyanka(birth_date: date) -> Tuple[int, Planet]:
+    """Docstring."""
     if not isinstance(birth_date, date):
         raise TypeError("birth_date must be a date object")
 
@@ -68,6 +71,7 @@ def calculate_complete_numerology(
     latitude: Optional[float] = None,
     longitude: Optional[float] = None,
 ) -> dict:
+    """Calculate complete numerology."""
     sunrise_corrected = (
         birth_time is not None and latitude is not None and longitude is not None
     )

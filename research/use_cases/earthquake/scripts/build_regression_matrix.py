@@ -10,21 +10,22 @@ Integrates:
 Output: CSV file ready for statistical modeling.
 """
 
-import pandas as pd
-import numpy as np
 import json
-from datetime import date, timedelta, datetime
 import sys
-import os
+from datetime import date, timedelta, datetime
 from pathlib import Path
+
+import pandas as pd
 
 # Add src to path for imports
 sys.path.append(str(Path(__file__).parent.parent.parent.parent / "src"))
 
-from vedic_numerology.engine import NumerologyEngine
-from vedic_astrology_core.dignity.global_scorer import GlobalShadbalaScorer
-from vedic_astrology_core.astrology.ephemeris import EphemerisEngine
-from earthquake_data_fetcher import EarthquakeDataFetcher
+from earthquake_data_fetcher import EarthquakeDataFetcher  # noqa: E402
+from vedic_astrology_core.astrology.ephemeris import EphemerisEngine  # noqa: E402
+from vedic_astrology_core.dignity.global_scorer import (  # noqa: E402
+    GlobalShadbalaScorer,
+)  # noqa: E402
+from vedic_numerology.engine import NumerologyEngine  # noqa: E402
 
 
 def build_matrix(
@@ -65,7 +66,8 @@ def build_matrix(
             # The file contains the processed list directly
             eq_list = json.load(f)
             # Ensure date range filter matches requested year
-            # (The file might contain 2020-2023, but we might only want a subset if specified)
+            # (The file might contain 2020-2023, but we might only want a
+            # subset if specified)
     else:
         print("⚠️ Real data not found. Falling back to mock/sample data.")
         eq_data_raw = eq_fetcher.fetch_earthquakes(start_date_str, end_date_str)

@@ -1,5 +1,6 @@
 """
-Research Report CLI Wrapper
+Research Report CLI Wrapper.
+
 ===========================
 
 This script has been refactored to serve as the entry point for the new
@@ -28,7 +29,7 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 
 
 def run_step(script_path: str, description: str):
-    """Runs a Python script as a subprocess."""
+    """Run a Python script as a subprocess."""
     print(f"\n{'='*60}")
     print(f"STEP: {description}")
     print(f"{'='*60}")
@@ -36,12 +37,13 @@ def run_step(script_path: str, description: str):
     full_path = os.path.join(PROJECT_ROOT, script_path)
     try:
         subprocess.run([sys.executable, full_path], check=True)
-    except subprocess.CalledProcessError as e:
+    except subprocess.CalledProcessError as e:  # noqa: F841
         logger.error(f"Failed to run {description}")
         sys.exit(1)
 
 
 def main():
+    """Docstring."""
     print("🚀 Starting Scientific Research Report Pipeline...\n")
 
     # Step 1: Fetch Data
@@ -71,10 +73,10 @@ def main():
     print("1. Review artifacts in: reports/artifacts/")
     print("2. Render the final manuscript PDF using Quarto:")
     print(
-        "   $ quarto render reports/manuscript.qmd --to pdf -o manuscript_nature.pdf  # Default Nature"
+        "   $ quarto render reports/manuscript.qmd --to pdf -o manuscript_nature.pdf  # Default Nature"  # noqa: E501
     )
     print(
-        "   $ quarto render reports/manuscript.qmd --to pdf -M csl=styles/ieee.csl -o manuscript_ieee.pdf # IEEE Override"
+        "   $ quarto render reports/manuscript.qmd --to pdf -M csl=styles/ieee.csl -o manuscript_ieee.pdf # IEEE Override"  # noqa: E501
     )
     print("\nThe generated PDF will contain the rigorous scientific analysis required.")
 

@@ -1,10 +1,12 @@
+"""Module docstring."""
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Optional
 
 
 @dataclass
 class DiagramRequest:
+    """Docstring."""
+
     context: str
     intent: str
     output_filename: str
@@ -17,7 +19,7 @@ class DiagramGenerator(ABC):
     @abstractmethod
     async def generate(self, request: DiagramRequest) -> str:
         """
-        Generates a diagram based on the request.
+        Generate a diagram based on the request.
 
         Args:
             request (DiagramRequest): The details of the diagram to generate.
