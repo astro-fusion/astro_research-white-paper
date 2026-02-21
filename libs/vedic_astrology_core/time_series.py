@@ -245,8 +245,9 @@ def compute_combined_series(
     """
     Compute a combined numerology + astrology dataset over time.
 
-    The resulting DataFrame matches what `vedic_astrology_core.visualization.temporal_comparison`  # noqa: E501
-    expects (date + numerology_* + astrology_* columns).
+    The resulting DataFrame matches what is expected by
+    `vedic_astrology_core.visualization.temporal_comparison`
+    (date + numerology_* + astrology_* columns).
     """
     num_df = compute_numerology_series(
         start_date=start_date, end_date=end_date, step_days=step_days, planets=planets

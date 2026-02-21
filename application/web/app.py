@@ -109,8 +109,8 @@ st.markdown(
 st.markdown(
     """
 <div class="main-header">
-    <h1>🪐 Vedic Numerology-Astrology Research Explorer</h1>
-    <p>Interactive computational analysis of planetary influences on numerological potentials</p>  # noqa: E501
+    <p>Interactive computational analysis of planetary influences
+       on numerological potentials</p>
     <p><em>Real-time exploration with dynamic controls and visualizations</em></p>
 </div>
 """,
@@ -217,7 +217,10 @@ elif analysis_mode == "Batch Processing":
     uploaded_file = st.sidebar.file_uploader(
         "Upload CSV with birth data",
         type=["csv"],
-        help="CSV should have columns: name, birth_date, birth_time, latitude, longitude",  # noqa: E501
+        help=(
+            "CSV should have columns: name, birth_date, "
+            "birth_time, latitude, longitude"
+        ),
     )
 
     if uploaded_file is not None:
@@ -432,7 +435,10 @@ with tab3:
             st.download_button(
                 label="📥 Download Temporal Analysis (CSV)",
                 data=csv_data,
-                file_name=f"temporal_analysis_{start_date.isoformat()}_{end_date.isoformat()}.csv",  # noqa: E501
+                file_name=(
+                    f"temporal_analysis_{start_date.isoformat()}_"
+                    f"{end_date.isoformat()}.csv"
+                ),
                 mime="text/csv",
             )
 
@@ -470,19 +476,24 @@ with tab4:
         """
     ## 🪐 Vedic Numerology-Astrology Integration
 
-    This interactive research platform explores the computational relationships between
-    traditional Vedic numerology (Anka Jyotish) and sidereal astrology (Parashari Jyotish).  # noqa: E501
+    This interactive research platform explores the computational
+    relationships between traditional Vedic numerology (Anka Jyotish)
+    and sidereal astrology (Parashari Jyotish).
 
     ### 🎯 Research Objectives
 
-    1. **Quantitative Analysis**: Develop computational methods to measure planetary support for numerological potentials  # noqa: E501
+    1. **Quantitative Analysis**: Develop computational methods to measure
+       planetary support for numerological potentials
     2. **Temporal Dynamics**: Study how numerological influences change over time
-    3. **Predictive Modeling**: Explore correlations between celestial mechanics and life patterns  # noqa: E501
-    4. **Interactive Exploration**: Provide tools for researchers to explore these relationships  # noqa: E501
+    3. **Predictive Modeling**: Explore correlations between celestial
+       mechanics and life patterns
+    4. **Interactive Exploration**: Provide tools for researchers to
+       explore these relationships
 
     ### 🔬 Methodology
 
-    - **Astronomical Precision**: Swiss Ephemeris calculations with 0.1 arcsecond accuracy  # noqa: E501
+    - **Astronomical Precision**: Swiss Ephemeris calculations with
+      0.1 arcsecond accuracy
     - **Traditional Systems**: Lahiri Ayanamsa with Parashari dignity calculations
     - **Statistical Validation**: Comparative analysis across multiple case studies
     - **Open Science**: All code and data available for peer review
@@ -525,7 +536,9 @@ with tab4:
         st.subheader("🔗 Links")
         st.markdown(
             """
-        [📚 GitHub Repository](https://github.com/astro-fusion/astro_research-white-paper)  # noqa: E501
+        [📚 GitHub Repository](
+            https://github.com/astro-fusion/astro_research-white-paper
+        )
         [🌐 Research Website](https://astro-fusion.com)
         [📖 Documentation](https://astro-research-white-paper.readthedocs.io/)
         """

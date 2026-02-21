@@ -77,7 +77,8 @@ class GlobalShadbalaScorer:
 
         # 3. Yuddha Bala (Planetary War)
         # If two planets are within 1 degree, they are at war.
-        # In research, we penalize BOTH for stress/volatility, or check declination for winner.  # noqa: E501
+        # In research, we penalize BOTH for stress/volatility,
+        # or check declination for winner.
         # Simplified for Global Index: Penalize both slightly to represent "Conflict".
         keys = list(scores.keys())
         for i in range(len(keys)):

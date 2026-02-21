@@ -1,4 +1,3 @@
-# flake8: noqa
 """
 Dignity Scorer.
 
@@ -306,8 +305,8 @@ class DignityScorer:
 def calculate_base_score(
     planet: Planet, sign_index: int, longitude: float, chart: Optional[Any] = None
 ) -> float:
-    """# noqa: D401
-    Convenience function to calculate base dignity score.
+    """
+    Calculate base dignity score.
 
     Args:
         planet: Planet to score
@@ -329,8 +328,8 @@ def calculate_full_score(
     chart: Optional[Any] = None,
     planet_data: Optional[Dict] = None,
 ) -> float:
-    """# noqa: D401
-    Convenience function to calculate full dignity score.
+    """
+    Calculate full dignity score.
 
     Args:
         planet: Planet to score

@@ -1,7 +1,3 @@
-# flake8: noqa
-from __future__ import annotations
-from datetime import datetime, timedelta
-
 """
 Sunrise correction for Vedic day logic.
 
@@ -9,10 +5,12 @@ In Vedic tradition, the "day" begins at sunrise, not at midnight. For Mulanka,
 this means births before local sunrise are treated as the previous day.
 """
 
-import math
-from datetime import date, datetime, time, timedelta  # noqa: F811
+from __future__ import annotations
 
-from typing import Optional, Tuple, cast  # noqa: F401
+import math
+from datetime import date, datetime, time, timedelta
+
+from typing import Optional, cast
 
 try:
     from suntime import Sun
@@ -21,7 +19,9 @@ except ImportError:  # pragma: no cover
 
 FLATLIB_AVAILABLE = False
 try:  # pragma: no cover
-    import flatlib  # noqa: F401
+    import flatlib
+
+    _ = flatlib
 
     FLATLIB_AVAILABLE = True
 except ImportError:  # pragma: no cover

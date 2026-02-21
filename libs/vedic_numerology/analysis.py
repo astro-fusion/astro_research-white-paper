@@ -1,7 +1,4 @@
-# flake8: noqa
-"""
-High-level numerology+astrology integration class used across the repo.
-"""
+"""High-level numerology+astrology integration class used across the repo."""
 
 from __future__ import annotations
 
@@ -164,9 +161,10 @@ class VedicNumerologyAstrology:
         )
 
     def plot_numerology_comparison(self, use_plotly: bool = True) -> Any:
-        """# noqa: D400
-        Plot numerology vs astrology strength over time for the Mulanka planet
-        for the next year starting today.
+        """
+        Plot numerology vs astrology strength over time for the Mulanka planet.
+
+        Plots the strength for the next year starting today.
         """
         from datetime import date as _date
 
@@ -205,18 +203,22 @@ class VedicNumerologyAstrology:
             f"  Mulanka (Birth Number): {mul['number']} ({PLANET_NAMES[mul['planet']]})"
         )
         lines.append(
-            f"  Bhagyanka (Destiny Number): {bha['number']} ({PLANET_NAMES[bha['planet']]})"  # noqa: E501
+            f"  Bhagyanka (Destiny Number): {bha['number']} "
+            f"({PLANET_NAMES[bha['planet']]})"
         )
         lines.append("")
         lines.append("PLANETARY SUPPORT ANALYSIS:")
         lines.append(
-            f"  Mulanka planet dignity: {support['mulanka']['score']:.1f}/100 ({support['mulanka']['support_level']})"  # noqa: E501
+            f"  Mulanka planet dignity: {support['mulanka']['score']:.1f}/100 "
+            f"({support['mulanka']['support_level']})"
         )
         lines.append(
-            f"  Bhagyanka planet dignity: {support['bhagyanka']['score']:.1f}/100 ({support['bhagyanka']['support_level']})"  # noqa: E501
+            f"  Bhagyanka planet dignity: {support['bhagyanka']['score']:.1f}/100 "
+            f"({support['bhagyanka']['support_level']})"
         )
         lines.append(
-            f"  Overall: {support['overall']['average_score']:.1f}/100 ({support['overall']['harmony_level']})"  # noqa: E501
+            f"  Overall: {support['overall']['average_score']:.1f}/100 "
+            f"({support['overall']['harmony_level']})"
         )
         lines.append("")
         lines.append("=" * 70)

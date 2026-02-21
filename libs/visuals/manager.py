@@ -1,4 +1,4 @@
-"""Module docstring."""
+"""Visuals management and orchestration."""
 import asyncio
 import logging
 from typing import Dict, List
@@ -64,7 +64,10 @@ async def run_visuals_generation(output_dir: str):
                Periodograms, and Molchan trajectories.
             The final output is a rendered Quarto research report.
             """,
-            intent="A flow diagram showing the data processing pipeline from raw data to final analysis.",  # noqa: E501
+            intent=(
+                "A flow diagram showing the data processing pipeline "
+                "from raw data to final analysis."
+            ),
             output_filename="fig_methodology_ai.png",
             caption="Automated Research Pipeline Flow",
         ),
@@ -80,7 +83,10 @@ async def run_visuals_generation(output_dir: str):
             - research/scripts: CLI entry points.
             Data flows from libs.models -> libs.visuals -> research/reports/.
             """,
-            intent="A class diagram or component diagram showing the module dependencies.",  # noqa: E501
+            intent=(
+                "A class diagram or component diagram showing the "
+                "module dependencies."
+            ),
             output_filename="fig_architecture.mmd",
             caption="System Architecture",
         ),

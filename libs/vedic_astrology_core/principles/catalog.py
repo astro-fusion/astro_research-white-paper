@@ -236,7 +236,10 @@ def _add_many(
     sources: str = SOURCES_CORE,
 ) -> None:
     for name in names:
-        pid = f"{prefix}_{name.lower().replace(' ', '_').replace('(', '').replace(')', '')}"  # noqa: E501
+        sanitized_name = (
+            name.lower().replace(" ", "_").replace("(", "").replace(")", "")
+        )
+        pid = f"{prefix}_{sanitized_name}"
         desc = description_template.format(name=name)
         _add(rows, pid, family, "member", name, desc, scope, computable, sources)
 

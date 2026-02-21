@@ -1,14 +1,14 @@
-# flake8: noqa
-from datetime import datetime, timedelta
+"""Generate scientific assets for Track 1: Numerology vs Astrology."""
 
-"""Module docstring."""
 import os
 import sys
+from datetime import datetime, timedelta
 from pathlib import Path
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+
 import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
 # from datetime import datetime, timedelta, date
 
@@ -55,8 +55,8 @@ def generate_scientific_assets(
 
     # Setup Engines
     eph = EphemerisEngine()
-    scorer = GlobalShadbalaScorer(eph)  # noqa: F841
-    num_engine = NumerologyEngine()  # noqa: F841
+    _ = GlobalShadbalaScorer(eph)
+    _ = NumerologyEngine()
 
     start_date = datetime(2024, 1, 1)
     end_date = datetime(2024, 2, 1)  # 31 Days
@@ -70,11 +70,11 @@ def generate_scientific_assets(
     current = start_date
     while current <= end_date:
         try:
-            jd = eph.datetime_to_julian_day(current)  # noqa: F841
-            # Calculate Shadbala (Mocking realistic sine waves if library fails or for speed)  # noqa: E501
+            _ = eph.datetime_to_julian_day(current)
+            # Calculate Shadbala (Mocking sine waves if library fails)
             # In real usage, scorer.calculate_global_power(jd)
 
-            # Using realistic simulation for robust curve generation (as scorer needs heavy swisseph)  # noqa: E501
+            # Using realistic simulation for robust curve generation
             # Mars Cycle: ~2 months.
             t_hour = (current - start_date).total_seconds() / 3600
 

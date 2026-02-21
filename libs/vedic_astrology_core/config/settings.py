@@ -261,7 +261,7 @@ class Config:
         return self.get(key) is not None
 
     def __repr__(self) -> str:
-        """String representation of configuration."""  # noqa: D401
+        """Return string representation of configuration."""
         return f"Config({self.config_file or 'defaults'})"
 
 

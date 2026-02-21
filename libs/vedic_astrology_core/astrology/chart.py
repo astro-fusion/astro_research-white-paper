@@ -1,4 +1,3 @@
-# flake8: noqa
 """
 Birth Chart Calculations.
 
@@ -80,21 +79,21 @@ class BirthChart:
 
     @property
     def ascendant(self) -> Dict:
-        """Get ascendant (Lagna) information."""
+        """Retrieve Lagna (Ascendant) information."""
         if self._ascendant is None:
             self._ascendant = self._calculate_ascendant()
         return self._ascendant
 
     @property
     def houses(self) -> List[Dict]:
-        """Get house cusp information."""
+        """Return house cusp information."""
         if self._houses is None:
             self._houses = self._calculate_houses()
         return self._houses
 
     @property
     def planets(self) -> Dict[str, Dict]:
-        """Get all planetary positions."""
+        """Return all planetary positions."""
         if self._planets is None:
             self._planets = self.ephemeris.get_all_planet_positions(self.julian_day)
         return self._planets
@@ -278,8 +277,8 @@ def calculate_chart(
     longitude: float,
     ayanamsa_system: AyanamsaSystem = AyanamsaSystem.LAHIRI,
 ) -> BirthChart:
-    """# noqa: D401
-    Convenience function to calculate a complete birth chart.
+    """
+    Calculate a complete birth chart.
 
     Args:
         birth_datetime: Birth date and time

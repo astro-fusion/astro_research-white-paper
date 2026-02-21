@@ -9,19 +9,13 @@ Provides interactive timeline visualization of planetary strength and numerology
 """
 
 import os
-import sys
 from datetime import datetime, timedelta
-from pathlib import Path
 
 from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
 
-# Add project src to path for local execution without installation
-repo_root = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(repo_root / "libs"))
-
 # Import our time series utilities
-from vedic_astrology_core.time_series import (  # noqa: E402
+from vedic_astrology_core.time_series import (
     compute_combined_series,
     compute_numerology_series,
     compute_planet_strength_series,

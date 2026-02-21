@@ -291,7 +291,8 @@ class VedicAstrologyChart:
             report_lines.append(f"    Degrees: {planet_data['degrees_in_sign']:.2f}°")
             report_lines.append(f"    Longitude: {planet_data['longitude']:.2f}°")
             report_lines.append(
-                f"    Dignity Score: {dignity_score['score']:.1f}/100 ({dignity_score['dignity_type']})"  # noqa: E501
+                f"    Dignity Score: {dignity_score['score']:.1f}/100 "
+                f"({dignity_score['dignity_type']})"
             )
             if planet_data.get("retrograde"):
                 report_lines.append("    Retrograde: Yes")
@@ -300,9 +301,11 @@ class VedicAstrologyChart:
         # House cusps
         report_lines.append("HOUSE CUSPS:")
         for i, house_data in enumerate(chart.houses):
-            report_lines.append(
-                f"  House {i+1}: {house_data['sign_name']} {house_data['degrees_in_sign']:.2f}°"  # noqa: E501
+            line = (
+                f"  House {i+1}: {house_data['sign_name']} "
+                f"{house_data['degrees_in_sign']:.2f}°"
             )
+            report_lines.append(line)
         report_lines.append("")
 
         report_lines.append("=" * 70)
@@ -310,7 +313,7 @@ class VedicAstrologyChart:
         return "\n".join(report_lines)
 
     def __repr__(self) -> str:
-        """String representation of the analysis object."""  # noqa: D401
+        """Return string representation of the analysis object."""
         return (
             f"VedicAstrologyChart("
             f"birth_date={self.birth_date}, "

@@ -73,13 +73,16 @@ class NumerologyEngine:
             Numerological value of the day.
         """
         # Method: Add components first, then reduce.
-        # Note: There are different schools (reduce each, then add vs add all then reduce).  # noqa: E501
-        # Research Doc 2.2.1 example: March 14, 1997 -> 3 + 1+4 + 1+9+9+7 = 3 + 5 + 26 -> 34 -> 7  # noqa: E501
+        # Note: There are different schools (reduce each, then add vs
+        # add all then reduce).
+        # Research Doc 2.2.1 example: March 14, 1997 ->
+        # 3 + 1+4 + 1+9+9+7 = 3 + 5 + 26 -> 34 -> 7
         # Which is effectively sum of digits of the full date string.
 
         # We will follow the method: Sum of (Year + Month + Day)
         # 1997 + 3 + 14 = 2014 -> 2+0+1+4 = 7.
-        # This is mathematically equivalent to summing all digits modulo 9 (except for the master number stops).  # noqa: E501
+        # This is mathematically equivalent to summing all digits modulo 9
+        # (except for the master number stops).
 
         total_sum = target_date.year + target_date.month + target_date.day
         return self._reduce(total_sum, preserve_master=preserve_master)

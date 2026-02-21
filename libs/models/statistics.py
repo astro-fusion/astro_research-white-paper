@@ -1,11 +1,11 @@
-# flake8: noqa
 """
 Statistical Analysis Module.
 
 ===========================
 
-This module implements the "Severe Testing" framework required for the scientific report.  # noqa: E501
-It includes rigorous econometric and signal processing tests to evaluate the
+This module implements the "Severe Testing" framework required for the
+scientific report. It includes rigorous econometric and signal processing
+tests to evaluate the hypothesis of planetary influence on financial markets.
 hypothesis of planetary influence on financial markets.
 
 Key Components:
@@ -17,7 +17,7 @@ Key Components:
 
 import logging
 
-from typing import Any, Dict, List, Optional, Tuple  # noqa: F401
+from typing import Any, Dict, List, Tuple
 
 import numpy as np
 import pandas as pd
@@ -25,15 +25,13 @@ import pandas as pd
 # Astrophysics / Signal Processing
 from astropy.timeseries import LombScargle
 
-from scipy import stats  # noqa: F401
 from statsmodels.tsa.api import VAR
 
 # Econometrics
 from statsmodels.tsa.stattools import (
     adfuller,
-    grangercausalitytests,
     kpss,
-)  # noqa: F401
+)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -153,7 +151,8 @@ def run_granger_causality(
     # Run Granger Causality
     # statsmodels grangercausalitytests returns a dictionary: {lag: (result, [params])}
     # We test the hypothesis: Do exog_cols cause target_col?
-    # Note: grangercausalitytests is bivariate. For multivariate, we use VAR model.test_causality  # noqa: E501
+    # Note: grangercausalitytests is bivariate.
+    # For multivariate, we use VAR model.test_causality
 
     final_model = model.fit(best_lag)
     causality_result = final_model.test_causality(target_col, exog_cols, kind="f")
@@ -266,10 +265,10 @@ def run_monte_carlo_permutation_test(
     logger.info(
         f"Running {n_permutations} Monte Carlo permutations for {target_col}..."
     )
-
     for _ in range(n_permutations):
         # Shuffle X (planetary data) randomly
-        # We use numpy.random.permutation on the indices to keep column integrity relative to each other?  # noqa: E501
+        # We use numpy.random.permutation on the indices to keep
+        # column integrity relative to each other?
         # No, usually we want to break the link between X and y.
         # Shuffling the rows of X while keeping y fixed is sufficient.
         #         X_shuffled = X.sample(frac=1, replace=False).reset_index(drop=True)
@@ -349,8 +348,8 @@ def calculate_chi_square(a: int, b: int, c: int, d: int) -> float:
 def apply_fdr_correction(
     p_values: np.ndarray, method: str = "fdr_bh", alpha: float = 0.05
 ) -> np.ndarray:
-    """# noqa: D401
-    Applies False Discovery Rate (FDR) correction for multiple hypothesis testing.
+    """
+    Apply False Discovery Rate (FDR) correction for multiple hypothesis testing.
 
     Default method is Benjamini-Hochberg (BH).
 

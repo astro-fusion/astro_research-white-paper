@@ -1,7 +1,4 @@
-# flake8: noqa
-from datetime import datetime, timedelta  # noqa: F401
-
-#!/usr/bin/env python3  # noqa: E265
+#!/usr/bin/env python3
 """
 Vedic Numerology-Astrology REST API.
 
@@ -14,7 +11,7 @@ Provides endpoints for real-time calculations and data retrieval.
 import os
 import sys
 
-from datetime import date, datetime, time  # noqa: F811
+from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 import uvicorn
@@ -26,14 +23,7 @@ from pydantic import BaseModel, Field, validator
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 
 try:
-    import json  # noqa: F401
-    import matplotlib.pyplot as plt  # noqa: F401
-    import plotly.graph_objects as go  # noqa: F401
-    from vedic_astrology_core import (
-        VedicAstrologyChart,
-        create_birth_chart,
-    )  # noqa: F401
-    from vedic_astrology_core.astrology import AyanamsaSystem  # noqa: F401
+    from vedic_astrology_core import VedicAstrologyChart
     from vedic_astrology_core.config import Planet
     from vedic_astrology_core.time_series import (
         TimeSeriesConfig,
@@ -286,7 +276,8 @@ async def complete_analysis(birth_data: BirthData):
         # Get astrology chart
         birth_chart = chart_obj.chart
 
-        # Calculate support analysis (this would need to be implemented in numerology use case)  # noqa: E501
+        # Calculate support analysis
+        # (needs to be implemented in numerology use case)
         # For now, provide basic structure
         support_analysis = {
             "mulanka": {
@@ -392,9 +383,10 @@ def _parse_planets(planets: Optional[str]) -> Optional[List[Planet]]:
         try:
             parsed.append(Planet[item])
         except KeyError:
+            valid_names = [p.name for p in Planet]
             raise HTTPException(
                 status_code=400,
-                detail=f"Unknown planet '{item}'. Expected one of: {[p.name for p in Planet]}",  # noqa: E501
+                detail=f"Unknown planet '{item}'. Expected one of: {valid_names}",
             )
     return parsed
 
@@ -467,8 +459,8 @@ async def combined_series(
     longitude: float = Query(
         77.1025, description="Longitude for astrology calculation"
     ),
-):  # noqa: D401
-    """Combined numerology + astrology time-series over time."""
+):
+    """Compute combined numerology and astrology time-series over time."""
     planet_list = _parse_planets(planets)
     cfg = TimeSeriesConfig(latitude=latitude, longitude=longitude)
     df = compute_combined_series(

@@ -1,0 +1,29 @@
+# 🪐 Astro Research White Paper - Development Standards
+
+You are acting as a Senior Software Engineer and Open Source Maintainer for the Astro Research White Paper project. You MUST adhere to these strict standards and follow these instructions for every interaction.
+
+## 🚫 Zero-Bypass Policy (No Hacks)
+
+- **Strict Linting**: The use of `# noqa`, `# type: ignore`, `# flake8: noqa`, or any other linter-silencing comments is strictly prohibited.
+- **Surgical Fixes**:
+  - If a variable is unused, **delete it** or prefix it with an underscore (e.g., `_unused`) if it serves as a placeholder.
+  - If a docstring is flagged, **rewrite it** to follow PEP 257 (imperative mood, first line period, etc.).
+  - If a line is too long, **refactor the code** or use proper parentheses for multi-line logic.
+- **Pure Imports**: Never leave unused imports. Use `from typing import ...` properly and ensure all type hints are resolved via imports, not bypassed.
+
+## 🧹 Workspace Hygiene
+
+- **No Stray Files**: Never leave temporary scripts (`fix_*.py`), audit reports (`*.txt`), or debug logs in the repository.
+- **Post-Task Cleanup**: Before concluding any task, verify that all auxiliary files created for analysis or automated fixing have been deleted.
+
+## 🧪 Verification Standard
+
+- **Pre-commit mandatory**: Always run `pre-commit run --all-files` before claiming a task is done.
+- **Greener than Green**: A "Green Build" achieved through bypasses is a FAILURE. Only 100% clean passes are acceptable.
+
+## 📖 AI Architectural Guidelines
+
+- **Server-First**: Default to Next.js Server Components. Client components are ONLY for interactivity.
+- **Type Safety**: No `any`. Use interfaces and Zod validation for external data.
+- **Semantic HTML**: Maintain strict heading hierarchy and ARIA roles for accessibility.
+- **Clean Documentation**: Every module and public function must have a clear, PEP-257 compliant docstring.

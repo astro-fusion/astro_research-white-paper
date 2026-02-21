@@ -264,7 +264,9 @@ try:
 
 except ImportError:
     SWISSEPH_AVAILABLE = False
-    PYSWISSEPH_AYANAMSA_MAP: Dict[AyanamsaSystem, int] = {}  # type: ignore[no-redef]
+
+if not SWISSEPH_AVAILABLE:
+    PYSWISSEPH_AYANAMSA_MAP: Dict[AyanamsaSystem, int] = {}
 
 
 def get_pyswisseph_ayanamsa_constant(system: AyanamsaSystem) -> Optional[int]:
