@@ -32,6 +32,14 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
+# ── Ayanamsa Mapping (Swiss Ephemeris constants) ──────────────────────────────
+AYANAMSA_MODES: dict[str, int] = {
+    "Lahiri": 0,  # swe.SIDM_LAHIRI
+    "Raman": 3,  # swe.SIDM_RAMAN
+    "KP": 5,  # swe.SIDM_KRISHNAMURTI
+    "Fagan-Bradley": 1,  # swe.SIDM_FAGAN_BRADLEY
+}
+
 # ── Body ID mapping (Swiss Ephemeris constants) ─────────────────────────────
 BODY_IDS: dict[str, int] = {
     "Sun": 0,
@@ -107,7 +115,9 @@ def _ecliptic_to_equatorial(
     return math.degrees(alpha_rad), math.degrees(delta_rad)
 
 
-def compute_position(body_name: str, jd_tt: float) -> CelestialPosition:
+def compute_position(
+    body_name: str, jd_tt: float, ayanamsa_name: str = "Lahiri"
+) -> CelestialPosition:
     """
     Compute the geocentric ecliptic and equatorial position of a body.
 
@@ -121,7 +131,8 @@ def compute_position(body_name: str, jd_tt: float) -> CelestialPosition:
         ) from exc
 
     body_id = BODY_IDS[body_name]
-    swe.set_sid_mode(swe.SIDM_LAHIRI)
+    mode = AYANAMSA_MODES.get(ayanamsa_name, swe.SIDM_LAHIRI)
+    swe.set_sid_mode(mode)
     flags = swe.FLG_SWIEPH | swe.FLG_SPEED
 
     # Tropical position
@@ -165,6 +176,7 @@ def generate_ephemeris(
     jd_start: float,
     jd_end: float,
     step_days: float = 1.0,
+    ayanamsa_name: str = "Lahiri",
 ) -> pd.DataFrame:
     """
     Compute positions for multiple bodies over a time range.
@@ -179,7 +191,7 @@ def generate_ephemeris(
     for jd in jd_range:
         for name in body_names:
             try:
-                pos = compute_position(name, float(jd))
+                pos = compute_position(name, float(jd), ayanamsa_name)
                 records.append(
                     {
                         "jd_tt": pos.jd_tt,
@@ -216,6 +228,11 @@ def main() -> None:
     parser.add_argument("--end_jd", type=float, default=J2000 + 36524.25)  # 100 years
     parser.add_argument("--step_days", type=float, default=1.0)
     parser.add_argument(
+        "--ayanamsa",
+        choices=list(AYANAMSA_MODES.keys()),
+        default="Lahiri",
+    )
+    parser.add_argument(
         "--output",
         type=Path,
         default=Path("data/ephemeris/planets_j2000_j2100.parquet"),
@@ -229,6 +246,7 @@ def main() -> None:
         jd_start=args.start_jd,
         jd_end=args.end_jd,
         step_days=args.step_days,
+        ayanamsa_name=args.ayanamsa,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     df.to_parquet(args.output, index=False)

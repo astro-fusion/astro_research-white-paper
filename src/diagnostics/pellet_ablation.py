@@ -5,6 +5,7 @@ Pellet Ablation Dynamics ODE Solver
 See: papers/physics/02_pellet_ablation_dynamics_elm_mitigation.md
      SYMBOLOGY.md §I.C
 """
+
 from __future__ import annotations
 import numpy as np
 

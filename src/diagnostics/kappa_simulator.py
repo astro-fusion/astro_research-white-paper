@@ -5,6 +5,7 @@ Relativistic Kappa Distribution Monte Carlo Generator
 See: papers/physics/03_relativistic_kappa_distributions.md
      SYMBOLOGY.md §I.A
 """
+
 from __future__ import annotations
 import numpy as np
 from numpy.random import Generator

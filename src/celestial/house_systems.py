@@ -5,6 +5,7 @@ Astrological House System Router with Polar Singularity Handling
 See: papers/astrology/02_house_systems_and_polar_singularities.md
      SYMBOLOGY.md §II.E
 """
+
 from __future__ import annotations
 
 from enum import Enum

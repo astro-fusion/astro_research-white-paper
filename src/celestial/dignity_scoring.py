@@ -5,6 +5,7 @@ Essential Dignity O(1) Hash-Map Scoring Engine
 See: papers/astrology/06_essential_dignity_scoring.md
      SYMBOLOGY.md §II.F
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -136,20 +137,6 @@ def score_dignity(
     Score the essential dignity of `planet` at `lambda_ecl_deg`.
 
     Achieves O(1) average lookup time via dict/set membership tests.
-
-    Parameters
-    ----------
-    planet : str
-        e.g. "Sun", "Moon", "Mars".
-    lambda_ecl_deg : float
-        Ecliptic longitude λ_ecl [0, 360).
-    system : "western" | "vedic"
-    exact_exalt_orb : float
-        Degrees within which the exact exaltation point earns +10.
-
-    Returns
-    -------
-    DignityResult with score in [−4, +10].
     """
     sign_index = int(lambda_ecl_deg // 30) % 12
     sign = SIGNS[sign_index]
@@ -181,3 +168,30 @@ def score_dignity(
 
     # 5. Peregrine (no dignity)
     return DignityResult(planet, sign, deg_in_sign, "peregrine", W_PEREGRINE, False)
+
+
+# ── Yoga Detection (Combinations) ───────────────────────────────────────────
+
+
+def detect_yogas(positions: dict[str, float]) -> list[str]:
+    """
+    Detect planetary combinations (Yogas) from positions.
+
+    Returns a list of active Yoga names.
+    """
+    yogas = []
+
+    # Gaja Kesari Yoga: Jupiter in a Kendra (1, 4, 7, 10) from Moon
+    if "Jupiter" in positions and "Moon" in positions:
+        l1, l2 = positions["Jupiter"], positions["Moon"]
+        diff = (l1 - l2) % 360.0
+        # Kendra houses (approximate signs)
+        if int(diff // 30) % 12 in [0, 3, 6, 9]:
+            yogas.append("Gaja_Kesari_Yoga")
+
+    # Budha-Aditya Yoga: Sun and Mercury in the same sign
+    if "Sun" in positions and "Mercury" in positions:
+        if int(positions["Sun"] // 30) == int(positions["Mercury"] // 30):
+            yogas.append("Budha_Aditya_Yoga")
+
+    return yogas

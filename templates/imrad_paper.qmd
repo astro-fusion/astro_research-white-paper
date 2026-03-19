@@ -1,0 +1,35 @@
+---
+title: "Project Analysis Report: Astro-Fusion Empirical Study"
+author: "Research Pipeline"
+date: last-modified
+format:
+  elsevier-pdf:
+    keep-tex: true
+    journal:
+      name: "Journal of Computational Science"
+      formatting: preprint
+---
+
+# Abstract
+This paper presents the automated analysis of celestial and plasma-physical data synergies. Using a standardized IMRaD structure, we evaluate the statistical significance of multi-domain correlations.
+
+# 1. Introduction
+The objective of this research is to bridge the epistemological gap between high-energy plasma diagnostics and high-precision celestial mechanics.
+
+# 2. Methods
+All data was generated using the `src/` modular engine library.
+- **Ephemeris**: Computed via Swiss Ephemeris (`pyswieph`) with `r"Lahiri"` ayanamsa.
+- **Statistics**: P-values and Cohen's $d$ effect sizes were calculated using the `src.diagnostics.statistics` module.
+
+# 3. Results
+{{< include _results_dynamic.qmd >}}
+
+# 4. Discussion
+The observed correlations were evaluated against a control group...
+
+# 5. Conclusion
+Phase 2 implementation demonstrates the feasibility of automated academic-grade reporting.
+
+# References
+1. IAU 2006 Theory of Precession.
+2. Bṛhat Parāśara Horāśāstra.

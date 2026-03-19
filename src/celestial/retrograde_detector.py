@@ -5,6 +5,7 @@ Retrograde Station Scanner and Progression Engine
 See: papers/astrology/04_temporal_inflection_retrogrades_progressions.md
      SYMBOLOGY.md §II.D
 """
+
 from __future__ import annotations
 
 import logging
