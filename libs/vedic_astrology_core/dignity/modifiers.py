@@ -142,20 +142,50 @@ def apply_shadbala_modifiers(
         planet: Planet enum
 
     Returns:
-        Modified score with Shad Bala adjustments
+        Modified score with Shad Bala adjustments.
+        # Sthana Bala includes Exaltation, Moolatrikona, Own Sign, Friendship.
+        # Dig Bala (Directional strength) is based on house position.
     """
-    # This is a placeholder for Shad Bala implementation
-    # Full Shad Bala includes:
-    # 1. Sthana Bala (Positional strength) - already handled in base_score
-    # 2. Dig Bala (Directional strength)
-    # 3. Kala Bala (Temporal strength)
-    # 4. Chesta Bala (Motional strength) - partially handled by retrograde
-    # 5. Naisargika Bala (Natural strength)
-    # 6. Drig Bala (Aspect strength)
+    # Dig Bala (Directional strength)
+    # 1st House: Jupiter, Mercury
+    # 4th House: Moon, Venus
+    # 7th House: Saturn
+    # 10th House: Sun, Mars
 
-    # For now, return base score unchanged
-    # TODO: Implement full Shad Bala system
-    return base_score
+    dig_bala_map = {
+        Planet.JUPITER: 0,  # 1st house (0-indexed)
+        Planet.MERCURY: 0,
+        Planet.MOON: 3,  # 4th house
+        Planet.VENUS: 3,
+        Planet.SATURN: 6,  # 7th house
+        Planet.SUN: 9,  # 10th house
+        Planet.MARS: 9,
+    }
+
+    if planet in dig_bala_map:
+        target_house = dig_bala_map[planet]
+        opposite_house = (target_house + 6) % 12
+
+        # Get planet's house from chart_data
+        planets_data = {}
+        if isinstance(chart_data, dict):
+            planets_data = chart_data.get("planets", {})
+        elif hasattr(chart_data, "planets"):
+            planets_data = chart_data.planets
+
+        if planets_data and planet.name in planets_data:
+            current_house = planets_data[planet.name].get("house")
+
+            if current_house is not None:
+                if current_house == target_house:
+                    base_score += 20.0  # Max Dig Bala bonus
+                elif current_house == opposite_house:
+                    base_score -= 20.0  # Min Dig Bala (Dig Bala Zero)
+
+    # Note: Full Shad Bala would also include Kala, Chesta, Naisargika, Drig Bala.
+    # Handling specific components as baseline for now.
+
+    return max(0.0, min(base_score, 100.0))
 
 
 def apply_all_modifiers(
@@ -270,6 +300,30 @@ def get_modifier_explanation(
             explanations.append(
                 "Exact debilitation: Additional weakness from precise placement"
             )
+
+    # Check Dig Bala (if available in chart_data/planet_data)
+    # Note: planet_data might contain 'house' directly
+    dig_bala_map = {
+        Planet.JUPITER: 0,
+        Planet.MERCURY: 0,
+        Planet.MOON: 3,
+        Planet.VENUS: 3,
+        Planet.SATURN: 6,
+        Planet.SUN: 9,
+        Planet.MARS: 9,
+    }
+    if planet in dig_bala_map:
+        target_house = dig_bala_map[planet]
+        opposite_house = (target_house + 6) % 12
+        current_house = planet_data.get("house")
+
+        if current_house is not None:
+            if current_house == target_house:
+                explanations.append(
+                    "Dig Bala: Planet in its directional strength house"
+                )
+            elif current_house == opposite_house:
+                explanations.append("Dig Bala Zero: Planet in opposite direction")
 
     if explanations:
         return " | ".join(explanations)

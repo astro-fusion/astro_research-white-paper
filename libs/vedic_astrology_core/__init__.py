@@ -48,6 +48,8 @@ class VedicAstrologyChart:
         longitude: float = 77.1025,
         timezone: str = "Asia/Kolkata",
         ayanamsa_system: str = "LAHIRI",
+        house_system: str = "P",
+        node_type: str = "mean",
     ):
         """
         Initialize the analysis with birth data.
@@ -67,6 +69,8 @@ class VedicAstrologyChart:
         self.longitude = longitude
         self.timezone = timezone
         self.ayanamsa_system = ayanamsa_system
+        self.house_system = house_system
+        self.node_type = node_type
 
         # Validate Ayanamsa system
         if self.ayanamsa_system.upper() != "LAHIRI":
@@ -154,7 +158,12 @@ class VedicAstrologyChart:
                 ayanamsa = AyanamsaSystem[self.ayanamsa_system.upper()]
 
             self._chart = calculate_chart(
-                self.birth_datetime, self.latitude, self.longitude, ayanamsa
+                self.birth_datetime,
+                self.latitude,
+                self.longitude,
+                ayanamsa,
+                house_system=self.house_system,
+                node_type=self.node_type,
             )
         return self._chart
 

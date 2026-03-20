@@ -52,8 +52,10 @@ BODY_IDS: dict[str, int] = {
     "Uranus": 7,
     "Neptune": 8,
     "Pluto": 9,
-    "Rahu": 10,  # Mean ascending node (Ketu = Rahu + 180°)
-    "Ketu": 11,  # Mean descending node
+    "Rahu": 10,  # Mean Node by default
+    "Ketu": 10,  # Derived from Rahu (ID 10) + 180
+    "Mean_Rahu": 10,
+    "True_Rahu": 11,
 }
 
 # J2000.0 epoch
@@ -148,8 +150,13 @@ def compute_position(
     sid_result, _ = swe.calc_ut(jd_tt, body_id, flags | swe.FLG_SIDEREAL)
     lambda_sid = sid_result[0]
 
+    # Special handling for Ketu (Rahu + 180°)
+    if "Ketu" in body_name:
+        lambda_ecl = (lambda_ecl + 180.0) % 360.0
+        lambda_sid = (lambda_sid + 180.0) % 360.0
+
     # Compute obliquity at epoch
-    epsilon = swe.calc_ut(jd_tt, swe.ECL_NUT, 0)[0][0]  # returns obliquity in index 0
+    epsilon = swe.calc_ut(jd_tt, swe.ECL_NUT, 0)[0][0]
 
     # Equatorial coordinates
     alpha_ra, delta_decl = _ecliptic_to_equatorial(lambda_ecl, beta, epsilon)

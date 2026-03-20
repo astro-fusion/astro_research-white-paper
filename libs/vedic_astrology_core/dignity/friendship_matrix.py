@@ -7,7 +7,7 @@ planetary relationships.
 """
 
 from enum import Enum
-from typing import TYPE_CHECKING, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from ..config.constants import Planet
 
@@ -23,8 +23,11 @@ class FriendshipType(Enum):
     NATURAL_NEUTRAL = "Natural Neutral"
     TEMPORARY_FRIEND = "Temporary Friend"
     TEMPORARY_ENEMY = "Temporary Enemy"
-    GREAT_FRIEND = "Great Friend"
-    GREAT_ENEMY = "Great Enemy"
+    ADHI_MITRA = "Adhi Mitra"
+    MITRA = "Mitra"
+    SAMA = "Sama"
+    SHATRU = "Shatru"
+    ADHI_SHATRU = "Adhi Shatru"
 
 
 # Naisargika Maitri (Natural Friendship) Matrix
@@ -206,36 +209,57 @@ def calculate_tatkalika_maitri(
         return FriendshipType.TEMPORARY_ENEMY
 
 
-def calculate_panchadha_maitri(chart: "BirthChart", planet: Planet) -> Dict[str, float]:
+def get_combined_friendship(
+    natural: FriendshipType, temporary: FriendshipType
+) -> FriendshipType:
     """
-    Calculate Panchadha Maitri (five-fold friendship) score for a planet.
+    Combine natural and temporary friendship into five-fold friendship.
 
-    This combines natural and temporary friendships to give an overall
-    friendship score for dignity calculations.
+    Standard Vedic combination rules:
+    - Friend + Friend = Great Friend
+    - Friend + Neutral = Friend
+    - Enemy + Friend = Neutral
+    - Neutral + Friend = Friend
+    - Neutral + Enemy = Enemy
+    - Enemy + Enemy = Great Enemy
+    """
+    # Friend + Friend = Great Friend
+    if natural == FriendshipType.NATURAL_FRIEND:
+        if temporary == FriendshipType.TEMPORARY_FRIEND:
+            return FriendshipType.ADHI_MITRA
+        else:
+            return FriendshipType.SAMA
+
+    # Enemy + Friend = Neutral / Enemy + Enemy = Great Enemy
+    elif natural == FriendshipType.NATURAL_ENEMY:
+        if temporary == FriendshipType.TEMPORARY_FRIEND:
+            return FriendshipType.SAMA
+        else:
+            return FriendshipType.ADHI_SHATRU
+
+    # Neutral + Friend = Friend / Neutral + Enemy = Enemy
+    else:
+        if temporary == FriendshipType.TEMPORARY_FRIEND:
+            return FriendshipType.MITRA
+        else:
+            return FriendshipType.SHATRU
+
+
+def calculate_panchadha_maitri(chart: "BirthChart", planet: Planet) -> Dict[str, Any]:
+    """
+    Calculate Panchadha Maitri (five-fold friendship) for a planet.
+
+    Combines Naisargika (Natural) and Tatkalika (Temporary) friendships
+    into the definitive five-fold relationship for all other planets.
 
     Args:
         chart: BirthChart object
         planet: Planet to analyze
 
     Returns:
-        Dictionary with friendship scores and summary
+        Dictionary mapping each planet to its five-fold relationship type.
     """
-    # This is a simplified implementation
-    # Full Panchadha Maitri would include:
-    # 1. Naisargika Maitri (Natural)
-    # 2. Tatkalika Maitri (Temporary)
-    # 3. Dreshkana Maitri (Aspect-based)
-    # 4. Nakshatra Maitri (Constellation-based)
-    # 5. Kendra Maitri (Angular relationship)
-
-    # For now, implement basic Naisargika + Tatkalika
-    scores = {
-        "natural_friends": 0,
-        "natural_enemies": 0,
-        "temporary_friends": 0,
-        "temporary_enemies": 0,
-        "overall_score": 0.0,
-    }
+    relationships = {}
 
     planets = [
         Planet.SUN,
@@ -253,28 +277,17 @@ def calculate_panchadha_maitri(chart: "BirthChart", planet: Planet) -> Dict[str,
         if other_planet == planet:
             continue
 
-        # Natural friendship
         natural_rel = get_natural_friendship(planet, other_planet)
-        if natural_rel == FriendshipType.NATURAL_FRIEND:
-            scores["natural_friends"] += 1
-        elif natural_rel == FriendshipType.NATURAL_ENEMY:
-            scores["natural_enemies"] += 1
-
-        # Temporary friendship
         temp_rel = calculate_tatkalika_maitri(chart, planet, other_planet)
-        if temp_rel == FriendshipType.TEMPORARY_FRIEND:
-            scores["temporary_friends"] += 1
-        elif temp_rel == FriendshipType.TEMPORARY_ENEMY:
-            scores["temporary_enemies"] += 1
+        combined = get_combined_friendship(natural_rel, temp_rel)
 
-    # Calculate overall score (simplified weighting)
-    # Natural friendship worth more than temporary
-    natural_score = scores["natural_friends"] - scores["natural_enemies"]
-    temporary_score = scores["temporary_friends"] - scores["temporary_enemies"]
+        relationships[other_planet.name] = {
+            "natural": natural_rel.value,
+            "temporary": temp_rel.value,
+            "combined": combined.value,
+        }
 
-    scores["overall_score"] = (natural_score * 2.0) + temporary_score
-
-    return scores
+    return relationships
 
 
 def are_planets_friends(

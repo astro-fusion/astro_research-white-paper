@@ -17,7 +17,12 @@ from .exaltation_matrix import (
     is_in_moolatrikona,
     is_in_own_sign,
 )
-from .friendship_matrix import FriendshipType, get_natural_friendship
+from .friendship_matrix import (
+    FriendshipType,
+    calculate_tatkalika_maitri,
+    get_combined_friendship,
+    get_natural_friendship,
+)
 from .modifiers import apply_all_modifiers, get_modifier_explanation
 
 
@@ -32,14 +37,14 @@ class DignityScorer:
     # Dignity score mapping (0-100 scale)
     DIGNITY_SCORES = {
         "exaltation": 100,
-        "moolatrikona": 90,  # 85-90 range, using 90 as representative
+        "moolatrikona": 90,
         "own_sign": 75,
-        "great_friend": 65,
-        "friend": 50,
-        "neutral": 40,
-        "enemy": 25,
-        "great_enemy": 10,
-        "debilitation": 5,  # 0-5 range, using 5 as representative
+        "great_friend": 65,  # Adhi Mitra
+        "friend": 50,  # Mitra
+        "neutral": 40,  # Sama
+        "enemy": 25,  # Shatru
+        "great_enemy": 10,  # Adhi Shatru
+        "debilitation": 5,
     }
 
     def __init__(self) -> None:
@@ -122,7 +127,7 @@ class DignityScorer:
             chart: BirthChart object (optional)
 
         Returns:
-            Dignity score based on friendship (40-65)
+            Dignity score based on friendship (10-65)
         """
         # Get sign lord
         sign_lord = self._get_sign_lord(sign_index)
@@ -130,16 +135,32 @@ class DignityScorer:
         if sign_lord is None:
             return self.DIGNITY_SCORES["neutral"]
 
-        # Get friendship type
-        friendship = get_natural_friendship(planet, sign_lord)
+        # Get natural friendship
+        natural = get_natural_friendship(planet, sign_lord)
 
-        # Convert friendship to score
-        if friendship == FriendshipType.NATURAL_FRIEND:
-            return self.DIGNITY_SCORES["friend"]
-        elif friendship == FriendshipType.NATURAL_ENEMY:
-            return self.DIGNITY_SCORES["enemy"]
+        # If chart is available, use Panchadha Maitri (Natural + Temporary)
+        if chart is not None:
+            temporary = calculate_tatkalika_maitri(chart, planet, sign_lord)
+            combined = get_combined_friendship(natural, temporary)
+
+            if combined == FriendshipType.ADHI_MITRA:
+                return self.DIGNITY_SCORES["great_friend"]
+            elif combined == FriendshipType.MITRA:
+                return self.DIGNITY_SCORES["friend"]
+            elif combined == FriendshipType.SHATRU:
+                return self.DIGNITY_SCORES["enemy"]
+            elif combined == FriendshipType.ADHI_SHATRU:
+                return self.DIGNITY_SCORES["great_enemy"]
+            else:
+                return self.DIGNITY_SCORES["neutral"]
         else:
-            return self.DIGNITY_SCORES["neutral"]
+            # Fallback to natural friendship only
+            if natural == FriendshipType.NATURAL_FRIEND:
+                return self.DIGNITY_SCORES["friend"]
+            elif natural == FriendshipType.NATURAL_ENEMY:
+                return self.DIGNITY_SCORES["enemy"]
+            else:
+                return self.DIGNITY_SCORES["neutral"]
 
     def _get_sign_lord(self, sign_index: int) -> Optional[Planet]:
         """
@@ -211,9 +232,16 @@ class DignityScorer:
 
         # Get sign lord and friendship
         sign_lord = self._get_sign_lord(sign_index)
-        friendship = None
+        friendship_desc = "Neutral"
+
         if sign_lord is not None:
-            friendship = get_natural_friendship(planet, sign_lord)
+            natural = get_natural_friendship(planet, sign_lord)
+            if chart is not None:
+                temporary = calculate_tatkalika_maitri(chart, planet, sign_lord)
+                combined = get_combined_friendship(natural, temporary)
+                friendship_desc = combined.value
+            else:
+                friendship_desc = natural.value
 
         # Get modifier explanation
         modifiers = get_modifier_explanation(
@@ -225,7 +253,7 @@ class DignityScorer:
             "base_score": base_score,
             "dignity_type": dignity_type,
             "sign_lord": sign_lord.name if sign_lord else None,
-            "friendship": friendship.value if friendship else None,
+            "friendship": friendship_desc,
             "modifiers": modifiers,
         }
 

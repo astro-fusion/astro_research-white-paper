@@ -20,6 +20,7 @@ except ImportError:
     SWISSEPH_AVAILABLE = False
     swe = None
 
+from ..utils.datetime_utils import julian_day as calculate_jd
 from .ayanamsa import (
     AyanamsaSystem,
     convert_tropical_to_sidereal,
@@ -76,7 +77,7 @@ class EphemerisEngine:
 
     def datetime_to_julian_day(self, dt: datetime) -> float:
         """
-        Convert datetime to Julian Day Number.
+        Convert datetime to Julian Day Number using project utility.
 
         Args:
             dt: Datetime object
@@ -84,33 +85,7 @@ class EphemerisEngine:
         Returns:
             Julian Day Number as float
         """
-        # Convert to UTC if timezone-aware
-        if dt.tzinfo is not None:
-            utc_tm = dt.utctimetuple()
-            year, month, day = utc_tm.tm_year, utc_tm.tm_mon, utc_tm.tm_mday
-            hour = utc_tm.tm_hour + utc_tm.tm_min / 60.0 + utc_tm.tm_sec / 3600.0
-        else:
-            year, month, day = dt.year, dt.month, dt.day
-            hour = dt.hour + dt.minute / 60.0 + dt.second / 3600.0
-
-        # Calculate Julian Day
-        if month <= 2:
-            year -= 1
-            month += 12
-
-        a = math.floor(year / 100)
-        b = 2 - a + math.floor(a / 4)
-
-        jd = (
-            math.floor(365.25 * (year + 4716))
-            + math.floor(30.6001 * (month + 1))
-            + day
-            + b
-            - 1524.5
-            + hour / 24.0
-        )
-
-        return jd
+        return calculate_jd(dt)
 
     def get_heliocentric_position(
         self, julian_day: float, planet: Union[int, str]
@@ -246,35 +221,38 @@ class EphemerisEngine:
             "combust": combust,
         }
 
-    def get_node_positions(self, julian_day: float) -> Tuple[Dict, Dict]:
+    def get_node_positions(
+        self, julian_day: float, node_type: str = "mean"
+    ) -> Tuple[Dict, Dict]:
         """
         Calculate positions of Rahu (North Node) and Ketu (South Node).
 
         Args:
             julian_day: Julian day number
+            node_type: 'mean' or 'true' node
 
         Returns:
             Tuple of (rahu_position, ketu_position) dictionaries
         """
+        node_id = swe.MEAN_NODE if node_type.lower() == "mean" else swe.TRUE_NODE
+
         # Calculate Rahu (North Node)
-        rahu_data = self.get_planet_position(julian_day, swe.TRUE_NODE)
+        rahu_data = self.get_planet_position(julian_day, node_id)
 
-        # Ketu is always 180 degrees opposite to Rahu
-        ketu_longitude = (rahu_data["longitude"] + 180) % 360
+        # Ketu is exactly 180 degrees opposite to Rahu
+        ketu_longitude = (rahu_data["longitude"] + 180.0) % 360.0
 
-        # Create Ketu position data (copy Rahu and modify)
+        # Create Ketu position data
         ketu_data = rahu_data.copy()
         ketu_data["longitude"] = ketu_longitude
 
-        # Recalculate sign information for Ketu
+        # Recalculate sign for Ketu
         from .ayanamsa import get_zodiac_sign
 
-        ketu_sign_index, ketu_sign_name, ketu_degrees_in_sign = get_zodiac_sign(
-            ketu_longitude
-        )
-        ketu_data["sign"] = ketu_sign_index
-        ketu_data["sign_name"] = ketu_sign_name
-        ketu_data["degrees_in_sign"] = ketu_degrees_in_sign
+        sign_idx, sign_name, deg_in_sign = get_zodiac_sign(ketu_longitude)
+        ketu_data["sign"] = sign_idx
+        ketu_data["sign_name"] = sign_name
+        ketu_data["degrees_in_sign"] = deg_in_sign
 
         return rahu_data, ketu_data
 
@@ -306,38 +284,42 @@ class EphemerisEngine:
         position_data = self.get_planet_position(julian_day, planet)
         return bool(position_data["combust"])
 
-    def get_all_planet_positions(self, julian_day: float) -> Dict[str, Dict]:
+    def get_all_planet_positions(
+        self, julian_day: float, node_type: str = "mean"
+    ) -> Dict[str, Dict]:
         """
         Calculate positions for all traditional planets.
 
         Args:
             julian_day: Julian day number
+            node_type: 'mean' or 'true' node
 
         Returns:
             Dictionary mapping planet names to position data
         """
         planets = {
-            "Sun": swe.SUN,
-            "Moon": swe.MOON,
-            "Mars": swe.MARS,
-            "Mercury": swe.MERCURY,
-            "Jupiter": swe.JUPITER,
-            "Venus": swe.VENUS,
-            "Saturn": swe.SATURN,
-            "Rahu": swe.TRUE_NODE,  # Will be handled specially
-            "Ketu": "KETU",  # Special marker for Ketu calculation
+            "SUN": swe.SUN,
+            "MOON": swe.MOON,
+            "MARS": swe.MARS,
+            "MERCURY": swe.MERCURY,
+            "JUPITER": swe.JUPITER,
+            "VENUS": swe.VENUS,
+            "SATURN": swe.SATURN,
+            "RAHU": "RAHU",
+            "KETU": "KETU",
         }
 
         positions = {}
 
         for planet_name, planet_const in planets.items():
-            if planet_name == "Ketu":
-                # Handle Ketu specially
-                rahu_data, ketu_data = self.get_node_positions(julian_day)
-                positions["Ketu"] = ketu_data
-            elif planet_name == "Rahu":
-                rahu_data, ketu_data = self.get_node_positions(julian_day)
-                positions["Rahu"] = rahu_data
+            if planet_name in ["RAHU", "KETU"]:
+                # Handle nodes together to ensure consistency
+                if "RAHU" not in positions:
+                    rahu_data, ketu_data = self.get_node_positions(
+                        julian_day, node_type
+                    )
+                    positions["RAHU"] = rahu_data
+                    positions["KETU"] = ketu_data
             else:
                 positions[planet_name] = self.get_planet_position(
                     julian_day, planet_const

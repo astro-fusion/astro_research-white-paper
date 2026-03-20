@@ -46,19 +46,19 @@ jobs:
         pip install black isort flake8 mypy bandit safety
 
     - name: Check code formatting (Black)
-      run: black --check --diff libs/ tests/
+      run: black --check --diff libs/ src/ application/ research/ tests/
 
     - name: Check import sorting (isort)
-      run: isort --check-only --diff libs/ tests/
+      run: isort --check-only --diff libs/ src/ application/ research/ tests/
 
     - name: Lint code (flake8)
-      run: flake8 libs/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
+      run: flake8 libs/ src/ application/ research/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
 
     - name: Type checking (mypy)
-      run: mypy libs/vedic_astrology_core/
+      run: mypy libs/vedic_astrology_core/ src/ application/
 
     - name: Security scan (bandit)
-      run: bandit -r libs/ --exclude tests
+      run: bandit -r libs/ src/ application/ --exclude tests
 
     - name: Check dependencies security (safety)
       run: safety check --full-report

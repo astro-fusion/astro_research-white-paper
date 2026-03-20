@@ -16,14 +16,21 @@ except ImportError:
     SWISSEPH_AVAILABLE = False
     swe = None
 
-from ..config.constants import NAKSHATRAS
 from .ayanamsa import (
     AyanamsaSystem,
     convert_tropical_to_sidereal,
-    get_ayanamsa_offset,
     get_zodiac_sign,
 )
 from .ephemeris import EphemerisEngine
+from ..config.constants import NAKSHATRAS
+
+# Internal bridge to src/celestial if available for advanced house systems
+try:
+    from src.celestial.house_systems import CelestialHouseSystem, compute_house_cusps
+
+    HAS_CELESTIAL_ENGINES = True
+except ImportError:
+    HAS_CELESTIAL_ENGINES = False
 
 
 class BirthChart:
@@ -40,6 +47,8 @@ class BirthChart:
         latitude: float,
         longitude: float,
         ayanamsa_system: AyanamsaSystem = AyanamsaSystem.LAHIRI,
+        house_system: str = "P",  # Default: Placidus
+        node_type: str = "mean",  # Default: Mean Node
     ):
         """
         Initialize birth chart.
@@ -49,11 +58,17 @@ class BirthChart:
             latitude: Birth latitude in decimal degrees
             longitude: Birth longitude in decimal degrees
             ayanamsa_system: Ayanamsa system to use
+            house_system: Swiss Ephemeris house system code (e.g., 'P', 'K', 'O', 'W')
+            node_type: 'mean' or 'true' node
         """
         self.birth_datetime = birth_datetime
         self.latitude = latitude
         self.longitude = longitude
         self.ayanamsa_system = ayanamsa_system
+        self.house_system_code = (
+            house_system.encode() if isinstance(house_system, str) else house_system
+        )
+        self.node_type = node_type
 
         # Validate coordinates
         if not (-90 <= self.latitude <= 90):
@@ -95,14 +110,16 @@ class BirthChart:
     def planets(self) -> Dict[str, Dict]:
         """Return all planetary positions."""
         if self._planets is None:
-            self._planets = self.ephemeris.get_all_planet_positions(self.julian_day)
+            self._planets = self.ephemeris.get_all_planet_positions(
+                self.julian_day, node_type=self.node_type
+            )
         return self._planets
 
     @property
     def ayanamsa(self) -> float:
         """Get Ayanamsa value for this chart."""
         if self._ayanamsa is None:
-            self._ayanamsa = get_ayanamsa_offset(self.julian_day, self.ayanamsa_system)
+            self._ayanamsa = self.ephemeris.get_ayanamsa_offset(self.julian_day)
         return self._ayanamsa
 
     def _calculate_ascendant(self) -> Dict:
@@ -147,33 +164,47 @@ class BirthChart:
         """
         Calculate house cusps for the birth chart.
 
-        Uses Placidus house system as standard for Vedic astrology.
+        Standard: Placidus (P) or Whole Sign (W). Handles polar regions via src bridge.
 
         Returns:
             List of 12 dictionaries with house information
         """
-        # Calculate houses using Swiss Ephemeris
-        cusps, ascmc = swe.houses_ex(
-            self.julian_day, self.latitude, self.longitude, b"P"
-        )  # Placidus
+        if HAS_CELESTIAL_ENGINES:
+            # Map single-letter code to HouseSystem enum if possible
+            try:
+                # This is a bit hacky but works for the bridge
+                enum_map = {
+                    b"P": CelestialHouseSystem.PLACIDUS,
+                    b"W": CelestialHouseSystem.WHOLE_SIGN,
+                }
+                sys_enum = enum_map.get(
+                    self.house_system_code, CelestialHouseSystem.PORPHYRY
+                )
+                cusps, ascmc_0, mc_0 = compute_house_cusps(
+                    self.julian_day, self.latitude, self.longitude, sys_enum
+                )
+            except Exception:
+                # Fallback to direct swisseph if bridge fails
+                cusps, ascmc = swe.houses_ex(
+                    self.julian_day,
+                    self.latitude,
+                    self.longitude,
+                    self.house_system_code,
+                )
+        else:
+            cusps, ascmc = swe.houses_ex(
+                self.julian_day, self.latitude, self.longitude, self.house_system_code
+            )
 
         houses = []
-
         for i in range(12):
             house_longitude = cusps[i]
-
-            # Convert to sidereal if needed
             if not self.ephemeris.sidereal_mode_set:
                 house_longitude = convert_tropical_to_sidereal(
                     house_longitude, self.ayanamsa
                 )
-
-            # Normalize to 0-360
             house_longitude = house_longitude % 360
-
-            # Get sign information
             sign_index, sign_name, degrees_in_sign = get_zodiac_sign(house_longitude)
-
             houses.append(
                 {
                     "house_number": i + 1,
@@ -184,7 +215,6 @@ class BirthChart:
                     "full_name": f"{sign_name} {degrees_in_sign:.2f}°",
                 }
             )
-
         return houses
 
     def get_planet_in_house(self, planet_name: str) -> Optional[int]:
@@ -197,6 +227,7 @@ class BirthChart:
         Returns:
             House number (1-12), or None if planet not found
         """
+        planet_name = planet_name.upper()
         if planet_name not in self.planets:
             return None
 
@@ -238,6 +269,7 @@ class BirthChart:
         Returns:
             Dictionary with Nakshatra info or None if planet not found
         """
+        planet_name = planet_name.upper()
         if planet_name not in self.planets:
             return None
 
@@ -276,6 +308,8 @@ def calculate_chart(
     latitude: float,
     longitude: float,
     ayanamsa_system: AyanamsaSystem = AyanamsaSystem.LAHIRI,
+    house_system: str = "P",
+    node_type: str = "mean",
 ) -> BirthChart:
     """
     Calculate a complete birth chart.
@@ -289,7 +323,14 @@ def calculate_chart(
     Returns:
         BirthChart object with complete chart data
     """
-    return BirthChart(birth_datetime, latitude, longitude, ayanamsa_system)
+    return BirthChart(
+        birth_datetime,
+        latitude,
+        longitude,
+        ayanamsa_system,
+        house_system=house_system,
+        node_type=node_type,
+    )
 
 
 def get_ascendant(
