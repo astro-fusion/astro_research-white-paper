@@ -91,6 +91,15 @@ plt.legend()
 plt.show()
 ```
 
+::: {.callout-note}
+## Astrological Interpretation
+The **Blue Step Function** is "Man-Made Time" (Calendar).
+The **Red Dots** are "Cosmic Time" (Moon).
+*   Notice how the Red Dots stay at the same level (same Nakshatra Lord) for barely a day.
+*   Sometimes the Moon skips a level entirely (Atichara/Fast Motion).
+*   **Key Insight**: Numerology forces a predictable rhythm (1, 2, 3...) that the Moon simply does not follow. Relying on the Blue Line to predict the Red Dot is mathematically flawed.
+:::
+
 ## 2. Distribution of Numerological vs Astrological Lords
 
 To understand baseline behavior, we visualize how often each planet appears in both systems across the year.
@@ -116,6 +125,13 @@ plt.grid(axis="y", alpha=0.3)
 plt.tight_layout()
 plt.show()
 ```
+
+::: {.callout-note}
+## Astrological Interpretation
+*   **Numerology (Blue)**: Shows a relatively even distribution because the calendar cycles 1-9 repeatedly. (31-day months slightly skew 1, 2, 3).
+*   **Astrology (Orange)**: Shows **natural variation**. The Moon spends different amounts of time in different signs/nakshatras based on its elliptical orbit speed.
+*   **Rahu/Ketu/Saturn**: Notice if they appear less or more frequently. In Numerology, a "4" (Rahu) occurs every 9 days. In Astrology, the Moon might rush through Rahu-ruled Nakshatras (Ardra, Swati, Shatabhisha) if it is fast.
+:::
 
 ## 3. Statistical Probability of Alignment
 
@@ -153,6 +169,14 @@ plt.ylabel("Numerology Lord")
 plt.tight_layout()
 plt.show()
 ```
+
+::: {.callout-note}
+## Astrological Interpretation
+A perfect system would show a diagonal line of dark blue squares (Sun matches Sun, Moon matches Moon).
+Instead, we see a **scattered field of noise**.
+*   **Example**: Look at the row for "Numerology Mars (9)". It overlaps with *every single Nakshatra Lord* almost equally.
+*   **Meaning**: On a "Mars Day" (9th), the Moon is just as likely to be in a Mercury Nakshatra (enemy of Mars) as it is in a Mars Nakshatra.
+:::
 
 ## 5. Statistical Association Metrics
 
@@ -209,6 +233,11 @@ plt.tight_layout()
 plt.show()
 ```
 
+::: {.callout-note}
+## Astrological Interpretation
+The fluctuation in match rate (e.g., dipping in some months, peaking in others) is **purely accidental**. It depends on how the Moon's 27.3-day cycle phases with the grid of the 30/31-day Gregorian months. There is no astrological "season" where numerology becomes more accurate.
+:::
+
 ## 7. Detailed Moon Phase Variation
 
 Beyond just the Nakshatra, the Moon's "mood" is heavily influenced by its phase (Paksha). Numerology treats every "2" (Moon number) day as identical. However, Astrology distinguishes between:
@@ -239,6 +268,14 @@ plt.xlabel("Date")
 plt.grid(True, alpha=0.2)
 plt.show()
 ```
+
+::: {.callout-note}
+## Astrological Interpretation
+This wave represents the **Dignity of the Moon**.
+*   At 30-60° (Taurus), the Moon is **Exalted (Ucca)**.
+*   At 210-240° (Scorpio), the Moon is **Debilitated (Neecha)**.
+*   Numerology ignores this wave. It predicts the same outcome for a "Number 2" day regardless of whether the Moon is at the peak (Exalted) or trough (Debilitated) of this wave.
+:::
 
 ## 8. Frequency-Domain Signature (Spectral Analysis)
 
@@ -272,6 +309,14 @@ plt.grid(True, alpha=0.3)
 plt.tight_layout()
 plt.show()
 ```
+
+::: {.callout-note}
+## Astrological Interpretation
+The **Orange Spikes** (Numerology) show a very artificial, mechanical frequency (the 9-day cycle).
+The **Blue Noise** (Astrology) shows a richer, more complex organic signal.
+*   The universe does not vibrate at a perfect base-9 integer frequency. It vibrates with complex harmonics (harmonics of orbital periods).
+*   Numerology is a "Digital Approximation" of an "Analog Universe."
+:::
 
 \FloatBarrier
 

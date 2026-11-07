@@ -323,7 +323,7 @@ def main():
         print("\n1. Fetching Global Data (2020-2025, Mag 6.0+)...")
         global_data = fetcher.fetch_earthquakes(
             start_date="2020-01-01",
-            end_date="2025-12-31", 
+            end_date="2026-02-18", 
             min_magnitude=6.0,
             use_usgs_api=True
         )
@@ -333,7 +333,13 @@ def main():
         
         with open(global_file, "w") as f:
             json.dump(processed_global, f, indent=2, default=str)
-        print(f"   ✅ Saved {len(processed_global)} records to {global_file.name}")
+        
+        # Consistent filename for analysis scripts
+        phase7_file = base_dir / "usgs_real_data_phase7.json"
+        with open(phase7_file, "w") as f:
+            json.dump(processed_global, f, indent=2, default=str)
+            
+        print(f"   ✅ Saved {len(processed_global)} records to {global_file.name} and {phase7_file.name}")
 
 
         # ---------------------------------------------------------
@@ -343,7 +349,7 @@ def main():
         print("\n2. Fetching Indian Subcontinent Data (2020-2025, Mag 5.0+)...")
         india_data = fetcher.fetch_earthquakes(
             start_date="2020-01-01",
-            end_date="2025-12-31", 
+            end_date="2026-02-18", 
             min_magnitude=5.0,
             latitude_range=(5.0, 40.0),
             longitude_range=(60.0, 100.0),

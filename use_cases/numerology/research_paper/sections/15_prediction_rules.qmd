@@ -1,0 +1,62 @@
+# Rules for Prediction & Synthesis
+
+To transform these statistical insights into a functional predictive system, we must apply the **Vedic Rules of Synthesis**. This section formalizes the logic used to interpret the interaction between the static Numerological Number (reduction) and the dynamic Astrological Planet (Shadbala).
+
+## 1. Core Planetary-Numeric Correspondences
+
+The foundation of the system is the fixed mapping between numbers and their planetary lords.
+
+| Number | Planet (Lord) | Nature | Key Quality |
+|:---:|:---|:---|:---|
+| 1 | Sun (Surya) | Royal | Leadership, Vitality, Soul |
+| 2 | Moon (Chandra) | Motherly | Emotions, Mind, Fluids |
+| 3 | Jupiter (Guru) | Guru | Wisdom, Expansion, Finance |
+| 4 | Rahu (North Node) | Shadow | Technology, Ambition, Illusion |
+| 5 | Mercury (Budh) | Prince | Communication, Trade, Logic |
+| 6 | Venus (Shukra) | Teacher | Luxury, Arts, Relationships |
+| 7 | Ketu (South Node) | Shadow | Intuition, Liberation, Detachment |
+| 8 | Saturn (Shani) | Judge | Discipline, Karma, Longevity |
+| 9 | Mars (Mangal) | Soldier | Energy, Bravery, Real Estate |
+
+## 2. The Rules of Alignment (Samyoga)
+
+Prediction success depends on the **Functional Alignment** between the Date and the Sky.
+
+### Rule A: The Lord-Strength Rule
+- **Condition**: If the planet ruling the Numerology Number (e.g., Sun for Number 1) has a Shadbala > 60.
+- **Prediction**: High probability of "Positive Manifestation." The potential shown by the number is supported by the cosmic engine.
+
+### Rule B: The Vara-Number Harmony
+- **Condition**: If the Day Number and Day of Week (Vara) share the same planet (e.g., date reduces to 1 on a Sunday).
+- **Prediction**: "Double Resonance." These dates are peak temporal alignment windows for that specific planet's energy.
+
+### Rule C: The Natural Friend/Enemy Rule
+Planets have inherent relationships that govern synergy.
+- **Harmony**: Number 1 (Sun) aligns well with Number 3 (Jupiter). Sunday is a "Strong" day for Number 1.
+- **Conflict**: Number 8 (Saturn) and Number 1 (Sun) are natural enemies. A "Number 8" date that falls on a Sunday creates "Tension" (Structural Stress).
+
+## 3. Actionable Prediction Synthesis Algorithm
+
+To derive a prediction for a specific date:
+
+1.  **Step 1: Calculate the Numerology Baseline** (UDN, UMN, UYN).
+2.  **Step 2: Identify the Current Shadbala** for the Lord of the Number.
+3.  **Step 3: Check Vara (Day Lord) Harmony**.
+4.  **Step 4: Combine into a Grade (A to F)**:
+    - **AAA**: Number and Vara match, AND Lord is Exalted/Strong (>70). *Maximum success.*
+    - **B**: Number Lord is average (40-60). *Moderate routine success.*
+    - **F**: Number Lord is Retrograde or Debilitated (<30). *Avoid major decisions even if the number is "lucky".*
+
+## 4. Sector-Specific Prediction Rules
+
+| Sector | Primary Planet | Secondary Numerology Indicator |
+|:---|:---|:---|
+| **Finance** | Jupiter (3) | Sum of UMN + UYN |
+| **Health** | Sun (1) | Missing Numbers 1, 5, 9 |
+| **Tech/Work** | Mercury (5) / Rahu (4) | Pinnacle Number Alignment |
+| **Travel** | Moon (2) | UDN-Vara Resonance |
+
+::: {.callout-important}
+## Summary of Prediction Logic
+The "Success Probability Index" (Section 13) is the primary computational filter. Always overlay the **Numerology Intent** onto the **Astrological Capacity** to avoid the "False Promise" trap identified in the data analysis.
+:::

@@ -75,4 +75,14 @@ This report is assembled from modular sections for maintainability.
 
 {{< include sections/12_graphs_alignment_windows.qmd >}}
 
+{{< include sections/13_planetary_variation_time.qmd >}}
+
+{{< include sections/14_vedic_interpretation.qmd >}}
+
+{{< include sections/15_prediction_rules.qmd >}}
+
 {{< include sections/90_legacy_content.qmd >}}
+
+# Acknowledgments
+
+This research was supported by the open-source community providing high-precision ephemeris data and the various scholars of Vedic Astrology whose translations of classical texts (BPHS, Brihat Samhita) formed the theoretical basis for this computational audit.

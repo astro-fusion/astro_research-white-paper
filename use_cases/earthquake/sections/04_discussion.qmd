@@ -1,0 +1,17 @@
+# Discussion
+
+## Interpretation of Results
+
+The coefficient for **Mars Strength** shows a non-significant negative correlation ($p=0.10$), suggesting that the signal is indistinguishable from noise in this dataset. Similarly, the **Universal Day Number** variables (including Day 8) did not reach the threshold of statistical significance ($p > 0.05$).
+
+However, the Conjunction Analysis (visualized in @fig-mars-ketu) suggests that while general "strength" is not a predictor, specific **angular relationships** (Yogas) may have local correlations.
+
+## Confounders
+
+Potential confounders include:
+*   **Solar Cycle:** The 11-year solar maximum cycle may overlap with planetary periods (Jupiter).
+*   **Tidal Stress:** Lunar phases (syzygy) are known physical triggers but are often conflated with "astrology."
+
+## Critical Self-Assessment
+
+The Monte Carlo analysis (@fig-monte-carlo) reveals that the improvement in model fit (Delta-AIC) provided by the Astro-Fusion variables falls within the 95% confidence interval of random noise. Therefore, strictly speaking, **we fail to reject the Null Hypothesis** for the global dataset. The signal provided by these variables is not strong enough to be used as a standalone predictor for global seismicity.

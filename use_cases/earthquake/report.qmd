@@ -1,7 +1,7 @@
 ---
 title: "Statistical Validation of Astrological and Numerological Precursors in Global Seismic Activity"
-subtitle: "A Negative Binomial Regression Analysis of the USGS Catalog (1900-2023)"
-date: 2026-01-30
+subtitle: "A Negative Binomial Regression Analysis of the USGS Catalog (2020-2025)"
+date: 2026-02-18
 authors:
   - name: Astro-Fusion Research Team
     affiliation: Independent Research Initiative
@@ -18,78 +18,34 @@ format:
     documentclass: article
     number-sections: true
     toc: true
+    lof: true
+    lot: true
+    fig-pos: 'H'
+    keep-tex: true
+    include-in-header:
+      text: |
+        \usepackage{float}
+        \usepackage{placeins}
 ---
 
-# Introduction
+# Master Structure
 
-The prediction of earthquakes remains one of the most persistent challenges in geophysical science. The "Prediction Gap"—the inability to deterministically forecast the time, location, and magnitude of rupture—stems from the non-linear, chaotic nature of crustal stress accumulation.
+:::{.callout-note}
+This report is assembled from modular sections for maintainability.
+:::
 
-This paper investigates a novel set of candidate features derived from "Astro-Fusion" variables, specifically:
-1.  **Universal Day Numbers (UDN):** A cyclic base-9 numerological time series.
-2.  **Planetary Force Vectors:** Quantified "Shadbala" strength scores for major planets (Mars, Saturn) derived from the Swiss Ephemeris.
+{{< include sections/00_introduction.qmd >}}
 
-We do not presuppose the physical mechanism but treat these as potential exogenous regressors in an Exploratory Data Analysis (EDA) framework.
+{{< include sections/01_data_methods.qmd >}}
 
-# Data & Methodology
+{{< include sections/02_planetary_variation.qmd >}}
 
-## Data Preprocessing
-We utilized the USGS Comprehensive Earthquake Catalog (ComCat), filtering for events with $Magnitude \ge 5.0$ from 1900 to 2023. Key preprocessing steps included:
--   **Magnitude Homogenization:** Converting all magnitudes to Moment Magnitude ($M_w$) to ensure consistency.
--   **Declustering:** Applying the Gardner-Knopoff algorithm to remove aftershocks, isolating independent mainshocks.
+{{< include sections/03_results.qmd >}}
 
-## Statistical Framework: Negative Binomial Regression
-Earthquake counts are discrete, non-negative integers. Traditional OLS regression is inappropriate. We employ a **Generalized Linear Model (GLM)**. Because earthquake counts exhibit overdispersion ($Variance > Mean$) due to clustering, we utilize the Negative Binomial distribution rather than the Poisson distribution.
+{{< include sections/04_discussion.qmd >}}
 
-The model specification is:
-$$ \ln(\mu_t) = \beta_0 + \beta_{trend} t + \beta_{season} \sin(\frac{2\pi t}{365}) + \beta_{astro} X_{astro} $$
+{{< include sections/05_conclusion.qmd >}}
 
-## The Null Hypothesis ($H_0$)
-The Null Hypothesis states that earthquake occurrence is a random Poisson process influenced only by:
--   Long-term catalog detection improvement (Trend).
--   Seasonal tidal stress (Annual Seasonality).
--   Random noise.
+# Acknowledgments
 
-Any significant deviation in $\beta_{astro}$ would suggest a signal.
-
-# Results
-
-## Regression Analysis
-Table 1 presents the estimated coefficients from the GLM.
-
-: Table 1: Regression Coefficients {tbl-colwidths="[40,20,20,20]"}
-
-| Variable | Coefficient | Standard Error | P-Value |
-|:---|:---|:---|:---|
-| Intercept | -0.900 | 0.388 | 0.02 |
-| Year Index | 0.011 | 0.062 | 0.86 |
-| Universal Day 8 | 0.143 | 0.213 | 0.50 |
-| Mars Strength | -0.005 | 0.003 | 0.10 |
-| Saturn Strength | 0.000 | 0.003 | 0.99 |
-
-*(Note: See `tables/regression_coefficients.csv` for full model output)*
-
-## Temporal Prediction
-Figure 1 below illustrates the model's ability to track the aggregate monthly seismic rate. The "Prediction Gap" is visible where the model captures the trend but misses extreme outliers (Mega-Quakes).
-
-![Figure 1: Time series of Predicted Rate vs. Actual Rate (Monthly Aggregated). The red dashed line represents the Negative Binomial model fit.](../figures/predicted_vs_actual.png)
-
-## "Look-Elsewhere" Analysis
-To ensure any detected signal is not a result of p-hacking (finding a pattern by checking thousands of combinations), we performed a Monte Carlo Shuffle Test (N=1000). We destroyed the time-link between astrology and earthquakes while preserving the internal structure of both series.
-
-![Figure 2: The "Look-Elsewhere" Analysis. The histogram shows the distribution of Delta-AIC values for random shuffles. The red line marks the Real Data performance. If the red line is within the gray mass, the result is indistinguishable from noise.](../figures/monte_carlo_distribution.png)
-
-# Discussion
-
-## Interpretation
-The coefficient for **Mars Strength** shows a non-significant negative correlation ($p=0.10$), suggesting that the signal is indistinguishable from noise in this dataset. Similarly, the **Universal Day Number** variables (including Day 8) did not reach the threshold of statistical significance ($p > 0.05$). The **Year Index** also showed no significant trend ($p=0.86$), indicating the seismic rate in the filtered dataset is relatively stable over time or the variance is too high to detect a trend.
-
-## Confounders
-Potential confounders include:
--   **Solar Cycle:** The 11-year solar maximum cycle may overlap with planetary periods (Jupiter).
--   **Tidal Stress:** Lunar phases (syzygy) are known physical triggers but are often conflated with "astrology."
-
-## Critical Self-Assessment
-The Monte Carlo analysis (Figure 2) reveals that the improvement in model fit (Delta-AIC) provided by the Astro-Fusion variables falls within the 95% confidence interval of random noise. Therefore, strictly speaking, **we fail to reject the Null Hypothesis** for the global dataset. The signal provided by these variables is not strong enough to be used as a standalone predictor for global seismicity.
-
-# Conclusion
-This study provides a reproducible computational framework for testing "fringe" scientific hypotheses. While we found anecdotal correlations in individual high-magnitude events, the aggregate statistical analysis suggests that "Universal Day Numbers" and "Global Planetary Strength" do not possess significant predictive power for global earthquake rates. Future work should focus on regionalized hypotheses (Koorma Chakra) rather than global aggregates.
+The authors express gratitude to the United States Geological Survey (USGS) for maintaining the Comprehensive Earthquake Catalog (ComCat). We also acknowledge the open-source community for the development of the Swiss Ephemeris and the scientific Python ecosystem (NumPy, SciPy, Matplotlib) which made this cross-disciplinary analysis possible.

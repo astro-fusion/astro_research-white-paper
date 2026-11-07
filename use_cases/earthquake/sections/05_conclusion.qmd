@@ -1,0 +1,9 @@
+# Conclusion
+
+This study provides a reproducible computational framework for testing "fringe" scientific hypotheses. While we found interesting anecdotal correlations (e.g., Mars-Ketu proximity during major events), the aggregate statistical analysis suggests that "Universal Day Numbers" and "Global Planetary Strength" do not possess significant predictive power for global earthquake rates when controlled for multiple hypothesis testing.
+
+Future work should focus on **Regionalized Hypotheses** (Koorma Chakra) rather than global aggregates. The "Global" nature of our dataset may average out specific regional triggers, masking the signal.
+
+We recommend:
+1.  **Regional Analysis**: Testing specific tectonic plates against zodiacal signs (Koorma Chakra mapping).
+2.  **Higher Frequency Analysis**: Analyzing lunar transits through specific Nakshatras sensitive to seismic zones. 

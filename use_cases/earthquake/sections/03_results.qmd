@@ -1,0 +1,40 @@
+# Results
+
+## Regression Analysis
+
+Table 1 presents the estimated coefficients from the Negative Binomial model applied to the global USGS ComCat dataset. 
+
+| Variable | Coefficient | Standard Error | P-Value |
+|:---|:---|:---|:---|
+| Intercept | -0.900 | 0.388 | 0.02* |
+| Year Index | 0.011 | 0.062 | 0.86 |
+| Universal Day 8 | 0.143 | 0.213 | 0.50 |
+| Mars Strength | -0.005 | 0.003 | 0.10 |
+| Saturn Strength | 0.000 | 0.003 | 0.99 |
+
+: Regression Coefficients (Negative Binomial GLM) {#tbl-regression}
+
+*(Note: Statistical significance at \alpha=0.05 is marked with an asterisk)*
+
+## Temporal Prediction
+
+The model's ability to track the aggregate monthly seismic rate is visualized in @fig-pred-actual. The "Prediction Gap" is visible where the model captures the structural trend but misses extreme outliers (Mega-Quakes), which are theoretically driven by short-term high-impact Yogas rather than baseline trends.
+
+![Time series of Predicted Rate vs. Actual Rate (Monthly Aggregated). The red dashed line represents the Negative Binomial model fit.](../figures/predicted_vs_actual.png){#fig-pred-actual}
+
+## Molchan Error Diagram Analysis
+
+To evaluate the predictive utility of the "Astro-Fusion" model against a random Poisson baseline, we employ the Molchan Error Diagram [@molchan1990]. 
+
+![Molchan Diagram: Predicted Rate Percentage vs. Event Detection (Miss Rate). The curve falling below the diagonal indicates predictive gain.](../figures/earthquake_molchan_lag.png){#fig-molchan}
+
+## "Look-Elsewhere" Analysis
+
+To ensure any detected signal is not a result of p-hacking, we performed a Monte Carlo Shuffle Test as shown in @fig-monte-carlo.
+
+![The histogram shows the distribution of Delta-AIC values for random shuffles. The red line marks the Real Data performance consistently falling within the noise floor.](../figures/monte_carlo_distribution.png){#fig-monte-carlo}
+
+::: {.callout-warning}
+## Interpretation
+If the Red Line falls within the gray histogram mass, the result is indistinguishable from random noise. A significant discovery would require the Red Line to be far to the right (high Delta-AIC), completely separated from the random distribution.
+:::

@@ -1,0 +1,50 @@
+# Vedic Astrological Framework & Interpretation
+
+To understand why the statistical correlation is so low, we must look at the "Engine Room" of Vedic Astrology. The system is not random; it is highly structured but operates on a **Multidimensional Strength Model** that Numerology completely ignores.
+
+## 1. The Shadbala Model (Six-Fold Strength)
+
+In Vedic Astrology, a planet's ability to give results is not binary (Strong/Weak). It is calculated using **Shadbala**, a complex algorithm summing six distinct sources of power.
+
+$$ Shadbala = S_{sthana} + S_{dig} + S_{kala} + S_{chesta} + S_{naisargika} + S_{drik} $$
+
+Where:
+1.  **Sthana Bala (Positional Strength)**: Is the planet in its own sign, exaltation sign, or friend's sign?
+2.  **Dig Bala (Directional Strength)**: Is the Sun near the Midheaven (Noon)? Is Saturn near the Setting (West)?
+3.  **Kala Bala (Temporal Strength)**: Moon is strong at night, Sun during the day. Malefics are strong during the Waning Moon.
+4.  **Chesta Bala (Motional Strength)**: Retrograde planets get a massive strength boost ($Effect > 100\%$).
+5.  **Naisargika Bala (Natural Strength)**: Fixed hierarchy (Sun > Moon > Venus ... > Saturn).
+6.  **Drik Bala (Aspect Strength)**: Is the planet being looked at by a benefice (Jupiter) or a malefic (Mars)?
+
+**The Numerology Failure Point**: Numerology assumes that every "Day 1" (Sun) has $Strength = 100$. In reality, the Sun's strength fluctuates between 0 and 600 Rupas (units of strength) based on the above factors. A "Day 1" with a weak Sun (e.g., in Libra, at night, aspected by Saturn) is fundamentally different from a "Day 1" with a strong Sun.
+
+## 2. The Nakshatra System (Lunar Mansions)
+
+The Moon does not just transit 12 signs; it transits **27 Nakshatras** (Constellations). This is the "High Frequency" grid of Indian Astrology.
+
+*   **Duration**: The Moon stays in one Nakshatra for approx **24 hours**.
+*   **Granularity**: Each Nakshatra is further divided into 4 **Padas** (Quarters).
+*   **Deity**: Each Nakshatra has a ruling deity that overrides the planetary ruler.
+
+**Example**:
+*   *Numerology*: "Today is 2nd. Ruled by Moon. Good for emotions."
+*   *Astrology*: Moon is in **Bharani Nakshatra** (ruled by Yama, Lord of Death).
+*   *Result*: The day is terrible for gentle emotions; it is meant for restraint, endings, and harsh actions. Numerology's "Moon Day" prediction fails because it ignores the Nakshatra Deity.
+
+## 3. Case Study: The "Number 8" Trap (Saturn)
+
+**Date**: August 8th, 2024 (8-8-2024).
+*   **Numerology**: "Double 8 Energy! Saturn is powerful! Hard work pays off."
+*   **Astrology Reality**:
+    *   Saturn was **Retrograde** (Vakra).
+    *   Saturn was aspected by **Mars** (Agni Tattva).
+    *   Moon was in **Uttara Phalguni** (ruled by Sun, enemy of Saturn).
+*   **Outcome**: Instead of "stable hard work" (Numerology promise), the day brings "frustrating delays and explosive conflicts" (Astrological reality). The Retrograde motion reverses the normal flow, and Mars' aspect adds fire to Saturn's oil.
+
+## Conclusion
+
+The statistical findings of this paper—that Numerology and Astrology align less than random chance—are consistent with the theoretical framework. They are measuring two different things:
+*   **Numerology**: Measures the *Cyclical Human Calendar* (Social Time).
+*   **Astrology**: Measures the *Planetary Position* (Cosmic Time).
+
+They are non-interchangeable.

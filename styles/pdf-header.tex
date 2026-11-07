@@ -2,5 +2,26 @@
 % This file is included in the LaTeX preamble for PDF generation
 
 % Add any custom LaTeX packages or commands here
-% Example: \usepackage{booktabs}
-% Example: \usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{titlesec}
+\usepackage{xcolor}
+
+% High-quality table settings
+\setlength{\heavyrulewidth}{1.5pt}
+\setlength{\lightrulewidth}{0.8pt}
+
+% Caption styling
+\captionsetup{font=small, labelfont=bf, margin=10pt}
+
+% Section styling for academic feel
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}

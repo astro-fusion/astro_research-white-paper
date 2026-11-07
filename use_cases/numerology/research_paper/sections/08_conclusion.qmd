@@ -9,6 +9,6 @@ This study serves as a definitive resource for understanding the mechanics of Ve
 Researchers and practitioners must therefore treat these as independent variables in any predictive model, rather than assuming they reinforce each other.
 
 # References
-1. *BPHS (Brihat Parashara Hora Shastra)*. The foundational text of Vedic Astrology.
-2. *Swiss Ephemeris*. Documentation of astronomical algorithms.
-3. *Vedic Numerology (Anka Jyotish)*. Traditional principles of date reduction.
+
+::: {#refs}
+:::

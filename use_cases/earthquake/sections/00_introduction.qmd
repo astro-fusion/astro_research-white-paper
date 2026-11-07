@@ -1,0 +1,20 @@
+# Introduction
+
+The prediction of earthquakes remains one of the most persistent challenges in geophysical science. The "Prediction Gap"—the inability to deterministically forecast the time, location, and magnitude of rupture—stems from the non-linear, chaotic nature of crustal stress accumulation.
+
+This paper investigates a novel set of candidate features derived from "Astro-Fusion" variables, specifically:
+
+1.  **Universal Day Numbers (UDN):** A cyclic base-9 numerological time series.
+2.  **Planetary Force Vectors:** Quantified "Shadbala" strength scores for major planets (Mars, Saturn) derived from the Swiss Ephemeris.
+3.  **Angular Separations:** Specific planetary geometries (conjunctions) traditionally associated with seismic triggers in Vedic Astrology (e.g., *Mangal-Ketu* Yoga).
+
+We do not presuppose the physical mechanism but treat these as potential exogenous regressors in an Exploratory Data Analysis (EDA) framework.
+
+## The Koorma Chakra Hypothesis
+
+In Vedic Astrology, the *Koorma Chakra* (Tortoise Cycle) maps the geography of the Earth to the constellations. Ancient texts posit that:
+*   **Saturn (Shani)** represents tectonic pressure and deep earth structures.
+*   **Mars (Mangal)** represents sudden release of energy, fire, and magma.
+*   **Ketu (South Node)** represents subtle, invisible breaks and sudden calamities.
+
+The hypothesis tested here is whether the *interaction* of these planets (e.g., Mars conjunction Ketu) correlates with a statistically significant increase in global seismic moment release.

@@ -1,0 +1,26 @@
+# Data & Methodology
+
+## Data Preprocessing
+
+We utilized the USGS Comprehensive Earthquake Catalog (ComCat), filtering for events with $Magnitude \ge 5.0$ (or regional specific thresholds) from 2020 to 2025. Key preprocessing steps included:
+
+-   **Magnitude Homogenization:** Converting all magnitudes to Moment Magnitude ($M_w$) to ensure consistency.
+-   **Declustering:** Applying the Gardner-Knopoff algorithm (or simplified time-windowing) to remove aftershocks, isolating independent mainshocks.
+-   **Time Standardization:** All timestamps converted to UTC to match the Swiss Ephemeris.
+
+## Statistical Framework: Negative Binomial Regression
+
+Earthquake counts are discrete, non-negative integers. Traditional OLS regression is inappropriate. We employ a **Generalized Linear Model (GLM)**. Because earthquake counts exhibit overdispersion ($Variance > Mean$) due to clustering, we utilize the Negative Binomial distribution rather than the Poisson distribution.
+
+The model specification is:
+
+$$ \ln(\mu_t) = \beta_0 + \beta_{trend} t + \beta_{season} \sin(\frac{2\pi t}{365}) + \beta_{astro} X_{astro} $$
+
+## The Null Hypothesis ($H_0$)
+
+The Null Hypothesis states that earthquake occurrence is a random Poisson process influenced only by:
+-   Long-term catalog detection improvement (Trend).
+-   Seasonal tidal stress (Annual Seasonality).
+-   Random noise.
+
+Any significant deviation in $\beta_{astro}$ (where $p < 0.05$) would suggest a signal.
