@@ -1,0 +1,15 @@
+# FastAPI REST API Requirements
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.0.0
+
+# Core numerology package
+-e .
+
+# Additional dependencies for API
+python-multipart>=0.0.6
+pyswisseph>=2.08.00
+
+# Optional: For enhanced performance
+gunicorn>=21.2.0
+httpx>=0.25.0

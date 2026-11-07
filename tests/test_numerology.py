@@ -11,7 +11,7 @@ import unittest
 from datetime import date, time
 
 # Add src to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "libs"))
 
 from vedic_numerology.numerology import (  # noqa: E402
     calculate_bhagyanka,

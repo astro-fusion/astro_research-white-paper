@@ -1,26 +1,18 @@
-import os
-import sys
+"""Test suite for Phase 2 of the astrology research pipeline."""
+
 import unittest
-from datetime import date, datetime
-from unittest.mock import MagicMock, patch
-
-import pandas as pd
-
-# Add src to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
-sys.path.append(
-    os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "../use_cases/earthquake/scripts")
-    )
-)
+from datetime import datetime
+from unittest.mock import patch
 
 from vedic_astrology_core.astrology.ephemeris import EphemerisEngine
 from vedic_astrology_core.dignity.global_scorer import GlobalShadbalaScorer
 
 
 class TestResearchPipelinePhase2(unittest.TestCase):
+    """Test cases for Phase 2 of the research pipeline."""
 
     def setUp(self):
+        """Set up test fixtures."""
         self.eph = EphemerisEngine()
         self.scorer = GlobalShadbalaScorer(self.eph)
 

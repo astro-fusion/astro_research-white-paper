@@ -1,0 +1,67 @@
+name: ✨ Feature Request
+description: Suggest a new feature, calculation, or improvement
+title: "[FEAT] "
+labels: ["enhancement", "triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement! Please fill out this form to help us understand your idea.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: "🔍 Problem or Motivation"
+      description: Is your feature request related to a problem? Describe it.
+      placeholder: "I'm always frustrated when I try to calculate Kala Sarpa Yoga but the library doesn't support it..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: "💡 Proposed Solution"
+      description: Describe the feature you'd like to see. Be as specific as possible.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: "🗂️ Target Component"
+      options:
+        - "libs/vedic_astrology_core — New astrological calculation"
+        - "libs/vedic_numerology — New numerology method"
+        - "libs/visuals — New chart type or visualization"
+        - "research/scripts — New pipeline or analysis script"
+        - "application/web — Web interface feature"
+        - "application/api — New API endpoint"
+        - "ops — DevOps/tooling improvement"
+        - "docs — Documentation improvement"
+        - "New top-level component"
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "🔄 Alternatives Considered"
+      description: Have you considered any alternative approaches?
+
+  - type: dropdown
+    id: willing_to_pr
+    attributes:
+      label: "🤝 Would you like to implement this yourself?"
+      options:
+        - "Yes — I'd like to submit a Pull Request"
+        - "Maybe — I'd need guidance"
+        - "No — I'm just suggesting"
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: "📎 Additional Context"
+      description: Links to references (classical texts, research papers, etc.), screenshots, or related issues.

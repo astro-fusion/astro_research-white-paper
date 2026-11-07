@@ -1,13 +1,14 @@
-"""
-Multi-Platform & Multi-Use Case Validation Suite
-Tests for Windows, macOS, Linux compatibility
-Tests for Web, PDF, Markdown outputs
+"""Multi-Platform & Multi-Use Case Validation Suite.
+
+Tests for Windows, macOS, Linux compatibility.
+Tests for Web, PDF, Markdown outputs.
 """
 
 import json
 import os
 import platform
 import sys
+import tempfile
 from pathlib import Path
 
 
@@ -15,6 +16,7 @@ class MultiPlatformValidator:
     """Validates application works across platforms."""
 
     def __init__(self):
+        """Initialize multi-platform validator."""
         self.platform_info = {
             "system": platform.system(),
             "platform": sys.platform,
@@ -59,7 +61,7 @@ class MultiPlatformValidator:
                     tmp.write(b"test")
                     assert tmp.tell() > 0, "File write failed"
 
-                print(f"✅ Windows-specific tests passed")
+                print("✅ Windows-specific tests passed")
             else:
                 print(f"⚠️  Not on Windows (on {sys.platform})")
 
@@ -86,7 +88,7 @@ class MultiPlatformValidator:
                 assert test_file.exists(), "File creation failed"
                 test_file.unlink()
 
-                print(f"✅ macOS-specific tests passed")
+                print("✅ macOS-specific tests passed")
             else:
                 print(f"⚠️  Not on macOS (on {sys.platform})")
 
@@ -110,7 +112,7 @@ class MultiPlatformValidator:
                 # Test environment
                 assert os.getenv("PATH"), "PATH environment variable not set"
 
-                print(f"✅ Linux-specific tests passed")
+                print("✅ Linux-specific tests passed")
             else:
                 print(f"⚠️  Not on Linux (on {sys.platform})")
 
@@ -134,6 +136,7 @@ class OutputFormatValidator:
     """Validates different output formats."""
 
     def __init__(self):
+        """Initialize validator."""
         self.results = {"passed": 0, "failed": 0, "total": 0, "formats": {}}
 
     def test_html_output(self):
@@ -163,7 +166,7 @@ class OutputFormatValidator:
             assert "<body>" in html_content, "BODY tag missing"
             assert html_content.count("<") == html_content.count(">"), "Tag mismatch"
 
-            print(f"✅ HTML output valid - Document well-formed")
+            print("✅ HTML output valid - Document well-formed")
             self._record_pass(test_name)
             return True
         except Exception as e:
@@ -263,7 +266,7 @@ More content.
             assert "|" in markdown, "Tables missing"
 
             lines = markdown.strip().split("\n")
-            headers = [l for l in lines if l.startswith("#")]
+            headers = [line for line in lines if line.startswith("#")]
 
             assert len(headers) >= 2, "Not enough headers"
 
@@ -321,6 +324,7 @@ class MultiUseCaseValidator:
     """Validates multiple use cases."""
 
     def __init__(self):
+        """Initialize use case validator."""
         self.results = {"passed": 0, "failed": 0, "total": 0, "use_cases": {}}
 
     def test_numerology_use_case(self):
@@ -368,7 +372,8 @@ class MultiUseCaseValidator:
             assert len(earthquakes) == 3, "Count mismatch"
 
             print(
-                f"✅ Earthquake use case - {len(earthquakes)} events, avg magnitude: {avg_magnitude:.1f}"
+                f"✅ Earthquake use case - {len(earthquakes)} events, "
+                f"avg magnitude: {avg_magnitude:.1f}"
             )
             self._record_pass(test_name)
             return True
@@ -402,7 +407,8 @@ class MultiUseCaseValidator:
             assert report["metadata"]["version"] == "1.0", "Version mismatch"
 
             print(
-                f"✅ Report generation - {len(report['sections'])} sections, v{report['metadata']['version']}"
+                f"✅ Report generation - {len(report['sections'])} sections, "
+                f"v{report['metadata']['version']}"
             )
             self._record_pass(test_name)
             return True
@@ -418,9 +424,6 @@ class MultiUseCaseValidator:
     def _record_fail(self, test_name, error):
         self.results["failed"] += 1
         self.results["total"] += 1
-
-
-import tempfile
 
 
 def run_all_validators():

@@ -1,25 +1,31 @@
 #!/usr/bin/env python3
-"""
-Generate daily astrology base features for mundane analysis.
-"""
+"""Generate daily astrology base features for mundane analysis."""
+import sys
 from datetime import datetime, timedelta
 from pathlib import Path
-import sys
+
 import pandas as pd
 
 repo_root = Path(__file__).resolve().parents[4]
 sys.path.insert(0, str(repo_root / "src"))
 
-from vedic_astrology_core.astrology.chart import calculate_chart, get_nakshatra
-from vedic_astrology_core.astrology.ephemeris import EphemerisEngine
-from vedic_astrology_core.config.constants import Planet
-from vedic_astrology_core.config.reference_charts import get_reference_chart
-from vedic_astrology_core.dasha.vimshottari import (
-    compute_vimshottari_periods,
+from vedic_astrology_core.astrology.chart import (  # noqa: E402
+    calculate_chart,
+    get_nakshatra,
+)
+from vedic_astrology_core.astrology.ephemeris import EphemerisEngine  # noqa: E402
+from vedic_astrology_core.config.reference_charts import (  # noqa: E402
+    get_reference_chart,
+)
+from vedic_astrology_core.dasha.vimshottari import (  # noqa: E402
     compute_vimshottari_nested_periods,
+    compute_vimshottari_periods,
     get_vimshottari_chain_at,
 )
-from vedic_astrology_core.time_series import TimeSeriesConfig, compute_astrology_strength_series
+from vedic_astrology_core.time_series import (  # noqa: E402
+    TimeSeriesConfig,
+    compute_astrology_strength_series,
+)
 
 # Config
 START = datetime(2015, 1, 1, 12, 0, 0)
@@ -37,8 +43,17 @@ TITHI_DEG = 12.0
 YOGA_DEG = 13.333333333333334
 
 KARANA_NAMES = [
-    "Bava", "Balava", "Kaulava", "Taitila", "Gara", "Vanija", "Vishti",
-    "Shakuni", "Chatushpada", "Naga", "Kimstughna",
+    "Bava",
+    "Balava",
+    "Kaulava",
+    "Taitila",
+    "Gara",
+    "Vanija",
+    "Vishti",
+    "Shakuni",
+    "Chatushpada",
+    "Naga",
+    "Kimstughna",
 ]
 
 # Daily iteration
@@ -50,19 +65,33 @@ engine = EphemerisEngine()
 india_chart = get_reference_chart("india_independence")
 nepal_chart = get_reference_chart("nepal_constitution_2015")
 
-india_birth = calculate_chart(india_chart.datetime, india_chart.latitude, india_chart.longitude)
-nepal_birth = calculate_chart(nepal_chart.datetime, nepal_chart.latitude, nepal_chart.longitude)
+india_birth = calculate_chart(
+    india_chart.datetime, india_chart.latitude, india_chart.longitude
+)
+nepal_birth = calculate_chart(
+    nepal_chart.datetime, nepal_chart.latitude, nepal_chart.longitude
+)
 
 india_moon_long = india_birth.planets["Moon"]["longitude"]
 nepal_moon_long = nepal_birth.planets["Moon"]["longitude"]
 
-india_periods = compute_vimshottari_periods(india_chart.datetime, india_moon_long, total_years=120)
-nepal_periods = compute_vimshottari_periods(nepal_chart.datetime, nepal_moon_long, total_years=120)
+india_periods = compute_vimshottari_periods(
+    india_chart.datetime, india_moon_long, total_years=120
+)
+nepal_periods = compute_vimshottari_periods(
+    nepal_chart.datetime, nepal_moon_long, total_years=120
+)
 
-india_nested = compute_vimshottari_nested_periods(india_chart.datetime, india_moon_long, depth=2, total_years=120)
-nepal_nested = compute_vimshottari_nested_periods(nepal_chart.datetime, nepal_moon_long, depth=2, total_years=120)
+india_nested = compute_vimshottari_nested_periods(
+    india_chart.datetime, india_moon_long, depth=2, total_years=120
+)
+nepal_nested = compute_vimshottari_nested_periods(
+    nepal_chart.datetime, nepal_moon_long, depth=2, total_years=120
+)
+
 
 def get_dasha_lord(periods, target_dt, tzinfo):
+    """Get the lord of the Dasha period for a given date."""
     if target_dt.tzinfo is None:
         target_dt = target_dt.replace(tzinfo=tzinfo)
     for period in periods:
@@ -70,10 +99,13 @@ def get_dasha_lord(periods, target_dt, tzinfo):
             return period.lord
     return periods[-1].lord
 
+
 def get_dasha_chain(nested_periods, target_dt, tzinfo):
+    """Get the sub-lords of the Dasha period for a given date."""
     if target_dt.tzinfo is None:
         target_dt = target_dt.replace(tzinfo=tzinfo)
     return get_vimshottari_chain_at(target_dt, nested_periods)
+
 
 while cur <= END:
     chart = calculate_chart(cur, LAT, LON)
@@ -113,14 +145,22 @@ while cur <= END:
         "nakshatra": nak.get("name"),
         "nakshatra_index": nak.get("index"),
         "nakshatra_lord": nak.get("lord"),
-        "india_vimshottari_lord": get_dasha_lord(india_periods, cur, india_chart.datetime.tzinfo),
-        "nepal_vimshottari_lord": get_dasha_lord(nepal_periods, cur, nepal_chart.datetime.tzinfo),
+        "india_vimshottari_lord": get_dasha_lord(
+            india_periods, cur, india_chart.datetime.tzinfo
+        ),
+        "nepal_vimshottari_lord": get_dasha_lord(
+            nepal_periods, cur, nepal_chart.datetime.tzinfo
+        ),
     }
 
     india_chain = get_dasha_chain(india_nested, cur, india_chart.datetime.tzinfo)
     nepal_chain = get_dasha_chain(nepal_nested, cur, nepal_chart.datetime.tzinfo)
-    row["india_vimshottari_sublord"] = india_chain[1] if len(india_chain) > 1 else india_chain[0]
-    row["nepal_vimshottari_sublord"] = nepal_chain[1] if len(nepal_chain) > 1 else nepal_chain[0]
+    row["india_vimshottari_sublord"] = (
+        india_chain[1] if len(india_chain) > 1 else india_chain[0]
+    )
+    row["nepal_vimshottari_sublord"] = (
+        nepal_chain[1] if len(nepal_chain) > 1 else nepal_chain[0]
+    )
 
     for pname, pdata in planet_data.items():
         row[f"{pname}_lon"] = pdata["longitude"]
@@ -142,8 +182,10 @@ base_df = base_df.merge(strength_df, left_on="date", right_on="date", how="left"
 base_df.to_csv(base_out, index=False)
 print(f"Wrote {base_out} with {len(base_df)} rows")
 
+
 # Export deeper dasha periods (up to pratyantar) for offline analysis
 def export_nested_periods(periods, path):
+    """Export deeply nested Dasha periods to a CSV file."""
     out = []
     for p in periods:
         out.append(
@@ -157,8 +199,13 @@ def export_nested_periods(periods, path):
         )
     pd.DataFrame(out).to_csv(path, index=False)
 
-india_nested_depth3 = compute_vimshottari_nested_periods(india_chart.datetime, india_moon_long, depth=3, total_years=120)
-nepal_nested_depth3 = compute_vimshottari_nested_periods(nepal_chart.datetime, nepal_moon_long, depth=3, total_years=120)
+
+india_nested_depth3 = compute_vimshottari_nested_periods(
+    india_chart.datetime, india_moon_long, depth=3, total_years=120
+)
+nepal_nested_depth3 = compute_vimshottari_nested_periods(
+    nepal_chart.datetime, nepal_moon_long, depth=3, total_years=120
+)
 
 export_nested_periods(india_nested_depth3, out_dir / "india_dasha_periods.csv")
 export_nested_periods(nepal_nested_depth3, out_dir / "nepal_dasha_periods.csv")

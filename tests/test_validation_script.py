@@ -1,7 +1,8 @@
+"""Test suite for the Phase 4 validation script."""
+
 import os
 import sys
 import unittest
-from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pandas as pd
@@ -9,14 +10,18 @@ import pandas as pd
 # Add src to path
 sys.path.append(
     os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "../use_cases/earthquake/scripts")
+        os.path.join(
+            os.path.dirname(__file__), "../research/use_cases/earthquake/scripts"
+        )
     )
 )
 
 
 class TestValidationScript(unittest.TestCase):
+    """Test cases for the validation script."""
 
     def setUp(self):
+        """Set up test fixtures."""
         # Create a dummy regression matrix for testing
         self.test_matrix_path = "test_validation_matrix.csv"
 
@@ -34,6 +39,7 @@ class TestValidationScript(unittest.TestCase):
         df.to_csv(self.test_matrix_path, index=False)
 
     def tearDown(self):
+        """Clean up test fixtures and generated files."""
         if os.path.exists(self.test_matrix_path):
             os.remove(self.test_matrix_path)
         if os.path.exists("validation_report.json"):
@@ -43,18 +49,18 @@ class TestValidationScript(unittest.TestCase):
 
     def test_validation_execution(self):
         """Test that run_validation runs with small N shuffles."""
-        import validate_results
-
         # Use small number of shuffles for speed
         try:
-            validate_results.run_validation(self.test_matrix_path, n_shuffles=10)
+            from validate_results import run_validation  # noqa: E402
+
+            run_validation(self.test_matrix_path, n_shuffles=10)
         except Exception as e:
             self.fail(f"run_validation failed with: {e}")
 
         # Check outputs
         self.assertTrue(os.path.exists("validation_report.json"))
-        # Plot might not generate in headless env without display, but code catches exception
-        # so mostly checking script finished.
+        # Plot might not generate in headless env without display,
+        # but code catches exception so mostly checking script finished.
 
 
 if __name__ == "__main__":

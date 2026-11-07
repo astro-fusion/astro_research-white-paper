@@ -1,0 +1,759 @@
+<!-- Interactive Components for Vedic Numerology Research -->
+<script src="https://cdn.jsdelivr.net/npm/plotly.js@2.27.0/dist/plotly.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.8.5/dist/d3.min.js"></script>
+<script src="api-client.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+
+<style>
+/* Interactive Components Styles */
+.interactive-controls {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 15px;
+    margin: 2rem 0;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.control-group {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.control-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    font-size: 1.1em;
+}
+
+.slider-container {
+    margin: 1rem 0;
+}
+
+.slider-value {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #ffd700;
+    text-align: center;
+    margin-top: 0.5rem;
+}
+
+.btn-interactive {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    margin: 0.5rem;
+    box-shadow: 0 4px 15px rgba(255,107,107,0.3);
+}
+
+.btn-interactive:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255,107,107,0.4);
+}
+
+.btn-interactive:active {
+    transform: translateY(0);
+}
+
+.chart-container {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    margin: 2rem 0;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border: 1px solid #e0e0e0;
+}
+
+.data-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.metric-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.metric-card h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.metric-card p {
+    margin: 0;
+    opacity: 0.9;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.interactive-tabs {
+    display: flex;
+    margin: 2rem 0 1rem 0;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.tab-button {
+    background: none;
+    border: none;
+    padding: 1rem 2rem;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 500;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.tab-button.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+}
+
+.tab-button:hover {
+    color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.date-range-selector {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.date-input {
+    padding: 0.5rem;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.date-input:focus {
+    border-color: #667eea;
+    outline: none;
+}
+
+.range-display {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 5px;
+    font-family: monospace;
+    margin-top: 0.5rem;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .interactive-controls {
+        padding: 1rem;
+    }
+
+    .data-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .date-range-selector {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .tab-button {
+        padding: 0.8rem 1rem;
+        font-size: 1em;
+    }
+}
+</style>
+
+<div class="interactive-controls">
+    <h2 style="text-align: center; margin-bottom: 2rem;">
+        <i class="fas fa-chart-line"></i>
+        Interactive Research Explorer
+    </h2>
+
+    <!-- Tab Navigation -->
+    <div class="interactive-tabs">
+        <button class="tab-button active" onclick="showTab('overview')">Overview</button>
+        <button class="tab-button" onclick="showTab('temporal')">Temporal Analysis</button>
+        <button class="tab-button" onclick="showTab('comparative')">Comparative Study</button>
+        <button class="tab-button" onclick="showTab('predictive')">Predictive Model</button>
+    </div>
+
+    <!-- Tab Content -->
+    <div id="overview" class="tab-content active">
+        <div class="control-group">
+            <h3><i class="fas fa-birthday-cake"></i> Birth Data Input</h3>
+            <div class="date-range-selector">
+                <div>
+                    <label for="birthDate">Birth Date:</label>
+                    <input type="date" id="birthDate" class="date-input" value="1984-08-27">
+                </div>
+                <div>
+                    <label for="birthTime">Birth Time:</label>
+                    <input type="time" id="birthTime" class="date-input" value="10:30">
+                </div>
+                <div>
+                    <label for="latitude">Latitude:</label>
+                    <input type="number" id="latitude" class="date-input" step="0.0001" value="28.6139">
+                </div>
+                <div>
+                    <label for="longitude">Longitude:</label>
+                    <input type="number" id="longitude" class="date-input" step="0.0001" value="77.1025">
+                </div>
+            </div>
+            <button class="btn-interactive" onclick="calculateNumerology()">
+                <i class="fas fa-calculator"></i> Calculate Numerology
+            </button>
+        </div>
+
+        <!-- Results Display -->
+        <div id="resultsContainer" style="display: none;">
+            <div class="data-summary">
+                <div class="metric-card">
+                    <h3 id="mulankaValue">-</h3>
+                    <p>Mulanka (Birth Number)</p>
+                </div>
+                <div class="metric-card">
+                    <h3 id="bhagyankaValue">-</h3>
+                    <p>Bhagyanka (Destiny Number)</p>
+                </div>
+                <div class="metric-card">
+                    <h3 id="harmonyScore">-</h3>
+                    <p>Harmony Score</p>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3>Planetary Dignity Analysis</h3>
+                <div id="dignityChart" style="height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="temporal" class="tab-content">
+        <div class="control-group">
+            <h3><i class="fas fa-calendar-alt"></i> Temporal Analysis Range</h3>
+            <div class="date-range-selector">
+                <div>
+                    <label for="startDate">Start Date:</label>
+                    <input type="date" id="startDate" class="date-input" value="2024-01-01">
+                </div>
+                <div>
+                    <label for="endDate">End Date:</label>
+                    <input type="date" id="endDate" class="date-input" value="2024-12-31">
+                </div>
+                <button class="btn-interactive" onclick="analyzeTemporal()">
+                    <i class="fas fa-chart-area"></i> Analyze Temporal Patterns
+                </button>
+            </div>
+
+            <div class="chart-container">
+                <h3>Planetary Support Over Time</h3>
+                <div id="temporalChart" style="height: 500px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="comparative" class="tab-content">
+        <div class="control-group">
+            <h3><i class="fas fa-balance-scale"></i> Comparative Analysis</h3>
+            <p>Compare numerological profiles across different birth data</p>
+            <button class="btn-interactive" onclick="loadComparativeData()">
+                <i class="fas fa-exchange-alt"></i> Load Comparative Data
+            </button>
+
+            <div class="chart-container">
+                <h3>Multi-Subject Comparison</h3>
+                <div id="comparativeChart" style="height: 500px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="predictive" class="tab-content">
+        <div class="control-group">
+            <h3><i class="fas fa-brain"></i> Predictive Modeling</h3>
+            <p>Explore predictive relationships between numerology and planetary positions</p>
+
+            <div class="slider-container">
+                <label for="predictionThreshold">Prediction Threshold: <span id="thresholdValue">0.7</span></label>
+                <input type="range" id="predictionThreshold" min="0.1" max="1.0" step="0.1" value="0.7"
+                       oninput="updateThreshold(this.value)">
+                <div class="slider-value">Confidence: <span id="confidenceDisplay">70%</span></div>
+            </div>
+
+            <button class="btn-interactive" onclick="runPrediction()">
+                <i class="fas fa-magic"></i> Run Predictive Analysis
+            </button>
+
+            <div class="chart-container">
+                <h3>Predictive Model Results</h3>
+                <div id="predictionChart" style="height: 500px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Global variables
+let currentData = null;
+let charts = {};
+
+// Tab switching functionality
+function showTab(tabName) {
+    // Hide all tab content
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+
+    // Remove active class from all buttons
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    // Show selected tab
+    document.getElementById(tabName).classList.add('active');
+    event.target.classList.add('active');
+}
+
+// Interactive calculation function
+async function calculateNumerology() {
+    const birthDate = document.getElementById('birthDate').value;
+    const birthTime = document.getElementById('birthTime').value;
+    const latitude = parseFloat(document.getElementById('latitude').value);
+    const longitude = parseFloat(document.getElementById('longitude').value);
+
+    // Show loading state
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<div class="loading-spinner"></div>Calculating...';
+    button.disabled = true;
+
+    try {
+        // Prepare birth data
+        const birthData = {
+            birth_date: birthDate,
+            birth_time: birthTime,
+            latitude: latitude,
+            longitude: longitude,
+            ayanamsa_system: 'lahiri'
+        };
+
+        // Call API for complete analysis
+        const result = await vedicAPI.completeAnalysis(birthData);
+
+        if (result.status === 'processing' || result.status === 'manual_required') {
+            // Handle async GitHub Actions processing
+            showProcessingMessage(result);
+        } else {
+            // Direct API response
+            displayResults(result);
+            updateDignityChart(result.astrology ? result.astrology.planets : null);
+        }
+
+    } catch (error) {
+        console.error('API calculation error:', error);
+        alert('Error calculating numerology: ' + error.message);
+    } finally {
+        // Reset button
+        button.innerHTML = originalText;
+        button.disabled = false;
+    }
+}
+
+// Show processing message for async calculations
+function showProcessingMessage(result) {
+    const resultsContainer = document.getElementById('resultsContainer');
+    resultsContainer.innerHTML = `
+        <div style="text-align: center; padding: 2rem;">
+            <div class="loading-spinner" style="display: inline-block; margin-bottom: 1rem;"></div>
+            <h3>🔄 Calculation in Progress</h3>
+            <p>Your calculation has been started via GitHub Actions.</p>
+            <p><strong>Check the results here:</strong></p>
+            <a href="${result.workflow_url}" target="_blank" class="btn-interactive" style="display: inline-block; margin-top: 1rem;">
+                📊 View GitHub Actions
+            </a>
+            ${result.manual_url ? `
+            <p style="margin-top: 1rem;"><em>Or trigger manually:</em></p>
+            <a href="${result.manual_url}" target="_blank" class="btn-interactive">
+                🚀 Manual Trigger
+            </a>
+            ` : ''}
+        </div>
+    `;
+    resultsContainer.style.display = 'block';
+}
+
+// Display calculation results
+function displayResults(data) {
+    // Handle different response formats
+    const numerology = data.numerology || data;
+    const support = data.support_analysis || data.support_analysis;
+
+    document.getElementById('mulankaValue').textContent = `${numerology.mulanka.number} (${numerology.mulanka.planet})`;
+    document.getElementById('bhagyankaValue').textContent = `${numerology.bhagyanka.number} (${numerology.bhagyanka.planet})`;
+
+    if (support && support.overall) {
+        document.getElementById('harmonyScore').textContent = `${support.overall.harmony_level}`;
+    } else {
+        document.getElementById('harmonyScore').textContent = 'Calculated';
+    }
+
+    document.getElementById('resultsContainer').style.display = 'block';
+
+    // Scroll to results
+    document.getElementById('resultsContainer').scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
+}
+
+// Planetary dignity scoring constants (based on Vedic astrology)
+const DIGNITY_SCORES = {
+    exaltation: 100,
+    moolatrikona: 90,
+    own_sign: 75,
+    great_friend: 65,
+    friend: 50,
+    neutral: 40,
+    enemy: 25,
+    great_enemy: 10,
+    debilitation: 5
+};
+
+// Exaltation degrees (where planets are strongest)
+const EXALTATION_DEGREES = {
+    'Sun': 10,      // Aries 10°
+    'Moon': 33,     // Taurus 3°
+    'Mars': 28,     // Capricorn 28°
+    'Mercury': 15,  // Virgo 15°
+    'Jupiter': 5,   // Cancer 5°
+    'Venus': 27,    // Pisces 27°
+    'Saturn': 20    // Libra 20°
+};
+
+// Debilitation degrees (where planets are weakest)
+const DEBILITATION_DEGREES = {
+    'Sun': 190,     // Libra 10°
+    'Moon': 213,    // Scorpio 3°
+    'Mars': 118,    // Cancer 28°
+    'Mercury': 345, // Pisces 15°
+    'Jupiter': 245, // Capricorn 5°
+    'Venus': 177,   // Virgo 27°
+    'Saturn': 290   // Aries 20°
+};
+
+// Moolatrikona signs (special own signs)
+const MOOLATRIKONA_SIGNS = {
+    'Sun': [4],     // Leo
+    'Moon': [1],    // Taurus
+    'Mars': [0, 7], // Aries, Scorpio
+    'Mercury': [2, 5], // Gemini, Virgo
+    'Jupiter': [8, 11], // Sagittarius, Pisces
+    'Venus': [1, 6], // Taurus, Libra
+    'Saturn': [9, 10] // Capricorn, Aquarius
+};
+
+// Own signs (ruling signs)
+const OWN_SIGNS = {
+    'Sun': [4],     // Leo
+    'Moon': [3],    // Cancer
+    'Mars': [0, 7], // Aries, Scorpio
+    'Mercury': [2, 5], // Gemini, Virgo
+    'Jupiter': [8, 11], // Sagittarius, Pisces
+    'Venus': [1, 6], // Taurus, Libra
+    'Saturn': [9, 10] // Capricorn, Aquarius
+};
+
+// Friendship relationships
+const FRIENDSHIP_MATRIX = {
+    'Sun': { friends: ['Moon', 'Mars', 'Jupiter'], enemies: ['Venus', 'Saturn'], neutrals: ['Mercury'] },
+    'Moon': { friends: ['Sun', 'Mercury'], enemies: [], neutrals: ['Mars', 'Jupiter', 'Venus', 'Saturn'] },
+    'Mars': { friends: ['Sun', 'Moon', 'Jupiter'], enemies: ['Mercury'], neutrals: ['Venus', 'Saturn'] },
+    'Mercury': { friends: ['Sun', 'Venus'], enemies: ['Moon'], neutrals: ['Mars', 'Jupiter', 'Saturn'] },
+    'Jupiter': { friends: ['Sun', 'Moon', 'Mars'], enemies: ['Mercury', 'Venus'], neutrals: ['Saturn'] },
+    'Venus': { friends: ['Mercury', 'Saturn'], enemies: ['Sun', 'Moon'], neutrals: ['Mars', 'Jupiter'] },
+    'Saturn': { friends: ['Mercury', 'Venus'], enemies: ['Sun', 'Moon', 'Mars'], neutrals: ['Jupiter'] }
+};
+
+// Calculate dignity score for a planet
+function calculateDignityScore(planetName, longitude, signIndex) {
+    // Check exaltation (highest priority)
+    if (isInExaltation(longitude, planetName)) {
+        return DIGNITY_SCORES.exaltation;
+    }
+
+    // Check debilitation (lowest priority)
+    if (isInDebilitation(longitude, planetName)) {
+        return DIGNITY_SCORES.debilitation;
+    }
+
+    // Check moolatrikona
+    if (isInMoolatrikona(longitude, planetName)) {
+        return DIGNITY_SCORES.moolatrikona;
+    }
+
+    // Check own sign
+    if (isInOwnSign(longitude, planetName)) {
+        return DIGNITY_SCORES.own_sign;
+    }
+
+    // Check friendship with sign lord
+    return calculateFriendshipScore(planetName, signIndex);
+}
+
+// Check if planet is in exaltation
+function isInExaltation(longitude, planetName) {
+    const exaltationDegree = EXALTATION_DEGREES[planetName];
+    if (!exaltationDegree) return false;
+
+    // Allow 1-degree orb for exaltation
+    return Math.abs(longitude - exaltationDegree) <= 1;
+}
+
+// Check if planet is in debilitation
+function isInDebilitation(longitude, planetName) {
+    const debilitationDegree = DEBILITATION_DEGREES[planetName];
+    if (!debilitationDegree) return false;
+
+    // Allow 1-degree orb for debilitation
+    return Math.abs(longitude - debilitationDegree) <= 1;
+}
+
+// Check if planet is in moolatrikona
+function isInMoolatrikona(longitude, planetName) {
+    const moolatrikonaSigns = MOOLATRIKONA_SIGNS[planetName];
+    if (!moolatrikonaSigns) return false;
+
+    const signIndex = Math.floor(longitude / 30);
+    return moolatrikonaSigns.includes(signIndex);
+}
+
+// Check if planet is in own sign
+function isInOwnSign(longitude, planetName) {
+    const ownSigns = OWN_SIGNS[planetName];
+    if (!ownSigns) return false;
+
+    const signIndex = Math.floor(longitude / 30);
+    return ownSigns.includes(signIndex);
+}
+
+// Calculate friendship score
+function calculateFriendshipScore(planetName, signIndex) {
+    // Get sign lord
+    const signLord = getSignLord(signIndex);
+    if (!signLord) return DIGNITY_SCORES.neutral;
+
+    const friendship = FRIENDSHIP_MATRIX[planetName];
+    if (!friendship) return DIGNITY_SCORES.neutral;
+
+    if (friendship.friends.includes(signLord)) {
+        return DIGNITY_SCORES.friend;
+    } else if (friendship.enemies.includes(signLord)) {
+        return DIGNITY_SCORES.enemy;
+    } else {
+        return DIGNITY_SCORES.neutral;
+    }
+}
+
+// Get ruling planet of a sign
+function getSignLord(signIndex) {
+    const signLords = ['Mars', 'Venus', 'Mercury', 'Moon', 'Sun', 'Mercury',
+                      'Venus', 'Mars', 'Jupiter', 'Saturn', 'Saturn', 'Jupiter'];
+    return signLords[signIndex];
+}
+
+// Update dignity chart
+function updateDignityChart(planetsData) {
+    const planets = [];
+    const scores = [];
+
+    // If we have astrology data, calculate real dignity scores
+    if (planetsData && typeof planetsData === 'object') {
+        // Only process traditional planets (exclude nodes if present)
+        const traditionalPlanets = ['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn'];
+
+        traditionalPlanets.forEach(planetName => {
+            const planetInfo = planetsData[planetName];
+            if (planetInfo && typeof planetInfo === 'object' && planetInfo.longitude !== undefined) {
+                const dignityScore = calculateDignityScore(
+                    planetName,
+                    planetInfo.longitude,
+                    planetInfo.sign
+                );
+
+                planets.push(planetName);
+                scores.push(dignityScore);
+            }
+        });
+    }
+
+    // Fallback to default planets if no valid data
+    if (planets.length === 0) {
+        const planetNames = ['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn'];
+        const mockScores = [75, 68, 85, 72, 78, 80, 65];
+
+        planetNames.forEach((planet, index) => {
+            planets.push(planet);
+            scores.push(mockScores[index] || 70);
+        });
+    }
+
+    const data = [{
+        type: 'bar',
+        x: planets,
+        y: scores,
+        marker: {
+            color: scores.map(score => score > 70 ? '#27ae60' : score > 50 ? '#f39c12' : '#e74c3c'),
+        },
+        text: scores.map(score => `${score}%`),
+        textposition: 'auto',
+    }];
+
+    const layout = {
+        title: 'Planetary Dignity Scores',
+        xaxis: { title: 'Planets' },
+        yaxis: { title: 'Dignity Score (%)', range: [0, 100] },
+        margin: { t: 50, b: 50, l: 50, r: 50 },
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+    };
+
+    Plotly.newPlot('dignityChart', data, layout, { responsive: true });
+}
+
+// Temporal analysis
+async function analyzeTemporal() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+
+    // Simulate temporal data generation
+    const temporalData = generateTemporalData(startDate, endDate);
+
+    updateTemporalChart(temporalData);
+}
+
+// Generate mock temporal data
+function generateTemporalData(startDate, endDate) {
+    const dates = [];
+    const mulankaSupport = [];
+    const bhagyankaSupport = [];
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+
+    for (let i = 0; i < Math.min(days, 365); i++) {
+        const date = new Date(start);
+        date.setDate(start.getDate() + i);
+
+        dates.push(date.toISOString().split('T')[0]);
+        mulankaSupport.push(60 + Math.random() * 40); // Random between 60-100
+        bhagyankaSupport.push(55 + Math.random() * 45); // Random between 55-100
+    }
+
+    return { dates, mulankaSupport, bhagyankaSupport };
+}
+
+// Update temporal chart
+function updateTemporalChart(data) {
+    const trace1 = {
+        type: 'scatter',
+        mode: 'lines+markers',
+        name: 'Mulanka Support',
+        x: data.dates,
+        y: data.mulankaSupport,
+        line: { color: '#e74c3c', width: 2 },
+        marker: { size: 4 }
+    };
+
+    const trace2 = {
+        type: 'scatter',
+        mode: 'lines+markers',
+        name: 'Bhagyanka Support',
+        x: data.dates,
+        y: data.bhagyankaSupport,
+        line: { color: '#3498db', width: 2 },
+        marker: { size: 4 }
+    };
+
+    const layout = {
+        title: 'Temporal Planetary Support Analysis',
+        xaxis: { title: 'Date', type: 'date' },
+        yaxis: { title: 'Support Score (%)', range: [0, 100] },
+        margin: { t: 50, b: 50, l: 50, r: 50 },
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        showlegend: true,
+        legend: { x: 0, y: 1 }
+    };
+
+    Plotly.newPlot('temporalChart', [trace1, trace2], layout, { responsive: true });
+}
+
+// Threshold slider
+function updateThreshold(value) {
+    document.getElementById('thresholdValue').textContent = value;
+    document.getElementById('confidenceDisplay').textContent = Math.round(value * 100) + '%';
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Set default dates
+    const today = new Date();
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(today.getFullYear() - 1);
+
+    document.getElementById('startDate').value = oneYearAgo.toISOString().split('T')[0];
+    document.getElementById('endDate').value = today.toISOString().split('T')[0];
+
+    // Initialize empty charts
+    Plotly.newPlot('dignityChart', [], { paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)' });
+    Plotly.newPlot('temporalChart', [], { paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)' });
+    Plotly.newPlot('comparativeChart', [], { paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)' });
+    Plotly.newPlot('predictionChart', [], { paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)' });
+});
+
+// Placeholder functions for other features
+function loadComparativeData() {
+    alert('Comparative analysis feature coming soon!');
+}
+
+function runPrediction() {
+    alert('Predictive modeling feature coming soon!');
+}
+</script>

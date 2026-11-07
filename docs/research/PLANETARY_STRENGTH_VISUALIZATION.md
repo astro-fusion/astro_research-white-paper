@@ -41,7 +41,7 @@ This project has been enhanced with real-time variant graphs showing how planeta
 **Features**:
 - Solid lines show actual planetary strength from Vedic Astrology
 - Dashed lines show the numerical influence from numerology
-- Color coding: 
+- Color coding:
   - Orange for Mulanka (Birth Number) planet
   - Blue for Bhagyanka (Fortune Number) planet
 

@@ -15,7 +15,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 root = Path(os.getenv("QUARTO_PROJECT_DIR") or Path.cwd())
-catalog = pd.read_csv(root / "data" / "vedic_principles_catalog.csv")
+catalog = pd.read_csv(root / "research" / "data" / "vedic_principles_catalog.csv")
 
 counts = catalog.groupby("family").size().sort_values(ascending=False).head(20)
 plt.figure(figsize=(8.5, 4))
@@ -31,7 +31,7 @@ plt.show()
 #| label: tbl-eq-vedic-coverage
 #| tbl-cap: "Coverage Matrix for Earthquake Report"
 
-coverage = pd.read_csv(root / "data" / "vedic_principles_coverage.csv")
+coverage = pd.read_csv(root / "research" / "data" / "vedic_principles_coverage.csv")
 eq_cov = coverage[coverage["report"] == "earthquake"]
 summary = (
     eq_cov.groupby(["family", "scope", "coverage_status"])
@@ -40,7 +40,7 @@ summary = (
     .reset_index()
 )
 summary["coverage_ratio"] = summary.get("computed", 0) / summary[[c for c in ["computed", "documented", "not_included"] if c in summary]].sum(axis=1)
-summary.sort_values(["scope", "family"])  
+summary.sort_values(["scope", "family"])
 ```
 
 ```{python}

@@ -1,0 +1,69 @@
+name: 🔬 Research Request
+description: Propose a new empirical research track or methodology improvement
+title: "[RESEARCH] "
+labels: ["research", "triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Proposing a New Research Track
+
+        This project is built around falsifiable empirical research. Before investing time in a new use case, let's discuss it here to align on methodology, data sources, and expected outputs.
+
+        **We welcome proposals that might disprove a hypothesis just as much as ones that might confirm it.**
+
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: "🧪 Research Hypothesis"
+      description: State the specific, falsifiable hypothesis you want to test.
+      placeholder: |
+        "Planets in Kendra houses (1, 4, 7, 10) during the birth of Olympic athletes will show statistically higher dignity scores than a random control group, with p < 0.05."
+    validations:
+      required: true
+
+  - type: textarea
+    id: data_sources
+    attributes:
+      label: "📦 Proposed Data Sources"
+      description: |
+        What data would you need? Is it publicly available?
+        Example: birth data from Wikipedia, earthquake data from USGS, financial data from Yahoo Finance.
+    validations:
+      required: true
+
+  - type: textarea
+    id: methodology
+    attributes:
+      label: "📐 Methodology"
+      description: |
+        How would you test the hypothesis?
+        - What statistical test? (e.g., t-test, correlation, permutation test)
+        - What is the control group?
+        - What constitutes a "significant" result?
+    validations:
+      required: true
+
+  - type: textarea
+    id: related_work
+    attributes:
+      label: "📚 Related Work / Prior Art"
+      description: Any existing research (classical or modern) that relates to this? Links welcome.
+
+  - type: dropdown
+    id: willing_to_implement
+    attributes:
+      label: "🤝 Are you willing to implement this research track?"
+      options:
+        - "Yes — I'd like to lead this research track"
+        - "Maybe — I'd need guidance on the coding parts"
+        - "No — I'm proposing it for others to explore"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: "📎 Additional Context"
+      description: Any other information, references, or context.

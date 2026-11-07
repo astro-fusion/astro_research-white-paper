@@ -13,13 +13,13 @@ import subprocess, sys
 root = Path.cwd().resolve()
 while root and not (root / "pyproject.toml").exists():
     root = root.parent
-data_dir = (root or Path.cwd()) / "docs" / "research" / "track_3_gold_market" / "data"
+data_dir = (root or Path.cwd()) / "research" / "use_cases" / "gold_market" / "data"
 
 metrics_path = data_dir / "gold_astro_metrics.csv"
 if not metrics_path.exists():
-    gen_features = (root or Path.cwd()) / "docs" / "research" / "track_3_gold_market" / "scripts" / "generate_gold_astro_features.py"
-    gen_catalog = (root or Path.cwd()) / "docs" / "research" / "track_3_gold_market" / "scripts" / "generate_gold_astro_catalog.py"
-    gen_metrics = (root or Path.cwd()) / "docs" / "research" / "track_3_gold_market" / "scripts" / "compute_gold_astro_metrics.py"
+    gen_features = (root or Path.cwd()) / "research" / "use_cases" / "gold_market" / "scripts" / "generate_gold_astro_features.py"
+    gen_catalog = (root or Path.cwd()) / "research" / "use_cases" / "gold_market" / "scripts" / "generate_gold_astro_catalog.py"
+    gen_metrics = (root or Path.cwd()) / "research" / "use_cases" / "gold_market" / "scripts" / "compute_gold_astro_metrics.py"
     subprocess.check_call([sys.executable, str(gen_features)])
     subprocess.check_call([sys.executable, str(gen_catalog)])
     subprocess.check_call([sys.executable, str(gen_metrics)])

@@ -1,0 +1,24 @@
+# Code Owners
+# These users are automatically requested for review when a PR modifies matching paths.
+# Format: <pattern> <@github-username>
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything not matched below
+* @astro-fusion
+
+# Core library — requires careful review for calculation correctness
+/libs/vedic_astrology_core/ @astro-fusion
+/libs/vedic_numerology/ @astro-fusion
+
+# Research pipeline — requires research methodology review
+/research/ @astro-fusion
+
+# CI/CD — requires DevOps review
+/.github/workflows/ @astro-fusion
+
+# Security-sensitive app code
+/application/ @astro-fusion
+
+# Documentation
+/docs/ @astro-fusion
+*.md @astro-fusion

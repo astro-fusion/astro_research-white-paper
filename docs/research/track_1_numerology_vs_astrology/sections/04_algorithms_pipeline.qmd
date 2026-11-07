@@ -2,17 +2,11 @@
 
 The full pipeline is designed to be deterministic and reproducible from raw dates and location.
 
-```{mermaid}
-flowchart TD
-  A["Date (YYYY-MM-DD)"] --> B["Mulanka via digital root"]
-  A --> C["Moon longitude (Swiss Ephemeris)"]
-  C --> D["Nakshatra index"]
-  D --> E["Nakshatra lord"]
-  B --> F["Numerology lord"]
-  F --> G["Match?"]
-  E --> G
-  G --> H["Metrics + Figures"]
-```
+- **Input:** Date (YYYY-MM-DD)
+  - -> Computes Mulanka via digital root -> Determines Numerology Lord
+  - -> Computes Moon longitude (Swiss Ephemeris) -> Determines Nakshatra Index -> Determines Nakshatra Lord
+- **Comparison:** Do the Numerology Lord and Nakshatra Lord match?
+- **Output:** Metrics + Figures
 
 **Algorithm 1: Daily Alignment Pipeline**
 

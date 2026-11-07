@@ -1,0 +1,12 @@
+## Conclusion: The Efficiency of Celestial Information
+
+## 5.1 Falsification of Predictive Utility
+
+Our rigorous econometric analysis of the Gold Market (2015-2024) yields no evidence to support the hypothesis of astrological influence.
+1.  **Stationarity**: Planetary strength indicators are highly persistent (non-stationary), while market returns are stationary. This fundamental mismatch complicates direct modeling.
+2.  **Granger Causality**: Post-Bonferroni correction, we found **0 out of 9** planetary bodies exhibited statistically significant Granger causality on Gold log-returns.
+3.  **Spectral incoherence**: The dominant cycles in Gold prices do not align with the known synodic periods of major planets.
+
+## 5.2 Support for EMH
+
+These findings strongly support the **Efficient Market Hypothesis** in the context of celestial data. Even if a subtle psychological effect existed historically, modern algorithmic trading likely arbitrages away any such signal instantaneously. Financial Astrology, therefore, offers no alpha in the current market environment.

@@ -1,18 +1,22 @@
+"""Test suite for Phase 1 of the astrology research pipeline."""
+
 import os
 import sys
 import unittest
 from datetime import date, datetime
 
 # Add src to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../libs")))
 
-from vedic_astrology_core.astrology.ephemeris import EphemerisEngine
-from vedic_numerology.engine import NumerologyEngine
+from vedic_astrology_core.astrology.ephemeris import EphemerisEngine  # noqa: E402
+from vedic_numerology.engine import NumerologyEngine  # noqa: E402
 
 
 class TestResearchPipelinePhase1(unittest.TestCase):
+    """Test cases for Phase 1 numerical and astronomical engines."""
 
     def setUp(self):
+        """Initialize the test environment with needed engines."""
         self.num_engine = NumerologyEngine()
         self.eph_engine = EphemerisEngine()
 
@@ -99,7 +103,8 @@ class TestResearchPipelinePhase1(unittest.TestCase):
 
         fetcher = EarthquakeDataFetcher(use_sample_data=True)
 
-        # Create mock sequence: Mainshock (7.0) -> Aftershock (5.0, near, soon) -> Independent (6.0, far)
+        # Create mock sequence: Mainshock (7.0) -> Aftershock (5.0, near, soon) ->
+        # Independent (6.0, far)
         catalog = [
             {
                 "magnitude": 7.0,  # Mainshock

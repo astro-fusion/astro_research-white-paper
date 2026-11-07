@@ -5,25 +5,25 @@ This section formalizes each numerology principle as a reproducible algorithm.
 ## Digital Root (Core Reduction)
 
 $$
-DR(n) = (n - 1) \bmod 9 + 1
+DR(n) = (n - 1) \\bmod 9 + 1
 $$
 
 ## Universal Day Number (UDN)
 
 $$
-UDN = DR(day + month + sum(year\_digits))
+UDN = DR(day + month + sum(year\\_digits))
 $$
 
 ## Universal Month Number (UMN)
 
 $$
-UMN = DR(month + sum(year\_digits))
+UMN = DR(month + sum(year\\_digits))
 $$
 
 ## Universal Year Number (UYN)
 
 $$
-UYN = DR(sum(year\_digits))
+UYN = DR(sum(year\\_digits))
 $$
 
 ## Missing Number Analysis (Lo Shu)

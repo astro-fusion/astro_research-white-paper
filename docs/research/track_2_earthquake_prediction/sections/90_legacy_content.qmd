@@ -315,18 +315,10 @@ $$
 
 ### Methodology Pipeline (End-to-End)
 
-```{mermaid}
-flowchart TD
-  A["USGS Events (2015-2024)"] --> B["Filter by region & magnitude"]
-  B --> C["Daily event counts"]
-  D["Planetary positions (Swiss Ephemeris)"] --> E["Astro feature extraction"]
-  E --> F["Planetary Stress Index"]
-  C --> G["Negative Binomial GLM"]
-  F --> G
-  G --> H["Coefficient tests + AIC"]
-  H --> I["Monte Carlo permutation"]
-  I --> J["Empirical p-values"]
-```
+- **USGS Events (2015-2024)** -> Filter by region & magnitude -> Daily event counts
+- **Planetary positions (Swiss Ephemeris)** -> Astro feature extraction -> Planetary Stress Index
+- **Model** -> Negative Binomial GLM (using Daily event counts and Planetary Stress Index)
+- **Validation** -> Coefficient tests + AIC -> Monte Carlo permutation -> Empirical p-values
 
 **Algorithm 1: Seismo-Astro Validation Pipeline**
 

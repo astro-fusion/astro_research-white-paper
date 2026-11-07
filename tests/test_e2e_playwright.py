@@ -1,20 +1,19 @@
-"""
-Playwright E2E Testing Suite for Astro Research Platform
+"""Playwright E2E Testing Suite for Astro Research Platform.
+
 Tests web interface, APIs, and user workflows
 Comprehensive validation across multiple platforms
 """
 
 import asyncio
-import json
 import os
 from datetime import datetime
-from pathlib import Path
 
 
 class AstroResearchE2ETester:
     """End-to-end testing using Playwright."""
 
     def __init__(self):
+        """Initialize the AstroResearchE2ETester."""
         self.browser = None
         self.context = None
         self.page = None
@@ -116,7 +115,8 @@ class AstroResearchE2ETester:
                 return True
             else:
                 print(
-                    f"⚠️  Health endpoint not available (status: {response.status if response else 'N/A'})"
+                    f"⚠️  Health endpoint not available (status: "
+                    f"{response.status if response else 'N/A'})"
                 )
                 self._record_test(test_name, True)  # Non-critical
                 return True
@@ -153,7 +153,7 @@ class AstroResearchE2ETester:
                 await page.close()
                 await context.close()
 
-            print(f"✅ Responsiveness - All viewports working")
+            print("✅ Responsiveness - All viewports working")
             self._record_test(test_name, True)
             return True
         except Exception as e:
@@ -170,7 +170,8 @@ class AstroResearchE2ETester:
             await self.page.goto(self.base_url)
 
             # Execute JavaScript to get page info
-            result = await self.page.evaluate("""
+            result = await self.page.evaluate(
+                """
                 () => ({
                     url: window.location.href,
                     title: document.title,
@@ -178,13 +179,15 @@ class AstroResearchE2ETester:
                     bodySize: document.body.offsetHeight,
                     headings: document.querySelectorAll('h1, h2, h3').length
                 })
-            """)
+            """
+            )
 
             assert result["ready"] in ["interactive", "complete"], "Page not ready"
             assert result["headings"] >= 0, "Heading detection failed"
 
             print(
-                f"✅ JS Execution - Headings: {result['headings']}, Body Height: {result['bodySize']}px"
+                f"✅ JS Execution - Headings: {result['headings']}, "
+                f"Body Height: {result['bodySize']}px"
             )
             self._record_test(test_name, True)
             return True
@@ -232,7 +235,8 @@ class AstroResearchE2ETester:
             button_count = await self.page.locator("button").count()
 
             print(
-                f"✅ Forms found - Forms: {form_count}, Inputs: {input_count}, Buttons: {button_count}"
+                f"✅ Forms found - Forms: {form_count}, Inputs: "
+                f"{input_count}, Buttons: {button_count}"
             )
             self._record_test(test_name, True)
             return True
@@ -270,19 +274,24 @@ class AstroResearchE2ETester:
             await self.page.goto(self.base_url)
 
             # Get performance metrics
-            metrics = await self.page.evaluate("""
+            metrics = await self.page.evaluate(
+                """
                 () => ({
                     navigation: performance.timing.navigationStart,
-                    loadComplete: performance.timing.loadEventEnd - performance.timing.navigationStart,
-                    domInteractive: performance.timing.domInteractive - performance.timing.navigationStart,
+                    loadComplete: performance.timing.loadEventEnd
+                    - performance.timing.navigationStart,
+                    domInteractive: performance.timing.domInteractive
+                    - performance.timing.navigationStart,
                     resourceCount: performance.getEntriesByType('resource').length
                 })
-            """)
+            """
+            )
 
             load_time = metrics["loadComplete"] / 1000  # Convert to seconds
 
             print(
-                f"✅ Performance - Load: {load_time:.2f}s, Resources: {metrics['resourceCount']}"
+                f"✅ Performance - Load: {load_time:.2f}s, "
+                f"Resources: {metrics['resourceCount']}"
             )
             self._record_test(test_name, True)
             return True
@@ -300,23 +309,30 @@ class AstroResearchE2ETester:
             await self.page.goto(self.base_url)
 
             # Check accessibility attributes
-            accessibility = await self.page.evaluate("""
+            accessibility = await self.page.evaluate(
+                """
                 () => ({
                     headings: document.querySelectorAll('h1, h2, h3, h4, h5, h6').length,
                     images: document.querySelectorAll('img[alt]').length,
-                    imagesNoAlt: document.querySelectorAll('img:not([alt])').length,
+                    imagesNoAlt: document.querySelectorAll(
+                        "img:not([alt])"  # noqa: E501
+                    ).length,
                     buttons: document.querySelectorAll('button').length,
                     labels: document.querySelectorAll('label').length,
-                    inputs: document.querySelectorAll('input[aria-label], input[id]').length
+                    inputs: document.querySelectorAll(
+                        'input[aria-label], input[id]'
+                    ).length
                 })
-            """)
+            """
+            )
 
             issues = []
             if accessibility["images"] == 0:
                 issues.append("Images without alt text")
 
             print(
-                f"✅ Accessibility - Headings: {accessibility['headings']}, Alt text: {accessibility['images']}"
+                f"✅ Accessibility - Headings: {accessibility['headings']}, "
+                f"Alt text: {accessibility['images']}"
             )
             self._record_test(test_name, True)
             return True
@@ -405,7 +421,7 @@ class AstroResearchE2ETester:
 
 
 async def main():
-    """Main entry point."""
+    """Run main entry point."""
     tester = AstroResearchE2ETester()
     success = await tester.run_all_tests()
     return success

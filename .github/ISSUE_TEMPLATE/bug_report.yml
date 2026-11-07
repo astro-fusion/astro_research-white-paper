@@ -1,0 +1,87 @@
+name: 🐛 Bug Report
+description: Report a calculation error, broken script, or unexpected behavior
+title: "[BUG] "
+labels: ["bug", "triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Please fill out this form as completely as possible.
+        If the bug is a **security vulnerability**, please do NOT open a public issue — see [SECURITY.md](../../SECURITY.md) instead.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "🐛 Bug Description"
+      description: A clear and concise description of what the bug is.
+      placeholder: "When I run calculate_planetary_dignity('Mars', 'Capricorn', 28.0), the dignity returned is 'debilitation' instead of 'exaltation'."
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: "📋 Steps to Reproduce"
+      description: |
+        Provide exact steps to trigger the bug.
+      value: |
+        1. Install with `pip install -e ".[dev]"`
+        2. Run: `python3 -c "from libs.vedic_astrology_core.dignity import ...; print(...)"`
+        3. See error: `...`
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: "✅ Expected Behavior"
+      description: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: "❌ Actual Behavior"
+      description: What actually happened? Paste any error output here.
+      render: shell
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: "🗂️ Affected Component"
+      multiple: true
+      options:
+        - "libs/vedic_astrology_core — Core astrological engine"
+        - "libs/vedic_numerology — Numerology calculators"
+        - "libs/visuals — Chart/visualization generators"
+        - "research/scripts — Pipeline scripts"
+        - "application/web — Flask web app"
+        - "application/api — REST API"
+        - "tests — Test suite"
+        - "ops/CI-CD — Build/deploy"
+        - "docs — Documentation"
+        - "Other"
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: "🖥️ Environment"
+      value: |
+        - OS:
+        - Python version (`python3 --version`):
+        - Dependencies (`pip freeze | grep -E 'numpy|pandas|pyswisseph'`):
+        - Quarto version (if relevant):
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: "📎 Additional Context"
+      description: Screenshots, data files, or any other information.

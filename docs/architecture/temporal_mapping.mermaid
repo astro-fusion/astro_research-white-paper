@@ -1,0 +1,35 @@
+graph TB
+    subgraph Continuous["Continuous Domain<br/>(Vedic Astrology)"]
+        A1["Planetary Position<br/>(0°-360°)"]
+        A2["Transit Speed<br/>(deg/day)"]
+        A3["Shadbala Strength<br/>(0-100)"]
+        A4["Aspect Geometry"]
+    end
+
+    subgraph Discrete["Discrete Domain<br/>(Vedic Numerology)"]
+        B1["Mulanka<br/>(1-9)"]
+        B2["Bhagyanka<br/>(1-9)"]
+        B3["Day Lord<br/>(1-9)"]
+        B4["Year Number"]
+    end
+
+    subgraph Time["Temporal Resolution"]
+        T1["Hourly<br/>8,760/year"]
+        T2["Daily<br/>~73 changes/year"]
+    end
+
+    A1 -.->|"120:1<br/>Frequency Ratio"| B1
+    Continuous --> T1
+    Discrete --> T2
+
+    subgraph Alignment["Alignment Analysis"]
+        C1["Cross-Correlation<br/>~0.0"]
+        C2["Temporal Mismatch<br/>Fundamental"]
+    end
+
+    T1 & T2 --> Alignment
+
+    style Continuous fill:#e3f2fd
+    style Discrete fill:#fff8e1
+    style Time fill:#f3e5f5
+    style Alignment fill:#ffebee

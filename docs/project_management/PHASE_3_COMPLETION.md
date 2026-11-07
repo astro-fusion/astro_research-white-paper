@@ -307,6 +307,6 @@ For any questions, refer to the comprehensive documentation in this repository.
 
 ---
 
-*Last Updated: $(date)*  
-*Version: 2.0 - Full Deployment*  
+*Last Updated: $(date)*
+*Version: 2.0 - Full Deployment*
 *Status: Production Ready*

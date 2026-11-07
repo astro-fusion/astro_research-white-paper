@@ -6,6 +6,7 @@ from vedic_astrology_core.dasha.vimshottari import compute_vimshottari_nested_pe
 
 
 def test_nested_depth_two_generates_antardasha():
+    """Test nested depth of two successfully generates Antardasha."""
     birth = datetime(2000, 1, 1)
     moon_long = 0.0
     nested = compute_vimshottari_nested_periods(
@@ -18,6 +19,7 @@ def test_nested_depth_two_generates_antardasha():
 
 
 def test_nested_depth_three_generates_pratyantar():
+    """Test nested depth of three successfully generates Pratyantar."""
     birth = datetime(2000, 1, 1)
     moon_long = 0.0
     nested = compute_vimshottari_nested_periods(

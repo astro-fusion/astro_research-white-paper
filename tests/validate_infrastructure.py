@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
-"""
-Final Validation Script - Verify Complete Testing Infrastructure
+"""Final Validation Script - Verify Complete Testing Infrastructure.
+
 Checks all test files, validates syntax, ensures all tests are ready
 """
 
 import json
-import os
-import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -15,6 +13,7 @@ class FinalValidator:
     """Final validation of testing infrastructure."""
 
     def __init__(self):
+        """Initialize the final validator."""
         self.workspace = Path(__file__).parent.parent
         self.tests_dir = Path(__file__).parent  # Current directory (tests/)
         self.results = {
@@ -95,13 +94,13 @@ class FinalValidator:
         return all_valid
 
     def _check_file_syntax(self, filename):
-        """Helper to check file syntax."""
+        """Check file syntax logically."""
         try:
             filepath = self.tests_dir / filename
             with open(filepath) as f:
                 compile(f.read(), filename, "exec")
             return True
-        except:
+        except Exception:
             return False
 
     def check_test_count(self):
@@ -194,11 +193,10 @@ class FinalValidator:
         for import_name, category in imports_to_check:
             try:
                 if import_name == "pathlib.Path":
-                    from pathlib import Path
+                    pass
                 elif import_name == "xml.etree.ElementTree":
-                    import xml.etree.ElementTree
+                    pass
                 else:
-                    parts = import_name.split(".")
                     __import__(import_name)
 
                 print(f"  ✅ {import_name} ({category})")
@@ -325,7 +323,7 @@ class FinalValidator:
         return all_have_handling
 
     def _has_error_handling(self, filename):
-        """Helper to check for error handling."""
+        """Verify presence of error handling."""
         filepath = self.tests_dir / filename
         with open(filepath) as f:
             content = f.read()
@@ -342,16 +340,14 @@ class FinalValidator:
         print("╚" + "=" * 68 + "╝")
 
         # Run all checks
-        check_results = [
-            self.check_test_files_exist(),
-            self.check_syntax(),
-            self.check_test_count(),
-            self.check_documentation(),
-            self.check_imports(),
-            self.check_master_runner(),
-            self.check_coverage_targets(),
-            self.check_error_handling(),
-        ]
+        self.check_test_files_exist()
+        self.check_syntax()
+        self.check_test_count()
+        self.check_documentation()
+        self.check_imports()
+        self.check_master_runner()
+        self.check_coverage_targets()
+        self.check_error_handling()
 
         # Summary
         print("\n" + "=" * 70)
@@ -398,7 +394,7 @@ class FinalValidator:
 
 
 def main():
-    """Main entry point."""
+    """Execute main entry point."""
     validator = FinalValidator()
     success = validator.run_all_checks()
     return 0 if success else 1

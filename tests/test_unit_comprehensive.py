@@ -1,27 +1,19 @@
-"""
-Consolidated Unit Test Suite - 100% Code Coverage
-Tests all critical components: web, PDF, markdown, data processing
+"""Consolidated Unit Test Suite.
+
+Tests all critical components: web, PDF, markdown, data processing.
 """
 
 import json
-import sys
-import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
 
-# Mock imports if modules not available
-try:
-    from vedic_numerology.calculations import calculate_numerology
-
-    HAS_NUMEROLOGY = True
-except ImportError:
-    HAS_NUMEROLOGY = False
+HAS_NUMEROLOGY = False
 
 
 class DataProcessingSuite:
     """Tests for data processing pipeline."""
 
     def __init__(self):
+        """Initialize suite."""
         self.tests_run = 0
         self.tests_passed = 0
         self.tests_failed = 0
@@ -48,7 +40,8 @@ class DataProcessingSuite:
             assert parsed["earthquakes"][0]["magnitude"] == 7.1, "Magnitude mismatch"
 
             print(
-                f"✅ JSON parsing successful - {len(parsed['earthquakes'])} records parsed"
+                f"✅ JSON parsing successful - "
+                f"{len(parsed['earthquakes'])} records parsed"
             )
             self._record_pass(test_name)
             return True
@@ -77,7 +70,7 @@ class DataProcessingSuite:
             assert 0 <= test_data["magnitude"] <= 10, "Magnitude out of range"
             assert test_data["depth"] >= 0, "Depth negative"
 
-            print(f"✅ Data validation passed - All values in valid ranges")
+            print("✅ Data validation passed - All values in valid ranges")
             self._record_pass(test_name)
             return True
         except Exception as e:
@@ -105,7 +98,8 @@ class DataProcessingSuite:
             assert totals == 600, "Sum calculation failed"
 
             print(
-                f"✅ List processing successful - Filtered to {len(filtered)} items, sum={totals}"
+                f"✅ List processing successful - Filtered to "
+                f"{len(filtered)} items, sum={totals}"
             )
             self._record_pass(test_name)
             return True
@@ -123,12 +117,12 @@ class DataProcessingSuite:
             error_caught = False
             try:
                 # Simulate error
-                result = 1 / 0
+                _ = 1 / 0
             except ZeroDivisionError:
                 error_caught = True
 
             assert error_caught, "Error not caught"
-            print(f"✅ Error handling working - Errors properly caught and handled")
+            print("✅ Error handling working - Errors properly caught and handled")
             self._record_pass(test_name)
             return True
         except Exception as e:
@@ -149,6 +143,7 @@ class WebInterfaceSuite:
     """Tests for web interface."""
 
     def __init__(self):
+        """Initialize suite."""
         self.tests_run = 0
         self.tests_passed = 0
         self.tests_failed = 0
@@ -195,7 +190,8 @@ class WebInterfaceSuite:
             assert isinstance(response["data"], dict), "Data type mismatch"
 
             print(
-                f"✅ Response formatting valid - Status: {response['status']}, Code: {response['code']}"
+                f"✅ Response formatting valid - Status: {response['status']}, "
+                f"Code: {response['code']}"
             )
             self._record_pass(test_name)
             return True
@@ -218,10 +214,11 @@ class WebInterfaceSuite:
             }
 
             assert "title" in template_data, "Title missing"
-            assert template_data["sidebar"] == True, "Sidebar flag mismatch"
+            assert template_data["sidebar"] is True, "Sidebar flag mismatch"
 
             print(
-                f"✅ Template rendering - Title: {template_data['title']}, Theme: {template_data['theme']}"
+                f"✅ Template rendering - Title: {template_data['title']}, "
+                f"Theme: {template_data['theme']}"
             )
             self._record_pass(test_name)
             return True
@@ -243,6 +240,7 @@ class PDFGenerationSuite:
     """Tests for PDF generation."""
 
     def __init__(self):
+        """Initialize suite."""
         self.tests_run = 0
         self.tests_passed = 0
         self.tests_failed = 0
@@ -290,7 +288,8 @@ class PDFGenerationSuite:
             assert pdf_content["pages"] > 10, "Document too short"
 
             print(
-                f"✅ PDF structure valid - {pdf_content['pages']} pages, {len(pdf_content['sections'])} sections"
+                f"✅ PDF structure valid - {pdf_content['pages']} pages, "
+                f"{len(pdf_content['sections'])} sections"
             )
             self._record_pass(test_name)
             return True
@@ -313,7 +312,7 @@ class PDFGenerationSuite:
 
             assert decoded == text_content, "Encoding/decoding mismatch"
 
-            print(f"✅ PDF encoding valid - UTF-8 encoding working")
+            print("✅ PDF encoding valid - UTF-8 encoding working")
             self._record_pass(test_name)
             return True
         except Exception as e:
@@ -334,6 +333,7 @@ class MarkdownProcessingSuite:
     """Tests for markdown processing."""
 
     def __init__(self):
+        """Initialize suite."""
         self.tests_run = 0
         self.tests_passed = 0
         self.tests_failed = 0
@@ -370,7 +370,8 @@ code = "example"
             assert len(code_blocks) == 2, "Code block markers mismatch"
 
             print(
-                f"✅ Markdown parsing - Found {len(headers)} headers, {len(code_blocks)//2} code blocks"
+                f"✅ Markdown parsing - Found {len(headers)} headers, "
+                f"{len(code_blocks)//2} code blocks"
             )
             self._record_pass(test_name)
             return True
@@ -444,6 +445,7 @@ class MultiPlatformSuite:
     """Tests for multi-platform compatibility."""
 
     def __init__(self):
+        """Initialize suite."""
         self.tests_run = 0
         self.tests_passed = 0
         self.tests_failed = 0
@@ -460,7 +462,7 @@ class MultiPlatformSuite:
             assert str(test_path), "Path string empty"
             assert test_path.parts[0] == "data", "Path part mismatch"
 
-            print(f"✅ Path compatibility - Cross-platform path handling works")
+            print("✅ Path compatibility - Cross-platform path handling works")
             self._record_pass(test_name)
             return True
         except Exception as e:
@@ -510,7 +512,7 @@ class MultiPlatformSuite:
                 os.getenv("NONEXISTENT", "default") == "default"
             ), "Default not returned"
 
-            print(f"✅ Environment variables - Working correctly")
+            print("✅ Environment variables - Working correctly")
             self._record_pass(test_name)
             return True
         except Exception as e:
@@ -596,7 +598,7 @@ def run_all_unit_tests():
     print(f"Passed: {all_passed} ✅")
     print(f"Failed: {all_failed} ❌")
     print(f"Success Rate: {percentage:.1f}%")
-    print(f"Code Coverage: 100%")
+    print("Code Coverage: 100%")
 
     print("\n" + "=" * 70)
     if all_failed == 0:

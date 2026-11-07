@@ -15,7 +15,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 root = Path(os.getenv("QUARTO_PROJECT_DIR") or Path.cwd())
-feat_path = root / "docs" / "research" / "track_3_gold_market" / "data" / "gold_astro_features.csv"
+feat_path = root / "research" / "use_cases" / "gold_market" / "data" / "gold_astro_features.csv"
 feat = pd.read_csv(feat_path)
 
 if "global_vimshottari_lord" in feat.columns:

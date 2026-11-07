@@ -1,0 +1,45 @@
+# Financial/Market Triggers Catalog
+# Defines combinations to test against Gold Market dataset
+
+- name: "Venus-Retrograde-Reversal"
+  use_case: "financial"
+  source: "Financial Astrology Tradition"
+  description: "Venus in retrograde, often signaling a reversal in value expectations."
+  conditions:
+    logic: "ALL_OF"
+    items:
+      - type: "RETROGRADE"
+        planet: "Venus"
+
+- name: "Jupiter-Retrograde-Contraction"
+  use_case: "financial"
+  source: "Financial Astrology Tradition"
+  description: "Jupiter in retrograde, signaling contraction or pause in market expansion."
+  conditions:
+    logic: "ALL_OF"
+    items:
+      - type: "RETROGRADE"
+        planet: "Jupiter"
+
+- name: "Shukra-Guru-Wealth"
+  use_case: "financial"
+  source: "Classical Wealth Yoga"
+  description: "Venus-Jupiter conjunction (≤8 degree orb)."
+  conditions:
+    logic: "ALL_OF"
+    items:
+      - type: "CONJUNCTION"
+        planet1: "Venus"
+        planet2: "Jupiter"
+        orb_deg: 8.0
+
+- name: "Venus-Own-Sign"
+  use_case: "financial"
+  source: "Parashara Hora Shastra"
+  description: "Venus in its own signs (Taurus or Libra)."
+  conditions:
+    logic: "ANY_OF"
+    items:
+      - type: "INSIGN"
+        planet: "Venus"
+        signs: ["Taurus", "Libra"]

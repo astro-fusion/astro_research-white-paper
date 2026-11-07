@@ -1,19 +1,22 @@
+"""Smoke tests for scientific report build."""
+
 import json
 import os
 import subprocess
 
-import pandas as pd
 import pytest
 
 # Paths
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-ARTIFACTS_DIR = os.path.join(BASE_DIR, "reports", "artifacts")
-MANUSCRIPT_QMD = os.path.join(BASE_DIR, "reports", "manuscript.qmd")
-GENERATE_ARTIFACTS_SCRIPT = os.path.join(BASE_DIR, "src", "generate_artifacts.py")
+ARTIFACTS_DIR = os.path.join(BASE_DIR, "research", "reports", "artifacts")
+MANUSCRIPT_QMD = os.path.join(BASE_DIR, "research", "reports", "manuscript.qmd")
+GENERATE_ARTIFACTS_SCRIPT = os.path.join(
+    BASE_DIR, "research", "scripts", "generate_artifacts.py"
+)
 
 
 def test_artifact_generation():
-    """Verify that the artifact generation script runs and produces all required files."""
+    """Verify that the script runs and produces all required files."""
     # Ensure artifacts directory exists or is clean
     if os.path.exists(ARTIFACTS_DIR):
         for f in os.listdir(ARTIFACTS_DIR):
@@ -59,7 +62,7 @@ def test_dynamic_stats_integrity():
     reason="Quarto not installed",
 )
 def test_quarto_render_smoke():
-    """Attempt a dry-run or partial render of the manuscript to verify Quarto integration."""
+    """Attempt a dry-run or partial render of the manuscript."""
     output_pdf = os.path.join(BASE_DIR, "reports", "smoke_test_render.pdf")
 
     # We use --to pdf and a specific output filename

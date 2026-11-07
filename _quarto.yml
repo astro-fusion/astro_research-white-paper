@@ -57,7 +57,7 @@ format:
     footnotes-hover: true
     anchor-sections: true
     smooth-scroll: true
-    css: styles/custom.css
+    # css: styles/custom.css
     # Interactive features
     include-after-body:
       - assets/visualizations/interactive-components.html
@@ -89,12 +89,12 @@ format:
     tbl-pos: 'H'
     pdf-engine: lualatex
     pdf-engine-opts: ["-shell-escape"]
-    include-in-header: styles/pdf-header.tex
-    include-before-body: styles/pdf-before-body.tex
+    # include-in-header: styles/pdf-header.tex
+    # include-before-body: styles/pdf-before-body.tex
 
   # DOCX format for Microsoft Word compatibility
   docx:
-    reference-doc: styles/reference.docx
+    # reference-doc: styles/reference.docx
     number-sections: true
     fig-cap-location: top
     tbl-cap-location: top
@@ -145,20 +145,20 @@ jupyter: python3
 bibliography:
   - "references.bib"
 
-csl: styles/apa.csl
+# csl: styles/apa.csl
 
 # Language and localization
 lang: en-US
 
 # Metadata for different formats (shared)
-metadata-files:
-  - styles/html-metadata.yml
-  - styles/pdf-metadata.yml
+# metadata-files:
+#   - styles/html-metadata.yml
+#   - styles/pdf-metadata.yml
 
 # Custom filters and extensions (shared)
-filters:
-  - styles/conditional-content.lua
-  - styles/format-specific.lua
+# filters:
+#   - styles/conditional-content.lua
+#   - styles/format-specific.lua
 
 # Environment variables
 environment:

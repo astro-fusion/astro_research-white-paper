@@ -63,10 +63,10 @@ The system automatically creates three interactive HTML dashboards:
    ```bash
    # Navigate to project directory
    cd astro-research
-   
+
    # Activate virtual environment (if using)
    source venv/bin/activate
-   
+
    # Run the visualization generator
    python create_planetary_strength_graph.py
    ```

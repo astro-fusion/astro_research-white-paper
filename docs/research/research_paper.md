@@ -70,7 +70,7 @@ We fitted a Negative Binomial regression model to test if the "Variation Curves"
 
 # 5. Discussion
 
-The near-zero correlation ($r \approx 0.08$) between Astrology and Numerology suggests system independence. 
+The near-zero correlation ($r \approx 0.08$) between Astrology and Numerology suggests system independence.
 
 1. **Information Independence:** Rather than being redundant, these systems provide unique, non-overlapping data. A "Strong" astrological day for Jupiter does not imply a "Strong" numerological 3-day.
 2. **Temporal Mismatch:** Correlation is physically limited by the resolution divergence. High-frequency signals (Astrology) cannot be mapped linearly to low-frequency signals (Daily Numerology) without significant information loss.

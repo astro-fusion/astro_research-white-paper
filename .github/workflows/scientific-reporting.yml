@@ -4,15 +4,15 @@ on:
   push:
     branches: [ main, develop, dev ]
     paths:
-      - 'src/models/**'
-      - 'src/generate_artifacts.py'
+      - 'libs/models/**'
+      - 'research/scripts/generate_artifacts.py'
       - 'reports/**'
       - 'docs/research/**'
   pull_request:
     branches: [ main, develop ]
     paths:
-      - 'src/models/**'
-      - 'src/generate_artifacts.py'
+      - 'libs/models/**'
+      - 'research/scripts/generate_artifacts.py'
       - 'reports/**'
       - 'docs/research/**'
   workflow_dispatch:
@@ -20,7 +20,7 @@ on:
 jobs:
   scientific-report:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v4
 
@@ -60,7 +60,7 @@ jobs:
     - name: Run Artifact Generation Pipeline
       run: |
         # Generate the data artifacts (MODEL -> CONTROLLER)
-        python3 src/generate_artifacts.py || echo "Artifact generation skipped"
+        python3 research/scripts/generate_artifacts.py || echo "Artifact generation skipped"
 
     - name: Run Smoke Tests
       run: |
@@ -125,4 +125,3 @@ jobs:
           EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf
           GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.pdf
           reports/artifacts/
-
