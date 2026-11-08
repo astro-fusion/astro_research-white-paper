@@ -12,31 +12,17 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 
-# Add src to path
-# Assuming script is in docs/research/track_2_earthquake_prediction/scripts/
-# And src is in REPO_ROOT/src/
-# We need to go up 4 levels from the script location to get to REPO_ROOT
-# Script: REPO/docs/research/track_2/scripts/script.py
-root = Path(__file__).resolve().parents[4]
-sys.path.insert(0, str(root / "src"))
+root = Path(__file__).resolve().parents[3]  # repo root
+sys.path.insert(0, str(root))
 
-try:
-    from models.statistics import calculate_chi_square, apply_fdr_correction
-except ImportError:
-    # Fallback to local import if src not found (e.g. running from differnt context)
-    # This is critical for robustness
-    print(
-        f"Warning: Could not import from src.models.statistics. Path added: {str(root / 'src')}"  # noqa: E501
-    )
-    # Define local fallback if absolutely necessary or raise error
-    raise
+from libs.models.statistics import calculate_chi_square, apply_fdr_correction
+from studies._paths import study_data_dir
 
 # Paths
-track_root = Path(__file__).resolve().parents[1]
-data_dir = track_root / "data"
+data_dir = study_data_dir("earthquake")
 base_path = data_dir / "daily_astro_base.csv"
 catalog_path = data_dir / "combination_catalog.csv"
-quakes_path = track_root / "india_nepal_data.json"
+quakes_path = data_dir / "india_nepal_data.json"
 
 if not base_path.exists():
     raise SystemExit(

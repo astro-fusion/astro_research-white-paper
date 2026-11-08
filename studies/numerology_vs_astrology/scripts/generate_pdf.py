@@ -9,7 +9,6 @@ Handles figure generation, data paths, and Quarto rendering.
 import os
 import shutil
 import subprocess
-import sys
 from typing import Optional
 
 
@@ -31,12 +30,12 @@ class PDFGenerator:
             paper_path = os.path.join(
                 os.path.dirname(__file__),
                 "..",
-                "research_paper",
-                "numerology_astrology_correlation.qmd",
+                "paper",
+                "NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.qmd",
             )
 
         if output_dir is None:
-            output_dir = os.path.join(os.path.dirname(__file__), "..", "research_paper")
+            output_dir = os.path.join(os.path.dirname(__file__), "..", "artifacts")
 
         self.paper_path = os.path.abspath(paper_path)
         self.output_dir = os.path.abspath(output_dir)
@@ -153,9 +152,6 @@ class PDFGenerator:
         """
         print("Generating figures for research paper...")
 
-        # Import the visualization functions
-        sys.path.insert(0, os.path.join(self.project_root, "src"))
-
         try:
             from vedic_astrology_core.visualization import (
                 plot_correlation_analysis,
@@ -165,7 +161,7 @@ class PDFGenerator:
 
             # Load data
             data_path = os.path.join(
-                self.project_root, "data", "processed", "temporal_analysis_5years.csv"
+                self.project_root, "data", "temporal_analysis_5years.csv"
             )
 
             if not os.path.exists(data_path):

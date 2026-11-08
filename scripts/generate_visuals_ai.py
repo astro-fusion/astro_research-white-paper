@@ -31,8 +31,8 @@ except ImportError:
     sys.exit(1)
 
 # Paths
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-ARTIFACTS_DIR = os.path.join(PROJECT_ROOT, "research", "reports", "artifacts")
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ARTIFACTS_DIR = os.path.join(PROJECT_ROOT, "studies", "gold_market", "artifacts")
 
 # Ensure artifacts directory exists
 os.makedirs(ARTIFACTS_DIR, exist_ok=True)

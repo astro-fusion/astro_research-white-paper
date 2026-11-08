@@ -2,9 +2,13 @@
 """Compute name-based numerology metrics (Pythagorean + Chaldean)."""
 from pathlib import Path
 import pandas as pd
+import sys
 
-DATA_PATH = Path(__file__).resolve().parents[1] / "data" / "names.csv"
-OUT_PATH = Path(__file__).resolve().parents[1] / "data" / "name_numerology_metrics.csv"
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
+from studies._paths import study_data_dir  # noqa: E402
+
+DATA_PATH = study_data_dir("numerology_vs_astrology") / "names.csv"
+OUT_PATH = study_data_dir("numerology_vs_astrology") / "name_numerology_metrics.csv"
 
 if not DATA_PATH.exists():
     print(f"Name dataset not found at {DATA_PATH}. Skipping name-based metrics.")

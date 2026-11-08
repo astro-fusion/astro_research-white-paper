@@ -6,8 +6,10 @@ from pathlib import Path
 
 import pandas as pd
 
-repo_root = Path(__file__).resolve().parents[4]
-sys.path.insert(0, str(repo_root / "src"))
+repo_root = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(repo_root))
+
+from studies._paths import study_data_dir  # noqa: E402
 
 from vedic_astrology_core.astrology.chart import (  # noqa: E402
     calculate_chart,
@@ -34,7 +36,7 @@ LAT = 28.6
 LON = 77.1
 
 # Output path
-out_dir = Path(__file__).resolve().parents[1] / "data"
+out_dir = study_data_dir("earthquake")
 out_dir.mkdir(parents=True, exist_ok=True)
 base_out = out_dir / "daily_astro_base.csv"
 

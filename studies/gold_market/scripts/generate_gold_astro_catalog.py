@@ -2,6 +2,10 @@
 """Generate exhaustive astrology principles catalog for gold (Vedic + Western)."""
 from pathlib import Path
 import pandas as pd
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
+from studies._paths import study_data_dir  # noqa: E402
 
 PLANETS = [
     "Sun",
@@ -178,7 +182,7 @@ for w in WINDOWS:
         window_days=w,
     )
 
-out_dir = Path(__file__).resolve().parents[1] / "data"
+out_dir = study_data_dir("gold_market")
 out_dir.mkdir(parents=True, exist_ok=True)
 cat_path = out_dir / "gold_astro_catalog.csv"
 pd.DataFrame(rows).to_csv(cat_path, index=False)

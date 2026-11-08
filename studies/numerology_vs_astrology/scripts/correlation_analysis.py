@@ -18,8 +18,11 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-# Add the src directory to the Python path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+sys.path.insert(
+    0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+)  # repo root
+
+from studies._paths import study_data_dir  # noqa: E402
 
 from vedic_astrology_core.config import Planet, PLANET_NAMES
 
@@ -38,9 +41,7 @@ class CorrelationAnalyzer:
         """
         if data_path is None:
             # Auto-detect the data file
-            data_dir = os.path.join(
-                os.path.dirname(__file__), "..", "data", "processed"
-            )
+            data_dir = str(study_data_dir("numerology_vs_astrology"))
             data_path = os.path.join(data_dir, "temporal_analysis_5years.csv")
 
         if not os.path.exists(data_path):
@@ -513,9 +514,7 @@ class CorrelationAnalyzer:
             Path to saved file
         """
         if output_path is None:
-            data_dir = os.path.join(
-                os.path.dirname(__file__), "..", "data", "processed"
-            )
+            data_dir = str(study_data_dir("numerology_vs_astrology"))
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             output_path = os.path.join(
                 data_dir, f"correlation_analysis_{timestamp}.json"

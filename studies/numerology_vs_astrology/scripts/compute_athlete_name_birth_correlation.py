@@ -4,8 +4,12 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 from scipy.stats import chi2
+import sys
 
-DATA_DIR = Path(__file__).resolve().parents[1] / "data"
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
+from studies._paths import study_data_dir  # noqa: E402
+
+DATA_DIR = study_data_dir("numerology_vs_astrology")
 athletes = pd.read_csv(DATA_DIR / "athletes_sample.csv")
 
 # Normalize columns

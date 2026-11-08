@@ -12,6 +12,10 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import requests
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
+from studies._paths import study_data_dir  # noqa: E402
 
 
 class EarthquakeDataFetcher:
@@ -35,7 +39,7 @@ class EarthquakeDataFetcher:
         self.use_sample_data = use_sample_data
         self.verbose = verbose
         self.sample_data_path = (
-            Path(__file__).parent.parent / "data" / "sample_earthquakes.json"
+            study_data_dir("earthquake") / "sample_earthquakes.json"
         )
 
     def fetch_earthquakes(
@@ -306,7 +310,7 @@ def main():
     print("Fetching REAL data to populate local storage (Multiple Datasets).")
     print("=" * 80)
 
-    base_dir = Path(__file__).parent.parent / "data"
+    base_dir = study_data_dir("earthquake")
     base_dir.mkdir(parents=True, exist_ok=True)
 
     try:

@@ -1,11 +1,15 @@
 
-.PHONY: help pdfs clean release
+.PHONY: help check-data pdfs clean release
 
 help:
 	@echo "Available commands:"
+	@echo "  make check-data - Verify required input data (paths from studies/_paths.py)"
 	@echo "  make pdfs     - Generate all whitepaper PDFs locally"
 	@echo "  make release  - Generate PDFs, add to git, and push (interactive)"
 	@echo "  make clean    - Remove generated PDFs"
+
+check-data:
+	@python3 scripts/check_data.py
 
 pdfs:
 	@./scripts/generate_pdfs.sh

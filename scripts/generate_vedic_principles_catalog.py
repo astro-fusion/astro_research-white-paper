@@ -4,7 +4,7 @@ from pathlib import Path
 import importlib.util
 
 ROOT = Path(__file__).resolve().parents[1]
-CATALOG_PATH = ROOT / "src" / "vedic_astrology_core" / "principles" / "catalog.py"
+CATALOG_PATH = ROOT / "libs" / "vedic_astrology_core" / "principles" / "catalog.py"
 
 spec = importlib.util.spec_from_file_location("vedic_principles_catalog", CATALOG_PATH)
 module = importlib.util.module_from_spec(spec)

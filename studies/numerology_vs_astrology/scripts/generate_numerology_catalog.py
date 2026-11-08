@@ -2,6 +2,10 @@
 """Generate exhaustive numerology principles catalog."""
 from pathlib import Path
 import pandas as pd
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
+from studies._paths import study_data_dir  # noqa: E402
 
 # Core principle sets
 NUMBERS = list(range(1, 10))
@@ -152,7 +156,7 @@ for n in NUMBERS:
     add("transit_month", f"Universal Month Number = {n}", "month reduction", number=n)
     add("transit_year", f"Universal Year Number = {n}", "year reduction", number=n)
 
-out_dir = Path(__file__).resolve().parents[1] / "data"
+out_dir = study_data_dir("numerology_vs_astrology")
 out_dir.mkdir(parents=True, exist_ok=True)
 cat_path = out_dir / "numerology_catalog.csv"
 pd.DataFrame(rows).to_csv(cat_path, index=False)

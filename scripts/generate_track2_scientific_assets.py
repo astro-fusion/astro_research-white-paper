@@ -9,9 +9,10 @@ import pandas as pd
 
 # cartopy removed to avoid dependency issues
 
-# Add src and scripts to path
-sys.path.append(str(Path(__file__).parent.parent / "src"))
-sys.path.append(str(Path(__file__).parent.parent / "use_cases/earthquake/scripts"))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # repo root
+from studies._paths import figures_dir, study_data_dir, study_dir  # noqa: E402
+
+sys.path.insert(0, str(study_dir("earthquake") / "scripts"))
 
 try:
     from earthquake_data_fetcher import EarthquakeDataFetcher
@@ -20,7 +21,7 @@ except ImportError:
 
 
 def generate_track2_assets(
-    output_dir: str = "docs/research/track_2_earthquake_prediction/figures",
+    output_dir: str = str(figures_dir("earthquake")),
     simulation: bool = False,
 ):
     """
@@ -58,9 +59,7 @@ def generate_track2_assets(
         data = fetcher.process_for_analysis(raw_data)
 
         # Save for report reference
-        with open(
-            "docs/research/track_2_earthquake_prediction/india_nepal_data.json", "w"
-        ) as f:
+        with open(study_data_dir("earthquake") / "india_nepal_data.json", "w") as f:
             json.dump(data, f, indent=2, default=str)
 
     except Exception as e:

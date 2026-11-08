@@ -25,7 +25,9 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+PROJECT_ROOT = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+)
 
 
 def run_step(script_path: str, description: str):
@@ -56,27 +58,28 @@ def main():
 
     # Step 3: Analyze & Generate Artifacts
     run_step(
-        "src/generate_artifacts.py",
+        "scripts/generate_artifacts.py",
         "Running Statistical Analysis & Generating Artifacts",
     )
 
     # Step 4: AI Visuals Generation (Multi-Provider)
     # Uses src.visuals.manager to generate PaperBanana, Mermaid, and LaTeX diagrams.
     run_step(
-        "src/visuals/manager.py", "Generating AI Diagrams (PaperBanana, Mermaid, LaTeX)"
+        "libs/visuals/manager.py",
+        "Generating AI Diagrams (PaperBanana, Mermaid, LaTeX)",
     )
 
     print(f"\n{'='*60}")
     print("✅ PIPELINE COMPLETE")
     print(f"{'='*60}")
     print("\nNext Steps:")
-    print("1. Review artifacts in: reports/artifacts/")
+    print("1. Review artifacts in: studies/gold_market/artifacts/")
     print("2. Render the final manuscript PDF using Quarto:")
     print(
-        "   $ quarto render reports/manuscript.qmd --to pdf -o manuscript_nature.pdf  # Default Nature"  # noqa: E501
+        "   $ quarto render studies/gold_market/paper/manuscript.qmd --to pdf -o manuscript_nature.pdf  # Default Nature"  # noqa: E501
     )
     print(
-        "   $ quarto render reports/manuscript.qmd --to pdf -M csl=styles/ieee.csl -o manuscript_ieee.pdf # IEEE Override"  # noqa: E501
+        "   $ quarto render studies/gold_market/paper/manuscript.qmd --to pdf -M csl=styles/ieee.csl -o manuscript_ieee.pdf # IEEE Override"  # noqa: E501
     )
     print("\nThe generated PDF will contain the rigorous scientific analysis required.")
 

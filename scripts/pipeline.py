@@ -21,11 +21,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from studies._paths import REPO_ROOT, study_dir  # noqa: E402
 
 TRACKS = {
     "track_2_earthquake": {
-        "dir": REPO_ROOT / "research/use_cases/earthquake",
+        "dir": study_dir("earthquake"),
         "scripts": [
             "generate_daily_astro_features.py",
             "generate_combination_catalog.py",
@@ -33,7 +34,7 @@ TRACKS = {
         ],
     },
     "track_3_gold": {
-        "dir": REPO_ROOT / "research/use_cases/gold_market",
+        "dir": study_dir("gold_market"),
         "scripts": [
             "fetch_gold_data.py",
             "generate_gold_astro_features.py",
@@ -59,7 +60,7 @@ def main():
     logger.info("Starting AstroFusion Research Pipeline...")
 
     # 1. Run Global Artifact Generator
-    run_script(REPO_ROOT / "src/generate_artifacts.py")
+    run_script(REPO_ROOT / "scripts" / "generate_artifacts.py")
 
     # 2. Run Track-specific scripts
     for track_name, track_info in TRACKS.items():
@@ -71,7 +72,7 @@ def main():
     # 3. Final Step: Reminder for Quarto
     logger.info("=== Pipeline Complete ===")
     logger.info("You can now render the final report using:")
-    logger.info("quarto render docs/research/COMPREHENSIVE_RESEARCH_THESIS.qmd")
+    logger.info("quarto render papers/COMPREHENSIVE_RESEARCH_THESIS.qmd")
 
 
 if __name__ == "__main__":

@@ -16,10 +16,11 @@ from typing import Dict, List, Tuple, Optional
 import os
 import sys
 
-# Ensure src is in path to import vedic_astrology_core
 sys.path.insert(
-    0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../libs"))
-)
+    0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+)  # repo root
+
+from studies._paths import figures_dir, study_data_dir  # noqa: E402
 
 from vedic_astrology_core.astrology.ephemeris import EphemerisEngine  # noqa: E402
 
@@ -543,7 +544,7 @@ def main():
     print("Data-driven framework for multi-use-case validation")
     print("=" * 80)
 
-    data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../data"))
+    data_dir = str(study_data_dir("earthquake"))
     target_file = None
 
     if len(sys.argv) > 1:
@@ -571,7 +572,7 @@ def main():
     else:
         print("❌ CRITICAL: No real earthquake data found.")
         print(
-            "Please run 'python3 research/use_cases/earthquake/scripts/"
+            "Please run 'python3 studies/earthquake/scripts/"
             "earthquake_data_fetcher.py' first"
         )
         print("to fetch real USGS data.")
@@ -585,8 +586,7 @@ def main():
 
     print("\n2. Genering Conjunction Graphs...")
     # Use relative path from script location for robustness
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    output_dir = os.path.abspath(os.path.join(script_dir, "../figures"))
+    output_dir = str(figures_dir("earthquake"))
     os.makedirs(output_dir, exist_ok=True)
 
     print("   - Generating Mars-Ketu Analysis...")
@@ -611,10 +611,8 @@ def main():
     summary = analyzer.generate_analysis_summary()
     print(summary)
 
-    output_file = os.path.abspath(
-        os.path.join(
-            script_dir, "../data/earthquake_planetary_correlation_analysis.json"
-        )
+    output_file = str(
+        study_data_dir("earthquake") / "earthquake_planetary_correlation_analysis.json"
     )
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     analyzer.export_results_json(output_file)

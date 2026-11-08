@@ -7,23 +7,15 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 
-# Add src to path
-# Script: REPO/research/use_cases/gold_market/scripts/script.py
-# Root: REPO/
-root = Path(__file__).resolve().parents[4]
-sys.path.insert(0, str(root / "libs"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
 
-try:
-    from models.statistics import calculate_chi_square, apply_fdr_correction
-except ImportError:
-    print(
-        "Warning: Could not import from models.statistics. "
-        f"Path added: {str(root / 'libs')}"
-    )
-    raise
+from libs.models.statistics import (  # noqa: E402
+    apply_fdr_correction,
+    calculate_chi_square,
+)
+from studies._paths import study_data_dir  # noqa: E402
 
-track_root = Path(__file__).resolve().parents[1]
-data_dir = track_root / "data"
+data_dir = study_data_dir("gold_market")
 
 catalog_path = data_dir / "gold_astro_catalog.csv"
 features_path = data_dir / "gold_astro_features.csv"

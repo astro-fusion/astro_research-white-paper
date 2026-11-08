@@ -8,7 +8,7 @@ echo "Starting PDF Generation..."
 
 # Generate Python Artifacts first
 echo "Generating Python Artifacts (Plots & Tables)..."
-python3 research/scripts/generate_artifacts.py || { echo "❌ Stats/Artifact generation failed"; exit 1; }
+python3 scripts/generate_artifacts.py || { echo "❌ Stats/Artifact generation failed"; exit 1; }
 
 # Function to render and move
 render_and_move() {
@@ -46,31 +46,31 @@ render_and_move() {
 }
 
 # 1. Master Consolidated Paper
-render_and_move "docs/research/VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.qmd" "VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.pdf"
+render_and_move "papers/VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.qmd" "VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.pdf"
 
 # 2. Track 1
-render_and_move "docs/research/track_1_numerology_vs_astrology/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.qmd" "NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.pdf"
+render_and_move "studies/numerology_vs_astrology/paper/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.qmd" "NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.pdf"
 
 # 3. Track 2
-render_and_move "docs/research/track_2_earthquake_prediction/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.qmd" "EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf"
+render_and_move "studies/earthquake/paper/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.qmd" "EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf"
 
 # 4. Track 3
-render_and_move "docs/research/track_3_gold_market/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.qmd" "GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.pdf"
+render_and_move "studies/gold_market/paper/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.qmd" "GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.pdf"
 
 # 5. Manuscripts & Consolidated Binder
-render_and_move "docs/research/COMPREHENSIVE_RESEARCH_THESIS.qmd" "COMPREHENSIVE_RESEARCH_THESIS.pdf"
-render_and_move "research/reports/manuscript.qmd" "manuscript_nature.pdf"
+render_and_move "papers/COMPREHENSIVE_RESEARCH_THESIS.qmd" "COMPREHENSIVE_RESEARCH_THESIS.pdf"
+render_and_move "studies/gold_market/paper/manuscript.qmd" "manuscript_nature.pdf"
 
 # For IEEE, we need to specify CSL.
 # We'll just run the command directly for this one to handle the extra arg
 echo "Rendering manuscript_ieee.pdf..."
-quarto render research/reports/manuscript.qmd --to pdf -M csl=styles/ieee.csl -o manuscript_ieee.pdf
+quarto render studies/gold_market/paper/manuscript.qmd --to pdf -M csl=../../../styles/ieee.csl -o manuscript_ieee.pdf
 if [ -f "manuscript_ieee.pdf" ]; then
     mv manuscript_ieee.pdf pdfs/
 elif [ -f "_site/manuscript_ieee.pdf" ]; then
     mv _site/manuscript_ieee.pdf pdfs/
-elif [ -f "research/reports/manuscript_ieee.pdf" ]; then
-    mv research/reports/manuscript_ieee.pdf pdfs/
+elif [ -f "studies/gold_market/paper/manuscript_ieee.pdf" ]; then
+    mv studies/gold_market/paper/manuscript_ieee.pdf pdfs/
 fi
 echo "✅ Moved manuscript_ieee.pdf to pdfs/"
 

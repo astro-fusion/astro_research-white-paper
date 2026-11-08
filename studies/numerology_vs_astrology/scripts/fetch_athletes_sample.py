@@ -6,12 +6,16 @@ import argparse
 from pathlib import Path
 
 import pandas as pd
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
+from studies._paths import study_data_dir  # noqa: E402
 
 URL = "https://raw.githubusercontent.com/stat408/Data/main/athletes%20new.csv"
 SAMPLE_N = 500
 SEED = 42
 
-out_dir = Path(__file__).resolve().parents[1] / "data"
+out_dir = study_data_dir("numerology_vs_astrology")
 out_dir.mkdir(parents=True, exist_ok=True)
 
 athletes_path = out_dir / "athletes_sample.csv"

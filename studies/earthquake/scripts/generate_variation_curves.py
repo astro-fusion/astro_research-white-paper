@@ -6,16 +6,17 @@ at 2-hour intervals. This resolution captures fast-moving components like the Mo
 and provides a smooth "Variation Curve" for correlation with seismic events.
 
 Output:
-    assets/data/planetary_strength_curves_2h.csv
+    data/processed/planetary_strength_curves_<year>_2h.csv
 """
 
 import os
 import sys
 
-# Ensure src is in path
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../src"))
-)
+sys.path.insert(
+    0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+)  # repo root
+
+from studies._paths import PROCESSED_ROOT  # noqa: E402
 
 # from vedic_astrology_core.config.constants import Planet  # noqa: E402
 from vedic_astrology_core.time_series import (  # noqa: E402
@@ -36,9 +37,7 @@ def generate_curves(year: int = 2023):
     )
 
     # Ensure asset directory exists
-    output_dir = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "../../../assets/data")
-    )
+    output_dir = str(PROCESSED_ROOT)
     os.makedirs(output_dir, exist_ok=True)
 
     output_path = os.path.join(output_dir, f"planetary_strength_curves_{year}_2h.csv")

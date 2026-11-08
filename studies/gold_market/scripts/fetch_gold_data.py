@@ -8,6 +8,10 @@ from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
+from studies._paths import study_data_dir  # noqa: E402
 
 try:
     import yfinance as yf
@@ -23,7 +27,7 @@ SYMBOLS = [
     "GC=F",  # COMEX Gold Futures (fallback)
 ]
 
-out_dir = Path(__file__).resolve().parents[1] / "data"
+out_dir = study_data_dir("gold_market")
 out_dir.mkdir(parents=True, exist_ok=True)
 out_path = out_dir / "gold_prices.csv"
 yearly_dir = out_dir / "gold_prices_yearly"

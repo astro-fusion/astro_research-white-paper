@@ -5,8 +5,9 @@ from pathlib import Path
 import sys
 import pandas as pd
 
-repo_root = Path(__file__).resolve().parents[4]
-sys.path.insert(0, str(repo_root / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
+
+from studies._paths import study_data_dir  # noqa: E402
 
 from vedic_astrology_core.astrology.chart import (  # noqa: E402
     calculate_chart,
@@ -21,8 +22,7 @@ from vedic_astrology_core.dasha.vimshottari import (  # noqa: E402
 )  # noqa: E402
 
 # Paths
-base = Path(__file__).resolve().parents[1]
-data_dir = base / "data"
+data_dir = study_data_dir("gold_market")
 gold_path = data_dir / "gold_prices.csv"
 
 if not gold_path.exists():

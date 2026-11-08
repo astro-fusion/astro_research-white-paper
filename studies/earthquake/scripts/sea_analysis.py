@@ -7,12 +7,7 @@ Statistical validation tool for the Research Pipeline.
 
 import pandas as pd
 import matplotlib.pyplot as plt
-import sys
 import os
-from pathlib import Path
-
-# Add src to path for imports
-sys.path.append(str(Path(__file__).parent.parent.parent.parent / "src"))
 
 
 def perform_sea_analysis(

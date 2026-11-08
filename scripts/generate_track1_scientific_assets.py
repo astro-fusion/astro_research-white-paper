@@ -9,12 +9,16 @@ watermarked illustrations with a ``SIMULATED_`` filename prefix.
 
 import argparse
 import os
+import sys
 from datetime import datetime, timedelta
 
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from studies._paths import figures_dir  # noqa: E402
 
 SIMULATION_WATERMARK = "SIMULATED, NOT DATA"
 
@@ -131,7 +135,7 @@ def plot_simulated_astrology_figures(df_num, start_date, end_date, output_dir):
 
 
 def generate_scientific_assets(
-    output_dir: str = "docs/research/track_1_numerology_vs_astrology/figures",
+    output_dir: str = str(figures_dir("numerology_vs_astrology")),
     simulation: bool = False,
 ):
     """Generate Track 1 figures for January 2024.

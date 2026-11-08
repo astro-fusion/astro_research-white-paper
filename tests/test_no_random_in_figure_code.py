@@ -2,7 +2,8 @@
 
 Figures in the papers were once drawn from ``np.random`` and presented as
 results (see CORRECTIONS.md, 2026-11-08). This test walks every Python file
-under ``research/`` whose name marks it as figure code and fails if it calls
+under ``scripts/`` and ``studies/`` whose name marks it as figure
+code and fails if it calls
 ``np.random.*``, ``numpy.random.*``, ``random.*`` or ``rng.*`` outside a
 function whose name contains ``simulat``. Simulated illustrations must live in
 such a function, run only behind an explicit ``--simulation`` flag, and carry a
@@ -17,7 +18,7 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-RESEARCH_DIR = REPO_ROOT / "research"
+SCAN_DIRS = (REPO_ROOT / "scripts", REPO_ROOT / "studies")
 FIGURE_NAME_MARKERS = ("figure", "asset", "graph", "plot", "artifact")
 RANDOM_ROOTS = (("np", "random"), ("numpy", "random"), ("random",), ("rng",))
 EXCLUDED_DIRS = {"_freeze", "_site", "__pycache__", ".ipynb_checkpoints"}
@@ -25,7 +26,7 @@ EXCLUDED_DIRS = {"_freeze", "_site", "__pycache__", ".ipynb_checkpoints"}
 
 def _figure_files():
     files = []
-    for path in sorted(RESEARCH_DIR.rglob("*.py")):
+    for path in sorted(p for d in SCAN_DIRS for p in d.rglob("*.py")):
         if EXCLUDED_DIRS.intersection(path.parts):
             continue
         name = path.stem.lower()

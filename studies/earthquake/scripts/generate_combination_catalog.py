@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Generate exhaustive Classical Jyotish combination catalog."""
+import sys
 from pathlib import Path
+
 import pandas as pd
 
 PLANETS = [
@@ -220,7 +222,10 @@ for window in WINDOWS:
         compound="malefic_conj_eclipse",
     )
 
-out_dir = Path(__file__).resolve().parents[1] / "data"
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
+from studies._paths import study_data_dir  # noqa: E402
+
+out_dir = study_data_dir("earthquake")
 out_dir.mkdir(parents=True, exist_ok=True)
 cat_path = out_dir / "combination_catalog.csv"
 pd.DataFrame(rows).to_csv(cat_path, index=False)

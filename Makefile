@@ -26,25 +26,16 @@ install:
 	. .venv/bin/activate && pip install -e ".[dev]"
 	@echo "✅ Setup complete. Use 'source .venv/bin/activate' to enter the environment."
 
-REQUIRED_DATA = data/raw/gold_prices.csv data/processed/aligned_planetary_data.csv
-
 check-data:
-	@echo "Checking required input data..."
-	@missing=0; for f in $(REQUIRED_DATA); do \
-	  if [ ! -f "$$f" ]; then echo "MISSING: $$f"; missing=1; continue; fi; \
-	  sha=$$(shasum -a 256 "$$f" | cut -d' ' -f1); \
-	  rows=$$(( $$(wc -l < "$$f") - 1 )); \
-	  echo "$$f  sha256=$$sha  rows=$$rows"; \
-	done; \
-	if [ $$missing -ne 0 ]; then echo "check-data failed: required data files are missing"; exit 1; fi
+	@python3 scripts/check_data.py
 
 artifacts:
 	@echo "📊 Generating research artifacts..."
-	@. .venv/bin/activate && python3 research/scripts/generate_artifacts.py
+	@. .venv/bin/activate && python3 scripts/generate_artifacts.py
 
 pdfs:
 	@echo "📄 Rendering research papers to PDF..."
-	@bash research/scripts/generate_pdfs.sh
+	@bash scripts/generate_pdfs.sh
 
 build: check-data pdfs  # generate_pdfs.sh already runs generate_artifacts.py
 	@echo "🎉 Platform build complete. Check the 'pdfs/' directory for outputs."
@@ -52,9 +43,7 @@ build: check-data pdfs  # generate_pdfs.sh already runs generate_artifacts.py
 clean:
 	@echo "🧹 Cleaning up..."
 	rm -rf pdfs/*.pdf
-	rm -rf research/reports/artifacts/*.csv
-	rm -rf research/reports/artifacts/*.pdf
-	rm -rf research/reports/artifacts/*.json
+	find studies -path '*/artifacts/*' ! -name .gitkeep -type f -delete
 	rm -rf _site/
 	rm -rf _freeze/
 	rm -rf .quarto/
@@ -66,6 +55,6 @@ test:
 
 quality-gate:
 	@echo "🛡️ Running quality checks..."
-	@. .venv/bin/activate && flake8 libs/ src/ application/ research/ tests/
+	@. .venv/bin/activate && flake8 libs/ src/ application/ scripts/ studies/ tests/
 	@. .venv/bin/activate && mypy libs/vedic_astrology_core/ src/ application/
 	@. .venv/bin/activate && pytest tests/

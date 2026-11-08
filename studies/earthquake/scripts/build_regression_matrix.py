@@ -17,8 +17,10 @@ from pathlib import Path
 
 import pandas as pd
 
-# Add src to path for imports
-sys.path.append(str(Path(__file__).parent.parent.parent.parent / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # sibling scripts
+
+from studies._paths import study_data_dir  # noqa: E402
 
 from earthquake_data_fetcher import EarthquakeDataFetcher  # noqa: E402
 from vedic_astrology_core.astrology.ephemeris import EphemerisEngine  # noqa: E402
@@ -56,9 +58,7 @@ def build_matrix(
     end_date_str = f"{end_year}-12-31"
 
     # Check for Real Data File first
-    real_data_path = (
-        Path(__file__).parent.parent.parent / "data" / "usgs_real_data_phase7.json"
-    )
+    real_data_path = study_data_dir("earthquake") / "usgs_real_data_phase7.json"
 
     if real_data_path.exists():
         print(f"Loading REAL earthquake data from {real_data_path}")

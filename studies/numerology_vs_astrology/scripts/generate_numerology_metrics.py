@@ -3,6 +3,10 @@
 from datetime import date, timedelta
 from pathlib import Path
 import pandas as pd
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
+from studies._paths import study_data_dir  # noqa: E402
 
 START = date(2024, 1, 1)
 END = date(2024, 12, 31)
@@ -41,7 +45,7 @@ while cur <= END:
     rows.append(row)
     cur += timedelta(days=1)
 
-out_dir = Path(__file__).resolve().parents[1] / "data"
+out_dir = study_data_dir("numerology_vs_astrology")
 out_dir.mkdir(parents=True, exist_ok=True)
 metric_path = out_dir / "numerology_daily_metrics.csv"
 

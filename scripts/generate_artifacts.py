@@ -8,7 +8,7 @@ It orchestrates the data flow:
 1. Loads aligned data (Model)
 2. Runs statistical tests (Model)
 3. Generates tables and figures (View Components)
-4. Saves them to 'reports/artifacts/' for Quarto consumption.
+4. Saves them to 'studies/gold_market/artifacts/' for Quarto consumption.
 """
 
 import json
@@ -21,33 +21,26 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-# Add src to path
-sys.path.insert(
-    0, os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "libs")
-)
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from models.statistics import (  # noqa: E402
+from libs.models.statistics import (  # noqa: E402
     calculate_molchan_trajectory,
     check_stationarity,
     run_granger_causality,
     run_lomb_scargle,
     run_monte_carlo_permutation_test,
 )
+from studies._paths import PROCESSED_ROOT, artifacts_dir  # noqa: E402
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Paths
-PROCESSED_DATA_PATH = os.environ.get("ASTRO_PROCESSED_DATA_PATH") or os.path.join(
-    os.path.dirname(os.path.dirname(__file__)),
-    "data",
-    "processed",
-    "aligned_planetary_data.csv",
+PROCESSED_DATA_PATH = os.environ.get("ASTRO_PROCESSED_DATA_PATH") or str(
+    PROCESSED_ROOT / "aligned_planetary_data.csv"
 )
-ARTIFACTS_DIR = os.environ.get("ASTRO_ARTIFACTS_DIR") or os.path.join(
-    os.path.dirname(os.path.dirname(__file__)), "reports", "artifacts"
-)
+ARTIFACTS_DIR = str(artifacts_dir("gold_market"))  # honours ASTRO_ARTIFACTS_DIR
 
 # Ensure artifacts directory exists
 if not os.path.exists(ARTIFACTS_DIR):

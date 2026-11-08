@@ -3,10 +3,14 @@
 from pathlib import Path
 import pandas as pd
 from datetime import datetime
+import sys
 
-DATA_PATH = Path(__file__).resolve().parents[1] / "data" / "births.csv"
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
+from studies._paths import study_data_dir  # noqa: E402
+
+DATA_PATH = study_data_dir("numerology_vs_astrology") / "births.csv"
 OUT_PATH = (
-    Path(__file__).resolve().parents[1] / "data" / "personal_numerology_metrics.csv"
+    study_data_dir("numerology_vs_astrology") / "personal_numerology_metrics.csv"
 )
 
 if not DATA_PATH.exists():

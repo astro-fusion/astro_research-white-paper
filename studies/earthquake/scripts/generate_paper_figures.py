@@ -18,10 +18,10 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 import pandas as pd
 
-# Ensure src is in path to import vedic_astrology_core
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../src"))
-)
+sys.path.insert(
+    0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+)  # repo root
+_paths = importlib.import_module("studies._paths")
 
 EphemerisEngine = importlib.import_module(
     "vedic_astrology_core.astrology.ephemeris"
@@ -34,10 +34,8 @@ GlobalShadbalaScorer = importlib.import_module(
 # Configuration
 START_DATE = datetime(2020, 1, 1)
 END_DATE = datetime(2025, 1, 1)
-OUTPUT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../figures"))
-DATA_PATH = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "../data/usgs_real_data_phase7.json")
-)
+OUTPUT_DIR = str(_paths.figures_dir("earthquake"))
+DATA_PATH = str(_paths.study_data_dir("earthquake") / "usgs_real_data_phase7.json")
 
 
 def ensure_dir(d):
