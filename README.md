@@ -36,11 +36,11 @@
 
 This repository is an **open multi-domain research platform** that:
 
-1. **Curates empirically rigorous astro-fusion plasma physics white papers** — covering thermal Helium line ratio spectroscopy, pellet ablation dynamics, relativistic κ-distributions, charge-exchange particle analysers, and wireless power transmission.
-2. **Applies classical Vedic astrological principles** to empirical, reproducible data science using Swiss Ephemeris (sub-arcsecond precision), statistical validation, Granger Causality, and Monte Carlo permutations.
-3. **Bridges both domains** — treating planetary geometry and high-temperature plasma diagnostics as multi-variable time-series amenable to unified ML analysis.
+1. **Applies classical Vedic astrological principles** to empirical, reproducible data science using Swiss Ephemeris (sub-arcsecond precision), statistical validation, Granger Causality, and Monte Carlo permutations.
+2. **Studies Vedic numerology** — Lo Shu, Mulanka, Bhagyanka and Chaldean systems as computable, testable models.
+3. **Investigates celestial-terrestrial correlations** — treating planetary geometry and terrestrial phenomena (earthquakes, gold market) as time-series amenable to statistical and ML analysis.
 
-> **We invite plasma physicists, astronomers, data scientists, astrologers, and skeptics alike to explore, challenge, and contribute.**
+> **We invite astronomers, data scientists, astrologers, and skeptics alike to explore, challenge, and contribute.**
 
 ---
 
@@ -49,19 +49,15 @@ This repository is an **open multi-domain research platform** that:
 ```
 astro_research-white-paper/
 │
-├── 📐 SYMBOLOGY.md            ← Centralized math symbol dictionary (λ collision resolved)
+├── 📐 SYMBOLOGY.md            ← Centralized math symbol dictionary
 │
 ├── 📚 papers/                 ← Static white papers (LaTeX math, Markdown)
-│   ├── physics/               ← Plasma physics: spectroscopy, pellet ablation, κ-distributions
 │   └── astrology/             ← Celestial mechanics, house systems, aspects, retrogrades
 │
 ├── 🗄️ data/                   ← Scientific datasets (HDF5 / Parquet, never raw CSV)
-│   ├── empirical/             ← Charge-exchange analyzer & spectroscopy raw data
-│   ├── ephemeris/             ← Swiss Ephemeris + JPL Horizons planetary positions
-│   └── simulations/           ← Pellet ablation ODE outputs, κ Monte Carlo results
+│   └── ephemeris/             ← Swiss Ephemeris + JPL Horizons planetary positions
 │
 ├── ⚙️ src/                    ← Pure-computation engine libraries
-│   ├── diagnostics/           ← Plasma: line ratio CR model, pellet ODE, κ simulator
 │   └── celestial/             ← Astrology: ephemeris, house systems, aspects, dignity
 │
 ├── 📚 research/               ← Research use cases, notebooks, Quarto reports
@@ -85,9 +81,9 @@ For a deeper view of the system design, see [docs/ARCHITECTURE.md](docs/ARCHITEC
 
 ## 📐 Mathematical Symbol Reference
 
-> **Critical for cross-domain readability**: the symbol $\lambda$ means **wavelength** in plasma physics but **ecliptic longitude** in astrological computation. All symbols are resolved in:
+> **For readability**: symbols such as $\lambda_{\rm ecl}$ (ecliptic longitude) are defined once and used consistently. All symbols are defined in:
 
-➜ **[SYMBOLOGY.md](SYMBOLOGY.md)** — the single authoritative dictionary for all variables across physics and astrology domains.
+➜ **[SYMBOLOGY.md](SYMBOLOGY.md)** — the single authoritative dictionary for all variables across astrology and statistics.
 
 ---
 
@@ -117,7 +113,6 @@ Research papers are generated using **Quarto**:
 ```bash
 make artifacts                    # Generate all charts and statistical tables
 python src/celestial/ephemeris_engine.py --help   # Ephemeris generation
-python src/diagnostics/line_ratio_spectroscopy.py --help  # He line ratio lookup
 ```
 
 ### 🖥️ 3. Web Interface
@@ -153,27 +148,25 @@ make quality-gate  # Lint + Type Check + Test
 ## 🗺️ Four-Phase Strategic Roadmap
 
 ```
-Phase I   (Current)  — Empirical plasma physics baseline + open-science docs ✅
-           → SYMBOLOGY.md, papers/physics/ (5 papers), data/ structure, validation docs
+Phase I   (Current)  — Open-science docs and astrological white papers ✅
+           → SYMBOLOGY.md, papers/astrology/, data/ structure, validation docs
 
-Phase II  (v0.2)     — Dynamic CI/CD + Physics computation engines
-           → src/diagnostics/ engines, automated TDD tests, unified API layer
+Phase II  (v0.2)     — Dynamic CI/CD
+           → automated TDD tests, unified API layer
 
 Phase III (v0.3)     — Astrological logic engine (all cases)
            → src/celestial/ engines, papers/astrology/ (6 papers), exhaustive house/aspect/dignity logic
 
 Phase IV  (v1.0)     — Multi-domain ML synthesis
-           → PCA, clustering, neural networks across plasma + astrology time-series
+           → PCA, clustering, neural networks across astrology, numerology and terrestrial time-series
            → Peer review submission, PyPI package, stable API
 ```
 
 | Phase | Component                                                    | Status        |
 | ----- | ------------------------------------------------------------ | ------------- |
-| I     | White papers: physics (5)                                    | ✅ Complete   |
 | I     | SYMBOLOGY.md                                                 | ✅ Complete   |
 | I     | docs: VALIDATION, DATA_PROVENANCE, COMPUTATIONAL_ENVIRONMENT | ✅ Complete   |
 | I     | data/ directory structure + READMEs                          | ✅ Complete   |
-| II    | src/diagnostics/ Python engines                              | ✅ Scaffolded |
 | III   | papers/astrology/ (6 papers)                                 | ✅ Complete   |
 | III   | src/celestial/ Python engines                                | ✅ Scaffolded |
 | II–IV | CI/CD, API, ML pipeline                                      | 🔄 Planned    |
@@ -181,16 +174,6 @@ Phase IV  (v1.0)     — Multi-domain ML synthesis
 ---
 
 ## 📚 White Papers Index
-
-### Physics (`papers/physics/`)
-
-| #   | Paper                                                                                     | Topic                              |
-| --- | ----------------------------------------------------------------------------------------- | ---------------------------------- |
-| 01  | [He Line Ratio Spectroscopy](papers/physics/01_line_ratio_spectroscopy_thermal_helium.md) | CR model, $R_{\rm line}(T_e, n_e)$ |
-| 02  | [Pellet Ablation Dynamics](papers/physics/02_pellet_ablation_dynamics_elm_mitigation.md)  | ELM mitigation ODE                 |
-| 03  | [Relativistic κ-Distributions](papers/physics/03_relativistic_kappa_distributions.md)     | Monte Carlo RNG                    |
-| 04  | [Charge-Exchange Analyzers](papers/physics/04_charge_exchange_particle_analyzers.md)      | $T_i$ from NPA                     |
-| 05  | [Wireless Power Transmission](papers/physics/05_wireless_power_transmission.md)           | WPT + SPS                          |
 
 ### Astrology (`papers/astrology/`)
 
@@ -273,7 +256,6 @@ Research content (manuscripts, datasets) licensed under [CC BY 4.0](https://crea
 - **Swiss Ephemeris** (Astro.com) — sub-arcsecond planetary precision
 - **NASA JPL Horizons** — authoritative Solar System ephemeris
 - **Quarto** — reproducible scientific publishing
-- **IRCC-AFP**, **CFQS (NIFS/SWJTU)** — astro-fusion plasma physics collaboration
 - The open-source Python scientific ecosystem: NumPy, SciPy, Pandas, pyswisseph, Matplotlib, statsmodels
 
 ---

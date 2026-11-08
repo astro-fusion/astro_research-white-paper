@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Removed: plasma-physics track (papers/physics, src/diagnostics); the project scope is Vedic astrology, numerology and celestial-terrestrial correlation research.
+
 ### Added
 
 - Full open-source documentation suite: root-level `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`

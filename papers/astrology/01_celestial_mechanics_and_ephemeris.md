@@ -10,7 +10,7 @@
 
 ## Abstract
 
-The mathematical foundation of any rigorous computational astrological analysis is the precise localisation of celestial bodies in three-dimensional space relative to a specific terrestrial observer at an exact moment in Universal Time. This white paper documents the coordinate system transformations required to translate heliocentric equatorial positions (as delivered by the Swiss Ephemeris / JPL Horizons data pipeline) into the geocentric ecliptic frame that forms the standard basis of astrological computation. All equations are rendered with explicit symbol definitions conforming to [SYMBOLOGY.md §II](../../SYMBOLOGY.md) to prevent collision with the plasma physics symbol space.
+The mathematical foundation of any rigorous computational astrological analysis is the precise localisation of celestial bodies in three-dimensional space relative to a specific terrestrial observer at an exact moment in Universal Time. This white paper documents the coordinate system transformations required to translate heliocentric equatorial positions (as delivered by the Swiss Ephemeris / JPL Horizons data pipeline) into the geocentric ecliptic frame that forms the standard basis of astrological computation. All equations are rendered with explicit symbol definitions conforming to [SYMBOLOGY.md §II](../../SYMBOLOGY.md).
 
 ---
 

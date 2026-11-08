@@ -1,90 +1,23 @@
 # 📐 SYMBOLOGY.md — Centralized Mathematical Symbol Dictionary
 
 > **Authoritative reference for all mathematical variables and symbols** used across
-> the astro-fusion/astro_research-white-paper repository. Every white paper,
+> the astro_research-white-paper repository. Every white paper,
 > source-code comment, and dataset schema MUST use the notation defined here.
 >
 > **Domain tags** — each symbol is marked with one or more domain tags:
-> `[PH]` = Plasma Physics / Astro-fusion | `[AS]` = Astrological / Celestial Mechanics | `[ST]` = General Statistics / Signal Processing
+> `[AS]` = Astrological / Celestial Mechanics | `[ST]` = General Statistics / Signal Processing
 
 ---
 
-## ⚠️ Symbol Collision Resolution
+## Notation Conventions
 
-Several symbols carry conflicting meanings across disciplines represented in this
-repository. The following table defines the **canonical, context-exclusive** usage
-that resolves those collisions:
+Symbols are kept context-exclusive so that astrological and statistical notation never collide:
 
-| Symbol | Physics Meaning `[PH]`      | Astrological Meaning `[AS]` | **Resolution**                                              |
-| ------ | --------------------------- | --------------------------- | ----------------------------------------------------------- |
-| `λ`    | Wavelength (optics, nm / Å) | Ecliptic longitude (°)      | Use `λ_wave` for wavelength; `λ_ecl` for ecliptic longitude |
-| `ω`    | Angular frequency (rad s⁻¹) | Argument of perihelion (°)  | Use `ω_freq` vs `ω_peri`                                    |
-| `ρ`    | Mass density (kg m⁻³)       | —                           | `ρ` reserved exclusively for plasma/particle density        |
-| `T`    | Temperature (K or eV)       | —                           | `T_e` = electron temperature; `T_i` = ion temperature       |
-| `n`    | Number density (m⁻³)        | —                           | `n_e` = electron number density                             |
-| `R`    | Line intensity ratio        | Right Ascension             | Use `R_line` for line ratios; `α` for Right Ascension       |
-
----
-
-## I. Plasma Physics & Astro-Fusion Symbols `[PH]`
-
-### I.A — Particle & Plasma Parameters
-
-| Symbol | LaTeX      | Unit        | Definition                                                                                       |
-| ------ | ---------- | ----------- | ------------------------------------------------------------------------------------------------ |
-| `n_e`  | `n_e`      | m⁻³         | Electron number density                                                                          |
-| `T_e`  | `T_e`      | eV or K     | Electron temperature                                                                             |
-| `T_i`  | `T_i`      | eV or K     | Ion temperature                                                                                  |
-| `κ`    | `\kappa`   | —           | Kappa index; spectral index of suprathermal tail distribution. κ → ∞ recovers Maxwell-Boltzmann. |
-| `f_κ`  | `f_\kappa` | m⁻³ (m/s)⁻³ | Relativistic Kappa velocity distribution function                                                |
-| `v_th` | `v_{th}`   | m s⁻¹       | Thermal velocity `v_th = sqrt(2 k_B T / m)`                                                      |
-| `m_e`  | `m_e`      | kg          | Electron rest mass                                                                               |
-| `m_i`  | `m_i`      | kg          | Ion rest mass                                                                                    |
-| `k_B`  | `k_B`      | J K⁻¹       | Boltzmann constant                                                                               |
-| `c`    | `c`        | m s⁻¹       | Speed of light in vacuum                                                                         |
-| `e`    | `e`        | C           | Elementary charge                                                                                |
-
-### I.B — Spectroscopic Line Diagnostics
-
-| Symbol    | LaTeX                | Unit       | Definition                                                                       |
-| --------- | -------------------- | ---------- | -------------------------------------------------------------------------------- |
-| `I_{ij}`  | `I_{ij}`             | W m⁻² sr⁻¹ | Intensity of spectral line from upper level `i` → lower level `j`                |
-| `A_{ij}`  | `A_{ij}`             | s⁻¹        | Einstein A-coefficient (spontaneous emission probability) for transition `i → j` |
-| `ΔE_{ij}` | `\Delta E_{ij}`      | J or eV    | Energy of the transition photon `i → j`                                          |
-| `N_i`     | `N_i`                | m⁻³        | Population density of excited state `i`                                          |
-| `λ_wave`  | `\lambda_{\rm wave}` | nm         | Wavelength of emitted photon (optical spectroscopy)                              |
-| `R_line`  | `R_{\rm line}`       | —          | Dimensionless ratio of two spectral line intensities                             |
-| `Q_{ij}`  | `Q_{ij}`             | m³ s⁻¹     | Collisional rate coefficient for transition `i → j`                              |
-
-**Helium Line Ratio Formula:**
-
-$$R_{\rm line}(T_e, n_e) = \frac{I_{\rm singlet}}{I_{\rm triplet}} = \frac{\lambda_{\rm wave,\,triplet}\,A_{\rm singlet}\,N_{\rm singlet}(T_e, n_e)}{\lambda_{\rm wave,\,singlet}\,A_{\rm triplet}\,N_{\rm triplet}(T_e, n_e)}$$
-
-### I.C — Pellet Ablation & ELM Mitigation
-
-| Symbol  | LaTeX               | Unit      | Definition                                                             |
-| ------- | ------------------- | --------- | ---------------------------------------------------------------------- |
-| `N_p`   | `N_p`               | particles | Total number of particles in the injected pellet                       |
-| `ṁ_abl` | `\dot{m}_{\rm abl}` | kg s⁻¹    | Ablation rate of the solid cryogenic pellet                            |
-| `n_cl`  | `n_{\rm cl}`        | m⁻³       | Number density of the pellet ablation cloud                            |
-| `T_cl`  | `T_{\rm cl}`        | eV        | Temperature of the ablation cloud                                      |
-| `v_p`   | `v_p`               | m s⁻¹     | Pellet injection velocity                                              |
-| `r_p`   | `r_p`               | m         | Pellet radius                                                          |
-| `S_c`   | `S_c`               | —         | Shielding factor (ratio of cloud density to background plasma density) |
-| `Φ_ELM` | `\Phi_{\rm ELM}`    | J         | Energy released per ELM event                                          |
-
-### I.D — Magnetic Reconnection
-
-| Symbol  | LaTeX              | Unit  | Definition                                  |
-| ------- | ------------------ | ----- | ------------------------------------------- |
-| `B`     | `\mathbf{B}`       | T     | Magnetic field vector                       |
-| `E`     | `\mathbf{E}`       | V m⁻¹ | Electric field vector                       |
-| `η`     | `\eta`             | Ω·m   | Plasma resistivity                          |
-| `v_A`   | `v_A`              | m s⁻¹ | Alfvén velocity                             |
-| `δ_rec` | `\delta_{\rm rec}` | m     | Thickness of the reconnection current sheet |
-| `W_rec` | `W_{\rm rec}`      | J     | Energy released per reconnection event      |
-| `W_kin` | `W_{\rm kin}`      | J     | Kinetic energy component from reconnection  |
-| `W_th`  | `W_{\rm th}`       | J     | Thermal energy component from reconnection  |
+| Symbol | Astrological Meaning `[AS]` | Convention                                                   |
+| ------ | --------------------------- | ------------------------------------------------------------ |
+| `λ`    | Ecliptic longitude (°)      | Always written `λ_ecl`                                       |
+| `α`    | Right Ascension             | Equatorial frame only                                        |
+| `ω`    | Argument of perihelion (°)  | Written `ω_peri`                                             |
 
 ---
 
@@ -197,15 +130,10 @@ The body is defined **retrograde** when `dλ_ecl/dt < 0` and **direct** when `d�
 
 | Abbreviation | Full Term                                                                   | Domain               |
 | ------------ | --------------------------------------------------------------------------- | -------------------- |
-| ELM          | Edge Localized Mode                                                         | `[PH]`               |
-| CFQS         | Chinese First Quasi-axisymmetric Stellarator                                | `[PH]`               |
 | TDD          | Test-Driven Development                                                     | Software Engineering |
 | CI/CD        | Continuous Integration / Continuous Deployment                              | Software Engineering |
 | HDF5         | Hierarchical Data Format v5                                                 | Data Science         |
 | JPL          | Jet Propulsion Laboratory                                                   | `[AS]`               |
-| WPT          | Wireless Power Transmission                                                 | `[PH]`               |
-| SPS          | Space Solar Power System                                                    | `[PH]`               |
-| IRCC-AFP     | International Research Collaboration Center for Astro-fusion Plasma Physics | `[PH]`               |
 | DOE          | US Department of Energy                                                     | Institutional        |
 | OOB          | Out-of-Bounds (declination)                                                 | `[AS]`               |
 | SPF          | Secondary Progression Formula                                               | `[AS]`               |

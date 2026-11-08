@@ -1,5 +1,5 @@
 ---
-title: "Project Analysis Report: Astro-Fusion Empirical Study"
+title: "Project Analysis Report: Vedic Astrology Empirical Study"
 author: "Research Pipeline"
 date: last-modified
 format:
@@ -11,18 +11,18 @@ format:
 ---
 
 # Abstract
-This paper presents the automated analysis of celestial and plasma-physical data synergies. Using a standardized IMRaD structure, we evaluate the statistical significance of multi-domain correlations.
+This paper presents the automated analysis of celestial, numerological and terrestrial data correlations. Using a standardized IMRaD structure, we evaluate the statistical significance of multi-domain correlations.
 
 # 1. Introduction
-The objective of this research is to bridge the epistemological gap between high-energy plasma diagnostics and high-precision celestial mechanics.
+The objective of this research is to bridge the epistemological gap between traditional Vedic astrological claims and high-precision celestial mechanics through reproducible statistical testing.
 
 # 2. Methods
 All data was generated using the `src/` modular engine library.
 - **Ephemeris**: Computed via Swiss Ephemeris (`pyswieph`) with `r"Lahiri"` ayanamsa.
-- **Statistics**: P-values and Cohen's $d$ effect sizes were calculated using the `src.diagnostics.statistics` module.
+- **Statistics**: P-values and Cohen's $d$ effect sizes were calculated using the `libs/models/statistics.py` module.
 
 # 3. Results
-{{< include _results_dynamic.qmd >}}
+Results are inserted here by the analysis pipeline (see `research/scripts/`).
 
 # 4. Discussion
 The observed correlations were evaluated against a control group...

@@ -1,6 +1,6 @@
 # 📦 Data Provenance & Reproducibility Governance
 
-> This document governs how all empirical data, simulation outputs, and
+> This document governs how all empirical data and
 > astrological ephemeris files are sourced, versioned, validated, and
 > re-used across this repository. External researchers must be able to
 > reproduce every published result using this document as their sole guide.
@@ -24,41 +24,7 @@
 
 ## 2. Dataset Registry
 
-### 2.1 Empirical Plasma Diagnostics (`data/empirical/`)
-
-| Dataset ID                  | Instrument                               | Format  | Update Policy         | Provenance                                   |
-| --------------------------- | ---------------------------------------- | ------- | --------------------- | -------------------------------------------- |
-| `he_line_ratios_v1`         | Thermal He spectroscopy diagnostic array | HDF5    | Immutable (published) | IRCC-AFP experimental run log EXP-2024-0312  |
-| `cxa_energy_spectra_v1`     | Charge-exchange particle analyzer        | Parquet | Immutable             | CFQS neutral particle analyzer, channel 1–32 |
-| `elm_mitigation_signals_v1` | Magnetic probes + scintillator array     | HDF5    | Immutable             | CFQS pellet injection campaign PIC-2024      |
-
-**Data Dictionary Template** (required per dataset):
-
-```yaml
-# data/empirical/<dataset_id>_dictionary.yml
-dataset_id: he_line_ratios_v1
-created: "2024-03-15T08:00:00Z"
-instrument: "Thermal He spectroscopy, CFQS diagnostic array"
-variables:
-  - name: n_e
-    symbol: n_e
-    unit: m^-3
-    dtype: float64
-    description: "Electron number density derived from 667.8nm/706.5nm singlet/triplet ratio"
-  - name: T_e
-    symbol: T_e
-    unit: eV
-    dtype: float64
-    description: "Electron temperature from singlet/triplet line ratio cross-reference"
-  - name: timestamp
-    unit: Unix epoch (s)
-    dtype: int64
-    description: "Shot-relative timestamp for each measurement"
-checksums:
-  SHA256: "<computed-at-ingest>"
-```
-
-### 2.2 Ephemeris Data (`data/ephemeris/`)
+### 2.1 Ephemeris Data (`data/ephemeris/`)
 
 | Dataset ID                       | Source                    | Format              | Coverage          | Notes                                                  |
 | -------------------------------- | ------------------------- | ------------------- | ----------------- | ------------------------------------------------------ |
@@ -77,57 +43,11 @@ export SE_EPHE_PATH="$(pwd)/data/ephemeris/swiss_ephe_files"
 pip install pyswisseph  # downloads binary ephemeris files to SE_EPHE_PATH
 ```
 
-### 2.3 Simulation Output Data (`data/simulations/`)
-
-| Dataset ID                | Model                                   | Format  | Reproducibility Command                                                                  |
-| ------------------------- | --------------------------------------- | ------- | ---------------------------------------------------------------------------------------- |
-| `kappa_reconnection_v1`   | Relativistic κ-distribution Monte Carlo | HDF5    | `python src/diagnostics/kappa_simulator.py --seed 42`                                    |
-| `pellet_ablation_cfqs_v1` | 1-D pellet ODE, CFQS geometry           | Parquet | `python src/diagnostics/pellet_ablation.py --config ops/config/pellet_ablation_cfqs.yml` |
-
 ---
 
 ## 3. Reproduction Instructions Per Research Track
 
-### 3.1 Helium Line Ratio Spectroscopy
-
-```bash
-# Step 1: Activate environment
-source .venv/bin/activate            # or: conda activate astro-fusion
-
-# Step 2: Generate line ratio lookup table
-python src/diagnostics/line_ratio_spectroscopy.py \
-    --n_e_range 1e17 1e21 \
-    --T_e_range 1.0 100.0 \
-    --output data/simulations/he_line_ratios_lookup.parquet
-
-# Step 3: Expected output (6 significant figures)
-# R_line(T_e=10eV, n_e=1e19) = 0.342815
-# R_line(T_e=50eV, n_e=1e19) = 0.178234
-```
-
-### 3.2 Pellet Ablation Simulation
-
-```bash
-python src/diagnostics/pellet_ablation.py \
-    --config ops/config/pellet_ablation_cfqs.yml \
-    --output data/simulations/pellet_ablation_cfqs_v1.parquet
-
-# Verify checksum
-sha256sum data/simulations/pellet_ablation_cfqs_v1.parquet
-# Expected: <hash recorded at original publication>
-```
-
-### 3.3 Relativistic Kappa Distribution
-
-```bash
-python src/diagnostics/kappa_simulator.py \
-    --kappa 3.5 \
-    --n_particles 1000000 \
-    --seed 42 \
-    --output data/simulations/kappa_reconnection_v1.hdf5
-```
-
-### 3.4 Astrological Chart Pipeline
+### 3.1 Astrological Chart Pipeline
 
 ```bash
 python src/celestial/ephemeris_engine.py \
@@ -149,7 +69,7 @@ All versions below are pinned in `pyproject.toml` and replicated in
 | ------------ | ------------ | ----------------------------------------- |
 | `pyswisseph` | `≥ 2.10.3.2` | Swiss Ephemeris wrapper                   |
 | `numpy`      | `≥ 1.26.0`   | Numerical arrays, RNG                     |
-| `scipy`      | `≥ 1.12.0`   | ODE solver (pellet ablation), statistics  |
+| `scipy`      | `≥ 1.12.0`   | Statistics                                |
 | `pandas`     | `≥ 2.1.0`    | DataFrame operations                      |
 | `h5py`       | `≥ 3.10.0`   | HDF5 I/O                                  |
 | `pyarrow`    | `≥ 14.0.0`   | Parquet I/O                               |
@@ -163,7 +83,7 @@ All versions below are pinned in `pyproject.toml` and replicated in
 # Confirmed at import in all library entry-points
 import numpy as np
 assert np.float64 == np.double   # 64-bit IEEE 754 enforced
-# Never use np.float32 for any physics or ephemeris computation
+# Never use np.float32 for any ephemeris computation
 ```
 
 ---
@@ -172,12 +92,10 @@ assert np.float64 == np.double   # 64-bit IEEE 754 enforced
 
 ```bash
 # After downloading/generating any dataset, run:
-sha256sum data/empirical/*.parquet data/empirical/*.hdf5 > data/empirical/CHECKSUMS.sha256
-sha256sum data/simulations/*.parquet data/simulations/*.hdf5 > data/simulations/CHECKSUMS.sha256
+sha256sum data/ephemeris/*.parquet > data/ephemeris/CHECKSUMS.sha256
 
 # Before using data, verify:
-sha256sum -c data/empirical/CHECKSUMS.sha256
-sha256sum -c data/simulations/CHECKSUMS.sha256
+sha256sum -c data/ephemeris/CHECKSUMS.sha256
 ```
 
 ---
@@ -186,10 +104,9 @@ sha256sum -c data/simulations/CHECKSUMS.sha256
 
 | Data Category                | License                 | Redistribution                     |
 | ---------------------------- | ----------------------- | ---------------------------------- |
-| Plasma diagnostic raw data   | CC BY 4.0               | Permitted with attribution         |
 | Swiss Ephemeris binary files | Swiss Ephemeris License | Only download script redistributed |
 | JPL Horizons exports         | Public Domain (NASA)    | Freely redistributable             |
-| Simulation outputs           | MIT                     | Freely redistributable             |
+| Derived analysis outputs     | MIT                     | Freely redistributable             |
 
 ---
 

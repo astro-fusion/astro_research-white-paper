@@ -1,7 +1,7 @@
 # 💻 Computational Environment Specifications
 
 > **Purpose**: Define the exact hardware profiles, software environments, and
-> containerisation strategies required to run the astro-fusion research platform.
+> containerisation strategies required to run the astro-research platform.
 > Any researcher must be able to replicate results across different machines
 > by following this document.
 
@@ -11,9 +11,6 @@
 
 | Workload                                     | CPU Cores | RAM   | Storage | GPU                    |
 | -------------------------------------------- | --------- | ----- | ------- | ---------------------- |
-| Line ratio lookup generation                 | 2+        | 4 GB  | 5 GB    | Not required           |
-| Pellet ablation ODE (CFQS)                   | 4+        | 8 GB  | 10 GB   | Not required           |
-| Relativistic κ Monte Carlo (10⁶ particles)   | 8+        | 16 GB | 20 GB   | Optional (CUDA)        |
 | Multi-century ephemeris generation           | 4+        | 8 GB  | 50 GB   | Not required           |
 | Full ML Phase IV pipeline (PCA + clustering) | 16+       | 64 GB | 200 GB  | Recommended (CUDA 12+) |
 
@@ -143,8 +140,6 @@ verified environment:
 | `SE_EPHE_PATH`          | `./data/ephemeris/swiss_ephe_files`   | Swiss Ephemeris binary file location               |
 | `ASTRO_DATA_DIR`        | `./data`                              | Root for all data subdirectories                   |
 | `ASTRO_LOG_LEVEL`       | `INFO`                                | Python logging level                               |
-| `KAPPA_SEED`            | `42`                                  | Default Monte Carlo seed (override per experiment) |
-| `PELLET_CONFIG`         | `ops/config/pellet_ablation_cfqs.yml` | Default pellet simulation config                   |
 | `HOUSE_SYSTEM`          | `placidus`                            | Default astrological house system                  |
 | `FALLBACK_HOUSE_SYSTEM` | `whole_sign`                          | Polar latitude fallback house system               |
 
@@ -176,9 +171,6 @@ Expected runtimes on the recommended environment (Apple M2 Pro, 16 GB RAM):
 
 | Task                                              | Expected Runtime |
 | ------------------------------------------------- | ---------------- |
-| Generate He line ratio lookup (full grid)         | ~45 seconds      |
-| Run pellet ablation ODE (single shot)             | < 5 seconds      |
-| Monte Carlo κ-distrib. (10⁶ particles)            | ~90 seconds      |
 | Generate 100-year planetary ephemeris (daily)     | ~3 minutes       |
 | Full aspect matrix (10 bodies, 36,500 time-steps) | ~8 minutes       |
 | Full retrograde scan (10 planets, 100 years)      | ~2 minutes       |
