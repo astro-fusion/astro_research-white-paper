@@ -13,10 +13,8 @@ ops/
 │   ├── planets.yml          ← Planet definitions and dignities
 │   ├── nakshatras.yml       ← Nakshatra catalog
 │   └── ...
-├── requirements.txt         ← Base runtime dependencies
-├── requirements-api.txt     ← API-specific dependencies
-├── requirements-app.txt     ← Web app dependencies
-├── requirements-colab.txt   ← Google Colab / notebook dependencies
+├── requirements.lock.txt    ← uv-compiled lockfile generated from pyproject.toml
+├── requirements*.txt        ← legacy lists kept for deploy targets; install from pyproject instead
 ├── railway.json             ← Railway.app deployment config
 └── render.yaml              ← Render.com deployment config
 ```
@@ -40,20 +38,20 @@ make docs         # Build Sphinx API documentation
 
 ---
 
-## 📦 Requirements Files
+## 📦 Dependencies
 
-| File                     | Use Case                         | Install Command                             |
-| ------------------------ | -------------------------------- | ------------------------------------------- |
-| `requirements.txt`       | Base runtime — all main features | `pip install -r ops/requirements.txt`       |
-| `requirements-api.txt`   | API server only                  | `pip install -r ops/requirements-api.txt`   |
-| `requirements-app.txt`   | Web application                  | `pip install -r ops/requirements-app.txt`   |
-| `requirements-colab.txt` | Google Colab / Jupyter notebooks | `pip install -r ops/requirements-colab.txt` |
-
-For development, use the `pyproject.toml` extras instead:
+`pyproject.toml` is the single dependency source. Install with extras:
 
 ```bash
-pip install -e ".[dev]"   # Includes all dev tools (pytest, black, mypy, etc.)
+pip install -e ".[dev]"     # library + dev tools (pytest, flake8, black, mypy, ...)
+pip install -e ".[colab]"   # notebook extras
+pip install -e ".[api]"     # API server extras
+pip install -e ".[app]"     # web app extras
 ```
+
+`ops/requirements.lock.txt` pins the resolved versions used by CI. The other
+`ops/requirements*.txt` files are legacy inputs for deploy targets and are not
+the source of truth.
 
 ---
 

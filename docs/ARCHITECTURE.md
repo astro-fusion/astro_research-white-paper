@@ -38,7 +38,7 @@ This document describes the high-level architecture of the Vedic Astrology Resea
            │
            ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                    RESEARCH PIPELINE (research/)                 │
+│              RESEARCH PIPELINE (studies/, scripts/)              │
 │                                                                 │
 │  ┌──────────────┐    ┌──────────────┐    ┌──────────────────┐  │
 │  │ Data Ingest  │───▶│  Analysis    │───▶│  Report          │  │
@@ -46,7 +46,7 @@ This document describes the high-level architecture of the Vedic Astrology Resea
 │  │ USGS, Yahoo  │    │  pipeline.py │    │  Quarto .qmd     │  │
 │  └──────────────┘    └──────────────┘    └──────────────────┘  │
 │                                                                 │
-│  use_cases/  numerology/ ─ earthquake/ ─ gold_market/           │
+│  studies/  gold_market/ ─ earthquake/ ─ numerology_vs_astrology/ │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
            │
@@ -71,7 +71,14 @@ The core computational engine. **This is the most stable component** — changes
 
 **No external I/O** — pure computation only. This enables easy testing and reproducibility.
 
-### 2. Research Pipeline (`research/`)
+### 2. Research Pipeline (`studies/`, `scripts/`)
+
+Each study lives in `studies/<name>/` with its README, `paper/`, `scripts/`,
+`data/` (gitignored), `figures/`, `tables/` and `artifacts/` (gitignored).
+Cross-study scripts live in `scripts/`, cross-study papers in `papers/`, the
+website pages in `site/`, and all data under the single `data/` root. Paths
+are resolved through `studies/_paths.py`; see
+[ADR-001](adr/ADR-001-flagship-research-repo.md).
 
 Orchestrates the full research workflow:
 
@@ -139,7 +146,7 @@ User Input (birth_date, birth_time, lat, lon)
 | **Quarto for Reports**               | Reproducible science publishing; native Python/R support          |
 | **YAML Config for Classical Rules**  | Non-programmers can correct classical rules without touching code |
 | **Stateless Flask API**              | Simplifies horizontal scaling and testing                         |
-| **Separate `libs/` and `research/`** | Library stays stable while research evolves rapidly               |
+| **Separate `libs/` and `studies/`**  | Library stays stable while research evolves rapidly               |
 
 ---
 

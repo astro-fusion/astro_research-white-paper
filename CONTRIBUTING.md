@@ -153,8 +153,8 @@ We follow **PEP 8** enforced by **Black** and **isort**.
 
 ```bash
 # Auto-format your code before committing
-black libs/ tests/ research/scripts/ application/
-isort libs/ tests/ research/scripts/ application/
+black libs/ tests/ scripts/ studies/ application/
+isort libs/ tests/ scripts/ studies/ application/
 
 # Check (without modifying)
 black --check --diff libs/ tests/
@@ -287,19 +287,20 @@ class TestPlanetaryDignity:
 
 ## 🔬 Adding a Research Use Case
 
-Research use cases live in `research/use_cases/`. To add a new track:
+Studies live in `studies/<name>/` (see [studies/README.md](studies/README.md)). To add a new track:
 
 1. **Discuss first** — Open a [Research Request issue](https://github.com/astro-fusion/astro_research-white-paper/issues/new?template=research_request.yml) to get feedback before investing time.
 
 2. **Create the structure**:
 
    ```
-   research/use_cases/your_topic/
-   ├── README.md          ← Hypothesis, methodology, data sources
-   ├── data/              ← Raw dataset (or instructions to download)
-   ├── analysis.qmd       ← Quarto notebook with reproducible analysis
-   ├── tests/             ← Validation tests for your analysis
-   └── reports/           ← Generated report outputs
+   studies/your_topic/
+   ├── README.md          ← Question, status, how to run, data sources
+   ├── paper/             ← .qmd manuscript + sections/ (no rendered output)
+   ├── scripts/           ← Pipeline scripts (paths via studies/_paths.py)
+   ├── data/              ← Fetched/generated inputs (gitignored)
+   ├── figures/, tables/  ← Committed only when referenced by paper/
+   └── artifacts/         ← Generated output (gitignored)
    ```
 
 3. **Follow the methodology template** in [docs/RESEARCH_METHODOLOGY.md](docs/RESEARCH_METHODOLOGY.md).

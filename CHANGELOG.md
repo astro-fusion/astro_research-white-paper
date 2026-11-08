@@ -9,7 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (repository reorganization, ADR-001 WP-2)
+
+- One layout: every study lives once in `studies/<name>/` (`gold_market`, `earthquake`, `numerology_vs_astrology`, `remedy_conflict_matrix`) with `README.md`, `paper/`, `scripts/`, `data/` (gitignored), `figures/`, `tables/`, `artifacts/` (gitignored). The duplicate copies under `research/use_cases/`, `docs/research/track_N_*` and root `use_cases/` were merged and removed.
+- `studies/_paths.py` is the single paths module (`REPO_ROOT`, `DATA_ROOT`, `SNAPSHOT_ROOT`, `study_dir`, `artifacts_dir`, ...); scripts and tests use it, and no `sys.path` entry points at `research/` or `src/` any more. `make check-data` runs `scripts/check_data.py`.
+- `research/scripts` -> `scripts/`, `research/notebooks` -> `notebooks/`, cross-study papers -> `papers/`, released PDFs -> `papers/pdf/` (one copy each), the gold manuscript -> `studies/gold_market/paper/manuscript.qmd`.
+- Website: `_quarto.yml` renders `site/` (home, methods, principles, data, mundane, contribute, corrections), `studies/*/paper/` and `papers/`; the home page follows the ADR-001 vision statement.
+- Project-tracking notes and status reports moved to `docs/archive/`; ADR-001 added under `docs/adr/`.
+- Docs (`README.md`, `docs/INDEX.md`, `docs/ARCHITECTURE.md`, `docs/DEVELOPMENT_SETUP.md`, `ops/README.md`) describe the new layout and install with `pip install -e ".[dev]"`.
+
 ### Removed
+
+- Rendered output is no longer tracked: `_book/`, `site_libs/`, `*-preview.html`, Quarto/pandoc `.tex` renders, release HTML/DOCX, `tex_artifacts/`, generated test reports. `.gitignore` covers them.
+- `research/use_cases/numerology/src/numerology`, a copy of `libs/vedic_numerology`; scripts import `vedic_numerology.numerology`.
 
 - Removed: plasma-physics track (papers/physics, src/diagnostics); the project scope is Vedic astrology, numerology and celestial-terrestrial correlation research.
 

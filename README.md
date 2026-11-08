@@ -2,7 +2,7 @@
 
 > **A high-precision computational framework for empirical research into Vedic Astrology, Numerology, and celestial-terrestrial correlations.**
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/astro-fusion/astro_research-white-paper/blob/main/research/notebooks/01_numerology_calculations.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/astro-fusion/astro_research-white-paper/blob/main/notebooks/01_numerology_calculations.ipynb)
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
 [![Quarto](https://img.shields.io/badge/Quarto-1.3%2B-purple.svg)](https://quarto.org/)
 [![CI/CD](https://github.com/astro-fusion/astro_research-white-paper/actions/workflows/ci.yml/badge.svg)](https://github.com/astro-fusion/astro_research-white-paper/actions)
@@ -29,10 +29,10 @@
 
 | Paper                                                                                               | Description                                                             |
 | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
-| [Master Research Report](research_papers/VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.pdf)                      | Consolidated 30+ page paper covering all research tracks                |
-| [Numerology-Astrology Correlation](research_papers/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.pdf) | Temporal discontinuity analysis between discrete and continuous systems |
-| [Earthquake Prediction Analysis](research_papers/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf)    | India-Nepal seismic pattern investigation                               |
-| [Gold Market Correlation](research_papers/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.pdf)           | XAU/USD price prediction analysis                                       |
+| [Master Research Report](papers/pdf/VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.pdf)                      | Consolidated 30+ page paper covering all research tracks                |
+| [Numerology-Astrology Correlation](papers/pdf/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.pdf) | Temporal discontinuity analysis between discrete and continuous systems |
+| [Earthquake Prediction Analysis](papers/pdf/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf)    | India-Nepal seismic pattern investigation                               |
+| [Gold Market Correlation](papers/pdf/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.pdf)           | XAU/USD price prediction analysis                                       |
 
 ---
 
@@ -52,32 +52,28 @@ This repository is an **open multi-domain research platform** that:
 
 ```
 astro_research-white-paper/
-│
-├── 📐 SYMBOLOGY.md            ← Centralized math symbol dictionary
-│
-├── 📚 papers/                 ← Static white papers (LaTeX math, Markdown)
-│   └── astrology/             ← Celestial mechanics, house systems, aspects, retrogrades
-│
-├── 🗄️ data/                   ← Scientific datasets (HDF5 / Parquet, never raw CSV)
-│   └── ephemeris/             ← Swiss Ephemeris + JPL Horizons planetary positions
-│
-├── ⚙️ src/                    ← Pure-computation engine libraries
-│   └── celestial/             ← Astrology: ephemeris, house systems, aspects, dignity
-│
-├── 📚 research/               ← Research use cases, notebooks, Quarto reports
-│   ├── use_cases/             ← numerology / earthquake / gold_market / remedy_conflict
-│   ├── scripts/               ← Pipeline scripts → artifacts & reports
-│   └── reports/               ← Generated Quarto manuscripts (PDF/HTML)
-│
-├── 🔧 libs/                   ← Vedic astrology + numerology core Python library
-│   ├── vedic_astrology_core/  ← Swiss Ephemeris integration (pyswisseph)
-│   └── vedic_numerology/      ← Lo Shu, Mulanka, Bhagyanka, Chaldean calculators
-│
-├── 🖥️ application/            ← Web interface and REST API (Flask, stateless)
-├── ⚙️ ops/                    ← DevOps: config YAML, Makefile, Docker, Conda env
-├── 📖 docs/                   ← Full documentation catalogue
-└── 🧪 tests/                  ← Comprehensive pytest suite
+├── studies/                   one folder per study, one copy each
+│   ├── gold_market/           README, paper/ (qmd + sections/), scripts/, data/, figures/, tables/, artifacts/
+│   ├── earthquake/
+│   ├── numerology_vs_astrology/
+│   ├── remedy_conflict_matrix/
+│   └── _paths.py              REPO_ROOT, DATA_ROOT, SNAPSHOT_ROOT, study_dir(), artifacts_dir()
+├── site/                      website pages: home, methods, principles, data, contribute, corrections
+├── papers/                    cross-study papers (qmd/md); papers/astrology/ white papers
+│   └── pdf/                   released PDFs (one copy each)
+├── notebooks/                 Colab-ready notebooks
+├── scripts/                   pipeline CLIs: generate_artifacts.py, check_data.py, track asset generators
+├── data/                      single data root: raw/, processed/, snapshots/ (gitignored; see data/README.md)
+├── libs/                      vedic_astrology_core, vedic_numerology, models (statistics)
+├── src/                       celestial engines (to be consolidated with libs/, ADR-001)
+├── application/               web interface and REST API (out of scope for now)
+├── templates/, styles/        Quarto paper template and LaTeX/CSL styles
+├── ops/                       Makefile, config, deploy files
+├── docs/                      methodology, provenance, architecture, adr/, archive/
+└── tests/                     pytest suite
 ```
+
+Rendered output (HTML, PDF, TeX, `_book`, `site_libs`, `_freeze`) is never committed; CI renders the website to GitHub Pages. The layout is recorded in [docs/adr/ADR-001-flagship-research-repo.md](docs/adr/ADR-001-flagship-research-repo.md).
 
 For a deeper view of the system design, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Detailed research methodologies are documented in [docs/RESEARCH_METHODOLOGY.md](docs/RESEARCH_METHODOLOGY.md).
 
@@ -96,42 +92,30 @@ For a deeper view of the system design, see [docs/ARCHITECTURE.md](docs/ARCHITEC
 ```bash
 git clone https://github.com/astro-fusion/astro_research-white-paper.git
 cd astro_research-white-paper
-
-make install     # 1. Setup environment & install dependencies
-make build       # 2. Generate all data artifacts & research PDFs
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"          # or: make install
 ```
 
----
-
-## 🏗️ Core Workflows
-
-### 📄 1. PDF Generation
-
-Research papers are generated using **Quarto**:
-
-- **Generate Everything**: `make pdfs`
-- **Output Directory**: Root `pdfs/` folder
-
-### 📊 2. Data & Artifact Generation
+**Read the research.** Open the [website](https://astro-fusion.github.io/astro_research-white-paper/) or build it locally:
 
 ```bash
-make artifacts                    # Generate all charts and statistical tables
-python src/celestial/ephemeris_engine.py --help   # Ephemeris generation
+quarto render --to html          # output in _site/
 ```
 
-### 🖥️ 3. Web Interface
+**Run a study.** Each study README lists its pipeline, for example:
 
 ```bash
-source .venv/bin/activate
-python application/web/web.py
-# → Open http://localhost:5000
+python studies/earthquake/scripts/earthquake_data_fetcher.py
+python studies/earthquake/scripts/generate_daily_astro_features.py
+make check-data                  # SHA-256 and row counts of required inputs
+make artifacts                   # scripts/generate_artifacts.py
 ```
 
-### 🧪 4. Testing & Quality
+**Develop.**
 
 ```bash
-make test          # Run all tests
-make quality-gate  # Lint + Type Check + Test
+make test                        # pytest tests/
+make quality-gate                # flake8, mypy, pytest
 ```
 
 ---
@@ -140,10 +124,10 @@ make quality-gate  # Lint + Type Check + Test
 
 | Use Case                     | Status         | Description                                          | Key Files                                                     |
 | ---------------------------- | -------------- | ---------------------------------------------------- | ------------------------------------------------------------- |
-| **Numerology-Astrology**     | ✅ Active      | Lo Shu / Vedic digit mapping vs. planetary positions | [Explore Track 1](research/use_cases/numerology/)             |
-| **Earthquake Prediction**    | 🔄 In Progress | Seismic pattern investigation (India-Nepal)          | [Explore Track 2](research/use_cases/earthquake/)             |
-| **Gold Market Correlation**  | 🔄 In Progress | XAU/USD vs. planetary cycles                         | [Explore Track 3](research/use_cases/gold_market/)            |
-| **Remedy Conflict Analysis** | 🔄 In Progress | Side-effect and collision analysis for remedies      | [Explore Track 4](research/use_cases/remedy_conflict_matrix/) |
+| **Numerology-Astrology**     | ✅ Active      | Lo Shu / Vedic digit mapping vs. planetary positions | [Explore](studies/numerology_vs_astrology/) |
+| **Earthquake Prediction**    | 🔄 In Progress | Seismic pattern investigation (India-Nepal)          | [Explore](studies/earthquake/) |
+| **Gold Market Correlation**  | 🔄 In Progress | XAU/USD vs. planetary cycles                         | [Explore](studies/gold_market/) |
+| **Remedy Conflict Analysis** | 🔄 In Progress | Side-effect and collision analysis for remedies      | [Explore](studies/remedy_conflict_matrix/) |
 
 > **Want to propose a new research track?** [Open a Research Request Issue →](https://github.com/astro-fusion/astro_research-white-paper/issues/new?template=research_request.yml)
 

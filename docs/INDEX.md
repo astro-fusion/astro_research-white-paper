@@ -1,11 +1,35 @@
-# 📚 Astro-Research Project: Real-Time Visualization System - Complete Index
+# Documentation index
 
-## 🎯 Start Here
+## Repository layout
 
-**New User?** Start with: **QUICK_REFERENCE_CARD.md**
-**Ready to Dive Deep?** Go to: **planetary_strength_dashboard.html**
+| Where | What |
+|---|---|
+| [`studies/`](../studies/README.md) | One folder per study: README, `paper/`, `scripts/`, `data/`, `figures/`, `tables/`, `artifacts/` |
+| `studies/_paths.py` | The one place that knows repository paths (`REPO_ROOT`, `DATA_ROOT`, `SNAPSHOT_ROOT`, `study_dir`, `artifacts_dir`) |
+| `site/` | Website pages (home, methods, principles, data, contribute, corrections), rendered by `_quarto.yml` |
+| `papers/` | Cross-study papers; `papers/pdf/` holds the released PDFs; `papers/astrology/` the white papers |
+| `scripts/` | Pipeline CLIs (`generate_artifacts.py`, `check_data.py`, asset generators, PDF builders) |
+| `notebooks/` | Colab-ready notebooks |
+| [`data/`](../data/README.md) | Single data root (`raw/`, `processed/`, `snapshots/`), gitignored |
+| `libs/`, `src/` | Python libraries (to be consolidated into one package, ADR-001 WP-7) |
+| `docs/adr/` | Decision records, starting with [ADR-001](adr/ADR-001-flagship-research-repo.md) |
+| `docs/archive/` | Superseded project-tracking notes and status reports |
+
+## Core documents
+
+- [ARCHITECTURE.md](ARCHITECTURE.md): system design
+- [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md): environment setup
+- [RESEARCH_METHODOLOGY.md](RESEARCH_METHODOLOGY.md): how a study is built
+- [REPORT_STANDARDS_AND_GUIDELINES.md](REPORT_STANDARDS_AND_GUIDELINES.md): standards for papers
+- [DATA_PROVENANCE.md](DATA_PROVENANCE.md), [VALIDATION_AND_EPISTEMOLOGY.md](VALIDATION_AND_EPISTEMOLOGY.md), [COMPUTATIONAL_ENVIRONMENT.md](COMPUTATIONAL_ENVIRONMENT.md), [EDGE_CASES.md](EDGE_CASES.md)
+- [../CORRECTIONS.md](../CORRECTIONS.md): withdrawn results and why
 
 ---
+
+# Legacy: real-time visualization notes
+
+The notes below describe an earlier visualization toolkit. The HTML outputs
+they mention are generated files and are no longer tracked.
 
 ## 📁 Complete File Guide
 
@@ -148,13 +172,13 @@
 
 ### 🔧 Modified Project Files
 
-#### **src/vedic_numerology/visualization.py**
+#### **libs/vedic_numerology/visualization.py**
 
 - **Changes**: Added import for `plot_planetary_strength_numerology`
 - **Purpose**: Integrate new visualization function
 - **Status**: Ready for use
 
-#### **src/vedic_astrology_core/visualization/radar_charts.py**
+#### **libs/vedic_astrology_core/visualization/radar_charts.py**
 
 - **Changes**: Added `plot_planetary_strength_numerology()` function
 - **Purpose**: Create radar charts for strength visualization
@@ -438,7 +462,7 @@ Time to first result: **< 2 minutes**
 
 ### Research Report Standards
 
-- **[REPORT_STANDARDS_AND_GUIDELINES.md](../research/REPORT_STANDARDS_AND_GUIDELINES.md)** ⭐ **MANDATORY READ FOR REPORT AUTHORS**
+- **[REPORT_STANDARDS_AND_GUIDELINES.md](REPORT_STANDARDS_AND_GUIDELINES.md)** ⭐ **MANDATORY READ FOR REPORT AUTHORS**
   - Defines the complete structure every final PDF report must follow
   - Classical astrological source citation requirements (Brihat Samhita, BPHS, etc.)
   - Mandatory graph list (G1–G7) per combination

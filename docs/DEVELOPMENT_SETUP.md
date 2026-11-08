@@ -55,17 +55,15 @@ python --version  # Should be 3.8+
 ## Step 3: Install Dependencies
 
 ```bash
-# Install base runtime dependencies
-pip install -r ops/requirements.txt
-
-# Install the library in editable mode + dev tools
+# Install the library in editable mode + dev tools (pyproject.toml is the
+# single dependency source; ops/requirements.lock.txt pins versions for CI)
 pip install -e ".[dev]"
 
 # Optional: Swiss Ephemeris (required for actual chart calculations)
 pip install -e ".[ephemeris]"
 
 # Optional: Colab/Jupyter extras
-pip install -r ops/requirements-colab.txt
+pip install -e ".[colab]"
 ```
 
 ---
@@ -114,7 +112,7 @@ pytest tests/ -m "not slow and not integration" -v
 make quality-gate
 
 # Try rendering a report (optional but recommended)
-quarto render research/reports/comprehensive_thesis/COMPREHENSIVE_RESEARCH_THESIS.qmd --to html
+quarto render --to html   # the whole website, output in _site/
 ```
 
 ---

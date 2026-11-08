@@ -178,4 +178,4 @@ orb_velocity = (A_batch[1:] - A_batch[:-1]) / dt_days   # degrees per day
 
 ---
 
-_Symbol cross-reference: [SYMBOLOGY.md §II.C](../../SYMBOLOGY.md). For synastry extensions, see the composite chart methodology in `docs/research/`._
+_Symbol cross-reference: [SYMBOLOGY.md §II.C](../../SYMBOLOGY.md). For synastry extensions, see the composite chart methodology in `docs/research/` and `papers/`._

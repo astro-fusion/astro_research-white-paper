@@ -4,9 +4,10 @@ This directory contains the extensive documentation, research guides, and framew
 
 ## 🚀 Quick Links - Start Here
 
-- [Architecture Guide](project_tracking/ARCHITECTURE.md): Complete system design.
+- [Architecture Guide](ARCHITECTURE.md): Complete system design.
 - [Quick Start](guides/QUICK_START_RESEARCH.md): Getting started in 5 minutes.
-- [Project Structure](project_tracking/PROJECT_STRUCTURE.md): Detailed organizational overview.
+- [Documentation index and repository layout](INDEX.md)
+- [ADR-001: one flagship research repository](adr/ADR-001-flagship-research-repo.md)
 
 ## 📚 Categorized Documentation
 
@@ -20,7 +21,6 @@ This directory contains the extensive documentation, research guides, and framew
 
 - [Research Data Reference](research/RESEARCH_DATA_REFERENCE.md)
 - [Planetary Strength Visualization](research/PLANETARY_STRENGTH_VISUALIZATION.md)
-- [Research Completion Summary](research/RESEARCH_COMPLETION_SUMMARY.md)
 
 ### **Framework & Governance** (`docs/framework/`)
 
@@ -30,4 +30,4 @@ This directory contains the extensive documentation, research guides, and framew
 
 ---
 
-For a full list of documentation files, please browse the subdirectories.
+For a full list of documentation files, please browse the subdirectories. Superseded status reports and tracking notes are in [archive/](archive/README.md).

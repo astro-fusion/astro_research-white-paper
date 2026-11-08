@@ -10,7 +10,7 @@
 
 ## 0. The Core Problem This Document Solves
 
-Our current reports (e.g., `research/use_cases/earthquake/report.qmd`) are ≈96 lines long. They contain:
+Our current reports (e.g., `studies/earthquake/paper/rigor_audit.qmd`) are ≈96 lines long. They contain:
 
 - A brief abstract
 - A description of the dataset
@@ -575,20 +575,20 @@ With graphs, tables, equations, and appendices, the final compiled PDF should be
 
 ### Phase 1 (Immediate — Current Sprint)
 
-1. **Earthquake report** — rewrite `research/use_cases/earthquake/report.qmd` to full standard format
+1. **Earthquake report** — rewrite `studies/earthquake/paper/rigor_audit.qmd` to full standard format
    - Embed all 5 combination analyses
    - Embed G1, G2, G3, G4 graphs (already generated — just need embedding)
    - Add classical source citation table
    - Add confusion matrix table with FP/FN sub-sections
 
-2. **Gold market report** — rewrite `research/use_cases/gold_market/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.qmd`
+2. **Gold market report** — rewrite `studies/gold_market/paper/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.qmd`
    - Add Venus Retrograde and Jupiter-Venus combination analysis sections
    - Embed Molchan diagram with proper caption
    - Add Monte Carlo null distribution graph
 
 ### Phase 2 (Next Sprint)
 
-3. **Numerology report** — rewrite `research/use_cases/numerology/numerology_planet_timeline.qmd`
+3. **Numerology report** — rewrite `studies/numerology_vs_astrology/paper/numerology_planet_timeline.qmd`
 4. **Master manuscript** — update `research/reports/manuscript.qmd` to cite all use-case results
 
 ### Phase 3 (Publication Preparation)

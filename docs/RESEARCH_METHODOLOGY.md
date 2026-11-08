@@ -20,19 +20,18 @@ Every research track in this project must be:
 
 ## Research Track Structure
 
-Every use case lives under `research/use_cases/your_topic/` with this structure:
+Every use case lives under `studies/your_topic/` with this structure:
 
 ```
-research/use_cases/your_topic/
-├── README.md              ← Hypothesis, methodology, data sources, findings
-├── data/
-│   ├── raw/               ← Unmodified downloaded data (with download script!)
-│   └── processed/         ← Cleaned/transformed data
-├── analysis.qmd           ← Quarto notebook: reproducible analysis
-├── tests/
-│   └── test_analysis.py   ← Validates that key calculations are correct
-└── reports/
-    └── report.pdf         ← Generated report (tracked in .gitignore if large)
+studies/your_topic/
+├── README.md              ← Question, status, how to run, data sources
+├── paper/                 ← The .qmd manuscript, sections/, references (no rendered output)
+├── scripts/               ← Pipeline scripts; resolve paths via studies/_paths.py
+├── data/                  ← Fetched or generated inputs (gitignored; documented in README)
+├── figures/               ← Committed only if produced by scripts/ and referenced by paper/
+├── tables/                ← Small committed result tables
+├── notebooks/             ← Optional exploration notebooks
+└── artifacts/             ← Generated output (gitignored)
 ```
 
 ---
@@ -52,9 +51,10 @@ Before writing any code, [open a Research Request Issue](https://github.com/astr
 
 ```bash
 # From project root
-mkdir -p research/use_cases/your_topic/{data/raw,data/processed,tests,reports}
-touch research/use_cases/your_topic/README.md
-touch research/use_cases/your_topic/analysis.qmd
+mkdir -p studies/your_topic/{paper/sections,scripts,data,figures,tables,artifacts}
+touch studies/your_topic/README.md studies/your_topic/paper/your_topic.qmd
+touch studies/your_topic/data/.gitkeep studies/your_topic/artifacts/.gitkeep
+# then add "your_topic" to STUDIES in studies/_paths.py
 ```
 
 ### Step 3: Write the README with Your Hypothesis
@@ -83,7 +83,7 @@ Your `README.md` must include:
 
 ```bash
 # Download instructions or reference download script
-python3 research/use_cases/your_topic/data/download.py
+python3 studies/your_topic/data/download.py
 ```
 ````
 
@@ -178,13 +178,13 @@ Every research track must have at least:
 3. A test that **edge cases don't crash** the pipeline
 
 ```python
-# research/use_cases/your_topic/tests/test_analysis.py
+# studies/your_topic/tests/test_analysis.py
 import pytest
 import pandas as pd
 
 def test_data_loading():
     """Dataset loads and has expected columns."""
-    df = pd.read_csv("research/use_cases/your_topic/data/processed/dataset.csv")
+    df = pd.read_csv("studies/your_topic/data/processed/dataset.csv")
     assert "birth_date" in df.columns
     assert len(df) > 0
 
