@@ -1,0 +1,15 @@
+# Stamp for the data bundle in this folder. See docs/UPSTREAM_CONTRACT.md.
+# Re-stamp after any edit: shasum -a 256 countries.yaml events.jsonl
+bundle_version: 1
+exported_at: 2026-11-08
+row_counts:
+  countries: 113
+  events: 825
+  eclipses: 0   # eclipses.csv is not part of bundle version 1
+sha256:
+  countries.yaml: 81755ee8756a52f2d3aa8512bf21fdbce3546f02394931affb495686106eb5d2
+  events.jsonl: 1c0181d76f1d5e673397524c9df0ac9884bff05e6f1e3e9703edec61b95ab10e
+# The upstream commit hash is recorded in the upstream's own ledger, not here.
+exporter_commit: null
+licence: CC-BY-4.0
+attribution: "AstroFusion mundane dataset"

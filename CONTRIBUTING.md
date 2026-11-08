@@ -387,3 +387,7 @@ Don't be shy — open an issue or discussion even if you're unsure. We'd rather 
 ---
 
 🌟 **Thank you for contributing to open science!**
+
+## Upstream data
+
+Some datasets here are exported from a private upstream maintained by the project owner; it is not needed to reproduce anything. If you edit a file in `studies/mundane/data/`, re-stamp `UPSTREAM.yaml` so `tests/test_upstream_stamp.py` passes. Do not add anything that describes the upstream's internals; see [docs/UPSTREAM_CONTRACT.md](docs/UPSTREAM_CONTRACT.md).

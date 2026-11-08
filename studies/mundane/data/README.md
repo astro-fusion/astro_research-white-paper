@@ -48,3 +48,11 @@ One JSON object per line: `id`, `title`, `date`, `event_type`,
 ```bash
 python studies/mundane/scripts/validate_data.py
 ```
+
+## Upstream stamp
+
+`UPSTREAM.yaml` records the bundle version, export date, row counts and a
+SHA-256 per file; `tests/test_upstream_stamp.py` fails if a file was edited
+without re-stamping. Recompute with `shasum -a 256 countries.yaml events.jsonl`
+in this folder. The schema and licence are in
+[docs/UPSTREAM_CONTRACT.md](../../../docs/UPSTREAM_CONTRACT.md).
