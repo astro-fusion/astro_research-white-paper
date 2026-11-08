@@ -60,5 +60,6 @@ def save_figure(
     fig.subplots_adjust(bottom=max(fig.subplotpars.bottom, 0.14))
     out = Path(path)
     out.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out, dpi=style["savefig.dpi"], metadata={"Software": None})
+    fig.savefig(out, dpi=style["savefig.dpi"], bbox_inches="tight",
+                pad_inches=0.08, metadata={"Software": None})
     return out
