@@ -14,7 +14,10 @@ Conventions (all recorded on the engine so they can go into a run manifest):
   :meth:`EphemerisEngine.get_node_positions` and nowhere else.
 * ``ephemeris_model`` is "swieph" when the Swiss Ephemeris ``.se1`` files
   were found and "moshier" when Swiss Ephemeris fell back to its analytic
-  Moshier theory (read from the ``retflag`` of each calculation).
+  Moshier theory. It is read once, from a Sun calculation at engine
+  creation, and does not change for the engine's lifetime (node calls
+  always report ``swieph`` and must not overwrite it). The ``retflag`` of
+  the latest calculation stays available as ``last_retflag``.
 * Retrograde motion is read from the ``FLG_SPEED`` longitude velocity.
 """
 
@@ -87,7 +90,10 @@ class EphemerisEngine:
     Attributes:
         ayanamsa_system: The sidereal zodiac in use (default Lahiri).
         node_model: "mean" or "true" lunar node for Rahu (Ketu = Rahu + 180).
-        ephemeris_model: "swieph" or "moshier", from the last ``retflag``.
+        ephemeris_model: "swieph" or "moshier", fixed at creation from a Sun
+            calculation (read-only).
+        last_retflag: ``retflag`` of the most recent calculation, for
+            diagnostics.
     """
 
     def __init__(
@@ -112,16 +118,21 @@ class EphemerisEngine:
         if self.ephe_path:
             swe.set_ephe_path(self.ephe_path)
         self.sidereal_mode_set = True
-        # Probe once so the model is known before the first real call.
+        self.last_retflag: Optional[int] = None
+        # Probe a planet once; the model is immutable for the engine's life.
         _, retflag = self._calc(2451545.0, swe.SUN)
-        self.ephemeris_model = ephemeris_model_from_retflag(retflag)
+        self._ephemeris_model = ephemeris_model_from_retflag(retflag)
+
+    @property
+    def ephemeris_model(self) -> str:
+        """Return "swieph", "moshier" or "jpl", read once from the Sun."""
+        return self._ephemeris_model
 
     # ------------------------------------------------------------------ core
     def _calc(self, julian_day: float, body: int, flags: int = SIDEREAL_FLAGS):
         set_sidereal_mode(self.ayanamsa_system)
         xx, retflag = swe.calc_ut(julian_day, body, flags)
-        if flags & swe.FLG_SIDEREAL:
-            self.ephemeris_model = ephemeris_model_from_retflag(retflag)
+        self.last_retflag = retflag
         return xx, retflag
 
     @property

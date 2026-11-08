@@ -114,19 +114,6 @@ def load_catalogue(
 
 
 # -------------------------------------------------------------- testing
-def ephemeris_info(engine: EphemerisEngine) -> Dict:
-    """Return the engine configuration with ``ephemeris_model`` probed on the Sun.
-
-    The engine records the model from the last calculation's return flag,
-    and the mean-node calculation always reports FLG_SWIEPH even when the
-    planets fall back to Moshier, so the model is re-read from a Sun call.
-    """
-    engine.get_planet_position(2451545.0, "SUN")
-    info = engine.get_ephemeris_info()
-    info["ephemeris_model_probe"] = "Sun at J2000"
-    return info
-
-
 def period_slices(hyp: Dict, grid: pd.DatetimeIndex) -> Dict[str, slice]:
     """Return grid slices of the exploration, confirmation and full periods."""
     split = hyp["split"]
@@ -432,7 +419,7 @@ def run(seed: int, snapshot: Optional[Path], offline: bool,
     counts = compare_nb_models(
         monthly_design(cat.loc[masks["gk"], "time"], frame, greater), greater)
 
-    eph_info = ephemeris_info(engine)
+    eph_info = engine.get_ephemeris_info()
     git = git_commit(REPO)
     prov = {"data_sha256": info["sha256"], "commit": git["commit"], "seed": seed}
     figures = make_figures(art, hyp, cat, info, masks, tests, tables["family"],
