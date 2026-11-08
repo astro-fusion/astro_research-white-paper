@@ -2,6 +2,7 @@
 
 import os
 import sys
+import tempfile
 import unittest
 
 import numpy as np
@@ -22,6 +23,13 @@ class TestValidationScript(unittest.TestCase):
 
     def setUp(self):
         """Set up test fixtures."""
+        # Run in a temp dir so generated outputs never land in the repo.
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self._old_cwd = os.getcwd()
+        self.addCleanup(os.chdir, self._old_cwd)
+        os.chdir(self._tmp.name)
+
         # Create a dummy regression matrix for testing
         self.test_matrix_path = "test_validation_matrix.csv"
 
