@@ -218,11 +218,16 @@ def test_every_committed_rule_is_version_2_and_unvalidated_or_stamped():
 
 
 def test_committed_orbs_became_params():
-    """A rule that had an orb now tunes it, with the old value kept."""
+    """A rule that had an orb now tunes it; the condition reads the param."""
     loaded, _ = load_rules([default_rules_dir() / "seismic"])
-    rule = next(i.rule for i in loaded if i.rule.id == "seismic.mangal_ketu_primary")
-    assert rule.params["orb"].value == 13
-    assert rule.conditions.params.orb == 13
+    rule = next(i.rule for i in loaded if i.rule.id == "seismic.shrapit_yoga")
+    orb = rule.params["orb"]
+    assert orb.min < orb.value < orb.max
+    assert rule.conditions is not None
+    assert "$orb" in str(rule._template["conditions"])
+    tuned = next(i.rule for i in loaded if i.rule.id == "seismic.mangal_ketu_primary")
+    assert tuned.params["orb"].value == tuned.tuning_log[-1].chosen["orb"]
+    assert tuned.conditions.params.orb == tuned.params["orb"].value
 
 
 def test_deepcopy_keeps_the_template():

@@ -10,6 +10,7 @@ import yaml
 from vedic_astrology_core.rules import default_rules_dir, load_rules
 from vedic_astrology_core.rules import studyadapter as sa
 from vedic_astrology_core.rules.cli import main
+from vedic_astrology_core.rules.yamlio import edit_rule_file
 
 RULE = "seismic.mangal_ketu_primary"
 EXPLORE = sa.Period(
@@ -35,6 +36,17 @@ def rules_dir(tmp_path):
     """Return a writable copy of the seismic rules."""
     target = tmp_path / "seismic"
     shutil.copytree(default_rules_dir() / "seismic", target)
+
+    def fresh(doc):
+        """Return the rule to an untuned, unvalidated v2."""
+        doc["version"] = 2
+        doc["params"]["orb"]["value"] = 13
+        doc["validation"] = {"status": "unvalidated"}
+        for key in ("tuning_log", "validation_history", "review"):
+            if key in doc:
+                del doc[key]
+
+    edit_rule_file(target / "mangal_ketu_primary.yaml", fresh)
     return target
 
 

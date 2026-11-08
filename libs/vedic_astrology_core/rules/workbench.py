@@ -332,7 +332,7 @@ def stamped(rule: Rule) -> bool:
     return v.status != "unvalidated" and (v.version in (None, rule.version))
 
 
-def confirm(rule: Rule, adapter: StudyAdapter) -> Dict[str, Any]:
+def confirm(rule: Rule, adapter: Optional[StudyAdapter]) -> Dict[str, Any]:
     """Run the frozen rule once on the confirm period; return the stamp.
 
     Raises:
@@ -343,8 +343,11 @@ def confirm(rule: Rule, adapter: StudyAdapter) -> Dict[str, Any]:
             f"{rule.id} v{rule.version} was already confirmed on "
             f"{rule.validation.study} at {rule.validation.at} "
             f"({rule.validation.status}); a new attempt needs a new version: "
-            "change the rule, bump 'version', and fit again"
+            "run astro-rules fit --new-version (or change the rule and bump "
+            "'version'), then confirm the new version"
         )
+    if adapter is None:
+        raise WorkbenchError("confirm needs a study")
     alternative = direction_of(rule)
     events = adapter.confirm_events()
     ind = adapter.confirm_indicator(rule)

@@ -316,17 +316,20 @@ def _fit(args: argparse.Namespace) -> int:
             log.append(entry)
 
     edit_rule_file(path, mutate)
-    print(f"wrote {path}: params updated, tuning_log entry appended")
+    what = "params updated, " if result.chosen else ""
+    print(f"wrote {path}: {what}tuning_log entry appended")
     return 0
 
 
 def _confirm(args: argparse.Namespace) -> int:
     from .studyadapter import StudyAdapter
-    from .workbench import confirm
+    from .workbench import confirm, stamped
     from .yamlio import edit_rule_file, flow, insert_key, plain
 
     try:
         rule, path = _load_rule(args)
+        if stamped(rule):
+            confirm(rule, None)  # raises the refusal with its explanation
         adapter = StudyAdapter(args.study)
         print(
             f"confirm {rule.id} v{rule.version} on {adapter.study}: one frozen run "
