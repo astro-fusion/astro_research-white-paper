@@ -1,0 +1,41 @@
+id,label,planets,structure,depth,study,rate_ratio,ci_low,ci_high,p_explore,q_explore,status,n_in
+fixture.000,FIXTURE Venus-Mars sign,Venus;Mars,sign,2,earthquake,1.4191,1.1216,1.7954,0.00002,,survivor,157
+fixture.001,FIXTURE Moon-Venus house from moon,Moon;Venus,house_from_moon,2,earthquake,1.4191,1.1216,1.7954,0.00006,,survivor,169
+fixture.002,FIXTURE Sun-Mercury nakshatra group,Sun;Mercury,nakshatra_group,2,earthquake,1.4191,1.1216,1.7954,0.003,,rejected,37
+fixture.003,FIXTURE Mercury-Moon conjunction,Mercury;Moon,conjunction,2,earthquake,1.038,0.8205,1.3133,0.55105,,rejected,35
+fixture.004,FIXTURE Moon-Mercury aspect,Moon;Mercury,aspect,2,earthquake,0.9546,0.7545,1.2077,0.63063,,rejected,169
+fixture.005,FIXTURE Saturn-Sun dasha lord,Saturn;Sun,dasha_lord,2,earthquake,0.9736,0.7696,1.2318,0.97626,,rejected,31
+fixture.006,FIXTURE Ketu-Mars sign,Ketu;Mars,sign,2,earthquake,1.0474,0.8279,1.3251,0.28961,,rejected,98
+fixture.007,FIXTURE Ketu-Mars house from moon,Ketu;Mars,house_from_moon,2,earthquake,1.0609,0.8386,1.3422,0.10306,,rejected,166
+fixture.008,FIXTURE Mercury-Venus nakshatra group,Mercury;Venus,nakshatra_group,2,earthquake,0.9554,0.7552,1.2088,0.09743,,rejected,178
+fixture.009,FIXTURE Mercury-Rahu conjunction,Mercury;Rahu,conjunction,2,earthquake,0.8287,0.655,1.0484,0.6804,,rejected,129
+fixture.010,FIXTURE Venus-Rahu aspect,Venus;Rahu,aspect,2,earthquake,0.8859,0.7002,1.1208,0.58556,,rejected,66
+fixture.011,FIXTURE Mercury-Moon dasha lord,Mercury;Moon,dasha_lord,2,earthquake,1.0374,0.82,1.3125,0.57442,,rejected,154
+fixture.012,FIXTURE Rahu-Venus sign,Rahu;Venus,sign,2,earthquake,0.9056,0.7158,1.1457,0.72945,,rejected,50
+fixture.013,FIXTURE Ketu-Saturn house from moon,Ketu;Saturn,house_from_moon,2,earthquake,1.5041,1.1888,1.9029,0.16496,,rejected,107
+fixture.014,FIXTURE Mars-Rahu nakshatra group,Mars;Rahu,nakshatra_group,2,earthquake,1.0603,0.8381,1.3415,0.4217,,rejected,162
+fixture.015,FIXTURE Venus-Ketu conjunction,Venus;Ketu,conjunction,2,earthquake,0.9858,0.7792,1.2473,0.6953,,rejected,172
+fixture.016,FIXTURE Rahu-Ketu aspect,Rahu;Ketu,aspect,2,earthquake,1.1041,0.8727,1.3968,0.06876,,rejected,198
+fixture.017,FIXTURE Moon-Sun dasha lord,Moon;Sun,dasha_lord,2,earthquake,1.0682,0.8443,1.3515,0.73116,,rejected,99
+fixture.018,FIXTURE Rahu-Jupiter sign,Rahu;Jupiter,sign,2,earthquake,1.1108,0.878,1.4053,0.71663,,rejected,138
+fixture.019,FIXTURE Venus-Mars house from moon,Venus;Mars,house_from_moon,2,earthquake,0.9137,0.7222,1.156,0.61092,,rejected,146
+fixture.020,FIXTURE Sun-Mercury nakshatra group,Sun;Mercury,nakshatra_group,2,earthquake,1.0809,0.8544,1.3675,0.76823,,rejected,120
+fixture.021,FIXTURE Rahu-Moon conjunction,Rahu;Moon,conjunction,2,earthquake,1.0856,0.8581,1.3735,0.16637,,rejected,122
+fixture.022,FIXTURE Ketu-Jupiter aspect,Ketu;Jupiter,aspect,2,earthquake,1.1347,0.8969,1.4355,0.88338,,rejected,91
+fixture.023,FIXTURE Saturn-Venus dasha lord,Saturn;Venus,dasha_lord,2,earthquake,0.7621,0.6024,0.9642,0.68272,,rejected,117
+fixture.024,FIXTURE Mercury-Mars sign,Mercury;Mars,sign,2,earthquake,1.1363,0.8982,1.4376,0.08298,,rejected,23
+fixture.025,FIXTURE Rahu-Mars house from moon,Rahu;Mars,house_from_moon,2,earthquake,1.196,0.9453,1.5131,0.26275,,rejected,21
+fixture.026,FIXTURE Mars-Saturn nakshatra group,Mars;Saturn,nakshatra_group,2,earthquake,0.9036,0.7142,1.1432,0.53459,,rejected,52
+fixture.027,FIXTURE Ketu-Sun conjunction,Ketu;Sun,conjunction,2,earthquake,0.9198,0.727,1.1637,0.45664,,rejected,194
+fixture.028,FIXTURE Ketu-Saturn aspect,Ketu;Saturn,aspect,2,earthquake,0.8735,0.6904,1.1051,0.39807,,rejected,122
+fixture.029,FIXTURE Sun-Mercury dasha lord,Sun;Mercury,dasha_lord,2,earthquake,1.112,0.8789,1.4068,0.06735,,rejected,73
+fixture.030,FIXTURE Rahu-Mars sign,Rahu;Mars,sign,2,earthquake,0.9453,0.7472,1.196,0.10993,,rejected,165
+fixture.031,FIXTURE Mars-Moon house from moon,Mars;Moon,house_from_moon,2,earthquake,0.9596,0.7585,1.2141,0.94895,,rejected,177
+fixture.032,FIXTURE Sun-Moon nakshatra group,Sun;Moon,nakshatra_group,2,earthquake,0.9379,0.7413,1.1866,0.87433,,rejected,84
+fixture.033,FIXTURE Venus-Ketu conjunction,Venus;Ketu,conjunction,2,earthquake,0.9457,0.7475,1.1964,0.47415,,rejected,49
+fixture.034,FIXTURE Rahu-Ketu aspect,Rahu;Ketu,aspect,2,earthquake,0.9688,0.7657,1.2257,0.4804,,rejected,107
+fixture.035,FIXTURE Jupiter-Rahu dasha lord,Jupiter;Rahu,dasha_lord,2,earthquake,1.0805,0.8541,1.367,0.82886,,rejected,61
+fixture.036,FIXTURE Ketu-Sun sign,Ketu;Sun,sign,2,earthquake,1.1454,0.9053,1.4491,0.20522,,rejected,196
+fixture.037,FIXTURE Ketu-Sun house from moon,Ketu;Sun,house_from_moon,2,earthquake,0.9587,0.7577,1.2129,0.75814,,rejected,96
+fixture.038,FIXTURE Moon-Jupiter nakshatra group,Moon;Jupiter,nakshatra_group,2,earthquake,1.1252,0.8893,1.4235,0.5184,,rejected,77
+fixture.039,FIXTURE Ketu-Venus conjunction,Ketu;Venus,conjunction,2,earthquake,0.9262,0.7321,1.1718,0.63644,,rejected,176

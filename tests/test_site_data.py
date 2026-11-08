@@ -41,6 +41,10 @@ def test_every_expected_file_is_published():
         "mundane_dasha.json",
         "rules.json",
         "numerology_daily.json",
+        "workbench_earthquake.json",
+        "workbench_gold.json",
+        "workbench_silver.json",
+        "atlas.json",
     } <= names
 
 
@@ -66,8 +70,9 @@ def test_meta_is_present_and_hash_matches(path):
 
 @pytest.mark.parametrize("path", FILES, ids=lambda p: p.name)
 def test_files_stay_small(path):
-    """Files stay small."""
-    assert path.stat().st_size < 1_000_000
+    """Files stay small (workbench daily arrays: 3 MB, see the cut test)."""
+    limit = 3_000_000 if path.name.startswith("workbench_") else 1_000_000
+    assert path.stat().st_size < limit
 
 
 @pytest.mark.parametrize("metal", ["gold", "silver"])
@@ -195,3 +200,44 @@ def test_market_definitions_cover_every_registered_indicator():
         ids = [s["id"] for s in esd.hypothesis(study)["indicators"]]
         assert [d["id"] for d in defs] == ids
         assert all(d["definition"] for d in defs)
+
+
+def test_rules_export_schema_v2_fields_and_client_flag():
+    """Every rule carries version, validation state and an evaluable flag."""
+    doc = load("rules.json")
+    states = {"confirmed", "not_confirmed", "tuned", "unvalidated"}
+    for rule in doc["rules"]:
+        assert rule["version"] >= 1
+        assert rule["validation_state"] in states
+        assert isinstance(rule["tuning_log"], list)
+        if rule["client_evaluable"]:
+            assert rule["machine"] is not None
+    counts = doc["validation_counts"]
+    assert set(counts) == states and sum(counts.values()) == len(doc["rules"])
+    ids = {r["id"] for r in doc["rules"] if r["client_evaluable"]}
+    assert "seismic.mangal_shani_malefic" in ids
+    assert "general.gaja_kesari.classical" not in ids  # needs the Lagna
+
+
+def test_atlas_export_marks_its_source():
+    """The atlas says whether it is the real atlas or the fixture."""
+    doc = load("atlas.json")
+    cols = doc["columns"]
+    n = doc["n"]
+    assert all(len(v) == n for v in cols.values())
+    real = (REPO / "studies/combinations/artifacts/atlas.csv").exists()
+    assert doc["fixture"] is (not real)
+    if doc["fixture"]:
+        assert "FIXTURE" in doc["_meta"]["source"]
+    assert 0 <= doc["threshold"] <= doc["alpha"]
+
+
+def test_by_threshold_is_the_largest_passing_p():
+    """BY threshold is the largest p under the step-up line."""
+    import numpy as np
+
+    p = np.array([0.0001, 0.0004, 0.2, 0.9])
+    c = 1 + 1 / 2 + 1 / 3 + 1 / 4
+    assert esd.by_threshold(p) == 0.0004
+    assert 0.0004 <= 2 * 0.05 / (4 * c)
+    assert esd.by_threshold(np.array([0.5, 0.9])) == 0.0
