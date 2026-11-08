@@ -357,6 +357,10 @@ class Rule(Strict):
     strength: Optional[Strength] = None
     tuning_log: List[TuningEntry] = Field(default_factory=list)
     validation: Validation = Field(default_factory=Validation)
+    validation_history: List[Validation] = Field(
+        default_factory=list,
+        description="stamps of earlier versions, moved here when a new version starts",
+    )
     review: List[ReviewEntry] = Field(default_factory=list)
     notes: Optional[Dict[str, Any]] = None
 

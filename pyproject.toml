@@ -101,6 +101,8 @@ dev = [
     "types-PyYAML",
     "types-pytz",
     "types-requests",
+    # astro-rules fit / confirm / review write rule files back with comments kept.
+    "ruamel.yaml>=0.17,<0.19",
 ]
 colab = [
     "plotly>=5.0.0,<7",

@@ -4186,6 +4186,14 @@
     "validation": {
       "$ref": "#/$defs/Validation"
     },
+    "validation_history": {
+      "description": "stamps of earlier versions, moved here when a new version starts",
+      "items": {
+        "$ref": "#/$defs/Validation"
+      },
+      "title": "Validation History",
+      "type": "array"
+    },
     "version": {
       "anyOf": [
         {
