@@ -1,0 +1,325 @@
+---
+title: "Rule workbench"
+subtitle: "Tune a rule's orb and window on the exploration period, and see what the data says as you move them"
+description: "Evaluate a registered rule on the explore-period daily sky, with a live rate ratio, exact interval, circular-shift null, Molchan point and an overlay of events against the rule's windows."
+---
+
+::: {.af-banner #wb-banner}
+You are tuning on the exploration period only; confirmation runs once, by a
+maintainer, on data this page does not contain.
+:::
+
+Every study splits its time axis once, in its pre-registration, into an
+exploration period and a confirmation period (ADR-003). This page holds the
+exploration days only: the sidereal sky of each day, the Moon's tithi and
+nakshatra, and which days had an event. Pick a study and a rule, move its
+sliders, and the page re-evaluates the rule on every day, in your browser,
+with the same statistics the studies use.
+
+::: {.af-howto}
+**How to read this.** The rate ratio compares how often events happen while
+the rule (and its window) holds with how often they happen otherwise: 1 means
+no difference, 1.3 means 30% more often. The interval is the exact 95%
+interval under a Poisson process; it is too narrow when events cluster, so the
+test is the circular-shift null beside it: the rule's on/off pattern is slid
+against the fixed event days 500 times by at least the study's minimum shift,
+and the p-value is the share of slides that do at least as well. The Molchan
+point puts the rule on the alarm-versus-miss plane: on the diagonal it does no
+better than chance. Each slider move is one more look at the same data, so a
+striking number after many moves is expected by chance; that is why the
+verdict comes from the confirmation period, which is not here. Only rules
+whose conditions the browser can evaluate are listed (conjunction or
+separation within an orb, planet in sign, house or kendra from another planet,
+retrograde, tithi or paksha, nakshatra group, dasha lord).
+:::
+
+```{ojs}
+{{< include ../components/theme.ojs >}}
+```
+
+```{ojs}
+{{< include ../components/provenance.ojs >}}
+```
+
+```{ojs}
+core = import(new URL("../components/workbench-core.mjs", document.baseURI).href)
+rulesData = FileAttachment("../data/rules.json").json()
+wbFiles = ({
+  earthquake: FileAttachment("../data/workbench_earthquake.json"),
+  gold: FileAttachment("../data/workbench_gold.json"),
+  silver: FileAttachment("../data/workbench_silver.json")
+})
+DEFAULT_RULE = ({ earthquake: "seismic.mangal_shani_malefic", gold: "financial.jupiter_retrograde_contraction",
+  silver: "financial.jupiter_retrograde_contraction" })
+STUDY_DOMAIN = ({ earthquake: ["seismic", "mundane"], gold: ["financial"], silver: ["financial"] })
+```
+
+::: {.af-filters}
+
+```{ojs}
+viewof studyKey = Inputs.radio(new Map([["Earthquakes (Himalayan arc)", "earthquake"], ["Gold", "gold"], ["Silver", "silver"]]),
+  { label: "Study", value: "earthquake" })
+```
+
+```{ojs}
+wb = wbFiles[studyKey].json()
+cols = core.decode(wb)
+viewof eventKey = Inputs.select(new Map(wb.events.map((k) => [wb.event_labels[k], k])),
+  { label: "Events", value: wb.events.includes("ev_gk") ? "ev_gk" : wb.events[0] })
+```
+
+```{ojs}
+usesDasha = (r) => JSON.stringify(r.machine).includes("dasha_lord_is")
+evaluable = rulesData.rules
+  .filter((r) => r.client_evaluable && (!usesDasha(r) || wb.dasha[r.id]))
+  .sort((a, b) => (STUDY_DOMAIN[studyKey].includes(b.domain) - STUDY_DOMAIN[studyKey].includes(a.domain)) || a.name.localeCompare(b.name))
+viewof ruleId = Inputs.select(new Map(evaluable.map((r) => [`${r.name} (v${r.version})`, r.id])),
+  { label: "Rule", value: DEFAULT_RULE[studyKey] })
+```
+
+```{ojs}
+rule = evaluable.find((r) => r.id === ruleId)
+viewof alternative = Inputs.radio(["greater", "two-sided", "less"], {
+  label: "Direction tested",
+  value: ({ increase: "greater", up: "greater", decrease: "less", down: "less" })[rule.expected_effect?.direction] || wb.alternative_default
+})
+```
+
+:::
+
+```{ojs}
+function orbOf(node) {
+  return node.pred ? node.params.orb : node.of.map(orbOf).find((x) => x != null);
+}
+```
+
+```{ojs}
+// Sliders come from the rule's schema-v2 `params` (value, min, max, step,
+// unit); rules.json says which condition slots ("$orb") or window ends each
+// one drives. A rule without `params` gets sliders derived here from its
+// conditions (the orb of its conjunction or separation leaves) and its window,
+// and the page says so under the sliders.
+knobs = {
+  if (rule.params && Object.keys(rule.params).length) return { derived: false, specs: Object.entries(rule.params) };
+  const specs = [];
+  const orb = orbOf(rule.machine);
+  if (orb != null) specs.push(["orb", { value: orb, min: 1, max: Math.min(30, Math.max(12, 2 * orb)), step: 1, unit: "deg" }]);
+  const after = rule.window_days?.after ?? 0, before = rule.window_days?.before ?? 0;
+  specs.push(["window_after", { value: Math.round(after), min: 0, max: Math.max(30, Math.ceil(2 * after)), step: 1, unit: "days" }]);
+  if (before > 0) specs.push(["window_before", { value: Math.round(before), min: 0, max: Math.max(30, Math.ceil(2 * before)), step: 1, unit: "days" }]);
+  return { derived: true, specs };
+}
+```
+
+```{ojs}
+viewof knobValues = {
+  const form = Inputs.form(Object.fromEntries(knobs.specs.map(([k, s]) => [k,
+    Inputs.range([s.min, s.max], { step: s.step || 1, value: s.value, label: `${k.replace("_", " ")} (${s.unit || ""})` })])));
+  form.id = "wb-knobs";
+  return form;
+}
+```
+
+```{ojs}
+htl.html`<p class="af-caption">${knobs.derived
+  ? "This rule has no published tuning ranges yet, so the sliders are derived from its conditions and its window; the published value is where each slider starts."
+  : "Slider ranges are the rule's published params; nothing else in the rule is tunable."}
+  Strength terms, if any, are not evaluated here; the rule is treated as on or off.</p>`
+```
+
+```{ojs}
+// Window ends in days: from the param that drives them, else the rule's window.
+windowDays = (end) => {
+  if (knobs.derived) return knobValues[`window_${end}`] ?? 0;
+  const hit = Object.entries(rule.param_links || {}).find(([, l]) => l.targets.includes(`window_${end}`));
+  return hit ? knobValues[hit[0]] * hit[1].days_per_unit : (rule.window_days?.[end] ?? 0);
+}
+dashaCtx = wb.dasha[rule.id] ? { dasha: core.dashaLevels(cols, wb.dasha[rule.id].runs) } : {}
+raw = core.evaluate(knobs.derived ? rule.machine : (rule.machine_template ?? rule.machine), cols, dashaCtx, knobValues, knobs.derived)
+ind = core.dilate(raw, cols.dayNum, windowDays("before"), windowDays("after"))
+ev = core.eventBins(cols.events[eventKey])
+onCount = ind.reduce((a, b) => a + b, 0)
+result = (onCount === 0 || onCount === cols.n || ev.length === 0) ? null
+  : { ...core.shiftTest(ev, ind, wb.min_shift, 500, 42, alternative), molchan: core.molchanPoint(ind, ev) }
+fmt = (x, d = 2) => (x == null || !Number.isFinite(x) ? "n/a" : x.toFixed(d))
+fmtP = (p) => (p < 0.001 ? p.toExponential(1) : p.toFixed(3))
+```
+
+```{ojs}
+readout = {
+  if (!result) return htl.html`<div id="wb-readout" class="af-notice">The rule is ${onCount ? "on every" : "never on in this period on any"} ${wb.unit};
+    no comparison is possible. Move a slider or pick another rule.</div>`;
+  const e = result.exact;
+  const pExact = alternative === "greater" ? e.pGreater : alternative === "two-sided" ? e.pTwoSided : null;
+  return htl.html`<div class="af-status" id="wb-readout">
+    <div class="af-status-item"><h4 class="af-readout-value" id="wb-rr">${fmt(e.rateRatio)}</h4>
+      <span class="af-status-state">Rate ratio, 95% CI ${fmt(e.ciLow)} to ${fmt(e.ciHigh)} (exact, Poisson)</span></div>
+    <div class="af-status-item"><h4 class="af-readout-value">${fmtP(result.pValue)}</h4>
+      <span class="af-status-state">Circular-shift p (${alternative}), ${result.nDraws} draws, shift at least ${wb.min_shift} ${wb.unit}s;
+        null median ${fmt(result.nullMedian)}${pExact == null ? "" : htl.html`; Poisson p ${fmtP(pExact)}`}</span></div>
+    <div class="af-status-item"><h4 class="af-readout-value">${e.nIn} of ${ev.length}</h4>
+      <span class="af-status-state">Events in the rule's windows, which cover ${(100 * e.tIn / cols.n).toFixed(1)}% of ${cols.n.toLocaleString()} ${wb.unit}s</span></div>
+    <div class="af-status-item"><h4 class="af-readout-value">${fmt(result.molchan.tau)}, ${fmt(result.molchan.nu)}</h4>
+      <span class="af-status-state">Molchan point (share of time on alarm, share of events missed); chance is the sum 1</span></div>
+  </div>`;
+}
+```
+
+```{ojs}
+runs = runsOf(cols.dates.map((d) => new Date(d + "T00:00:00Z")), Array.from(ind))
+eventDays = cols.dates.flatMap((d, i) => (cols.events[eventKey][i] > 0
+  ? [{ date: new Date(d + "T12:00:00Z"), n: cols.events[eventKey][i], inside: ind[i] === 1 }] : []))
+LANES = ["Rule window", "Event days"]
+overlay = {
+  const w = Math.max(340, Math.min(width, 1200));
+  const plot = Plot.plot({
+    width: w, height: 190, marginLeft: 96, marginRight: 16, style: plotStyle,
+    x: { type: "utc", label: null, domain: [new Date(wb.explore.start), new Date(wb.explore.end)] },
+    y: { domain: LANES, label: null, padding: 0.25 },
+    color: { type: "identity" },
+    marks: [
+      Plot.barX(runs, { x1: (d) => d[0], x2: (d) => d[1], y: () => LANES[0], fill: palette.active, fillOpacity: 0.55,
+        title: (d) => `Rule window ${d[0].toISOString().slice(0, 10)} to ${d[1].toISOString().slice(0, 10)}` }),
+      Plot.tickX(eventDays, { x: "date", y: () => LANES[1], stroke: (d) => (d.inside ? palette.active : palette.inactive),
+        strokeWidth: 2, title: (d) => `${d.date.toISOString().slice(0, 10)}: ${d.n} event${d.n > 1 ? "s" : ""}, ${d.inside ? "inside" : "outside"} the rule's window`, tip: true })
+    ]
+  });
+  return htl.html`<div class="af-chart" id="wb-overlay">${plot}</div>`;
+}
+```
+
+```{ojs}
+swatchLegend([{ color: palette.active, label: "Rule window, and events inside it" }, { color: palette.inactive, label: "Events outside the rule's window" }])
+```
+
+```{ojs}
+nullCharts = {
+  if (!result) return htl.html`<span></span>`;
+  const half = Math.max(300, Math.min(width / 2 - 16, 580));
+  const finite = result.nullRR.filter(Number.isFinite);
+  const hist = Plot.plot({
+    width: half, height: 250, marginLeft: 48, marginBottom: 42, style: plotStyle,
+    x: { label: "Rate ratio under the circular-shift null" }, y: { label: "Draws", grid: true },
+    marks: [
+      Plot.rectY(finite, Plot.binX({ y: "count" }, { x: (d) => d, fill: palette.inactive, inset: 1, rx: 2, tip: true })),
+      Plot.ruleX([1], { stroke: palette.axis, strokeDasharray: "4,3" }),
+      Plot.ruleX([result.exact.rateRatio], { stroke: palette.ink, strokeWidth: 2 }),
+      Plot.text([result.exact.rateRatio], { x: (d) => d, frameAnchor: "top", dy: -4, text: () => "observed", fill: palette.ink, textAnchor: "start", dx: 4 }),
+      Plot.ruleY([0], { stroke: palette.axis })
+    ]
+  });
+  const m = result.molchan;
+  const mol = Plot.plot({
+    width: Math.min(half, 300), height: 250, marginLeft: 48, marginBottom: 42, marginRight: 16, style: plotStyle,
+    x: { domain: [0, 1], label: "Share of time on alarm (tau)", grid: true }, y: { domain: [0, 1], label: "Share of events missed (nu)", grid: true },
+    marks: [
+      Plot.line([[0, 1], [1, 0]], { stroke: palette.axis, strokeDasharray: "4,3" }),
+      Plot.dot([m], { x: "tau", y: "nu", r: 6, fill: palette.active, stroke: palette.surface, strokeWidth: 2,
+        title: (d) => `tau ${d.tau.toFixed(3)}, nu ${d.nu.toFixed(3)}`, tip: true })
+    ]
+  });
+  return htl.html`<div class="af-grid-2"><div class="af-chart" id="wb-null">${hist}</div><div class="af-chart" id="wb-molchan">${mol}</div></div>`;
+}
+```
+
+## What is published for this rule
+
+The tuning log is written by `astro-rules fit` and the stamp by
+`astro-rules confirm`, once per rule version. Both are shown read-only.
+
+```{ojs}
+REPO_BLOB = "https://github.com/astro-fusion/astro_research-white-paper/blob/main/"
+published = {
+  const v = rule.validation;
+  const log = rule.tuning_log || [];
+  const reviews = rule.review || [];
+  const row = (k, x) => (x == null ? "" : htl.html`<tr><td>${k}</td><td><code>${typeof x === "object" ? JSON.stringify(x) : x}</code></td></tr>`);
+  return htl.html`<div class="af-drawer" id="wb-published">
+    <h3>${rule.name}</h3>
+    <p><code>${rule.id}</code> · version ${rule.version} · ${rule.tier} · <a href=${REPO_BLOB + rule.path}>YAML file</a></p>
+    <p>${stamp(rule.validation_state)}</p>
+    ${v && v.confirm ? htl.html`<table class="table af-table"><tbody>${row("study", v.study)}${row("confirm rate ratio", v.confirm.rate_ratio)}
+      ${row("confirm CI", v.confirm.ci)}${row("confirm p", v.confirm.p)}${row("family q", v.confirm.q_family)}${row("at", v.at)}${row("commit", v.commit)}</tbody></table>` : ""}
+    <p>${rule.claim}</p>
+    <details><summary>Tuning log (${log.length} ${log.length === 1 ? "entry" : "entries"})</summary>
+      ${log.length ? htl.html`<table class="table af-table"><thead><tr><th>When</th><th>By</th><th>Study</th><th>Chosen</th><th>Explore result</th></tr></thead>
+        <tbody>${log.map((t) => htl.html`<tr><td>${t.at}</td><td>${t.by}</td><td>${t.study}</td><td><code>${JSON.stringify(t.chosen)}</code></td>
+        <td><code>${JSON.stringify(t.explore)}</code></td></tr>`)}</tbody></table>`
+        : htl.html`<p class="af-notice">No tuning published yet for this rule.</p>`}
+    </details>
+    <details><summary>Reviews (${reviews.length})</summary>
+      ${reviews.length ? htl.html`<ul>${reviews.map((r) => htl.html`<li><strong>${r.verdict}</strong> by ${r.by} (${r.at})${r.note ? `: ${r.note}` : ""}</li>`)}</ul>`
+        : htl.html`<p class="af-notice">No review of this rule's operationalisation yet.</p>`}
+    </details>
+  </div>`;
+}
+```
+
+## Submit this tuning
+
+The button opens a prefilled "Propose a rule" issue with the parameters you
+chose and the exploration result. A maintainer turns it into a new rule
+version and runs `astro-rules fit` on it; the confirmation run comes after,
+once.
+
+```{ojs}
+tuningYaml = {
+  const e = result?.exact;
+  const lines = [
+    "# Tuning proposed from the rule workbench (exploration period only)",
+    `rule: ${rule.id}`,
+    `from_version: ${rule.version}`,
+    `study: ${wb.study}`,
+    `events: ${eventKey}`,
+    "params:",
+    ...knobs.specs.map(([k, s]) => `  ${k}: {value: ${knobValues[k]}, min: ${s.min}, max: ${s.max}, step: ${s.step || 1}, unit: ${s.unit || "none"}}`),
+    "explore:",
+    `  period: [${wb.explore.start}, ${wb.explore.end}]`,
+    `  rate_ratio: ${fmt(e?.rateRatio, 3)}`,
+    `  ci: [${fmt(e?.ciLow, 3)}, ${fmt(e?.ciHigh, 3)}]`,
+    `  p_shift: ${result ? result.pValue.toFixed(4) : "n/a"}  # ${alternative}, 500 draws, min shift ${wb.min_shift} ${wb.unit}s`,
+    `  n_in: ${e?.nIn ?? "n/a"}`,
+    `  t_in: ${e?.tIn ?? "n/a"}`,
+    `  molchan: {tau: ${fmt(result?.molchan.tau, 4)}, nu: ${fmt(result?.molchan.nu, 4)}}`,
+    `  window_days: {before: ${windowDays("before").toFixed(2)}, after: ${windowDays("after").toFixed(2)}}`,
+    `  slider_ranges_derived: ${knobs.derived}`
+  ];
+  return lines.join("\n");
+}
+issueUrl = {
+  const u = new URL("https://github.com/astro-fusion/astro_research-white-paper/issues/new");
+  const q = {
+    template: "propose-rule.yml",
+    title: `[Rule]: tuning of ${rule.id} (v${rule.version} -> v${rule.version + 1})`,
+    name: `${rule.name} (tuned)`,
+    claim: rule.claim,
+    domain: rule.domain,
+    source_text: rule.source,
+    tier: rule.tier,
+    conditions: tuningYaml,
+    window: `${windowDays("before").toFixed(1)} days before to ${windowDays("after").toFixed(1)} days after`,
+    expected_effect: rule.expected_effect ? Object.values(rule.expected_effect).join(" / ") : "",
+    fires_on: `Unchanged: see the reference cases in ${rule.path}`
+  };
+  for (const [k, v] of Object.entries(q)) u.searchParams.set(k, v);
+  return u.href;
+}
+htl.html`<p><a class="btn btn-primary" id="wb-submit" href=${issueUrl} target="_blank" rel="noopener">Submit this tuning</a></p>
+  <details><summary>The YAML that goes into the issue</summary><pre><code>${tuningYaml}</code></pre></details>`
+```
+
+<details><summary>Table view</summary>
+
+```{ojs}
+Inputs.table(eventDays.map((d) => ({ date: d.date.toISOString().slice(0, 10), events: d.n, inside: d.inside ? "yes" : "no" })),
+  { header: { date: "Day", events: "Events", inside: "Inside the rule's window" }, rows: 12 })
+```
+
+</details>
+
+```{ojs}
+provenance([wb._meta, rulesData._meta], {
+  twin: [],
+  note: `exploration period ${wb.explore.start} to ${wb.explore.end}; sky sampled ${wb.sampled_at}; the workbench has no paper figure, its numbers come from the same functions as stats.rates and stats.nulls`
+})
+```

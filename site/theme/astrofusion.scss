@@ -173,3 +173,47 @@ form.oi-3a86ea, .observablehq form {
     scroll-behavior: auto !important;
   }
 }
+
+// Validation stamp: a coloured glyph beside a text label (never colour alone).
+.af-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: $af-space-2;
+  font-size: $af-font-size-sm;
+  color: var(--af-ink);
+  .af-stamp-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid;
+    border-radius: $af-radius-sm;
+    font-weight: 700;
+    line-height: 1;
+  }
+}
+
+// Two charts side by side on wide screens, stacked on phones.
+.af-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: $af-space-4;
+}
+
+// The explore-only banner on the workbench.
+.af-banner {
+  border: 1px solid var(--af-border);
+  border-left: 4px solid var(--af-series-2);
+  border-radius: $af-radius-md;
+  padding: $af-space-3 $af-space-4;
+  margin: $af-space-4 0;
+  background: var(--af-surface);
+  color: var(--af-ink);
+  font-weight: 600;
+}
+
+.af-readout-value {
+  font-size: 1.5rem;
+  font-variant-numeric: tabular-nums;
+}

@@ -114,3 +114,19 @@ columnsToRows = (cols) => {
   const n = cols[keys[0]].length;
   return Array.from({ length: n }, (_, i) => Object.fromEntries(keys.map((k) => [k, cols[k][i]])));
 }
+
+// Validation stamps (ADR-003). Status colours are fixed (dataviz status
+// palette) and never carry meaning alone: every stamp has a glyph and a label.
+STATUS = ({ good: "#0ca30c", warning: "#fab219", serious: "#ec835a", critical: "#d03b3b" })
+
+STAMPS = ({
+  confirmed: { glyph: "✓", label: "Confirmed on the holdout", color: STATUS.good },
+  not_confirmed: { glyph: "✕", label: "Not confirmed on the holdout", color: STATUS.critical },
+  tuned: { glyph: "◐", label: "Tuned on explore; awaiting confirmation", color: STATUS.warning },
+  unvalidated: { glyph: "○", label: "Unvalidated", color: palette.muted }
+})
+
+stamp = (state) => {
+  const s = STAMPS[state] || STAMPS.unvalidated;
+  return htl.html`<span class="af-stamp" data-state=${state}><span class="af-stamp-mark" style=${{ borderColor: s.color, color: s.color }}>${s.glyph}</span>${s.label}</span>`;
+}
