@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=../schema.json
 id: seismic.mangal_shani_malefic
-version: 2
+version: 3
 name: Mangal-Shani-Malefic
 domain: seismic
 claim: A Mars-Saturn conjunction within 15 degrees is associated with earthquakes.
@@ -18,6 +18,11 @@ conditions:
       - Mars
       - Saturn
     orb: $orb
+strength:
+  # Graded by closeness: 1 at an exact conjunction, 0 at the orb (v3 adds this).
+  combine: product
+  terms:
+    - orb_closeness: {planets: [Mars, Saturn], orb: $orb}
 expected_effect:
   event: earthquake
   direction: increase

@@ -30,6 +30,12 @@ only by data: both sides are encoded as rules and tested on the same events.
 - The two tables send the same transit to different regions.
   `kurma_north_sector_malefics.yaml` encodes the practitioner table; the
   Brihat Samhita table is the obvious companion rule.
+- The engine encodes both: the predicate `kurma_direction` takes
+  `start: krittika` (Brihat Samhita 14.1, the default: centre, east,
+  south-east, south, south-west, west, north-west, north, north-east) or
+  `start: ashwini` (the practitioner table, read clockwise from the north;
+  the page does not say where its last triple goes, so it is put in the
+  centre). Test both on the same events.
 
 ## Koorma Chakra or zodiac-sign rulership of countries?
 
@@ -60,3 +66,14 @@ Vimshottari. Rules from practitioners who use something else are marked
 The transcription used for `bs32_agni_mandala_earthquake.yaml` lists
 Uttara Ashadha under both the Indra and the Varuna mandala. One of the two is a
 copying error; the verse must be checked before those two mandalas are encoded.
+
+Checked 2026-11-08 against N. Chidambaram Iyer's translation (1884) on
+wisdomlib.org (https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc229177.html):
+the doubling is in the translation itself. Verse 16 (Indra) and verse 20
+(Varuna) both name Uttarashadha, and Uttara Bhadrapada appears in no list.
+Each of the 27 asterisms belongs to exactly one circle, so the predicate
+`moon_mandala` reads the Varuna entry as Uttara Bhadrapada, the same reading
+as `studies/earthquake/hypothesis.yaml`. M. Ramakrishna Bhat's translation
+(1981) has not been checked; if it differs, the table in
+`libs/vedic_astrology_core/astrology/mundane.py` changes and every rule using
+`moon_mandala` gets a new version.

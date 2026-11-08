@@ -200,10 +200,323 @@ a list.
 | `moon_mandala` | mundane | the Moon's nakshatra is in a listed earthquake circle: vayu, agni, indra, varuna (BS 32) | `{moon_mandala: {mandalas: [agni]}}` |
 | `planet_distance_au_lte` | mundane | the planet's geocentric distance is at most `au` astronomical units (BS 6 reads a large, bright Mars) | `{planet_distance_au_lte: {planet: Mars, au: 0.45}}` |
 | `samvatsara_is` | time | the sixty-year samvatsara (BS 8; luni-solar, Prabhava = 1987-88) is listed | `{samvatsara_is: {names: [Krodhi]}}` |
+| `month_paksha` | time | the amanta lunar month (named by the Sun's sign at its new Moon) and optionally its paksha and adhika status match | `{month_paksha: {months: [Ashadha], paksha: shukla}}` |
+| `nakshatra_on_tithi` | time | the Moon is in a listed nakshatra on a listed tithi, optionally of a listed month (BS 24, 26) | `{nakshatra_on_tithi: {nakshatras: [Rohini], tithis: [19], months: [Ashadha]}}` |
+| `lord_of_house_in` | placement | the lord of `house` (whole sign from the Lagna or `from`) sits in one of `houses`; `chart: natal` reads the natal chart (BPHS 24) | `{lord_of_house_in: {house: 4, houses: [12], chart: natal}}` |
+| `malefic_in_house` | placement | at least `count_gte` natural malefics (Sun, Mars, Saturn, Rahu, Ketu) occupy the listed houses | `{malefic_in_house: {houses: [6]}}` |
+| `lords_conjoined` | placement | the lords of the listed houses share one sign, optionally one of `in_houses` (BPHS 41) | `{lords_conjoined: {houses: [6, 1]}}` |
+| `afflicted_element` | mundane | at least `count_gte` malefics occupy signs of the element (fire, earth, air, water) | `{afflicted_element: {element: fire, count_gte: 2}}` |
+| `cycle_resonance` | time | the years since `reference`, modulo `period_years`, are within `tolerance_years` of a return | `{cycle_resonance: {reference: "2020-12-21T18:20:00Z", period_years: 60, tolerance_years: 3}}` |
+| `conjunction_or_mutual_aspect` | relation | the planet shares a sign with (or, with `orb`, is within `orb` of) any of `others`, or they aspect each other | `{conjunction_or_mutual_aspect: {planet: Mars, others: [Saturn, Jupiter]}}` |
 
 The full definition of each predicate, with its classical source, is
 printed by `astro-rules list --predicates` and lives in the docstrings of
 `libs/vedic_astrology_core/rules/predicates/`.
+
+## Tune and validate a rule
+
+### The principle: tune on one period, decide on another
+
+Every study (earthquakes, gold, silver) splits its years once, in its
+`hypothesis.yaml`, into an **explore** period and a **confirm** period. For
+the earthquake study explore is 1976-2010 and confirm is 2011-2026.
+
+- You may try as many orbs, windows and thresholds as you like on the
+  explore period. That is tuning, and it is allowed.
+- The confirm period is the exam. `astro-rules confirm` runs your rule on it
+  **once per rule version**, with the values you chose, and writes the
+  result into the rule file. Nobody, including you, gets a second look at
+  the same version.
+- If the exam is failed, the rule does not get retried quietly. You start a
+  new version, tune again on explore, and that new version gets its own
+  single confirm run. The old result stays in the file.
+
+The reason is simple: if you try twenty orbs and keep the best, the best
+will look good by luck. A period the tuning never saw is the only fair test
+of whether it was luck. This is pre-registration with a tuning phase, and it
+is what lets a positive result survive review.
+
+### Declare what may be tuned
+
+Only `params` are tunable. Each has a value and the range `fit` may try;
+conditions refer to it as `$name`:
+
+```yaml
+version: 2                  # bump on any change to conditions, params or strength
+params:
+  orb: {value: 13, min: 3, max: 20, step: 1, unit: deg}
+conditions:
+  conjunct_within:
+    planets: [Mars, Ketu]
+    orb: $orb
+```
+
+`astro-rules validate` rejects a `$name` that is not declared, a declared
+parameter that is never used, a value outside its range, and a range whose
+ends would make the rule invalid (an orb above 30 degrees, for example).
+
+### A worked session: `fit`, then `confirm`
+
+This is the real output for the Mars-Ketu conjunction rule on the earthquake
+study (the result is now in `rules/seismic/mangal_ketu_primary.yaml`):
+
+```console
+$ astro-rules fit seismic.mangal_ketu_primary --study earthquake --by @astro-research
+fit seismic.mangal_ketu_primary v2 on earthquake: EXPLORE 1976-01-01 to 2010-12-31 only
+events: 128 declustered (Gardner-Knopoff) earthquakes per day; grid steps: 12784; cells: 18; alternative: greater; null: circular shift, min shift 767 steps, 2000 draws
+
+top 5 cells (p from the circular-shift null; q = BH within the grid)
+  cell                                      RR            95% CI        p        q     on
+  orb=15                                  1.09     [0.532, 2.03]    0.457    0.966   7.9%
+  orb=14                                  1.07     [0.502, 2.05]    0.479    0.966   7.3%
+  orb=16                                  1.01     [0.489, 1.87]    0.521    0.966   8.5%
+  orb=19                                 0.972     [0.502, 1.73]    0.588    0.966  10.4%
+  orb=12                                 0.934     [0.368, 1.98]    0.592    0.966   5.8%
+
+specification curve: median RR 0.891, joint circular-shift p 0.607 (200 draws); 0% of cells exclude RR = 1
+specification curve: studies/earthquake/artifacts/speccurve_seismic.mangal_ketu_primary_v2.png
+chosen: orb = 15
+wrote rules/seismic/mangal_ketu_primary.yaml: params updated, tuning_log entry appended
+```
+
+How to read it:
+
+- **RR** is the rate ratio: earthquakes per day while the rule holds,
+  divided by earthquakes per day while it does not. 1 means no difference.
+- **p** comes from shifting the rule's on/off pattern in time against the
+  fixed earthquake dates thousands of times (by at least two years, so the
+  shifted pattern is unrelated to the sky), which keeps aftershock clusters
+  and the rule's own rhythm intact.
+- **q** corrects p for having tried 18 orbs. A tuned cell is only
+  interesting if its q is small.
+- **on** is the share of days the rule holds.
+- The **specification curve** (the PNG) plots every cell's RR with its
+  interval. A real effect shows as a curve that sits above 1 for most
+  reasonable orbs, not one lucky point.
+
+`fit` set `orb` to 15 and appended this to the file:
+
+```yaml
+tuning_log:
+  - at: '2026-11-08T07:34:31Z'
+    by: '@astro-research'
+    study: earthquake
+    version: 2
+    grid:
+      orb: {min: 3, max: 20, step: 1}
+    chosen: {orb: 15}
+    explore:
+      rate_ratio: 1.09482
+      ci: [0.531911, 2.03187]
+      p: 0.456772
+      q_within_grid: 0.965517
+      n_cells: 18
+      n_events: 128
+      period: ['1976-01-01', '2010-12-31']
+```
+
+Then the single exam on the confirm period:
+
+```console
+$ astro-rules confirm seismic.mangal_ketu_primary --study earthquake
+confirm seismic.mangal_ketu_primary v2 on earthquake: one frozen run on CONFIRM 2011-01-01 to 2026-10-31
+events: 58; RR 0.988 [0.308, 2.45]; p 0.6; q 0.6 in this rule alone (not in the study's registered family)
+validation.status: not_confirmed
+wrote rules/seismic/mangal_ketu_primary.yaml: validation stamped for v2
+```
+
+The stamp in the file records the numbers, the time and the git commit:
+
+```yaml
+validation:
+  status: not_confirmed
+  version: 2
+  study: earthquake
+  confirm:
+    period: ['2011-01-01', '2026-10-31']
+    n_events: 58
+    direction: greater
+    rate_ratio: 0.988133
+    ci: [0.308227, 2.45413]
+    p: 0.59984
+    q_family: 0.59984
+    family: this rule alone (not in the study's registered family)
+    family_size: 1
+  at: '2026-11-08T07:34:37Z'
+  commit: 48f94d7fb96290ca3779dd2601602721b6a037ba
+```
+
+`confirmed` needs q below the study's alpha (0.05) with the rate ratio in
+the direction the rule predicts (`expected_effect.direction`). When the
+study's `hypothesis.yaml` lists the rule in its registered family, q is
+corrected across that whole family; otherwise the rule is a family of one.
+
+### After a failed confirm
+
+A second confirm on the same version is refused:
+
+```console
+$ astro-rules confirm seismic.mangal_ketu_primary --study earthquake
+astro-rules confirm: seismic.mangal_ketu_primary v2 was already confirmed on earthquake at 2026-11-08 07:34:37+00:00 (not_confirmed); a new attempt needs a new version: run astro-rules fit --new-version (or change the rule and bump 'version'), then confirm the new version
+```
+
+and so is more tuning of the stamped version:
+
+```console
+$ astro-rules fit seismic.mangal_ketu_primary --study earthquake --by @astro-research
+astro-rules fit: seismic.mangal_ketu_primary v2 already has a confirm stamp (not_confirmed); tuning it again needs a new version: rerun with --new-version
+```
+
+`fit --new-version` raises `version` by one, moves the old stamp to
+`validation_history` (it is never deleted), tunes the new version on explore
+and leaves it `unvalidated`, ready for its own single confirm. Think before
+you do this: each new version is another try, and readers see every try in
+the file. A better reason for a new version is a better reading of the
+source (a corrected condition), not a different orb.
+
+The confirm period itself only moves by a dated amendment to the study's
+`hypothesis.yaml` (older confirm years join explore, a newer stretch becomes
+confirm), and every rule then confirms again on the new period.
+
+### Graded strength and `dose`
+
+A rule may say how strongly it holds, from 0 to 1, with a `strength` block.
+The terms are `orb_closeness` (1 at an exact conjunction, 0 at the orb),
+`aspect_closeness` (the same around an angle), `dignity_weight` (uccha bala:
+1 at deep exaltation, 0 at deep debilitation), `dasha_weight` (1 when the
+lord runs the mahadasha, 1/2 the antardasha) and `eclipse_magnitude` (the
+largest eclipse magnitude in a window); `combine` is `product`, `min` or
+`mean`:
+
+```yaml
+strength:
+  combine: product
+  terms:
+    - orb_closeness: {planets: [Mars, Saturn], orb: $orb}
+```
+
+`astro-rules explain <rule> <moment> --strength` prints the value at one
+moment. `dose` asks the question a real effect should answer: is the event
+rate higher when the configuration is stronger? (explore period only):
+
+```console
+$ astro-rules dose seismic.mangal_shani_malefic --study earthquake
+dose seismic.mangal_shani_malefic v3 on earthquake: EXPLORE 1976-01-01 to 2010-12-31 only
+silent steps: 11461, events 118, rate 10.30 per 1000 steps
+  quintile    strength  steps events  per 1000  RR vs silent           95% CI
+         1   0.00-0.18    265      2      7.55         0.733   [0.0877, 2.71]
+         2   0.18-0.37    264      4     15.15          1.47    [0.394, 3.87]
+         3   0.37-0.59    265      1      3.77         0.367   [0.0092, 2.08]
+         4   0.59-0.79    264      1      3.79         0.368  [0.00924, 2.09]
+         5   0.79-1.00    265      2      7.55         0.733   [0.0877, 2.71]
+trend: cochran_armitage z -0.673, p 0.501 (independent days); Kendall tau-b -0.0119, scipy p 0.598; circular-shift p 0.699 (999 shifts, one-sided: rate rises with strength)
+```
+
+Here the closest Mars-Saturn conjunctions are no more seismic than the
+widest ones. Trust the circular-shift p: earthquakes cluster in time, so the
+two p-values that assume independent days are too optimistic.
+
+### The review sign-off
+
+Statistics cannot tell whether the YAML says what the text says. A second
+astrologer reads the rule against its source and signs:
+
+```console
+$ astro-rules review seismic.mangal_ketu_primary --by @your-handle --verdict not_faithful --note "BS 17 is on planetary war, not earthquakes; the citation does not support the claim"
+seismic.mangal_ketu_primary v2: review by @your-handle (not_faithful) appended
+```
+
+```yaml
+review:
+  - by: '@your-handle'
+    at: '2026-11-08T07:36:07Z'
+    verdict: not_faithful
+    note: BS 17 is on planetary war, not earthquakes; the citation does not support the claim
+    version: 2
+```
+
+Reviews are appended, never edited. A rule whose encoding has a `faithful`
+review and a `confirmed` stamp on the same version is the strongest claim
+this project makes; a `not_faithful` review means the test, whatever it
+found, was not a test of the source.
+
+### New predicates
+
+Each was added with its classical source in the docstring
+(`astro-rules list --predicates`) and tests on known dates. One example
+each:
+
+`planets_in_one_sign_gte`: five or more grahas in one sign (all seven
+were in Capricorn on 5 February 1962).
+
+    {planets_in_one_sign_gte: {count: 5}}
+
+`eclipse_within_days`: an eclipse within 30 days either side, with a
+partner of the other kind within 16 days (an eclipse pair).
+
+    {eclipse_within_days: {days_before: 30, days_after: 30, pair_within_days: 16}}
+
+`eclipse_degree_transited_by`: Mars or Saturn conjunct or opposite the
+degree of an eclipse of the last year, within 3 degrees.
+
+    {eclipse_degree_transited_by: {planets: [Mars, Saturn], orb: 3, angles: [0, 180], lookback_days: 365}}
+
+`kurma_direction`: Saturn's nakshatra in the northern division of the
+Kurma Chakra, Brihat Samhita 14 (start the wheel at `krittika`, as the
+text, or `ashwini`, as some practitioners; see `DISPUTES.md`).
+
+    {kurma_direction: {planet: Saturn, directions: [north], start: krittika}}
+
+`moon_mandala`: the Moon in an Agni-mandala nakshatra (Brihat Samhita 32).
+
+    {moon_mandala: {mandalas: [agni]}}
+
+`planet_distance_au_lte`: Mars within 0.45 au of the Earth.
+
+    {planet_distance_au_lte: {planet: Mars, au: 0.45}}
+
+`samvatsara_is`: the sixty-year samvatsara (luni-solar; 2024-25 is Krodhi).
+
+    {samvatsara_is: {names: [Krodhi]}}
+
+`month_paksha`: the bright half of the lunar month Ashadha (amanta).
+
+    {month_paksha: {months: [Ashadha], paksha: shukla}}
+
+`nakshatra_on_tithi`: the Moon in Rohini on the 4th tithi of the dark
+half (tithi 19) of Ashadha.
+
+    {nakshatra_on_tithi: {nakshatras: [Rohini], tithis: [19], months: [Ashadha]}}
+
+`lord_of_house_in`: the natal 4th lord in the 12th.
+
+    {lord_of_house_in: {house: 4, houses: [12], chart: natal}}
+
+`malefic_in_house`: a natural malefic in the 6th from the Lagna.
+
+    {malefic_in_house: {houses: [6]}}
+
+`lords_conjoined`: the 6th and 1st lords in one sign.
+
+    {lords_conjoined: {houses: [6, 1]}}
+
+`afflicted_element`: two or more malefics in fire signs.
+
+    {afflicted_element: {element: fire, count_gte: 2}}
+
+`cycle_resonance`: within 3 years of a sixty-year return of the 2020
+Jupiter-Saturn conjunction.
+
+    {cycle_resonance: {reference: "2020-12-21T18:20:00Z", period_years: 60, tolerance_years: 3}}
+
+`conjunction_or_mutual_aspect`: Mars sharing a sign with, or in mutual
+aspect with, Saturn or Jupiter.
+
+    {conjunction_or_mutual_aspect: {planet: Mars, others: [Saturn, Jupiter]}}
+
+With these, 17 of the 64 rules that were waiting for predicates now have
+conditions and reference cases (see `notes.encoding` in each for the
+reading chosen where the source was ambiguous).
 
 ## Tiers
 

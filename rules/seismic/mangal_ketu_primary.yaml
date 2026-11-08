@@ -14,7 +14,7 @@ source:
 author: astro-research combinations catalog (migrated 2026-11-08)
 tier: experimental
 params:
-  orb: {value: 13, min: 3, max: 20, step: 1, unit: deg}
+  orb: {value: 15, min: 3, max: 20, step: 1, unit: deg}
 conditions:
   conjunct_within:
     planets:
@@ -30,17 +30,48 @@ reference_cases:
     note: >-
       Mars is in Sagittarius 5.0 deg and Ketu is in Sagittarius 14.7 deg: 9.6 deg apart, within
       the 13 deg orb
-    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
-      JHora
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in JHora
   - moment: '2000-08-26T06:00:00Z'
     expect: silent
     note: >-
       Mars is in Cancer 22.3 deg and Ketu is in Sagittarius 28.6 deg: 156.3 deg apart, outside
       the 13 deg orb
-    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
-      JHora
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in JHora
+tuning_log:
+  - at: '2026-11-08T07:34:31Z'
+    by: '@astro-research'
+    study: earthquake
+    version: 2
+    grid:
+      orb: {min: 3, max: 20, step: 1}
+    chosen: {orb: 15}
+    explore:
+      rate_ratio: 1.09482
+      ci: [0.531911, 2.03187]
+      p: 0.456772
+      q_within_grid: 0.965517
+      n_cells: 18
+      n_events: 128
+      period: ['1976-01-01', '2010-12-31']
+    spec_curve_artifact: studies/earthquake/artifacts/speccurve_seismic.mangal_ketu_primary_v2.png
+    note: 'specification curve: median RR 0.891, joint circular-shift p 0.607 (200 draws); 0% of cells
+      exclude RR = 1'
 validation:
-  status: unvalidated
+  status: not_confirmed
+  version: 2
+  study: earthquake
+  confirm:
+    period: ['2011-01-01', '2026-10-31']
+    n_events: 58
+    direction: greater
+    rate_ratio: 0.988133
+    ci: [0.308227, 2.45413]
+    p: 0.59984
+    q_family: 0.59984
+    family: this rule alone (not in the study's registered family)
+    family_size: 1
+  at: '2026-11-08T07:34:37Z'
+  commit: 48f94d7fb96290ca3779dd2601602721b6a037ba
 notes:
   migrated_from: >-
     libs/vedic_astrology_core/combinations/catalog/seismic_yogas.yaml (Mangal-Ketu-Primary)
