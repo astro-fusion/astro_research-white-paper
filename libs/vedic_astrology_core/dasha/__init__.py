@@ -1,6 +1,8 @@
 """Dasha systems for Vedic astrology."""
 
 from .vimshottari import (
+    DashaYear,
+    virtual_start,
     VIMSHOTTARI_SEQUENCE,
     VIMSHOTTARI_YEARS,
     compute_vimshottari_nested_periods,
@@ -11,6 +13,8 @@ from .vimshottari import (
 )
 
 __all__ = [
+    "DashaYear",
+    "virtual_start",
     "VIMSHOTTARI_SEQUENCE",
     "VIMSHOTTARI_YEARS",
     "compute_vimshottari_periods",
