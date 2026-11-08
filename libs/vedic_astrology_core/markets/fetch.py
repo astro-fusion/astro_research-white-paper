@@ -109,10 +109,11 @@ def fred(
     """
     url = FRED_URL.format(series_id=series_id)
     df = parse_fred_csv((opener or _default_opener)(url), series_id)
-    return _clip(df, start, end)
+    return clip(df, start, end)
 
 
-def _clip(df: pd.DataFrame, start: Optional[str], end: Optional[str]) -> pd.DataFrame:
+def clip(df: pd.DataFrame, start: Optional[str], end: Optional[str]) -> pd.DataFrame:
+    """Keep rows with ``start <= date <= end`` (either bound optional)."""
     attrs = dict(df.attrs)
     if start is not None:
         df = df[df["date"] >= pd.Timestamp(start)]

@@ -18,6 +18,7 @@ from typing import Dict, Iterable, Optional, Sequence, Union
 import numpy as np
 import pandas as pd
 from matplotlib.figure import Figure
+from matplotlib.ticker import NullFormatter, ScalarFormatter
 
 from ..stats.plots import save_figure
 from .align import intervals, on_calendar
@@ -146,10 +147,12 @@ def overlay_plot(
         ax_fwd.scatter(dates[bars], fwd[bars], s=10, color=EVENT, zorder=3)
     ax_price.legend(loc="upper left", frameon=False, fontsize=8)
     ax_price.set_title(title, loc="left", fontsize=11, color=INK)
+    ax_price.yaxis.set_major_formatter(ScalarFormatter())
+    ax_price.yaxis.set_minor_formatter(NullFormatter())
+    ax_price.set_xlim(dates[0], dates[-1])
     span = f"{dates[0]:%Y-%m-%d} to {dates[-1]:%Y-%m-%d} (full sample)"
-    fig.supxlabel(span, fontsize=7.5, color=MUTED)
     if path is not None:
-        note = status
+        note = f"{status} | {span}"
         if provenance and provenance.get("source"):
             note += f" | {provenance['source']}"
         save_figure(fig, path, provenance, note=note)
