@@ -1,0 +1,3025 @@
+{
+  "$defs": {
+    "AllOf": {
+      "additionalProperties": false,
+      "description": "Every child condition holds.",
+      "properties": {
+        "all": {
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/AllOf"
+              },
+              {
+                "$ref": "#/$defs/AnyOf"
+              },
+              {
+                "$ref": "#/$defs/NotOf"
+              },
+              {
+                "$ref": "#/$defs/AtLeast"
+              },
+              {
+                "$ref": "#/$defs/Leaf_in_sign"
+              },
+              {
+                "$ref": "#/$defs/Leaf_in_house"
+              },
+              {
+                "$ref": "#/$defs/Leaf_in_house_from"
+              },
+              {
+                "$ref": "#/$defs/Leaf_in_kendra_from"
+              },
+              {
+                "$ref": "#/$defs/Leaf_in_trikona_from"
+              },
+              {
+                "$ref": "#/$defs/Leaf_in_nakshatra"
+              },
+              {
+                "$ref": "#/$defs/Leaf_nakshatra_lord_is"
+              },
+              {
+                "$ref": "#/$defs/Leaf_dignity_in"
+              },
+              {
+                "$ref": "#/$defs/Leaf_varga_sign"
+              },
+              {
+                "$ref": "#/$defs/Leaf_longitude_between"
+              },
+              {
+                "$ref": "#/$defs/Leaf_combust"
+              },
+              {
+                "$ref": "#/$defs/Leaf_retrograde"
+              },
+              {
+                "$ref": "#/$defs/Leaf_conjunct_within"
+              },
+              {
+                "$ref": "#/$defs/Leaf_separation_within"
+              },
+              {
+                "$ref": "#/$defs/Leaf_graha_drishti"
+              },
+              {
+                "$ref": "#/$defs/Leaf_planet_speed_below"
+              },
+              {
+                "$ref": "#/$defs/Leaf_dasha_lord_is"
+              },
+              {
+                "$ref": "#/$defs/Leaf_antardasha_lord_is"
+              },
+              {
+                "$ref": "#/$defs/Leaf_moon_phase"
+              },
+              {
+                "$ref": "#/$defs/Leaf_weekday_lord_is"
+              },
+              {
+                "$ref": "#/$defs/Leaf_transit_in_house_from_natal"
+              },
+              {
+                "$ref": "#/$defs/Leaf_transit_conjunct_natal"
+              },
+              {
+                "$ref": "#/$defs/Leaf_eclipse_in_sign"
+              },
+              {
+                "$ref": "#/$defs/Leaf_ingress"
+              }
+            ]
+          },
+          "minItems": 1,
+          "title": "All",
+          "type": "array"
+        }
+      },
+      "required": [
+        "all"
+      ],
+      "title": "AllOf",
+      "type": "object"
+    },
+    "AnyOf": {
+      "additionalProperties": false,
+      "description": "At least one child condition holds.",
+      "properties": {
+        "any": {
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/AllOf"
+              },
+              {
+                "$ref": "#/$defs/AnyOf"
+              },
+              {
+                "$ref": "#/$defs/NotOf"
+              },
+              {
+                "$ref": "#/$defs/AtLeast"
+              },
+              {
+                "$ref": "#/$defs/Leaf_in_sign"
+              },
+              {
+                "$ref": "#/$defs/Leaf_in_house"
+              },
+              {
+                "$ref": "#/$defs/Leaf_in_house_from"
+              },
+              {
+                "$ref": "#/$defs/Leaf_in_kendra_from"
+              },
+              {
+                "$ref": "#/$defs/Leaf_in_trikona_from"
+              },
+              {
+                "$ref": "#/$defs/Leaf_in_nakshatra"
+              },
+              {
+                "$ref": "#/$defs/Leaf_nakshatra_lord_is"
+              },
+              {
+                "$ref": "#/$defs/Leaf_dignity_in"
+              },
+              {
+                "$ref": "#/$defs/Leaf_varga_sign"
+              },
+              {
+                "$ref": "#/$defs/Leaf_longitude_between"
+              },
+              {
+                "$ref": "#/$defs/Leaf_combust"
+              },
+              {
+                "$ref": "#/$defs/Leaf_retrograde"
+              },
+              {
+                "$ref": "#/$defs/Leaf_conjunct_within"
+              },
+              {
+                "$ref": "#/$defs/Leaf_separation_within"
+              },
+              {
+                "$ref": "#/$defs/Leaf_graha_drishti"
+              },
+              {
+                "$ref": "#/$defs/Leaf_planet_speed_below"
+              },
+              {
+                "$ref": "#/$defs/Leaf_dasha_lord_is"
+              },
+              {
+                "$ref": "#/$defs/Leaf_antardasha_lord_is"
+              },
+              {
+                "$ref": "#/$defs/Leaf_moon_phase"
+              },
+              {
+                "$ref": "#/$defs/Leaf_weekday_lord_is"
+              },
+              {
+                "$ref": "#/$defs/Leaf_transit_in_house_from_natal"
+              },
+              {
+                "$ref": "#/$defs/Leaf_transit_conjunct_natal"
+              },
+              {
+                "$ref": "#/$defs/Leaf_eclipse_in_sign"
+              },
+              {
+                "$ref": "#/$defs/Leaf_ingress"
+              }
+            ]
+          },
+          "minItems": 1,
+          "title": "Any",
+          "type": "array"
+        }
+      },
+      "required": [
+        "any"
+      ],
+      "title": "AnyOf",
+      "type": "object"
+    },
+    "AtLeast": {
+      "additionalProperties": false,
+      "description": "At least ``n`` of the listed conditions hold.",
+      "properties": {
+        "at_least": {
+          "$ref": "#/$defs/AtLeastBody"
+        }
+      },
+      "required": [
+        "at_least"
+      ],
+      "title": "AtLeast",
+      "type": "object"
+    },
+    "AtLeastBody": {
+      "additionalProperties": false,
+      "description": "``n`` of the listed conditions must hold.",
+      "properties": {
+        "n": {
+          "minimum": 1,
+          "title": "N",
+          "type": "integer"
+        },
+        "of": {
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/AllOf"
+              },
+              {
+                "$ref": "#/$defs/AnyOf"
+              },
+              {
+                "$ref": "#/$defs/NotOf"
+              },
+              {
+                "$ref": "#/$defs/AtLeast"
+              },
+              {
+                "$ref": "#/$defs/Leaf_in_sign"
+              },
+              {
+                "$ref": "#/$defs/Leaf_in_house"
+              },
+              {
+                "$ref": "#/$defs/Leaf_in_house_from"
+              },
+              {
+                "$ref": "#/$defs/Leaf_in_kendra_from"
+              },
+              {
+                "$ref": "#/$defs/Leaf_in_trikona_from"
+              },
+              {
+                "$ref": "#/$defs/Leaf_in_nakshatra"
+              },
+              {
+                "$ref": "#/$defs/Leaf_nakshatra_lord_is"
+              },
+              {
+                "$ref": "#/$defs/Leaf_dignity_in"
+              },
+              {
+                "$ref": "#/$defs/Leaf_varga_sign"
+              },
+              {
+                "$ref": "#/$defs/Leaf_longitude_between"
+              },
+              {
+                "$ref": "#/$defs/Leaf_combust"
+              },
+              {
+                "$ref": "#/$defs/Leaf_retrograde"
+              },
+              {
+                "$ref": "#/$defs/Leaf_conjunct_within"
+              },
+              {
+                "$ref": "#/$defs/Leaf_separation_within"
+              },
+              {
+                "$ref": "#/$defs/Leaf_graha_drishti"
+              },
+              {
+                "$ref": "#/$defs/Leaf_planet_speed_below"
+              },
+              {
+                "$ref": "#/$defs/Leaf_dasha_lord_is"
+              },
+              {
+                "$ref": "#/$defs/Leaf_antardasha_lord_is"
+              },
+              {
+                "$ref": "#/$defs/Leaf_moon_phase"
+              },
+              {
+                "$ref": "#/$defs/Leaf_weekday_lord_is"
+              },
+              {
+                "$ref": "#/$defs/Leaf_transit_in_house_from_natal"
+              },
+              {
+                "$ref": "#/$defs/Leaf_transit_conjunct_natal"
+              },
+              {
+                "$ref": "#/$defs/Leaf_eclipse_in_sign"
+              },
+              {
+                "$ref": "#/$defs/Leaf_ingress"
+              }
+            ]
+          },
+          "minItems": 1,
+          "title": "Of",
+          "type": "array"
+        }
+      },
+      "required": [
+        "n",
+        "of"
+      ],
+      "title": "AtLeastBody",
+      "type": "object"
+    },
+    "ChartSpec": {
+      "additionalProperties": false,
+      "description": "A natal chart: a person's birth or a nation's founding moment.",
+      "properties": {
+        "label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Label"
+        },
+        "moment": {
+          "format": "date-time",
+          "title": "Moment",
+          "type": "string"
+        },
+        "place": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Place"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "moment"
+      ],
+      "title": "ChartSpec",
+      "type": "object"
+    },
+    "DashaLordIs": {
+      "additionalProperties": false,
+      "description": "Parameters of ``dasha_lord_is``.",
+      "properties": {
+        "level": {
+          "default": 1,
+          "maximum": 3,
+          "minimum": 1,
+          "title": "Level",
+          "type": "integer"
+        },
+        "lords": {
+          "items": {
+            "enum": [
+              "Sun",
+              "Moon",
+              "Mars",
+              "Mercury",
+              "Jupiter",
+              "Venus",
+              "Saturn",
+              "Rahu",
+              "Ketu",
+              "Brihaspati",
+              "Budha",
+              "Chandra",
+              "Guru",
+              "Kuja",
+              "Mangal",
+              "Mangala",
+              "Northnode",
+              "Ravi",
+              "Sani",
+              "Shani",
+              "Shukra",
+              "Soma",
+              "Southnode",
+              "Sukra",
+              "Surya"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Lords",
+          "type": "array"
+        }
+      },
+      "required": [
+        "lords"
+      ],
+      "title": "DashaLordIs",
+      "type": "object"
+    },
+    "DignityIn": {
+      "additionalProperties": false,
+      "description": "Parameters of ``dignity_in``.",
+      "properties": {
+        "dignities": {
+          "items": {
+            "enum": [
+              "own",
+              "exaltation",
+              "debilitation",
+              "moolatrikona",
+              "friend",
+              "enemy",
+              "neutral"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Dignities",
+          "type": "array"
+        },
+        "planet": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya"
+          ],
+          "title": "Planet",
+          "type": "string"
+        },
+        "rahu_exalted_in": {
+          "default": "taurus",
+          "enum": [
+            "taurus",
+            "gemini"
+          ],
+          "title": "Rahu Exalted In",
+          "type": "string"
+        }
+      },
+      "required": [
+        "planet",
+        "dignities"
+      ],
+      "title": "DignityIn",
+      "type": "object"
+    },
+    "Drishti": {
+      "additionalProperties": false,
+      "description": "Parameters of ``graha_drishti``.",
+      "properties": {
+        "aspects": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Aspects"
+        },
+        "planet": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya"
+          ],
+          "title": "Planet",
+          "type": "string"
+        },
+        "target": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya",
+            "Lagna",
+            "Ascendant"
+          ],
+          "title": "Target",
+          "type": "string"
+        }
+      },
+      "required": [
+        "planet",
+        "target"
+      ],
+      "title": "Drishti",
+      "type": "object"
+    },
+    "EclipseInSign": {
+      "additionalProperties": false,
+      "description": "Parameters of ``eclipse_in_sign``.",
+      "properties": {
+        "days_after": {
+          "default": 1.0,
+          "maximum": 400,
+          "minimum": 0,
+          "title": "Days After",
+          "type": "number"
+        },
+        "days_before": {
+          "default": 1.0,
+          "maximum": 400,
+          "minimum": 0,
+          "title": "Days Before",
+          "type": "number"
+        },
+        "kind": {
+          "default": "any",
+          "enum": [
+            "solar",
+            "lunar",
+            "any"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "nakshatras": {
+          "anyOf": [
+            {
+              "items": {
+                "enum": [
+                  "Ashwini",
+                  "Bharani",
+                  "Krittika",
+                  "Rohini",
+                  "Mrigashira",
+                  "Ardra",
+                  "Punarvasu",
+                  "Pushya",
+                  "Ashlesha",
+                  "Magha",
+                  "Purva Phalguni",
+                  "Uttara Phalguni",
+                  "Hasta",
+                  "Chitra",
+                  "Swati",
+                  "Vishakha",
+                  "Anuradha",
+                  "Jyeshtha",
+                  "Mula",
+                  "Purva Ashadha",
+                  "Uttara Ashadha",
+                  "Shravana",
+                  "Dhanishta",
+                  "Shatabhisha",
+                  "Purva Bhadrapada",
+                  "Uttara Bhadrapada",
+                  "Revati",
+                  "Anuradha",
+                  "Aridra",
+                  "Arudra",
+                  "Ashlesa",
+                  "Aslesha",
+                  "Asvini",
+                  "Aswini",
+                  "Chitta",
+                  "Dhanishtha",
+                  "Dhanista",
+                  "Jyeshta",
+                  "Jyestha",
+                  "Karthika",
+                  "Kritika",
+                  "Makha",
+                  "Moola",
+                  "Mrigashirsha",
+                  "Mrigasira",
+                  "Mrigasirsha",
+                  "Poorvashadha",
+                  "Pubba",
+                  "Purvabhadra",
+                  "Purvabhadrapada",
+                  "Purvaphalguni",
+                  "Purvashadha",
+                  "Pushyami",
+                  "Pusya",
+                  "Satabhisha",
+                  "Satabhishak",
+                  "Shatabhishak",
+                  "Shravan",
+                  "Sravana",
+                  "Svati",
+                  "Uttara",
+                  "Uttarabhadra",
+                  "Uttarabhadrapada",
+                  "Uttaraphalguni",
+                  "Uttarashadha",
+                  "Visaka",
+                  "Visakha"
+                ],
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Nakshatras"
+        },
+        "signs": {
+          "anyOf": [
+            {
+              "items": {
+                "enum": [
+                  "Aries",
+                  "Taurus",
+                  "Gemini",
+                  "Cancer",
+                  "Leo",
+                  "Virgo",
+                  "Libra",
+                  "Scorpio",
+                  "Sagittarius",
+                  "Capricorn",
+                  "Aquarius",
+                  "Pisces",
+                  "Dhanu",
+                  "Dhanus",
+                  "Kanya",
+                  "Karka",
+                  "Karkata",
+                  "Kataka",
+                  "Kumbha",
+                  "Makara",
+                  "Meena",
+                  "Mesha",
+                  "Mina",
+                  "Mithuna",
+                  "Simha",
+                  "Tula",
+                  "Vrischika",
+                  "Vrishabha",
+                  "Vrishabham",
+                  "Vrishchika"
+                ],
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Signs"
+        }
+      },
+      "title": "EclipseInSign",
+      "type": "object"
+    },
+    "ExpectedEffect": {
+      "additionalProperties": false,
+      "description": "What the rule predicts, for the statistics layer.",
+      "properties": {
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "direction": {
+          "anyOf": [
+            {
+              "enum": [
+                "up",
+                "down",
+                "increase",
+                "decrease",
+                "either"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Direction"
+        },
+        "event": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event"
+        },
+        "series": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Series"
+        }
+      },
+      "title": "ExpectedEffect",
+      "type": "object"
+    },
+    "FromPoint": {
+      "additionalProperties": false,
+      "description": "Parameters of ``in_kendra_from`` and ``in_trikona_from``.",
+      "properties": {
+        "from": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya",
+            "Lagna",
+            "Ascendant"
+          ],
+          "title": "From",
+          "type": "string"
+        },
+        "planet": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya",
+            "Lagna",
+            "Ascendant"
+          ],
+          "title": "Planet",
+          "type": "string"
+        }
+      },
+      "required": [
+        "planet",
+        "from"
+      ],
+      "title": "FromPoint",
+      "type": "object"
+    },
+    "InHouse": {
+      "additionalProperties": false,
+      "description": "Parameters of ``in_house``.",
+      "properties": {
+        "houses": {
+          "items": {
+            "maximum": 12,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "minItems": 1,
+          "title": "Houses",
+          "type": "array"
+        },
+        "planet": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya"
+          ],
+          "title": "Planet",
+          "type": "string"
+        }
+      },
+      "required": [
+        "planet",
+        "houses"
+      ],
+      "title": "InHouse",
+      "type": "object"
+    },
+    "InHouseFrom": {
+      "additionalProperties": false,
+      "description": "Parameters of ``in_house_from``.",
+      "properties": {
+        "from": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya",
+            "Lagna",
+            "Ascendant"
+          ],
+          "title": "From",
+          "type": "string"
+        },
+        "houses": {
+          "items": {
+            "maximum": 12,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "minItems": 1,
+          "title": "Houses",
+          "type": "array"
+        },
+        "planet": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya",
+            "Lagna",
+            "Ascendant"
+          ],
+          "title": "Planet",
+          "type": "string"
+        }
+      },
+      "required": [
+        "planet",
+        "from",
+        "houses"
+      ],
+      "title": "InHouseFrom",
+      "type": "object"
+    },
+    "InNakshatra": {
+      "additionalProperties": false,
+      "description": "Parameters of ``in_nakshatra``.",
+      "properties": {
+        "nakshatras": {
+          "items": {
+            "enum": [
+              "Ashwini",
+              "Bharani",
+              "Krittika",
+              "Rohini",
+              "Mrigashira",
+              "Ardra",
+              "Punarvasu",
+              "Pushya",
+              "Ashlesha",
+              "Magha",
+              "Purva Phalguni",
+              "Uttara Phalguni",
+              "Hasta",
+              "Chitra",
+              "Swati",
+              "Vishakha",
+              "Anuradha",
+              "Jyeshtha",
+              "Mula",
+              "Purva Ashadha",
+              "Uttara Ashadha",
+              "Shravana",
+              "Dhanishta",
+              "Shatabhisha",
+              "Purva Bhadrapada",
+              "Uttara Bhadrapada",
+              "Revati",
+              "Anuradha",
+              "Aridra",
+              "Arudra",
+              "Ashlesa",
+              "Aslesha",
+              "Asvini",
+              "Aswini",
+              "Chitta",
+              "Dhanishtha",
+              "Dhanista",
+              "Jyeshta",
+              "Jyestha",
+              "Karthika",
+              "Kritika",
+              "Makha",
+              "Moola",
+              "Mrigashirsha",
+              "Mrigasira",
+              "Mrigasirsha",
+              "Poorvashadha",
+              "Pubba",
+              "Purvabhadra",
+              "Purvabhadrapada",
+              "Purvaphalguni",
+              "Purvashadha",
+              "Pushyami",
+              "Pusya",
+              "Satabhisha",
+              "Satabhishak",
+              "Shatabhishak",
+              "Shravan",
+              "Sravana",
+              "Svati",
+              "Uttara",
+              "Uttarabhadra",
+              "Uttarabhadrapada",
+              "Uttaraphalguni",
+              "Uttarashadha",
+              "Visaka",
+              "Visakha"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Nakshatras",
+          "type": "array"
+        },
+        "planet": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya",
+            "Lagna",
+            "Ascendant"
+          ],
+          "title": "Planet",
+          "type": "string"
+        }
+      },
+      "required": [
+        "planet",
+        "nakshatras"
+      ],
+      "title": "InNakshatra",
+      "type": "object"
+    },
+    "InSign": {
+      "additionalProperties": false,
+      "description": "Parameters of ``in_sign``.",
+      "properties": {
+        "planet": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya",
+            "Lagna",
+            "Ascendant"
+          ],
+          "title": "Planet",
+          "type": "string"
+        },
+        "signs": {
+          "items": {
+            "enum": [
+              "Aries",
+              "Taurus",
+              "Gemini",
+              "Cancer",
+              "Leo",
+              "Virgo",
+              "Libra",
+              "Scorpio",
+              "Sagittarius",
+              "Capricorn",
+              "Aquarius",
+              "Pisces",
+              "Dhanu",
+              "Dhanus",
+              "Kanya",
+              "Karka",
+              "Karkata",
+              "Kataka",
+              "Kumbha",
+              "Makara",
+              "Meena",
+              "Mesha",
+              "Mina",
+              "Mithuna",
+              "Simha",
+              "Tula",
+              "Vrischika",
+              "Vrishabha",
+              "Vrishabham",
+              "Vrishchika"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Signs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "planet",
+        "signs"
+      ],
+      "title": "InSign",
+      "type": "object"
+    },
+    "Ingress": {
+      "additionalProperties": false,
+      "description": "Parameters of ``ingress``.",
+      "properties": {
+        "days_after": {
+          "default": 1.0,
+          "maximum": 400,
+          "minimum": 0,
+          "title": "Days After",
+          "type": "number"
+        },
+        "days_before": {
+          "default": 1.0,
+          "maximum": 400,
+          "minimum": 0,
+          "title": "Days Before",
+          "type": "number"
+        },
+        "planet": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya"
+          ],
+          "title": "Planet",
+          "type": "string"
+        },
+        "signs": {
+          "anyOf": [
+            {
+              "items": {
+                "enum": [
+                  "Aries",
+                  "Taurus",
+                  "Gemini",
+                  "Cancer",
+                  "Leo",
+                  "Virgo",
+                  "Libra",
+                  "Scorpio",
+                  "Sagittarius",
+                  "Capricorn",
+                  "Aquarius",
+                  "Pisces",
+                  "Dhanu",
+                  "Dhanus",
+                  "Kanya",
+                  "Karka",
+                  "Karkata",
+                  "Kataka",
+                  "Kumbha",
+                  "Makara",
+                  "Meena",
+                  "Mesha",
+                  "Mina",
+                  "Mithuna",
+                  "Simha",
+                  "Tula",
+                  "Vrischika",
+                  "Vrishabha",
+                  "Vrishabham",
+                  "Vrishchika"
+                ],
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Signs"
+        }
+      },
+      "required": [
+        "planet"
+      ],
+      "title": "Ingress",
+      "type": "object"
+    },
+    "Leaf_antardasha_lord_is": {
+      "additionalProperties": false,
+      "properties": {
+        "antardasha_lord_is": {
+          "$ref": "#/$defs/LordsOnly",
+          "description": "Check that the running Vimshottari antardasha (bhukti) lord is listed."
+        }
+      },
+      "required": [
+        "antardasha_lord_is"
+      ],
+      "title": "Leaf_antardasha_lord_is",
+      "type": "object"
+    },
+    "Leaf_combust": {
+      "additionalProperties": false,
+      "properties": {
+        "combust": {
+          "$ref": "#/$defs/PlanetOnly",
+          "description": "Check that the planet is within its combustion (asta) orb of the Sun."
+        }
+      },
+      "required": [
+        "combust"
+      ],
+      "title": "Leaf_combust",
+      "type": "object"
+    },
+    "Leaf_conjunct_within": {
+      "additionalProperties": false,
+      "properties": {
+        "conjunct_within": {
+          "$ref": "#/$defs/PlanetPair",
+          "description": "Check that the two planets are within ``orb`` degrees of longitude (yuti)."
+        }
+      },
+      "required": [
+        "conjunct_within"
+      ],
+      "title": "Leaf_conjunct_within",
+      "type": "object"
+    },
+    "Leaf_dasha_lord_is": {
+      "additionalProperties": false,
+      "properties": {
+        "dasha_lord_is": {
+          "$ref": "#/$defs/DashaLordIs",
+          "description": "Check that the natal chart's running Vimshottari lord at ``level`` is listed."
+        }
+      },
+      "required": [
+        "dasha_lord_is"
+      ],
+      "title": "Leaf_dasha_lord_is",
+      "type": "object"
+    },
+    "Leaf_dignity_in": {
+      "additionalProperties": false,
+      "properties": {
+        "dignity_in": {
+          "$ref": "#/$defs/DignityIn",
+          "description": "Check that the planet's dignity (sthana) is one of the listed kinds."
+        }
+      },
+      "required": [
+        "dignity_in"
+      ],
+      "title": "Leaf_dignity_in",
+      "type": "object"
+    },
+    "Leaf_eclipse_in_sign": {
+      "additionalProperties": false,
+      "properties": {
+        "eclipse_in_sign": {
+          "$ref": "#/$defs/EclipseInSign",
+          "description": "Check that an eclipse falls in the window and in one of the listed signs."
+        }
+      },
+      "required": [
+        "eclipse_in_sign"
+      ],
+      "title": "Leaf_eclipse_in_sign",
+      "type": "object"
+    },
+    "Leaf_graha_drishti": {
+      "additionalProperties": false,
+      "properties": {
+        "graha_drishti": {
+          "$ref": "#/$defs/Drishti",
+          "description": "Check that the planet casts a whole-sign graha drishti on the target."
+        }
+      },
+      "required": [
+        "graha_drishti"
+      ],
+      "title": "Leaf_graha_drishti",
+      "type": "object"
+    },
+    "Leaf_in_house": {
+      "additionalProperties": false,
+      "properties": {
+        "in_house": {
+          "$ref": "#/$defs/InHouse",
+          "description": "Check that the planet is in one of the listed houses counted from the Lagna."
+        }
+      },
+      "required": [
+        "in_house"
+      ],
+      "title": "Leaf_in_house",
+      "type": "object"
+    },
+    "Leaf_in_house_from": {
+      "additionalProperties": false,
+      "properties": {
+        "in_house_from": {
+          "$ref": "#/$defs/InHouseFrom",
+          "description": "Check that the planet is in one of the listed houses counted from another point."
+        }
+      },
+      "required": [
+        "in_house_from"
+      ],
+      "title": "Leaf_in_house_from",
+      "type": "object"
+    },
+    "Leaf_in_kendra_from": {
+      "additionalProperties": false,
+      "properties": {
+        "in_kendra_from": {
+          "$ref": "#/$defs/FromPoint",
+          "description": "Check that the planet is in a kendra (1st, 4th, 7th or 10th) from the point."
+        }
+      },
+      "required": [
+        "in_kendra_from"
+      ],
+      "title": "Leaf_in_kendra_from",
+      "type": "object"
+    },
+    "Leaf_in_nakshatra": {
+      "additionalProperties": false,
+      "properties": {
+        "in_nakshatra": {
+          "$ref": "#/$defs/InNakshatra",
+          "description": "Check that the point lies in one of the listed nakshatras."
+        }
+      },
+      "required": [
+        "in_nakshatra"
+      ],
+      "title": "Leaf_in_nakshatra",
+      "type": "object"
+    },
+    "Leaf_in_sign": {
+      "additionalProperties": false,
+      "properties": {
+        "in_sign": {
+          "$ref": "#/$defs/InSign",
+          "description": "Check that the planet (or the Lagna) occupies one of the listed sidereal signs."
+        }
+      },
+      "required": [
+        "in_sign"
+      ],
+      "title": "Leaf_in_sign",
+      "type": "object"
+    },
+    "Leaf_in_trikona_from": {
+      "additionalProperties": false,
+      "properties": {
+        "in_trikona_from": {
+          "$ref": "#/$defs/FromPoint",
+          "description": "Check that the planet is in a trikona (1st, 5th, 9th) from the point."
+        }
+      },
+      "required": [
+        "in_trikona_from"
+      ],
+      "title": "Leaf_in_trikona_from",
+      "type": "object"
+    },
+    "Leaf_ingress": {
+      "additionalProperties": false,
+      "properties": {
+        "ingress": {
+          "$ref": "#/$defs/Ingress",
+          "description": "Check that the planet enters a sign (sankranti for the Sun) within the window."
+        }
+      },
+      "required": [
+        "ingress"
+      ],
+      "title": "Leaf_ingress",
+      "type": "object"
+    },
+    "Leaf_longitude_between": {
+      "additionalProperties": false,
+      "properties": {
+        "longitude_between": {
+          "$ref": "#/$defs/LongitudeBetween",
+          "description": "Check that the point's sidereal longitude lies in [start, end) degrees."
+        }
+      },
+      "required": [
+        "longitude_between"
+      ],
+      "title": "Leaf_longitude_between",
+      "type": "object"
+    },
+    "Leaf_moon_phase": {
+      "additionalProperties": false,
+      "properties": {
+        "moon_phase": {
+          "$ref": "#/$defs/MoonPhase",
+          "description": "Check that the Moon's phase (paksha) or tithi matches."
+        }
+      },
+      "required": [
+        "moon_phase"
+      ],
+      "title": "Leaf_moon_phase",
+      "type": "object"
+    },
+    "Leaf_nakshatra_lord_is": {
+      "additionalProperties": false,
+      "properties": {
+        "nakshatra_lord_is": {
+          "$ref": "#/$defs/NakshatraLordIs",
+          "description": "Check that the lord of the point's nakshatra is one of the listed planets."
+        }
+      },
+      "required": [
+        "nakshatra_lord_is"
+      ],
+      "title": "Leaf_nakshatra_lord_is",
+      "type": "object"
+    },
+    "Leaf_planet_speed_below": {
+      "additionalProperties": false,
+      "properties": {
+        "planet_speed_below": {
+          "$ref": "#/$defs/SpeedBelow",
+          "description": "Check that the planet moves slower than ``speed`` degrees per day."
+        }
+      },
+      "required": [
+        "planet_speed_below"
+      ],
+      "title": "Leaf_planet_speed_below",
+      "type": "object"
+    },
+    "Leaf_retrograde": {
+      "additionalProperties": false,
+      "properties": {
+        "retrograde": {
+          "$ref": "#/$defs/PlanetOnly",
+          "description": "Check that the planet moves backwards (vakri): longitude decreasing."
+        }
+      },
+      "required": [
+        "retrograde"
+      ],
+      "title": "Leaf_retrograde",
+      "type": "object"
+    },
+    "Leaf_separation_within": {
+      "additionalProperties": false,
+      "properties": {
+        "separation_within": {
+          "$ref": "#/$defs/Separation",
+          "description": "Check that the shortest arc between two planets is within ``orb`` of ``angle``."
+        }
+      },
+      "required": [
+        "separation_within"
+      ],
+      "title": "Leaf_separation_within",
+      "type": "object"
+    },
+    "Leaf_transit_conjunct_natal": {
+      "additionalProperties": false,
+      "properties": {
+        "transit_conjunct_natal": {
+          "$ref": "#/$defs/TransitConjunct",
+          "description": "Check that the transiting planet is within ``orb`` degrees of a natal point."
+        }
+      },
+      "required": [
+        "transit_conjunct_natal"
+      ],
+      "title": "Leaf_transit_conjunct_natal",
+      "type": "object"
+    },
+    "Leaf_transit_in_house_from_natal": {
+      "additionalProperties": false,
+      "properties": {
+        "transit_in_house_from_natal": {
+          "$ref": "#/$defs/TransitHouse",
+          "description": "Check that the transiting planet is in one of the houses from a natal point."
+        }
+      },
+      "required": [
+        "transit_in_house_from_natal"
+      ],
+      "title": "Leaf_transit_in_house_from_natal",
+      "type": "object"
+    },
+    "Leaf_varga_sign": {
+      "additionalProperties": false,
+      "properties": {
+        "varga_sign": {
+          "$ref": "#/$defs/VargaSign",
+          "description": "Check that the point is in one of the listed signs of the D-n chart."
+        }
+      },
+      "required": [
+        "varga_sign"
+      ],
+      "title": "Leaf_varga_sign",
+      "type": "object"
+    },
+    "Leaf_weekday_lord_is": {
+      "additionalProperties": false,
+      "properties": {
+        "weekday_lord_is": {
+          "$ref": "#/$defs/WeekdayLordIs",
+          "description": "Check that the lord of the weekday (vara) is listed."
+        }
+      },
+      "required": [
+        "weekday_lord_is"
+      ],
+      "title": "Leaf_weekday_lord_is",
+      "type": "object"
+    },
+    "LongitudeBetween": {
+      "additionalProperties": false,
+      "description": "Parameters of ``longitude_between``.",
+      "properties": {
+        "end": {
+          "maximum": 360,
+          "minimum": 0,
+          "title": "End",
+          "type": "number"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "planet": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya",
+            "Lagna",
+            "Ascendant"
+          ],
+          "title": "Planet",
+          "type": "string"
+        },
+        "start": {
+          "exclusiveMaximum": 360,
+          "minimum": 0,
+          "title": "Start",
+          "type": "number"
+        }
+      },
+      "required": [
+        "planet",
+        "start",
+        "end"
+      ],
+      "title": "LongitudeBetween",
+      "type": "object"
+    },
+    "LordsOnly": {
+      "additionalProperties": false,
+      "description": "Parameters of ``antardasha_lord_is``.",
+      "properties": {
+        "lords": {
+          "items": {
+            "enum": [
+              "Sun",
+              "Moon",
+              "Mars",
+              "Mercury",
+              "Jupiter",
+              "Venus",
+              "Saturn",
+              "Rahu",
+              "Ketu",
+              "Brihaspati",
+              "Budha",
+              "Chandra",
+              "Guru",
+              "Kuja",
+              "Mangal",
+              "Mangala",
+              "Northnode",
+              "Ravi",
+              "Sani",
+              "Shani",
+              "Shukra",
+              "Soma",
+              "Southnode",
+              "Sukra",
+              "Surya"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Lords",
+          "type": "array"
+        }
+      },
+      "required": [
+        "lords"
+      ],
+      "title": "LordsOnly",
+      "type": "object"
+    },
+    "MoonPhase": {
+      "additionalProperties": false,
+      "description": "Parameters of ``moon_phase``.",
+      "properties": {
+        "phase": {
+          "anyOf": [
+            {
+              "enum": [
+                "waxing",
+                "waning",
+                "new",
+                "full"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Phase"
+        },
+        "tithis": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tithis"
+        }
+      },
+      "title": "MoonPhase",
+      "type": "object"
+    },
+    "NakshatraLordIs": {
+      "additionalProperties": false,
+      "description": "Parameters of ``nakshatra_lord_is``.",
+      "properties": {
+        "lords": {
+          "items": {
+            "enum": [
+              "Sun",
+              "Moon",
+              "Mars",
+              "Mercury",
+              "Jupiter",
+              "Venus",
+              "Saturn",
+              "Rahu",
+              "Ketu",
+              "Brihaspati",
+              "Budha",
+              "Chandra",
+              "Guru",
+              "Kuja",
+              "Mangal",
+              "Mangala",
+              "Northnode",
+              "Ravi",
+              "Sani",
+              "Shani",
+              "Shukra",
+              "Soma",
+              "Southnode",
+              "Sukra",
+              "Surya"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Lords",
+          "type": "array"
+        },
+        "planet": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya",
+            "Lagna",
+            "Ascendant"
+          ],
+          "title": "Planet",
+          "type": "string"
+        }
+      },
+      "required": [
+        "planet",
+        "lords"
+      ],
+      "title": "NakshatraLordIs",
+      "type": "object"
+    },
+    "NotOf": {
+      "additionalProperties": false,
+      "description": "The child condition does not hold.",
+      "properties": {
+        "not": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/AllOf"
+            },
+            {
+              "$ref": "#/$defs/AnyOf"
+            },
+            {
+              "$ref": "#/$defs/NotOf"
+            },
+            {
+              "$ref": "#/$defs/AtLeast"
+            },
+            {
+              "$ref": "#/$defs/Leaf_in_sign"
+            },
+            {
+              "$ref": "#/$defs/Leaf_in_house"
+            },
+            {
+              "$ref": "#/$defs/Leaf_in_house_from"
+            },
+            {
+              "$ref": "#/$defs/Leaf_in_kendra_from"
+            },
+            {
+              "$ref": "#/$defs/Leaf_in_trikona_from"
+            },
+            {
+              "$ref": "#/$defs/Leaf_in_nakshatra"
+            },
+            {
+              "$ref": "#/$defs/Leaf_nakshatra_lord_is"
+            },
+            {
+              "$ref": "#/$defs/Leaf_dignity_in"
+            },
+            {
+              "$ref": "#/$defs/Leaf_varga_sign"
+            },
+            {
+              "$ref": "#/$defs/Leaf_longitude_between"
+            },
+            {
+              "$ref": "#/$defs/Leaf_combust"
+            },
+            {
+              "$ref": "#/$defs/Leaf_retrograde"
+            },
+            {
+              "$ref": "#/$defs/Leaf_conjunct_within"
+            },
+            {
+              "$ref": "#/$defs/Leaf_separation_within"
+            },
+            {
+              "$ref": "#/$defs/Leaf_graha_drishti"
+            },
+            {
+              "$ref": "#/$defs/Leaf_planet_speed_below"
+            },
+            {
+              "$ref": "#/$defs/Leaf_dasha_lord_is"
+            },
+            {
+              "$ref": "#/$defs/Leaf_antardasha_lord_is"
+            },
+            {
+              "$ref": "#/$defs/Leaf_moon_phase"
+            },
+            {
+              "$ref": "#/$defs/Leaf_weekday_lord_is"
+            },
+            {
+              "$ref": "#/$defs/Leaf_transit_in_house_from_natal"
+            },
+            {
+              "$ref": "#/$defs/Leaf_transit_conjunct_natal"
+            },
+            {
+              "$ref": "#/$defs/Leaf_eclipse_in_sign"
+            },
+            {
+              "$ref": "#/$defs/Leaf_ingress"
+            }
+          ],
+          "title": "Not"
+        }
+      },
+      "required": [
+        "not"
+      ],
+      "title": "NotOf",
+      "type": "object"
+    },
+    "Place": {
+      "additionalProperties": false,
+      "description": "Where a chart is cast: latitude, longitude (east +), IANA time zone.",
+      "properties": {
+        "lat": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Lon",
+          "type": "number"
+        },
+        "tz": {
+          "default": "UTC",
+          "title": "Tz",
+          "type": "string"
+        }
+      },
+      "required": [
+        "lat",
+        "lon"
+      ],
+      "title": "Place",
+      "type": "object"
+    },
+    "PlanetOnly": {
+      "additionalProperties": false,
+      "description": "Parameters of predicates about one planet.",
+      "properties": {
+        "planet": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya"
+          ],
+          "title": "Planet",
+          "type": "string"
+        }
+      },
+      "required": [
+        "planet"
+      ],
+      "title": "PlanetOnly",
+      "type": "object"
+    },
+    "PlanetPair": {
+      "additionalProperties": false,
+      "description": "Two planets and an orb.",
+      "properties": {
+        "orb": {
+          "exclusiveMinimum": 0,
+          "maximum": 30,
+          "title": "Orb",
+          "type": "number"
+        },
+        "planets": {
+          "items": {
+            "enum": [
+              "Sun",
+              "Moon",
+              "Mars",
+              "Mercury",
+              "Jupiter",
+              "Venus",
+              "Saturn",
+              "Rahu",
+              "Ketu",
+              "Brihaspati",
+              "Budha",
+              "Chandra",
+              "Guru",
+              "Kuja",
+              "Mangal",
+              "Mangala",
+              "Northnode",
+              "Ravi",
+              "Sani",
+              "Shani",
+              "Shukra",
+              "Soma",
+              "Southnode",
+              "Sukra",
+              "Surya"
+            ],
+            "type": "string"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Planets",
+          "type": "array"
+        }
+      },
+      "required": [
+        "planets",
+        "orb"
+      ],
+      "title": "PlanetPair",
+      "type": "object"
+    },
+    "ReferenceCase": {
+      "additionalProperties": false,
+      "description": "A moment at which the rule is known to fire or stay silent.",
+      "properties": {
+        "expect": {
+          "enum": [
+            "fires",
+            "silent"
+          ],
+          "title": "Expect",
+          "type": "string"
+        },
+        "moment": {
+          "format": "date-time",
+          "title": "Moment",
+          "type": "string"
+        },
+        "natal": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ChartSpec"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "note": {
+          "minLength": 1,
+          "title": "Note",
+          "type": "string"
+        },
+        "place": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Place"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "verified_with": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Verified With"
+        }
+      },
+      "required": [
+        "moment",
+        "expect",
+        "note"
+      ],
+      "title": "ReferenceCase",
+      "type": "object"
+    },
+    "Separation": {
+      "additionalProperties": false,
+      "description": "Two planets, a target angle and an orb.",
+      "properties": {
+        "angle": {
+          "maximum": 180,
+          "minimum": 0,
+          "title": "Angle",
+          "type": "number"
+        },
+        "orb": {
+          "exclusiveMinimum": 0,
+          "maximum": 30,
+          "title": "Orb",
+          "type": "number"
+        },
+        "planets": {
+          "items": {
+            "enum": [
+              "Sun",
+              "Moon",
+              "Mars",
+              "Mercury",
+              "Jupiter",
+              "Venus",
+              "Saturn",
+              "Rahu",
+              "Ketu",
+              "Brihaspati",
+              "Budha",
+              "Chandra",
+              "Guru",
+              "Kuja",
+              "Mangal",
+              "Mangala",
+              "Northnode",
+              "Ravi",
+              "Sani",
+              "Shani",
+              "Shukra",
+              "Soma",
+              "Southnode",
+              "Sukra",
+              "Surya"
+            ],
+            "type": "string"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Planets",
+          "type": "array"
+        }
+      },
+      "required": [
+        "planets",
+        "angle",
+        "orb"
+      ],
+      "title": "Separation",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "description": "Where the rule comes from.\n\nOne of: a text with chapter (and verse), an application registry entry\n(``app_registry`` + ``id``), or a ``url``. A rule is ``classical`` only\nwhen it has both ``text`` and ``chapter``.",
+      "properties": {
+        "app_registry": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "App Registry"
+        },
+        "chapter": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Chapter"
+        },
+        "edition": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Edition"
+        },
+        "id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Id"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        },
+        "verse": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Verse"
+        }
+      },
+      "title": "Source",
+      "type": "object"
+    },
+    "SpeedBelow": {
+      "additionalProperties": false,
+      "description": "Parameters of ``planet_speed_below``.",
+      "properties": {
+        "absolute": {
+          "default": true,
+          "title": "Absolute",
+          "type": "boolean"
+        },
+        "planet": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya"
+          ],
+          "title": "Planet",
+          "type": "string"
+        },
+        "speed": {
+          "exclusiveMinimum": 0,
+          "title": "Speed",
+          "type": "number"
+        }
+      },
+      "required": [
+        "planet",
+        "speed"
+      ],
+      "title": "SpeedBelow",
+      "type": "object"
+    },
+    "TransitConjunct": {
+      "additionalProperties": false,
+      "description": "Parameters of ``transit_conjunct_natal``.",
+      "properties": {
+        "natal_point": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya",
+            "Lagna",
+            "Ascendant"
+          ],
+          "title": "Natal Point",
+          "type": "string"
+        },
+        "orb": {
+          "exclusiveMinimum": 0,
+          "maximum": 30,
+          "title": "Orb",
+          "type": "number"
+        },
+        "planet": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya"
+          ],
+          "title": "Planet",
+          "type": "string"
+        }
+      },
+      "required": [
+        "planet",
+        "natal_point",
+        "orb"
+      ],
+      "title": "TransitConjunct",
+      "type": "object"
+    },
+    "TransitHouse": {
+      "additionalProperties": false,
+      "description": "Parameters of ``transit_in_house_from_natal``.",
+      "properties": {
+        "from": {
+          "default": "Lagna",
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya",
+            "Lagna",
+            "Ascendant"
+          ],
+          "title": "From",
+          "type": "string"
+        },
+        "houses": {
+          "items": {
+            "maximum": 12,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "minItems": 1,
+          "title": "Houses",
+          "type": "array"
+        },
+        "planet": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya"
+          ],
+          "title": "Planet",
+          "type": "string"
+        }
+      },
+      "required": [
+        "planet",
+        "houses"
+      ],
+      "title": "TransitHouse",
+      "type": "object"
+    },
+    "VargaSign": {
+      "additionalProperties": false,
+      "description": "Parameters of ``varga_sign``.",
+      "properties": {
+        "planet": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya",
+            "Lagna",
+            "Ascendant"
+          ],
+          "title": "Planet",
+          "type": "string"
+        },
+        "signs": {
+          "items": {
+            "enum": [
+              "Aries",
+              "Taurus",
+              "Gemini",
+              "Cancer",
+              "Leo",
+              "Virgo",
+              "Libra",
+              "Scorpio",
+              "Sagittarius",
+              "Capricorn",
+              "Aquarius",
+              "Pisces",
+              "Dhanu",
+              "Dhanus",
+              "Kanya",
+              "Karka",
+              "Karkata",
+              "Kataka",
+              "Kumbha",
+              "Makara",
+              "Meena",
+              "Mesha",
+              "Mina",
+              "Mithuna",
+              "Simha",
+              "Tula",
+              "Vrischika",
+              "Vrishabha",
+              "Vrishabham",
+              "Vrishchika"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Signs",
+          "type": "array"
+        },
+        "varga": {
+          "title": "Varga",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "planet",
+        "varga",
+        "signs"
+      ],
+      "title": "VargaSign",
+      "type": "object"
+    },
+    "WeekdayLordIs": {
+      "additionalProperties": false,
+      "description": "Parameters of ``weekday_lord_is``.",
+      "properties": {
+        "lords": {
+          "items": {
+            "enum": [
+              "Sun",
+              "Moon",
+              "Mars",
+              "Mercury",
+              "Jupiter",
+              "Venus",
+              "Saturn",
+              "Rahu",
+              "Ketu",
+              "Brihaspati",
+              "Budha",
+              "Chandra",
+              "Guru",
+              "Kuja",
+              "Mangal",
+              "Mangala",
+              "Northnode",
+              "Ravi",
+              "Sani",
+              "Shani",
+              "Shukra",
+              "Soma",
+              "Southnode",
+              "Sukra",
+              "Surya"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Lords",
+          "type": "array"
+        }
+      },
+      "required": [
+        "lords"
+      ],
+      "title": "WeekdayLordIs",
+      "type": "object"
+    },
+    "Window": {
+      "additionalProperties": false,
+      "description": "The time window in which the claimed effect is expected.",
+      "properties": {
+        "after": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "After"
+        },
+        "before": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Before"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "unit": {
+          "enum": [
+            "hours",
+            "days",
+            "weeks",
+            "months",
+            "years"
+          ],
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "unit"
+      ],
+      "title": "Window",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "One astrological rule.",
+  "properties": {
+    "author": {
+      "minLength": 1,
+      "title": "Author",
+      "type": "string"
+    },
+    "claim": {
+      "minLength": 1,
+      "title": "Claim",
+      "type": "string"
+    },
+    "conditions": {
+      "anyOf": [
+        {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/AllOf"
+            },
+            {
+              "$ref": "#/$defs/AnyOf"
+            },
+            {
+              "$ref": "#/$defs/NotOf"
+            },
+            {
+              "$ref": "#/$defs/AtLeast"
+            },
+            {
+              "$ref": "#/$defs/Leaf_in_sign"
+            },
+            {
+              "$ref": "#/$defs/Leaf_in_house"
+            },
+            {
+              "$ref": "#/$defs/Leaf_in_house_from"
+            },
+            {
+              "$ref": "#/$defs/Leaf_in_kendra_from"
+            },
+            {
+              "$ref": "#/$defs/Leaf_in_trikona_from"
+            },
+            {
+              "$ref": "#/$defs/Leaf_in_nakshatra"
+            },
+            {
+              "$ref": "#/$defs/Leaf_nakshatra_lord_is"
+            },
+            {
+              "$ref": "#/$defs/Leaf_dignity_in"
+            },
+            {
+              "$ref": "#/$defs/Leaf_varga_sign"
+            },
+            {
+              "$ref": "#/$defs/Leaf_longitude_between"
+            },
+            {
+              "$ref": "#/$defs/Leaf_combust"
+            },
+            {
+              "$ref": "#/$defs/Leaf_retrograde"
+            },
+            {
+              "$ref": "#/$defs/Leaf_conjunct_within"
+            },
+            {
+              "$ref": "#/$defs/Leaf_separation_within"
+            },
+            {
+              "$ref": "#/$defs/Leaf_graha_drishti"
+            },
+            {
+              "$ref": "#/$defs/Leaf_planet_speed_below"
+            },
+            {
+              "$ref": "#/$defs/Leaf_dasha_lord_is"
+            },
+            {
+              "$ref": "#/$defs/Leaf_antardasha_lord_is"
+            },
+            {
+              "$ref": "#/$defs/Leaf_moon_phase"
+            },
+            {
+              "$ref": "#/$defs/Leaf_weekday_lord_is"
+            },
+            {
+              "$ref": "#/$defs/Leaf_transit_in_house_from_natal"
+            },
+            {
+              "$ref": "#/$defs/Leaf_transit_conjunct_natal"
+            },
+            {
+              "$ref": "#/$defs/Leaf_eclipse_in_sign"
+            },
+            {
+              "$ref": "#/$defs/Leaf_ingress"
+            }
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Conditions"
+    },
+    "domain": {
+      "enum": [
+        "financial",
+        "seismic",
+        "mundane",
+        "natal",
+        "general"
+      ],
+      "title": "Domain",
+      "type": "string"
+    },
+    "expected_effect": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ExpectedEffect"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "id": {
+      "description": "unique, lowercase, dotted",
+      "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)+$",
+      "title": "Id",
+      "type": "string"
+    },
+    "name": {
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "natal": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ChartSpec"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "node_model": {
+      "default": "mean",
+      "enum": [
+        "mean",
+        "true"
+      ],
+      "title": "Node Model",
+      "type": "string"
+    },
+    "notes": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Notes"
+    },
+    "reference_cases": {
+      "items": {
+        "$ref": "#/$defs/ReferenceCase"
+      },
+      "title": "Reference Cases",
+      "type": "array"
+    },
+    "source": {
+      "$ref": "#/$defs/Source"
+    },
+    "status": {
+      "default": "active",
+      "enum": [
+        "active",
+        "needs_predicates",
+        "needs_verification"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "tier": {
+      "enum": [
+        "classical",
+        "experimental"
+      ],
+      "title": "Tier",
+      "type": "string"
+    },
+    "version": {
+      "default": 1,
+      "minimum": 1,
+      "title": "Version",
+      "type": "integer"
+    },
+    "window": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Window"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "domain",
+    "claim",
+    "source",
+    "author",
+    "tier",
+    "conditions"
+  ],
+  "title": "Astrological rule",
+  "type": "object"
+}
