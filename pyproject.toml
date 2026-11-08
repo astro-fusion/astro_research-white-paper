@@ -65,6 +65,11 @@ astro-rules = "vedic_astrology_core.rules.cli:main"
 fetch = [
     "yfinance>=0.2.30,<2",
 ]
+# GARCH-standardised volatility target in vedic_astrology_core.stats.granger
+# (target="garch_abs"); without it that target raises and must be reported.
+stats = [
+    "arch>=6.0,<9",
+]
 # LLM diagram generator in libs/visuals (unrelated to data plotting).
 diagrams = [
     "google-generativeai>=0.3.0,<1",
@@ -107,7 +112,7 @@ app = [
 # Kept for backwards compatibility: pyswisseph is now a core dependency.
 ephemeris = []
 all = [
-    "vedic-astrology-core[dev,docs,fetch,diagrams,colab,api,app]",
+    "vedic-astrology-core[dev,docs,fetch,diagrams,colab,api,app,stats]",
 ]
 
 [project.urls]
