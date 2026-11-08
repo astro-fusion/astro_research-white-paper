@@ -32,9 +32,23 @@ wheels/
 *_cache/
 **/*.quarto_ipynb
 
-# Data (Generated)
-data/
-!use_cases/**/data/*.json
+# Data: one root (data/). Raw, processed and snapshot files are fetched or
+# generated and never committed; see data/README.md for sources and hashes.
+data/raw/*
+data/processed/*
+data/snapshots/*
+/data/*.csv
+/data/*.parquet
+# Study-local data: generated or fetched, documented in each study README.
+studies/*/data/*
+!studies/earthquake/data/india_nepal_data.json
+!**/data/**/README.md
+!**/data/**/.gitkeep
+!**/data/README.md
+!**/data/.gitkeep
+# Generated study outputs
+studies/*/artifacts/*
+!studies/*/artifacts/.gitkeep
 docs/_build/
 
 /.quarto/
@@ -55,9 +69,8 @@ _freeze/
 # Generated Research Figures (Large Binaries)
 # ==========================================
 # Figures produced by analysis scripts are generated artefacts
-research/use_cases/**/figures/*.png
-research/use_cases/**/figures/*.svg
-research/use_cases/**/figures/*.jpg
+# Study figures are committed only when a study script produces them and the
+# paper references them; everything else goes to studies/<name>/artifacts/.
 
 # ==========================================
 # LaTeX Build Artifacts
@@ -92,7 +105,24 @@ htmlcov/
 coverage.xml
 .coverage
 .mypy_cache/
-# Quarto keep-tex render outputs (existing tracked .tex files are untouched;
-# the reorganization package untracks them)
-research/**/*.tex
-docs/research/**/*.tex
+# Quarto / pandoc render outputs. LaTeX SOURCES live only in styles/ and templates/.
+*.tex
+!styles/**/*.tex
+!templates/**/*.tex
+*.out.ipynb
+*.docx
+studies/**/paper/**/*.pdf
+studies/**/paper/**/*.html
+tests/test_report.json
+tests/validation_report.json
+tests/test_regression_matrix.csv
+tests/test_validation_matrix.csv
+model_results.json
+validation_report.json
+monte_carlo_distribution.png
+.jupyter_cache/
+# Legacy render locations (pre-reorganization)
+research/reports/tex_artifacts/
+research/use_cases/assets/releases/*.html
+research/reports/visualizations/test-output.html
+**/manuscripts/use_cases/
