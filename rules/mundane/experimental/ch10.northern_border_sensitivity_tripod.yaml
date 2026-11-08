@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch10.northern_border_sensitivity_tripod
+version: 2
 name: Northern Border Historical Incident Correlation Tripod
 domain: mundane
 claim: >-
@@ -81,6 +82,8 @@ reference_cases:
       Sagittarius, Pisces
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - >-

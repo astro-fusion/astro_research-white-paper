@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: mundane.practitioner.saturn_5th_or_11th_youth_unrest
+version: 2
 name: Saturn transits the 5th or 11th from a national lagna, youth unrest
 domain: mundane
 claim: When Saturn transits the 5th house (students) or the 11th house (public hopes) of a national chart,
@@ -13,8 +14,8 @@ tier: experimental
 status: active
 window:
   unit: months
-  before: 0
-  after: 0
+  before: $window_before
+  after: $window_after
   note: for the whole transit
 expected_effect:
   event: youth_protest
@@ -26,6 +27,9 @@ natal:
     lat: 28.6139
     lon: 77.209
     tz: Asia/Kolkata
+params:
+  window_before: {value: 0, min: 0, max: 3, step: 1, unit: months}
+  window_after: {value: 0, min: 0, max: 3, step: 1, unit: months}
 conditions:
   transit_in_house_from_natal:
     planet: Saturn
@@ -44,6 +48,8 @@ reference_cases:
     11]): transiting Saturn is in Capricorn 7.5 deg, the 9th from the natal Lagna in Taurus, not 5th,
     11th.'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

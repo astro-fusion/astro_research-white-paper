@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.core.r017_stambha_yogas_the_four_pillars_of_agriculture
+version: 2
 name: Stambha Yogas (The Four Pillars of Agriculture)
 domain: mundane
 claim: >-
@@ -18,6 +19,8 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: needs_predicates
 conditions: null
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - 'Pillar 1 (Rainfall): Chaitra Shukla 1 == Revati.'

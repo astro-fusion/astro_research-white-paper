@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: mundane.practitioner.bs32_agni_mandala_earthquake
+version: 2
 name: 'Brihat Samhita 32: an earthquake on a day in the Agni Mandala asterisms is of the fire type'
 domain: mundane
 claim: 'Earthquakes are classed by the asterism of the day: Pushya, Krittika, Vishakha, Bharani, Magha,
@@ -13,11 +14,14 @@ tier: experimental
 status: active
 window:
   unit: days
-  before: 0
-  after: 0
+  before: $window_before
+  after: $window_after
 expected_effect:
   event: earthquake_classification_agneya
   direction: either
+params:
+  window_before: {value: 0, min: 0, max: 7, step: 1, unit: days}
+  window_after: {value: 0, min: 0, max: 7, step: 1, unit: days}
 conditions:
   in_nakshatra:
     planet: Moon
@@ -49,6 +53,8 @@ reference_cases:
     deg, in Dhanishta pada 2, not one of Pushya, Krittika, Vishakha, Bharani, Magha, Purva Bhadrapada,
     Purva Phalguni.'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

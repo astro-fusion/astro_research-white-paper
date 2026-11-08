@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: financial.practitioner.rahu_ketu_sign_shift_nifty_risk
+version: 2
 name: 'Rahu-Ketu sign change (December 2026): high-risk window for the Nifty'
 domain: financial
 claim: The Rahu-Ketu axis shift of 5-15 December 2026 is a high-risk structural realignment window for
@@ -14,16 +15,21 @@ tier: experimental
 status: active
 window:
   unit: days
-  before: 15
-  after: 15
+  before: $window_before
+  after: $window_after
 expected_effect:
   series: nifty50
   direction: either
+params:
+  days_before: {value: 15, min: 0, max: 30, step: 1, unit: days}
+  days_after: {value: 15, min: 0, max: 30, step: 1, unit: days}
+  window_before: {value: 15, min: 0, max: 30, step: 1, unit: days}
+  window_after: {value: 15, min: 0, max: 30, step: 1, unit: days}
 conditions:
   ingress:
     planet: Rahu
-    days_before: 15
-    days_after: 15
+    days_before: $days_before
+    days_after: $days_after
 reference_cases:
 - moment: '2026-12-10T00:00:00Z'
   expect: fires
@@ -35,6 +41,8 @@ reference_cases:
   note: 'Mid-transit. Engine: ingress(planet=Rahu, days_before=15.0, days_after=15.0): Rahu stays in Aquarius
     between 15 days before and 15 days after the moment (no ingress).'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

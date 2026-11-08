@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.core.r025_elemental_classification_of_accident_types
+version: 2
 name: Elemental Classification of Accident Types
 domain: mundane
 claim: >-
@@ -18,6 +19,8 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: needs_predicates
 conditions: null
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - >-

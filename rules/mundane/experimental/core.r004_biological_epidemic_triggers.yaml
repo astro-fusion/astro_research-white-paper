@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.core.r004_biological_epidemic_triggers
+version: 2
 name: Biological & Epidemic Triggers
 domain: mundane
 claim: >-
@@ -18,6 +19,8 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: needs_predicates
 conditions: null
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - Check if Mars distance <= 0.40 AU (eruptive illness / fever flag).

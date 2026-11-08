@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../schema.json
 id: financial.jupiter_retrograde_contraction
+version: 2
 name: Jupiter-Retrograde-Contraction
 domain: financial
 claim: Jupiter retrograde signals contraction or a pause in market expansion.
@@ -25,6 +26,8 @@ reference_cases:
     note: Jupiter moves +0.237 deg/day, so it is direct
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   migrated_from: >-
     libs/vedic_astrology_core/combinations/catalog/financial_yogas.yaml (Jupiter-Retrograde-Contraction)

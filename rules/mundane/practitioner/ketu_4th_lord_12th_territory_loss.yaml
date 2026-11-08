@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: mundane.practitioner.ketu_4th_lord_12th_territory_loss
+version: 2
 name: Ketu in the 4th and the 4th lord in the 12th of a national chart, territory loss
 domain: mundane
 claim: Ketu in the 4th house with the 4th lord in the 12th house of a national chart indicates loss of
@@ -15,6 +16,8 @@ expected_effect:
   event: territory_loss
   direction: increase
 conditions: null
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

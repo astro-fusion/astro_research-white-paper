@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch5.eclipse_lunar_baseline_window
+version: 2
 name: Lunar Eclipse Baseline Impact Window
 domain: mundane
 claim: >-
@@ -18,14 +19,19 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 window:
   unit: days
-  before: 30
-  after: 30
+  before: $window_before
+  after: $window_after
 status: active
+params:
+  days_before: {value: 30, min: 0, max: 60, step: 1, unit: days}
+  days_after: {value: 30, min: 0, max: 60, step: 1, unit: days}
+  window_before: {value: 30, min: 0, max: 60, step: 1, unit: days}
+  window_after: {value: 30, min: 0, max: 60, step: 1, unit: days}
 conditions:
   eclipse_in_sign:
     kind: lunar
-    days_before: 30
-    days_after: 30
+    days_before: $days_before
+    days_after: $days_after
 reference_cases:
   - moment: '1950-04-03T06:00:00Z'
     expect: fires
@@ -39,6 +45,8 @@ reference_cases:
     note: no lunar eclipse between 30 days before and 30 days after the moment
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - Target date within -30 days to +30 days of lunar eclipse date.

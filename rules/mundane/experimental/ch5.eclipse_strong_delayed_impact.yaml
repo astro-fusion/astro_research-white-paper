@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch5.eclipse_strong_delayed_impact
+version: 2
 name: Strong Eclipse Delayed Impact Manifestation
 domain: mundane
 claim: Strong Eclipse Delayed Impact Manifestation - Eclipse strength score >= 75.0.
@@ -16,10 +17,14 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 window:
   unit: days
-  after: 210
+  after: $window_after
   note: impact days +180..+210 after eclipse
 status: needs_predicates
+params:
+  window_after: {value: 210, min: 0, max: 400, step: 1, unit: days}
 conditions: null
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - Eclipse strength score >= 75.0.

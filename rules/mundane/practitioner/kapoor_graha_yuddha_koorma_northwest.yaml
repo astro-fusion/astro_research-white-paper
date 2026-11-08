@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: mundane.practitioner.kapoor_graha_yuddha_koorma_northwest
+version: 2
 name: 'Prashant Kapoor: planetary war with Uttarashadha-Shravana-Dhanishta implicated, north-west quake'
 domain: mundane
 claim: A planetary war (graha yuddha) implicating Uttarashadha, Shravana and Dhanishta points, through
@@ -16,6 +17,8 @@ expected_effect:
   event: earthquake_northwest
   direction: increase
 conditions: null
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

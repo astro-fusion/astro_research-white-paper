@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: mundane.practitioner.maheshri_geocentric_angles_m7
+version: 2
 name: 'Jagdish Maheshri: four or more outer planets and Rahu forming geocentric angles, M7+ earthquakes'
 domain: mundane
 claim: The probability of an earthquake rises with the number of geocentric angles (0, 90, 180, 150 degrees
@@ -16,6 +17,8 @@ expected_effect:
   event: earthquake_m7
   direction: increase
 conditions: null
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

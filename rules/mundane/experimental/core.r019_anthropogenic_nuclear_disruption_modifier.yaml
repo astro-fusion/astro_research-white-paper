@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.core.r019_anthropogenic_nuclear_disruption_modifier
+version: 2
 name: Anthropogenic & Nuclear Disruption Modifier
 domain: mundane
 claim: >-
@@ -18,6 +19,8 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: needs_predicates
 conditions: null
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - If nuclear test or extreme pollution detected, apply Severe_Disruption modifier.

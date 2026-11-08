@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch4.planetary_cluster_solar_risk
+version: 2
 name: Planetary Clustering Within 45° of the Sun
 domain: mundane
 claim: >-
@@ -18,6 +19,8 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: needs_predicates
 conditions: null
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - All included bodies have angular distance from Sun <= 45.0 deg.

@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../schema.json
 id: financial.venus_retrograde_reversal
+version: 2
 name: Venus-Retrograde-Reversal
 domain: financial
 claim: Venus retrograde signals a reversal in value expectations (gold).
@@ -25,6 +26,8 @@ reference_cases:
     note: Venus moves +1.230 deg/day, so it is direct
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   migrated_from: >-
     libs/vedic_astrology_core/combinations/catalog/financial_yogas.yaml (Venus-Retrograde-Reversal)

@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: mundane.practitioner.mars_in_rohini_weak_monsoon
+version: 2
 name: 'Mars in Rohini: dryness, below-normal monsoon in the south'
 domain: mundane
 claim: Mars in Rohini causes dryness; used to forecast below-normal monsoon rain for the southern states
@@ -13,11 +14,14 @@ tier: experimental
 status: active
 window:
   unit: months
-  before: 0
-  after: 3
+  before: $window_before
+  after: $window_after
 expected_effect:
   event: monsoon_deficit
   direction: increase
+params:
+  window_before: {value: 0, min: 0, max: 3, step: 1, unit: months}
+  window_after: {value: 3, min: 0, max: 6, step: 1, unit: months}
 conditions:
   in_nakshatra:
     planet: Mars
@@ -34,6 +38,8 @@ reference_cases:
   note: 'Monsoon onset 2019. Engine: in_nakshatra(planet=Mars, nakshatras=[Rohini]): Mars is in Gemini
     25.1 deg, in Punarvasu pada 2, not one of Rohini.'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

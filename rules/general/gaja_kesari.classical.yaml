@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../schema.json
 id: general.gaja_kesari.classical
+version: 2
 name: Gaja Kesari Yoga (BPHS definition)
 domain: general
 claim: >-
@@ -87,6 +88,8 @@ reference_cases:
       deg
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   benefics: >-
     Mercury and Venus are taken as the benefics. The Moon (a benefic when waxing) is not included

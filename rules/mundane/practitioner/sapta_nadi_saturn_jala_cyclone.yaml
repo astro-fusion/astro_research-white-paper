@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: mundane.practitioner.sapta_nadi_saturn_jala_cyclone
+version: 2
 name: 'Sapta Nadi Chakra: Saturn in the Jala Nadi, windstorms and cyclones'
 domain: mundane
 claim: Saturn placed in the Jala (water) Nadi causes strong windstorms and cyclones; the Nadis group the
@@ -16,6 +17,8 @@ expected_effect:
   event: cyclone
   direction: increase
 conditions: null
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

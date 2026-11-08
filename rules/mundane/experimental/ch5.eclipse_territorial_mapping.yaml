@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch5.eclipse_territorial_mapping
+version: 2
 name: Eclipse Zodiac Sign & Nakshatra Territorial Mapping
 domain: mundane
 claim: >-
@@ -17,6 +18,11 @@ source:
 author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: active
+params:
+  days_before: {value: 1, min: 0, max: 2, step: 1, unit: days}
+  days_after: {value: 1, min: 0, max: 2, step: 1, unit: days}
+  days_before_2: {value: 1, min: 0, max: 2, step: 1, unit: days}
+  days_after_2: {value: 1, min: 0, max: 2, step: 1, unit: days}
 conditions:
   any:
     - eclipse_in_sign:
@@ -25,14 +31,14 @@ conditions:
           - Leo
           - Aquarius
           - Cancer
-        days_before: 1
-        days_after: 1
+        days_before: $days_before
+        days_after: $days_after
     - eclipse_in_sign:
         kind: any
         nakshatras:
           - Shravana
-        days_before: 1
-        days_after: 1
+        days_before: $days_before_2
+        days_after: $days_after_2
 reference_cases:
   - moment: '2017-08-22T00:00:00Z'
     expect: fires
@@ -50,6 +56,8 @@ reference_cases:
       before and 1 day after the moment
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - If Eclipse in Leo (5): Flag executive/leadership centers, mountainous, and forest zones.

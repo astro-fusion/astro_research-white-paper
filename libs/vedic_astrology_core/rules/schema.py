@@ -19,6 +19,7 @@ A rule is one YAML document::
 vocabulary in :mod:`.predicates`. Unknown keys anywhere are errors.
 """
 
+import copy
 import difflib
 import json
 from pathlib import Path
@@ -32,6 +33,7 @@ from pydantic import (
     ConfigDict,
     Discriminator,
     Field,
+    PrivateAttr,
     Tag,
     create_model,
     field_validator,
@@ -39,6 +41,16 @@ from pydantic import (
 )
 
 from .predicates import PREDICATES, Params
+from .tuning import (
+    PARAM_NAME,
+    Param,
+    ReviewEntry,
+    Strength,
+    TuningEntry,
+    Validation,
+    allow_param_refs,
+    bind_template,
+)
 
 CONNECTIVES = ("all", "any", "not", "at_least")
 ID_PATTERN = r"^[a-z0-9_]+(\.[a-z0-9_]+)+$"
@@ -312,10 +324,20 @@ class ReferenceCase(Strict):
 
 
 class Rule(Strict):
-    """One astrological rule."""
+    """One astrological rule.
+
+    Schema v2 adds ``params`` (tunable knobs with ranges, referenced as
+    ``$name`` in ``conditions``, ``window`` and ``strength``), ``strength``
+    (graded output), the append-only ``tuning_log``, the write-once
+    ``validation`` stamp and the ``review`` sign-offs.
+    """
 
     id: str = Field(pattern=ID_PATTERN, description="unique, lowercase, dotted")
-    version: int = Field(default=1, ge=1)
+    version: int = Field(
+        default=1,
+        ge=1,
+        description="bump on any change to conditions, params or strength",
+    )
     name: str = Field(min_length=1)
     domain: Literal["financial", "seismic", "mundane", "natal", "general"]
     claim: str = Field(min_length=1)
@@ -329,7 +351,59 @@ class Rule(Strict):
     window: Optional[Window] = None
     expected_effect: Optional[ExpectedEffect] = None
     reference_cases: List[ReferenceCase] = Field(default_factory=list)
+    params: Dict[Annotated[str, Field(pattern=PARAM_NAME)], Param] = Field(
+        default_factory=dict
+    )
+    strength: Optional[Strength] = None
+    tuning_log: List[TuningEntry] = Field(default_factory=list)
+    validation: Validation = Field(default_factory=Validation)
+    review: List[ReviewEntry] = Field(default_factory=list)
     notes: Optional[Dict[str, Any]] = None
+
+    _template: Dict[str, Any] = PrivateAttr(default_factory=dict)
+
+    @model_validator(mode="wrap")
+    @classmethod
+    def _bind_params(cls, data, handler):
+        """Replace each ``$param`` with its value; keep the raw template."""
+        if not isinstance(data, dict):
+            return handler(data)
+        bound, used = bind_template(data)
+        declared = set(
+            (data.get("params") or {}) if isinstance(data.get("params"), dict) else {}
+        )
+        unused = sorted(declared - used)
+        if unused:
+            raise ValueError(
+                "parameter(s) declared but never referenced as $name: "
+                + ", ".join(unused)
+            )
+        rule = handler(bound)
+        rule._template = copy.deepcopy(data)
+        return rule
+
+    def bind(self, values: Dict[str, float]) -> "Rule":
+        """Return this rule with ``params`` set to ``values`` (others unchanged).
+
+        Raises:
+            ValueError: unknown parameter name, or a value outside its range.
+        """
+        data = (
+            copy.deepcopy(self._template)
+            if self._template
+            else (self.model_dump(by_alias=True, exclude_none=True))
+        )
+        params = data.get("params") or {}
+        for name, value in values.items():
+            if name not in params:
+                raise ValueError(f"{self.id} has no parameter '{name}'")
+            params[name]["value"] = value
+        return Rule.model_validate(data)
+
+    @property
+    def param_values(self) -> Dict[str, float]:
+        """``{name: current value}``."""
+        return {name: p.value for name, p in self.params.items()}
 
     @model_validator(mode="after")
     def _consistent(self):
@@ -359,7 +433,7 @@ class Rule(Strict):
 
 def json_schema() -> Dict[str, Any]:
     """Return the JSON Schema of a rule file."""
-    schema = Rule.model_json_schema(by_alias=True)
+    schema = allow_param_refs(Rule.model_json_schema(by_alias=True))
     schema["$schema"] = "https://json-schema.org/draft/2020-12/schema"
     schema["title"] = "Astrological rule"
     return schema

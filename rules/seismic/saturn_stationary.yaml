@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../schema.json
 id: seismic.saturn_stationary
+version: 2
 name: Saturn-Stationary
 domain: seismic
 claim: >-
@@ -27,6 +28,8 @@ reference_cases:
     note: Saturn moves +0.1287 deg/day; |speed| is not below 0.05
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   migrated_from: >-
     libs/vedic_astrology_core/combinations/catalog/seismic_yogas.yaml (Saturn-Stationary)

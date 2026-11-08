@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.core.r020_dual_eclipse_threat_multiplier_same_calendar_month
+version: 2
 name: Dual-Eclipse Threat Multiplier (Same Calendar Month)
 domain: mundane
 claim: >-
@@ -18,10 +19,14 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 window:
   unit: months
-  after: 8
+  after: $window_after
   note: 6-8 month window
 status: needs_predicates
+params:
+  window_after: {value: 8, min: 0, max: 16, step: 1, unit: months}
 conditions: null
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - Check if solar and lunar eclipse share the same calendar month.

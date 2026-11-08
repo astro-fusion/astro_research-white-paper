@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.core.r010_eclipse_proximity_duration_index
+version: 2
 name: Eclipse Proximity & Duration Index
 domain: mundane
 claim: >-
@@ -18,11 +19,16 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 window:
   unit: days
-  before: 180
-  after: 180
+  before: $window_before
+  after: $window_after
   note: solar 180d / lunar 90d
 status: needs_predicates
+params:
+  window_before: {value: 180, min: 0, max: 360, step: 1, unit: days}
+  window_after: {value: 180, min: 0, max: 360, step: 1, unit: days}
 conditions: null
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - Check if target date is in 6-month solar window or 3-month lunar window.

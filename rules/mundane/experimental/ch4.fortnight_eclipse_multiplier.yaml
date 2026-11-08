@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch4.fortnight_eclipse_multiplier
+version: 2
 name: Fortnight Dual-Eclipse Threat Multiplier
 domain: mundane
 claim: >-
@@ -17,11 +18,16 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 window:
   unit: days
-  before: 100
-  after: 100
+  before: $window_before
+  after: $window_after
   note: peak +/-30d, broad +/-100d
 status: needs_predicates
+params:
+  window_before: {value: 100, min: 0, max: 200, step: 1, unit: days}
+  window_after: {value: 100, min: 0, max: 200, step: 1, unit: days}
 conditions: null
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - Days between solar and lunar eclipses <= 16 days.

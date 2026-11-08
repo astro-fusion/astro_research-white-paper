@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../schema.json
 id: seismic.mars_retrograde_tension
+version: 2
 name: Mars-Retrograde-Tension
 domain: seismic
 claim: Mars retrograde builds internal crustal tension.
@@ -25,6 +26,8 @@ reference_cases:
     note: Mars moves +0.635 deg/day, so it is direct
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   migrated_from: >-
     libs/vedic_astrology_core/combinations/catalog/seismic_yogas.yaml (Mars-Retrograde-Tension)

@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch7.himalaya_jupiter_ketu_cancer_sensitivity
+version: 2
 name: Traditional Himalayan Regional Sensitivity Window
 domain: mundane
 claim: >-
@@ -17,6 +18,8 @@ source:
 author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: active
+params:
+  orb: {value: 10, min: 2, max: 15, step: 1, unit: deg}
 conditions:
   all:
     - in_sign:
@@ -31,7 +34,7 @@ conditions:
         planets:
           - Jupiter
           - Ketu
-        orb: 10
+        orb: $orb
 reference_cases:
   - moment: '1990-09-18T06:00:00Z'
     expect: fires
@@ -49,6 +52,8 @@ reference_cases:
       the 10 deg orb
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - Both Jupiter and Ketu transit Cancer within conjunction orb.

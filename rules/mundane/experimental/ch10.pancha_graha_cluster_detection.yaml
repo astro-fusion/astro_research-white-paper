@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch10.pancha_graha_cluster_detection
+version: 2
 name: Pancha Graha Yuti (5+ Planet Cluster) Mundane Generation Engine
 domain: mundane
 claim: >-
@@ -18,6 +19,8 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: needs_predicates
 conditions: null
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - 5 or more traditional planets occupy a single zodiac sign.

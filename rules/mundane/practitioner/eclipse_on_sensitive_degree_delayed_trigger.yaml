@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: mundane.practitioner.eclipse_on_sensitive_degree_delayed_trigger
+version: 2
 name: Eclipse on a sensitive degree of a national chart, triggered later by a transit over the eclipse
   degree
 domain: mundane
@@ -17,6 +18,8 @@ expected_effect:
   event: national_strain
   direction: increase
 conditions: null
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

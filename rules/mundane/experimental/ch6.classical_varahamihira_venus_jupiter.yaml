@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch6.classical_varahamihira_venus_jupiter
+version: 2
 name: Varahamihira / Garga Venus-Jupiter Opposition
 domain: mundane
 claim: >-
@@ -17,13 +18,15 @@ source:
 author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: active
+params:
+  orb: {value: 10, min: 2, max: 15, step: 1, unit: deg}
 conditions:
   separation_within:
     planets:
       - Venus
       - Jupiter
     angle: 180
-    orb: 10
+    orb: $orb
 reference_cases:
   - moment: '1950-09-10T06:00:00Z'
     expect: fires
@@ -39,6 +42,8 @@ reference_cases:
       deg from 180 (outside the 10 deg orb)
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - Venus and Jupiter are in opposition (180° ± 10°).

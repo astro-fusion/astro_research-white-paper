@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: financial.practitioner.vyapar_ratna_inverse_dignity_gold
+version: 2
 name: 'Vyapar Ratna inverse law: gold falls when the Sun or Jupiter is exalted, in own or friendly sign'
 domain: financial
 claim: When a commodity's significator (Sun or Jupiter for gold) transits its exaltation, own or a friendly
@@ -14,12 +15,15 @@ tier: experimental
 status: active
 window:
   unit: months
-  before: 0
-  after: 1
+  before: $window_before
+  after: $window_after
   note: for the length of the sign transit
 expected_effect:
   series: gold_usd
   direction: down
+params:
+  window_before: {value: 0, min: 0, max: 3, step: 1, unit: months}
+  window_after: {value: 1, min: 0, max: 2, step: 1, unit: months}
 conditions:
   any:
   - dignity_in:
@@ -52,6 +56,8 @@ reference_cases:
     moolatrikona, friend]): Jupiter in Capricorn 21.5 deg is debilitation (sign lord Saturn of Capricorn),
     not exaltation or own or moolatrikona or friend.'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

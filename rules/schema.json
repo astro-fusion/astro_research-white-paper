@@ -208,6 +208,97 @@
       "title": "AnyOf",
       "type": "object"
     },
+    "AspectCloseness": {
+      "additionalProperties": false,
+      "description": "Strength term ``aspect_closeness``.",
+      "properties": {
+        "aspect_closeness": {
+          "$ref": "#/$defs/AspectClosenessBody"
+        }
+      },
+      "required": [
+        "aspect_closeness"
+      ],
+      "title": "AspectCloseness",
+      "type": "object"
+    },
+    "AspectClosenessBody": {
+      "additionalProperties": false,
+      "description": "1 at the exact ``angle``, falling linearly to 0 at ``orb`` from it.",
+      "properties": {
+        "angle": {
+          "anyOf": [
+            {
+              "maximum": 180,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Angle"
+        },
+        "orb": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 30,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Orb"
+        },
+        "planets": {
+          "items": {
+            "enum": [
+              "Sun",
+              "Moon",
+              "Mars",
+              "Mercury",
+              "Jupiter",
+              "Venus",
+              "Saturn",
+              "Rahu",
+              "Ketu",
+              "Brihaspati",
+              "Budha",
+              "Chandra",
+              "Guru",
+              "Kuja",
+              "Mangal",
+              "Mangala",
+              "Northnode",
+              "Ravi",
+              "Sani",
+              "Shani",
+              "Shukra",
+              "Soma",
+              "Southnode",
+              "Sukra",
+              "Surya"
+            ],
+            "type": "string"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Planets",
+          "type": "array"
+        }
+      },
+      "required": [
+        "planets",
+        "angle",
+        "orb"
+      ],
+      "title": "AspectClosenessBody",
+      "type": "object"
+    },
     "AtLeast": {
       "additionalProperties": false,
       "description": "At least ``n`` of the listed conditions hold.",
@@ -227,9 +318,17 @@
       "description": "``n`` of the listed conditions must hold.",
       "properties": {
         "n": {
-          "minimum": 1,
-          "title": "N",
-          "type": "integer"
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "N"
         },
         "of": {
           "items": {
@@ -371,16 +470,185 @@
       "title": "ChartSpec",
       "type": "object"
     },
+    "ConfirmResult": {
+      "additionalProperties": false,
+      "description": "The single confirm-period run.",
+      "properties": {
+        "ci": {
+          "items": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                    "type": "string"
+                  }
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Ci",
+          "type": "array"
+        },
+        "direction": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Direction"
+        },
+        "family": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Family"
+        },
+        "family_size": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Family Size"
+        },
+        "n_events": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "N Events"
+        },
+        "p": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "P"
+        },
+        "period": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Period",
+          "type": "array"
+        },
+        "q_family": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Q Family"
+        },
+        "rate_ratio": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rate Ratio"
+        }
+      },
+      "title": "ConfirmResult",
+      "type": "object"
+    },
     "DashaLordIs": {
       "additionalProperties": false,
       "description": "Parameters of ``dasha_lord_is``.",
       "properties": {
         "level": {
-          "default": 1,
-          "maximum": 3,
-          "minimum": 1,
-          "title": "Level",
-          "type": "integer"
+          "anyOf": [
+            {
+              "default": 1,
+              "maximum": 3,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Level"
         },
         "lords": {
           "items": {
@@ -422,6 +690,78 @@
         "lords"
       ],
       "title": "DashaLordIs",
+      "type": "object"
+    },
+    "DashaWeight": {
+      "additionalProperties": false,
+      "description": "Strength term ``dasha_weight``.",
+      "properties": {
+        "dasha_weight": {
+          "$ref": "#/$defs/DashaWeightBody"
+        }
+      },
+      "required": [
+        "dasha_weight"
+      ],
+      "title": "DashaWeight",
+      "type": "object"
+    },
+    "DashaWeightBody": {
+      "additionalProperties": false,
+      "description": "1 if ``lord`` runs the mahadasha, 1/2 the antardasha, 1/4 the third level.",
+      "properties": {
+        "levels": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                "type": "string"
+              }
+            ]
+          },
+          "minItems": 1,
+          "title": "Levels",
+          "type": "array"
+        },
+        "lord": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya"
+          ],
+          "title": "Lord",
+          "type": "string"
+        }
+      },
+      "required": [
+        "lord"
+      ],
+      "title": "DashaWeightBody",
       "type": "object"
     },
     "DignityIn": {
@@ -493,6 +833,62 @@
       "title": "DignityIn",
       "type": "object"
     },
+    "DignityWeight": {
+      "additionalProperties": false,
+      "description": "Strength term ``dignity_weight``.",
+      "properties": {
+        "dignity_weight": {
+          "$ref": "#/$defs/DignityWeightBody"
+        }
+      },
+      "required": [
+        "dignity_weight"
+      ],
+      "title": "DignityWeight",
+      "type": "object"
+    },
+    "DignityWeightBody": {
+      "additionalProperties": false,
+      "description": "Uccha bala / 60 (BPHS Ch. 27): 1 at deep exaltation, 0 at deep fall.",
+      "properties": {
+        "planet": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya"
+          ],
+          "title": "Planet",
+          "type": "string"
+        }
+      },
+      "required": [
+        "planet"
+      ],
+      "title": "DignityWeightBody",
+      "type": "object"
+    },
     "Drishti": {
       "additionalProperties": false,
       "description": "Parameters of ``graha_drishti``.",
@@ -501,7 +897,15 @@
           "anyOf": [
             {
               "items": {
-                "type": "integer"
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                    "type": "string"
+                  }
+                ]
               },
               "type": "array"
             },
@@ -589,18 +993,34 @@
       "description": "Parameters of ``eclipse_in_sign``.",
       "properties": {
         "days_after": {
-          "default": 1.0,
-          "maximum": 400,
-          "minimum": 0,
-          "title": "Days After",
-          "type": "number"
+          "anyOf": [
+            {
+              "default": 1.0,
+              "maximum": 400,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Days After"
         },
         "days_before": {
-          "default": 1.0,
-          "maximum": 400,
-          "minimum": 0,
-          "title": "Days Before",
-          "type": "number"
+          "anyOf": [
+            {
+              "default": 1.0,
+              "maximum": 400,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Days Before"
         },
         "kind": {
           "default": "any",
@@ -810,6 +1230,139 @@
       "title": "ExpectedEffect",
       "type": "object"
     },
+    "ExploreResult": {
+      "additionalProperties": false,
+      "description": "The chosen cell's explore-period numbers.",
+      "properties": {
+        "ci": {
+          "items": {
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                    "type": "string"
+                  }
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Ci",
+          "type": "array"
+        },
+        "n_cells": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "N Cells"
+        },
+        "n_events": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "N Events"
+        },
+        "p": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "P"
+        },
+        "period": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Period",
+          "type": "array"
+        },
+        "q_within_grid": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Q Within Grid"
+        },
+        "rate_ratio": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rate Ratio"
+        }
+      },
+      "required": [
+        "n_cells"
+      ],
+      "title": "ExploreResult",
+      "type": "object"
+    },
     "FromPoint": {
       "additionalProperties": false,
       "description": "Parameters of ``in_kendra_from`` and ``in_trikona_from``.",
@@ -888,15 +1441,72 @@
       "title": "FromPoint",
       "type": "object"
     },
+    "GridRange": {
+      "additionalProperties": false,
+      "description": "The range one parameter was swept over.",
+      "properties": {
+        "max": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Max"
+        },
+        "min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Min"
+        },
+        "step": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Step"
+        }
+      },
+      "required": [
+        "min",
+        "max",
+        "step"
+      ],
+      "title": "GridRange",
+      "type": "object"
+    },
     "InHouse": {
       "additionalProperties": false,
       "description": "Parameters of ``in_house``.",
       "properties": {
         "houses": {
           "items": {
-            "maximum": 12,
-            "minimum": 1,
-            "type": "integer"
+            "anyOf": [
+              {
+                "maximum": 12,
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                "type": "string"
+              }
+            ]
           },
           "minItems": 1,
           "title": "Houses",
@@ -980,9 +1590,17 @@
         },
         "houses": {
           "items": {
-            "maximum": 12,
-            "minimum": 1,
-            "type": "integer"
+            "anyOf": [
+              {
+                "maximum": 12,
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                "type": "string"
+              }
+            ]
           },
           "minItems": 1,
           "title": "Houses",
@@ -1242,18 +1860,34 @@
       "description": "Parameters of ``ingress``.",
       "properties": {
         "days_after": {
-          "default": 1.0,
-          "maximum": 400,
-          "minimum": 0,
-          "title": "Days After",
-          "type": "number"
+          "anyOf": [
+            {
+              "default": 1.0,
+              "maximum": 400,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Days After"
         },
         "days_before": {
-          "default": 1.0,
-          "maximum": 400,
-          "minimum": 0,
-          "title": "Days Before",
-          "type": "number"
+          "anyOf": [
+            {
+              "default": 1.0,
+              "maximum": 400,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Days Before"
         },
         "planet": {
           "enum": [
@@ -1681,10 +2315,18 @@
       "description": "Parameters of ``longitude_between``.",
       "properties": {
         "end": {
-          "maximum": 360,
-          "minimum": 0,
-          "title": "End",
-          "type": "number"
+          "anyOf": [
+            {
+              "maximum": 360,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "End"
         },
         "note": {
           "anyOf": [
@@ -1732,10 +2374,18 @@
           "type": "string"
         },
         "start": {
-          "exclusiveMaximum": 360,
-          "minimum": 0,
-          "title": "Start",
-          "type": "number"
+          "anyOf": [
+            {
+              "exclusiveMaximum": 360,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Start"
         }
       },
       "required": [
@@ -1818,7 +2468,15 @@
           "anyOf": [
             {
               "items": {
-                "type": "integer"
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                    "type": "string"
+                  }
+                ]
               },
               "type": "array"
             },
@@ -2013,21 +2671,172 @@
       "title": "NotOf",
       "type": "object"
     },
+    "OrbCloseness": {
+      "additionalProperties": false,
+      "description": "Strength term ``orb_closeness``.",
+      "properties": {
+        "orb_closeness": {
+          "$ref": "#/$defs/OrbClosenessBody"
+        }
+      },
+      "required": [
+        "orb_closeness"
+      ],
+      "title": "OrbCloseness",
+      "type": "object"
+    },
+    "OrbClosenessBody": {
+      "additionalProperties": false,
+      "description": "1 at exact conjunction, falling linearly to 0 at ``orb`` degrees.",
+      "properties": {
+        "orb": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 30,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Orb"
+        },
+        "planets": {
+          "items": {
+            "enum": [
+              "Sun",
+              "Moon",
+              "Mars",
+              "Mercury",
+              "Jupiter",
+              "Venus",
+              "Saturn",
+              "Rahu",
+              "Ketu",
+              "Brihaspati",
+              "Budha",
+              "Chandra",
+              "Guru",
+              "Kuja",
+              "Mangal",
+              "Mangala",
+              "Northnode",
+              "Ravi",
+              "Sani",
+              "Shani",
+              "Shukra",
+              "Soma",
+              "Southnode",
+              "Sukra",
+              "Surya"
+            ],
+            "type": "string"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Planets",
+          "type": "array"
+        }
+      },
+      "required": [
+        "planets",
+        "orb"
+      ],
+      "title": "OrbClosenessBody",
+      "type": "object"
+    },
+    "Param": {
+      "additionalProperties": false,
+      "description": "One tunable parameter: its current value and the range ``fit`` may try.",
+      "properties": {
+        "max": {
+          "title": "Max",
+          "type": "number"
+        },
+        "min": {
+          "title": "Min",
+          "type": "number"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "step": {
+          "exclusiveMinimum": 0,
+          "title": "Step",
+          "type": "number"
+        },
+        "unit": {
+          "enum": [
+            "deg",
+            "days",
+            "hours",
+            "weeks",
+            "months",
+            "years",
+            "count",
+            "au",
+            "ratio"
+          ],
+          "title": "Unit",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "value",
+        "min",
+        "max",
+        "step",
+        "unit"
+      ],
+      "title": "Param",
+      "type": "object"
+    },
     "Place": {
       "additionalProperties": false,
       "description": "Where a chart is cast: latitude, longitude (east +), IANA time zone.",
       "properties": {
         "lat": {
-          "maximum": 90,
-          "minimum": -90,
-          "title": "Lat",
-          "type": "number"
+          "anyOf": [
+            {
+              "maximum": 90,
+              "minimum": -90,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Lat"
         },
         "lon": {
-          "maximum": 180,
-          "minimum": -180,
-          "title": "Lon",
-          "type": "number"
+          "anyOf": [
+            {
+              "maximum": 180,
+              "minimum": -180,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Lon"
         },
         "tz": {
           "default": "UTC",
@@ -2089,10 +2898,18 @@
       "description": "Two planets and an orb.",
       "properties": {
         "orb": {
-          "exclusiveMinimum": 0,
-          "maximum": 30,
-          "title": "Orb",
-          "type": "number"
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 30,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Orb"
         },
         "planets": {
           "items": {
@@ -2203,21 +3020,94 @@
       "title": "ReferenceCase",
       "type": "object"
     },
+    "ReviewEntry": {
+      "additionalProperties": false,
+      "description": "An astrologer's sign-off that the encoding is faithful to the source.",
+      "properties": {
+        "at": {
+          "format": "date-time",
+          "title": "At",
+          "type": "string"
+        },
+        "by": {
+          "minLength": 1,
+          "title": "By",
+          "type": "string"
+        },
+        "note": {
+          "minLength": 1,
+          "title": "Note",
+          "type": "string"
+        },
+        "verdict": {
+          "enum": [
+            "faithful",
+            "not_faithful"
+          ],
+          "title": "Verdict",
+          "type": "string"
+        },
+        "version": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Version"
+        }
+      },
+      "required": [
+        "by",
+        "at",
+        "verdict",
+        "note"
+      ],
+      "title": "ReviewEntry",
+      "type": "object"
+    },
     "Separation": {
       "additionalProperties": false,
       "description": "Two planets, a target angle and an orb.",
       "properties": {
         "angle": {
-          "maximum": 180,
-          "minimum": 0,
-          "title": "Angle",
-          "type": "number"
+          "anyOf": [
+            {
+              "maximum": 180,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Angle"
         },
         "orb": {
-          "exclusiveMinimum": 0,
-          "maximum": 30,
-          "title": "Orb",
-          "type": "number"
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 30,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Orb"
         },
         "planets": {
           "items": {
@@ -2409,9 +3299,17 @@
           "type": "string"
         },
         "speed": {
-          "exclusiveMinimum": 0,
-          "title": "Speed",
-          "type": "number"
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Speed"
         }
       },
       "required": [
@@ -2419,6 +3317,48 @@
         "speed"
       ],
       "title": "SpeedBelow",
+      "type": "object"
+    },
+    "Strength": {
+      "additionalProperties": false,
+      "description": "Graded output in [0, 1] while the rule fires; absent means binary.",
+      "properties": {
+        "combine": {
+          "default": "product",
+          "enum": [
+            "product",
+            "min",
+            "mean"
+          ],
+          "title": "Combine",
+          "type": "string"
+        },
+        "terms": {
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/OrbCloseness"
+              },
+              {
+                "$ref": "#/$defs/AspectCloseness"
+              },
+              {
+                "$ref": "#/$defs/DignityWeight"
+              },
+              {
+                "$ref": "#/$defs/DashaWeight"
+              }
+            ]
+          },
+          "minItems": 1,
+          "title": "Terms",
+          "type": "array"
+        }
+      },
+      "required": [
+        "terms"
+      ],
+      "title": "Strength",
       "type": "object"
     },
     "TransitConjunct": {
@@ -2459,10 +3399,18 @@
           "type": "string"
         },
         "orb": {
-          "exclusiveMinimum": 0,
-          "maximum": 30,
-          "title": "Orb",
-          "type": "number"
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 30,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Orb"
         },
         "planet": {
           "enum": [
@@ -2544,9 +3492,17 @@
         },
         "houses": {
           "items": {
-            "maximum": 12,
-            "minimum": 1,
-            "type": "integer"
+            "anyOf": [
+              {
+                "maximum": 12,
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                "type": "string"
+              }
+            ]
           },
           "minItems": 1,
           "title": "Houses",
@@ -2589,6 +3545,183 @@
         "houses"
       ],
       "title": "TransitHouse",
+      "type": "object"
+    },
+    "TuningEntry": {
+      "additionalProperties": false,
+      "description": "One ``astro-rules fit`` run (append-only).",
+      "properties": {
+        "at": {
+          "format": "date-time",
+          "title": "At",
+          "type": "string"
+        },
+        "by": {
+          "minLength": 1,
+          "title": "By",
+          "type": "string"
+        },
+        "chosen": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                "type": "string"
+              }
+            ]
+          },
+          "title": "Chosen",
+          "type": "object"
+        },
+        "explore": {
+          "$ref": "#/$defs/ExploreResult"
+        },
+        "grid": {
+          "additionalProperties": {
+            "$ref": "#/$defs/GridRange"
+          },
+          "title": "Grid",
+          "type": "object"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "spec_curve_artifact": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Spec Curve Artifact"
+        },
+        "study": {
+          "title": "Study",
+          "type": "string"
+        },
+        "version": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Version"
+        }
+      },
+      "required": [
+        "at",
+        "by",
+        "study",
+        "version",
+        "explore"
+      ],
+      "title": "TuningEntry",
+      "type": "object"
+    },
+    "Validation": {
+      "additionalProperties": false,
+      "description": "Written once per rule version by ``astro-rules confirm``.",
+      "properties": {
+        "at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "At"
+        },
+        "commit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Commit"
+        },
+        "confirm": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConfirmResult"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "status": {
+          "default": "unvalidated",
+          "enum": [
+            "unvalidated",
+            "confirmed",
+            "not_confirmed"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "study": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Study"
+        },
+        "version": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Version"
+        }
+      },
+      "title": "Validation",
       "type": "object"
     },
     "VargaSign": {
@@ -2669,8 +3802,16 @@
           "type": "array"
         },
         "varga": {
-          "title": "Varga",
-          "type": "integer"
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Varga"
         }
       },
       "required": [
@@ -2734,8 +3875,16 @@
         "after": {
           "anyOf": [
             {
-              "minimum": 0,
-              "type": "number"
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
             },
             {
               "type": "null"
@@ -2747,8 +3896,16 @@
         "before": {
           "anyOf": [
             {
-              "minimum": 0,
-              "type": "number"
+              "anyOf": [
+                {
+                  "minimum": 0,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
             },
             {
               "type": "null"
@@ -2790,7 +3947,7 @@
   },
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
-  "description": "One astrological rule.",
+  "description": "One astrological rule.\n\nSchema v2 adds ``params`` (tunable knobs with ranges, referenced as\n``$name`` in ``conditions``, ``window`` and ``strength``), ``strength``\n(graded output), the append-only ``tuning_log``, the write-once\n``validation`` stamp and the ``review`` sign-offs.",
   "properties": {
     "author": {
       "minLength": 1,
@@ -2964,11 +4121,27 @@
       "default": null,
       "title": "Notes"
     },
+    "params": {
+      "patternProperties": {
+        "^[a-z][a-z0-9_]*$": {
+          "$ref": "#/$defs/Param"
+        }
+      },
+      "title": "Params",
+      "type": "object"
+    },
     "reference_cases": {
       "items": {
         "$ref": "#/$defs/ReferenceCase"
       },
       "title": "Reference Cases",
+      "type": "array"
+    },
+    "review": {
+      "items": {
+        "$ref": "#/$defs/ReviewEntry"
+      },
+      "title": "Review",
       "type": "array"
     },
     "source": {
@@ -2984,6 +4157,17 @@
       "title": "Status",
       "type": "string"
     },
+    "strength": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Strength"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
     "tier": {
       "enum": [
         "classical",
@@ -2992,11 +4176,30 @@
       "title": "Tier",
       "type": "string"
     },
+    "tuning_log": {
+      "items": {
+        "$ref": "#/$defs/TuningEntry"
+      },
+      "title": "Tuning Log",
+      "type": "array"
+    },
+    "validation": {
+      "$ref": "#/$defs/Validation"
+    },
     "version": {
-      "default": 1,
-      "minimum": 1,
-      "title": "Version",
-      "type": "integer"
+      "anyOf": [
+        {
+          "default": 1,
+          "description": "bump on any change to conditions, params or strength",
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "pattern": "^\\$([a-z][a-z0-9_]*)$",
+          "type": "string"
+        }
+      ],
+      "title": "Version"
     },
     "window": {
       "anyOf": [

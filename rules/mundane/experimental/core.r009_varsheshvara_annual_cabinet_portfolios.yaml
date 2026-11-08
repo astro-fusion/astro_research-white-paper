@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.core.r009_varsheshvara_annual_cabinet_portfolios
+version: 2
 name: Varsheshvara Annual Cabinet Portfolios
 domain: mundane
 claim: >-
@@ -19,6 +20,8 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: needs_predicates
 conditions: null
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - >-

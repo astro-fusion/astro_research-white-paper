@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: mundane.practitioner.mars_jupiter_ketu_leo_nov_2026
+version: 2
 name: Mars joins Jupiter and Ketu in Leo (November-December 2026), youth-authority friction
 domain: mundane
 claim: Flare-ups between youth and authority are expected in November-December 2026, when Mars joins Jupiter
@@ -13,11 +14,14 @@ tier: experimental
 status: active
 window:
   unit: weeks
-  before: 0
-  after: 4
+  before: $window_before
+  after: $window_after
 expected_effect:
   event: youth_protest
   direction: increase
+params:
+  window_before: {value: 0, min: 0, max: 2, step: 1, unit: weeks}
+  window_after: {value: 4, min: 0, max: 8, step: 1, unit: weeks}
 conditions:
   all:
   - in_sign:
@@ -52,6 +56,8 @@ reference_cases:
     one of Leo; in_sign(planet=Jupiter, signs=[Leo]): Jupiter is in Gemini 29.8 deg, not one of Leo; in_sign(planet=Ketu,
     signs=[Leo]): Ketu is in Leo 9.9 deg, one of Leo.'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

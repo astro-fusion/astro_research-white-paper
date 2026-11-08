@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch9.capital_saturn_transit_clock
+version: 2
 name: Capital-Relative Saturnine 30-Year Structural Transit Clock
 domain: mundane
 claim: Capital-Relative Saturnine 30-Year Structural Transit Clock
@@ -53,6 +54,8 @@ reference_cases:
       1st, 4th, 6th, 7th, 8th, 10th
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: mapped
   draft_conditions:

@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch6.classical_parasara_trigger
+version: 2
 name: Parasara Saturn-Krittika & Jupiter-Visakha Upheaval
 domain: mundane
 claim: >-
@@ -42,6 +43,8 @@ reference_cases:
       Cancer 9.0 deg, in Pushya pada 2, not one of Vishakha
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - Saturn is in Krittika Nakshatra AND Jupiter is in Visakha Nakshatra.

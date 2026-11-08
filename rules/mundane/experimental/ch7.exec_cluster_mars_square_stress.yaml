@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch7.exec_cluster_mars_square_stress
+version: 2
 name: Executive Cluster Mars Hard Square Vulnerability Window
 domain: mundane
 claim: >-
@@ -18,9 +19,13 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 window:
   unit: days
-  after: 30
+  after: $window_after
 status: needs_predicates
+params:
+  window_after: {value: 30, min: 0, max: 60, step: 1, unit: days}
 conditions: null
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - Sun, Jupiter, and Ketu conjoined within orb AND Mars squares cluster within orb.

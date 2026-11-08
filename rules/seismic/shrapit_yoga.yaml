@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../schema.json
 id: seismic.shrapit_yoga
+version: 2
 name: Shrapit-Yoga
 domain: seismic
 claim: >-
@@ -9,12 +10,14 @@ source:
   note: Shrapit yoga is a modern name; no classical chapter.
 author: astro-research combinations catalog (migrated 2026-11-08)
 tier: experimental
+params:
+  orb: {value: 12, min: 3, max: 18, step: 1, unit: deg}
 conditions:
   conjunct_within:
     planets:
       - Saturn
       - Rahu
-    orb: 12
+    orb: $orb
 expected_effect:
   event: earthquake
   direction: increase
@@ -33,5 +36,7 @@ reference_cases:
       the 12 deg orb
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   migrated_from: libs/vedic_astrology_core/combinations/catalog/seismic_yogas.yaml (Shrapit-Yoga)

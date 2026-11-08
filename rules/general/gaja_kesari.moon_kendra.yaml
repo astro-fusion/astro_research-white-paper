@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../schema.json
 id: general.gaja_kesari.moon_kendra
+version: 2
 name: Gaja Kesari Yoga (Moon kendra form)
 domain: general
 claim: >-
@@ -41,6 +42,8 @@ reference_cases:
       (diff // 30) did not count as a kendra.
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   simplified: >-
     This is the common short form. BPHS also requires a benefic to join or aspect Jupiter

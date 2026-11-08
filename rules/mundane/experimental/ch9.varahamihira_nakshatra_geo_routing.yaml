@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch9.varahamihira_nakshatra_geo_routing
+version: 2
 name: Varahamihira Granular Nakshatra Threat Geo-Router
 domain: mundane
 claim: Varahamihira Granular Nakshatra Threat Geo-Router
@@ -16,6 +17,8 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: needs_predicates
 conditions: null
+validation:
+  status: unvalidated
 notes:
   mapping_status: mapped
   draft_conditions:

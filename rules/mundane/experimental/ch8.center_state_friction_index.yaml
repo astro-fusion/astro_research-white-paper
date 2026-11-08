@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch8.center_state_friction_index
+version: 2
 name: Foundational 7th House Center-State Friction Index
 domain: mundane
 claim: >-
@@ -52,6 +53,8 @@ reference_cases:
       7th
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - Mars and Mercury conjoin in the 7th house of the capital inauguration chart.

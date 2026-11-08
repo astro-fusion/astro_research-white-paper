@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: mundane.practitioner.solar_eclipse_purva_phalguni_southeast
+version: 2
 name: 'Solar eclipse in Purva Phalguni: Koorma south-east sector, earthquake or tsunami risk'
 domain: mundane
 claim: The annular solar eclipse of 1 September 2016, with Sun, Moon and Rahu in Purva Phalguni (south-east
@@ -14,18 +15,23 @@ tier: experimental
 status: active
 window:
   unit: months
-  before: 0
-  after: 6
+  before: $window_before
+  after: $window_after
 expected_effect:
   event: earthquake_or_tsunami_southeast
   direction: increase
+params:
+  days_before: {value: 1, min: 0, max: 2, step: 1, unit: days}
+  days_after: {value: 1, min: 0, max: 2, step: 1, unit: days}
+  window_before: {value: 0, min: 0, max: 3, step: 1, unit: months}
+  window_after: {value: 6, min: 0, max: 12, step: 1, unit: months}
 conditions:
   eclipse_in_sign:
     kind: solar
     nakshatras:
     - Purva Phalguni
-    days_before: 1
-    days_after: 1
+    days_before: $days_before
+    days_after: $days_after
 reference_cases:
 - moment: '2016-09-01T09:00:00Z'
   expect: fires
@@ -39,6 +45,8 @@ reference_cases:
     Phalguni], days_before=1.0, days_after=1.0): total solar eclipse 2017-08-21 18:25 UT in Leo 4.8 deg
     (Magha) (between 1 day before and 1 day after); wanted nakshatras Purva Phalguni.'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch4.elemental_hazard_tags
+version: 2
 name: Elemental Classification of Accident Hazards
 domain: mundane
 claim: >-
@@ -18,6 +19,8 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: needs_predicates
 conditions: null
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - If fiery planets or fiery signs afflicted: assign fire_explosion (0.8), collision_derailment

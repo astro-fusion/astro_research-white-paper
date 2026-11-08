@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch9.saturn_temporal_execution_delay
+version: 2
 name: Saturnine Temporal Execution Latency Filter
 domain: mundane
 claim: >-
@@ -18,11 +19,16 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 window:
   unit: years
-  before: 1.5
-  after: 2.5
+  before: $window_before
+  after: $window_after
   note: execution latency
 status: needs_predicates
+params:
+  window_before: {value: 1.5, min: 0, max: 3, step: 1, unit: years}
+  window_after: {value: 2.5, min: 0, max: 5, step: 1, unit: years}
 conditions: null
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - >-

@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: financial.practitioner.jupiter_saturn_conjunction_and_waxing_square
+version: 2
 name: Jupiter-Saturn conjunction (reset) and waxing square (stress) for equities and gold
 domain: financial
 claim: 'The 20-year Jupiter-Saturn cycle: the conjunction resets the era (21 December 2020); the first
@@ -15,11 +16,16 @@ tier: experimental
 status: active
 window:
   unit: months
-  before: 1
-  after: 1
+  before: $window_before
+  after: $window_after
 expected_effect:
   series: sp500
   direction: either
+params:
+  orb: {value: 1, min: 0.5, max: 2, step: 0.5, unit: deg}
+  orb_2: {value: 3, min: 1, max: 5, step: 1, unit: deg}
+  window_before: {value: 1, min: 0, max: 2, step: 1, unit: months}
+  window_after: {value: 1, min: 0, max: 2, step: 1, unit: months}
 conditions:
   any:
   - separation_within:
@@ -27,13 +33,13 @@ conditions:
       - Jupiter
       - Saturn
       angle: 0
-      orb: 1
+      orb: $orb
   - separation_within:
       planets:
       - Jupiter
       - Saturn
       angle: 90
-      orb: 3
+      orb: $orb_2
 reference_cases:
 - moment: '2020-12-21T18:00:00Z'
   expect: fires
@@ -59,6 +65,8 @@ reference_cases:
     is in Pisces 7.0 deg and Saturn is in Capricorn 28.2 deg: 38.8 deg apart, 51.2 deg from 90 (outside
     the 3 deg orb).'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

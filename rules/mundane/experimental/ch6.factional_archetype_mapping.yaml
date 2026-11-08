@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch6.factional_archetype_mapping
+version: 2
 name: Factional & Ideological Societal Archetype Dynamics
 domain: mundane
 claim: Factional & Ideological Societal Archetype Dynamics
@@ -16,6 +17,8 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: needs_predicates
 conditions: null
+validation:
+  status: unvalidated
 notes:
   mapping_status: descriptive
   draft_conditions:

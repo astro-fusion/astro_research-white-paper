@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: mundane.practitioner.raman_eighteen_earthquake_configurations
+version: 2
 name: B.V. Raman's earthquake configurations (as implemented by VedAstro)
 domain: mundane
 claim: Eighteen planetary configurations identified by B.V. Raman correlate with major earthquakes, among
@@ -16,6 +17,8 @@ expected_effect:
   event: earthquake
   direction: increase
 conditions: null
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

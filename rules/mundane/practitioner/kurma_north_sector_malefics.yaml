@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: mundane.practitioner.kurma_north_sector_malefics
+version: 2
 name: 'Koorma Chakra: malefics in Ashwini, Bharani or Krittika afflict the northern (Himalayan) sector'
 domain: mundane
 claim: When Saturn, Mars, Rahu or Ketu occupies Ashwini, Bharani or Krittika, the northern division of
@@ -13,12 +14,15 @@ tier: experimental
 status: active
 window:
   unit: months
-  before: 0
-  after: 0
+  before: $window_before
+  after: $window_after
   note: while the planet stays in the asterism
 expected_effect:
   event: regional_disaster_north
   direction: increase
+params:
+  window_before: {value: 0, min: 0, max: 3, step: 1, unit: months}
+  window_after: {value: 0, min: 0, max: 3, step: 1, unit: months}
 conditions:
   any:
   - in_nakshatra:
@@ -64,6 +68,8 @@ reference_cases:
     Bharani, Krittika]): Rahu is in Pisces 7.3 deg, in Uttara Bhadrapada pada 2, not one of Ashwini, Bharani,
     Krittika.'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

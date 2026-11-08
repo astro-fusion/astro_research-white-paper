@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch8.decadal_mahadasa_era_mapping
+version: 2
 name: Capital City Foundational Mahadasa Decadal Era Mapping
 domain: mundane
 claim: Capital City Foundational Mahadasa Decadal Era Mapping
@@ -16,6 +17,8 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: needs_predicates
 conditions: null
+validation:
+  status: unvalidated
 notes:
   mapping_status: partial
   draft_conditions:

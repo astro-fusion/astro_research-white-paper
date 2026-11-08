@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch6.coalition_viability_index
+version: 2
 name: Coalition Government Longevity & Fragility Index
 domain: mundane
 claim: >-
@@ -46,6 +47,8 @@ reference_cases:
       of Sagittarius; Saturn is in Libra 15.5 deg, not one of Sagittarius
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - >-

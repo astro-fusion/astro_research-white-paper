@@ -180,9 +180,30 @@ def load_file(path: PathLike) -> Tuple[Optional[Rule], List[RuleProblem]]:
         return None, problems
 
 
+def range_problems(rule: Rule, path: PathLike) -> List[RuleProblem]:
+    """Each parameter's ``min`` and ``max`` must still give a valid rule."""
+    problems = []
+    for name, param in rule.params.items():
+        for end in ("min", "max"):
+            try:
+                rule.bind({name: getattr(param, end)})
+            except (ValidationError, ValueError) as exc:
+                errs = exc.errors() if isinstance(exc, ValidationError) else []
+                detail = _message(errs[0]) if errs else str(exc)
+                problems.append(
+                    RuleProblem(
+                        str(path),
+                        f"the rule is invalid at {name} = {getattr(param, end):g} "
+                        f"(its {end}): {detail}",
+                        f"params.{name}.{end}",
+                    )
+                )
+    return problems
+
+
 def semantic_problems(rule: Rule, path: PathLike) -> List[RuleProblem]:
     """Check beyond the schema that reference cases carry the needed inputs."""
-    problems = []
+    problems = range_problems(rule, path)
     needed = rule_inputs(rule)
     for i, case in enumerate(rule.reference_cases):
         natal = case.natal or rule.natal
@@ -312,5 +333,6 @@ __all__ = [
     "discover",
     "load_file",
     "load_rules",
+    "range_problems",
     "semantic_problems",
 ]

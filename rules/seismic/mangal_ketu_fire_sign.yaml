@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../schema.json
 id: seismic.mangal_ketu_fire_sign
+version: 2
 name: Mangal-Ketu-Fire-Sign
 domain: seismic
 claim: A Mars-Ketu conjunction is amplified when Mars is in a fire sign.
@@ -11,13 +12,15 @@ source:
     see mangal_ketu_primary.
 author: astro-research combinations catalog (migrated 2026-11-08)
 tier: experimental
+params:
+  orb: {value: 13, min: 3, max: 20, step: 1, unit: deg}
 conditions:
   all:
     - conjunct_within:
         planets:
           - Mars
           - Ketu
-        orb: 13
+        orb: $orb
     - in_sign:
         planet: Mars
         signs:
@@ -42,6 +45,8 @@ reference_cases:
       the 13 deg orb; Mars is in Cancer 22.3 deg, not one of Aries, Leo, Sagittarius
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   migrated_from: >-
     libs/vedic_astrology_core/combinations/catalog/seismic_yogas.yaml (Mangal-Ketu-Fire-Sign)

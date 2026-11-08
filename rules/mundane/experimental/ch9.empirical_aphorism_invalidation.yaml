@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch9.empirical_aphorism_invalidation
+version: 2
 name: Empirical Backtest & Aphorism Invalidation Engine
 domain: mundane
 claim: >-
@@ -19,6 +20,8 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: needs_predicates
 conditions: null
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - "If hit rate < 15% across historical cycles (e.g., Saturn in Leo vs Delhi overthrows": 2/26

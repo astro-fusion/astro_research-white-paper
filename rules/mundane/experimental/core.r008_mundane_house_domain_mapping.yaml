@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.core.r008_mundane_house_domain_mapping
+version: 2
 name: Mundane House Domain Mapping
 domain: mundane
 claim: Mundane House Domain Mapping - Map transits to houses 1 through 12.
@@ -94,6 +95,8 @@ reference_cases:
       is in Virgo 17.5 deg, the 5th from the natal Lagna in Taurus, not 6th, 8th, 10th, 12th
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - Map transits to houses 1 through 12.

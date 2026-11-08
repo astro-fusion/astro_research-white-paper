@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: financial.practitioner.mma_venus_retrograde_station_turn
+version: 2
 name: 'MMA: Venus retrograde stations coincide with primary cycle highs or lows'
 domain: financial
 claim: Within a few trading days of a Venus retrograde station there is an 80% correlation with a primary-or-greater
@@ -14,12 +15,15 @@ tier: experimental
 status: active
 window:
   unit: days
-  before: 7
-  after: 7
+  before: $window_before
+  after: $window_after
 expected_effect:
   series: gold_usd
   direction: either
   description: cycle crest or trough
+params:
+  window_before: {value: 7, min: 0, max: 14, step: 1, unit: days}
+  window_after: {value: 7, min: 0, max: 14, step: 1, unit: days}
 conditions:
   planet_speed_below:
     planet: Venus
@@ -35,6 +39,8 @@ reference_cases:
   note: 'Venus at normal speed. Engine: planet_speed_below(planet=Venus, speed=0.1): Venus moves +1.0380
     deg/day; |speed| is not below 0.1.'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: mundane.practitioner.india_lunar_eclipse_10th_pm_resignation
+version: 2
 name: Total lunar eclipse in the 10th of India's 1947 chart, head of government under pressure
 domain: mundane
 claim: A total lunar eclipse in the 10th house of India's foundation chart (Aquarius, from the Taurus
@@ -15,8 +16,8 @@ tier: experimental
 status: active
 window:
   unit: months
-  before: 0
-  after: 6
+  before: $window_before
+  after: $window_after
 expected_effect:
   event: head_of_government_change
   direction: increase
@@ -27,13 +28,18 @@ natal:
     lat: 28.6139
     lon: 77.209
     tz: Asia/Kolkata
+params:
+  days_before: {value: 1, min: 0, max: 2, step: 1, unit: days}
+  days_after: {value: 1, min: 0, max: 2, step: 1, unit: days}
+  window_before: {value: 0, min: 0, max: 3, step: 1, unit: months}
+  window_after: {value: 6, min: 0, max: 12, step: 1, unit: months}
 conditions:
   eclipse_in_sign:
     kind: lunar
     signs:
     - Aquarius
-    days_before: 1
-    days_after: 1
+    days_before: $days_before
+    days_after: $days_after
 reference_cases:
 - moment: '2025-09-07T18:00:00Z'
   expect: fires
@@ -47,6 +53,8 @@ reference_cases:
     days_before=1.0, days_after=1.0): total lunar eclipse 2025-03-14 06:58 UT in Leo 29.8 deg (Uttara
     Phalguni) (between 1 day before and 1 day after); wanted signs Aquarius.'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

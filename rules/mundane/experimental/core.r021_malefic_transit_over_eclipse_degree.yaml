@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.core.r021_malefic_transit_over_eclipse_degree
+version: 2
 name: Malefic Transit over Eclipse Degree
 domain: mundane
 claim: Malefic Transit over Eclipse Degree - Query stored degrees of recent eclipses.
@@ -16,6 +17,8 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: needs_predicates
 conditions: null
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - Query stored degrees of recent eclipses.

@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../schema.json
 id: seismic.shani_10th_aspect_mars
+version: 2
 name: Shani-10th-Aspect-Mars
 domain: seismic
 claim: Saturn casting its special 10th aspect on Mars triggers seismic stress.
@@ -33,6 +34,8 @@ reference_cases:
       (10th)
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   migrated_from: >-
     libs/vedic_astrology_core/combinations/catalog/seismic_yogas.yaml (Shani-10th-Aspect-Mars)

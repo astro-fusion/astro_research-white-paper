@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: financial.practitioner.panchak_five_day_trend
+version: 2
 name: 'Panchak rules: the five Panchak sessions set the next month''s trend'
 domain: financial
 claim: If all five Panchak trading days (Moon from Dhanishta to Revati) close up, the next month is bullish,
@@ -16,6 +17,8 @@ expected_effect:
   series: nifty50
   direction: either
 conditions: null
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

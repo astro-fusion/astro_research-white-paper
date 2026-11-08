@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: financial.practitioner.india_mars_mahadasha_markets
+version: 2
 name: 'India 1947 chart in Mars mahadasha (2025-2032): volatility and a defence-sector boom'
 domain: financial
 claim: During the Mars mahadasha of India's 1947 chart (9 September 2025 to 9 September 2032), defence
@@ -13,8 +14,8 @@ tier: experimental
 status: active
 window:
   unit: years
-  before: 0
-  after: 0
+  before: $window_before
+  after: $window_after
   note: for the whole mahadasha
 expected_effect:
   series: nifty50
@@ -27,6 +28,9 @@ natal:
     lat: 28.6139
     lon: 77.209
     tz: Asia/Kolkata
+params:
+  window_before: {value: 0, min: 0, max: 1, step: 1, unit: years}
+  window_after: {value: 0, min: 0, max: 1, step: 1, unit: years}
 conditions:
   dasha_lord_is:
     level: 1
@@ -43,6 +47,8 @@ reference_cases:
   note: 'Moon mahadasha (2015-2025). Engine: dasha_lord_is(lords=[Mars], level=1): the running Vimshottari
     period is Moon; its mahadasha lord is Moon, not Mars.'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

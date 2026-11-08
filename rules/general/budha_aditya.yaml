@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../schema.json
 id: general.budha_aditya
+version: 2
 name: Budha-Aditya Yoga
 domain: general
 claim: The Sun and Mercury in the same sign give intelligence and skill.
@@ -30,6 +31,8 @@ reference_cases:
       1st
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   definition: >-
     Same sign, as in detect_yogas; no orb and no combustion test (Mercury is often combust

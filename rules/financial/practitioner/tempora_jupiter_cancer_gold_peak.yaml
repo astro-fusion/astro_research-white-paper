@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: financial.practitioner.tempora_jupiter_cancer_gold_peak
+version: 2
 name: 'Tempora: Jupiter exalted in Cancer, gold peak window'
 domain: financial
 claim: Jupiter in Cancer (exaltation) marks the gold exaltation window; the forward call was a gold peak
@@ -13,11 +14,14 @@ tier: experimental
 status: active
 window:
   unit: months
-  before: 0
-  after: 12
+  before: $window_before
+  after: $window_after
 expected_effect:
   series: gold_usd
   direction: up
+params:
+  window_before: {value: 0, min: 0, max: 3, step: 1, unit: months}
+  window_after: {value: 12, min: 0, max: 24, step: 1, unit: months}
 conditions:
   in_sign:
     planet: Jupiter
@@ -40,6 +44,8 @@ reference_cases:
   note: 'Sidereal Jupiter''s first, brief entry into Cancer (late October to December 2025). Engine: in_sign(planet=Jupiter,
     signs=[Cancer]): Jupiter is in Cancer 0.9 deg, one of Cancer.'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

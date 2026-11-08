@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.core.r005_geo_magnetic_astrological_stability_index
+version: 2
 name: Geo-Magnetic & Astrological Stability Index
 domain: mundane
 claim: >-
@@ -17,6 +18,16 @@ source:
 author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: active
+params:
+  orb: {value: 6, min: 2, max: 9, step: 1, unit: deg}
+  orb_2: {value: 6, min: 2, max: 9, step: 1, unit: deg}
+  orb_3: {value: 6, min: 2, max: 9, step: 1, unit: deg}
+  orb_4: {value: 6, min: 2, max: 9, step: 1, unit: deg}
+  orb_5: {value: 6, min: 2, max: 9, step: 1, unit: deg}
+  orb_6: {value: 6, min: 2, max: 9, step: 1, unit: deg}
+  orb_7: {value: 6, min: 2, max: 9, step: 1, unit: deg}
+  orb_8: {value: 6, min: 2, max: 9, step: 1, unit: deg}
+  orb_9: {value: 6, min: 2, max: 9, step: 1, unit: deg}
 conditions:
   at_least:
     n: 2
@@ -26,55 +37,55 @@ conditions:
               planets:
                 - Saturn
                 - Jupiter
-              orb: 6
+              orb: $orb
           - separation_within:
               planets:
                 - Saturn
                 - Jupiter
               angle: 90
-              orb: 6
+              orb: $orb_2
           - separation_within:
               planets:
                 - Saturn
                 - Jupiter
               angle: 180
-              orb: 6
+              orb: $orb_3
       - any:
           - conjunct_within:
               planets:
                 - Jupiter
                 - Mars
-              orb: 6
+              orb: $orb_4
           - separation_within:
               planets:
                 - Jupiter
                 - Mars
               angle: 90
-              orb: 6
+              orb: $orb_5
           - separation_within:
               planets:
                 - Jupiter
                 - Mars
               angle: 180
-              orb: 6
+              orb: $orb_6
       - any:
           - conjunct_within:
               planets:
                 - Saturn
                 - Mars
-              orb: 6
+              orb: $orb_7
           - separation_within:
               planets:
                 - Saturn
                 - Mars
               angle: 90
-              orb: 6
+              orb: $orb_8
           - separation_within:
               planets:
                 - Saturn
                 - Mars
               angle: 180
-              orb: 6
+              orb: $orb_9
 reference_cases:
   - moment: '1951-12-10T06:00:00Z'
     expect: fires
@@ -111,6 +122,8 @@ reference_cases:
       deg orb)
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - >-

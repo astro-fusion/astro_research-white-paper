@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: financial.practitioner.sarvatobhadra_vedha_commodities
+version: 2
 name: 'Sarvatobhadra Chakra: malefic vedha on a commodity''s asterism or letter'
 domain: financial
 claim: When malefic planets cast vedha on the asterism, sign or initial letter of a commodity or index
@@ -16,6 +17,8 @@ expected_effect:
   series: gold_usd
   direction: either
 conditions: null
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

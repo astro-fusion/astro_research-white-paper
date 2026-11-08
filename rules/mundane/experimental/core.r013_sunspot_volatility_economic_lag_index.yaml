@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.core.r013_sunspot_volatility_economic_lag_index
+version: 2
 name: Sunspot Volatility & Economic Lag Index
 domain: mundane
 claim: >-
@@ -18,10 +19,14 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 window:
   unit: years
-  after: 3
+  after: $window_after
   note: 2-3 years forward
 status: needs_predicates
+params:
+  window_after: {value: 3, min: 0, max: 6, step: 1, unit: years}
 conditions: null
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - >-

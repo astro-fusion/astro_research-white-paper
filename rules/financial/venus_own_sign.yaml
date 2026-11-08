@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../schema.json
 id: financial.venus_own_sign
+version: 2
 name: Venus-Own-Sign
 domain: financial
 claim: Venus in its own signs (Taurus, Libra) supports value and luxury assets.
@@ -29,6 +30,8 @@ reference_cases:
     note: Venus in Aquarius 3.4 deg is friend (sign lord Saturn of Aquarius), not own
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   migrated_from: >-
     libs/vedic_astrology_core/combinations/catalog/financial_yogas.yaml (Venus-Own-Sign)

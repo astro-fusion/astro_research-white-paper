@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch6.malefic_multiplier_axis
+version: 2
 name: Mars, Rahu, Ketu Malefic Multiplier on Political Axis
 domain: mundane
 claim: >-
@@ -18,6 +19,8 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: needs_predicates
 conditions: null
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - Mars in conjunction or mutual aspect with Saturn or Jupiter.

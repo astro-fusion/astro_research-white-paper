@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: financial.practitioner.merriman_solar_lunar_reversals
+version: 2
 name: 'Merriman: Sun-sign and Moon-sign combinations with high reversal scores'
 domain: financial
 claim: Each 1-3 day combination of Sun sign and Moon sign has a historical reversal frequency for gold
@@ -16,6 +17,8 @@ expected_effect:
   series: silver_usd
   direction: either
 conditions: null
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

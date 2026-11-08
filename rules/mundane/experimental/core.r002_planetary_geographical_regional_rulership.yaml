@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.core.r002_planetary_geographical_regional_rulership
+version: 2
 name: Planetary Geographical Regional Rulership
 domain: mundane
 claim: >-
@@ -18,6 +19,8 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: needs_predicates
 conditions: null
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - Evaluate affliction/prominence score for 7 Grahas + Rahu/Ketu.

@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: financial.practitioner.mercury_retrograde_market_chop
+version: 2
 name: 'Mercury retrograde: choppy markets, stand aside'
 domain: financial
 claim: Mercury retrograde brings choppy, trendless trading and false signals; position traders stand aside
@@ -14,13 +15,16 @@ tier: experimental
 status: active
 window:
   unit: days
-  before: 0
-  after: 0
+  before: $window_before
+  after: $window_after
   note: for the length of the retrograde
 expected_effect:
   series: equity_index
   direction: either
   description: lower returns and choppier trade
+params:
+  window_before: {value: 0, min: 0, max: 7, step: 1, unit: days}
+  window_after: {value: 0, min: 0, max: 7, step: 1, unit: days}
 conditions:
   retrograde:
     planet: Mercury
@@ -34,6 +38,8 @@ reference_cases:
   expect: silent
   note: 'Mercury direct. Engine: retrograde(planet=Mercury): Mercury moves +1.271 deg/day, so it is direct.'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: financial.practitioner.nyse_dasha_turning_points
+version: 2
 name: Vimshottari dasha on the NYSE 1792 chart times market regimes (Rosen)
 domain: financial
 claim: Dasha periods of the NYSE Buttonwood chart (17 May 1792) map market regimes; the 4 December 1987
@@ -13,8 +14,8 @@ tier: experimental
 status: needs_predicates
 window:
   unit: days
-  before: 7
-  after: 7
+  before: $window_before
+  after: $window_after
 expected_effect:
   series: sp500
   direction: either
@@ -26,7 +27,12 @@ natal:
     lat: 40.7069
     lon: -74.0113
     tz: UTC
+params:
+  window_before: {value: 7, min: 0, max: 14, step: 1, unit: days}
+  window_after: {value: 7, min: 0, max: 14, step: 1, unit: days}
 conditions: null
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

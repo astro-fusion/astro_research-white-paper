@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: financial.practitioner.tempora_jupiter_own_sign_gold_bull_peak
+version: 2
 name: 'Tempora: gold bull markets peak 8-14 months after Jupiter enters Sagittarius or Pisces'
 domain: financial
 claim: Gold bull markets peak within 8-14 months of Jupiter entering its own signs, Sagittarius or Pisces;
@@ -13,12 +14,15 @@ tier: experimental
 status: active
 window:
   unit: months
-  before: 0
-  after: 14
+  before: $window_before
+  after: $window_after
   note: peak expected 8-14 months after the ingress
 expected_effect:
   series: gold_usd
   direction: up
+params:
+  window_before: {value: 0, min: 0, max: 3, step: 1, unit: months}
+  window_after: {value: 14, min: 0, max: 24, step: 1, unit: months}
 conditions:
   in_sign:
     planet: Jupiter
@@ -38,6 +42,8 @@ reference_cases:
   note: 'Early 2020. Engine: in_sign(planet=Jupiter, signs=[Sagittarius, Pisces]): Jupiter is in Sagittarius
     25.4 deg, one of Sagittarius, Pisces.'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

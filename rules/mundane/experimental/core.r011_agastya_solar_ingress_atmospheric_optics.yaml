@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.core.r011_agastya_solar_ingress_atmospheric_optics
+version: 2
 name: Agastya Solar Ingress & Atmospheric Optics
 domain: mundane
 claim: >-
@@ -18,10 +19,13 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 window:
   unit: days
-  before: 15
-  after: 15
+  before: $window_before
+  after: $window_after
   note: ingress_window_15_days
 status: active
+params:
+  window_before: {value: 15, min: 0, max: 30, step: 1, unit: days}
+  window_after: {value: 15, min: 0, max: 30, step: 1, unit: days}
 conditions:
   longitude_between:
     planet: Sun
@@ -39,6 +43,8 @@ reference_cases:
     note: Sun is in Aries 22.0 deg (21.98 deg), outside 141.5-144.5 deg
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - Check if Sun longitude is within 143.0 +/- 1.5 deg (Simha 23 deg).

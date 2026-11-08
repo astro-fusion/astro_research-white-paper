@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch4.planetary_flanking_solar_risk
+version: 2
 name: Planetary Flanking (Papargala) of the Sun Sign
 domain: mundane
 claim: >-
@@ -18,6 +19,8 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: needs_predicates
 conditions: null
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - At least one planet within 10 deg before the Sun sign boundary.

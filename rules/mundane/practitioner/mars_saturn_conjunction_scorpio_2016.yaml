@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: mundane.practitioner.mars_saturn_conjunction_scorpio_2016
+version: 2
 name: 'Mars-Saturn conjunction in Scorpio (2016): war and a political scandal in India'
 domain: mundane
 claim: The 2016 Mars-Saturn conjunction in Scorpio was read as a 'deadly combination of a big war at many
@@ -14,18 +15,22 @@ tier: experimental
 status: active
 window:
   unit: months
-  before: 0
-  after: 3
+  before: $window_before
+  after: $window_after
 expected_effect:
   event: armed_conflict_or_political_scandal
   direction: increase
+params:
+  orb: {value: 10, min: 2, max: 15, step: 1, unit: deg}
+  window_before: {value: 0, min: 0, max: 3, step: 1, unit: months}
+  window_after: {value: 3, min: 0, max: 6, step: 1, unit: months}
 conditions:
   all:
   - conjunct_within:
       planets:
       - Mars
       - Saturn
-      orb: 10
+      orb: $orb
   - in_sign:
       planet: Saturn
       signs:
@@ -56,6 +61,8 @@ reference_cases:
     signs=[Scorpio]): Saturn is in Scorpio 18.5 deg, one of Scorpio; in_sign(planet=Mars, signs=[Scorpio]):
     Mars is in Libra 12.1 deg, not one of Scorpio.'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

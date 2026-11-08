@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: financial.practitioner.kartik_amavasya_debilitated_mars_aspect
+version: 2
 name: 'Kartik Amavasya chart: debilitated Mars aspecting Sun, Moon and Mercury, equity volatility within
   30 days'
 domain: financial
@@ -15,12 +16,15 @@ tier: experimental
 status: active
 window:
   unit: days
-  before: 0
-  after: 30
+  before: $window_before
+  after: $window_after
 expected_effect:
   series: nifty50
   direction: either
   description: volatility
+params:
+  window_before: {value: 0, min: 0, max: 7, step: 1, unit: days}
+  window_after: {value: 30, min: 0, max: 60, step: 1, unit: days}
 conditions:
   all:
   - moon_phase:
@@ -51,6 +55,8 @@ reference_cases:
     target=Sun, aspects=[4]): Mars is in Libra 25.8 deg; Sun in Libra is the 1st sign from it, not one
     of its aspects (4th).'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

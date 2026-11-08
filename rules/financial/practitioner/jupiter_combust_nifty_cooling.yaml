@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: financial.practitioner.jupiter_combust_nifty_cooling
+version: 2
 name: 'Jupiter combust (July-August 2026): Nifty mid-year cooling'
 domain: financial
 claim: Jupiter's combustion (14 July to 12 August 2026), right after its exalted ingress into Cancer,
@@ -14,11 +15,14 @@ tier: experimental
 status: active
 window:
   unit: days
-  before: 0
-  after: 30
+  before: $window_before
+  after: $window_after
 expected_effect:
   series: nifty50
   direction: down
+params:
+  window_before: {value: 0, min: 0, max: 7, step: 1, unit: days}
+  window_after: {value: 30, min: 0, max: 60, step: 1, unit: days}
 conditions:
   combust:
     planet: Jupiter
@@ -33,6 +37,8 @@ reference_cases:
   note: 'After it. Engine: combust(planet=Jupiter): Jupiter is 48.2 deg from the Sun; its combustion orb
     is 11 deg.'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

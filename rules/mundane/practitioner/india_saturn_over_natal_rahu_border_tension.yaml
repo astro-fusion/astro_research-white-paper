@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: mundane.practitioner.india_saturn_over_natal_rahu_border_tension
+version: 2
 name: Saturn transits natal Rahu of India's 1947 chart, border tension with Pakistan and China
 domain: mundane
 claim: When transiting Saturn passes over Rahu of India's foundation chart, tension on the borders with
@@ -13,8 +14,8 @@ tier: experimental
 status: active
 window:
   unit: months
-  before: 3
-  after: 3
+  before: $window_before
+  after: $window_after
 expected_effect:
   event: interstate_conflict
   direction: increase
@@ -25,11 +26,15 @@ natal:
     lat: 28.6139
     lon: 77.209
     tz: Asia/Kolkata
+params:
+  orb: {value: 3, min: 1, max: 5, step: 1, unit: deg}
+  window_before: {value: 3, min: 0, max: 6, step: 1, unit: months}
+  window_after: {value: 3, min: 0, max: 6, step: 1, unit: months}
 conditions:
   transit_conjunct_natal:
     planet: Saturn
     natal_point: Rahu
-    orb: 3
+    orb: $orb
 reference_cases:
 - moment: '2029-10-01T00:00:00Z'
   expect: silent
@@ -50,6 +55,8 @@ reference_cases:
     transiting Saturn is in Pisces 1.9 deg is 63.1 deg from the natal Rahu at Taurus 5.1 deg (outside
     3 deg).'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

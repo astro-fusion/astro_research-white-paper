@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: financial.practitioner.gidel_mercury_three_pass_degree
+version: 2
 name: 'Gidel: price meets resistance at the Mercury station degree on each of its three passes'
 domain: financial
 claim: A market meets resistance at the zodiac degree where Mercury stations retrograde, retraces during
@@ -16,6 +17,8 @@ expected_effect:
   series: gold_usd
   direction: either
 conditions: null
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

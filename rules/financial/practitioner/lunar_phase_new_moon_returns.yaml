@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: financial.practitioner.lunar_phase_new_moon_returns
+version: 2
 name: Stock returns are higher around new moons than full moons
 domain: financial
 claim: Equity returns in the window around new moons exceed those around full moons (about 3-5% per year
@@ -14,12 +15,15 @@ tier: experimental
 status: active
 window:
   unit: days
-  before: 0
-  after: 0
+  before: $window_before
+  after: $window_after
   note: the condition itself is the ~15-day half-cycle centred on the new moon (tithis 23-30 and 1-7)
 expected_effect:
   series: equity_index
   direction: up
+params:
+  window_before: {value: 0, min: 0, max: 7, step: 1, unit: days}
+  window_after: {value: 0, min: 0, max: 7, step: 1, unit: days}
 conditions:
   moon_phase:
     tithis:
@@ -54,6 +58,8 @@ reference_cases:
   note: 'Full moon of 25 January 2024. Engine: moon_phase(tithis=[23, 24, 25, 26, 27, 28, 29, 30, 1, 2,
     3, 4, 5, 6, 7]): the Moon is 180.0 deg ahead of the Sun: tithi 16 (Krishna 1), waning.'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

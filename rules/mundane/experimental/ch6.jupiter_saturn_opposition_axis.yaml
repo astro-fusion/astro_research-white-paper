@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch6.jupiter_saturn_opposition_axis
+version: 2
 name: Jupiter-Saturn Opposition Axis Dynamics
 domain: mundane
 claim: Jupiter-Saturn Opposition Axis Dynamics
@@ -15,6 +16,8 @@ source:
 author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: active
+params:
+  orb: {value: 12, min: 3, max: 18, step: 1, unit: deg}
 conditions:
   all:
     - separation_within:
@@ -22,7 +25,7 @@ conditions:
           - Jupiter
           - Saturn
         angle: 180
-        orb: 12
+        orb: $orb
     - any:
         - all:
             - in_sign:
@@ -80,6 +83,8 @@ reference_cases:
       deg, not one of Cancer, Capricorn
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   original_thresholds:
     opposition_orb_deg: 12

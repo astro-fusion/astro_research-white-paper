@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch10.ketu_ninth_legal_commercial_friction
+version: 2
 name: 9th House Ketu Regulatory Friction & Jupiter Mitigation Engine
 domain: mundane
 claim: >-
@@ -49,6 +50,8 @@ reference_cases:
       transiting Ketu is in Gemini 3.0 deg, the 2nd from the natal Lagna in Taurus, not 9th
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - Ketu transits the 9th house from the national Ascendant.

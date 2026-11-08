@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch7.oath_aquarius_baseline_penalty
+version: 2
 name: Aquarius Oath Lagna Baseline Tenurial Friction
 domain: mundane
 claim: >-
@@ -40,6 +41,8 @@ reference_cases:
     note: the Lagna is in Sagittarius 24.0 deg, not one of Aquarius
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - Oath Ascendant sign is Aquarius (11).

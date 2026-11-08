@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../schema.json
 id: seismic.mangal_8th_aspect_ketu
+version: 2
 name: Mangal-8th-Aspect-Ketu
 domain: seismic
 claim: Mars casting its special 8th aspect on Ketu triggers seismic stress.
@@ -33,6 +34,8 @@ reference_cases:
       aspects (8th)
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   migrated_from: >-
     libs/vedic_astrology_core/combinations/catalog/seismic_yogas.yaml (Mangal-8th-Aspect-Ketu)

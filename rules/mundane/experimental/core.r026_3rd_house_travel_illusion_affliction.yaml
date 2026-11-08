@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.core.r026_3rd_house_travel_illusion_affliction
+version: 2
 name: 3rd House Travel Illusion Affliction
 domain: mundane
 claim: 3rd House Travel Illusion Affliction - Identify 3rd house relative to the Sun.
@@ -42,6 +43,8 @@ reference_cases:
       is in Leo 21.3 deg, 6th from Sun in Pisces, which is not one of the 3rd
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - Identify 3rd house relative to the Sun.

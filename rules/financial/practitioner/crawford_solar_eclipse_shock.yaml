@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: financial.practitioner.crawford_solar_eclipse_shock
+version: 2
 name: 'Crawford: total solar eclipses trigger geopolitical hostility and market shocks'
 domain: financial
 claim: Solar eclipses trigger immediate hostile geopolitical reactions and market reversals; the 1 August
@@ -14,11 +15,16 @@ tier: experimental
 status: active
 window:
   unit: days
-  before: 0
-  after: 30
+  before: $window_before
+  after: $window_after
 expected_effect:
   series: sp500
   direction: down
+params:
+  days_before: {value: 30, min: 0, max: 60, step: 1, unit: days}
+  days_after: {value: 0, min: 0, max: 7, step: 1, unit: days}
+  window_before: {value: 0, min: 0, max: 7, step: 1, unit: days}
+  window_after: {value: 30, min: 0, max: 60, step: 1, unit: days}
 conditions:
   eclipse_in_sign:
     kind: solar
@@ -35,8 +41,8 @@ conditions:
     - Capricorn
     - Aquarius
     - Pisces
-    days_before: 30
-    days_after: 0
+    days_before: $days_before
+    days_after: $days_after
 reference_cases:
 - moment: '2008-08-07T00:00:00Z'
   expect: fires
@@ -52,6 +58,8 @@ reference_cases:
     Taurus, Gemini, Cancer, Leo, Virgo, Libra, Scorpio, Sagittarius, Capricorn, Aquarius, Pisces], days_before=30.0,
     days_after=0.0): no solar eclipse between 30 days before and 0 days after the moment.'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

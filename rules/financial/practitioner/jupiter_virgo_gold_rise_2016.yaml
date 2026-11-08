@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: financial.practitioner.jupiter_virgo_gold_rise_2016
+version: 2
 name: Jupiter entering Virgo (August 2016) raises gold
 domain: financial
 claim: When Jupiter enters Virgo (late August 2016), gold prices increase.
@@ -12,11 +13,14 @@ tier: experimental
 status: active
 window:
   unit: months
-  before: 0
-  after: 6
+  before: $window_before
+  after: $window_after
 expected_effect:
   series: gold_usd
   direction: up
+params:
+  window_before: {value: 0, min: 0, max: 3, step: 1, unit: months}
+  window_after: {value: 6, min: 0, max: 12, step: 1, unit: months}
 conditions:
   in_sign:
     planet: Jupiter
@@ -33,6 +37,8 @@ reference_cases:
   note: 'Jupiter in Leo. Engine: in_sign(planet=Jupiter, signs=[Virgo]): Jupiter is in Leo 19.9 deg, not
     one of Virgo.'
   verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

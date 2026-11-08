@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: financial.practitioner.merriman_jupiter_leo_precious_metals
+version: 2
 name: 'Merriman: Jupiter''s ingress into Leo is bullish for precious metals'
 domain: financial
 claim: Precious metals respond bullishly to Jupiter's ingress into Leo, the sign ruled by the Sun, ruler
@@ -16,6 +17,8 @@ expected_effect:
   series: gold_usd
   direction: up
 conditions: null
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

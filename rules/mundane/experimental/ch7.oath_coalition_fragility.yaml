@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch7.oath_coalition_fragility
+version: 2
 name: 6th Lord Conjunction & Nodal Affliction Fragility
 domain: mundane
 claim: >-
@@ -18,6 +19,8 @@ author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
 status: needs_predicates
 conditions: null
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - 6th lord is conjunct 1st lord AND 6th house is occupied by Ketu or malefic.

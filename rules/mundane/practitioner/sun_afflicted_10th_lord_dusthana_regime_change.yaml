@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../../schema.json
 id: mundane.practitioner.sun_afflicted_10th_lord_dusthana_regime_change
+version: 2
 name: Sun afflicted by Saturn or Rahu and the 10th lord in a dusthana, regime change
 domain: mundane
 claim: Affliction of the Sun (head of state) by Saturn or Rahu, together with the 10th lord in a dusthana
@@ -15,6 +16,8 @@ expected_effect:
   event: regime_change
   direction: increase
 conditions: null
+validation:
+  status: unvalidated
 notes:
   mapping_status: practitioner_extracted
   practitioner:

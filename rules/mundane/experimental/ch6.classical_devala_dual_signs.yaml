@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../../schema.json
 id: mundane.ch6.classical_devala_dual_signs
+version: 2
 name: Devala Dual-Sign Geopolitical Turbulence
 domain: mundane
 claim: >-
@@ -48,6 +49,8 @@ reference_cases:
       is in Leo 25.3 deg, not one of Gemini, Virgo, Sagittarius, Pisces
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
       JHora
+validation:
+  status: unvalidated
 notes:
   original_condition:
     - Both Jupiter and Saturn reside simultaneously in dual (common) signs.
