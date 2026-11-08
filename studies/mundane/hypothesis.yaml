@@ -1,0 +1,61 @@
+# Pre-registration template for the mundane study.
+# Nothing here may change after the first confirmatory run; changes before it are
+# recorded in git history. Fields marked TBD are filled when founding times with
+# citations exist.
+status: draft, awaiting sourced founding times
+version: 0
+registered_on: null
+registered_commit: null
+
+question: >
+  Do recorded national events of a given class occur more often, in the window
+  around the event, when the pre-declared sign-level indicators are active for
+  that country's natal chart than the circular-shift null predicts?
+
+inputs:
+  countries: studies/mundane/data/countries.yaml   # only entries with time_known: true
+  events: studies/mundane/data/events.jsonl        # plus USGS and DFO snapshots (hashed)
+  snapshot_hashes: TBD                             # SHA-256 of each snapshot, from its manifest
+  natal_chart: one chart per country, fixed before any outcome is seen (TBD)
+
+indicators:   # fixed list; adding one later makes it exploratory
+  - {id: SATURN_ASPECTS_NATAL_SUN, rule: "transit Saturn whole-sign aspects or conjoins natal Sun sign"}
+  - {id: MARS_ASPECTS_NATAL_MOON, rule: "transit Mars whole-sign aspects or conjoins natal Moon sign"}
+  - {id: JUPITER_ASPECTS_NATAL_JUPITER, rule: "transit Jupiter whole-sign aspects or conjoins natal Jupiter sign"}
+  - {id: RAHU_CONJUNCT_NATAL_SUN, rule: "transit Rahu in natal Sun sign"}
+  - {id: ECLIPSE_IN_WINDOW, rule: "solar or lunar eclipse within the window"}
+  - {id: STATION_SATURN_OR_MARS, rule: "Saturn or Mars station within the window"}
+  - {id: SUN_INGRESS_IN_WINDOW, rule: "Sun sign ingress within the window"}
+
+event_classes:
+  earthquake: {source: usgs, definition: "M>=6 with epicentre within 500 km of the country's capital or border (TBD)"}
+  flood: {source: dfo, definition: "DFO archive event with the country in its country list, severity class >= 1 (TBD)"}
+  war_start: {source: events.jsonl, definition: "event_type War after review (event_type_reviewed: true), first-day date only"}
+  government_change: {source: events.jsonl, definition: "event_type Political or Independence after review, regime or government change only (TBD)"}
+
+windows_days: [0, 7, 30]   # indicator active at the event date; +-7 and +-30 day windows
+
+null_model:
+  kind: circular_shift
+  description: >
+    Shift the indicator series by a random whole number of days (wrapping around
+    the study period) and recompute the statistic; this keeps the series' own
+    autocorrelation and the seasonal structure of the event process.
+  draws: 10000
+  seed: 20261108
+
+test_statistic: "difference in event rate with indicator active vs inactive, per indicator x event class x country group"
+
+correction:
+  family: all indicator x event_class x window tests declared in this file
+  method: benjamini_yekutieli
+  alpha: 0.05
+
+out_of_sample:
+  split: "events dated up to 1999-12-31 are exploratory; 2000-01-01 onward are held out and used once"
+  rule: "an effect counts only if it survives BY correction in the held-out part with the same sign"
+
+reporting:
+  report_all_results: true
+  negative_results: published with the same prominence
+  deviations: listed in the paper under "Deviations from the pre-registration"
