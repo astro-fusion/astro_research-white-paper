@@ -112,7 +112,9 @@ jobs:
 
           # Copy documentation
           echo "📋 Copying documentation..."
-          cp -r docs/* _site/docs/ 2>/dev/null || true
+          # -L: docs/apa.csl, custom.css and references.bib are relative
+          # symlinks that would dangle inside _site and fail the Pages upload.
+          cp -rL docs/* _site/docs/ 2>/dev/null || true
 
           # Copy reports
           echo "📄 Copying reports..."
