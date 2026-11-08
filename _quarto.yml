@@ -159,7 +159,7 @@ crossref:
   tbl-title: "Table"
   lst-title: "Listing"
   eq-title: "Equation"
-  title-delim: "colon"
+  title-delim: ":"
   fig-prefix: "Figure"
   tbl-prefix: "Table"
   lst-prefix: "Listing"
