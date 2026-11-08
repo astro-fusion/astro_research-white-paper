@@ -11,6 +11,12 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../libs
 from vedic_astrology_core.astrology.ephemeris import EphemerisEngine  # noqa: E402
 from vedic_numerology.engine import NumerologyEngine  # noqa: E402
 
+from studies._paths import study_dir  # noqa: E402
+
+EARTHQUAKE_SCRIPTS = str(study_dir("earthquake") / "scripts")
+if EARTHQUAKE_SCRIPTS not in sys.path:
+    sys.path.append(EARTHQUAKE_SCRIPTS)
+
 
 class TestResearchPipelinePhase1(unittest.TestCase):
     """Test cases for Phase 1 numerical and astronomical engines."""
@@ -54,7 +60,7 @@ class TestResearchPipelinePhase1(unittest.TestCase):
         xx, _ = swe.calc_ut(jd, swe.JUPITER, swe.FLG_HELCTR | swe.FLG_SPEED)
         self.assertAlmostEqual(pos["longitude"], xx[0] % 360, places=6)
         self.assertAlmostEqual(pos["distance"], xx[2], places=9)
-        radius = (pos["x_vector"] ** 2 + pos["y_vector"] ** 2 + pos["z_vector"] ** 2)
+        radius = pos["x_vector"] ** 2 + pos["y_vector"] ** 2 + pos["z_vector"] ** 2
         self.assertAlmostEqual(radius**0.5, pos["distance"], places=9)
         self.assertAlmostEqual(pos["distance"], 4.965, delta=0.01)
 
@@ -66,15 +72,6 @@ class TestResearchPipelinePhase1(unittest.TestCase):
 
     def test_magnitude_homogenization(self):
         """Test magnitude conversion logic."""
-        # Need to import fetcher - it's in use_cases so path is tricky
-        sys.path.append(
-            os.path.abspath(
-                os.path.join(
-                    os.path.dirname(__file__),
-                    "../research/use_cases/earthquake/scripts",
-                )
-            )
-        )
         from earthquake_data_fetcher import EarthquakeDataFetcher
 
         fetcher = EarthquakeDataFetcher(use_sample_data=True)
@@ -93,14 +90,6 @@ class TestResearchPipelinePhase1(unittest.TestCase):
 
     def test_declustering(self):
         """Test Gardner-Knopoff declustering."""
-        sys.path.append(
-            os.path.abspath(
-                os.path.join(
-                    os.path.dirname(__file__),
-                    "../research/use_cases/earthquake/scripts",
-                )
-            )
-        )
         from earthquake_data_fetcher import EarthquakeDataFetcher
 
         fetcher = EarthquakeDataFetcher(use_sample_data=True)

@@ -7,13 +7,13 @@ import sys
 
 import pytest
 
+from studies._paths import REPO_ROOT, artifacts_dir, study_dir
+
 # Paths
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-ARTIFACTS_DIR = os.path.join(BASE_DIR, "research", "reports", "artifacts")
-MANUSCRIPT_QMD = os.path.join(BASE_DIR, "research", "reports", "manuscript.qmd")
-GENERATE_ARTIFACTS_SCRIPT = os.path.join(
-    BASE_DIR, "research", "scripts", "generate_artifacts.py"
-)
+BASE_DIR = str(REPO_ROOT)
+ARTIFACTS_DIR = str(artifacts_dir("gold_market", create=False))
+MANUSCRIPT_QMD = str(study_dir("gold_market") / "paper" / "manuscript.qmd")
+GENERATE_ARTIFACTS_SCRIPT = str(REPO_ROOT / "scripts" / "generate_artifacts.py")
 
 
 # 50 trading days of real COMEX gold closes (Yahoo Finance GC=F, from
@@ -85,7 +85,7 @@ def test_artifact_generation_fails_without_data(tmp_path):
 )
 def test_quarto_render_smoke():
     """Attempt a dry-run or partial render of the manuscript."""
-    output_pdf = os.path.join(BASE_DIR, "reports", "smoke_test_render.pdf")
+    output_pdf = os.path.join(os.path.dirname(MANUSCRIPT_QMD), "smoke_test_render.pdf")
 
     # We use --to pdf and a specific output filename
     # We also use --execute to ensure the python blocks run

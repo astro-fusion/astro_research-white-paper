@@ -1,6 +1,5 @@
 """Test suite for Phase 2 of the astrology research pipeline."""
 
-import os
 import sys
 import unittest
 from datetime import datetime, timezone
@@ -9,6 +8,12 @@ from unittest.mock import patch
 from vedic_astrology_core.astrology.ephemeris import EphemerisEngine
 from vedic_astrology_core.config.constants import Planet
 from vedic_astrology_core.dignity.global_scorer import GlobalStrengthScorer
+
+from studies._paths import study_dir  # noqa: E402
+
+EARTHQUAKE_SCRIPTS = str(study_dir("earthquake") / "scripts")
+if EARTHQUAKE_SCRIPTS not in sys.path:
+    sys.path.append(EARTHQUAKE_SCRIPTS)
 
 
 class TestResearchPipelinePhase2(unittest.TestCase):
@@ -53,14 +58,6 @@ class TestResearchPipelinePhase2(unittest.TestCase):
 
     def test_regression_matrix_script_imports(self):
         """Test that build_matrix script is importable and has function."""
-        scripts_dir = os.path.abspath(
-            os.path.join(
-                os.path.dirname(__file__),
-                "../research/use_cases/earthquake/scripts",
-            )
-        )
-        if scripts_dir not in sys.path:
-            sys.path.append(scripts_dir)
         import build_regression_matrix
 
         self.assertTrue(hasattr(build_regression_matrix, "build_matrix"))

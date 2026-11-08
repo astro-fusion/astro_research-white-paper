@@ -8,14 +8,11 @@ import unittest
 import numpy as np
 import pandas as pd
 
-# Add src to path
-sys.path.append(
-    os.path.abspath(
-        os.path.join(
-            os.path.dirname(__file__), "../research/use_cases/earthquake/scripts"
-        )
-    )
-)
+from studies._paths import study_dir  # noqa: E402
+
+EARTHQUAKE_SCRIPTS = str(study_dir("earthquake") / "scripts")
+if EARTHQUAKE_SCRIPTS not in sys.path:
+    sys.path.append(EARTHQUAKE_SCRIPTS)
 
 
 class TestResearchPipelinePhase3(unittest.TestCase):
