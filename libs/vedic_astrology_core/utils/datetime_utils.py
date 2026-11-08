@@ -5,11 +5,11 @@ Provides functions for date/time parsing, timezone conversion, and
 Julian Day calculation.
 """
 
-import math
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from typing import Optional, Union
 
 import pytz
+import swisseph as swe
 from dateutil import parser as date_parser
 
 
@@ -50,69 +50,61 @@ def parse_datetime(
     return dt
 
 
+class NaiveDatetimeError(ValueError):
+    """Raised when a naive datetime reaches an API that needs an instant."""
+
+
+def require_aware(dt: datetime, name: str = "datetime") -> datetime:
+    """Return ``dt`` unchanged if it is timezone-aware, else raise.
+
+    A naive datetime is ambiguous (local time? UT?). Treating it as UT
+    silently shifted Kathmandu charts by 5h45m, so public APIs reject it.
+
+    Raises:
+        NaiveDatetimeError: If ``dt`` has no tzinfo / utcoffset.
+    """
+    if not isinstance(dt, datetime):
+        raise TypeError(f"{name} must be a datetime, got {type(dt).__name__}")
+    if dt.tzinfo is None or dt.tzinfo.utcoffset(dt) is None:
+        raise NaiveDatetimeError(
+            f"{name} {dt!r} is naive; attach a timezone (e.g. "
+            "datetime(..., tzinfo=ZoneInfo('Asia/Kathmandu')) or timezone.utc)"
+        )
+    return dt
+
+
 def convert_timezone(dt: datetime, target_tz_str: str) -> datetime:
     """
-    Convert a datetime object to a target timezone.
+    Convert a timezone-aware datetime to a target timezone.
 
-    Args:
-        dt: Datetime object
-        target_tz_str: Target timezone string
-
-    Returns:
-        Datetime object in target timezone
+    Raises:
+        NaiveDatetimeError: If ``dt`` is naive.
     """
-    target_tz = pytz.timezone(target_tz_str)
-    if dt.tzinfo is None:
-        # Assume UTC if naive, or raise error?
-        # Assuming UTC is safer than local for ambiguity
-        dt = pytz.UTC.localize(dt)
-
-    return dt.astimezone(target_tz)
+    require_aware(dt)
+    return dt.astimezone(pytz.timezone(target_tz_str))
 
 
 def julian_day(dt: datetime) -> float:
     """
-    Calculate Julian Day Number from a datetime object.
+    Return the Julian day (UT) of a timezone-aware datetime.
 
-    This implementation matches the standard astronomical algorithm.
+    The instant is converted to UTC and passed to ``swe.julday`` (Gregorian
+    calendar). UTC is used as UT; the difference (under 1 s) is far below
+    every tolerance in this library.
 
-    Args:
-        dt: Datetime object
-
-    Returns:
-        Julian Day Number as float
+    Raises:
+        NaiveDatetimeError: If ``dt`` is naive.
     """
-    # Convert to UTC if timezone-aware
-    if dt.tzinfo is not None:
-        utc_tm = dt.astimezone(pytz.UTC).timetuple()
-        year, month, day = utc_tm.tm_year, utc_tm.tm_mon, utc_tm.tm_mday
-        # Add fractional day from time
-        # Note: timetuple doesn't include microseconds, need to get them from dt
-        utc_dt = dt.astimezone(pytz.UTC)
-        hour = (
-            utc_dt.hour
-            + utc_dt.minute / 60.0
-            + (utc_dt.second + utc_dt.microsecond / 1e6) / 3600.0
-        )
-    else:
-        year, month, day = dt.year, dt.month, dt.day
-        hour = dt.hour + dt.minute / 60.0 + (dt.second + dt.microsecond / 1e6) / 3600.0
+    require_aware(dt)
+    utc = dt.astimezone(timezone.utc)
+    hour = utc.hour + utc.minute / 60.0 + (utc.second + utc.microsecond / 1e6) / 3600.0
+    return float(swe.julday(utc.year, utc.month, utc.day, hour, swe.GREG_CAL))
 
-    # Calculate Julian Day
-    if month <= 2:
-        year -= 1
-        month += 12
 
-    a = math.floor(year / 100)
-    b = 2 - a + math.floor(a / 4)
+def julian_day_to_datetime(jd: float) -> datetime:
+    """Return the UTC datetime of a Julian day (UT)."""
+    return _JD_UNIX_EPOCH_DT + timedelta(days=jd - _JD_UNIX_EPOCH)
 
-    jd = (
-        math.floor(365.25 * (year + 4716))
-        + math.floor(30.6001 * (month + 1))
-        + day
-        + b
-        - 1524.5
-        + hour / 24.0
-    )
 
-    return jd
+_JD_UNIX_EPOCH = 2440587.5
+_JD_UNIX_EPOCH_DT = datetime(1970, 1, 1, tzinfo=timezone.utc)

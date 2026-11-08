@@ -3,7 +3,7 @@
 import os
 import sys
 import unittest
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 
 # Add src to path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../libs")))
@@ -44,19 +44,19 @@ class TestResearchPipelinePhase1(unittest.TestCase):
 
     def test_heliocentric_vectors(self):
         """Test that heliocentric positions return vector components."""
-        # Just check structure and non-zero values for current date
-        now = datetime.now()
-        jd = self.eph_engine.datetime_to_julian_day(now)
+        import swisseph as swe
+
+        j2000 = datetime(2000, 1, 1, 12, tzinfo=timezone.utc)
+        jd = self.eph_engine.datetime_to_julian_day(j2000)
 
         # Jupiter (5)
         pos = self.eph_engine.get_heliocentric_position(jd, 5)
-
-        self.assertIn("x_vector", pos)
-        self.assertIn("y_vector", pos)
-        self.assertIn("z_vector", pos)
-
-        # Distance should be > 0
-        self.assertGreater(pos["distance"], 0)
+        xx, _ = swe.calc_ut(jd, swe.JUPITER, swe.FLG_HELCTR | swe.FLG_SPEED)
+        self.assertAlmostEqual(pos["longitude"], xx[0] % 360, places=6)
+        self.assertAlmostEqual(pos["distance"], xx[2], places=9)
+        radius = (pos["x_vector"] ** 2 + pos["y_vector"] ** 2 + pos["z_vector"] ** 2)
+        self.assertAlmostEqual(radius**0.5, pos["distance"], places=9)
+        self.assertAlmostEqual(pos["distance"], 4.965, delta=0.01)
 
         # Vector magnitude should roughly equal distance
         vector_mag = (

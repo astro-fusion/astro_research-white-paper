@@ -7,12 +7,21 @@ zodiac signs, and other astrological constants.
 """
 
 from enum import Enum
-from typing import Dict, List
+from typing import Any, Dict, List, Union
 
 
-# Planet Constants (matching Swiss Ephemeris)
+# Planet Constants
 class Planet(Enum):
-    """Vedic planets with their Swiss Ephemeris constants."""
+    """The nine Vedic grahas; the canonical key for every planet dictionary.
+
+    Values for Sun to Saturn equal the Swiss Ephemeris body numbers. RAHU is an
+    identifier only: the body actually computed (mean or true node) is chosen
+    by the engine's ``node_model``. KETU is not a Swiss Ephemeris body at all;
+    it is always derived as Rahu + 180 degrees. Its value is a negative
+    sentinel so that it can never be passed to ``swe.calc_ut`` by mistake
+    (it previously equalled ``swe.TRUE_NODE``, so "Ketu" silently returned
+    the true Rahu).
+    """
 
     SUN = 0  # Surya
     MOON = 1  # Chandra
@@ -21,8 +30,73 @@ class Planet(Enum):
     JUPITER = 5  # Guru
     VENUS = 3  # Shukra
     SATURN = 6  # Shani
-    RAHU = 10  # North Node
-    KETU = 11  # South Node (calculated)
+    RAHU = 10  # North Node (identifier; body set by node_model)
+    KETU = -10  # South Node (derived: Rahu + 180)
+
+
+_PLANET_ALIASES: Dict[str, "Planet"] = {
+    "NORTH_NODE": Planet.RAHU,
+    "SOUTH_NODE": Planet.KETU,
+    "TRUE_NODE": Planet.RAHU,
+    "MEAN_NODE": Planet.RAHU,
+}
+
+
+def to_planet(key: Union["Planet", str]) -> "Planet":
+    """Resolve a Planet, or a planet name in any case, to the Planet enum.
+
+    Raises:
+        KeyError: if the key does not name one of the nine grahas.
+    """
+    if isinstance(key, Planet):
+        return key
+    if isinstance(key, str):
+        name = key.strip().upper().replace(" ", "_")
+        if name in Planet.__members__:
+            return Planet[name]
+        if name in _PLANET_ALIASES:
+            return _PLANET_ALIASES[name]
+    raise KeyError(f"Unknown planet {key!r}")
+
+
+class PlanetDict(dict):
+    """Dictionary keyed by :class:`Planet`.
+
+    Keys are always stored as Planet members. Lookups also accept planet
+    names in any case ("SUN", "Sun", "sun") and normalise them, so older
+    callers keep working while iteration yields the canonical enum keys.
+    """
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Build from any mapping or iterable of pairs, normalising keys."""
+        super().__init__()
+        for key, value in dict(*args, **kwargs).items():
+            self[key] = value
+
+    def __setitem__(self, key: Any, value: Any) -> None:
+        """Store under the canonical Planet key."""
+        super().__setitem__(to_planet(key), value)
+
+    def __getitem__(self, key: Any) -> Any:
+        """Look up by Planet or planet name."""
+        try:
+            return super().__getitem__(to_planet(key))
+        except KeyError:
+            raise KeyError(key) from None
+
+    def __contains__(self, key: object) -> bool:
+        """Membership by Planet or planet name."""
+        try:
+            return super().__contains__(to_planet(key))  # type: ignore[arg-type]
+        except KeyError:
+            return False
+
+    def get(self, key: Any, default: Any = None) -> Any:
+        """Return the value for a Planet or planet name, else default."""
+        try:
+            return self[key]
+        except KeyError:
+            return default
 
 
 # Zodiac Signs
@@ -210,7 +284,8 @@ SUPPORT_LEVELS: Dict[str, Dict] = {
 # Ayanamsa Systems
 AYANAMSA_SYSTEMS: Dict[str, str] = {
     "lahiri": "Lahiri (Chitra Paksha) - Standard Vedic",
-    "raman": "Krishnamurti Ayanamsa",
+    "raman": "B.V. Raman Ayanamsa",
+    "krishnamurti": "Krishnamurti (KP) Ayanamsa",
     "yukteshwar": "Yukteshwar Ayanamsa",
     "fagan": "Fagan-Bradley Ayanamsa",
     "deluce": "De Luce Ayanamsa",
@@ -219,10 +294,12 @@ AYANAMSA_SYSTEMS: Dict[str, str] = {
 
 # House Systems
 HOUSE_SYSTEMS: Dict[str, str] = {
-    "placidus": "Placidus - Most common in Vedic astrology",
-    "koch": "Koch - Alternative Western system",
-    "equal": "Equal House - Simple equal division",
-    "whole_sign": "Whole Sign - Traditional Vedic approach",
+    "whole_sign": "Whole Sign (bhava = rashi) - Parashari default",
+    "sripati": "Sripati - Porphyry-based bhava madhya system",
+    "equal": "Equal House - 30 degree houses from the ascendant degree",
+    "placidus": "Placidus - Western quadrant system (fails near the poles)",
+    "koch": "Koch - Western quadrant system (fails near the poles)",
+    "porphyry": "Porphyry - Trisected quadrants",
 }
 
 
@@ -321,6 +398,8 @@ def get_support_level(score: float) -> Dict:
 # Export all constants for easy importing
 __all__ = [
     "Planet",
+    "PlanetDict",
+    "to_planet",
     "PLANETS",
     "ZodiacSign",
     "SIGNS",
