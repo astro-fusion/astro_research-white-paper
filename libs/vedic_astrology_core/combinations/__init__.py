@@ -1,14 +1,18 @@
-"""Modular Astrological Combinations Engine.
+"""Astrological combinations: compatibility layer over :mod:`..rules`.
 
-This package provides a declarative rule engine for evaluating Vedic astrological
-combinations (Yogas) across time series data. It supports complex composition of
-atomic conditions (conjunctions, aspects, sign placements, etc.).
+Deprecated for new code: use :mod:`vedic_astrology_core.rules` (rule files
+in ``rules/``, the ``astro-rules`` CLI, ``evaluate`` and ``explain``). This
+package keeps ``CombinationRegistry``, ``get_registry`` and
+``CombinationEvaluator`` working for one release; they now read the same
+``rules/`` files, so there is a single rule source. The degree-based
+condition classes in :mod:`.conditions` and :mod:`.rules` are legacy and
+are no longer used by the registry.
 """
 
 from .conditions import AstroCondition, create_condition
 from .rules import CombinationRule, create_rule_from_config
 from .evaluator import CombinationEvaluator
-from .registry import CombinationRegistry, get_registry
+from .registry import CombinationRegistry, RegistryRule, get_registry
 
 __all__ = [
     "AstroCondition",
@@ -17,5 +21,6 @@ __all__ = [
     "create_rule_from_config",
     "CombinationEvaluator",
     "CombinationRegistry",
+    "RegistryRule",
     "get_registry",
 ]

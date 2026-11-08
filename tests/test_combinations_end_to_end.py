@@ -1,94 +1,39 @@
-"""End-to-end: every catalog rule evaluated on a fixed date.
+"""End-to-end: the combinations API now reads the rules/ registry.
 
 Positions are keyed by the canonical ``Planet`` enum. Expected activations
-are recomputed independently from the golden fixture (pyswisseph oracle) for
-the J2000 chart, so this checks values, not just that nothing raises.
+for the migrated catalog rules are worked out by hand from the golden
+fixture (pyswisseph oracle) for the J2000 chart: Sun Sagittarius 16.5,
+Mars Aquarius 4.1 (304.1), Jupiter Aries 1.4 (speed +0.041), Venus Scorpio
+7.7 (217.7, speed +1.21), Saturn Aries 16.5 (speed -0.020), Rahu Cancer
+11.2 (101.2), Ketu Capricorn 11.2 (281.2).
 """
 
-import json
 from datetime import datetime, timezone
-from pathlib import Path
 
 from vedic_astrology_core.astrology.ephemeris import EphemerisEngine
+from vedic_astrology_core.combinations import RegistryRule
 from vedic_astrology_core.combinations.evaluator import CombinationEvaluator
 from vedic_astrology_core.combinations.registry import CombinationRegistry
 from vedic_astrology_core.config.constants import Planet, PlanetDict
 
-FIXTURE = json.loads(
-    (Path(__file__).parent / "fixtures" / "golden_charts.json").read_text()
-)
-J2000 = next(c for c in FIXTURE["charts"] if c["id"] == "grw_j2000")
 WHEN = datetime(2000, 1, 1, 12, tzinfo=timezone.utc)
 
-
-def _lon(name):
-    key = {"RAHU": "RAHU_MEAN", "KETU": "KETU_MEAN"}.get(name, name)
-    return J2000["bodies"][key]["longitude"]
-
-
-def _speed(name):
-    key = {"RAHU": "RAHU_MEAN", "KETU": "KETU_MEAN"}.get(name, name)
-    return J2000["bodies"][key]["speed"]
-
-
-def _sep(a, b):
-    d = abs(a - b) % 360.0
-    return min(d, 360.0 - d)
-
-
-def _expected(item):
-    kind = item["type"].upper()
-    if kind == "CONJUNCTION":
-        p1, p2 = item["planet1"].upper(), item["planet2"].upper()
-        return _sep(_lon(p1), _lon(p2)) <= float(item["orb_deg"])
-    if kind == "ASPECT":
-        src, dst = item["aspect_planet"].upper(), item["target_planet"].upper()
-        point = (_lon(src) + (int(item["house_aspect"]) - 1) * 30.0) % 360.0
-        return _sep(point, _lon(dst)) <= float(item.get("orb_deg", 15.0))
-    if kind == "SIGNELEMENT":
-        elements = {"FIRE": 0, "EARTH": 1, "AIR": 2, "WATER": 3}
-        sign = int(_lon(item["planet"].upper()) // 30)
-        return sign % 4 == elements[item["element"].upper()]
-    if kind == "INSIGN":
-        names = [
-            "aries",
-            "taurus",
-            "gemini",
-            "cancer",
-            "leo",
-            "virgo",
-            "libra",
-            "scorpio",
-            "sagittarius",
-            "capricorn",
-            "aquarius",
-            "pisces",
-        ]
-        sign = int(_lon(item["planet"].upper()) // 30)
-        return names[sign] in [s.lower() for s in item["signs"]]
-    if kind == "RETROGRADE":
-        return _speed(item["planet"].upper()) < 0
-    if kind == "STATIONARY":
-        return abs(_speed(item["planet"].upper())) <= float(
-            item.get("speed_threshold", 0.05)
-        )
-    raise AssertionError(kind)
-
-
-def _catalog_entries():
-    import yaml
-
-    catalog = (
-        Path(__file__).parent.parent
-        / "libs"
-        / "vedic_astrology_core"
-        / "combinations"
-        / "catalog"
-    )
-    entries = []
-    for path in sorted(catalog.glob("*.yaml")):
-        entries += yaml.safe_load(path.read_text()) or []
-    return entries
+EXPECTED_J2000 = {
+    "Venus-Retrograde-Reversal": False,  # Venus speed +1.21
+    "Jupiter-Retrograde-Contraction": False,  # Jupiter speed +0.041
+    "Shukra-Guru-Wealth": False,  # Venus 217.7 vs Jupiter 1.4: 143.7 deg
+    "Venus-Own-Sign": False,  # Venus in Scorpio
+    "Mangal-Ketu-Primary": False,  # Mars 304.1 vs Ketu 281.2: 22.9 > 13
+    "Mangal-Ketu-Fire-Sign": False,
+    "Mangal-Shani-Malefic": False,  # 304.1 vs 16.5: 72.4 > 15
+    "Mangal-8th-Aspect-Ketu": False,  # Ketu Capricorn is 12th from Aquarius
+    "Shani-10th-Aspect-Mars": False,  # 10th from Aries is Capricorn, Mars Aquarius
+    "Shrapit-Yoga": False,  # Saturn 16.5 vs Rahu 101.2
+    "Mars-Retrograde-Tension": False,  # Mars direct
+    "Saturn-Stationary": True,  # |speed| 0.020 < 0.05
+    "Budha-Aditya Yoga": True,  # Sun and Mercury both in Sagittarius
+    "Gaja Kesari Yoga (Moon kendra form)": True,  # Jupiter Aries, 7th from Libra
+}
 
 
 def test_positions_use_canonical_planet_keys():
@@ -108,18 +53,52 @@ def test_positions_use_canonical_planet_keys():
     ]
 
 
-def test_every_catalog_rule_evaluates_to_the_oracle_value():
-    """All catalog rules run (no KeyError) and agree with the fixture."""
+def test_registry_reads_the_migrated_rules():
+    """The old names are kept; seismic and financial come from rules/."""
     registry = CombinationRegistry()
-    rules = registry.get_all_rules()
-    entries = {e["name"]: e for e in _catalog_entries()}
-    assert len(rules) == len(entries) >= 12
-    results = CombinationEvaluator(EphemerisEngine(), rules).evaluate_date(WHEN)
-    assert set(results) == set(entries)
-    for name, entry in entries.items():
-        items = entry["conditions"]["items"]
-        flags = [_expected(i) for i in items]
-        logic = entry["conditions"].get("logic", "ALL_OF").upper()
-        expected = all(flags) if logic == "ALL_OF" else any(flags)
+    seismic = {r.name for r in registry.get_rules_by_usecase("seismic")}
+    assert len(seismic) == 8 and "Mangal-Ketu-Primary" in seismic
+    assert len(registry.get_rules_by_usecase("financial")) == 4
+    rule = registry.get_rule("Mangal-Ketu-Primary")
+    assert isinstance(rule, RegistryRule)
+    assert rule.id == "seismic.mangal_ketu_primary"
+    assert registry.get_rule("seismic.mangal_ketu_primary") is rule
+
+
+def test_every_rule_evaluates_to_the_hand_derived_value():
+    """All moment-only rules run and agree with the fixture at J2000."""
+    registry = CombinationRegistry()
+    results = CombinationEvaluator(EphemerisEngine(), registry.get_all_rules())
+    results = results.evaluate_date(WHEN)
+    for name, expected in EXPECTED_J2000.items():
         assert results[name]["is_active"] is expected, name
-        assert 0.0 <= results[name]["score"] <= 1.0
+        assert results[name]["score"] == (1.0 if expected else 0.0)
+    for res in results.values():
+        assert 0.0 <= res["score"] <= 1.0
+        assert res["breakdown"]
+
+
+def test_default_evaluator_loads_all_rules():
+    """CombinationEvaluator() with no rules uses the registry."""
+    evaluator = CombinationEvaluator()
+    names = {r.name for r in evaluator.rules}
+    assert set(EXPECTED_J2000) <= names
+
+
+def test_positions_interface_still_works():
+    """rule.evaluate(positions) gives the same answer as evaluate_date."""
+    engine = EphemerisEngine()
+    positions = engine.get_all_planet_positions(engine.datetime_to_julian_day(WHEN))
+    rule = CombinationRegistry().get_rule("Saturn-Stationary")
+    assert rule.evaluate(positions)["is_active"] is True
+
+
+def test_timeseries_columns_keep_old_names():
+    """The earthquake study's columns are <old name>_active / _score."""
+    registry = CombinationRegistry()
+    evaluator = CombinationEvaluator(
+        EphemerisEngine(), registry.get_rules_by_usecase("seismic")
+    )
+    frame = evaluator.evaluate_timeseries(WHEN, WHEN, step_days=1.0)
+    assert "Mangal-Ketu-Primary_active" in frame.columns
+    assert int(frame["Saturn-Stationary_active"].iloc[0]) == 1

@@ -1,34 +1,52 @@
 """Astrological Combination Evaluator.
 
-Time-series engine to evaluate rules against the ephemeris over a date range.
+Time-series engine to evaluate rules against the ephemeris over a date
+range. Rules come from the ``rules/`` registry (see :mod:`.registry`); the
+old :class:`~.rules.CombinationRule` objects are still accepted for one
+release.
 """
 
-from typing import Dict, List
 from datetime import datetime, timedelta
+from typing import Dict, List, Optional, Sequence, Union
+
 import pandas as pd
 
-from .rules import CombinationRule
 from ..astrology.ephemeris import EphemerisEngine
+from ..rules.context import EvalContext, Sky
+from .registry import RegistryRule, get_registry
+from .rules import CombinationRule
+
+AnyRule = Union[RegistryRule, CombinationRule]
 
 
 class CombinationEvaluator:
     """Time-series engine for evaluating astrological combinations."""
 
-    def __init__(self, ephemeris: EphemerisEngine, rules: List[CombinationRule]):
-        """Initialize with ephemeris engine and a list of rules."""
-        self.ephemeris = ephemeris
-        self.rules = rules
+    def __init__(
+        self,
+        ephemeris: Optional[EphemerisEngine] = None,
+        rules: Optional[Sequence[AnyRule]] = None,
+    ):
+        """Initialize with an ephemeris engine and rules (default: all of rules/)."""
+        self.ephemeris = ephemeris or EphemerisEngine()
+        self.rules: List[AnyRule] = (
+            list(rules) if rules is not None else get_registry().get_all_rules()
+        )
 
     def evaluate_date(self, dt: datetime) -> Dict[str, Dict]:
-        """Evaluate all registered combinations for a specific datetime."""
-        # Calculate julian day and get all required planetary positions
+        """Evaluate all rules for one timezone-aware datetime."""
         jd = self.ephemeris.datetime_to_julian_day(dt)
         positions = self.ephemeris.get_all_planet_positions(jd)
+        sky = Sky(dt, None, self.ephemeris.node_model)
+        sky._positions = positions
+        ctx = EvalContext(sky)
 
         results = {}
         for rule in self.rules:
-            results[rule.name] = rule.evaluate(positions)
-
+            if isinstance(rule, RegistryRule):
+                results[rule.name] = rule._result(ctx)
+            else:
+                results[rule.name] = rule.evaluate(positions)
         return results
 
     def evaluate_timeseries(
@@ -41,7 +59,6 @@ class CombinationEvaluator:
         while current <= end_date:
             day_res = self.evaluate_date(current)
 
-            # Flatten into a row mapping
             row = {"date": current}
             for rule_name, ev in day_res.items():
                 row[f"{rule_name}_active"] = 1 if ev["is_active"] else 0
