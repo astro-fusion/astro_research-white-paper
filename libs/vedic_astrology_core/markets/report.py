@@ -209,8 +209,10 @@ def discussion(res: Dict) -> str:
             "Within this design the data give no support to the idea that the "
             "pre-registered sidereal conditions shift next-day returns, "
             "volatility or the frequency of extreme moves. The confidence "
-            "intervals bound the size of any effect that could have been missed; "
-            "an effect that small would not be usable after trading costs.")
+            "intervals show the effects the data cannot rule out: for common "
+            "conditions they are a few basis points a day, for rare ones (a "
+            "planet in one sign, a conjunction) they are wide, so for those the "
+            "null is weak evidence of absence.")
     if h["n_significant_full"] or h["n_event_significant"]:
         parts.append(
             "Some full-sample or event-study tests pass their own correction; "

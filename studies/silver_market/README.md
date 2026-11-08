@@ -20,8 +20,8 @@ numbers.
 - `scripts/pipeline.py`: the shared pipeline, configured.
 - `paper/manuscript.qmd`: Results and Discussion generated from
   `artifacts/results.json`.
-- `artifacts/`: `results.json`, `manifest.json`, tables, figures and
-  `overlay_frame.csv`.
+- `artifacts/`: `results.json`, `manifest.json`, tables and figures
+  (`overlay_frame.csv` is regenerated, not committed: it holds the prices).
 
 ## How to run
 

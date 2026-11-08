@@ -144,13 +144,10 @@ The fundamental challenge in aligning these systems lies in their temporal resol
 
 # Track 3: Gold Market Correlation
 
-{{< include ../studies/gold_market/paper/sections/00_overview.qmd >}}
-{{< include ../studies/gold_market/paper/sections/01_principles_catalog.qmd >}}
-{{< include ../studies/gold_market/paper/sections/01a_vedic_principles_coverage.qmd >}}
-{{< include ../studies/gold_market/paper/sections/02a_dasha.qmd >}}
-{{< include ../studies/gold_market/paper/sections/03_graphs_frequency.qmd >}}
-{{< include ../studies/gold_market/paper/sections/04_graphs_alignment.qmd >}}
-{{< include ../studies/gold_market/paper/sections/05_conclusion.qmd >}}
+The gold catalogue analysis that stood here was removed on 2026-11-08 (see
+CORRECTIONS.md). Gold and silver are now pre-registered studies on one shared
+pipeline; see [the gold manuscript](../studies/gold_market/paper/manuscript.qmd)
+and [the silver manuscript](../studies/silver_market/paper/manuscript.qmd).
 
 \newpage
 
@@ -194,7 +191,6 @@ The "Demarcation Problem" for Vedic systems is resolved not by dismissal, but by
 
 {{< include ../studies/numerology_vs_astrology/paper/sections/10_algorithms_examples.qmd >}}
 {{< include ../studies/earthquake/paper/sections/12_algorithms_examples.qmd >}}
-{{< include ../studies/gold_market/paper/sections/02_algorithms_examples.qmd >}}
 
 # Legacy Content Archive
 

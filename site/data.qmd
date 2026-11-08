@@ -39,3 +39,24 @@ with a manifest holding its SHA-256.
 | Earthquake catalogue (M6+, 1900-2026) | [USGS FDSN event service](https://earthquake.usgs.gov/fdsnws/event/1/) | Public domain (US Government) | Mundane study |
 | Global flood archive | Dartmouth Flood Observatory | See the DFO site; fetched on demand with a local file or URL | Mundane study |
 | EM-DAT disaster database | CRED, UCLouvain | Registration required; not redistributable; fetch-on-demand only | Mundane study (optional) |
+
+## Market datasets
+
+The gold and silver studies fetch their price series on each run, in the
+order given by their `hypothesis.yaml`, and write the download to the
+gitignored `data/snapshots/` with a manifest. The SHA-256, row count and date
+range of the series a published result used are recorded in that study's
+`artifacts/results.json` and `artifacts/manifest.json`.
+
+| Dataset | Source | Licence | Rows, range (run of 2026-11-08) | SHA-256 | Used by |
+|---|---|---|---|---|---|
+| Gold, COMEX front-month continuous futures (`GC=F`), not spot | Yahoo Finance via `yfinance` | Yahoo terms of use; not redistributed | 6,150 trading days, 2000-09-05 to 2026-10-30 | `3085b0d501ec...` | [Gold market](../studies/gold_market/paper/manuscript.qmd) |
+| Silver, COMEX front-month continuous futures (`SI=F`), not spot | Yahoo Finance via `yfinance` | Yahoo terms of use; not redistributed | 5,824 trading days, 2000-08-30 to 2026-10-30 | `bb3e274e4079...` | [Silver market](../studies/silver_market/paper/manuscript.qmd) |
+| LBMA gold PM fix (`GOLDPMGBD228NLBM`), LBMA silver (`SLVPRUSD`) | FRED | ICE Benchmark Administration | Pre-registered first choice; withdrawn from FRED in 2022 (HTTP 404) | - | Not used |
+| Market fixtures, 2015-2020 | Yahoo `GC=F`, `SI=F`; FRED `DEXUSUK` sample | As above | 1,480 / 1,377 / 16 rows | in `tests/fixtures/markets/` | Tests and the offline (provisional) fallback |
+
+Zero-volume rows are stale quotes and are dropped. Futures rolls are not
+back-adjusted. Each study also writes `artifacts/overlay_frame.csv`: one row
+per trading day with the close, daily and forward log returns, and every
+indicator as 0/1, the file the site's explorer will load. It is regenerated
+by the pipeline and not committed, because it contains the price series.

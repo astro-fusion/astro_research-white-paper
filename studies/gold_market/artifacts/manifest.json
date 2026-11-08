@@ -1,0 +1,40 @@
+{
+  "created_utc": "2026-11-08T02:18:33+00:00",
+  "git": {
+    "commit": "370edd952eea18d8deb10fdde0423fa8da4a5f2d",
+    "dirty": true
+  },
+  "seed": 42,
+  "inputs": [
+    {
+      "path": "data/snapshots/gold_market_3085b0d501ec.csv",
+      "row_count": 6150,
+      "date_range": [
+        "2000-09-05",
+        "2026-10-30"
+      ],
+      "sha256": "3085b0d501ecd3f123b6ca48ef4b13705e2d22d1a9465a0e9f463aa81032365a"
+    }
+  ],
+  "python": "3.14.7",
+  "ephemeris_model": "swieph",
+  "ayanamsa": "lahiri",
+  "node_model": "mean",
+  "swisseph_version": "2.10.03",
+  "study": "gold_market",
+  "hypothesis_sha256": "2428f9657670f2ce96ab69719611438eec72dd636bf8fac4414768e297d329e2",
+  "provisional": false,
+  "artifacts": [
+    ".gitkeep",
+    "fig_effects.png",
+    "fig_event_study.png",
+    "fig_overlay.png",
+    "fig_stations.png",
+    "manifest.json",
+    "overlay_frame.csv",
+    "results.json",
+    "tbl_confirmation.csv",
+    "tbl_event_study.csv",
+    "tbl_indicator_tests.csv"
+  ]
+}

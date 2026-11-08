@@ -20,8 +20,9 @@ finds no rule that beats being flat. The paper states the numbers.
 - `paper/manuscript.qmd`: the paper; its Results and Discussion are generated
   from `artifacts/results.json`.
 - `artifacts/`: committed outputs the paper reads: `results.json`,
-  `manifest.json`, `tbl_*.csv`, `fig_*.png`, and `overlay_frame.csv` (one row
-  per trading day with every indicator, for the website explorer).
+  `manifest.json`, `tbl_*.csv` and `fig_*.png`. The pipeline also writes
+  `overlay_frame.csv` (one row per trading day with every indicator, for the
+  website explorer); it holds the price series and is not committed.
 
 ## How to run
 

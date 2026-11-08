@@ -1,0 +1,40 @@
+{
+  "created_utc": "2026-11-08T02:19:10+00:00",
+  "git": {
+    "commit": "370edd952eea18d8deb10fdde0423fa8da4a5f2d",
+    "dirty": true
+  },
+  "seed": 42,
+  "inputs": [
+    {
+      "path": "data/snapshots/silver_market_bb3e274e4079.csv",
+      "row_count": 5824,
+      "date_range": [
+        "2000-08-30",
+        "2026-10-30"
+      ],
+      "sha256": "bb3e274e4079c6423bbefc316acd519d0534dcd564773709d2c65f4de3c8817d"
+    }
+  ],
+  "python": "3.14.7",
+  "ephemeris_model": "swieph",
+  "ayanamsa": "lahiri",
+  "node_model": "mean",
+  "swisseph_version": "2.10.03",
+  "study": "silver_market",
+  "hypothesis_sha256": "cd36ee1909102fc3c42e5d8ff8bbb85758eb093b46adca688ad51c9b67223716",
+  "provisional": false,
+  "artifacts": [
+    ".gitkeep",
+    "fig_effects.png",
+    "fig_event_study.png",
+    "fig_overlay.png",
+    "fig_stations.png",
+    "manifest.json",
+    "overlay_frame.csv",
+    "results.json",
+    "tbl_confirmation.csv",
+    "tbl_event_study.csv",
+    "tbl_indicator_tests.csv"
+  ]
+}
