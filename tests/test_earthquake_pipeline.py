@@ -60,3 +60,21 @@ def test_only_significant_pairs_in_direction_are_carried():
     assert not conf.loc[("gk", "i1"), "confirmed"]
     assert np.isnan(conf.loc[("gk", "i2"), "q_value"])
     assert set(t["raw"]["catalogue"]) == {"raw"}
+
+
+def test_ephemeris_model_is_probed_on_a_planet():
+    """The mean-node call reports FLG_SWIEPH; the probe re-reads the Sun."""
+    import swisseph as swe
+
+    from vedic_astrology_core.astrology.ephemeris import (
+        EphemerisEngine,
+        ephemeris_model_from_retflag,
+    )
+
+    engine = EphemerisEngine()
+    engine.get_all_planet_positions(2443000.5)  # ends on the node
+    swe.set_sid_mode(swe.SIDM_LAHIRI)
+    _, flag = swe.calc_ut(2451545.0, swe.SUN,
+                          swe.FLG_SWIEPH | swe.FLG_SPEED | swe.FLG_SIDEREAL)
+    info = pipeline.ephemeris_info(engine)
+    assert info["ephemeris_model"] == ephemeris_model_from_retflag(flag)

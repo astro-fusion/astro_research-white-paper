@@ -114,6 +114,19 @@ def load_catalogue(
 
 
 # -------------------------------------------------------------- testing
+def ephemeris_info(engine: EphemerisEngine) -> Dict:
+    """Return the engine configuration with ``ephemeris_model`` probed on the Sun.
+
+    The engine records the model from the last calculation's return flag,
+    and the mean-node calculation always reports FLG_SWIEPH even when the
+    planets fall back to Moshier, so the model is re-read from a Sun call.
+    """
+    engine.get_planet_position(2451545.0, "SUN")
+    info = engine.get_ephemeris_info()
+    info["ephemeris_model_probe"] = "Sun at J2000"
+    return info
+
+
 def period_slices(hyp: Dict, grid: pd.DatetimeIndex) -> Dict[str, slice]:
     """Return grid slices of the exploration, confirmation and full periods."""
     split = hyp["split"]
@@ -419,6 +432,7 @@ def run(seed: int, snapshot: Optional[Path], offline: bool,
     counts = compare_nb_models(
         monthly_design(cat.loc[masks["gk"], "time"], frame, greater), greater)
 
+    eph_info = ephemeris_info(engine)
     git = git_commit(REPO)
     prov = {"data_sha256": info["sha256"], "commit": git["commit"], "seed": seed}
     figures = make_figures(art, hyp, cat, info, masks, tests, tables["family"],
@@ -450,7 +464,7 @@ def run(seed: int, snapshot: Optional[Path], offline: bool,
         "seed": seed,
         "n_draws": n_draws,
         "git": git,
-        "ephemeris": engine.get_ephemeris_info(),
+        "ephemeris": eph_info,
         "catalogue": {k: v for k, v in info.items() if k != "all_mw"},
         "declustering": {
             "summary": _records(summary),
@@ -486,7 +500,7 @@ def run(seed: int, snapshot: Optional[Path], offline: bool,
         inputs=[{"path": REPO / info["snapshot"], "row_count": info["n_polygon"],
                  "date_range": [info["first_event"], info["last_event"]]},
                 {"path": fc.HYPOTHESIS}],
-        seed=seed, engine=engine, repo_root=REPO,
+        seed=seed, engine=eph_info, repo_root=REPO,
         extra={"catalogue_source": info["source"], "n_draws": n_draws,
                "artifacts": sorted(p.name for p in art.iterdir()
                                    if p.name != "manifest.json")},
