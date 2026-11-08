@@ -16,7 +16,114 @@ countries:
       rationale: "Founded on July 4, 1776, with the Declaration of Independence"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Declaration of Independence (Sibly chart)
+        date: '1776-07-04'
+        time: '17:10:00'
+        time_zone: LMT
+        place: Philadelphia, Pennsylvania
+        lat: 39.9489
+        lon: -75.15
+        used_by:
+        - Ebenezer Sibly (1787)
+        - commonly used by Western mundane astrologers
+        source:
+          url: https://alextrenoweth.co.uk/sibley-chart-usa-birth-horoscope/
+          title: Sibly chart USA birth horoscope (Alex Trenoweth)
+          checked: false
+        confidence: disputed
+        notes: Time from Sibly's 1787 publication, not from a 1776 record; Uranus near the Ascendant. Also cited
+          at https://www.lincosastrology.com/post/a-deeper-look-at-the-usa-chart.
+      - event: Declaration of Independence (Rudhyar rectification)
+        date: '1776-07-04'
+        time: '17:13:55'
+        time_zone: LMT
+        place: Philadelphia, Pennsylvania
+        lat: 39.9489
+        lon: -75.15
+        used_by:
+        - Dane Rudhyar
+        source:
+          url: https://alextrenoweth.co.uk/sibley-chart-usa-birth-horoscope/
+          title: Sibly chart USA birth horoscope (Alex Trenoweth)
+          checked: false
+        confidence: disputed
+        notes: Rectified for a 13 deg Sagittarius Ascendant (tropical).
+      - event: Declaration of Independence (Penfield)
+        date: '1776-07-04'
+        time: '14:20:00'
+        time_zone: LMT
+        place: Philadelphia, Pennsylvania
+        lat: 39.9489
+        lon: -75.15
+        used_by:
+        - Marc Penfield
+        source:
+          url: https://theastrologypodcast.com/2020/04/28/what-is-the-birth-chart-of-the-united-states/
+          title: What is the Birth Chart of the United States? (The Astrology Podcast, 2020-04-28)
+          checked: false
+        confidence: disputed
+        notes: Based on recollections attributed to John Hancock.
+      - event: Vote for independence (Lorentzen)
+        date: '1776-07-02'
+        time: null
+        time_zone: LMT
+        place: Philadelphia, Pennsylvania
+        lat: 39.9489
+        lon: -75.15
+        used_by:
+        - Gary Lorentzen
+        source:
+          url: https://theastrologypodcast.com/2020/04/28/what-is-the-birth-chart-of-the-united-states/
+          title: What is the Birth Chart of the United States? (The Astrology Podcast, 2020-04-28)
+          checked: false
+        confidence: disputed
+        notes: Lorentzen argues for the 1 and 2 July 1776 votes; no time stated in the record.
+      - event: Public proclamation of independence (Lorentzen)
+        date: '1776-07-08'
+        time: '12:28:00'
+        time_zone: LMT
+        place: Philadelphia, Pennsylvania
+        lat: 39.9489
+        lon: -75.15
+        used_by:
+        - Gary Lorentzen
+        source:
+          url: https://theastrologypodcast.com/2020/04/28/what-is-the-birth-chart-of-the-united-states/
+          title: What is the Birth Chart of the United States? (The Astrology Podcast, 2020-04-28)
+          checked: false
+        confidence: disputed
+        notes: Official public reading of the Declaration.
+      - event: Battle of Lexington
+        date: '1775-04-19'
+        time: 05:00:00
+        time_zone: LMT
+        place: Lexington, Massachusetts
+        lat: 42.4473
+        lon: -71.2245
+        used_by:
+        - Nicholas Campion (as cited)
+        source:
+          url: https://theastrologypodcast.com/2020/04/28/what-is-the-birth-chart-of-the-united-states/
+          title: What is the Birth Chart of the United States? (The Astrology Podcast, 2020-04-28)
+          checked: false
+        confidence: disputed
+        notes: Approximate time ('c. 5:00 AM'); start of armed conflict.
+      - event: First Continental Congress
+        date: '1774-09-05'
+        time: '10:00:00'
+        time_zone: LMT
+        place: Philadelphia, Pennsylvania
+        lat: 39.9489
+        lon: -75.15
+        used_by:
+        - Nicholas Campion (as cited)
+        source:
+          url: https://theastrologypodcast.com/2020/04/28/what-is-the-birth-chart-of-the-united-states/
+          title: What is the Birth Chart of the United States? (The Astrology Podcast, 2020-04-28)
+          checked: false
+        confidence: disputed
+        notes: First unified colonial action.
   - iso: "IN"
     slug: "india"
     name: "India"
@@ -30,7 +137,75 @@ countries:
       rationale: "Independence from British rule on August 15, 1947"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Independence Act takes effect (midnight chart)
+        date: '1947-08-15'
+        time: 00:00:00
+        time_zone: Asia/Kolkata
+        place: New Delhi
+        lat: 28.6139
+        lon: 77.209
+        used_by:
+        - most Vedic practitioners
+        - Prashant Kapoor
+        - Maneeza Ahuja
+        - PVR Narasimha Rao
+        - Vishal Aksh
+        - Tempora Research
+        - Anvaya
+        source:
+          url: https://paramarsh.app/patrika/mundane-astrology/national-charts-mundane-astrology
+          title: National charts in mundane astrology (Paramarsh)
+          checked: false
+        confidence: documented
+        notes: Legal moment of the transfer of power; Taurus lagna (sidereal). Also https://www.astrovedica.in/blog/india-independence-chart-2026-saturn-rahu-dasha-protests.
+          One account credits Pandit Hardeo Sharma Trivedi with choosing the moment (Facebook group post, unverified).
+      - event: Independence (K.N. Rao variant)
+        date: '1947-08-15'
+        time: 00:01:00
+        time_zone: Asia/Kolkata
+        place: New Delhi
+        lat: 28.6139
+        lon: 77.209
+        used_by:
+        - K.N. Rao
+        source:
+          url: https://www.journalofastrology.com/article.php?article_id=591
+          title: Journal of Astrology article 591
+          checked: false
+        confidence: disputed
+        notes: One minute after midnight.
+      - event: Independence (noon chart)
+        date: '1947-08-15'
+        time: '12:00:00'
+        time_zone: Asia/Kolkata
+        place: New Delhi
+        lat: 28.6139
+        lon: 77.209
+        used_by:
+        - anonymous author, classicalastrologer.com
+        source:
+          url: https://classicalastrologer.com/2013/05/17/independence-of-india-part-i/
+          title: Independence of India, part I (2013-05-17)
+          checked: false
+        confidence: conventional
+        notes: Proposed because the luminaries are below the horizon at midnight; Sun in the 10th at noon.
+      - event: Republic Day (constitution in force)
+        date: '1950-01-26'
+        time: '10:18:00'
+        time_zone: Asia/Kolkata
+        place: New Delhi
+        lat: 28.6139
+        lon: 77.209
+        used_by:
+        - askastrologer.com
+        - astromantra.com
+        source:
+          url: https://askastrologer.com/articles/mundane-astrology/
+          title: Mundane astrology (AskAstrologer)
+          checked: false
+        confidence: disputed
+        notes: Argued to mark full sovereignty as a republic; time provenance not stated.
   - iso: "GB"
     slug: "united-kingdom"
     name: "United Kingdom"
@@ -44,7 +219,68 @@ countries:
       rationale: "Union of Great Britain and Ireland"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Act of Union 1800 takes effect (United Kingdom)
+        date: '1801-01-01'
+        time: 00:00:00
+        time_zone: LMT
+        place: London
+        lat: 51.5074
+        lon: -0.1278
+        used_by:
+        - David Reynolds (as cited)
+        source:
+          url: https://www.ccrsdodona.org/m_dilemma/1982/gem/falkland.html
+          title: Falklands chart discussion (CCRS Dodona, 1982)
+          checked: false
+        confidence: conventional
+        notes: Union with Ireland; legal midnight.
+      - event: Acts of Union 1707 (Great Britain)
+        date: '1707-05-01'
+        time: null
+        time_zone: LMT
+        place: London
+        lat: 51.5074
+        lon: -0.1278
+        used_by:
+        - standard chart
+        source:
+          url: https://astropotential.com/445/independence-scotland/
+          title: Independence for Scotland (Astropotential)
+          checked: false
+        confidence: conventional
+        notes: Untimed. Date in force 1 May 1707 (Gregorian; 1 May Julian was the calendar in use, check).
+      - event: Coronation of William I
+        date: '1066-12-25'
+        time: null
+        time_zone: LMT
+        place: London
+        lat: 51.5074
+        lon: -0.1278
+        used_by:
+        - David Reynolds (as cited)
+        source:
+          url: https://dashaflow.com/mundane
+          title: DashaFlow mundane chart list
+          checked: false
+        confidence: conventional
+        notes: Julian calendar date as usually given; untimed.
+      - event: Brexit (exit day)
+        date: '2020-01-31'
+        time: '23:00:00'
+        time_zone: Europe/London
+        place: London
+        lat: 51.5074
+        lon: -0.1278
+        used_by:
+        - Jessica Adams
+        source:
+          url: https://www.jessicaadams.com/2020/01/10/blog/the-new-great-britain-astrology-chart/
+          title: The new Great Britain astrology chart (2020-01-10)
+          checked: false
+        confidence: documented
+        notes: Proposed to supersede older charts. 23:00 GMT is exit day as defined in the European Union (Withdrawal)
+          Act 2018 as amended; the practitioner page was not opened.
   - iso: "CA"
     slug: "canada"
     name: "Canada"
@@ -58,7 +294,68 @@ countries:
       rationale: "Confederation established on July 1, 1867"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Confederation (midnight)
+        date: '1867-07-01'
+        time: 00:00:00
+        time_zone: LMT
+        place: Ottawa, Ontario
+        lat: 45.4215
+        lon: -75.6972
+        used_by:
+        - Liz Greene (astro.com)
+        source:
+          url: https://www.astro.com/nat/natca_e.htm
+          title: Canada (Astrodienst national charts)
+          checked: false
+        confidence: conventional
+        notes: Legislation takes effect at midnight. Discussed at https://www.melpriestley.ca/figuring-out-canadas-natal-chart-aries-rising-really/.
+      - event: Confederation (proclamation read)
+        date: '1867-07-01'
+        time: '11:00:00'
+        time_zone: LMT
+        place: Ottawa, Ontario
+        lat: 45.4215
+        lon: -75.6972
+        used_by:
+        - Maclean's / Historical Society of Ottawa (as cited)
+        source:
+          url: https://www.melpriestley.ca/figuring-out-canadas-natal-chart-aries-rising-really/
+          title: Figuring out Canada's natal chart (Mel Priestley)
+          checked: false
+        confidence: disputed
+        notes: Accounts of a public proclamation at 11:00; Virgo Ascendant (tropical).
+      - event: Confederation (noon)
+        date: '1867-07-01'
+        time: '12:00:00'
+        time_zone: LMT
+        place: Ottawa, Ontario
+        lat: 45.4215
+        lon: -75.6972
+        used_by:
+        - timelords magazine (as cited)
+        source:
+          url: https://cosmicintelligenceagency.com/timelords-magazine/will-the-real-chart-of-canada-please-stand-up/
+          title: Will the real chart of Canada please stand up?
+          checked: false
+        confidence: disputed
+        notes: Validity questioned because of possible misreporting of the time.
+      - event: Patriation of the Constitution
+        date: '1982-04-17'
+        time: 09:35:00
+        time_zone: America/Toronto
+        place: Ottawa, Ontario
+        lat: 45.4215
+        lon: -75.6972
+        used_by:
+        - Jessica Adams
+        - Mj Patterson (as cited)
+        source:
+          url: https://www.jessicaadams.com/2025/03/10/blog/canada-in-psychic-astrology/
+          title: Canada in psychic astrology (2025-03-10)
+          checked: false
+        confidence: disputed
+        notes: Argued to reflect full sovereignty and to work better for prediction.
   - iso: "MX"
     slug: "mexico"
     name: "Mexico"
@@ -72,7 +369,38 @@ countries:
       rationale: "Independence from Spain declared on September 27, 1821"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Grito de Dolores
+        date: '1810-09-16'
+        time: null
+        time_zone: LMT
+        place: Dolores Hidalgo, Guanajuato
+        lat: 21.1561
+        lon: -100.9339
+        used_by:
+        - dorjekirsten (Substack)
+        source:
+          url: https://dorjekirsten.substack.com/p/big-trouble-in-mexico
+          title: Big trouble in Mexico
+          checked: false
+        confidence: conventional
+        notes: Symbolic start of the independence movement; untimed. Listed under the United States in one table
+          by mistake.
+      - event: Iturbide's entry into Mexico City
+        date: '1821-09-27'
+        time: null
+        time_zone: LMT
+        place: Mexico City
+        lat: 19.4326
+        lon: -99.1332
+        used_by:
+        - Helen Boyd / Alan White (as cited)
+        source:
+          url: https://theastrologypodcast.com/2020/04/28/what-is-the-birth-chart-of-the-united-states/
+          title: What is the Birth Chart of the United States? (The Astrology Podcast, 2020-04-28)
+          checked: false
+        confidence: conventional
+        notes: Untimed; the citation given points at a US-chart podcast, so the attribution is weak.
   - iso: "BR"
     slug: "brazil"
     name: "Brazil"
@@ -86,7 +414,37 @@ countries:
       rationale: "Independence from Portugal on September 7, 1822"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Independence declaration
+        date: '1822-09-07'
+        time: null
+        time_zone: LMT
+        place: Sao Paulo
+        lat: -23.5505
+        lon: -46.6333
+        used_by:
+        - standard chart
+        source:
+          url: https://dashaflow.com/mundane
+          title: DashaFlow mundane chart list
+          checked: false
+        confidence: conventional
+        notes: Untimed.
+      - event: Proclamation of the Republic
+        date: '1889-11-15'
+        time: null
+        time_zone: LMT
+        place: Rio de Janeiro
+        lat: -22.9068
+        lon: -43.1729
+        used_by:
+        - Doris Chase Doane (Accurate World Horoscopes, as cited)
+        source:
+          url: https://www.scribd.com/document/917394185/Accurate-World-Horoscopes-Doris-Chase-Doane-Z-Library
+          title: Accurate World Horoscopes (scan)
+          checked: false
+        confidence: conventional
+        notes: Morning; the flag's stars are said to show the sky over Rio that morning.
   - iso: "AR"
     slug: "argentina"
     name: "Argentina"
@@ -100,7 +458,37 @@ countries:
       rationale: "Independence from Spain on July 9, 1816"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: May Revolution
+        date: '1810-05-25'
+        time: null
+        time_zone: LMT
+        place: Buenos Aires
+        lat: -34.6037
+        lon: -58.3816
+        used_by:
+        - astrologyweekly.com
+        source:
+          url: https://astrologyweekly.com/tools/charts/countries/argentina/
+          title: Argentina charts (Astrology Weekly)
+          checked: false
+        confidence: conventional
+        notes: Source gives the year; the day is the conventional 25 May. No recorded time.
+      - event: Declaration of Independence (Congress of Tucuman)
+        date: '1816-07-09'
+        time: '16:00:00'
+        time_zone: LMT
+        place: San Miguel de Tucuman
+        lat: -26.8083
+        lon: -65.2176
+        used_by:
+        - C.C. Zain
+        source:
+          url: https://www.scribd.com/document/396975499/Zain-C-C-Mundane-Astrology-pdf
+          title: C.C. Zain, Mundane Astrology (scan)
+          checked: false
+        confidence: disputed
+        notes: Time provenance not stated; elsewhere described as unrecorded.
   - iso: "CO"
     slug: "colombia"
     name: "Colombia"
@@ -184,7 +572,38 @@ countries:
       rationale: "French Revolution and establishment of the First Republic on July 14, 1789"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Fifth Republic
+        date: '1958-09-28'
+        time: '18:30:00'
+        time_zone: Europe/Paris
+        place: Paris
+        lat: 48.8566
+        lon: 2.3522
+        used_by:
+        - Liz Greene (astro.com)
+        source:
+          url: https://www.astro.com/nat/natfr_e.htm
+          title: France (Astrodienst national charts)
+          checked: false
+        confidence: disputed
+        notes: Date as reported (referendum day); the constitution was promulgated on 4 October and in force
+          on 5 October 1958, so the date itself needs checking against the astro.com page.
+      - event: First Republic proclaimed
+        date: '1792-09-22'
+        time: null
+        time_zone: LMT
+        place: Paris
+        lat: 48.8566
+        lon: 2.3522
+        used_by:
+        - astrologyweekly.com
+        source:
+          url: https://astrologyweekly.com/tools/charts/countries/france/
+          title: France charts (Astrology Weekly)
+          checked: false
+        confidence: conventional
+        notes: Untimed.
   - iso: "DE"
     slug: "germany"
     name: "Germany"
@@ -198,7 +617,53 @@ countries:
       rationale: "Unification of Germany on January 18, 1871"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Reunification
+        date: '1990-10-03'
+        time: null
+        time_zone: Europe/Berlin
+        place: Berlin
+        lat: 52.52
+        lon: 13.405
+        used_by:
+        - standard chart
+        source:
+          url: https://dashaflow.com/mundane
+          title: DashaFlow mundane chart list
+          checked: false
+        confidence: conventional
+        notes: Untimed in the source (reunification took effect at midnight).
+      - event: Basic Law in force (Federal Republic)
+        date: '1949-05-23'
+        time: 00:00:00
+        time_zone: Europe/Berlin
+        place: Frankfurt am Main
+        lat: 50.1109
+        lon: 8.6821
+        used_by:
+        - astrologyweekly.com
+        source:
+          url: https://astrologyweekly.com/tools/charts/countries/germany/
+          title: Germany charts (Astrology Weekly)
+          checked: false
+        confidence: disputed
+        notes: Reported as '12:00 AM (Noon)', which is self-contradictory; the Basic Law was signed in Bonn,
+          place as reported.
+      - event: Reunification (astrotheme variant)
+        date: '1990-11-07'
+        time: 01:50:00
+        time_zone: UTC
+        place: Berlin
+        lat: 52.52
+        lon: 13.405
+        used_by:
+        - astrotheme.com
+        source:
+          url: https://www.astrotheme.com/astrology/German_reunification_(1990)
+          title: German reunification (Astrotheme)
+          checked: false
+        confidence: disputed
+        notes: Date differs from the reunification date; reason not given.
   - iso: "IT"
     slug: "italy"
     name: "Italy"
@@ -212,7 +677,23 @@ countries:
       rationale: "Unification of Italy completed on March 17, 1861"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Proclamation of the Kingdom of Italy
+        date: '1861-03-17'
+        time: null
+        time_zone: LMT
+        place: Turin
+        lat: 45.0703
+        lon: 7.6869
+        used_by:
+        - standard chart
+        source:
+          url: https://dashaflow.com/mundane
+          title: DashaFlow mundane chart list
+          checked: false
+        confidence: conventional
+        notes: Time not consistently specified (https://astrologyweekly.com/tools/charts/countries/italy/);
+          some use 1871 (Rome as capital).
   - iso: "ES"
     slug: "spain"
     name: "Spain"
@@ -226,7 +707,37 @@ countries:
       rationale: "Completion of the Reconquista and discovery of America in 1492"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Union under Ferdinand and Isabella
+        date: '1479-01-19'
+        time: null
+        time_zone: LMT
+        place: Madrid
+        lat: 40.4168
+        lon: -3.7038
+        used_by:
+        - Nicholas Campion, The Book of World Horoscopes (as cited)
+        source:
+          url: https://www.jessicaadams.com/2021/04/18/blog/brazil-astrology-predictions-to-2022/
+          title: Brazil astrology predictions to 2022 (as cited)
+          checked: false
+        confidence: conventional
+        notes: Julian date; the cited page is about Brazil, so the citation needs replacing with Campion's book.
+      - event: Accession of Juan Carlos I
+        date: '1975-11-22'
+        time: '12:45:00'
+        time_zone: Europe/Madrid
+        place: Madrid
+        lat: 40.4168
+        lon: -3.7038
+        used_by:
+        - Liz Greene (astro.com)
+        source:
+          url: https://www.astro.com/nat/nates_e.htm
+          title: Spain (Astrodienst national charts)
+          checked: false
+        confidence: documented
+        notes: Start of the democratic era.
   - iso: "RU"
     slug: "russia"
     name: "Russia"
@@ -240,7 +751,52 @@ countries:
       rationale: "Dissolution of the Soviet Union on December 25, 1991"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Dissolution of the USSR
+        date: '1991-12-25'
+        time: '17:27:12'
+        time_zone: Europe/Moscow
+        place: Moscow
+        lat: 55.7558
+        lon: 37.6173
+        used_by:
+        - Dr H. (pseudonym) / Regulus Astrology
+        source:
+          url: https://mentalhealth-astrology.com/astrology/full-astrological-interpretation-russia/
+          title: 'Full astrological interpretation: Russia'
+          checked: false
+        confidence: disputed
+        notes: Rectified; Leo Ascendant.
+      - event: Declaration of State Sovereignty
+        date: '1990-06-12'
+        time: '13:45:00'
+        time_zone: Europe/Moscow
+        place: Moscow
+        lat: 55.7558
+        lon: 37.6173
+        used_by:
+        - K.N. Rao (as cited)
+        source:
+          url: https://astrologicalmusings.com/jupiter-dasha-and-russia-ukraine-war-a-dasha-pravesh-chart-analysis/
+          title: Jupiter dasha and Russia-Ukraine war
+          checked: false
+        confidence: disputed
+        notes: Time provenance not stated.
+      - event: Union State of Russia and Belarus
+        date: '1999-12-08'
+        time: '17:06:00'
+        time_zone: UTC
+        place: Moscow
+        lat: 55.7558
+        lon: 37.6173
+        used_by:
+        - Jessica Adams
+        source:
+          url: https://www.jessicaadams.com/2022/03/13/blog/the-russia-astrology-chart/
+          title: The Russia astrology chart (2022-03-13)
+          checked: false
+        confidence: disputed
+        notes: Argued to be the chart that shows the war on Ukraine.
   - iso: "NL"
     slug: "netherlands"
     name: "Netherlands"
@@ -282,7 +838,22 @@ countries:
       rationale: "Founding of the Swiss Confederation on August 1, 1291"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Federal Charter (Rutli)
+        date: '1291-08-01'
+        time: '12:00:00'
+        time_zone: LMT
+        place: Rutli, Uri
+        lat: 46.9706
+        lon: 8.5936
+        used_by:
+        - DashaFlow
+        source:
+          url: https://dashaflow.com/mundane
+          title: DashaFlow mundane chart list
+          checked: false
+        confidence: conventional
+        notes: Noon; Julian date; place given only as 'Swiss Alps'.
   - iso: "AT"
     slug: "austria"
     name: "Austria"
@@ -310,7 +881,53 @@ countries:
       rationale: "Founding of the People's Republic of China on October 1, 1949"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Founding ceremony of the PRC
+        date: '1949-10-01'
+        time: '15:15:00'
+        time_zone: Asia/Shanghai
+        place: Beijing
+        lat: 39.9042
+        lon: 116.4074
+        used_by:
+        - astrologicalmusings.com
+        - Jessica Adams
+        source:
+          url: https://astrologicalmusings.com/foundation-chart-of-china-and-chances-of-its-involvement-in-wars-in-2016/
+          title: Foundation chart of China (2016)
+          checked: false
+        confidence: documented
+        notes: Mao's proclamation at Tiananmen; also https://www.jessicaadams.com/2022/03/15/blog/the-china-astrology-chart/.
+      - event: Announcement of the new state
+        date: '1949-09-21'
+        time: null
+        time_zone: Asia/Shanghai
+        place: Beijing
+        lat: 39.9042
+        lon: 116.4074
+        used_by:
+        - Jessica Adams
+        source:
+          url: https://www.jessicaadams.com/2022/03/15/blog/the-china-astrology-chart/
+          title: The China astrology chart (2022-03-15)
+          checked: false
+        confidence: conventional
+        notes: Untimed.
+      - event: Alternative PRC chart
+        date: '1947-12-25'
+        time: null
+        time_zone: Asia/Shanghai
+        place: Beijing
+        lat: 39.9042
+        lon: 116.4074
+        used_by:
+        - Jessica Adams
+        source:
+          url: https://www.jessicaadams.com/2022/03/15/blog/the-china-astrology-chart/
+          title: The China astrology chart (2022-03-15)
+          checked: false
+        confidence: disputed
+        notes: Event behind the date not stated (25 Dec 1947 is the ROC constitution's effective date).
   - iso: "JP"
     slug: "japan"
     name: "Japan"
@@ -324,7 +941,54 @@ countries:
       rationale: "Meiji Restoration beginning modernization on January 3, 1868"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Meiji Constitution promulgated
+        date: '1889-02-11'
+        time: '12:00:00'
+        time_zone: Asia/Tokyo
+        place: Tokyo
+        lat: 35.6762
+        lon: 139.6503
+        used_by:
+        - DashaFlow
+        source:
+          url: https://dashaflow.com/mundane/japan
+          title: Japan (DashaFlow)
+          checked: false
+        confidence: conventional
+        notes: Noon flagged as conventional.
+      - event: Constitution of Japan in force
+        date: '1947-05-03'
+        time: '12:00:00'
+        time_zone: Asia/Tokyo
+        place: Tokyo
+        lat: 35.6762
+        lon: 139.6503
+        used_by:
+        - Nicholas Campion (as cited)
+        - Jessica Adams
+        source:
+          url: https://www.jessicaadams.com/2022/04/19/blog/the-japan-astrology-chart-to-2026/
+          title: The Japan astrology chart to 2026 (2022-04-19)
+          checked: false
+        confidence: conventional
+        notes: Noon.
+      - event: End of the Allied occupation
+        date: '1952-04-28'
+        time: '13:30:00'
+        time_zone: UTC
+        place: Tokyo
+        lat: 35.6762
+        lon: 139.6503
+        used_by:
+        - Nicholas Campion (as cited)
+        - Jessica Adams
+        source:
+          url: https://www.jessicaadams.com/2022/04/19/blog/the-japan-astrology-chart-to-2026/
+          title: The Japan astrology chart to 2026 (2022-04-19)
+          checked: false
+        confidence: disputed
+        notes: Reported both as 13:30 GMT and as 1:30 PM in Tokyo; 13:30 UTC is 22:30 JST.
   - iso: "KR"
     slug: "south-korea"
     name: "South Korea"
@@ -338,7 +1002,22 @@ countries:
       rationale: "Establishment of the Republic of Korea on August 15, 1948"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Government of the Republic of Korea proclaimed
+        date: '1948-08-15'
+        time: '11:00:00'
+        time_zone: Asia/Seoul
+        place: Seoul
+        lat: 37.5665
+        lon: 126.978
+        used_by:
+        - astrotheme.com
+        source:
+          url: https://www.astrotheme.com/astrology/South_Korea
+          title: South Korea (Astrotheme)
+          checked: false
+        confidence: documented
+        notes: Time attributed to presidential archive records.
   - iso: "ID"
     slug: "indonesia"
     name: "Indonesia"
@@ -352,7 +1031,37 @@ countries:
       rationale: "Independence from the Netherlands on August 17, 1945"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Proclamation of independence
+        date: '1945-08-17'
+        time: '10:00:00'
+        time_zone: Asia/Jakarta
+        place: Jakarta
+        lat: -6.2088
+        lon: 106.8456
+        used_by:
+        - Sukarno and Hatta (documented event)
+        source:
+          url: https://en.wikipedia.org/wiki/Proclamation_of_Indonesian_Independence
+          title: Proclamation of Indonesian Independence (Wikipedia)
+          checked: false
+        confidence: documented
+        notes: The clock in use in 1945 Java needs checking (Japanese occupation time) before casting.
+      - event: Astrotheme variant
+        date: '1945-10-04'
+        time: '19:39:00'
+        time_zone: UTC
+        place: Jakarta
+        lat: -6.2088
+        lon: 106.8456
+        used_by:
+        - astrotheme.com
+        source:
+          url: https://www.astrotheme.com/astrology/Indonesia
+          title: Indonesia (Astrotheme)
+          checked: false
+        confidence: disputed
+        notes: Event behind the date not stated.
   - iso: "PK"
     slug: "pakistan"
     name: "Pakistan"
@@ -478,7 +1187,24 @@ countries:
       rationale: "Founding of the Republic of Turkey on October 29, 1923"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Proclamation of the Republic
+        date: '1923-10-29'
+        time: '20:30:00'
+        time_zone: LMT
+        place: Ankara
+        lat: 39.9334
+        lon: 32.8597
+        used_by:
+        - Astro-Databank (as cited)
+        - astrologicalmusings.com
+        source:
+          url: https://astrologicalmusings.com/planets-and-general-elections-in-turkey-in-2023/
+          title: Planets and general elections in Turkey in 2023
+          checked: false
+        confidence: documented
+        notes: Moment of the National Assembly vote; Gemini Ascendant (tropical). Time zone of the source not
+          stated.
   - iso: "IR"
     slug: "iran"
     name: "Iran"
@@ -492,7 +1218,37 @@ countries:
       rationale: "Islamic Revolution and establishment of the Islamic Republic on February 11, 1979"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Islamic Revolution (transfer of power)
+        date: '1979-02-11'
+        time: null
+        time_zone: Asia/Tehran
+        place: Tehran
+        lat: 35.6892
+        lon: 51.389
+        used_by:
+        - srath.com
+        source:
+          url: https://srath.com/jyoti%E1%B9%A3a/mundane/iran-islamic-republic/
+          title: Iran Islamic Republic (Sanjay Rath)
+          checked: false
+        confidence: disputed
+        notes: Time uncertain; DST handling inconsistent (https://www.astrotheme.com/astrology/Islamic_Republic_of_Iran).
+      - event: Islamic Republic established by referendum
+        date: '1979-04-01'
+        time: 00:01:00
+        time_zone: Asia/Tehran
+        place: Tehran
+        lat: 35.6892
+        lon: 51.389
+        used_by:
+        - Jessica Adams
+        source:
+          url: https://www.jessicaadams.com/2026/01/12/blog/iran-in-psychic-astrology-2026-2040/
+          title: Iran in psychic astrology 2026-2040 (2026-01-12)
+          checked: false
+        confidence: disputed
+        notes: Formal birth of the state.
   - iso: "EG"
     slug: "egypt"
     name: "Egypt"
@@ -506,7 +1262,53 @@ countries:
       rationale: "Republic of Egypt established on June 18, 1953"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Proclamation of the Republic
+        date: '1953-06-19'
+        time: 01:30:00
+        time_zone: Africa/Cairo
+        place: Cairo
+        lat: 30.0444
+        lon: 31.2357
+        used_by:
+        - astrologicalworldmap.com
+        source:
+          url: https://astrologicalworldmap.com/2019/04/18/the-astrogeographical-position-of-cairo/
+          title: The astrogeographical position of Cairo (2019-04-18)
+          checked: false
+        confidence: disputed
+        notes: Equals 18 June 1953 23:30 UTC.
+      - event: Proclamation of the Republic (as reported for 1956)
+        date: '1956-06-18'
+        time: '23:30:00'
+        time_zone: UTC
+        place: Cairo
+        lat: 30.0444
+        lon: 31.2357
+        used_by:
+        - Nicholas Campion (as cited)
+        source:
+          url: https://astrologyking.com/egyptian-horoscope/
+          title: Egyptian horoscope (Astrology King)
+          checked: false
+        confidence: disputed
+        notes: Same clock time as the 1953 chart; the year may be a typo for 1953 (18 June 1956 is also Evacuation
+          Day).
+      - event: Free Officers' coup
+        date: '1952-07-22'
+        time: '22:00:00'
+        time_zone: Africa/Cairo
+        place: Cairo
+        lat: 30.0444
+        lon: 31.2357
+        used_by:
+        - Nicholas Campion (as cited)
+        source:
+          url: https://astrologicalworldmap.com/2019/04/18/the-astrogeographical-position-of-cairo/
+          title: The astrogeographical position of Cairo
+          checked: false
+        confidence: disputed
+        notes: Coup began on the night of 22-23 July.
   - iso: "ZA"
     slug: "south-africa"
     name: "South Africa"
@@ -520,7 +1322,52 @@ countries:
       rationale: "Republic of South Africa established on May 31, 1961"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Republic of South Africa
+        date: '1961-05-31'
+        time: 00:00:00
+        time_zone: Africa/Johannesburg
+        place: Pretoria
+        lat: -25.7479
+        lon: 28.2293
+        used_by:
+        - myastro.com
+        source:
+          url: https://myastro.com/myastropedia/south-africa
+          title: South Africa (MyAstro)
+          checked: false
+        confidence: conventional
+        notes: Midnight.
+      - event: Interim constitution in force (post-apartheid)
+        date: '1994-04-27'
+        time: '10:59:00'
+        time_zone: Africa/Johannesburg
+        place: Pretoria
+        lat: -25.7479
+        lon: 28.2293
+        used_by:
+        - Liz Greene (astro.com)
+        source:
+          url: https://www.astro.com/nat/natza_e.htm
+          title: South Africa (Astrodienst national charts)
+          checked: false
+        confidence: disputed
+        notes: Called the 'true' birth by Liz Greene; time provenance not stated.
+      - event: Union of South Africa
+        date: '1910-05-31'
+        time: null
+        time_zone: Africa/Johannesburg
+        place: Pretoria
+        lat: -25.7479
+        lon: 28.2293
+        used_by:
+        - general reference
+        source:
+          url: https://en.wikipedia.org/wiki/Union_of_South_Africa
+          title: Union of South Africa (Wikipedia)
+          checked: false
+        confidence: conventional
+        notes: Untimed.
   - iso: "NG"
     slug: "nigeria"
     name: "Nigeria"
@@ -534,7 +1381,22 @@ countries:
       rationale: "Independence from Britain on October 1, 1960"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Independence
+        date: '1960-10-01'
+        time: 00:00:00
+        time_zone: Africa/Lagos
+        place: Lagos
+        lat: 6.5244
+        lon: 3.3792
+        used_by:
+        - standard chart
+        source:
+          url: https://www.facebook.com/HistoricalnigeriaYoruba/posts/independence-day-october-1-1960this-is-the-moment-nigeria-received-its-freedom-c/122313443012076276/
+          title: Independence Day 1 October 1960 (Historical Nigeria, Facebook)
+          checked: false
+        confidence: documented
+        notes: Midnight handover; the 1999 civilian-rule chart was left out because its only citation is unrelated.
   - iso: "KE"
     slug: "kenya"
     name: "Kenya"
@@ -576,7 +1438,37 @@ countries:
       rationale: "Federation of Australia on January 1, 1901"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: First Fleet / British settlement
+        date: '1788-01-26'
+        time: 05:10:00
+        time_zone: LMT
+        place: Sydney
+        lat: -33.8688
+        lon: 151.2093
+        used_by:
+        - standard chart (as cited)
+        source:
+          url: https://www.jessicaadams.com/2018/01/26/blog/australia-new-astrology-chart/
+          title: Australia new astrology chart (2018-01-26)
+          checked: false
+        confidence: disputed
+        notes: 26 January called an 'invented birthday'.
+      - event: 1967 referendum result
+        date: '1967-05-27'
+        time: '23:59:00'
+        time_zone: Australia/Sydney
+        place: Canberra
+        lat: -35.2809
+        lon: 149.13
+        used_by:
+        - Jessica Adams
+        source:
+          url: https://www.jessicaadams.com/2018/01/26/blog/australia-new-astrology-chart/
+          title: Australia new astrology chart (2018-01-26)
+          checked: false
+        confidence: disputed
+        notes: Approximate; argued as a more inclusive founding moment.
   - iso: "NZ"
     slug: "new-zealand"
     name: "New Zealand"
@@ -604,7 +1496,22 @@ countries:
       rationale: "Restoration of Polish independence on November 11, 1918"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Independence
+        date: '1918-11-11'
+        time: null
+        time_zone: Europe/Warsaw
+        place: Warsaw
+        lat: 52.2297
+        lon: 21.0122
+        used_by:
+        - DashaFlow
+        source:
+          url: https://dashaflow.com/mundane
+          title: DashaFlow mundane chart list
+          checked: false
+        confidence: conventional
+        notes: Untimed; no dispute recorded.
   - iso: "SE"
     slug: "sweden"
     name: "Sweden"
@@ -618,7 +1525,22 @@ countries:
       rationale: "Unification of Sweden on June 6, 1523"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Union with Norway
+        date: '1814-11-04'
+        time: null
+        time_zone: LMT
+        place: Christiania (Oslo)
+        lat: 59.9139
+        lon: 10.7522
+        used_by:
+        - DashaFlow
+        source:
+          url: https://dashaflow.com/mundane
+          title: DashaFlow mundane chart list
+          checked: false
+        confidence: conventional
+        notes: Untimed.
   - iso: "NO"
     slug: "norway"
     name: "Norway"
@@ -632,7 +1554,22 @@ countries:
       rationale: "Dissolution of the union with Sweden on June 7, 1905"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Union with Sweden
+        date: '1814-11-04'
+        time: null
+        time_zone: LMT
+        place: Christiania (Oslo)
+        lat: 59.9139
+        lon: 10.7522
+        used_by:
+        - DashaFlow
+        source:
+          url: https://dashaflow.com/mundane
+          title: DashaFlow mundane chart list
+          checked: false
+        confidence: conventional
+        notes: Untimed.
   - iso: "DK"
     slug: "denmark"
     name: "Denmark"
@@ -674,7 +1611,22 @@ countries:
       rationale: "Independence from the Ottoman Empire on February 3, 1829"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Start of the War of Independence
+        date: '1821-03-25'
+        time: null
+        time_zone: LMT
+        place: Athens
+        lat: 37.9838
+        lon: 23.7275
+        used_by:
+        - DashaFlow
+        source:
+          url: https://dashaflow.com/mundane
+          title: DashaFlow mundane chart list
+          checked: false
+        confidence: conventional
+        notes: Untimed; 25 March is usually a Julian (Old Style) date.
   - iso: "PT"
     slug: "portugal"
     name: "Portugal"
@@ -870,7 +1822,39 @@ countries:
       rationale: "Unification of Nepal under Prithvi Narayan Shah around 1769"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Abolition of the monarchy (republic declared)
+        date: '2008-05-28'
+        time: null
+        time_zone: Asia/Kathmandu
+        place: Kathmandu
+        lat: 27.7172
+        lon: 85.324
+        used_by:
+        - named as a contender by Paramarsh
+        source:
+          url: https://paramarsh.app/patrika/mundane-astrology/national-charts-mundane-astrology
+          title: National charts in mundane astrology (Paramarsh)
+          checked: false
+        confidence: disputed
+        notes: The practitioner names the event without a date or time; the date is the Constituent Assembly's
+          first sitting. No source opened states the hour.
+      - event: Constitution of Nepal 2015 promulgated
+        date: '2015-09-20'
+        time: null
+        time_zone: Asia/Kathmandu
+        place: Kathmandu
+        lat: 27.7172
+        lon: 85.324
+        used_by:
+        - named as a contender by Paramarsh
+        source:
+          url: https://thehimalayantimes.com/ampArticle/126755
+          title: Nepal gets new constitution (The Himalayan Times, 2015-09-21)
+          checked: true
+        confidence: disputed
+        notes: Date confirmed by the news report (opened 2026-11-08), which gives no time of day. The unification
+          of the 18th century is the third contender (no date stated).
   - iso: "KZ"
     slug: "kazakhstan"
     name: "Kazakhstan"
@@ -1556,7 +2540,22 @@ countries:
       rationale: "Government of the Republic of China relocated to Taiwan on October 1, 1949"
     # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
     # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
-    candidate_charts: []
+    candidate_charts:
+      - event: Republic of China established
+        date: '1912-01-01'
+        time: '12:00:00'
+        time_zone: LMT
+        place: Nanjing
+        lat: 32.0603
+        lon: 118.7969
+        used_by:
+        - Jessica Adams
+        source:
+          url: https://www.jessicaadams.com/2022/03/15/blog/the-china-astrology-chart/
+          title: The China astrology chart (2022-03-15)
+          checked: false
+        confidence: conventional
+        notes: ROC chart, filed here because the ROC government is in Taipei; noon is conventional.
   - iso: "TM"
     slug: "turkmenistan"
     name: "Turkmenistan"
