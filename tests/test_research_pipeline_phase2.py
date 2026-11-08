@@ -1,5 +1,7 @@
 """Test suite for Phase 2 of the astrology research pipeline."""
 
+import os
+import sys
 import unittest
 from datetime import datetime
 from unittest.mock import patch
@@ -21,11 +23,11 @@ class TestResearchPipelinePhase2(unittest.TestCase):
         jd = self.eph.datetime_to_julian_day(datetime.now())
         scores = self.scorer.calculate_global_power(jd)
 
-        self.assertIn("Sun", scores)
-        self.assertIn("Mars", scores)
-        self.assertGreaterEqual(scores["Mars"], 0)
+        self.assertIn("SUN", scores)
+        self.assertIn("MARS", scores)
+        self.assertGreaterEqual(scores["MARS"], 0)
         self.assertLessEqual(
-            scores["Mars"], 100
+            scores["MARS"], 100
         )  # Should be normalized (though bonus might go over 100 on raw, but clamped)
 
     def test_chesta_bala_retrograde_boost(self):
@@ -47,6 +49,14 @@ class TestResearchPipelinePhase2(unittest.TestCase):
 
     def test_regression_matrix_script_imports(self):
         """Test that build_matrix script is importable and has function."""
+        scripts_dir = os.path.abspath(
+            os.path.join(
+                os.path.dirname(__file__),
+                "../research/use_cases/earthquake/scripts",
+            )
+        )
+        if scripts_dir not in sys.path:
+            sys.path.append(scripts_dir)
         import build_regression_matrix
 
         self.assertTrue(hasattr(build_regression_matrix, "build_matrix"))

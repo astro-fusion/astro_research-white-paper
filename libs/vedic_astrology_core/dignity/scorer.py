@@ -138,8 +138,10 @@ class DignityScorer:
         # Get natural friendship
         natural = get_natural_friendship(planet, sign_lord)
 
-        # If chart is available, use Panchadha Maitri (Natural + Temporary)
-        if chart is not None:
+        # If chart positions are available, use Panchadha Maitri
+        # (Natural + Temporary); otherwise fall back to natural friendship.
+        chart_planets = getattr(chart, "planets", None)
+        if chart is not None and isinstance(chart_planets, dict) and chart_planets:
             temporary = calculate_tatkalika_maitri(chart, planet, sign_lord)
             combined = get_combined_friendship(natural, temporary)
 

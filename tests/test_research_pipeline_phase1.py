@@ -70,7 +70,8 @@ class TestResearchPipelinePhase1(unittest.TestCase):
         sys.path.append(
             os.path.abspath(
                 os.path.join(
-                    os.path.dirname(__file__), "../use_cases/earthquake/scripts"
+                    os.path.dirname(__file__),
+                    "../research/use_cases/earthquake/scripts",
                 )
             )
         )
@@ -95,7 +96,8 @@ class TestResearchPipelinePhase1(unittest.TestCase):
         sys.path.append(
             os.path.abspath(
                 os.path.join(
-                    os.path.dirname(__file__), "../use_cases/earthquake/scripts"
+                    os.path.dirname(__file__),
+                    "../research/use_cases/earthquake/scripts",
                 )
             )
         )

@@ -45,7 +45,7 @@ PROCESSED_DATA_PATH = os.path.join(
     "processed",
     "aligned_planetary_data.csv",
 )
-ARTIFACTS_DIR = os.path.join(
+ARTIFACTS_DIR = os.environ.get("ASTRO_ARTIFACTS_DIR") or os.path.join(
     os.path.dirname(os.path.dirname(__file__)), "reports", "artifacts"
 )
 

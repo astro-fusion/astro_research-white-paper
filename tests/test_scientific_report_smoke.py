@@ -3,6 +3,7 @@
 import json
 import os
 import subprocess
+import sys
 
 import pytest
 
@@ -15,22 +16,20 @@ GENERATE_ARTIFACTS_SCRIPT = os.path.join(
 )
 
 
-def test_artifact_generation():
-    """Verify that the script runs and produces all required files."""
-    # Ensure artifacts directory exists or is clean
-    if os.path.exists(ARTIFACTS_DIR):
-        for f in os.listdir(ARTIFACTS_DIR):
-            os.remove(os.path.join(ARTIFACTS_DIR, f))
-    else:
-        os.makedirs(ARTIFACTS_DIR)
+def test_artifact_generation(tmp_path):
+    """Verify that the script runs and produces all required files.
 
-    # Run the script
+    Output goes to a temporary directory so tracked artifacts stay untouched.
+    """
+    env = dict(os.environ, ASTRO_ARTIFACTS_DIR=str(tmp_path))
     result = subprocess.run(
-        ["python3", GENERATE_ARTIFACTS_SCRIPT], capture_output=True, text=True
+        [sys.executable, GENERATE_ARTIFACTS_SCRIPT],
+        capture_output=True,
+        text=True,
+        env=env,
     )
     assert result.returncode == 0, f"Artifact generation failed: {result.stderr}"
 
-    # Verify expected files
     expected_files = [
         "tbl_stationarity.csv",
         "fig_periodogram.pdf",
@@ -39,12 +38,12 @@ def test_artifact_generation():
         "fig_permutation_dist.pdf",
     ]
     for filename in expected_files:
-        path = os.path.join(ARTIFACTS_DIR, filename)
-        assert os.path.exists(path), f"Missing expected artifact: {filename}"
+        path = tmp_path / filename
+        assert path.exists(), f"Missing expected artifact: {filename}"
 
 
 def test_dynamic_stats_integrity():
-    """Verify that the generated JSON stats contain the expected keys and types."""
+    """Verify that the committed JSON stats contain the expected keys and types."""
     json_path = os.path.join(ARTIFACTS_DIR, "stats_granger.json")
     with open(json_path, "r") as f:
         data = json.load(f)

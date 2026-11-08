@@ -243,6 +243,7 @@ class TestDignityScorer(unittest.TestCase):
     def test_neutral_sign_scoring(self):
         """Test scoring for planets in neutral signs."""
         mock_chart = Mock()
+        mock_chart.planets = {}
 
         # Sun in Gemini (neither exalted, debilitated, own sign, nor Moolatrikona)
         sun_longitude = 2 * 30 + 15  # Gemini 15°

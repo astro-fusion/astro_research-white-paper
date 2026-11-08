@@ -6,11 +6,12 @@ and store it locally for offline research analysis.
 """
 
 import json
-import requests
-from datetime import datetime
-from typing import List, Dict, Optional, Tuple
 import os
+from datetime import datetime
 from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+
+import requests
 
 
 class EarthquakeDataFetcher:
@@ -236,7 +237,7 @@ class EarthquakeDataFetcher:
                     return gk_windows[k]
             return gk_windows[2.5]
 
-        from math import radians, cos, sin, asin, sqrt
+        from math import asin, cos, radians, sin, sqrt
 
         def haversine(lat1, lon1, lat2, lon2):
             R = 6371
@@ -325,13 +326,16 @@ def main():
 
         with open(global_file, "w") as f:
             json.dump(processed_global, f, indent=2, default=str)
-        
+
         # Consistent filename for analysis scripts
         phase7_file = base_dir / "usgs_real_data_phase7.json"
         with open(phase7_file, "w") as f:
             json.dump(processed_global, f, indent=2, default=str)
-            
-        print(f"   ✅ Saved {len(processed_global)} records to {global_file.name} and {phase7_file.name}")
+
+        print(
+            f"   ✅ Saved {len(processed_global)} records to "
+            f"{global_file.name} and {phase7_file.name}"
+        )
 
         # ---------------------------------------------------------
         # DATASET 2: Indian Subcontinent (Mag 5.0+)
