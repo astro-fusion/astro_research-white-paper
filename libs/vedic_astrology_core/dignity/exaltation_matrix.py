@@ -31,71 +31,68 @@ class ZodiacSign(Enum):
 
 # Exaltation and Debilitation data
 # Format: (sign_index, degrees_in_sign)
+# Deep-exaltation degrees: BPHS 3.49-50 (Santhanam 1984), "The deepest
+# exaltation degrees are respectively 10, 3, 28, 15, 5, 27 and 20" in Aries,
+# Taurus, Capricorn, Virgo, Cancer, Pisces and Libra. Deep fall is the same
+# degree in the seventh sign.
 EXALTATION_TABLE: Dict[Planet, Tuple[int, float]] = {
-    Planet.SUN: (ZodiacSign.ARIES.value, 10.0),  # Aries 10°
-    Planet.MOON: (ZodiacSign.TAURUS.value, 3.0),  # Taurus 3°
-    Planet.MARS: (ZodiacSign.CAPRICORN.value, 28.0),  # Capricorn 28°
-    Planet.MERCURY: (ZodiacSign.VIRGO.value, 15.0),  # Virgo 15°
-    Planet.JUPITER: (ZodiacSign.CANCER.value, 5.0),  # Cancer 5°
-    Planet.VENUS: (ZodiacSign.PISCES.value, 27.0),  # Pisces 27°
-    Planet.SATURN: (ZodiacSign.LIBRA.value, 20.0),  # Libra 20°
+    Planet.SUN: (ZodiacSign.ARIES.value, 10.0),  # Aries 10°, BPHS 3.49-50
+    Planet.MOON: (ZodiacSign.TAURUS.value, 3.0),  # Taurus 3°, BPHS 3.49-50
+    Planet.MARS: (ZodiacSign.CAPRICORN.value, 28.0),  # Capricorn 28°, BPHS 3.49-50
+    Planet.MERCURY: (ZodiacSign.VIRGO.value, 15.0),  # Virgo 15°, BPHS 3.49-50
+    Planet.JUPITER: (ZodiacSign.CANCER.value, 5.0),  # Cancer 5°, BPHS 3.49-50
+    Planet.VENUS: (ZodiacSign.PISCES.value, 27.0),  # Pisces 27°, BPHS 3.49-50
+    Planet.SATURN: (ZodiacSign.LIBRA.value, 20.0),  # Libra 20°, BPHS 3.49-50
     # Rahu and Ketu: Special handling (Taurus/Scorpio convention)
     Planet.RAHU: (ZodiacSign.TAURUS.value, 0.0),  # Taurus (variable)
     Planet.KETU: (ZodiacSign.SCORPIO.value, 0.0),  # Scorpio (variable)
 }
 
 DEBILITATION_TABLE: Dict[Planet, Tuple[int, float]] = {
-    Planet.SUN: (ZodiacSign.LIBRA.value, 10.0),  # Libra 10°
-    Planet.MOON: (ZodiacSign.SCORPIO.value, 3.0),  # Scorpio 3°
-    Planet.MARS: (ZodiacSign.CANCER.value, 28.0),  # Cancer 28°
-    Planet.MERCURY: (ZodiacSign.PISCES.value, 15.0),  # Pisces 15°
-    Planet.JUPITER: (ZodiacSign.CAPRICORN.value, 5.0),  # Capricorn 5°
-    Planet.VENUS: (ZodiacSign.VIRGO.value, 27.0),  # Virgo 27°
-    Planet.SATURN: (ZodiacSign.ARIES.value, 20.0),  # Aries 20°
+    Planet.SUN: (ZodiacSign.LIBRA.value, 10.0),  # Libra 10°, BPHS 3.49-50
+    Planet.MOON: (ZodiacSign.SCORPIO.value, 3.0),  # Scorpio 3°, BPHS 3.49-50
+    Planet.MARS: (ZodiacSign.CANCER.value, 28.0),  # Cancer 28°, BPHS 3.49-50
+    Planet.MERCURY: (ZodiacSign.PISCES.value, 15.0),  # Pisces 15°, BPHS 3.49-50
+    Planet.JUPITER: (ZodiacSign.CAPRICORN.value, 5.0),  # Capricorn 5°, BPHS 3.49-50
+    Planet.VENUS: (ZodiacSign.VIRGO.value, 27.0),  # Virgo 27°, BPHS 3.49-50
+    Planet.SATURN: (ZodiacSign.ARIES.value, 20.0),  # Aries 20°, BPHS 3.49-50
     # Rahu and Ketu: Opposite signs to exaltation
     Planet.RAHU: (ZodiacSign.SCORPIO.value, 0.0),  # Scorpio (variable)
     Planet.KETU: (ZodiacSign.TAURUS.value, 0.0),  # Taurus (variable)
 }
 
-# Moolatrikona ranges: (start_sign, start_degrees, end_sign, end_degrees)
+# Moolatrikona ranges: (start_sign, start_degrees, end_sign, end_degrees),
+# half-open [start, end): "the first 20 degrees" ends before 20.
+# Source: BPHS 3.51-54 (Santhanam 1984). Corrected 2026-11-09, see
+# CORRECTIONS.md (Mars was 0-18, Jupiter 0-13, Venus 0-10, Moon 4-30,
+# Mercury 16-20, and the end degree was included).
 MOOLATRIKONA_TABLE: Dict[Planet, Tuple[int, float, int, float]] = {
-    Planet.SUN: (ZodiacSign.LEO.value, 0.0, ZodiacSign.LEO.value, 20.0),  # Leo 0-20°
-    Planet.MOON: (
-        ZodiacSign.TAURUS.value,
-        4.0,
-        ZodiacSign.TAURUS.value,
-        30.0,
-    ),  # Taurus 4-30°
-    Planet.MARS: (
-        ZodiacSign.ARIES.value,
-        0.0,
-        ZodiacSign.ARIES.value,
-        18.0,
-    ),  # Aries 0-18°
-    Planet.MERCURY: (
-        ZodiacSign.VIRGO.value,
-        16.0,
-        ZodiacSign.VIRGO.value,
-        20.0,
-    ),  # Virgo 16-20°
+    # Leo 0-20°: "In Leo, the first 20 degrees are the Sun's Moola-Trikona",
+    # BPHS 3.51-54 (Santhanam 1984)
+    Planet.SUN: (ZodiacSign.LEO.value, 0.0, ZodiacSign.LEO.value, 20.0),
+    # Taurus 3-30°: "After the first 3 degrees of exaltation portion in
+    # Taurus", BPHS 3.51-54 (Santhanam 1984)
+    Planet.MOON: (ZodiacSign.TAURUS.value, 3.0, ZodiacSign.TAURUS.value, 30.0),
+    # Aries 0-12°: "Mars has the first 12 degrees in Aries", BPHS 3.51-54
+    # (Santhanam 1984)
+    Planet.MARS: (ZodiacSign.ARIES.value, 0.0, ZodiacSign.ARIES.value, 12.0),
+    # Virgo 15-20°: "the first 15 degrees are exaltation zone, the next 5
+    # degrees Moola-Trikona", BPHS 3.51-54 (Santhanam 1984)
+    Planet.MERCURY: (ZodiacSign.VIRGO.value, 15.0, ZodiacSign.VIRGO.value, 20.0),
+    # Sagittarius 0-10°: "The first one third of Sagittarius", BPHS 3.51-54
+    # (Santhanam 1984)
     Planet.JUPITER: (
         ZodiacSign.SAGITTARIUS.value,
         0.0,
         ZodiacSign.SAGITTARIUS.value,
-        13.0,
-    ),  # Sagittarius 0-13°
-    Planet.VENUS: (
-        ZodiacSign.LIBRA.value,
-        0.0,
-        ZodiacSign.LIBRA.value,
         10.0,
-    ),  # Libra 0-10°
-    Planet.SATURN: (
-        ZodiacSign.AQUARIUS.value,
-        0.0,
-        ZodiacSign.AQUARIUS.value,
-        20.0,
-    ),  # Aquarius 0-20°
+    ),
+    # Libra 0-15°: "Venus divides Libra into two halves keeping the first as
+    # Moola-Trikona", BPHS 3.51-54 (Santhanam 1984)
+    Planet.VENUS: (ZodiacSign.LIBRA.value, 0.0, ZodiacSign.LIBRA.value, 15.0),
+    # Aquarius 0-20°: "Saturn's arrangements are same in Aquarius as the Sun
+    # has in Leo", BPHS 3.51-54 (Santhanam 1984)
+    Planet.SATURN: (ZodiacSign.AQUARIUS.value, 0.0, ZodiacSign.AQUARIUS.value, 20.0),
     # Rahu and Ketu do not have Moolatrikona
 }
 
@@ -299,7 +296,10 @@ def uccha_bala(planet: Planet, longitude: float) -> float:
 
 def is_in_moolatrikona(longitude: float, planet: Planet) -> bool:
     """
-    Check if a planet is in its Moolatrikona range.
+    Check if a planet is in its Moolatrikona range (BPHS 3.51-54).
+
+    The range is half-open: the end degree belongs to the next part of the
+    sign (own sign, or the next sign for the Moon's Taurus 3-30).
 
     Args:
         longitude: Planet's longitude in degrees
@@ -318,12 +318,13 @@ def is_in_moolatrikona(longitude: float, planet: Planet) -> bool:
     start_longitude = start_sign * 30 + start_deg
     end_longitude = end_sign * 30 + end_deg
 
+    # Half-open [start, end): BPHS 3.51-54 counts "the first 20 degrees".
     # Handle wraparound case (if range crosses 0° Aries)
     if start_longitude <= end_longitude:
-        return start_longitude <= longitude <= end_longitude
+        return start_longitude <= longitude < end_longitude
     else:
         # Range wraps around 360°/0°
-        return longitude >= start_longitude or longitude <= end_longitude
+        return longitude >= start_longitude or longitude < end_longitude
 
 
 def is_in_own_sign(longitude: float, planet: Planet) -> bool:

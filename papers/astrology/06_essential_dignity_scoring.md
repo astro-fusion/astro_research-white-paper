@@ -66,9 +66,9 @@ The maximum dignity score (+10) is awarded only at the **specific degree** of ex
 | Planet  | Moolatrikona Sign | Moolatrikona Degrees | Own Sign(s)           |
 | ------- | ----------------- | -------------------- | --------------------- |
 | Sun     | Leo               | 0°–20°               | Leo                   |
-| Moon    | Taurus            | 4°–30°               | Cancer                |
+| Moon    | Taurus            | 3°–30°               | Cancer                |
 | Mars    | Aries             | 0°–12°               | Aries, Scorpio        |
-| Mercury | Virgo             | 16°–20°              | Gemini, Virgo         |
+| Mercury | Virgo             | 15°–20°              | Gemini, Virgo         |
 | Jupiter | Sagittarius       | 0°–10°               | Sagittarius, Pisces   |
 | Venus   | Libra             | 0°–15°               | Taurus, Libra         |
 | Saturn  | Aquarius          | 0°–20°               | Capricorn, Aquarius   |

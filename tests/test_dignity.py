@@ -11,7 +11,11 @@ from unittest.mock import Mock
 from vedic_astrology_core.config.constants import Planet
 from vedic_astrology_core.dignity import DignityScorer
 from vedic_astrology_core.dignity.exaltation_matrix import (
+    DEBILITATION_TABLE,
+    EXALTATION_TABLE,
+    MOOLATRIKONA_TABLE,
     get_debilitation_sign,
+    get_dignity_type,
     get_exaltation_sign,
     is_in_exaltation,
     is_in_moolatrikona,
@@ -337,6 +341,70 @@ class TestMars1984Dignity(unittest.TestCase):
 
         # Should be debilitation score (5)
         self.assertEqual(score, 5.0)
+
+
+class TestBphsDignityTables(unittest.TestCase):
+    """Pin the dignity tables to BPHS ch. 3 (Santhanam 1984).
+
+    BPHS 3.49-50: "The deepest exaltation degrees are respectively 10, 3,
+    28, 15, 5, 27 and 20" in Aries, Taurus, Capricorn, Virgo, Cancer, Pisces
+    and Libra. BPHS 3.51-54: Sun Leo first 20 degrees; Moon Taurus after the
+    first 3 degrees; Mars Aries first 12 degrees; Mercury Virgo the 5 degrees
+    after the first 15; Jupiter the first third of Sagittarius; Venus the
+    first half of Libra; Saturn Aquarius as the Sun in Leo. Ranges are
+    half-open: "the first 20 degrees" ends before 20.
+    """
+
+    # BPHS 3.51-54 (Santhanam 1984): (sign index, start deg, end deg).
+    MOOLATRIKONA = {
+        Planet.SUN: (4, 0.0, 20.0),
+        Planet.MOON: (1, 3.0, 30.0),
+        Planet.MARS: (0, 0.0, 12.0),
+        Planet.MERCURY: (5, 15.0, 20.0),
+        Planet.JUPITER: (8, 0.0, 10.0),
+        Planet.VENUS: (6, 0.0, 15.0),
+        Planet.SATURN: (10, 0.0, 20.0),
+    }
+
+    # BPHS 3.49-50 (Santhanam 1984): (sign index, deep-exaltation degree).
+    DEEP_EXALTATION = {
+        Planet.SUN: (0, 10.0),
+        Planet.MOON: (1, 3.0),
+        Planet.MARS: (9, 28.0),
+        Planet.MERCURY: (5, 15.0),
+        Planet.JUPITER: (3, 5.0),
+        Planet.VENUS: (11, 27.0),
+        Planet.SATURN: (6, 20.0),
+    }
+
+    def test_moolatrikona_table_matches_bphs_3_51_54(self):
+        """Moolatrikona table equals BPHS 3.51-54."""
+        for planet, (sign, start, end) in self.MOOLATRIKONA.items():
+            with self.subTest(planet=planet.name):
+                self.assertEqual(MOOLATRIKONA_TABLE[planet], (sign, start, sign, end))
+
+    def test_moolatrikona_ranges_are_half_open(self):
+        """The start degree is inside and the end degree is outside."""
+        for planet, (sign, start, end) in self.MOOLATRIKONA.items():
+            with self.subTest(planet=planet.name):
+                base = sign * 30.0
+                self.assertTrue(is_in_moolatrikona(base + start, planet))
+                self.assertTrue(is_in_moolatrikona(base + end - 0.01, planet))
+                self.assertFalse(is_in_moolatrikona(base + end, planet))
+                if start > 0:
+                    self.assertFalse(is_in_moolatrikona(base + start - 0.01, planet))
+
+    def test_mars_at_aries_15_is_own_sign_not_moolatrikona(self):
+        """Mars at Aries 15 is own sign (moolatrikona ends at 12)."""
+        self.assertFalse(is_in_moolatrikona(15.0, Planet.MARS))
+        self.assertEqual(get_dignity_type(15.0, Planet.MARS), "Own Sign")
+
+    def test_deep_exaltation_matches_bphs_3_49_50(self):
+        """Deep exaltation and fall degrees equal BPHS 3.49-50."""
+        for planet, (sign, deg) in self.DEEP_EXALTATION.items():
+            with self.subTest(planet=planet.name):
+                self.assertEqual(EXALTATION_TABLE[planet], (sign, deg))
+                self.assertEqual(DEBILITATION_TABLE[planet], ((sign + 6) % 12, deg))
 
 
 if __name__ == "__main__":

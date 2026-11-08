@@ -310,9 +310,10 @@ def dignity_in(ctx: EvalContext, p: DignityIn) -> Outcome:
     """Check that the planet's dignity (sthana) is one of the listed kinds.
 
     Exaltation (uccha) and debilitation (neecha) are the whole signs of BPHS
-    Ch. 3; moolatrikona uses the BPHS degree ranges (Sun Leo 0-20, Moon
-    Taurus 4-30, ...). A planet can hold several at once: Mercury at Virgo
-    17 deg is exalted, in moolatrikona and in its own sign. Friend, enemy and
+    Ch. 3; moolatrikona uses the BPHS 3.51-54 degree ranges (Sun Leo
+    0-20, Moon Taurus 3-30, ..., half-open). A planet can hold several at
+    once: Mercury at Virgo 17 deg is exalted, in moolatrikona and in its own
+    sign. Friend, enemy and
     neutral are the natural relation (naisargika maitri) of the planet to
     the lord of the sign it occupies, used only when the planet is in none
     of its own, moolatrikona, exaltation or debilitation signs. The nodes'

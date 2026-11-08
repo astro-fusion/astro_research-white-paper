@@ -1,5 +1,50 @@
 # Corrections
 
+## 2026-11-09: moolatrikona degree ranges corrected to BPHS 3.51-54
+
+**What was wrong.** `MOOLATRIKONA_TABLE` in
+`libs/vedic_astrology_core/dignity/exaltation_matrix.py` did not match the
+source it is meant to encode, BPHS ch. 3 v. 51-54 (Santhanam 1984). Mars was
+Aries 0-18 (BPHS: "Mars has the first 12 degrees in Aries"), Jupiter
+Sagittarius 0-13 (BPHS: "the first one third of Sagittarius", 0-10), Venus
+Libra 0-10 (BPHS: "divides Libra into two halves keeping the first", 0-15),
+the Moon Taurus 4-30 (BPHS: "after the first 3 degrees", 3-30) and Mercury
+Virgo 16-20 (BPHS: "the first 15 degrees are exaltation zone, the next 5
+degrees Moola-Trikona", 15-20). `is_in_moolatrikona` also included the end
+degree, so the Sun at exactly Leo 20 was moolatrikona and the Moon at exactly
+Gemini 0 was in its Taurus moolatrikona. The Sun and Saturn ranges were
+right. The deep-exaltation and deep-debilitation degrees (BPHS 3.49-50) were
+checked and were right.
+
+**Since when.** The table has carried these values since the project
+reorganisation (commit 9ddd511, 2026-02-19); the `dignity_in` rule predicate
+has read it since it was added on 2026-11-08 (commit c362c7e).
+
+**What changed.** The five ranges now follow BPHS 3.51-54 and every range is
+half-open `[start, end)`. Each row cites its verse. `tests/test_dignity.py`
+pins all seven moolatrikona ranges, their boundaries and the seven
+deep-exaltation degrees. The Vedic table in
+`papers/astrology/06_essential_dignity_scoring.md` now shows Moon 3-30 and
+Mercury 15-20.
+
+**Results affected.**
+
+- The rule predicate `dignity_in` with `moolatrikona` (through
+  `dignities_of`), `get_dignity_type`, and the `DignityScorer` base score
+  change for Mars at Aries 12-18 (now own sign), Jupiter at Sagittarius
+  10-13 (now own sign), Venus at Libra 10-15 (now moolatrikona), the Moon at
+  Taurus 3-4 and Mercury at Virgo 15-16 (now moolatrikona), and at the exact
+  end degrees. The catalogue rules that use `moolatrikona`
+  (`rules/financial/practitioner/vyapar_ratna_inverse_dignity_gold.yaml`,
+  for the Sun and Jupiter) keep their recorded reference-case outcomes;
+  those cases do not fall in the changed ranges.
+- The numerology-versus-astrology study scores dignity through
+  `DignityScorer`; its dignity figures are already being recomputed under
+  (c) of the 2026-11-08 entry and will use the corrected table.
+- The public benchmark's dignity gold was generated from this engine and
+  carries the old ranges. It will be regenerated and re-pinned to this
+  commit.
+
 ## 2026-11-08: results withdrawn pending re-analysis
 
 A review of this repository found that several published figures and statistics
