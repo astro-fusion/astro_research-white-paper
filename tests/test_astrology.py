@@ -1,319 +1,228 @@
 """
-Unit tests for astrology module.
+Unit tests for the astrology module.
 
-Tests astronomical calculations including ephemeris, chart generation,
-and Ayanamsa handling.
+Values are asserted against the golden fixture
+(``tests/fixtures/golden_charts.json``: pyswisseph with FLG_SIDEREAL and
+Lahiri, PyJHora), not just shapes.
 """
 
-import os
-import sys
+import json
 import unittest
-from datetime import datetime
+from datetime import datetime, timezone
+from pathlib import Path
+from zoneinfo import ZoneInfo
 
-# Add src to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "libs"))
+import swisseph as swe
 
-from vedic_astrology_core.astrology import AyanamsaSystem  # noqa: E402
-from vedic_astrology_core.astrology.ayanamsa import (  # noqa: E402
+from vedic_astrology_core.astrology import AyanamsaSystem, BirthChart, EphemerisEngine
+from vedic_astrology_core.astrology.ayanamsa import (
     convert_sidereal_to_tropical,
     convert_tropical_to_sidereal,
     get_ayanamsa_offset,
     get_zodiac_sign,
 )
-from vedic_astrology_core.config.constants import Planet  # noqa: E402
+from vedic_astrology_core.config.constants import Planet
+from vedic_astrology_core.utils.datetime_utils import NaiveDatetimeError
+
+FIXTURE = json.loads(
+    (Path(__file__).parent / "fixtures" / "golden_charts.json").read_text()
+)
+CHARTS = {c["id"]: c for c in FIXTURE["charts"]}
+J2000 = CHARTS["grw_j2000"]  # 2000-01-01 12:00 UTC, JD 2451545.0
+DELHI_1984 = CHARTS["del_1984"]  # 1984-08-27 10:30 IST, Delhi
+ARCSEC = 1.0 / 3600.0
+ARCMIN = 1.0 / 60.0
 
 
 class TestAyanamsaCalculations(unittest.TestCase):
-    """Test Ayanamsa calculation functions."""
+    """Ayanamsa comes from swe.get_ayanamsa_ut only."""
 
-    def test_lahiri_ayanamsa_calculation(self):
-        """Test Lahiri Ayanamsa calculation."""
-        # Test with a known Julian day
-        # Approximate JD for J2000: 2451545.0
-        jd_j2000 = 2451545.0
+    def test_lahiri_ayanamsa_at_j2000(self):
+        """Lahiri at J2000 is 23.857 deg (not the 23.437 obliquity)."""
+        ayanamsa = get_ayanamsa_offset(2451545.0, AyanamsaSystem.LAHIRI)
+        self.assertAlmostEqual(ayanamsa, J2000["ayanamsa"], delta=ARCSEC)
+        self.assertAlmostEqual(ayanamsa, 23.857, places=3)
 
-        ayanamsa = get_ayanamsa_offset(jd_j2000, AyanamsaSystem.LAHIRI)
-        self.assertIsInstance(ayanamsa, float)
-        self.assertGreater(ayanamsa, 20)  # Should be around 24 degrees for current era
-        self.assertLess(ayanamsa, 30)
+    def test_lahiri_ayanamsa_precesses(self):
+        """The value at 1984 matches the oracle and is smaller than at 2000."""
+        ayanamsa = get_ayanamsa_offset(DELHI_1984["jd_ut"])
+        self.assertAlmostEqual(ayanamsa, DELHI_1984["ayanamsa"], delta=ARCSEC)
+        self.assertLess(ayanamsa, J2000["ayanamsa"])
 
-    def test_ayanamsa_conversion(self):
-        """Test tropical to sidereal conversion."""
-        longitude = 0.0  # Aries 0° tropical
-        ayanamsa = 24.0  # Current Lahiri Ayanamsa
+    def test_raman_uses_sidm_raman(self):
+        """Raman maps to SIDM_RAMAN, distinct from Krishnamurti."""
+        swe.set_sid_mode(swe.SIDM_RAMAN, 0.0, 0.0)
+        expected = swe.get_ayanamsa_ut(2451545.0)
+        raman = get_ayanamsa_offset(2451545.0, AyanamsaSystem.RAMAN)
+        kp = get_ayanamsa_offset(2451545.0, AyanamsaSystem.KRISHNAMURTI)
+        self.assertAlmostEqual(raman, expected, delta=1e-9)
+        self.assertNotAlmostEqual(raman, kp, places=3)
 
-        sidereal = convert_tropical_to_sidereal(longitude, ayanamsa)
-        expected = (longitude - ayanamsa) % 360
-        self.assertAlmostEqual(sidereal, expected, places=5)
-
-        # Test round-trip conversion
-        tropical_again = convert_sidereal_to_tropical(sidereal, ayanamsa)
-        self.assertAlmostEqual(tropical_again, longitude, places=5)
-
-    def test_zodiac_sign_calculation(self):
-        """Test zodiac sign determination."""
-        # Test Aries (0-30°)
-        sign_idx, sign_name, degrees = get_zodiac_sign(15.5)
-        self.assertEqual(sign_idx, 0)
-        self.assertEqual(sign_name, "Aries")
-        self.assertAlmostEqual(degrees, 15.5, places=1)
-
-        # Test Taurus (30-60°)
-        sign_idx, sign_name, degrees = get_zodiac_sign(45.0)
-        self.assertEqual(sign_idx, 1)
-        self.assertEqual(sign_name, "Taurus")
-        self.assertAlmostEqual(degrees, 15.0, places=1)
-
-        # Test wraparound (360° = 0°)
-        sign_idx1, _, _ = get_zodiac_sign(359.9)
-        sign_idx2, _, _ = get_zodiac_sign(0.1)
-        self.assertNotEqual(sign_idx1, sign_idx2)  # Should be different signs
-
-    def test_ayanamsa_system_validation(self):
-        """Test Ayanamsa system validation."""
-        # Valid systems
-        for system in [AyanamsaSystem.LAHIRI, AyanamsaSystem.RAMAN]:
-            with self.subTest(system=system):
-                offset = get_ayanamsa_offset(2451545.0, system)
-                self.assertIsInstance(offset, float)
-
-        # Invalid system should raise ValueError
+    def test_invalid_system(self):
+        """Unknown systems raise ValueError."""
         with self.assertRaises(ValueError):
             get_ayanamsa_offset(2451545.0, "invalid_system")
 
+    def test_ayanamsa_conversion_round_trip(self):
+        """Tropical to sidereal and back."""
+        sidereal = convert_tropical_to_sidereal(0.0, 24.0)
+        self.assertAlmostEqual(sidereal, 336.0, places=9)
+        self.assertAlmostEqual(convert_sidereal_to_tropical(sidereal, 24.0), 0.0)
+
+    def test_zodiac_sign_calculation(self):
+        """Sign index, name and degrees within sign."""
+        self.assertEqual(get_zodiac_sign(15.5), (0, "Aries", 15.5))
+        idx, name, deg = get_zodiac_sign(45.0)
+        self.assertEqual((idx, name), (1, "Taurus"))
+        self.assertAlmostEqual(deg, 15.0)
+        self.assertEqual(get_zodiac_sign(359.9)[0], 11)
+        self.assertEqual(get_zodiac_sign(360.1)[0], 0)
+
 
 class TestEphemerisEngine(unittest.TestCase):
-    """Test ephemeris engine functionality."""
+    """Sidereal positions against the pyswisseph oracle."""
 
     def setUp(self):
-        """Set up test fixtures."""
-        try:
-            from vedic_astrology_core.astrology import EphemerisEngine
+        """Create a default (Lahiri, mean node) engine."""
+        self.ephemeris = EphemerisEngine()
 
-            self.ephemeris = EphemerisEngine()
-            self.ephemeris_available = True
-        except ImportError:
-            self.ephemeris_available = False
-
-    def test_ephemeris_initialization(self):
-        """Test ephemeris engine initialization."""
-        if not self.ephemeris_available:
-            self.skipTest("Swiss Ephemeris (pyswisseph) not available")
-
-        # Should initialize without errors
-        self.assertIsNotNone(self.ephemeris)
+    def test_engine_records_conventions(self):
+        """Node model and ephemeris model are recorded on the engine."""
+        info = self.ephemeris.get_ephemeris_info()
+        self.assertEqual(info["node_model"], "mean")
+        self.assertIn(info["ephemeris_model"], ("swieph", "moshier"))
+        self.assertEqual(info["ayanamsa_system"], "lahiri")
+        with self.assertRaises(ValueError):
+            EphemerisEngine(node_model="osculating")
 
     def test_datetime_to_julian_day(self):
-        """Test Julian day conversion."""
-        if not self.ephemeris_available:
-            self.skipTest("Swiss Ephemeris not available")
+        """Aware datetimes convert exactly; naive ones are rejected."""
+        j2000 = datetime(2000, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
+        self.assertEqual(self.ephemeris.datetime_to_julian_day(j2000), 2451545.0)
+        with self.assertRaises(NaiveDatetimeError):
+            self.ephemeris.datetime_to_julian_day(datetime(2000, 1, 1, 12))
+        ktm = datetime(1990, 5, 15, 10, 30, tzinfo=ZoneInfo("Asia/Kathmandu"))
+        utc = datetime(1990, 5, 15, 4, 45, tzinfo=timezone.utc)
+        self.assertAlmostEqual(
+            self.ephemeris.datetime_to_julian_day(ktm),
+            self.ephemeris.datetime_to_julian_day(utc),
+            places=9,
+        )
 
-        # Test J2000 epoch
-        j2000 = datetime(2000, 1, 1, 12, 0, 0)
-        jd = self.ephemeris.datetime_to_julian_day(j2000)
+    def test_sun_at_j2000_is_sidereal(self):
+        """J2000 Sun is 256.516 deg (sidereal Sagittarius), not 280.37."""
+        sun = self.ephemeris.get_planet_position(2451545.0, Planet.SUN)
+        self.assertAlmostEqual(
+            sun["longitude"], J2000["bodies"]["SUN"]["longitude"], delta=ARCMIN
+        )
+        self.assertEqual(sun["sign_name"], "Sagittarius")
+        self.assertFalse(sun["retrograde"])
+        self.assertFalse(sun["combust"])
 
-        # J2000.0 is 2451545.0
-        self.assertAlmostEqual(jd, 2451545.0, places=1)
+    def test_planet_position_values(self):
+        """Every graha at J2000 within 1 arcminute; retrograde from speed."""
+        for name in ("MOON", "MARS", "MERCURY", "JUPITER", "VENUS", "SATURN"):
+            with self.subTest(planet=name):
+                pos = self.ephemeris.get_planet_position(2451545.0, name.lower())
+                expected = J2000["bodies"][name]
+                self.assertAlmostEqual(
+                    pos["longitude"], expected["longitude"], delta=ARCMIN
+                )
+                self.assertAlmostEqual(
+                    pos["longitude_speed"], expected["speed"], delta=1e-3
+                )
+                self.assertEqual(pos["retrograde"], expected["speed"] < 0)
+                self.assertEqual(pos["sign"], int(expected["longitude"] // 30))
 
-    def test_planet_position_structure(self):
-        """Test planet position data structure."""
-        if not self.ephemeris_available:
-            self.skipTest("Swiss Ephemeris not available")
-
-        # Test with a known date
-        test_date = datetime(2024, 1, 1, 12, 0, 0)
-        jd = self.ephemeris.datetime_to_julian_day(test_date)
-
-        position = self.ephemeris.get_planet_position(jd, Planet.SUN.name.lower())
-
-        # Check required keys exist
-        required_keys = [
-            "longitude",
-            "latitude",
-            "distance",
-            "longitude_speed",
-            "sign",
-            "sign_name",
-            "degrees_in_sign",
-            "retrograde",
-            "combust",
-        ]
-
-        for key in required_keys:
-            self.assertIn(key, position)
-
-        # Check data types
-        self.assertIsInstance(position["longitude"], float)
-        self.assertIsInstance(position["retrograde"], bool)
-        self.assertIsInstance(position["combust"], bool)
-
-        # Longitude should be 0-360
-        self.assertGreaterEqual(position["longitude"], 0)
-        self.assertLess(position["longitude"], 360)
-
-    @unittest.skipUnless(hasattr(unittest, "assertLogs"), "assertLogs not available")
-    def test_ephemeris_error_handling(self):
-        """Test error handling when ephemeris is not available."""
-        if self.ephemeris_available:
-            self.skipTest("Swiss Ephemeris is available, cannot test error handling")
-
-        from vedic_astrology_core.astrology import EphemerisEngine
-
-        with self.assertRaises(ImportError):
-            EphemerisEngine()
-
-
-class TestBirthChart(unittest.TestCase):
-    """Test birth chart calculations."""
-
-    def test_birth_chart_creation(self):
-        """Test birth chart object creation."""
-        from vedic_astrology_core.astrology import BirthChart
-
-        birth_datetime = datetime(1984, 8, 27, 10, 30, 0)
-        latitude = 28.6139
-        longitude = 77.1025
-
-        chart = BirthChart(birth_datetime, latitude, longitude)
-
-        # Check basic attributes
-        self.assertEqual(chart.birth_datetime, birth_datetime)
-        self.assertEqual(chart.latitude, latitude)
-        self.assertEqual(chart.longitude, longitude)
-
-    def test_chart_properties_lazy_loading(self):
-        """Test that chart properties are loaded lazily."""
-        from vedic_astrology_core.astrology import BirthChart
-
-        birth_datetime = datetime(1984, 8, 27, 10, 30, 0)
-        chart = BirthChart(birth_datetime, 28.6139, 77.1025)
-
-        # Initially None
-        self.assertIsNone(chart._ascendant)
-        self.assertIsNone(chart._houses)
-        self.assertIsNone(chart._planets)
-
-        # Access triggers loading
-        ascendant = chart.ascendant
-        self.assertIsNotNone(ascendant)
-        self.assertIsNotNone(chart._ascendant)  # Now loaded
-
-    def test_ascendant_calculation(self):
-        """Test ascendant calculation."""
-        if not hasattr(unittest, "assertLogs"):
-            self.skipTest("Cannot test without ephemeris")
-
-        from vedic_astrology_core.astrology import BirthChart
-
-        birth_datetime = datetime(1984, 8, 27, 10, 30, 0)
-        chart = BirthChart(birth_datetime, 28.6139, 77.1025)
-
-        ascendant = chart.ascendant
-
-        # Check structure
-        required_keys = [
-            "longitude",
-            "sign",
-            "sign_name",
-            "degrees_in_sign",
-            "full_name",
-        ]
-        for key in required_keys:
-            self.assertIn(key, ascendant)
-
-        # Check value ranges
-        self.assertGreaterEqual(ascendant["longitude"], 0)
-        self.assertLess(ascendant["longitude"], 360)
-        self.assertIsInstance(ascendant["sign"], int)
-        self.assertGreaterEqual(ascendant["sign"], 0)
-        self.assertLess(ascendant["sign"], 12)
-
-
-class TestMars1984Case(unittest.TestCase):
-    """Test the Mars in 1984 case from the technical document."""
-
-    def test_mars_position_august_1984(self):
-        """Test Mars position for August 1984 as mentioned in document."""
-        # According to the document, Mars was in Scorpio in August 1984
-        # Let's test the calculation framework
-
-        from vedic_astrology_core.astrology import EphemerisEngine
-
-        try:
-            ephemeris = EphemerisEngine()
-        except ImportError:
-            self.skipTest("Swiss Ephemeris not available")
-
-        # Calculate for August 15, 1984 (mid-month)
-        test_date = datetime(1984, 8, 15, 12, 0, 0)
-        jd = ephemeris.datetime_to_julian_day(test_date)
-
-        mars_position = ephemeris.get_planet_position(jd, Planet.MARS.name.lower())
-
-        # Mars should be in a valid sign (0-11)
-        self.assertIsInstance(mars_position["sign"], int)
-        self.assertGreaterEqual(mars_position["sign"], 0)
-        self.assertLess(mars_position["sign"], 12)
-
-        # Scorpio is sign index 7 (210°-240°)
-        # The document mentions Mars in Scorpio, so let's verify the framework works
-        sign_name = mars_position["sign_name"]
-        self.assertIsInstance(sign_name, str)
-        self.assertIn(
-            sign_name,
-            [
-                "Aries",
-                "Taurus",
-                "Gemini",
-                "Cancer",
-                "Leo",
-                "Virgo",
-                "Libra",
-                "Scorpio",
-                "Sagittarius",
-                "Capricorn",
-                "Aquarius",
-                "Pisces",
-            ],
+    def test_ketu_id_is_not_true_node(self):
+        """Planet.KETU no longer collides with swe.TRUE_NODE."""
+        self.assertNotEqual(Planet.KETU.value, swe.TRUE_NODE)
+        ketu = self.ephemeris.get_planet_position(2451545.0, Planet.KETU.value)
+        self.assertAlmostEqual(
+            ketu["longitude"], J2000["bodies"]["KETU_MEAN"]["longitude"], delta=ARCMIN
         )
 
 
+class TestBirthChart(unittest.TestCase):
+    """Birth chart against the Delhi 1984 golden chart."""
+
+    def setUp(self):
+        """Delhi, 1984-08-27 10:30 IST."""
+        self.birth = datetime(1984, 8, 27, 10, 30, tzinfo=ZoneInfo("Asia/Kolkata"))
+        self.lat, self.lon = DELHI_1984["latitude"], DELHI_1984["longitude"]
+
+    def test_naive_datetime_rejected(self):
+        """A naive birth time is ambiguous and raises."""
+        with self.assertRaises(NaiveDatetimeError):
+            BirthChart(datetime(1984, 8, 27, 10, 30), self.lat, self.lon)
+
+    def test_chart_values(self):
+        """Ascendant, ayanamsa and planets match the oracle."""
+        chart = BirthChart(self.birth, self.lat, self.lon)
+        self.assertIsNone(chart._ascendant)  # lazy
+        self.assertAlmostEqual(chart.julian_day, DELHI_1984["jd_ut"], places=6)
+        self.assertAlmostEqual(
+            chart.ascendant["longitude"], DELHI_1984["ascendant"], delta=ARCMIN
+        )
+        self.assertEqual(chart.ascendant["sign_name"], "Libra")
+        self.assertAlmostEqual(chart.ayanamsa, DELHI_1984["ayanamsa"], delta=ARCSEC)
+        mars = chart.planets[Planet.MARS]
+        self.assertAlmostEqual(
+            mars["longitude"], DELHI_1984["bodies"]["MARS"]["longitude"], delta=ARCMIN
+        )
+        self.assertEqual(mars["sign_name"], "Scorpio")
+
+    def test_whole_sign_houses_by_default(self):
+        """Whole-sign houses: house = sign distance from the ascendant sign."""
+        chart = BirthChart(self.birth, self.lat, self.lon)
+        self.assertEqual(chart.house_system, "W")
+        asc_sign = chart.ascendant["sign"]
+        self.assertEqual([h["sign"] for h in chart.houses][0], asc_sign)
+        # Mars in Scorpio, ascendant Libra: 2nd house.
+        self.assertEqual(chart.get_planet_in_house(Planet.MARS), 2)
+        self.assertEqual(chart.planets[Planet.MARS]["house"], 2)
+
+    def test_house_system_parameter_is_honoured(self):
+        """Placidus cusps and placement come from the same system."""
+        chart = BirthChart(self.birth, self.lat, self.lon, house_system="placidus")
+        self.assertEqual(chart.house_system, "P")
+        for house, cusp in zip(chart.houses, DELHI_1984["cusps_placidus"]):
+            self.assertAlmostEqual(house["longitude"], cusp, delta=ARCMIN)
+        mars = chart.planets[Planet.MARS]["longitude"]
+        house = chart.get_planet_in_house(Planet.MARS)
+        start = chart.houses[house - 1]["longitude"]
+        end = chart.houses[house % 12]["longitude"]
+        self.assertLess((mars - start) % 360, (end - start) % 360)
+
+    def test_polar_latitude_falls_back_to_whole_sign(self):
+        """Placidus is undefined above 66.5 deg; whole sign is used instead."""
+        polar = CHARTS["polar_2010"]
+        birth = datetime.fromisoformat(polar["utc"])
+        with self.assertWarns(RuntimeWarning):
+            chart = BirthChart(
+                birth, polar["latitude"], polar["longitude"], house_system="P"
+            )
+            asc = chart.ascendant["longitude"]
+        self.assertEqual(chart.requested_house_system, "P")
+        self.assertEqual(chart.house_system, "W")
+        self.assertAlmostEqual(asc, polar["ascendant"], delta=ARCMIN)
+
+    def test_unknown_house_system(self):
+        """Unknown systems raise ValueError."""
+        with self.assertRaises(ValueError):
+            BirthChart(self.birth, self.lat, self.lon, house_system="nonsense")
+
+
 class TestCoordinateValidation(unittest.TestCase):
-    """Test coordinate validation."""
-
-    def test_valid_coordinates(self):
-        """Test valid coordinate ranges."""
-        from vedic_astrology_core.astrology import BirthChart
-
-        # Valid coordinates
-        birth_datetime = datetime(1984, 8, 27, 10, 30, 0)
-
-        # Should not raise errors
-        chart = BirthChart(birth_datetime, 28.6139, 77.1025)  # Delhi
-        self.assertIsNotNone(chart)
-
-        chart = BirthChart(birth_datetime, 40.7128, -74.0060)  # New York
-        self.assertIsNotNone(chart)
+    """Coordinate validation."""
 
     def test_invalid_coordinates(self):
-        """Test invalid coordinate handling."""
-        from vedic_astrology_core.astrology import BirthChart
-
-        birth_datetime = datetime(1984, 8, 27, 10, 30, 0)
-
-        # Invalid latitude
-        with self.assertRaises(ValueError):
-            BirthChart(birth_datetime, 91.0, 77.1025)  # Latitude > 90
-
-        with self.assertRaises(ValueError):
-            BirthChart(birth_datetime, -91.0, 77.1025)  # Latitude < -90
-
-        # Invalid longitude
-        with self.assertRaises(ValueError):
-            BirthChart(birth_datetime, 28.6139, 181.0)  # Longitude > 180
-
-        with self.assertRaises(ValueError):
-            BirthChart(birth_datetime, 28.6139, -181.0)  # Longitude < -180
+        """Out-of-range latitude/longitude raise ValueError."""
+        birth = datetime(1984, 8, 27, 10, 30, tzinfo=ZoneInfo("Asia/Kolkata"))
+        for lat, lon in ((91.0, 77.1), (-91.0, 77.1), (28.6, 181.0), (28.6, -181.0)):
+            with self.subTest(lat=lat, lon=lon):
+                with self.assertRaises(ValueError):
+                    BirthChart(birth, lat, lon)
 
 
 if __name__ == "__main__":

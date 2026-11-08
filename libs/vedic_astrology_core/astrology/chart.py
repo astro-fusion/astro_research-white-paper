@@ -1,44 +1,136 @@
 """
 Birth Chart Calculations.
 
-Handles complete birth chart generation including ascendant calculation,
-house cusps, planetary positions, and chart analysis for Vedic astrology.
+Sidereal ascendant, house cusps, planetary positions and nakshatras.
+
+House systems: the ``house_system`` argument is honoured everywhere. The
+default is whole sign (bhava = rashi), the Parashari practice. The ascendant,
+the cusps and the house of each planet all come from the same system. Near
+the poles quadrant systems (Placidus, Koch, ...) are undefined; above
+66.5 deg latitude they fall back to whole sign with a warning (ported from
+``src/celestial/house_systems.py``).
 """
 
+import logging
+import warnings
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
-try:
-    import swisseph as swe
+import swisseph as swe
 
-    SWISSEPH_AVAILABLE = True
-except ImportError:
-    SWISSEPH_AVAILABLE = False
-    swe = None
-
-from .ayanamsa import (
-    AyanamsaSystem,
-    convert_tropical_to_sidereal,
-    get_zodiac_sign,
-)
+from ..config.constants import NAKSHATRAS, Planet, PlanetDict, to_planet
+from ..utils.datetime_utils import require_aware
+from .ayanamsa import AyanamsaSystem, get_zodiac_sign, set_sidereal_mode
 from .ephemeris import EphemerisEngine
-from ..config.constants import NAKSHATRAS
 
-# Internal bridge to src/celestial if available for advanced house systems
-try:
-    from src.celestial.house_systems import CelestialHouseSystem, compute_house_cusps
+logger = logging.getLogger(__name__)
 
-    HAS_CELESTIAL_ENGINES = True
-except ImportError:
-    HAS_CELESTIAL_ENGINES = False
+PLACIDUS_HIGH_DISTORTION_LAT = 60.0  # degrees N/S
+POLAR_SINGULARITY_LAT = 66.5  # degrees N/S
+
+# Swiss Ephemeris house-system codes, by name or code.
+HOUSE_SYSTEM_CODES: Dict[str, str] = {
+    "whole_sign": "W",
+    "w": "W",
+    "equal": "E",
+    "e": "E",
+    "sripati": "S",
+    "s": "S",
+    "porphyry": "O",
+    "o": "O",
+    "placidus": "P",
+    "p": "P",
+    "koch": "K",
+    "k": "K",
+    "regiomontanus": "R",
+    "r": "R",
+    "campanus": "C",
+    "c": "C",
+    "topocentric": "T",
+    "t": "T",
+}
+# Systems that are defined at every latitude.
+LATITUDE_SAFE_SYSTEMS = {"W", "E"}
+DEFAULT_HOUSE_SYSTEM = "W"
+
+
+def resolve_house_system(house_system: Union[str, bytes]) -> str:
+    """Return the one-letter Swiss Ephemeris code for a house-system name/code.
+
+    Raises:
+        ValueError: If the system is unknown.
+    """
+    if isinstance(house_system, bytes):
+        house_system = house_system.decode()
+    key = str(house_system).strip().lower()
+    if key not in HOUSE_SYSTEM_CODES:
+        raise ValueError(
+            f"Unknown house system {house_system!r}. Valid: "
+            f"{sorted(k for k in HOUSE_SYSTEM_CODES if len(k) > 1)}"
+        )
+    return HOUSE_SYSTEM_CODES[key]
+
+
+def resolve_house_system_for_latitude(
+    latitude: float, house_system: Union[str, bytes]
+) -> Tuple[str, Optional[str]]:
+    """Apply the polar-latitude fallback.
+
+    Returns:
+        (system code actually used, warning message or None)
+    """
+    code = resolve_house_system(house_system)
+    abs_lat = abs(latitude)
+    if abs_lat >= POLAR_SINGULARITY_LAT and code not in LATITUDE_SAFE_SYSTEMS:
+        return DEFAULT_HOUSE_SYSTEM, (
+            f"Latitude {latitude:.2f} deg exceeds the polar threshold "
+            f"({POLAR_SINGULARITY_LAT} deg); house system {code!r} is undefined "
+            "there. Falling back to whole sign."
+        )
+    if abs_lat >= PLACIDUS_HIGH_DISTORTION_LAT and code in ("P", "K"):
+        return code, (
+            f"Latitude {latitude:.2f} deg is in the high-distortion zone "
+            f"({PLACIDUS_HIGH_DISTORTION_LAT}-{POLAR_SINGULARITY_LAT} deg); "
+            "house cusps may be severely compressed."
+        )
+    return code, None
+
+
+def compute_sidereal_houses(
+    julian_day: float,
+    latitude: float,
+    longitude: float,
+    house_system: Union[str, bytes] = DEFAULT_HOUSE_SYSTEM,
+    ayanamsa_system: Union[str, AyanamsaSystem] = AyanamsaSystem.LAHIRI,
+) -> Tuple[List[float], float, float, str]:
+    """
+    Sidereal cusps, ascendant and MC from ``swe.houses_ex(..., FLG_SIDEREAL)``.
+
+    Returns:
+        (12 cusp longitudes, ascendant, MC, system code used)
+    """
+    code, warning = resolve_house_system_for_latitude(latitude, house_system)
+    if warning:
+        logger.warning(warning)
+        warnings.warn(warning, RuntimeWarning, stacklevel=2)
+    set_sidereal_mode(ayanamsa_system)
+    cusps, ascmc = swe.houses_ex(
+        julian_day, latitude, longitude, code.encode(), swe.FLG_SIDEREAL
+    )
+    return (
+        [c % 360.0 for c in cusps[:12]],
+        ascmc[0] % 360.0,
+        ascmc[1] % 360.0,
+        code,
+    )
 
 
 class BirthChart:
     """
-    Complete birth chart for Vedic astrology analysis.
+    Complete sidereal birth chart.
 
     Contains planetary positions, ascendant, house cusps, and metadata
-    required for dignity scoring and numerology-astrology correlation.
+    required for dignity scoring.
     """
 
     def __init__(
@@ -47,251 +139,170 @@ class BirthChart:
         latitude: float,
         longitude: float,
         ayanamsa_system: AyanamsaSystem = AyanamsaSystem.LAHIRI,
-        house_system: str = "P",  # Default: Placidus
-        node_type: str = "mean",  # Default: Mean Node
+        house_system: Union[str, bytes] = DEFAULT_HOUSE_SYSTEM,
+        node_type: str = "mean",
     ):
         """
         Initialize birth chart.
 
         Args:
-            birth_datetime: Birth date and time
+            birth_datetime: Timezone-aware birth date and time
             latitude: Birth latitude in decimal degrees
-            longitude: Birth longitude in decimal degrees
+            longitude: Birth longitude in decimal degrees (east positive)
             ayanamsa_system: Ayanamsa system to use
-            house_system: Swiss Ephemeris house system code (e.g., 'P', 'K', 'O', 'W')
-            node_type: 'mean' or 'true' node
+            house_system: "whole_sign" (default), "sripati", "equal",
+                "placidus", "koch", "porphyry", ... or a Swiss Ephemeris code
+            node_type: "mean" (default) or "true" lunar node
+
+        Raises:
+            ValueError: On a naive datetime, bad coordinates or unknown system.
         """
+        require_aware(birth_datetime, "birth_datetime")
+        if not (-90 <= latitude <= 90):
+            raise ValueError(f"Latitude must be between -90 and 90, got {latitude}")
+        if not (-180 <= longitude <= 180):
+            raise ValueError(f"Longitude must be between -180 and 180, got {longitude}")
         self.birth_datetime = birth_datetime
         self.latitude = latitude
         self.longitude = longitude
         self.ayanamsa_system = ayanamsa_system
-        self.house_system_code = (
-            house_system.encode() if isinstance(house_system, str) else house_system
+        self.requested_house_system = resolve_house_system(house_system)
+        self.house_system, self.house_system_warning = (
+            resolve_house_system_for_latitude(latitude, house_system)
         )
+        if self.house_system_warning:
+            logger.warning(self.house_system_warning)
+            warnings.warn(self.house_system_warning, RuntimeWarning, stacklevel=2)
+        self.house_system_code = self.house_system.encode()
         self.node_type = node_type
 
-        # Validate coordinates
-        if not (-90 <= self.latitude <= 90):
-            raise ValueError(
-                f"Latitude must be between -90 and 90, got {self.latitude}"
-            )
-        if not (-180 <= self.longitude <= 180):
-            raise ValueError(
-                f"Longitude must be between -180 and 180, got {self.longitude}"
-            )
-
-        # Initialize ephemeris engine
-        self.ephemeris = EphemerisEngine(ayanamsa_system)
-
-        # Calculate Julian Day
+        self.ephemeris = EphemerisEngine(ayanamsa_system, node_model=node_type)
         self.julian_day = self.ephemeris.datetime_to_julian_day(birth_datetime)
 
-        # Chart data (calculated on demand)
         self._ascendant: Optional[Dict] = None
         self._houses: Optional[List[Dict]] = None
-        self._planets: Optional[Dict[str, Dict]] = None
+        self._planets: Optional[PlanetDict] = None
         self._ayanamsa: Optional[float] = None
+        self._cusps: Optional[List[float]] = None
 
-    @property
-    def ascendant(self) -> Dict:
-        """Retrieve Lagna (Ascendant) information."""
-        if self._ascendant is None:
-            self._ascendant = self._calculate_ascendant()
-        return self._ascendant
-
-    @property
-    def houses(self) -> List[Dict]:
-        """Return house cusp information."""
-        if self._houses is None:
-            self._houses = self._calculate_houses()
-        return self._houses
-
-    @property
-    def planets(self) -> Dict[str, Dict]:
-        """Return all planetary positions."""
-        if self._planets is None:
-            self._planets = self.ephemeris.get_all_planet_positions(
-                self.julian_day, node_type=self.node_type
-            )
-        return self._planets
-
-    @property
-    def ayanamsa(self) -> float:
-        """Get Ayanamsa value for this chart."""
-        if self._ayanamsa is None:
-            self._ayanamsa = self.ephemeris.get_ayanamsa_offset(self.julian_day)
-        return self._ayanamsa
-
-    def _calculate_ascendant(self) -> Dict:
-        """
-        Calculate the ascendant (Lagna) for the birth chart.
-
-        The ascendant is the degree of the zodiac rising on the eastern horizon
-        at the time of birth.
-
-        Returns:
-            Dictionary with ascendant information
-        """
-        # Calculate ascendant using Swiss Ephemeris
-        # swe.houses_ex() returns house cusps, but we can also get ascendant directly
-        cusps, ascmc = swe.houses_ex(
-            self.julian_day, self.latitude, self.longitude, b"P"
-        )  # Placidus
-
-        ascendant_longitude = ascmc[0]  # Ascendant is first element
-
-        # Convert to sidereal if needed
-        if not self.ephemeris.sidereal_mode_set:
-            ascendant_longitude = convert_tropical_to_sidereal(
-                ascendant_longitude, self.ayanamsa
-            )
-
-        # Normalize to 0-360
-        ascendant_longitude = ascendant_longitude % 360
-
-        # Get sign information
-        sign_index, sign_name, degrees_in_sign = get_zodiac_sign(ascendant_longitude)
-
-        return {
-            "longitude": ascendant_longitude,
+    def _compute_houses(self) -> None:
+        if self._cusps is not None:
+            return
+        cusps, asc, _mc, _code = compute_sidereal_houses(
+            self.julian_day,
+            self.latitude,
+            self.longitude,
+            self.house_system,
+            self.ayanamsa_system,
+        )
+        self._cusps = cusps
+        sign_index, sign_name, degrees_in_sign = get_zodiac_sign(asc)
+        self._ascendant = {
+            "longitude": asc,
             "sign": sign_index,
             "sign_name": sign_name,
             "degrees_in_sign": degrees_in_sign,
             "full_name": f"{sign_name} {degrees_in_sign:.2f}°",
         }
 
-    def _calculate_houses(self) -> List[Dict]:
-        """
-        Calculate house cusps for the birth chart.
+    @property
+    def ascendant(self) -> Dict:
+        """Sidereal Lagna (ascendant)."""
+        self._compute_houses()
+        assert self._ascendant is not None
+        return self._ascendant
 
-        Standard: Placidus (P) or Whole Sign (W). Handles polar regions via src bridge.
+    @property
+    def houses(self) -> List[Dict]:
+        """Sidereal house cusps of the chart's house system."""
+        if self._houses is None:
+            self._compute_houses()
+            assert self._cusps is not None
+            houses = []
+            for i, cusp in enumerate(self._cusps):
+                sign_index, sign_name, degrees_in_sign = get_zodiac_sign(cusp)
+                houses.append(
+                    {
+                        "house_number": i + 1,
+                        "longitude": cusp,
+                        "sign": sign_index,
+                        "sign_name": sign_name,
+                        "degrees_in_sign": degrees_in_sign,
+                        "full_name": f"{sign_name} {degrees_in_sign:.2f}°",
+                    }
+                )
+            self._houses = houses
+        return self._houses
 
-        Returns:
-            List of 12 dictionaries with house information
-        """
-        if HAS_CELESTIAL_ENGINES:
-            # Map single-letter code to HouseSystem enum if possible
-            try:
-                # This is a bit hacky but works for the bridge
-                enum_map = {
-                    b"P": CelestialHouseSystem.PLACIDUS,
-                    b"W": CelestialHouseSystem.WHOLE_SIGN,
-                }
-                sys_enum = enum_map.get(
-                    self.house_system_code, CelestialHouseSystem.PORPHYRY
-                )
-                cusps, ascmc_0, mc_0 = compute_house_cusps(
-                    self.julian_day, self.latitude, self.longitude, sys_enum
-                )
-            except Exception:
-                # Fallback to direct swisseph if bridge fails
-                cusps, ascmc = swe.houses_ex(
-                    self.julian_day,
-                    self.latitude,
-                    self.longitude,
-                    self.house_system_code,
-                )
-        else:
-            cusps, ascmc = swe.houses_ex(
-                self.julian_day, self.latitude, self.longitude, self.house_system_code
-            )
+    @property
+    def planets(self) -> PlanetDict:
+        """All planetary positions, keyed by :class:`Planet`."""
+        if self._planets is None:
+            self._planets = self.ephemeris.get_all_planet_positions(self.julian_day)
+            for planet, data in self._planets.items():
+                data["house"] = self._house_of_longitude(data["longitude"])
+        return self._planets
 
-        houses = []
+    @property
+    def ayanamsa(self) -> float:
+        """Ayanamsa value (degrees) at the birth instant."""
+        if self._ayanamsa is None:
+            self._ayanamsa = self.ephemeris.get_ayanamsa(self.julian_day)
+        return self._ayanamsa
+
+    def _house_of_longitude(self, lon: float) -> int:
+        """House (1-12) containing ``lon`` under the chart's house system."""
+        if self.house_system == "W":
+            asc_sign = int(self.ascendant["longitude"] // 30)
+            return (int(lon // 30) - asc_sign) % 12 + 1
+        self._compute_houses()
+        assert self._cusps is not None
+        cusps = self._cusps
         for i in range(12):
-            house_longitude = cusps[i]
-            if not self.ephemeris.sidereal_mode_set:
-                house_longitude = convert_tropical_to_sidereal(
-                    house_longitude, self.ayanamsa
-                )
-            house_longitude = house_longitude % 360
-            sign_index, sign_name, degrees_in_sign = get_zodiac_sign(house_longitude)
-            houses.append(
-                {
-                    "house_number": i + 1,
-                    "longitude": house_longitude,
-                    "sign": sign_index,
-                    "sign_name": sign_name,
-                    "degrees_in_sign": degrees_in_sign,
-                    "full_name": f"{sign_name} {degrees_in_sign:.2f}°",
-                }
-            )
-        return houses
+            start, end = cusps[i], cusps[(i + 1) % 12]
+            span = (end - start) % 360.0
+            if (lon - start) % 360.0 < span:
+                return i + 1
+        return 12
 
-    def get_planet_in_house(self, planet_name: str) -> Optional[int]:
+    def get_planet_in_house(self, planet_name: Union[Planet, str]) -> Optional[int]:
         """
-        Determine which house a planet is in.
+        Return the house (1-12) of a planet under the chart's house system.
 
-        Args:
-            planet_name: Name of the planet
-
-        Returns:
-            House number (1-12), or None if planet not found
+        Returns None if the planet is unknown.
         """
-        planet_name = planet_name.upper()
-        if planet_name not in self.planets:
+        try:
+            planet = to_planet(planet_name)
+        except KeyError:
             return None
+        return self._house_of_longitude(self.planets[planet]["longitude"])
 
-        planet_longitude = self.planets[planet_name]["longitude"]
-        ascendant_longitude = self.ascendant["longitude"]
+    def get_planets_in_sign(self, sign_index: int) -> List[Planet]:
+        """Return the planets placed in a zodiac sign (0-11)."""
+        return [p for p, data in self.planets.items() if data["sign"] == sign_index]
 
-        # Calculate house by finding angular distance from ascendant
-        # Each house spans 30 degrees
-        angle_from_asc = (planet_longitude - ascendant_longitude) % 360
-        house_number = int(angle_from_asc / 30) + 1
-
-        return house_number
-
-    def get_planets_in_sign(self, sign_index: int) -> List[str]:
-        """
-        Get all planets in a specific zodiac sign.
-
-        Args:
-            sign_index: Zodiac sign index (0-11)
-
-        Returns:
-            List of planet names in that sign
-        """
-        planets_in_sign = []
-
-        for planet_name, planet_data in self.planets.items():
-            if planet_data["sign"] == sign_index:
-                planets_in_sign.append(planet_name)
-
-        return planets_in_sign
-
-    def get_planet_nakshatra(self, planet_name: str) -> Optional[Dict]:
-        """
-        Get Nakshatra information for a specific planet.
-
-        Args:
-            planet_name: Name of the planet
-
-        Returns:
-            Dictionary with Nakshatra info or None if planet not found
-        """
-        planet_name = planet_name.upper()
-        if planet_name not in self.planets:
+    def get_planet_nakshatra(self, planet_name: Union[Planet, str]) -> Optional[Dict]:
+        """Return nakshatra information for a planet, or None if unknown."""
+        try:
+            planet = to_planet(planet_name)
+        except KeyError:
             return None
-
-        longitude = self.planets[planet_name]["longitude"]
-        return get_nakshatra(longitude)
+        return get_nakshatra(self.planets[planet]["longitude"])
 
     def get_chart_summary(self) -> Dict:
-        """
-        Generate a summary of the birth chart.
-
-        Returns:
-            Dictionary with chart summary information
-        """
+        """Return a JSON-friendly summary of the chart."""
         return {
             "birth_datetime": self.birth_datetime.isoformat(),
             "latitude": self.latitude,
             "longitude": self.longitude,
             "ayanamsa_system": self.ayanamsa_system.value,
             "ayanamsa_value": self.ayanamsa,
+            "house_system": self.house_system,
+            "node_model": self.ephemeris.node_model,
+            "ephemeris_model": self.ephemeris.ephemeris_model,
             "julian_day": self.julian_day,
             "ascendant": self.ascendant,
-            "planets": self.planets,
+            "planets": {p.name: data for p, data in self.planets.items()},
             "houses": [
                 {
                     "house": h["house_number"],
@@ -308,21 +319,10 @@ def calculate_chart(
     latitude: float,
     longitude: float,
     ayanamsa_system: AyanamsaSystem = AyanamsaSystem.LAHIRI,
-    house_system: str = "P",
+    house_system: Union[str, bytes] = DEFAULT_HOUSE_SYSTEM,
     node_type: str = "mean",
 ) -> BirthChart:
-    """
-    Calculate a complete birth chart.
-
-    Args:
-        birth_datetime: Birth date and time
-        latitude: Birth latitude in decimal degrees
-        longitude: Birth longitude in decimal degrees
-        ayanamsa_system: Ayanamsa system to use
-
-    Returns:
-        BirthChart object with complete chart data
-    """
+    """Calculate a complete sidereal birth chart (see :class:`BirthChart`)."""
     return BirthChart(
         birth_datetime,
         latitude,
@@ -339,18 +339,7 @@ def get_ascendant(
     longitude: float,
     ayanamsa_system: AyanamsaSystem = AyanamsaSystem.LAHIRI,
 ) -> Dict:
-    """
-    Calculate ascendant for a given birth data.
-
-    Args:
-        birth_datetime: Birth date and time
-        latitude: Birth latitude
-        longitude: Birth longitude
-        ayanamsa_system: Ayanamsa system to use
-
-    Returns:
-        Dictionary with ascendant information
-    """
+    """Return the sidereal ascendant for the given birth data."""
     chart = calculate_chart(birth_datetime, latitude, longitude, ayanamsa_system)
     return chart.ascendant
 
@@ -360,63 +349,39 @@ def get_house_system(
     latitude: float,
     longitude: float,
     ayanamsa_system: AyanamsaSystem = AyanamsaSystem.LAHIRI,
+    house_system: Union[str, bytes] = DEFAULT_HOUSE_SYSTEM,
 ) -> List[Dict]:
-    """
-    Calculate house cusps for a given birth data.
-
-    Args:
-        birth_datetime: Birth date and time
-        latitude: Birth latitude
-        longitude: Birth longitude
-        ayanamsa_system: Ayanamsa system to use
-
-    Returns:
-        List of house cusp dictionaries
-    """
-    chart = calculate_chart(birth_datetime, latitude, longitude, ayanamsa_system)
+    """Return the sidereal house cusps for the given birth data."""
+    chart = calculate_chart(
+        birth_datetime, latitude, longitude, ayanamsa_system, house_system
+    )
     return chart.houses
 
 
 def get_planet_in_sign(longitude: float) -> Tuple[int, str, float]:
-    """
-    Get zodiac sign information for a given celestial longitude.
-
-    Args:
-        longitude: Celestial longitude in degrees (0-360)
-
-    Returns:
-        Tuple of (sign_index, sign_name, degrees_in_sign)
-    """
+    """Return (sign_index, sign_name, degrees_in_sign) for a longitude."""
     return get_zodiac_sign(longitude)
+
+
+NAKSHATRA_SPAN = 360.0 / 27.0
+PADA_SPAN = NAKSHATRA_SPAN / 4.0
 
 
 def get_nakshatra(longitude: float) -> Dict:
     """
-    Get Nakshatra (lunar mansion) information for a given longitude.
-
-    Args:
-        longitude: Celestial longitude in degrees (0-360)
+    Return the nakshatra (lunar mansion) of a sidereal longitude.
 
     Returns:
-        Dictionary with Nakshatra name, lord, deity, and pada (quarter)
+        Dictionary with index (0-26), name, lord, deity, pada (1-4) and
+        degrees_in_nakshatra.
     """
-    normalized_long = longitude % 360
-
-    # Each Nakshatra spans 13°20' (13.3333... degrees)
-    nakshatra_span = 360 / 27
-    nakshatra_index = int(normalized_long / nakshatra_span)
-
-    # Calculate angular distance into the Nakshatra
-    degrees_in_nakshatra = normalized_long % nakshatra_span
-
-    # Each Pada (quarter) spans 3°20' (3.3333... degrees)
-    # 4 Padas per Nakshatra
-    pada = int(degrees_in_nakshatra / (nakshatra_span / 4)) + 1
-
-    data = NAKSHATRAS[nakshatra_index]
-
+    lon = longitude % 360.0
+    index = int(lon // NAKSHATRA_SPAN) % 27
+    degrees_in_nakshatra = lon - index * NAKSHATRA_SPAN
+    pada = min(int(degrees_in_nakshatra // PADA_SPAN), 3) + 1
+    data = NAKSHATRAS[index]
     return {
-        "index": nakshatra_index,
+        "index": index,
         "name": data["name"],
         "lord": data["lord"],
         "deity": data["deity"],

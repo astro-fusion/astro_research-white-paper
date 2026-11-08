@@ -23,7 +23,8 @@ from .constants import AYANAMSA_SYSTEMS, HOUSE_SYSTEMS
 DEFAULT_CONFIG: Dict[str, Any] = {
     "astrology": {
         "ayanamsa_system": "lahiri",
-        "house_system": "placidus",
+        "house_system": "whole_sign",
+        "node_model": "mean",
         "sidereal_zodiac": True,
         "default_latitude": 28.6139,  # Delhi
         "default_longitude": 77.1025,  # Delhi
