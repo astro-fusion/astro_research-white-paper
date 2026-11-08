@@ -1,0 +1,44 @@
+{
+  "artifacts": [
+    ".gitkeep",
+    "catalogue_summary.csv",
+    "confirmation.csv",
+    "family_explore.csv",
+    "fig_declustering.png",
+    "fig_mc.png",
+    "fig_molchan.png",
+    "fig_rate_ratios.png",
+    "fig_region.png",
+    "rate_tests_all.csv",
+    "raw_descriptive.csv",
+    "results.json"
+  ],
+  "ayanamsa": "lahiri",
+  "catalogue_source": "usgs_fdsn",
+  "created_utc": "2026-11-08T02:26:50+00:00",
+  "ephemeris_model": "moshier",
+  "git": {
+    "commit": "8dbfa59b6fda4aa22058d2292b0d1c84f07ae7b0",
+    "dirty": true
+  },
+  "inputs": [
+    {
+      "date_range": [
+        "1976-01-07 00:24:54.100000+00:00",
+        "2026-10-25 07:21:37.857000+00:00"
+      ],
+      "path": "data/snapshots/usgs_d3d3d6ec8405.csv",
+      "row_count": 1645,
+      "sha256": "d3d3d6ec840599341782147b35579b69dae3919dd2668d762659270baef19972"
+    },
+    {
+      "path": "studies/earthquake/hypothesis.yaml",
+      "sha256": "d8e209709108fa6fbc7ff67e44b246bb74bb092de389fdc28e329647f229b455"
+    }
+  ],
+  "n_draws": 10000,
+  "node_model": "mean",
+  "python": "3.14.7",
+  "seed": 42,
+  "swisseph_version": "2.10.03"
+}

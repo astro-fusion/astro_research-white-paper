@@ -41,3 +41,32 @@ equal footing: event-rate ratios with confidence intervals, Molchan diagrams
 against a time-random baseline, declustered catalogues, multiplicity correction
 across every rule tested, and effect sizes reported whether or not they reach
 significance. The studies answer the expectation; it does not decide them.
+
+## Methods in practice
+
+The contract above is implemented once, in `vedic_astrology_core.stats`
+(`libs/vedic_astrology_core/stats/`), and every study calls it instead of
+writing its own tests:
+
+| Step | Module | What it does |
+|---|---|---|
+| Stationarity gate | `stationarity` | ADF and KPSS; applies one difference or log-difference and refuses the test if the series is still non-stationary |
+| Null surrogates | `nulls` | circular shift of the indicator (offset at least the longest period), stationary block bootstrap, phase randomisation; all seeded through `np.random.default_rng(seed)` |
+| Permutation test | `permutation` | p = (n_extreme + 1) / (n + 1), effect size against the null and a block-bootstrap interval |
+| Multiplicity | `multiplicity` | Benjamini-Hochberg, Benjamini-Yekutieli or Bonferroni across every (rule, target) pair |
+| Event rates | `rates` | rate ratio with an exact Poisson interval, tested against circular shifts |
+| Molchan | `molchan` | alarm fraction on the time axis, binomial bounds for N events, area skill score, time-random reference |
+| Granger-type tests | `granger` | astro series as exogenous regressors in an ADL with Newey-West errors and a fixed lag set |
+| Out of sample | `walk_forward` | time split with a frozen confirmation period; Hansen's SPA test for best-rule claims |
+| Provenance | `manifest`, `plots` | `manifest.json` (data SHA-256, commit, seed, ephemeris model, ayanamsa, node model) and a footer on every figure |
+
+The earthquake study is the first study rebuilt on it. Its pre-registration
+is `studies/earthquake/hypothesis.yaml` (region polygon, Mw homogenisation,
+completeness, two declustering methods, thirteen enumerated indicators, a
+10,000-draw circular-shift null, Benjamini-Yekutieli across 26 tests, and a
+1976-2010 / 2011-2026 split). One command,
+`python studies/earthquake/scripts/pipeline.py --seed 42`, writes every table
+and figure and the `results.json` from which the paper's Results and
+Discussion are generated. The first run found no configuration that passed the
+family correction; the paper reports the rate ratios and intervals for all of
+them.

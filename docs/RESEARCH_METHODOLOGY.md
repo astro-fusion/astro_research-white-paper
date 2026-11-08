@@ -197,7 +197,7 @@ def test_astrological_mapping():
 
 ### Step 6: Register the Use Case
 
-Add an entry to `research/use_cases/README.md`:
+Add the study to `STUDIES` in `studies/_paths.py` and an entry to the studies table:
 
 ```markdown
 | [your_topic/](your_topic/) | Your Hypothesis Summary | 🔄 In Progress | Your Data Source |
@@ -218,13 +218,31 @@ Open a PR referencing your Research Request issue. The PR should include:
 
 ## Statistical Methods Reference
 
-| Method                  | When to Use                                          | Python Implementation                               |
-| ----------------------- | ---------------------------------------------------- | --------------------------------------------------- |
-| **Pearson Correlation** | Linear relationship between two continuous variables | `scipy.stats.pearsonr()`                            |
-| **Permutation Test**    | Non-parametric, no distribution assumptions          | `scipy.stats.permutation_test()`                    |
-| **Granger Causality**   | Does X help predict Y over time?                     | `statsmodels.tsa.stattools.grangercausalitytests()` |
-| **Monte Carlo**         | Empirical null distribution for complex statistics   | Custom implementation                               |
-| **Mann-Whitney U**      | Comparing two groups without normality assumption    | `scipy.stats.mannwhitneyu()`                        |
+Use `vedic_astrology_core.stats` (`libs/vedic_astrology_core/stats/`); do not
+write study-local versions of these tests. The rigor contract in
+`docs/adr/ADR-001-flagship-research-repo.md` is enforced through it.
+
+| Need | Module and function | Notes |
+| --- | --- | --- |
+| Is the outcome stationary? | `stationarity.stationarity_gate` | ADF + KPSS; returns the verdict and the transform applied (none, diff, log-diff) |
+| Null that keeps autocorrelation | `nulls.circular_shift_null`, `nulls.stationary_block_bootstrap`, `nulls.phase_randomization` | never shuffle days i.i.d.; pass `rng=np.random.default_rng(seed)` |
+| Permutation test of any statistic | `permutation.permutation_test` | p = (n_extreme + 1) / (n + 1); returns effect size and a bootstrap CI |
+| Multiple comparisons | `multiplicity.family(results, method="by")` | one correction across every (rule, target) pair; `"bh"`, `"by"`, `"bonferroni"` |
+| Event rate during an indicator | `rates.rate_ratio`, `rates.rate_ratio_shift_test` | exact Poisson CI; circular-shift p-value |
+| Alarm-based forecasts | `molchan.molchan_trajectory`, `binomial_bound`, `area_skill_score`, `time_random_reference` | tau is a fraction of time; never interpolate on a decreasing axis |
+| Granger-type question | `granger.exog_granger` | astro series exogenous, ADL with Newey-West HAC, a priori lags, stationarity gate enforced; `target="garch_abs"` needs the optional `arch` package |
+| Out-of-sample evaluation | `walk_forward.time_split`, `walk_forward_splits`, `spa_test` | frozen confirmation period; Hansen SPA for best-rule claims |
+| Periodicities | `spectral.lomb_scargle_at_periods` | only at periods fixed in advance |
+| Provenance | `manifest.write_manifest`, `plots.save_figure` | data SHA-256, commit, seed, ephemeris model, ayanamsa and node model; figure footer |
+
+Every study also needs a `hypothesis.yaml` written before the pipeline runs
+(see `studies/earthquake/hypothesis.yaml`): data and period, indicators,
+windows, direction, null, number of draws and seed, correction, alpha and the
+exploration/confirmation split. Changes after the first run go into its
+`amendments` list with a date and a reason. One `scripts/pipeline.py` per
+study writes every table, figure, `results.json` and `manifest.json` into
+`studies/<name>/artifacts/`, and the paper reads `results.json` instead of
+typing numbers.
 
 ---
 
