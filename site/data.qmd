@@ -60,3 +60,35 @@ back-adjusted. Each study also writes `artifacts/overlay_frame.csv`: one row
 per trading day with the close, daily and forward log returns, and every
 indicator as 0/1, the file the site's explorer will load. It is regenerated
 by the pipeline and not committed, because it contains the price series.
+
+## Planetary dataset 1600-2100
+
+Daily sidereal positions of the nine grahas from 1600 to 2100, regenerated with
+the engine every study uses: Swiss Ephemeris, Lahiri ayanamsa, mean node, Ketu
+equal to Rahu plus 180 degrees, whole-sign. One row per body per day at 12:00
+UTC (1,646,883 rows), with columns `date`, `jd`, `body`, `longitude`,
+`latitude`, `speed`, `retrograde`, `sign`, `sign_name`, `degree_in_sign`,
+`nakshatra`, `nakshatra_name`, `pada` and `nakshatra_lord`. Each year has its
+own Parquet file and a manifest recording the engine settings, the git commit
+and the file's SHA-256.
+
+Regenerate it in about half a minute, with no download:
+
+```bash
+pip install ".[dev,data]"
+python scripts/generate_planetary_dataset.py --years 1600-2100 --out data/datasets/planetary
+python scripts/generate_planetary_dataset.py --check --out data/datasets/planetary
+```
+
+Published copies are release assets tagged `dataset-v*` on the
+[releases page](https://github.com/astro-fusion/astro_research-white-paper/releases),
+zipped per century, with `DATASET_README.md` (schema, CC BY 4.0 licence,
+citation). Two notebooks use it: `notebooks/03_planet_combinations.ipynb` and
+`notebooks/04_date_planet_conjunctions.ipynb` (five or more planets in one
+sign).
+
+This dataset replaces `astro-fusion/Astrology_Planetary_Data`, which is
+archived. That repository held only house occupancy per day for an unsourced
+ascendant, with no longitudes. Its tables could not be reproduced with a
+tropical or a Lahiri-sidereal calculation (see the provenance note), so they
+are not used here. The old `house_lordships` tables are not reproduced either.

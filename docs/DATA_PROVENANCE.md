@@ -112,3 +112,40 @@ sha256sum -c data/ephemeris/CHECKSUMS.sha256
 
 _Every submitted PR that introduces new data must follow Section 2 (Dataset Registry)
 and update the appropriate `CHECKSUMS.sha256` file._
+
+---
+
+## 7. Planetary dataset 1600-2100 (2026-11-08)
+
+**What it is.** `libs/vedic_astrology_core/datasets/planetary.py` writes daily
+positions of the nine grahas, 1600-2100, 12:00 UTC, one Parquet file per year
+under `data/datasets/planetary/` (not committed). Engine: pyswisseph,
+`FLG_SWIEPH | FLG_SPEED | FLG_SIDEREAL`, Lahiri, mean node, Ketu = Rahu + 180,
+whole-sign. Columns: `date`, `jd`, `body`, `longitude`, `latitude`, `speed`,
+`retrograde`, `sign`, `sign_name`, `degree_in_sign`, `nakshatra`,
+`nakshatra_name`, `pada`, `nakshatra_lord`. Each `<year>.manifest.json` holds the
+engine `ephemeris_model`, ayanamsa, node model, generator version, git commit
+and the file SHA-256.
+
+**Regenerate and verify.**
+
+    python scripts/generate_planetary_dataset.py --years 1600-2100
+    python scripts/generate_planetary_dataset.py --check
+
+**Where it lives.** Release assets of tag `dataset-v*` on
+`astro-fusion/astro_research-white-paper` (workflow
+`.github/workflows/dataset-release.yml`), zipped per century with
+`DATASET_README.md`. Licence CC BY 4.0. Hashes are reproducible only with the
+same Swiss Ephemeris build and `ephemeris_model`.
+
+**The old repository.** `astro-fusion/Astrology_Planetary_Data` is archived.
+Its CSVs (`planetary_positions_simplified`, `planetary_positions_complete`,
+`house_lordships_complete`) contain house occupancy per day or hour for an
+unsourced ascendant, not longitudes. The claimed sidereal basis could not be
+confirmed: for 2000-01-01 the sign pattern of the first row fits a sidereal
+Lahiri chart, but over all 366 days of 2000 neither a tropical nor a Lahiri
+sidereal calculation (mean or true node, any 3-hourly sample time) explains
+more than 56 days (15%) with a single ascendant, so the tables are not
+reproducible. `house_lordships` depended on the same unsourced ascendant and is
+not reproduced. The old raw CSV URLs stay online for existing notebooks, but
+nothing here should cite them.
