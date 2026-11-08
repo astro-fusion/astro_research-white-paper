@@ -42,7 +42,7 @@ This directory contains all CI/CD workflow definitions. Each workflow automates 
 **Steps**:
 
 1. Full quality gate (same as CI)
-2. Generate all research artifacts (`research/scripts/generate_artifacts.py`)
+2. Generate all research artifacts (`scripts/generate_artifacts.py`)
 3. Render all Quarto reports
 4. Deploy the rendered site to GitHub Pages
 

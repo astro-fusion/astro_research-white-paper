@@ -1,0 +1,13 @@
+---
+title: "Principles"
+---
+
+This page will be generated from the rule files under `rules/`: one row per
+rule with its plain-language condition, its classical source (text, chapter
+and verse), the studies that use it, and whether it has passed its
+reference-chart tests.
+
+The rules catalogue is being built. Until it is published, the principles each
+study uses are described in that study's paper (see the Studies menu).
+
+To propose a principle for testing, see [Contribute](contribute.qmd).

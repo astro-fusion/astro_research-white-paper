@@ -58,7 +58,7 @@ body:
         - "libs/vedic_astrology_core — Core astrological engine"
         - "libs/vedic_numerology — Numerology calculators"
         - "libs/visuals — Chart/visualization generators"
-        - "research/scripts — Pipeline scripts"
+        - "scripts — Pipeline scripts"
         - "application/web — Flask web app"
         - "application/api — REST API"
         - "tests — Test suite"

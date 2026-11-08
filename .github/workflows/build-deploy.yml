@@ -5,7 +5,10 @@ on:
     branches: ["main"]
     paths:
       - 'docs/**'
-      - 'use_cases/**'
+      - 'studies/**'
+      - 'site/**'
+      - 'papers/**'
+      - '_quarto.yml'
       - 'scripts/**'
       - 'README.md'
       - 'ARCHITECTURE.md'
@@ -50,13 +53,13 @@ jobs:
       - name: Test earthquake analysis with sample data
         run: |
           echo "🔬 Testing earthquake-planetary correlation analysis..."
-          python use_cases/earthquake/scripts/earthquake_planetary_analysis.py
+          python studies/earthquake/scripts/earthquake_planetary_analysis.py
           echo "✅ Sample data test completed!"
 
           # Check if results were generated
-          if [ -f "use_cases/earthquake/data/earthquake_planetary_correlation_analysis.json" ]; then
+          if [ -f "studies/earthquake/data/earthquake_planetary_correlation_analysis.json" ]; then
             echo "✅ Analysis results generated successfully"
-            echo "📊 Result file size: $(du -h use_cases/earthquake/data/earthquake_planetary_correlation_analysis.json | cut -f1)"
+            echo "📊 Result file size: $(du -h studies/earthquake/data/earthquake_planetary_correlation_analysis.json | cut -f1)"
           else
             echo "⚠️ Analysis results not found"
           fi
@@ -114,7 +117,7 @@ jobs:
 
           # Copy analysis results
           echo "📈 Copying analysis results..."
-          find use_cases -name "*.json" -type f ! -path "*/node_modules/*" -exec cp {} _site/data/ \; 2>/dev/null || true
+          find studies -name "*.json" -type f ! -path "*/node_modules/*" -exec cp {} _site/data/ \; 2>/dev/null || true
 
           echo "✅ Documentation structure built"
 
@@ -291,7 +294,7 @@ jobs:
                                       <li><a href="docs/research/RESEARCH_DATA_REFERENCE.md">Data Reference</a></li>
                                       <li><a href="docs/research/RESEARCH_PAPER_TEMPLATE.md">Paper Template</a></li>
                                       <li><a href="docs/research/PLANETARY_STRENGTH_VISUALIZATION.md">Visualizations</a></li>
-                                      <li><a href="docs/research/RESEARCH_COMPLETION_SUMMARY.md">Completion Summary</a></li>
+                                      <li><a href="docs/archive/RESEARCH_COMPLETION_SUMMARY.md">Completion Summary</a></li>
                                   </ul>
                               </div>
                               <div class="card">
@@ -337,14 +340,14 @@ jobs:
                                   <h3>Numerology-Astrology <span class="status complete">✅ Complete</span></h3>
                                   <p>Analysis of correlation between Vedic Astrology and Numerology systems.</p>
                                   <p><strong>Finding:</strong> r ≈ 0.12 (independent systems)</p>
-                                  <a href="docs/research/track_1_numerology_vs_astrology/research_numerology_correlation.html" style="display:inline-block; margin-top:10px; padding:6px 12px; background:#667eea; color:white; border-radius:4px; text-decoration:none;">📄 Read Report</a>
+                                  <a href="studies/numerology_vs_astrology/paper/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.html" style="display:inline-block; margin-top:10px; padding:6px 12px; background:#667eea; color:white; border-radius:4px; text-decoration:none;">📄 Read Report</a>
                                   <a href="reports/research_numerology_correlation.pdf" style="margin-left:10px; font-size:0.9em;">⬇️ PDF</a>
                               </div>
                               <div class="card">
                                   <h3>Earthquake-Planetary <span class="status ready">🔄 Framework Ready</span></h3>
                                   <p>Testing if planetary configurations correlate with earthquake occurrences.</p>
                                   <p><strong>Status:</strong> Analysis engine ready, awaiting data</p>
-                                  <a href="docs/research/track_2_earthquake_prediction/research_earthquake_prediction.html" style="display:inline-block; margin-top:10px; padding:6px 12px; background:#667eea; color:white; border-radius:4px; text-decoration:none;">📄 Read Report</a>
+                                  <a href="studies/earthquake/paper/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.html" style="display:inline-block; margin-top:10px; padding:6px 12px; background:#667eea; color:white; border-radius:4px; text-decoration:none;">📄 Read Report</a>
                                   <a href="reports/research_earthquake_prediction.pdf" style="margin-left:10px; font-size:0.9em;">⬇️ PDF</a>
                               </div>
                               <div class="card">

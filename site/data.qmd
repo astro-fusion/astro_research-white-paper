@@ -1,0 +1,27 @@
+---
+title: "Data"
+---
+
+All data lives under one root folder, `data/`, with three parts:
+
+| Folder | Contents | In git |
+|---|---|---|
+| `data/raw/` | Files exactly as downloaded | No |
+| `data/processed/` | Files derived from raw data by scripts | No |
+| `data/snapshots/` | Frozen copies used by a published result, each with a SHA-256 hash | No (published as release assets) |
+
+Study-specific inputs live in `studies/<name>/data/` and are documented in each
+study's README. Nothing in these folders is committed; each file is either
+fetched by a script from its source or generated from other files.
+
+| Dataset | Source | Licence | Used by |
+|---|---|---|---|
+| Earthquake catalogue (M5+) | [USGS ComCat](https://earthquake.usgs.gov/fdsnws/event/1/) | Public domain (US Government) | Earthquake study |
+| Gold price (XAU/USD, COMEX GC=F fallback) | Yahoo Finance via `yfinance` | Yahoo terms of use; not redistributed | Gold market study |
+| Athlete names and birth dates | [stat408 athletes dataset](https://github.com/stat408/Data) | See the source repository | Numerology study |
+| Planetary positions | Swiss Ephemeris (`pyswisseph`) | AGPL / Swiss Ephemeris licence | All studies |
+
+`make check-data` prints the SHA-256 hash and row count of every required input
+file, so a result can be tied to the exact data it used. The list of sources,
+licences and hashes is kept in
+[data/README.md](https://github.com/astro-fusion/astro_research-white-paper/blob/main/data/README.md).

@@ -42,6 +42,10 @@ format:
     toc: true
     number-sections: true
 execute:
+  # Disabled 2026-11-08: the code cells call the engine with naive datetimes,
+  # which it now rejects; re-enable once the sections are re-run with
+  # timezone-aware dates on sidereal positions (CORRECTIONS.md, item c).
+  enabled: false
   echo: false
   warning: false
 jupyter: python3

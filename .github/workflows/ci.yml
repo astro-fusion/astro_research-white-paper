@@ -46,13 +46,13 @@ jobs:
         pip install black isort flake8 flake8-docstrings mypy bandit safety
 
     - name: Check code formatting (Black)
-      run: black --check --diff libs/ src/ application/ research/ tests/
+      run: black --check --diff libs/ src/ application/ scripts/ studies/ tests/
 
     - name: Check import sorting (isort)
-      run: isort --check-only --diff libs/ src/ application/ research/ tests/
+      run: isort --check-only --diff libs/ src/ application/ scripts/ studies/ tests/
 
     - name: Lint code (flake8)
-      run: flake8 libs/ src/ application/ research/ tests/ --count --show-source --statistics
+      run: flake8 libs/ src/ application/ scripts/ studies/ tests/ --count --show-source --statistics
 
     - name: Type checking (mypy)
       run: mypy libs/vedic_astrology_core/ src/ application/

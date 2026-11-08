@@ -1,0 +1,43 @@
+---
+title: "Methods"
+---
+
+## How a study is run
+
+Every study follows the same contract, so that any rule can be tested on equal
+footing with any other:
+
+- The hypothesis is written down before the pipeline runs: the event series,
+  the rule, the time window, the expected direction, the test, the significance
+  level and the correction for multiple comparisons.
+- Planetary positions come from the Swiss Ephemeris, with the ayanamsa and the
+  node model stated in every output.
+- Event catalogues are declustered where the events cluster (aftershocks), and
+  every dataset is recorded with its source, licence and SHA-256 hash (see
+  [Data](data.qmd)).
+- Comparisons use event-rate ratios with confidence intervals and Molchan
+  diagrams against a time-random baseline. Null distributions preserve
+  autocorrelation (block bootstrap or phase randomisation).
+- Multiplicity is corrected across every rule tested (Benjamini-Hochberg), and
+  effect sizes are reported whether or not they reach significance.
+- Market series are checked for stationarity before any Granger-type test, and
+  forecasts are evaluated walk-forward on a held-out period.
+- Every figure and number in a paper is produced by the study's scripts with a
+  fixed seed and a recorded data hash.
+
+## Working expectations
+
+The project owner's current expectation, recorded as a hypothesis to be tested
+rather than a premise: planetary motion is smooth and deterministic in every
+ayanamsa and every divisional chart, while earthquakes, floods and prices are
+bursty and partly random, so if a relationship exists it is more likely to
+appear as a change in the *rate* or *conditions* of events during a
+configuration than as a point prediction.
+
+This is one expectation among others that astrologers may hold (for example,
+that specific transits to a national chart coincide with specific event
+types). The methods above are chosen so that any of these can be tested on
+equal footing: event-rate ratios with confidence intervals, Molchan diagrams
+against a time-random baseline, declustered catalogues, multiplicity correction
+across every rule tested, and effect sizes reported whether or not they reach
+significance. The studies answer the expectation; it does not decide them.

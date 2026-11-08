@@ -1,0 +1,61 @@
+---
+title: "Astro Research"
+subtitle: "Comparing Vedic astrological principles with recorded events, openly and reproducibly"
+toc: false
+number-sections: false
+aliases:
+  - ../index.html
+---
+
+## What this project is
+
+Astro Research is an open laboratory for comparing classical Vedic astrological
+principles with what actually happened: earthquakes, floods, market prices and
+national events. Every principle, dataset, script and result is public, and the
+project is built so that astrologers can add the principles they want tested
+without writing code.
+
+The aim is to compare and contrast. A principle from a classical text is
+stated precisely, matched against recorded dates and data, and the comparison
+is published with the code that produced it, so that anyone can rerun it,
+question it or extend it.
+
+## How to read a comparison here
+
+- **A rule** is one classical principle written down precisely: which planets,
+  which configuration, which window of time, which kind of event it is said to
+  relate to, and the text and verse it comes from.
+- **A study** applies a set of rules to one kind of recorded event (for
+  example, M5+ earthquakes since 2020, or the daily gold price) and compares
+  the periods when a rule holds with the periods when it does not.
+- **A result** is the outcome of that comparison: an effect size with its
+  uncertainty, the test used, and how many rules were tested at the same time.
+  Results are reported as found, whether positive, null or mixed, and every
+  figure links back to the script and data that made it.
+
+The methods are described on the [Methods](methods.qmd) page.
+
+## The principles in use
+
+Each study draws on principles from classical texts such as the Brihat Parashara
+Hora Shastra, Brihat Samhita, Phaladeepika and Saravali, for example
+Mars-Ketu conjunctions in mundane astrology or the planetary lords of the
+nakshatras. The [Principles](principles.qmd) page will list every rule in use
+with its classical source and the studies that use it.
+
+Astrologers are invited to propose more. A rule can be proposed without
+writing code; see [Contribute](contribute.qmd).
+
+## Studies and their status
+
+| Study | What it compares | Status |
+|---|---|---|
+| [Gold market](../studies/gold_market/paper/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.qmd) | Planetary configurations and XAU/USD returns | Re-analysis on verified data in progress |
+| [Earthquake](../studies/earthquake/paper/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.qmd) | Classical seismic combinations and the USGS catalogue, India-Nepal and global | Re-analysis in progress |
+| [Numerology and astrology](../studies/numerology_vs_astrology/paper/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.qmd) | Date numerology and the Moon's nakshatra lord | Re-analysis with sidereal positions in progress |
+| [Mundane](mundane.qmd) | National charts and recorded national events | Planned |
+
+Earlier results were withdrawn on 2026-11-08 because some figures were
+generated from simulated data and planetary positions were tropical rather than
+sidereal. The [Corrections](corrections.qmd) page records what was withdrawn and
+why; corrected results will be published here as they are computed.

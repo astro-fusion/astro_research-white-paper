@@ -32,6 +32,10 @@ format:
         \usepackage{placeins}
         \usepackage{float}
 execute:
+  # Disabled 2026-11-08: the included numerology sections call the engine with
+  # naive datetimes, which it now rejects; results are withdrawn pending
+  # re-analysis (CORRECTIONS.md).
+  enabled: false
   echo: false
   warning: false
 jupyter: python3

@@ -6,6 +6,10 @@ format:
   html:
     toc: true
     code-fold: true
+execute:
+  # Disabled 2026-11-08: needs the optional plotly extra and timezone-aware
+  # dates for the corrected engine; re-enable when the study is re-run.
+  enabled: false
 ---
 
 ## Overview

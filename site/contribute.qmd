@@ -1,0 +1,30 @@
+---
+title: "Contribute"
+---
+
+## Propose a principle (no code needed)
+
+If you are an astrologer and want a classical principle tested, open a
+[research request](https://github.com/astro-fusion/astro_research-white-paper/issues/new/choose)
+with:
+
+- the principle in plain words (planets, configuration, window of time);
+- the kind of event it is said to relate to;
+- the classical source: text, chapter and verse;
+- one or two dates when you expect it to hold, and one when you expect it not to.
+
+A maintainer turns it into a rule file and runs it against the reference
+charts before it enters a study.
+
+## Add code
+
+Developers can add predicates, studies or statistical tests. The developer
+guide is [CONTRIBUTING.md](https://github.com/astro-fusion/astro_research-white-paper/blob/main/CONTRIBUTING.md);
+the repository layout is described in
+[docs/ARCHITECTURE.md](https://github.com/astro-fusion/astro_research-white-paper/blob/main/docs/ARCHITECTURE.md).
+
+## Report an error
+
+If a chart, a calculation or a figure looks wrong, please open an issue. Errors
+that affect published results are recorded on the [Corrections](corrections.qmd)
+page.

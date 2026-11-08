@@ -34,7 +34,7 @@ body:
         - "libs/vedic_astrology_core — New astrological calculation"
         - "libs/vedic_numerology — New numerology method"
         - "libs/visuals — New chart type or visualization"
-        - "research/scripts — New pipeline or analysis script"
+        - "scripts — New pipeline or analysis script"
         - "application/web — Web interface feature"
         - "application/api — New API endpoint"
         - "ops — DevOps/tooling improvement"

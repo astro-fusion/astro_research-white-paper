@@ -1,0 +1,12 @@
+---
+title: "Mundane"
+---
+
+The mundane track will compare national charts (founding date, time and place,
+each with a cited source and a confidence rating) with recorded national
+events: earthquakes, floods, and later cyclones and droughts. It will compute
+transit-to-natal features from the rules catalogue and test whether event rates
+change during the configurations astrologers name.
+
+This track is planned. Floods are the first event type after earthquakes,
+because the Dartmouth Flood Observatory archive is open and well structured.
