@@ -341,35 +341,44 @@ def molchan_summary(hyp, frame, bins, seed, tag) -> Dict:
     }
 
 
-def secondary_analyses(hyp, grid, eph, frame, bins_by_cat, tables, tests,
-                       seed, n_draws) -> Dict:
+def secondary_analyses(
+    hyp, grid, eph, frame, bins_by_cat, tables, tests, seed, n_draws
+) -> Dict:
     """Run the controls, classifier, Bayes and power (amendment 2)."""
     pos = rb.positive_control(hyp, grid, eph, bins_by_cat, seed, n_draws, run_tests)
-    neg = rb.negative_control(hyp, grid, frame, bins_by_cat, seed, n_draws,
-                              run_tests)
-    clf = rb.classifier(hyp, grid, eph, bins_by_cat["gk"],
-                        period_slices(hyp, grid), seed)
+    neg = rb.negative_control(hyp, grid, frame, bins_by_cat, seed, n_draws, run_tests)
+    clf = rb.classifier(
+        hyp, grid, eph, bins_by_cat["gk"], period_slices(hyp, grid), seed
+    )
     bayes_tab = rb.bayes_table(tables["family"], tables["confirmation"])
     power_tab = rb.power_rows(hyp, tests, pos["tests"], seed)
     ctrl_tab = pd.concat(
-        [pos["tests"].assign(control="positive"),
-         neg["tests"].assign(control="negative")], ignore_index=True)
+        [
+            pos["tests"].assign(control="positive"),
+            neg["tests"].assign(control="negative"),
+        ],
+        ignore_index=True,
+    )
     controls = {
         "positive": {
             "references": pos["references"],
             "time_fraction": pos["time_fraction"],
             "detected": pos["detected"],
-            "best": {k: (v.item() if hasattr(v, "item") else v)
-                     for k, v in pos["best"].items()},
+            "best": {
+                k: (v.item() if hasattr(v, "item") else v)
+                for k, v in pos["best"].items()
+            },
             "decision": rb.records(pos["decision"]),
             "all": rb.records(pos["tests"]),
         },
         "negative": {k: v for k, v in neg.items() if k != "tests"}
         | {"tests": rb.records(neg["tests"])},
     }
-    return {"controls": controls, "classifier": clf,
-            "tables": {"controls": ctrl_tab, "bayes": bayes_tab,
-                       "power": power_tab}}
+    return {
+        "controls": controls,
+        "classifier": clf,
+        "tables": {"controls": ctrl_tab, "bayes": bayes_tab, "power": power_tab},
+    }
 
 
 # -------------------------------------------------------------- figures
@@ -564,8 +573,9 @@ def run(
         monthly_design(cat.loc[masks["gk"], "time"], frame, greater), greater
     )
 
-    sec = secondary_analyses(hyp, grid, eph, frame, bins_by_cat, tables, tests,
-                             seed, n_draws)
+    sec = secondary_analyses(
+        hyp, grid, eph, frame, bins_by_cat, tables, tests, seed, n_draws
+    )
 
     eph_info = engine.get_ephemeris_info()
     git = git_commit(REPO)
@@ -717,11 +727,15 @@ def main(argv=None) -> int:
         f"p {pc['best']['p_value']:.3f}"
     )
     nc = res["controls"]["negative"]
-    print(f"negative control: {nc['n_nominal']}/{nc['family_size']} nominal, "
-          f"{nc['n_significant']} after BY")
+    print(
+        f"negative control: {nc['n_nominal']}/{nc['family_size']} nominal, "
+        f"{nc['n_significant']} after BY"
+    )
     cv = res["classifier"]["explore_cv"]
-    print(f"classifier AUC {cv['auc']:.3f} vs shifted median {cv['null_q50']:.3f}"
-          f" (p {cv['p_value']:.3f})")
+    print(
+        f"classifier AUC {cv['auc']:.3f} vs shifted median {cv['null_q50']:.3f}"
+        f" (p {cv['p_value']:.3f})"
+    )
     return 0
 
 

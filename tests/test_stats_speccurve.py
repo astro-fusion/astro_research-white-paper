@@ -19,6 +19,7 @@ def _make(n, effect, rng):
 
 def _estimator(window, events, n):
     """Build the estimator fixture."""
+
     def est(spec, shift):
         w = np.roll(window, spec["lag"])
         if spec["widen"]:
@@ -94,11 +95,16 @@ def test_plot_helper_draws_both_panels(tmp_path):
     n = 5000
     w, ev = _make(n, 2.0, rng)
     res = specification_curve(
-        _estimator(w, ev, n), {"lag": [0, 1], "widen": [False, True]},
-        np.random.default_rng(5), n=n, min_shift=200, n_draws=9,
+        _estimator(w, ev, n),
+        {"lag": [0, 1], "widen": [False, True]},
+        np.random.default_rng(5),
+        n=n,
+        min_shift=200,
+        n_draws=9,
     )
     fig = specification_curve_figure(res, ["lag", "widen"])
     assert len(fig.axes) == 2
-    out = save_figure(fig, tmp_path / "sc.png", {"data_sha256": "x", "commit": "y",
-                                                 "seed": 5})
+    out = save_figure(
+        fig, tmp_path / "sc.png", {"data_sha256": "x", "commit": "y", "seed": 5}
+    )
     assert out.exists()

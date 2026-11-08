@@ -18,10 +18,28 @@ from vedic_astrology_core.stats.nulls import circular_shift_offsets
 from vedic_astrology_core.stats.permutation import empirical_p_value
 from vedic_astrology_core.stats.rates import indicator_rate_ratio
 
-PLANETS = ("SUN", "MOON", "MARS", "MERCURY", "VENUS", "JUPITER", "SATURN",
-           "RAHU", "KETU")
-VIMSHOTTARI = ("KETU", "VENUS", "SUN", "MOON", "MARS", "RAHU", "JUPITER",
-               "SATURN", "MERCURY")
+PLANETS = (
+    "SUN",
+    "MOON",
+    "MARS",
+    "MERCURY",
+    "VENUS",
+    "JUPITER",
+    "SATURN",
+    "RAHU",
+    "KETU",
+)
+VIMSHOTTARI = (
+    "KETU",
+    "VENUS",
+    "SUN",
+    "MOON",
+    "MARS",
+    "RAHU",
+    "JUPITER",
+    "SATURN",
+    "MERCURY",
+)
 
 
 def lagna_signs(jds, lat: float, lon: float) -> np.ndarray:
@@ -46,15 +64,17 @@ def dasha_lords(grid: pd.DatetimeIndex, chart: Dict, engine) -> Dict[int, np.nda
     birth = pd.Timestamp(chart["datetime"]).to_pydatetime()
     jd = engine.datetime_to_julian_day(birth)
     moon = engine.get_planet_position(jd, Planet.MOON)["longitude"]
-    periods = compute_vimshottari_nested_periods(birth, moon, depth=2,
-                                                 total_years=120)
+    periods = compute_vimshottari_nested_periods(birth, moon, depth=2, total_years=120)
     starts = pd.DatetimeIndex([pd.Timestamp(p["start"]) for p in periods]).tz_convert(
-        "UTC")
+        "UTC"
+    )
     pos = np.clip(starts.searchsorted(grid, side="right") - 1, 0, len(periods) - 1)
     out = {}
     for level in (1, 2):
-        lords = np.array([PLANETS.index(p["lords"][level - 1].upper())
-                          for p in periods], dtype=np.int8)
+        lords = np.array(
+            [PLANETS.index(p["lords"][level - 1].upper()) for p in periods],
+            dtype=np.int8,
+        )
         out[level] = lords[pos]
     return out
 
@@ -101,8 +121,9 @@ def clause_mask(c: Dict, sky: Dict, grammar: Dict) -> np.ndarray:
     raise KeyError(f"unknown clause kind {k}")
 
 
-def candidate_mask(cand: Dict, sky: Dict, grammar: Dict,
-                   cache: Optional[Dict] = None) -> np.ndarray:
+def candidate_mask(
+    cand: Dict, sky: Dict, grammar: Dict, cache: Optional[Dict] = None
+) -> np.ndarray:
     """Logical AND of a candidate's clauses (relation clauses cached)."""
     out = None
     for c in cand["clauses"]:
@@ -151,10 +172,14 @@ def shift_family(
     for cid, mask in masks:
         m = np.asarray(mask, dtype=bool)
         duty = float(m.mean())
-        row = {"id": cid, "n_active_hours": int(m.sum()),
-               "n_active_days": int(np.ceil(m.sum() / 24.0)),
-               "time_fraction": duty, "n_events": n_ev,
-               "expected_in": n_ev * duty}
+        row = {
+            "id": cid,
+            "n_active_hours": int(m.sum()),
+            "n_active_days": int(np.ceil(m.sum() / 24.0)),
+            "time_fraction": duty,
+            "n_events": n_ev,
+            "expected_in": n_ev * duty,
+        }
         if n_ev * duty < min_expected or n_ev * (1 - duty) < min_expected:
             row["testable"] = False
             rows.append(row)
@@ -166,17 +191,26 @@ def shift_family(
         z_obs = abs(rr.n_in - mu) / sd if sd > 0 else 0.0
         if sd > 0:
             np.maximum(max_abs_z, np.abs(counts - mu) / sd, out=max_abs_z)
-        row.update({
-            "testable": True, "n_in": rr.n_in, "rate_ratio": rr.rate_ratio,
-            "ci_low": rr.ci_low, "ci_high": rr.ci_high,
-            "p_value": empirical_p_value(rr.n_in, counts, "two-sided"),
-        })
+        row.update(
+            {
+                "testable": True,
+                "n_in": rr.n_in,
+                "rate_ratio": rr.rate_ratio,
+                "ci_low": rr.ci_low,
+                "ci_high": rr.ci_high,
+                "p_value": empirical_p_value(rr.n_in, counts, "two-sided"),
+            }
+        )
         rows.append(row)
         zs.append(z_obs)
     out = pd.DataFrame(rows)
     z = np.asarray(zs)
     out["p_rw"] = [
-        float((1 + np.sum(max_abs_z >= zi)) / (len(max_abs_z) + 1))
-        if np.isfinite(zi) else np.nan for zi in z
+        (
+            float((1 + np.sum(max_abs_z >= zi)) / (len(max_abs_z) + 1))
+            if np.isfinite(zi)
+            else np.nan
+        )
+        for zi in z
     ]
     return out

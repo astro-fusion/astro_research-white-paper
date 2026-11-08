@@ -39,7 +39,7 @@ def test_daily_features_shape():
     """Nine sin/cos pairs, eight speeds, 30 tithis and 27 nakshatras per day."""
     x = rb.daily_features(_eph(10), 24)
     assert x.shape == (10, 18 + 8 + 30 + 27)
-    assert np.allclose(x[:, 18 + 8:18 + 8 + 30].sum(axis=1), 1)
+    assert np.allclose(x[:, 18 + 8 : 18 + 8 + 30].sum(axis=1), 1)
     assert np.allclose(x[:, -27:].sum(axis=1), 1)
 
 

@@ -72,8 +72,13 @@ def save_figure(
     return out
 
 
-def specification_curve_figure(curve, choices, null_value: float = 1.0,
-                               ylabel: str = "Rate ratio", log_scale: bool = True):
+def specification_curve_figure(
+    curve,
+    choices,
+    null_value: float = 1.0,
+    ylabel: str = "Rate ratio",
+    log_scale: bool = True,
+):
     """Return a two-panel figure of a :class:`.speccurve.SpecCurve`.
 
     Top: estimates sorted by size with their intervals (filled where the
@@ -87,7 +92,10 @@ def specification_curve_figure(curve, choices, null_value: float = 1.0,
     rows = [(c, v) for c in choices for v in dict.fromkeys(f[c].tolist())]
     with plt.rc_context(HOUSE_STYLE):
         fig, (ax, bx) = plt.subplots(
-            2, 1, figsize=(7.0, 2.6 + 0.16 * len(rows)), sharex=True,
+            2,
+            1,
+            figsize=(7.0, 2.6 + 0.16 * len(rows)),
+            sharex=True,
             gridspec_kw={"height_ratios": [2.2, max(1.0, 0.16 * len(rows))]},
         )
         x = f["rank"].to_numpy()

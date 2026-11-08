@@ -58,7 +58,8 @@ N_SPA = 20
 def _load_earthquake_pipeline():
     """Import the earthquake pipeline under a name that does not clash."""
     spec = importlib.util.spec_from_file_location(
-        "earthquake_pipeline", EQ_SCRIPTS / "pipeline.py")
+        "earthquake_pipeline", EQ_SCRIPTS / "pipeline.py"
+    )
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
@@ -75,20 +76,27 @@ def earthquake_inputs(study: Dict) -> Dict:
     eqp = _load_earthquake_pipeline()
     hyp = fc.load_hypothesis()
     cat, info = eqp.load_catalogue(None, False)
-    cat = cat[(cat["time"] >= pd.Timestamp(hyp["catalogue"]["start"]))
-              & (cat["time"] < pd.Timestamp(hyp["catalogue"]["end"]))]
+    cat = cat[
+        (cat["time"] >= pd.Timestamp(hyp["catalogue"]["start"]))
+        & (cat["time"] < pd.Timestamp(hyp["catalogue"]["end"]))
+    ]
     cat = cat.reset_index(drop=True)
     gk = decluster.gardner_knopoff(cat).to_numpy()
     engine = EphemerisEngine(node_model=hyp["ephemeris"]["node_model"])
-    grid = ind.time_grid(hyp["catalogue"]["start"], hyp["catalogue"]["end"],
-                         hyp["time_grid"]["step_hours"])
+    grid = ind.time_grid(
+        hyp["catalogue"]["start"],
+        hyp["catalogue"]["end"],
+        hyp["time_grid"]["step_hours"],
+    )
     eph = ind.ephemeris_frame(grid, engine)
     bins = np.sort(ind.event_bins(cat.loc[gk, "time"], grid))
     loc = study["reference_location"]
     lagna = atlas.lagna_signs(eph["jd"].to_numpy(), loc["lat"], loc["lon"])
     dasha = atlas.dasha_lords(grid, study["reference_chart"], engine)
     return {
-        "grid": grid, "eph": eph, "events": bins,
+        "grid": grid,
+        "eph": eph,
+        "events": bins,
         "slices": eqp.period_slices(hyp, grid),
         "sky": atlas.sky_state(eph, lagna, dasha),
         "catalogue": {k: v for k, v in info.items() if k != "all_mw"},
@@ -111,7 +119,7 @@ def spa_check(cands, sky, grammar, events, slices, top, seed) -> Dict:
     per_day = 24
     n_days = (co.stop - co.start) // per_day
     stop = co.start + n_days * per_day
-    daily = counts[co.start:stop].reshape(n_days, per_day).sum(axis=1)
+    daily = counts[co.start : stop].reshape(n_days, per_day).sum(axis=1)
     base = counts[ex].sum() / (ex.stop - ex.start)
     losses = []
     for cid in top:
@@ -119,16 +127,25 @@ def spa_check(cands, sky, grammar, events, slices, top, seed) -> Dict:
         a_ex = m[ex]
         r_in = counts[ex][a_ex].sum() / max(a_ex.sum(), 1)
         r_out = counts[ex][~a_ex].sum() / max((~a_ex).sum(), 1)
-        a_co = m[co.start:stop].reshape(n_days, per_day)
+        a_co = m[co.start : stop].reshape(n_days, per_day)
         mu = (a_co * r_in + (~a_co) * r_out).sum(axis=1)
         losses.append(-poisson.logpmf(daily, np.maximum(mu, 1e-12)))
-    res = spa_test(-poisson.logpmf(daily, np.full(n_days, base * per_day)),
-                   np.column_stack(losses), np.random.default_rng([seed, 99]),
-                   n_boot=2000, mean_block=30.0)
-    return {"candidates": list(top), "n_days": int(n_days),
-            "p_consistent": res.p_consistent, "p_lower": res.p_lower,
-            "p_upper": res.p_upper, "best": top[res.best_model],
-            "best_log_score_gain_per_day": float(res.mean_loss_diff[res.best_model])}
+    res = spa_test(
+        -poisson.logpmf(daily, np.full(n_days, base * per_day)),
+        np.column_stack(losses),
+        np.random.default_rng([seed, 99]),
+        n_boot=2000,
+        mean_block=30.0,
+    )
+    return {
+        "candidates": list(top),
+        "n_days": int(n_days),
+        "p_consistent": res.p_consistent,
+        "p_lower": res.p_lower,
+        "p_upper": res.p_upper,
+        "best": top[res.best_model],
+        "best_log_score_gain_per_day": float(res.mean_loss_diff[res.best_model]),
+    }
 
 
 def run(seed: int, study_id: str = "earthquake") -> Dict:
@@ -148,31 +165,53 @@ def run(seed: int, study_id: str = "earthquake") -> Dict:
     ex = slices["explore"]
     ev_ex = _period_events(events, ex)
     n_ex = ex.stop - ex.start
-    masks = ((cid, atlas.candidate_mask(c, sky, grammar, cache)[ex])
-             for cid, c in cands.items())
-    res = atlas.shift_family(masks, ev_ex, n_ex, min_shift, int(t["n_draws"]),
-                             np.random.default_rng([seed, 1]),
-                             float(t["min_expected"]))
+    masks = (
+        (cid, atlas.candidate_mask(c, sky, grammar, cache)[ex])
+        for cid, c in cands.items()
+    )
+    res = atlas.shift_family(
+        masks,
+        ev_ex,
+        n_ex,
+        min_shift,
+        int(t["n_draws"]),
+        np.random.default_rng([seed, 1]),
+        float(t["min_expected"]),
+    )
     res = res.rename(columns={c: f"explore_{c}" for c in res.columns if c != "id"})
     testable = res["explore_testable"].to_numpy(dtype=bool)
     res["explore_q_value"] = np.nan
     res.loc[testable, "explore_q_value"] = adjust(
-        res.loc[testable, "explore_p_value"].to_numpy(), "by")
+        res.loc[testable, "explore_p_value"].to_numpy(), "by"
+    )
     surv = testable & (res["explore_q_value"].fillna(1.0).to_numpy() < alpha)
 
     co = slices["confirm"]
     ev_co = _period_events(events, co)
-    for col in ("confirm_rate_ratio", "confirm_ci_low", "confirm_ci_high",
-                "confirm_p_value", "confirm_q_value"):
+    for col in (
+        "confirm_rate_ratio",
+        "confirm_ci_low",
+        "confirm_ci_high",
+        "confirm_p_value",
+        "confirm_q_value",
+    ):
         res[col] = np.nan
     res["confirmed"] = False
     if surv.any():
         ids = res.loc[surv, "id"].tolist()
-        cmasks = ((cid, atlas.candidate_mask(cands[cid], sky, grammar, cache)[co])
-                  for cid in ids)
-        cres = atlas.shift_family(cmasks, ev_co, co.stop - co.start, min_shift,
-                                  int(t["n_draws"]), np.random.default_rng([seed, 2]),
-                                  0.0).set_index("id")
+        cmasks = (
+            (cid, atlas.candidate_mask(cands[cid], sky, grammar, cache)[co])
+            for cid in ids
+        )
+        cres = atlas.shift_family(
+            cmasks,
+            ev_co,
+            co.stop - co.start,
+            min_shift,
+            int(t["n_draws"]),
+            np.random.default_rng([seed, 2]),
+            0.0,
+        ).set_index("id")
         q = adjust(cres["p_value"].to_numpy(), "by")
         for (cid, r), qi in zip(cres.iterrows(), q):
             sel = res["id"] == cid
@@ -182,30 +221,44 @@ def run(seed: int, study_id: str = "earthquake") -> Dict:
             res.loc[sel, "confirm_p_value"] = r["p_value"]
             res.loc[sel, "confirm_q_value"] = qi
             same = np.sign(np.log(r["rate_ratio"])) == np.sign(
-                np.log(res.loc[sel, "explore_rate_ratio"].iloc[0]))
+                np.log(res.loc[sel, "explore_rate_ratio"].iloc[0])
+            )
             res.loc[sel, "confirmed"] = bool(qi < alpha and same)
 
-    status = np.where(~testable, "untestable",
-                      np.where(~surv, "not significant in explore",
-                               np.where(res["confirmed"], "confirmed",
-                                        "survived explore, not confirmed")))
+    status = np.where(
+        ~testable,
+        "untestable",
+        np.where(
+            ~surv,
+            "not significant in explore",
+            np.where(res["confirmed"], "confirmed", "survived explore, not confirmed"),
+        ),
+    )
     res["status"] = status
-    meta = pd.DataFrame([{k: c[k] for k in ("id", "template", "depth", "key",
-                                            "definition")} for c in cands.values()])
+    meta = pd.DataFrame(
+        [
+            {k: c[k] for k in ("id", "template", "depth", "key", "definition")}
+            for c in cands.values()
+        ]
+    )
     atlas_df = meta.merge(res, on="id", how="left")
     atlas_df.insert(0, "study", study_id)
 
-    top = (atlas_df[testable].sort_values("explore_p_value")["id"].head(N_SPA)
-           .tolist())
+    top = atlas_df[testable].sort_values("explore_p_value")["id"].head(N_SPA).tolist()
     spa = spa_check(cands, sky, grammar, events, slices, top, seed)
     best = atlas_df[testable].sort_values("explore_p_value").iloc[0]
 
     ARTIFACTS.mkdir(parents=True, exist_ok=True)
     atlas_df.to_csv(ARTIFACTS / "atlas.csv", index=False, float_format="%.6g")
-    by_t = atlas_df.groupby("template").agg(
-        candidates=("id", "size"), testable=("explore_testable", "sum"),
-        nominal=("explore_p_value", lambda p: int((p < alpha).sum())),
-    ).reset_index()
+    by_t = (
+        atlas_df.groupby("template")
+        .agg(
+            candidates=("id", "size"),
+            testable=("explore_testable", "sum"),
+            nominal=("explore_p_value", lambda p: int((p < alpha).sum())),
+        )
+        .reset_index()
+    )
     git = git_commit(REPO)
     results = {
         "grammar_id": grammar["id"],
@@ -227,7 +280,8 @@ def run(seed: int, study_id: str = "earthquake") -> Dict:
         },
         "by_template": json.loads(by_t.to_json(orient="records")),
         "best_explore": {
-            "id": best["id"], "definition": best["definition"],
+            "id": best["id"],
+            "definition": best["definition"],
             "rate_ratio": float(best["explore_rate_ratio"]),
             "ci_low": float(best["explore_ci_low"]),
             "ci_high": float(best["explore_ci_high"]),
@@ -237,15 +291,21 @@ def run(seed: int, study_id: str = "earthquake") -> Dict:
         },
         "spa": spa,
     }
-    (ARTIFACTS / "results.json").write_text(json.dumps(results, indent=1,
-                                                       default=str))
+    (ARTIFACTS / "results.json").write_text(json.dumps(results, indent=1, default=str))
     write_manifest(
         ARTIFACTS,
-        inputs=[{"path": REPO / data["catalogue"]["snapshot"]},
-                {"path": grammar_enum.GRAMMAR}, {"path": data["hyp_path"]}],
-        seed=seed, engine=data["engine"], repo_root=REPO,
-        extra={"n_draws": int(t["n_draws"]),
-               "artifacts": ["atlas.csv", "results.json"]},
+        inputs=[
+            {"path": REPO / data["catalogue"]["snapshot"]},
+            {"path": grammar_enum.GRAMMAR},
+            {"path": data["hyp_path"]},
+        ],
+        seed=seed,
+        engine=data["engine"],
+        repo_root=REPO,
+        extra={
+            "n_draws": int(t["n_draws"]),
+            "artifacts": ["atlas.csv", "results.json"],
+        },
     )
     return results
 
@@ -256,17 +316,24 @@ def main(argv=None) -> int:
     ap.add_argument("--seed", type=int, default=None)
     ap.add_argument("--study", default="earthquake")
     args = ap.parse_args(argv)
-    seed = args.seed if args.seed is not None else int(
-        grammar_enum.load_grammar()["test"]["seed"])
+    seed = (
+        args.seed
+        if args.seed is not None
+        else int(grammar_enum.load_grammar()["test"]["seed"])
+    )
     r = run(seed, args.study)
     c = r["counts"]
-    print(f"{c['candidates']} candidates, {c['testable']} testable, "
-          f"{c['explore_nominal_p_lt_alpha']} with explore p < 0.05 "
-          f"({c['expected_nominal_by_chance']:.0f} expected by chance), "
-          f"{c['survived_by']} survived BY, {c['confirmed']} confirmed")
+    print(
+        f"{c['candidates']} candidates, {c['testable']} testable, "
+        f"{c['explore_nominal_p_lt_alpha']} with explore p < 0.05 "
+        f"({c['expected_nominal_by_chance']:.0f} expected by chance), "
+        f"{c['survived_by']} survived BY, {c['confirmed']} confirmed"
+    )
     b = r["best_explore"]
-    print(f"best: {b['definition']} RR {b['rate_ratio']:.2f} p {b['p_value']:.4f} "
-          f"Romano-Wolf p {b['p_romano_wolf']:.3f}")
+    print(
+        f"best: {b['definition']} RR {b['rate_ratio']:.2f} p {b['p_value']:.4f} "
+        f"Romano-Wolf p {b['p_romano_wolf']:.3f}"
+    )
     return 0
 
 

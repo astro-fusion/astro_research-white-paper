@@ -23,8 +23,16 @@ import pandas as pd
 from vedic_astrology_core.stats import bayes, classify, controls, power
 from vedic_astrology_core.stats.multiplicity import adjust
 
-LONGITUDE_BODIES = ("SUN", "MOON", "MARS", "MERCURY", "VENUS", "JUPITER",
-                    "SATURN", "KETU")
+LONGITUDE_BODIES = (
+    "SUN",
+    "MOON",
+    "MARS",
+    "MERCURY",
+    "VENUS",
+    "JUPITER",
+    "SATURN",
+    "KETU",
+)
 
 
 def _per_day(grid: pd.DatetimeIndex) -> int:
@@ -38,15 +46,17 @@ def tidal_frame(eph: pd.DataFrame, cfg: Dict) -> pd.DataFrame:
     ha = controls.moon_hour_angle(eph["jd"].to_numpy(), float(pos["longitude_deg_e"]))
     el = controls.lunar_elongation(eph["lon_MOON"], eph["lon_SUN"])
     cols = controls.tidal_phase_indicators(
-        ha, el,
+        ha,
+        el,
         semidiurnal_half_width_deg=float(pos["semidiurnal_half_width_deg"]),
         spring_half_width_deg=float(pos["spring_half_width_deg"]),
     )
     return pd.DataFrame(cols, index=eph.index)
 
 
-def positive_control(hyp, grid, eph, bins_by_cat, seed, n_draws,
-                     run_tests: Callable) -> Dict:
+def positive_control(
+    hyp, grid, eph, bins_by_cat, seed, n_draws, run_tests: Callable
+) -> Dict:
     """Test the tidal indicators like indicators; decide detection."""
     cfg = hyp["controls"]
     tf = tidal_frame(eph, cfg)
@@ -67,16 +77,27 @@ def positive_control(hyp, grid, eph, bins_by_cat, seed, n_draws,
         "tests": tests,
         "decision": dec,
         "detected": bool(dec["detected"].any()),
-        "best": {k: best[k] for k in ("indicator", "catalogue", "rate_ratio",
-                                      "ci_low", "ci_high", "p_value", "q_value",
-                                      "n_events")},
+        "best": {
+            k: best[k]
+            for k in (
+                "indicator",
+                "catalogue",
+                "rate_ratio",
+                "ci_low",
+                "ci_high",
+                "p_value",
+                "q_value",
+                "n_events",
+            )
+        },
         "frame": tf,
     }
 
 
 # ----------------------------------------------------------- negative control
-def negative_control(hyp, grid, frame, bins_by_cat, seed, n_draws,
-                     run_tests: Callable) -> Dict:
+def negative_control(
+    hyp, grid, frame, bins_by_cat, seed, n_draws, run_tests: Callable
+) -> Dict:
     """Every registered indicator on a sky rotated by a fixed offset."""
     cfg = hyp["controls"]["negative"]
     offset = int(cfg["offset_days"]) * _per_day(grid)
@@ -142,19 +163,28 @@ def classifier(hyp, grid, eph, bins, slices, seed) -> Dict:
     min_shift = int(hyp["test"]["min_shift_days"])
     rng = np.random.default_rng([seed, 31])
     cv = classify.shifted_sky_auc_test(
-        x[:ex_days], y[:ex_days], min_shift, int(cfg["n_draws"]), rng,
-        n_folds=int(cfg["n_folds"]), l2=float(cfg["l2"]),
+        x[:ex_days],
+        y[:ex_days],
+        min_shift,
+        int(cfg["n_draws"]),
+        rng,
+        n_folds=int(cfg["n_folds"]),
+        l2=float(cfg["l2"]),
     )
-    hold = classify.holdout_auc(x[:ex_days], y[:ex_days], x[co_day0:], y[co_day0:],
-                                float(cfg["l2"]))
+    hold = classify.holdout_auc(
+        x[:ex_days], y[:ex_days], x[co_day0:], y[co_day0:], float(cfg["l2"])
+    )
     offsets = np.random.default_rng([seed, 32]).integers(
-        min_shift, n_days - min_shift + 1, size=int(cfg["n_draws"]))
+        min_shift, n_days - min_shift + 1, size=int(cfg["n_draws"])
+    )
     null_hold = []
     for k in offsets:
         xs = np.roll(x, int(k), axis=0)
-        null_hold.append(classify.holdout_auc(xs[:ex_days], y[:ex_days],
-                                              xs[co_day0:], y[co_day0:],
-                                              float(cfg["l2"])))
+        null_hold.append(
+            classify.holdout_auc(
+                xs[:ex_days], y[:ex_days], xs[co_day0:], y[co_day0:], float(cfg["l2"])
+            )
+        )
     null_hold = np.asarray(null_hold)
     q = np.quantile(null_hold, [0.05, 0.5, 0.95])
     return {
@@ -166,13 +196,19 @@ def classifier(hyp, grid, eph, bins, slices, seed) -> Dict:
         "confirm_event_days": int(y[co_day0:].sum()),
         "model": "L2 logistic, l2 = %g, standardised features" % cv.l2,
         "explore_cv": {
-            "auc": cv.auc, "n_folds": cv.n_folds, "n_draws": cv.n_draws,
-            "null_q05": cv.null_q05, "null_q50": cv.null_q50,
-            "null_q95": cv.null_q95, "p_value": cv.p_value,
+            "auc": cv.auc,
+            "n_folds": cv.n_folds,
+            "n_draws": cv.n_draws,
+            "null_q05": cv.null_q05,
+            "null_q50": cv.null_q50,
+            "null_q95": cv.null_q95,
+            "p_value": cv.p_value,
         },
         "holdout": {
-            "auc": hold, "n_draws": int(len(null_hold)),
-            "null_q05": float(q[0]), "null_q50": float(q[1]),
+            "auc": hold,
+            "n_draws": int(len(null_hold)),
+            "null_q05": float(q[0]),
+            "null_q50": float(q[1]),
             "null_q95": float(q[2]),
             "p_value": float((1 + np.sum(null_hold >= hold)) / (len(null_hold) + 1)),
         },
@@ -185,34 +221,58 @@ def bayes_table(fam: pd.DataFrame, conf: pd.DataFrame) -> pd.DataFrame:
     rows = []
     for period, df in (("explore", fam), ("confirm", conf)):
         for _, r in df.iterrows():
-            s = bayes.summarise(int(r["n_in"]), float(r["t_in_days"]),
-                                int(r["n_out"]), float(r["t_out_days"]))
-            row = {"period": period, "catalogue": r["catalogue"],
-                   "indicator": r["indicator"], "label": r["label"],
-                   "rate_ratio": float(r["rate_ratio"])}
+            s = bayes.summarise(
+                int(r["n_in"]),
+                float(r["t_in_days"]),
+                int(r["n_out"]),
+                float(r["t_out_days"]),
+            )
+            row = {
+                "period": period,
+                "catalogue": r["catalogue"],
+                "indicator": r["indicator"],
+                "label": r["label"],
+                "rate_ratio": float(r["rate_ratio"]),
+            }
             for prior, v in s.items():
-                for k in ("rr_median", "rr_cri_low", "rr_cri_high", "p_rr_gt_1",
-                          "bf10"):
+                for k in (
+                    "rr_median",
+                    "rr_cri_low",
+                    "rr_cri_high",
+                    "p_rr_gt_1",
+                    "bf10",
+                ):
                     row[f"{prior}_{k}"] = v[k]
             rows.append(row)
     return pd.DataFrame(rows)
 
 
-def power_rows(hyp, tests: pd.DataFrame, extra: pd.DataFrame,
-               seed: int) -> pd.DataFrame:
+def power_rows(
+    hyp, tests: pd.DataFrame, extra: pd.DataFrame, seed: int
+) -> pd.DataFrame:
     """Minimum detectable RR per indicator, catalogue and period."""
     cfg = hyp["secondary"]["power"]
     df = pd.concat([tests, extra], ignore_index=True)
     df = df[(df["skipped"].fillna("") == "") & df["catalogue"].isin(["gk", "nn"])]
     specs, keys = [], []
     for _, r in df.iterrows():
-        specs.append({"id": r["indicator"], "label": r["label"],
-                      "n_events": r["n_events"], "duty_cycle": r["time_fraction"],
-                      "direction": r["direction"]})
+        specs.append(
+            {
+                "id": r["indicator"],
+                "label": r["label"],
+                "n_events": r["n_events"],
+                "duty_cycle": r["time_fraction"],
+                "direction": r["direction"],
+            }
+        )
         keys.append((r["catalogue"], r["period"]))
-    tab = power.power_table(specs, np.random.default_rng([seed, 41]),
-                            alpha=float(cfg["alpha"]), power=float(cfg["power"]),
-                            n_sim=int(cfg["n_sim"]))
+    tab = power.power_table(
+        specs,
+        np.random.default_rng([seed, 41]),
+        alpha=float(cfg["alpha"]),
+        power=float(cfg["power"]),
+        n_sim=int(cfg["n_sim"]),
+    )
     tab.insert(0, "catalogue", [k[0] for k in keys])
     tab.insert(1, "period", [k[1] for k in keys])
     return tab

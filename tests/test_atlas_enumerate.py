@@ -63,11 +63,16 @@ def test_plain_words(cands):
     by_key = {c["key"]: c for c in cands}
     assert by_key["MARS@sign=0"]["definition"] == "Mars in Aries"
     assert by_key["MARS>aspect>SATURN"]["definition"] == (
-        "Mars casts a Parashari aspect on Saturn")
+        "Mars casts a Parashari aspect on Saturn"
+    )
     assert by_key["MARS~conj~SATURN"]["definition"] == "Mars within 8 deg of Saturn"
-    assert "Ketu-ruled nakshatra (Ashvini, Magha, Mula)" in by_key[
-        "SUN@nakshatra_group=0"]["definition"]
+    assert (
+        "Ketu-ruled nakshatra (Ashvini, Magha, Mula)"
+        in by_key["SUN@nakshatra_group=0"]["definition"]
+    )
     assert "mahadasha" in by_key["dasha1=SATURN"]["definition"]
-    assert "from the moment's lagna at Kathmandu" in by_key[
-        "SATURN@house_from_lagna=7"]["definition"]
+    assert (
+        "from the moment's lagna at Kathmandu"
+        in by_key["SATURN@house_from_lagna=7"]["definition"]
+    )
     assert "MOON@house_from_moon=0" not in by_key

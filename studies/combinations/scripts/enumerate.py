@@ -20,16 +20,60 @@ import yaml
 
 GRAMMAR = Path(__file__).resolve().parents[1] / "grammar.yaml"
 
-SIGNS = ("Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra",
-         "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces")
-VIMSHOTTARI = ("KETU", "VENUS", "SUN", "MOON", "MARS", "RAHU", "JUPITER",
-               "SATURN", "MERCURY")
-NAKSHATRAS = ("Ashvini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra",
-              "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni",
-              "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Vishakha",
-              "Anuradha", "Jyeshtha", "Mula", "Purva Ashadha", "Uttara Ashadha",
-              "Shravana", "Dhanishtha", "Shatabhisha", "Purva Bhadrapada",
-              "Uttara Bhadrapada", "Revati")
+SIGNS = (
+    "Aries",
+    "Taurus",
+    "Gemini",
+    "Cancer",
+    "Leo",
+    "Virgo",
+    "Libra",
+    "Scorpio",
+    "Sagittarius",
+    "Capricorn",
+    "Aquarius",
+    "Pisces",
+)
+VIMSHOTTARI = (
+    "KETU",
+    "VENUS",
+    "SUN",
+    "MOON",
+    "MARS",
+    "RAHU",
+    "JUPITER",
+    "SATURN",
+    "MERCURY",
+)
+NAKSHATRAS = (
+    "Ashvini",
+    "Bharani",
+    "Krittika",
+    "Rohini",
+    "Mrigashira",
+    "Ardra",
+    "Punarvasu",
+    "Pushya",
+    "Ashlesha",
+    "Magha",
+    "Purva Phalguni",
+    "Uttara Phalguni",
+    "Hasta",
+    "Chitra",
+    "Swati",
+    "Vishakha",
+    "Anuradha",
+    "Jyeshtha",
+    "Mula",
+    "Purva Ashadha",
+    "Uttara Ashadha",
+    "Shravana",
+    "Dhanishtha",
+    "Shatabhisha",
+    "Purva Bhadrapada",
+    "Uttara Bhadrapada",
+    "Revati",
+)
 PLACEMENT_KINDS = ("sign", "house_from_lagna", "house_from_moon", "nakshatra_group")
 
 
@@ -51,8 +95,9 @@ def placements(g: Dict) -> List[Dict]:
                 continue
             n = 9 if kind == "nakshatra_group" else 12
             for v in range(n):
-                out.append({"kind": "placement", "planet": p, "frame": kind,
-                            "value": v})
+                out.append(
+                    {"kind": "placement", "planet": p, "frame": kind, "value": v}
+                )
     return out
 
 
@@ -67,7 +112,7 @@ def relations(g: Dict, actor: str = None) -> List[Dict]:
             if b != a:
                 out.append({"kind": "aspect", "from": a, "to": b})
     for i, a in enumerate(planets):
-        for b in planets[i + 1:]:
+        for b in planets[i + 1 :]:
             if actor is None:
                 out.append({"kind": "conjunction", "a": a, "b": b})
     if actor is not None:
@@ -80,8 +125,11 @@ def relations(g: Dict, actor: str = None) -> List[Dict]:
 def dashas(g: Dict, levels=None) -> List[Dict]:
     """Dasha-lord clauses."""
     levels = levels or g["dasha"]["levels"]
-    return [{"kind": "dasha", "planet": p, "level": int(lv)}
-            for lv in levels for p in g["planets"]]
+    return [
+        {"kind": "dasha", "planet": p, "level": int(lv)}
+        for lv in levels
+        for p in g["planets"]
+    ]
 
 
 def clause_key(c: Dict) -> str:
@@ -131,8 +179,12 @@ def _template_clauses(t: Dict, g: Dict) -> List[List[Dict]]:
     if tid == "T4":
         return [[pl, r] for pl in signs for r in relations(g, actor=pl["planet"])]
     if tid == "T5":
-        return [[pl, d] for pl in placements(g) for d in dashas(g)
-                if d["planet"] == pl["planet"]]
+        return [
+            [pl, d]
+            for pl in placements(g)
+            for d in dashas(g)
+            if d["planet"] == pl["planet"]
+        ]
     if tid == "T6":
         out = []
         for r in relations(g):
@@ -142,8 +194,13 @@ def _template_clauses(t: Dict, g: Dict) -> List[List[Dict]]:
                     out.append([r, d])
         return out
     if tid == "T7":
-        return [[pl, r, d] for pl in signs for r in relations(g, actor=pl["planet"])
-                for d in dashas(g, levels=[1]) if d["planet"] == pl["planet"]]
+        return [
+            [pl, r, d]
+            for pl in signs
+            for r in relations(g, actor=pl["planet"])
+            for d in dashas(g, levels=[1])
+            if d["planet"] == pl["planet"]
+        ]
     raise KeyError(f"unknown template {tid}")
 
 
@@ -160,15 +217,18 @@ def expand(g: Dict = None, study_id: str = "earthquake") -> List[Dict]:
             if key in seen:
                 continue
             seen.add(key)
-            out.append({
-                "id": f"atl-{len(out) + 1:05d}",
-                "template": t["id"],
-                "depth": len(clauses),
-                "key": key,
-                "clauses": clauses,
-                "definition": "; and ".join(clause_words(c, g, study)
-                                            for c in clauses),
-            })
+            out.append(
+                {
+                    "id": f"atl-{len(out) + 1:05d}",
+                    "template": t["id"],
+                    "depth": len(clauses),
+                    "key": key,
+                    "clauses": clauses,
+                    "definition": "; and ".join(
+                        clause_words(c, g, study) for c in clauses
+                    ),
+                }
+            )
     return out
 
 
@@ -187,9 +247,12 @@ def main(argv=None) -> int:
     if args.csv:
         import pandas as pd
 
-        pd.DataFrame([{k: c[k] for k in ("id", "template", "depth", "key",
-                                         "definition")} for c in cands]).to_csv(
-            args.csv, index=False)
+        pd.DataFrame(
+            [
+                {k: c[k] for k in ("id", "template", "depth", "key", "definition")}
+                for c in cands
+            ]
+        ).to_csv(args.csv, index=False)
     return 0
 
 

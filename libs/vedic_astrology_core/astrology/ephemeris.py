@@ -36,8 +36,10 @@ from ..config.constants import Planet, PlanetDict, to_planet
 from ..utils.datetime_utils import julian_day as calculate_jd
 from .ayanamsa import (
     AyanamsaSystem,
-    ayanamsa_mean as _ayanamsa_mean,
-    ayanamsa_true as _ayanamsa_true,
+)
+from .ayanamsa import ayanamsa_mean as _ayanamsa_mean
+from .ayanamsa import ayanamsa_true as _ayanamsa_true
+from .ayanamsa import (
     get_zodiac_sign,
     resolve_ayanamsa_system,
     set_sidereal_mode,

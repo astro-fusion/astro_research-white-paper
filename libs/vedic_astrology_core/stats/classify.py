@@ -151,13 +151,22 @@ def shifted_sky_auc_test(
     obs = forward_chaining_auc(x, y, n_folds, l2)
     offsets = circular_shift_offsets(len(x), min_shift, n_draws, rng)
     null = np.array(
-        [forward_chaining_auc(np.roll(x, int(k), axis=0), y, n_folds, l2)
-         for k in offsets]
+        [
+            forward_chaining_auc(np.roll(x, int(k), axis=0), y, n_folds, l2)
+            for k in offsets
+        ]
     )
     ok = null[np.isfinite(null)]
     q = np.quantile(ok, [0.05, 0.5, 0.95]) if len(ok) else [np.nan] * 3
     p = float((1 + np.sum(ok >= obs)) / (len(ok) + 1))
     return ClassifierTest(
-        float(obs), null, float(q[0]), float(q[1]), float(q[2]), p,
-        int(n_draws), int(n_folds), float(l2)
+        float(obs),
+        null,
+        float(q[0]),
+        float(q[1]),
+        float(q[2]),
+        p,
+        int(n_draws),
+        int(n_folds),
+        float(l2),
     )

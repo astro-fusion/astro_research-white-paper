@@ -23,8 +23,9 @@ def test_tidal_indicators_duty_cycles():
     """Check tidal indicators duty cycles."""
     ha = np.linspace(0, 360, 3601)[:-1]
     el = np.linspace(0, 360, 3601)[:-1]
-    t = tidal_phase_indicators(ha, el, semidiurnal_half_width_deg=45,
-                               spring_half_width_deg=45)
+    t = tidal_phase_indicators(
+        ha, el, semidiurnal_half_width_deg=45, spring_half_width_deg=45
+    )
     assert t["tide_semidiurnal_peak"].mean() == pytest.approx(0.5, abs=0.002)
     assert t["tide_spring"].mean() == pytest.approx(0.5, abs=0.002)
     # Upper and lower culmination are both peaks; quadrature is not.

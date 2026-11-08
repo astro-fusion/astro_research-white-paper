@@ -62,16 +62,21 @@ def dose_response(strength, outcome, n_bins: int = 5) -> DoseResult:
     s, y = s[ok], y[ok]
     if len(s) < 3:
         raise ValueError("need at least three observations")
-    codes = pd.qcut(pd.Series(s).rank(method="average"), n_bins, labels=False,
-                    duplicates="drop")
+    codes = pd.qcut(
+        pd.Series(s).rank(method="average"), n_bins, labels=False, duplicates="drop"
+    )
     # Equal strengths share a rank, so ties never split across bins.
     score = pd.factorize(codes, sort=True)[0]
     binary = set(np.unique(y)).issubset({0.0, 1.0})
     df = pd.DataFrame({"bin": score, "strength": s, "y": y})
     table = (
         df.groupby("bin")
-        .agg(n=("y", "size"), strength_min=("strength", "min"),
-             strength_max=("strength", "max"), mean_outcome=("y", "mean"))
+        .agg(
+            n=("y", "size"),
+            strength_min=("strength", "min"),
+            strength_max=("strength", "max"),
+            mean_outcome=("y", "mean"),
+        )
         .reset_index()
     )
     if binary:
