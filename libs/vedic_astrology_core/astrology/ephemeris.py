@@ -8,7 +8,11 @@ Conventions (all recorded on the engine so they can go into a run manifest):
 
 * Every ``calc_ut`` call uses ``FLG_SWIEPH | FLG_SPEED | FLG_SIDEREAL``:
   apparent geocentric sidereal longitudes with velocities.
-* The ayanamsa comes only from ``swe.get_ayanamsa_ut``.
+* The ayanamsa comes only from the Swiss Ephemeris. Sidereal longitudes
+  are the apparent tropical longitude minus the *true* ayanamsa (mean plus
+  nutation in longitude), and :meth:`EphemerisEngine.get_ayanamsa` returns
+  that same true value; :meth:`EphemerisEngine.ayanamsa_mean` gives the
+  mean one (``swe.get_ayanamsa_ut``), up to about 17 arcseconds away.
 * ``node_model`` ("mean" or "true", default "mean") selects the lunar node
   used for Rahu; Ketu is always Rahu + 180 degrees, computed in
   :meth:`EphemerisEngine.get_node_positions` and nowhere else.
@@ -32,6 +36,8 @@ from ..config.constants import Planet, PlanetDict, to_planet
 from ..utils.datetime_utils import julian_day as calculate_jd
 from .ayanamsa import (
     AyanamsaSystem,
+    ayanamsa_mean as _ayanamsa_mean,
+    ayanamsa_true as _ayanamsa_true,
     get_zodiac_sign,
     resolve_ayanamsa_system,
     set_sidereal_mode,
@@ -149,10 +155,23 @@ class EphemerisEngine:
         """
         return calculate_jd(dt)
 
+    def ayanamsa_mean(self, julian_day: float) -> float:
+        """Return the mean ayanamsa (no nutation), ``swe.get_ayanamsa_ut``."""
+        return _ayanamsa_mean(julian_day, self.ayanamsa_system)
+
+    def ayanamsa_true(self, julian_day: float) -> float:
+        """Return the true ayanamsa, the one the sidereal positions subtract."""
+        return _ayanamsa_true(julian_day, self.ayanamsa_system)
+
     def get_ayanamsa(self, julian_day: float) -> float:
-        """Return the ayanamsa in degrees from ``swe.get_ayanamsa_ut``."""
-        set_sidereal_mode(self.ayanamsa_system)
-        return float(swe.get_ayanamsa_ut(julian_day))
+        """Return the ayanamsa the sidereal positions use (the true one).
+
+        ``sidereal longitude + get_ayanamsa(jd)`` is the apparent tropical
+        longitude of date. Before 2026-11-08 this returned the mean value,
+        which disagreed with the positions by the nutation in longitude
+        (-13.9 arcseconds at J2000, up to about 17).
+        """
+        return self.ayanamsa_true(julian_day)
 
     def get_ayanamsa_offset(self, julian_day: float) -> float:
         """Alias of :meth:`get_ayanamsa`."""
@@ -334,5 +353,6 @@ class EphemerisEngine:
             "node_model": self.node_model,
             "ephemeris_model": self.ephemeris_model,
             "flags": "FLG_SWIEPH|FLG_SPEED|FLG_SIDEREAL",
+            "ayanamsa_kind": "true (mean + nutation in longitude)",
             "version": swe.version,
         }

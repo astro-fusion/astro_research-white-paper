@@ -24,8 +24,12 @@ def test_fixture_provenance_and_coverage():
 
 @pytest.mark.parametrize("chart", CHARTS, ids=CHART_IDS)
 def test_ayanamsa(chart):
-    """Lahiri ayanamsa equals swe.get_ayanamsa_ut."""
-    assert ENGINE_MEAN.get_ayanamsa(chart["jd_ut"]) == pytest.approx(
+    """The golden (mean) Lahiri ayanamsa equals swe.get_ayanamsa_ut.
+
+    The engine's get_ayanamsa is the true value the positions use; see
+    tests/test_ephemeris_ayanamsa.py.
+    """
+    assert ENGINE_MEAN.ayanamsa_mean(chart["jd_ut"]) == pytest.approx(
         chart["ayanamsa"], abs=ARCMIN / 60.0
     )
 

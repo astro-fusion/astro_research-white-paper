@@ -92,7 +92,12 @@ def get_ayanamsa_offset(
     julian_day: float, system: Union[str, AyanamsaSystem] = AyanamsaSystem.LAHIRI
 ) -> float:
     """
-    Return the ayanamsa in degrees from ``swe.get_ayanamsa_ut``.
+    Return the mean ayanamsa in degrees from ``swe.get_ayanamsa_ut``.
+
+    This is the mean value (no nutation). Sidereal positions from
+    :class:`~.ephemeris.EphemerisEngine` subtract the true value; use
+    :func:`ayanamsa_true` (or ``EphemerisEngine.get_ayanamsa``) to convert
+    between them.
 
     Args:
         julian_day: Julian day number (UT)
@@ -103,6 +108,31 @@ def get_ayanamsa_offset(
     """
     set_sidereal_mode(system)
     return float(swe.get_ayanamsa_ut(julian_day))
+
+
+def ayanamsa_mean(
+    julian_day: float, system: Union[str, AyanamsaSystem] = AyanamsaSystem.LAHIRI
+) -> float:
+    """Return the mean ayanamsa (no nutation), ``swe.get_ayanamsa_ut``."""
+    set_sidereal_mode(system)
+    return float(swe.get_ayanamsa_ut(julian_day))
+
+
+def ayanamsa_true(
+    julian_day: float, system: Union[str, AyanamsaSystem] = AyanamsaSystem.LAHIRI
+) -> float:
+    """Return the true ayanamsa: the mean value plus the nutation in longitude.
+
+    This is the value Swiss Ephemeris subtracts from the apparent tropical
+    longitude of date when ``FLG_SIDEREAL`` is set, so sidereal longitude
+    plus the true ayanamsa is the apparent tropical longitude exactly
+    (``swe.get_ayanamsa_ex_ut`` without ``FLG_NONUT``). The two differ by
+    the nutation in longitude, at most about 17.2 arcseconds (-13.9 at
+    J2000).
+    """
+    set_sidereal_mode(system)
+    _flag, value = swe.get_ayanamsa_ex_ut(julian_day, swe.FLG_SWIEPH)
+    return float(value)
 
 
 def convert_tropical_to_sidereal(longitude: float, ayanamsa: float) -> float:
@@ -171,6 +201,8 @@ __all__ = [
     "resolve_ayanamsa_system",
     "set_sidereal_mode",
     "get_ayanamsa_offset",
+    "ayanamsa_mean",
+    "ayanamsa_true",
     "convert_tropical_to_sidereal",
     "convert_sidereal_to_tropical",
     "get_zodiac_sign",

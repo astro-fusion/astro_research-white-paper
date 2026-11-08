@@ -165,7 +165,16 @@ class TestBirthChart(unittest.TestCase):
             chart.ascendant["longitude"], DELHI_1984["ascendant"], delta=ARCMIN
         )
         self.assertEqual(chart.ascendant["sign_name"], "Libra")
-        self.assertAlmostEqual(chart.ayanamsa, DELHI_1984["ayanamsa"], delta=ARCSEC)
+        # The fixture stores the mean ayanamsa; the chart reports the true one
+        # (mean + nutation in longitude), which its sidereal positions use.
+        self.assertAlmostEqual(
+            chart.ephemeris.ayanamsa_mean(chart.julian_day),
+            DELHI_1984["ayanamsa"],
+            delta=ARCSEC,
+        )
+        self.assertAlmostEqual(
+            chart.ayanamsa, chart.ephemeris.ayanamsa_true(chart.julian_day), delta=1e-9
+        )
         mars = chart.planets[Planet.MARS]
         self.assertAlmostEqual(
             mars["longitude"], DELHI_1984["bodies"]["MARS"]["longitude"], delta=ARCMIN
