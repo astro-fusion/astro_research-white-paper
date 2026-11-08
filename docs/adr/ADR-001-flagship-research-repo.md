@@ -1,6 +1,6 @@
 # ADR-001: One flagship research repository
 
-Status: proposed 2026-11-08. Owner: astro-fusion. Applies to `astro_research-white-paper`.
+Status: accepted 2026-11-08; packages WP-0..WP-2, WP-4..WP-6, WP-8 and WP-M delivered; WP-3 and WP-7 open (see Outcome). Owner: astro-fusion. Applies to `astro_research-white-paper`.
 
 ## Decision
 
@@ -169,3 +169,34 @@ Gates for every package: flake8 0, pytest green, no new tracked rendered output,
 ## Out of scope for now
 
 Flask `application/` layer and the REST API. They stay untouched until the package consolidation is done; they are not on the reviewer-facing path.
+
+## Outcome (2026-11-08)
+
+Delivered on `main`, by package (commit ranges inclusive, oldest first):
+
+| Package | Delivered | Commits |
+|---|---|---|
+| WP-1 | Plasma-physics track removed | `23cad93` |
+| WP-0 | Deep review; its integrity findings fixed: simulated figures withdrawn and `CORRECTIONS.md`, sidereal positions and one node model, houses, Vimshottari dasha, BPHS vargas, dignity, rule keys; single dependency source and lockfile | `d69c651`..`ca8f9fb`, `f364283`, `6df9321`..`da5f39c` |
+| WP-2 | Rendered output untracked; one copy of each study under `studies/`, `studies/_paths.py`, Quarto website from `site/`, ADR-001 | `20ffde4`, `6d87830`..`4740abb` |
+| WP-M | Mundane study seeded: countries and events with validator, transit-to-natal features, pipeline and draft pre-registration, site page | `dbfb76f`..`c31ba43` |
+| WP-4 | Rules engine v2: schema, predicates, loader, `explain()`, `astro-rules` CLI, migration of the catalog and 67 mundane drafts, `CONTRIBUTING_ASTROLOGERS.md` | `c362c7e`..`eed142d`, `4f55153`..`b272929`, `c7b1e46` |
+| WP-5 | `vedic_astrology_core.stats` rigor-contract module; earthquake pre-registration, catalogue snapshot, declustering, one-command pipeline and paper from `results.json` | `085bc52`, `a078cb4`, `298512e`, `12cb679`, `51b2fa9`, `8dbfa59`, `a6b11d7`, `129e69a` |
+| WP-6 | `vedic_astrology_core.markets` overlay and study pipeline; gold rebuilt and silver added on it, seed-42 results | `fa2f92f`, `2af434e`..`9332c25` |
+| WP-8 | Consolidation: immutable ephemeris model, pydantic and Python 3.9 in packaging, migration scripts kept, ignores for committed artifacts, mundane on `_paths`, caption and deploy home page, README with three quick starts and results, numerology re-analysis with TOST and Cohen's kappa | `9d77cea`..`f6016cf` and this ADR update |
+
+Not delivered: WP-3 (dataset generator and Parquet release, notebook and
+geocoding migration, archive banner on the old repository) and WP-7 (merging
+`libs/` and `src/` into one package, ephemeris validation against JPL
+Horizons in CI). They remain open.
+
+Current results (pre-registered runs, seed 42, from each study's
+`artifacts/results.json`):
+
+| Study | Outcome |
+|---|---|
+| Gold market | Null: 1 of 42 exploration tests significant after Benjamini-Yekutieli, not confirmed in 2016-2026; SPA p = 0.53 |
+| Silver market | Null: 0 of 42 significant; SPA p = 0.90 |
+| Earthquake (Himalayan arc) | Null: 0 of 26 significant, none confirmed; the Varuna-mandala indicator (highest rate ratio in both periods, not significant) is a candidate for a new pre-registration on independent data |
+| Numerology vs astrology | Agreement equivalent to chance (kappa = -0.012 within +-0.05; 9 of 9 planets within +-0.10), as the paper derives analytically |
+| Mundane | Pending: seeded, awaiting sourced founding times |
