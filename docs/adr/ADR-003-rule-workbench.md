@@ -1,6 +1,6 @@
 # ADR-003: The rule workbench. Astrologers tune, the holdout decides.
 
-Status: accepted 2026-11-08. Applies to `astro_research-white-paper`.
+Status: accepted 2026-11-08; delivered. Applies to `astro_research-white-paper`.
 
 ## Vision (owner's words, kept)
 
@@ -99,3 +99,31 @@ A declared grammar enumerated in advance: {planet} × {sign | house-from-lagna |
 | W-1 | schema v2, params, strength, tuning_log, validation, review; `fit`/`confirm`/`dose`/`review`; new predicates; ayanamsa fix; contributor guide update | public | Opus |
 | W-2 | stats additions; controls applied to the earthquake study; combination atlas; power in every README | public | Opus |
 | W-3 | workbench explorer; explore-only export with the holdout cut enforced; principles browser shows version, tuning log, validation, reviews; combination atlas page | public | Opus |
+
+## Outcome
+
+Delivered 2026-11-08 (commit range `d778c32..HEAD`).
+
+| WP | What landed | Commits |
+|---|---|---|
+| W-1 | Rule schema v2 (params, strength, tuning log, validation, review); `fit`/`confirm`/`dose`/`review`; study adapter and grid evaluator; mundane predicates batch 1 and 2; ayanamsa fix; worked tune-and-validate session | be3d74a, 7bcea26, 68aa8a3, 96b3264, 279a15f, cde45bd, d8c107f, 64b9e2e |
+| W-2 | Specification curves, power, controls, classifier, Bayes, dose-response; earthquake controls; combination atlas; power sections in READMEs | 7b5bb48, 4acdc21, 375585f, 6c2c9c3 |
+| W-3 | Explore-only workbench export with the holdout cut enforced; workbench explorer; atlas page; principles v2 with validation strip | f4bbaa1, 83182a5, 48f94d7 |
+
+Headline numbers:
+
+- 121 rules at schema v2; 104 params created; 15 new predicates.
+- 17 of 64 blocked rules activated.
+- 34 rules evaluable in the browser workbench.
+- Atlas: 4,977 candidates, 705 testable, 0 survivors.
+- Earthquake positive control (tidal) not detected; minimum detectable rate ratios 1.4 to 3.5.
+- Classifier AUC 0.52 versus 0.49 shuffled.
+
+Open items:
+
+- `fit` uses a daily grid while the earthquake study registered hourly.
+- `eclipse_strong_delayed_impact` needs an offset eclipse window.
+- 6 mundane rules are still blocked.
+- BS 32 mandala lists are unverified against the Bhat translation.
+- Strength terms are not evaluated in the browser.
+- The gold atlas is declared but not run.

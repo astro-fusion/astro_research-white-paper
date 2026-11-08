@@ -30,6 +30,7 @@ STUDIES = (
     "numerology_vs_astrology",
     "remedy_conflict_matrix",
     "mundane",
+    "combinations",
 )
 
 

@@ -4,7 +4,7 @@ version: 2
 name: Mangal-Ketu-Primary
 domain: seismic
 claim: >-
-  A Mars-Ketu conjunction within 13 degrees releases sudden martial energy (earthquakes).
+  A Mars-Ketu conjunction within 15 degrees releases sudden martial energy (earthquakes).
 source:
   text: Brihat Samhita
   chapter: '17'
@@ -29,13 +29,13 @@ reference_cases:
     expect: fires
     note: >-
       Mars is in Sagittarius 5.0 deg and Ketu is in Sagittarius 14.7 deg: 9.6 deg apart, within
-      the 13 deg orb
+      the 15 deg orb
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in JHora
   - moment: '2000-08-26T06:00:00Z'
     expect: silent
     note: >-
       Mars is in Cancer 22.3 deg and Ketu is in Sagittarius 28.6 deg: 156.3 deg apart, outside
-      the 13 deg orb
+      the 15 deg orb
     verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in JHora
 tuning_log:
   - at: '2026-11-08T07:34:31Z'

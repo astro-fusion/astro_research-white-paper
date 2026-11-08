@@ -189,7 +189,12 @@ def test_plain_words_renders_without_evaluating():
     loaded, _ = load_rules([REPO / "rules/seismic/mangal_ketu_primary.yaml"])
     tree = esd.plain_words(loaded[0].rule.conditions)
     assert tree["text"].startswith("Conjunct within")
-    assert "Mars" in tree["text"] and "13" in tree["text"]
+    import yaml
+
+    orb = yaml.safe_load(
+        (REPO / "rules/seismic/mangal_ketu_primary.yaml").read_text()
+    )["params"]["orb"]["value"]
+    assert "Mars" in tree["text"] and f"{orb:g}" in tree["text"]
     assert tree["gloss"].startswith("Two planets")
 
 

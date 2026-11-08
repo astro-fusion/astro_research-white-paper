@@ -56,6 +56,9 @@ studies/*/artifacts/*
 !studies/*/artifacts/manifest.json
 !studies/*/artifacts/tbl_*.csv
 !studies/*/artifacts/fig_*.png
+!studies/combinations/artifacts/atlas.csv
+!studies/combinations/artifacts/results.json
+!studies/combinations/artifacts/manifest.json
 !studies/earthquake/artifacts/catalogue_summary.csv
 !studies/earthquake/artifacts/confirmation.csv
 !studies/earthquake/artifacts/family_explore.csv
