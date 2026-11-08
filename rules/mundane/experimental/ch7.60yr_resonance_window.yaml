@@ -17,27 +17,49 @@ source:
     see the export PROVENANCE.
 author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
-status: needs_predicates
-conditions: null
+status: active
+params:
+  tolerance_years: {value: 3, min: 0, max: 10, step: 1, unit: years}
+conditions:
+  cycle_resonance:
+    reference: '2020-12-21T18:20:00Z'
+    period_years: 60
+    tolerance_years: $tolerance_years
+    anchor: Jupiter-Saturn conjunction of 21 December 2020
+reference_cases:
+- moment: '1961-06-01T00:00:00Z'
+  expect: fires
+  note: 'Chosen date. Engine: cycle_resonance(reference=2020-12-21 18:20:00+00:00, period_years=60.0, tolerance_years=3.0,
+    anchor=Jupiter-Saturn conjunction of 21 December 2020): -59.6 years from Jupiter-Saturn conjunction of
+    21 December 2020: 0.4 years from a 60-year return (within 3)'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in
+    JHora
+- moment: '1991-06-01T00:00:00Z'
+  expect: silent
+  note: 'Chosen date. Engine: cycle_resonance(reference=2020-12-21 18:20:00+00:00, period_years=60.0, tolerance_years=3.0,
+    anchor=Jupiter-Saturn conjunction of 21 December 2020): -29.6 years from Jupiter-Saturn conjunction of
+    21 December 2020: 29.6 years from a 60-year return (outside 3)'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in
+    JHora
 validation:
   status: unvalidated
 notes:
   original_condition:
-    - >-
-      Absolute difference between (current_year - anchor_epoch_year) modulo 60 is <= tolerance_window_years.
+  - >-
+    Absolute difference between (current_year - anchor_epoch_year) modulo 60 is <= tolerance_window_years.
   original_thresholds:
     cycle_period_years: 60
     tolerance_window_years: 3
   mapping_status: mapped
   draft_conditions:
     all:
-      - cycle_resonance:
-          period_years: 60
-          tolerance_years: 3
-          anchor: anchor_epoch_year
+    - cycle_resonance:
+        period_years: 60
+        tolerance_years: 3
+        anchor: anchor_epoch_year
   event_types:
-    - institutional_transformation
-    - agrarian_social_movement
+  - institutional_transformation
+  - agrarian_social_movement
   confidence_in_app: source_based
   severity_in_app: moderate
   validation:
@@ -50,6 +72,7 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/chapter7-validation-report.md
     empirical_backtest_result: null
-  needs_predicates: 'Not expressible yet: the vocabulary has no predicate for cycle_resonance.'
-  missing_predicates:
-    - cycle_resonance
+  encoding: Encoded 2026-11-08 when the missing predicates (cycle_resonance) were added. The registry
+    leaves the anchor epoch open; the 'Jovian-Saturnian' cycle is anchored on the Jupiter-Saturn
+    conjunction of 21 December 2020 (three conjunctions make the sixty-year cycle of Brihat Samhita 8).
+    A different anchor is a different rule.

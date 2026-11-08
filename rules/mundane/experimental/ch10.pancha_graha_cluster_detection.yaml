@@ -17,26 +17,43 @@ source:
     see the export PROVENANCE.
 author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
-status: needs_predicates
-conditions: null
+status: active
+params:
+  count: {value: 5, min: 4, max: 7, step: 1, unit: count}
+conditions:
+  planets_in_one_sign_gte:
+    count: $count
+reference_cases:
+- moment: '1962-02-05T00:00:00Z'
+  expect: fires
+  note: 'Chosen date. Engine: planets_in_one_sign_gte(count=5): largest cluster: 7 in Capricorn
+    (Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn); 5 needed'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet
+    checked in JHora
+- moment: '2020-01-01T00:00:00Z'
+  expect: silent
+  note: 'Chosen date. Engine: planets_in_one_sign_gte(count=5): largest cluster: 4 in Sagittarius
+    (Sun, Mercury, Jupiter, Saturn); 5 needed'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet
+    checked in JHora
 validation:
   status: unvalidated
 notes:
   original_condition:
-    - 5 or more traditional planets occupy a single zodiac sign.
+  - 5 or more traditional planets occupy a single zodiac sign.
   original_thresholds:
     minimum_cluster_planets: 5
     kala_sarpa_governance_axis:
-      - 4
-      - 10
+    - 4
+    - 10
   mapping_status: mapped
   draft_conditions:
     all:
-      - planets_in_one_sign_gte:
-          count: 5
-          bodies: traditional_planets
+    - planets_in_one_sign_gte:
+        count: 5
+        bodies: traditional_planets
   event_types:
-    - national_socioeconomics
+  - national_socioeconomics
   confidence_in_app: source_based
   severity_in_app: generational
   validation:
@@ -49,7 +66,6 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/chapter10-validation-report.md
     empirical_backtest_result: null
-  needs_predicates: >-
-    Not expressible yet: the vocabulary has no predicate for planets_in_one_sign_gte.
-  missing_predicates:
-    - planets_in_one_sign_gte
+  encoding: Encoded 2026-11-08 when the missing predicates (planets_in_one_sign_gte) were
+    added. 'traditional planets' read as the seven visible grahas (the predicate
+    default); the nodes are not counted.

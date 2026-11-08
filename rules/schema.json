@@ -1,5 +1,76 @@
 {
   "$defs": {
+    "AfflictedElement": {
+      "additionalProperties": false,
+      "description": "Parameters of ``afflicted_element``.",
+      "properties": {
+        "count_gte": {
+          "anyOf": [
+            {
+              "default": 1,
+              "maximum": 9,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Count Gte"
+        },
+        "element": {
+          "enum": [
+            "fire",
+            "earth",
+            "air",
+            "water"
+          ],
+          "title": "Element",
+          "type": "string"
+        },
+        "malefics": {
+          "items": {
+            "enum": [
+              "Sun",
+              "Moon",
+              "Mars",
+              "Mercury",
+              "Jupiter",
+              "Venus",
+              "Saturn",
+              "Rahu",
+              "Ketu",
+              "Brihaspati",
+              "Budha",
+              "Chandra",
+              "Guru",
+              "Kuja",
+              "Mangal",
+              "Mangala",
+              "Northnode",
+              "Ravi",
+              "Sani",
+              "Shani",
+              "Shukra",
+              "Soma",
+              "Southnode",
+              "Sukra",
+              "Surya"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Malefics",
+          "type": "array"
+        }
+      },
+      "required": [
+        "element"
+      ],
+      "title": "AfflictedElement",
+      "type": "object"
+    },
     "AllOf": {
       "additionalProperties": false,
       "description": "Every child condition holds.",
@@ -111,6 +182,30 @@
               },
               {
                 "$ref": "#/$defs/Leaf_samvatsara_is"
+              },
+              {
+                "$ref": "#/$defs/Leaf_month_paksha"
+              },
+              {
+                "$ref": "#/$defs/Leaf_nakshatra_on_tithi"
+              },
+              {
+                "$ref": "#/$defs/Leaf_lord_of_house_in"
+              },
+              {
+                "$ref": "#/$defs/Leaf_malefic_in_house"
+              },
+              {
+                "$ref": "#/$defs/Leaf_lords_conjoined"
+              },
+              {
+                "$ref": "#/$defs/Leaf_afflicted_element"
+              },
+              {
+                "$ref": "#/$defs/Leaf_cycle_resonance"
+              },
+              {
+                "$ref": "#/$defs/Leaf_conjunction_or_mutual_aspect"
               }
             ]
           },
@@ -236,6 +331,30 @@
               },
               {
                 "$ref": "#/$defs/Leaf_samvatsara_is"
+              },
+              {
+                "$ref": "#/$defs/Leaf_month_paksha"
+              },
+              {
+                "$ref": "#/$defs/Leaf_nakshatra_on_tithi"
+              },
+              {
+                "$ref": "#/$defs/Leaf_lord_of_house_in"
+              },
+              {
+                "$ref": "#/$defs/Leaf_malefic_in_house"
+              },
+              {
+                "$ref": "#/$defs/Leaf_lords_conjoined"
+              },
+              {
+                "$ref": "#/$defs/Leaf_afflicted_element"
+              },
+              {
+                "$ref": "#/$defs/Leaf_cycle_resonance"
+              },
+              {
+                "$ref": "#/$defs/Leaf_conjunction_or_mutual_aspect"
               }
             ]
           },
@@ -479,6 +598,30 @@
               },
               {
                 "$ref": "#/$defs/Leaf_samvatsara_is"
+              },
+              {
+                "$ref": "#/$defs/Leaf_month_paksha"
+              },
+              {
+                "$ref": "#/$defs/Leaf_nakshatra_on_tithi"
+              },
+              {
+                "$ref": "#/$defs/Leaf_lord_of_house_in"
+              },
+              {
+                "$ref": "#/$defs/Leaf_malefic_in_house"
+              },
+              {
+                "$ref": "#/$defs/Leaf_lords_conjoined"
+              },
+              {
+                "$ref": "#/$defs/Leaf_afflicted_element"
+              },
+              {
+                "$ref": "#/$defs/Leaf_cycle_resonance"
+              },
+              {
+                "$ref": "#/$defs/Leaf_conjunction_or_mutual_aspect"
               }
             ]
           },
@@ -692,6 +835,164 @@
         }
       },
       "title": "ConfirmResult",
+      "type": "object"
+    },
+    "ConjOrAspect": {
+      "additionalProperties": false,
+      "description": "Parameters of ``conjunction_or_mutual_aspect``.",
+      "properties": {
+        "orb": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0,
+                  "maximum": 30,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Orb"
+        },
+        "others": {
+          "items": {
+            "enum": [
+              "Sun",
+              "Moon",
+              "Mars",
+              "Mercury",
+              "Jupiter",
+              "Venus",
+              "Saturn",
+              "Rahu",
+              "Ketu",
+              "Brihaspati",
+              "Budha",
+              "Chandra",
+              "Guru",
+              "Kuja",
+              "Mangal",
+              "Mangala",
+              "Northnode",
+              "Ravi",
+              "Sani",
+              "Shani",
+              "Shukra",
+              "Soma",
+              "Southnode",
+              "Sukra",
+              "Surya"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Others",
+          "type": "array"
+        },
+        "planet": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya"
+          ],
+          "title": "Planet",
+          "type": "string"
+        }
+      },
+      "required": [
+        "planet",
+        "others"
+      ],
+      "title": "ConjOrAspect",
+      "type": "object"
+    },
+    "CycleResonance": {
+      "additionalProperties": false,
+      "description": "Parameters of ``cycle_resonance``.",
+      "properties": {
+        "anchor": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Anchor"
+        },
+        "period_years": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 1000,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Period Years"
+        },
+        "reference": {
+          "format": "date-time",
+          "title": "Reference",
+          "type": "string"
+        },
+        "tolerance_years": {
+          "anyOf": [
+            {
+              "maximum": 50,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Tolerance Years"
+        }
+      },
+      "required": [
+        "reference",
+        "period_years",
+        "tolerance_years"
+      ],
+      "title": "CycleResonance",
       "type": "object"
     },
     "DashaLordIs": {
@@ -2428,6 +2729,20 @@
       "title": "KurmaDirection",
       "type": "object"
     },
+    "Leaf_afflicted_element": {
+      "additionalProperties": false,
+      "properties": {
+        "afflicted_element": {
+          "$ref": "#/$defs/AfflictedElement",
+          "description": "Check that malefics occupy signs of one element."
+        }
+      },
+      "required": [
+        "afflicted_element"
+      ],
+      "title": "Leaf_afflicted_element",
+      "type": "object"
+    },
     "Leaf_antardasha_lord_is": {
       "additionalProperties": false,
       "properties": {
@@ -2468,6 +2783,34 @@
         "conjunct_within"
       ],
       "title": "Leaf_conjunct_within",
+      "type": "object"
+    },
+    "Leaf_conjunction_or_mutual_aspect": {
+      "additionalProperties": false,
+      "properties": {
+        "conjunction_or_mutual_aspect": {
+          "$ref": "#/$defs/ConjOrAspect",
+          "description": "Check that the planet is conjunct, or in mutual aspect with, any of ``others``."
+        }
+      },
+      "required": [
+        "conjunction_or_mutual_aspect"
+      ],
+      "title": "Leaf_conjunction_or_mutual_aspect",
+      "type": "object"
+    },
+    "Leaf_cycle_resonance": {
+      "additionalProperties": false,
+      "properties": {
+        "cycle_resonance": {
+          "$ref": "#/$defs/CycleResonance",
+          "description": "Check that the moment is within ``tolerance_years`` of a cycle return."
+        }
+      },
+      "required": [
+        "cycle_resonance"
+      ],
+      "title": "Leaf_cycle_resonance",
       "type": "object"
     },
     "Leaf_dasha_lord_is": {
@@ -2680,6 +3023,62 @@
       "title": "Leaf_longitude_between",
       "type": "object"
     },
+    "Leaf_lord_of_house_in": {
+      "additionalProperties": false,
+      "properties": {
+        "lord_of_house_in": {
+          "$ref": "#/$defs/LordOfHouseIn",
+          "description": "Check that the lord of house ``house`` sits in one of ``houses``."
+        }
+      },
+      "required": [
+        "lord_of_house_in"
+      ],
+      "title": "Leaf_lord_of_house_in",
+      "type": "object"
+    },
+    "Leaf_lords_conjoined": {
+      "additionalProperties": false,
+      "properties": {
+        "lords_conjoined": {
+          "$ref": "#/$defs/LordsConjoined",
+          "description": "Check that the lords of the listed houses occupy one sign (yuti)."
+        }
+      },
+      "required": [
+        "lords_conjoined"
+      ],
+      "title": "Leaf_lords_conjoined",
+      "type": "object"
+    },
+    "Leaf_malefic_in_house": {
+      "additionalProperties": false,
+      "properties": {
+        "malefic_in_house": {
+          "$ref": "#/$defs/MaleficInHouse",
+          "description": "Check that at least ``count_gte`` malefics occupy the listed houses."
+        }
+      },
+      "required": [
+        "malefic_in_house"
+      ],
+      "title": "Leaf_malefic_in_house",
+      "type": "object"
+    },
+    "Leaf_month_paksha": {
+      "additionalProperties": false,
+      "properties": {
+        "month_paksha": {
+          "$ref": "#/$defs/MonthPaksha",
+          "description": "Check the amanta lunar month (and optionally its paksha) at the moment."
+        }
+      },
+      "required": [
+        "month_paksha"
+      ],
+      "title": "Leaf_month_paksha",
+      "type": "object"
+    },
     "Leaf_moon_mandala": {
       "additionalProperties": false,
       "properties": {
@@ -2720,6 +3119,20 @@
         "nakshatra_lord_is"
       ],
       "title": "Leaf_nakshatra_lord_is",
+      "type": "object"
+    },
+    "Leaf_nakshatra_on_tithi": {
+      "additionalProperties": false,
+      "properties": {
+        "nakshatra_on_tithi": {
+          "$ref": "#/$defs/NakshatraOnTithi",
+          "description": "Check that the Moon is in a listed nakshatra on a listed tithi (and month)."
+        }
+      },
+      "required": [
+        "nakshatra_on_tithi"
+      ],
+      "title": "Leaf_nakshatra_on_tithi",
       "type": "object"
     },
     "Leaf_planet_distance_au_lte": {
@@ -2948,6 +3361,187 @@
       "title": "LongitudeBetween",
       "type": "object"
     },
+    "LordOfHouseIn": {
+      "additionalProperties": false,
+      "description": "Parameters of ``lord_of_house_in``.",
+      "properties": {
+        "chart": {
+          "default": "now",
+          "enum": [
+            "now",
+            "natal"
+          ],
+          "title": "Chart",
+          "type": "string"
+        },
+        "from": {
+          "default": "Lagna",
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya",
+            "Lagna",
+            "Ascendant"
+          ],
+          "title": "From",
+          "type": "string"
+        },
+        "house": {
+          "anyOf": [
+            {
+              "maximum": 12,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "House"
+        },
+        "houses": {
+          "items": {
+            "anyOf": [
+              {
+                "maximum": 12,
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                "type": "string"
+              }
+            ]
+          },
+          "minItems": 1,
+          "title": "Houses",
+          "type": "array"
+        }
+      },
+      "required": [
+        "house",
+        "houses"
+      ],
+      "title": "LordOfHouseIn",
+      "type": "object"
+    },
+    "LordsConjoined": {
+      "additionalProperties": false,
+      "description": "Parameters of ``lords_conjoined``.",
+      "properties": {
+        "chart": {
+          "default": "now",
+          "enum": [
+            "now",
+            "natal"
+          ],
+          "title": "Chart",
+          "type": "string"
+        },
+        "from": {
+          "default": "Lagna",
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya",
+            "Lagna",
+            "Ascendant"
+          ],
+          "title": "From",
+          "type": "string"
+        },
+        "houses": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                "type": "string"
+              }
+            ]
+          },
+          "maxItems": 4,
+          "minItems": 2,
+          "title": "Houses",
+          "type": "array"
+        },
+        "in_houses": {
+          "anyOf": [
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "In Houses"
+        }
+      },
+      "required": [
+        "houses"
+      ],
+      "title": "LordsConjoined",
+      "type": "object"
+    },
     "LordsOnly": {
       "additionalProperties": false,
       "description": "Parameters of ``antardasha_lord_is``.",
@@ -2992,6 +3586,175 @@
         "lords"
       ],
       "title": "LordsOnly",
+      "type": "object"
+    },
+    "MaleficInHouse": {
+      "additionalProperties": false,
+      "description": "Parameters of ``malefic_in_house``.",
+      "properties": {
+        "chart": {
+          "default": "now",
+          "enum": [
+            "now",
+            "natal"
+          ],
+          "title": "Chart",
+          "type": "string"
+        },
+        "count_gte": {
+          "anyOf": [
+            {
+              "default": 1,
+              "maximum": 9,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Count Gte"
+        },
+        "from": {
+          "default": "Lagna",
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya",
+            "Lagna",
+            "Ascendant"
+          ],
+          "title": "From",
+          "type": "string"
+        },
+        "houses": {
+          "items": {
+            "anyOf": [
+              {
+                "maximum": 12,
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                "type": "string"
+              }
+            ]
+          },
+          "minItems": 1,
+          "title": "Houses",
+          "type": "array"
+        },
+        "malefics": {
+          "items": {
+            "enum": [
+              "Sun",
+              "Moon",
+              "Mars",
+              "Mercury",
+              "Jupiter",
+              "Venus",
+              "Saturn",
+              "Rahu",
+              "Ketu",
+              "Brihaspati",
+              "Budha",
+              "Chandra",
+              "Guru",
+              "Kuja",
+              "Mangal",
+              "Mangala",
+              "Northnode",
+              "Ravi",
+              "Sani",
+              "Shani",
+              "Shukra",
+              "Soma",
+              "Southnode",
+              "Sukra",
+              "Surya"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Malefics",
+          "type": "array"
+        }
+      },
+      "required": [
+        "houses"
+      ],
+      "title": "MaleficInHouse",
+      "type": "object"
+    },
+    "MonthPaksha": {
+      "additionalProperties": false,
+      "description": "Parameters of ``month_paksha``.",
+      "properties": {
+        "adhika": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Adhika"
+        },
+        "months": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Months",
+          "type": "array"
+        },
+        "paksha": {
+          "anyOf": [
+            {
+              "enum": [
+                "shukla",
+                "krishna"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Paksha"
+        }
+      },
+      "required": [
+        "months"
+      ],
+      "title": "MonthPaksha",
       "type": "object"
     },
     "MoonMandala": {
@@ -3182,6 +3945,126 @@
       "title": "NakshatraLordIs",
       "type": "object"
     },
+    "NakshatraOnTithi": {
+      "additionalProperties": false,
+      "description": "Parameters of ``nakshatra_on_tithi``.",
+      "properties": {
+        "months": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Months"
+        },
+        "nakshatras": {
+          "items": {
+            "enum": [
+              "Ashwini",
+              "Bharani",
+              "Krittika",
+              "Rohini",
+              "Mrigashira",
+              "Ardra",
+              "Punarvasu",
+              "Pushya",
+              "Ashlesha",
+              "Magha",
+              "Purva Phalguni",
+              "Uttara Phalguni",
+              "Hasta",
+              "Chitra",
+              "Swati",
+              "Vishakha",
+              "Anuradha",
+              "Jyeshtha",
+              "Mula",
+              "Purva Ashadha",
+              "Uttara Ashadha",
+              "Shravana",
+              "Dhanishta",
+              "Shatabhisha",
+              "Purva Bhadrapada",
+              "Uttara Bhadrapada",
+              "Revati",
+              "Anuradha",
+              "Aridra",
+              "Arudra",
+              "Ashlesa",
+              "Aslesha",
+              "Asvini",
+              "Aswini",
+              "Chitta",
+              "Dhanishtha",
+              "Dhanista",
+              "Jyeshta",
+              "Jyestha",
+              "Karthika",
+              "Kritika",
+              "Makha",
+              "Moola",
+              "Mrigashirsha",
+              "Mrigasira",
+              "Mrigasirsha",
+              "Poorvashadha",
+              "Pubba",
+              "Purvabhadra",
+              "Purvabhadrapada",
+              "Purvaphalguni",
+              "Purvashadha",
+              "Pushyami",
+              "Pusya",
+              "Satabhisha",
+              "Satabhishak",
+              "Shatabhishak",
+              "Shravan",
+              "Sravana",
+              "Svati",
+              "Uttara",
+              "Uttarabhadra",
+              "Uttarabhadrapada",
+              "Uttaraphalguni",
+              "Uttarashadha",
+              "Visaka",
+              "Visakha"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Nakshatras",
+          "type": "array"
+        },
+        "tithis": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                "type": "string"
+              }
+            ]
+          },
+          "minItems": 1,
+          "title": "Tithis",
+          "type": "array"
+        }
+      },
+      "required": [
+        "nakshatras",
+        "tithis"
+      ],
+      "title": "NakshatraOnTithi",
+      "type": "object"
+    },
     "NotOf": {
       "additionalProperties": false,
       "description": "The child condition does not hold.",
@@ -3292,6 +4175,30 @@
             },
             {
               "$ref": "#/$defs/Leaf_samvatsara_is"
+            },
+            {
+              "$ref": "#/$defs/Leaf_month_paksha"
+            },
+            {
+              "$ref": "#/$defs/Leaf_nakshatra_on_tithi"
+            },
+            {
+              "$ref": "#/$defs/Leaf_lord_of_house_in"
+            },
+            {
+              "$ref": "#/$defs/Leaf_malefic_in_house"
+            },
+            {
+              "$ref": "#/$defs/Leaf_lords_conjoined"
+            },
+            {
+              "$ref": "#/$defs/Leaf_afflicted_element"
+            },
+            {
+              "$ref": "#/$defs/Leaf_cycle_resonance"
+            },
+            {
+              "$ref": "#/$defs/Leaf_conjunction_or_mutual_aspect"
             }
           ],
           "title": "Not"
@@ -4834,6 +5741,30 @@
             },
             {
               "$ref": "#/$defs/Leaf_samvatsara_is"
+            },
+            {
+              "$ref": "#/$defs/Leaf_month_paksha"
+            },
+            {
+              "$ref": "#/$defs/Leaf_nakshatra_on_tithi"
+            },
+            {
+              "$ref": "#/$defs/Leaf_lord_of_house_in"
+            },
+            {
+              "$ref": "#/$defs/Leaf_malefic_in_house"
+            },
+            {
+              "$ref": "#/$defs/Leaf_lords_conjoined"
+            },
+            {
+              "$ref": "#/$defs/Leaf_afflicted_element"
+            },
+            {
+              "$ref": "#/$defs/Leaf_cycle_resonance"
+            },
+            {
+              "$ref": "#/$defs/Leaf_conjunction_or_mutual_aspect"
             }
           ]
         },

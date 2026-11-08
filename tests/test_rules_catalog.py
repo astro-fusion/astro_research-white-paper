@@ -45,10 +45,15 @@ def test_mundane_rules_are_experimental_and_keep_their_original_text():
 
 
 def test_status_counts():
-    """27 mundane rules are testable now (9 practitioner); 58 wait for predicates."""
+    """44 mundane rules are testable (11 practitioner); 41 wait for predicates.
+
+    17 of the 64 rules that waited were encoded on 2026-11-08 when the
+    mundane predicates were added (15 drafts, 2 practitioner rules).
+    """
     counts = Counter((r.domain, r.status) for r in RULES)
-    assert counts[("mundane", "active")] == 27
-    assert counts[("mundane", "needs_predicates")] == 58
+    assert counts[("mundane", "active")] == 44
+    assert counts[("mundane", "needs_predicates")] == 41
+    assert sum(r.status == "needs_predicates" for r in RULES) == 47
 
 
 @pytest.mark.parametrize(

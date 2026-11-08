@@ -23,28 +23,28 @@ validation:
   status: unvalidated
 notes:
   original_condition:
-    - 6th lord is conjunct 1st lord AND 6th house is occupied by Ketu or malefic.
+  - 6th lord is conjunct 1st lord AND 6th house is occupied by Ketu or malefic.
   original_thresholds:
     conjunction_penalty: 12
     occupancy_penalty: 8
   mapping_status: mapped
   draft_conditions:
     all:
-      - conjunction_within_orb:
-          a: lord_of_6
-          b: lord_of_1
-          orb: null
+    - conjunction_within_orb:
+        a: lord_of_6
+        b: lord_of_1
+        orb: null
+        chart: oath
+    - any:
+      - planet_in_house_from:
+          planet: Ketu
+          house: 6
+          frm: oath_lagna
+      - malefic_in_house:
+          house: 6
           chart: oath
-      - any:
-          - planet_in_house_from:
-              planet: Ketu
-              house: 6
-              frm: oath_lagna
-          - malefic_in_house:
-              house: 6
-              chart: oath
   event_types:
-    - coalition_coordination
+  - coalition_coordination
   confidence_in_app: source_based
   severity_in_app: elevated
   validation:
@@ -56,6 +56,8 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/chapter7-validation-report.md
     empirical_backtest_result: null
-  needs_predicates: 'Not expressible yet: the vocabulary has no predicate for malefic_in_house.'
+  needs_predicates: 'lords_conjoined and malefic_in_house now exist (2026-11-08), but the rule
+    reads an oath-of-office chart, which the rule file does not give (natal: {moment, place} of
+    the oath).'
   missing_predicates:
-    - malefic_in_house
+  - the oath chart (natal moment and place)

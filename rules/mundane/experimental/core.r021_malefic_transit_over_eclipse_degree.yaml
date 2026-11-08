@@ -15,42 +15,69 @@ source:
     see the export PROVENANCE.
 author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
-status: needs_predicates
-conditions: null
+status: active
+params:
+  orb: {value: 3, min: 0.5, max: 6, step: 0.5, unit: deg}
+  lookback_days: {value: 365, min: 90, max: 730, step: 30, unit: days}
+conditions:
+  eclipse_degree_transited_by:
+    planets:
+    - Mars
+    - Saturn
+    orb: $orb
+    angles:
+    - 0
+    - 180
+    lookback_days: $lookback_days
+reference_cases:
+- moment: '2000-01-01T00:00:00Z'
+  expect: fires
+  note: 'First firing moment found by a scan. Engine: eclipse_degree_transited_by(planets=[Mars,
+    Saturn], orb=3.0, angles=[0.0, 180.0], lookback_days=365.0): Mars 0.4 deg from 0 to the solar
+    eclipse degree Aquarius 3.3 deg of 1999-02-16'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet
+    checked in JHora
+- moment: '2000-01-06T00:00:00Z'
+  expect: silent
+  note: 'A silent moment found by a scan. Engine: eclipse_degree_transited_by(planets=[Mars,
+    Saturn], orb=3.0, angles=[0.0, 180.0], lookback_days=365.0): closest: Mars 4.3 deg from 0
+    to the solar eclipse degree Aquarius 3.3 deg of 1999-02-16 (orb 3)'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet
+    checked in JHora
 validation:
   status: unvalidated
 notes:
   original_condition:
-    - Query stored degrees of recent eclipses.
-    - >-
-      Check if transiting Mars, Saturn, or Uranus conjuncts (0 deg) or opposes (180 deg) within
-      3.0 deg orb.
-    - Fire Severe_Blow alert for transit and transportation catastrophes.
+  - Query stored degrees of recent eclipses.
+  - >-
+    Check if transiting Mars, Saturn, or Uranus conjuncts (0 deg) or opposes (180 deg) within
+    3.0 deg orb.
+  - Fire Severe_Blow alert for transit and transportation catastrophes.
   original_thresholds:
     aspect_orb_deg: 3
   mapping_status: mapped
   draft_conditions:
     any:
-      - transit_over_eclipse_degree:
-          planet: Mars
-          aspects:
-            - 0
-            - 180
-          orb: 3
-      - transit_over_eclipse_degree:
-          planet: Saturn
-          aspects:
-            - 0
-            - 180
-          orb: 3
-      - transit_over_eclipse_degree:
-          planet: Uranus
-          aspects:
-            - 0
-            - 180
-          orb: 3
+    - transit_over_eclipse_degree:
+        planet: Mars
+        aspects:
+        - 0
+        - 180
+        orb: 3
+    - transit_over_eclipse_degree:
+        planet: Saturn
+        aspects:
+        - 0
+        - 180
+        orb: 3
+    - transit_over_eclipse_degree:
+        planet: Uranus
+        aspects:
+        - 0
+        - 180
+        orb: 3
   event_types:
-    - disaster
+  - disaster
   confidence_in_app: source_based
   severity_in_app: high
   validation:
@@ -62,8 +89,6 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/validation-report.md
     empirical_backtest_result: null
-  needs_predicates: >-
-    Not expressible yet: the vocabulary has no predicate for transit_over_eclipse_degree;
-    it uses Uranus, which is outside the nine grahas.
-  missing_predicates:
-    - transit_over_eclipse_degree
+  encoding: Encoded 2026-11-08 when the missing predicates (transit_over_eclipse_degree)
+    were added. Mars and Saturn only (Uranus is not in the vocabulary). 'Recent eclipses'
+    read as those of the previous $lookback_days.

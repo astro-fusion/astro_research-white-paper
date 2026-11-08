@@ -17,60 +17,99 @@ source:
     see the export PROVENANCE.
 author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
-status: needs_predicates
-conditions: null
+status: active
+params:
+  orb: {value: 6, min: 1, max: 10, step: 1, unit: deg}
+  lookback_days: {value: 180, min: 30, max: 365, step: 30, unit: days}
+conditions:
+  any:
+  - eclipse_degree_transited_by:
+      planets:
+      - Mars
+      - Saturn
+      orb: $orb
+      angles:
+      - 90
+      - 180
+      lookback_days: $lookback_days
+  - eclipse_degree_transited_by:
+      planets:
+      - Mercury
+      orb: $orb
+      angles:
+      - 0
+      lookback_days: $lookback_days
+reference_cases:
+- moment: '2000-01-01T00:00:00Z'
+  expect: fires
+  note: 'First firing moment found by a scan. Engine: eclipse_degree_transited_by(planets=[Mars, Saturn],
+    orb=6.0, angles=[90.0, 180.0], lookback_days=180.0): Saturn 5.4 deg from 90 to the lunar eclipse
+    degree Capricorn 11.2 deg of 1999-07-28; eclipse_degree_transited_by(planets=[Mercury], orb=6.0,
+    angles=[0.0], lookback_days=180.0): closest: Mercury 33.9 deg from 0 to the lunar eclipse degree
+    Capricorn 11.2 deg of 1999-07-28 (orb 6)'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked
+    in JHora
+- moment: '2000-01-26T00:00:00Z'
+  expect: silent
+  note: 'A silent moment found by a scan. Engine: eclipse_degree_transited_by(planets=[Mars, Saturn],
+    orb=6.0, angles=[90.0, 180.0], lookback_days=180.0): closest: Saturn 7.9 deg from 90 to the solar
+    eclipse degree Cancer 24.5 deg of 1999-08-11 (orb 6); eclipse_degree_transited_by(planets=[Mercury],
+    orb=6.0, angles=[0.0], lookback_days=180.0): closest: Mercury 168.4 deg from 0 to the lunar eclipse
+    degree Cancer 6.6 deg of 2000-01-21 (orb 6)'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked
+    in JHora
 validation:
   status: unvalidated
 notes:
   original_condition:
-    - If Mars aspects (90, 180, or special 4th/8th) eclipse degree: set Event_Type = WARLIKE
-        (riots, revolts, violent unrest).
-    - If Saturn aspects (90, 180, or special 3rd/10th) eclipse degree: set Event_Type = SCARCITY
-        (famine, drought, economic inflation).
-    - If Mercury conjuncts/aspects eclipse: flag price volatility and market speculation.
-    - If Jupiter conjuncts eclipse degree: flag institutional and legal crises in northwestern/Indus
-        regions.
-    - If Venus conjuncts eclipse degree: flag ministerial diplomatic strain.
+  - If Mars aspects (90, 180, or special 4th/8th) eclipse degree: set Event_Type = WARLIKE
+      (riots, revolts, violent unrest).
+  - If Saturn aspects (90, 180, or special 3rd/10th) eclipse degree: set Event_Type = SCARCITY
+      (famine, drought, economic inflation).
+  - If Mercury conjuncts/aspects eclipse: flag price volatility and market speculation.
+  - If Jupiter conjuncts eclipse degree: flag institutional and legal crises in
+      northwestern/Indus regions.
+  - If Venus conjuncts eclipse degree: flag ministerial diplomatic strain.
   original_thresholds:
     conjunction_orb_deg: 5
     aspect_orb_deg: 6
   mapping_status: mapped
   draft_conditions:
     any:
-      - aspect_to_eclipse_degree:
-          planet: Mars
-          aspects:
-            - 90
-            - 180
-            - 4th
-            - 8th
-          orb: 6
-          outcome: WARLIKE
-      - aspect_to_eclipse_degree:
-          planet: Saturn
-          aspects:
-            - 90
-            - 180
-            - 3rd
-            - 10th
-          orb: 6
-          outcome: SCARCITY
-      - conjunction_within_orb:
-          a: Mercury
-          b: eclipse_degree
-          orb: 5
-      - conjunction_within_orb:
-          a: Jupiter
-          b: eclipse_degree
-          orb: 5
-      - conjunction_within_orb:
-          a: Venus
-          b: eclipse_degree
-          orb: 5
+    - aspect_to_eclipse_degree:
+        planet: Mars
+        aspects:
+        - 90
+        - 180
+        - 4th
+        - 8th
+        orb: 6
+        outcome: WARLIKE
+    - aspect_to_eclipse_degree:
+        planet: Saturn
+        aspects:
+        - 90
+        - 180
+        - 3rd
+        - 10th
+        orb: 6
+        outcome: SCARCITY
+    - conjunction_within_orb:
+        a: Mercury
+        b: eclipse_degree
+        orb: 5
+    - conjunction_within_orb:
+        a: Jupiter
+        b: eclipse_degree
+        orb: 5
+    - conjunction_within_orb:
+        a: Venus
+        b: eclipse_degree
+        orb: 5
   event_types:
-    - civil_unrest
-    - resource_scarcity
-    - market_inflation
+  - civil_unrest
+  - resource_scarcity
+  - market_inflation
   confidence_in_app: traditional_only
   severity_in_app: high
   validation:
@@ -83,7 +122,8 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/chapter5-validation-report.md
     empirical_backtest_result: null
-  needs_predicates: >-
-    Not expressible yet: the vocabulary has no predicate for aspect_to_eclipse_degree.
-  missing_predicates:
-    - aspect_to_eclipse_degree
+  encoding: 'Encoded 2026-11-08 when the missing predicates (aspect_to_eclipse_degree) were added.
+    Degree aspects (90, 180) of Mars and Saturn and the conjunction of Mercury to an eclipse degree
+    of the previous $lookback_days. The special whole-sign aspects (Mars 4th/8th, Saturn 3rd/10th)
+    of the draft are not encoded: an eclipse point has a degree, not a sign-based drishti target. The
+    outcome labels (WARLIKE, SCARCITY) are not conditions.'

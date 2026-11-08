@@ -11,11 +11,37 @@ source:
   note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
 author: astro-research practitioner extraction (2026-11-08)
 tier: experimental
-status: needs_predicates
+status: active
 expected_effect:
   event: territory_loss
   direction: increase
-conditions: null
+conditions:
+  all:
+  - in_house:
+      planet: Ketu
+      houses:
+      - 4
+  - lord_of_house_in:
+      house: 4
+      houses:
+      - 12
+reference_cases:
+- moment: '2002-07-04T04:48:00Z'
+  place: {lat: 28.61, lon: 77.21, tz: Asia/Kolkata}
+  expect: fires
+  note: 'First firing moment found by a scan. Engine: in_house(planet=Ketu, houses=[4]): Ketu is in Scorpio
+    22.7 deg, the 4th house from the Lagna in Leo; lord_of_house_in(house=4, houses=[12]): the 4th lord from
+    the Lagna is Mars, in the 12th (Cancer)'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in
+    JHora
+- moment: '2000-01-01T06:00:00Z'
+  place: {lat: 28.61, lon: 77.21, tz: Asia/Kolkata}
+  expect: silent
+  note: 'A silent moment found by a scan. Engine: in_house(planet=Ketu, houses=[4]): Ketu is in Capricorn
+    11.2 deg, the 11th house from the Lagna in Pisces, not one of 4th; lord_of_house_in(house=4, houses=[12]):
+    the 4th lord from the Lagna is Mercury, in the 10th (Sagittarius), not 12th'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in
+    JHora
 validation:
   status: unvalidated
 notes:
@@ -31,10 +57,9 @@ notes:
     citation: none cited by the practitioner
   bib:
   - anvaya_nationalcharts
-  needs_predicates: Needs a 'lord of house N is in house M' predicate; Ketu in the 4th alone is expressible
-    with in_house.
   original_condition:
   - Ketu in the 4th house of the national chart
   - lord of the 4th house placed in the 12th house
-  missing_predicates:
-  - house_lord_in_house
+  encoding: Encoded 2026-11-08 when the missing predicates (house_lord_in_house) were added. Read in
+    the chart of the moment for the place given (a national chart is the chart of its founding moment);
+    whole-sign houses.

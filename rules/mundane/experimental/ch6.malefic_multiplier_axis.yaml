@@ -17,15 +17,78 @@ source:
     see the export PROVENANCE.
 author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
-status: needs_predicates
-conditions: null
+status: active
+params:
+  orb: {value: 8, min: 2, max: 12, step: 1, unit: deg}
+conditions:
+  any:
+  - conjunction_or_mutual_aspect:
+      planet: Mars
+      others:
+      - Saturn
+      - Jupiter
+      orb: $orb
+  - conjunct_within:
+      planets:
+      - Rahu
+      - Jupiter
+      orb: $orb
+  - conjunct_within:
+      planets:
+      - Rahu
+      - Saturn
+      orb: $orb
+  - conjunct_within:
+      planets:
+      - Ketu
+      - Jupiter
+      orb: $orb
+  - conjunct_within:
+      planets:
+      - Ketu
+      - Saturn
+      orb: $orb
+  - in_sign:
+      planet: Mars
+      signs:
+      - Aries
+      - Libra
+reference_cases:
+- moment: '2000-03-18T00:00:00Z'
+  expect: fires
+  note: 'First firing moment found by a scan. Engine: conjunction_or_mutual_aspect(planet=Mars,
+    others=[Saturn, Jupiter], orb=8.0): Mars is in Aries 2.4 deg; no conjunction or mutual aspect
+    with Saturn in Aries, Jupiter in Aries; conjunct_within(planets=[Rahu, Jupiter], orb=8.0):
+    Rahu is in Cancer 7.1 deg and Jupiter is in Aries 12.2 deg: 84.9 deg apart, outside the
+    8 deg orb; conjunct_within(planets=[Rahu, Saturn], orb=8.0): Rahu is in Cancer 7.1 deg and
+    Saturn is in Aries 20.1 deg: 77.0 deg apart, outside the 8 deg orb; conjunct_within(planets=[Ketu,
+    Jupiter], orb=8.0): Ketu is in Capricorn 7.1 deg and Jupiter is in Aries 12.2 deg: 95.1
+    deg apart, outside the 8 deg orb; conjunct_within(planets=[Ketu, Saturn], orb=8.0): Ketu
+    is in Capricorn 7.1 deg and Saturn is in Aries 20.1 deg: 103.0 deg apart, outside the 8
+    deg orb; in_sign(planet=Mars, signs=[Aries, Libra]): Mars is in A ...'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet
+    checked in JHora
+- moment: '2000-01-01T00:00:00Z'
+  expect: silent
+  note: 'A silent moment found by a scan. Engine: conjunction_or_mutual_aspect(planet=Mars,
+    others=[Saturn, Jupiter], orb=8.0): Mars is in Aquarius 3.7 deg; no conjunction or mutual
+    aspect with Saturn in Aries, Jupiter in Aries; conjunct_within(planets=[Rahu, Jupiter],
+    orb=8.0): Rahu is in Cancer 11.2 deg and Jupiter is in Aries 1.4 deg: 99.8 deg apart, outside
+    the 8 deg orb; conjunct_within(planets=[Rahu, Saturn], orb=8.0): Rahu is in Cancer 11.2
+    deg and Saturn is in Aries 16.6 deg: 84.7 deg apart, outside the 8 deg orb; conjunct_within(planets=[Ketu,
+    Jupiter], orb=8.0): Ketu is in Capricorn 11.2 deg and Jupiter is in Aries 1.4 deg: 80.2
+    deg apart, outside the 8 deg orb; conjunct_within(planets=[Ketu, Saturn], orb=8.0): Ketu
+    is in Capricorn 11.2 deg and Saturn is in Aries 16.6 deg: 95.3 deg apart, outside the 8
+    deg orb; in_sign(planet=Mars, signs=[Aries, Libra]): Mars is in A ...'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet
+    checked in JHora
 validation:
   status: unvalidated
 notes:
   original_condition:
-    - Mars in conjunction or mutual aspect with Saturn or Jupiter.
-    - Rahu or Ketu conjunct Jupiter or Saturn.
-    - Mars in Aries or Libra squaring Cancer-Capricorn axis.
+  - Mars in conjunction or mutual aspect with Saturn or Jupiter.
+  - Rahu or Ketu conjunct Jupiter or Saturn.
+  - Mars in Aries or Libra squaring Cancer-Capricorn axis.
   original_thresholds:
     conjunction_orb_deg: 8
     mars_aspect_weight: 30
@@ -34,32 +97,32 @@ notes:
   mapping_status: mapped
   draft_conditions:
     any:
-      - conjunction_or_mutual_aspect:
-          a: Mars
-          b_any:
-            - Saturn
-            - Jupiter
-          orb: 8
-      - conjunction_within_orb:
-          a_any:
-            - Rahu
-            - Ketu
-          b_any:
-            - Jupiter
-            - Saturn
-          orb: 8
-      - all:
-          - planet_in_sign_in:
-              planet: Mars
-              signs:
-                - 1
-                - 7
-          - squares_axis:
-              axis:
-                - 4
-                - 10
+    - conjunction_or_mutual_aspect:
+        a: Mars
+        b_any:
+        - Saturn
+        - Jupiter
+        orb: 8
+    - conjunction_within_orb:
+        a_any:
+        - Rahu
+        - Ketu
+        b_any:
+        - Jupiter
+        - Saturn
+        orb: 8
+    - all:
+      - planet_in_sign_in:
+          planet: Mars
+          signs:
+          - 1
+          - 7
+      - squares_axis:
+          axis:
+          - 4
+          - 10
   event_types:
-    - security_and_defense
+  - security_and_defense
   confidence_in_app: source_based
   severity_in_app: critical
   validation:
@@ -71,9 +134,7 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/chapter6-validation-report.md
     empirical_backtest_result: null
-  needs_predicates: >-
-    Not expressible yet: the vocabulary has no predicate for conjunction_or_mutual_aspect,
-    squares_axis.
-  missing_predicates:
-    - conjunction_or_mutual_aspect
-    - squares_axis
+  encoding: "Encoded 2026-11-08 when the missing predicates (conjunction_or_mutual_aspect, squares_axis)
+    were added. 'Mars in Aries or Libra squaring the Cancer-Capricorn axis' is by sign: Aries
+    and Libra are the signs square to that axis, so the square adds no further test. Mutual
+    aspect is whole-sign graha drishti."

@@ -23,31 +23,31 @@ validation:
   status: unvalidated
 notes:
   original_condition:
-    - >-
-      Saturn transits Capricorn conjunct Rahu within orb OR 8th/9th/10th lords conjoin in
-      4th house.
+  - >-
+    Saturn transits Capricorn conjunct Rahu within orb OR 8th/9th/10th lords conjoin in
+    4th house.
   original_thresholds:
     capricorn_sign: 10
     conjunction_orb_deg: 8
   mapping_status: mapped
   draft_conditions:
     any:
-      - all:
-          - planet_in_sign:
-              planet: Saturn
-              sign: 10
-          - conjunction_within_orb:
-              a: Saturn
-              b: Rahu
-              orb: 8
-      - lords_conjoined_in_house:
-          lords:
-            - 8
-            - 9
-            - 10
-          house: 4
+    - all:
+      - planet_in_sign:
+          planet: Saturn
+          sign: 10
+      - conjunction_within_orb:
+          a: Saturn
+          b: Rahu
+          orb: 8
+    - lords_conjoined_in_house:
+        lords:
+        - 8
+        - 9
+        - 10
+        house: 4
   event_types:
-    - parliament_and_markets
+  - parliament_and_markets
   confidence_in_app: source_based
   severity_in_app: elevated
   validation:
@@ -60,6 +60,7 @@ notes:
     source_file: docs/mundane/chapter7-validation-report.md
     empirical_backtest_result: null
   needs_predicates: >-
-    Not expressible yet: the vocabulary has no predicate for lords_conjoined_in_house.
+    lords_conjoined now exists (2026-11-08), but the draft does not say whose houses (the national chart, fixed, or
+    the transit Lagna at the capital, which changes every two hours).
   missing_predicates:
-    - lords_conjoined_in_house
+  - which chart's 8th, 9th and 10th lords

@@ -17,15 +17,74 @@ source:
     see the export PROVENANCE.
 author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
-status: needs_predicates
-conditions: null
+status: active
+params:
+  tolerance_years: {value: 7, min: 1, max: 15, step: 1, unit: years}
+  orb: {value: 10, min: 2, max: 15, step: 1, unit: deg}
+conditions:
+  all:
+  - cycle_resonance:
+      reference: '1815-12-02T00:00:00Z'
+      period_years: 180
+      tolerance_years: $tolerance_years
+      anchor: Treaty of Sugauli, 2 December 1815
+  - separation_within:
+      planets:
+      - Jupiter
+      - Saturn
+      angle: 180
+      orb: $orb
+  - in_sign:
+      planet: Jupiter
+      signs:
+      - Cancer
+      - Capricorn
+  - any:
+    - conjunction_or_mutual_aspect:
+        planet: Rahu
+        others:
+        - Jupiter
+        - Saturn
+    - conjunction_or_mutual_aspect:
+        planet: Ketu
+        others:
+        - Jupiter
+        - Saturn
+reference_cases:
+- moment: '1990-07-24T00:00:00Z'
+  expect: fires
+  note: 'First firing moment found by a scan. Engine: cycle_resonance(reference=1815-12-02 00:00:00+00:00,
+    period_years=180.0, tolerance_years=7.0, anchor=Treaty of Sugauli, 2 December 1815): 174.6
+    years from Treaty of Sugauli, 2 December 1815: 5.4 years from a 180-year return (within 7);
+    separation_within(planets=[Jupiter, Saturn], angle=180.0, orb=10.0): Jupiter is in Cancer
+    0.7 deg and Saturn is in Sagittarius 27.6 deg: 176.9 deg apart, 3.1 deg from 180 (within
+    the 10 deg orb); in_sign(planet=Jupiter, signs=[Cancer, Capricorn]): Jupiter is in Cancer
+    0.7 deg, one of Cancer, Capricorn; conjunction_or_mutual_aspect(planet=Rahu, others=[Jupiter,
+    Saturn]): Rahu in Capricorn and Jupiter in Cancer aspect each other; conjunction_or_mutual_aspect(planet=Ketu,
+    others=[Jupiter, Saturn]): Ketu conjunct Jupiter (both in Cancer)'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet
+    checked in JHora
+- moment: '2010-01-01T00:00:00Z'
+  expect: silent
+  note: 'A silent moment found by a scan. Engine: cycle_resonance(reference=1815-12-02 00:00:00+00:00,
+    period_years=180.0, tolerance_years=7.0, anchor=Treaty of Sugauli, 2 December 1815): 194.1
+    years from Treaty of Sugauli, 2 December 1815: 14.1 years from a 180-year return (outside
+    7); separation_within(planets=[Jupiter, Saturn], angle=180.0, orb=10.0): Jupiter is in Aquarius
+    2.4 deg and Saturn is in Virgo 10.5 deg: 141.9 deg apart, 38.1 deg from 180 (outside the
+    10 deg orb); in_sign(planet=Jupiter, signs=[Cancer, Capricorn]): Jupiter is in Aquarius 2.4
+    deg, not one of Cancer, Capricorn; conjunction_or_mutual_aspect(planet=Rahu, others=[Jupiter,
+    Saturn]): Rahu is in Sagittarius 27.6 deg; no conjunction or mutual aspect with Jupiter in
+    Aquarius, Saturn in Virgo; conjunction_or_mutual_aspect(planet=Ketu, others=[Jupiter, Saturn]):
+    Ketu is in Gemini 27.6 deg; no conjunction or m ...'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet
+    checked in JHora
 validation:
   status: unvalidated
 notes:
   original_condition:
-    - >-
-      Current year within tolerance of 180-year anchor (e.g., 1814-1816 Sugauli baseline).
-    - Jupiter-Saturn opposition on Cancer-Capricorn axis with Rahu/Ketu association.
+  - >-
+    Current year within tolerance of 180-year anchor (e.g., 1814-1816 Sugauli baseline).
+  - Jupiter-Saturn opposition on Cancer-Capricorn axis with Rahu/Ketu association.
   original_thresholds:
     cycle_period_years: 180
     tolerance_window_years: 7
@@ -33,26 +92,26 @@ notes:
   mapping_status: mapped
   draft_conditions:
     all:
-      - cycle_resonance:
-          period_years: 180
-          tolerance_years: 7
-          anchor: 1815 (Sugauli baseline)
-      - aspect_within_orb:
-          a: Jupiter
-          b: Saturn
-          angle: 180
-          orb: 10
-      - opposition_axis_signs:
-          signs:
-            - 4
-            - 10
-      - node_association:
-          nodes:
-            - Rahu
-            - Ketu
+    - cycle_resonance:
+        period_years: 180
+        tolerance_years: 7
+        anchor: 1815 (Sugauli baseline)
+    - aspect_within_orb:
+        a: Jupiter
+        b: Saturn
+        angle: 180
+        orb: 10
+    - opposition_axis_signs:
+        signs:
+        - 4
+        - 10
+    - node_association:
+        nodes:
+        - Rahu
+        - Ketu
   event_types:
-    - cross_border_diplomatic_friction
-    - territorial_status_review
+  - cross_border_diplomatic_friction
+  - territorial_status_review
   confidence_in_app: source_based
   severity_in_app: high
   validation:
@@ -65,8 +124,8 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/chapter7-validation-report.md
     empirical_backtest_result: null
-  needs_predicates: >-
-    Not expressible yet: the vocabulary has no predicate for cycle_resonance, node_association.
-  missing_predicates:
-    - cycle_resonance
-    - node_association
+  encoding: "Encoded 2026-11-08 when the missing predicates (cycle_resonance, node_association)
+    were added. Anchor: the Treaty of Sugauli, signed 2 December 1815. The Cancer-Capricorn axis
+    is tested on Jupiter's sign (with the opposition, Saturn is then on the other end within
+    the orb). 'Node association' read as Rahu or Ketu sharing a sign with, or in mutual aspect
+    with, Jupiter or Saturn."

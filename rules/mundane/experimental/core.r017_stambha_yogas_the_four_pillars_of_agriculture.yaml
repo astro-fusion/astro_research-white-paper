@@ -17,40 +17,92 @@ source:
     see the export PROVENANCE.
 author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
-status: needs_predicates
-conditions: null
+status: active
+conditions:
+  any:
+  - nakshatra_on_tithi:
+      nakshatras:
+      - Revati
+      tithis:
+      - 1
+      months:
+      - Chaitra
+  - nakshatra_on_tithi:
+      nakshatras:
+      - Bharani
+      tithis:
+      - 1
+      months:
+      - Vaishakha
+  - nakshatra_on_tithi:
+      nakshatras:
+      - Mrigashira
+      tithis:
+      - 1
+      months:
+      - Jyeshtha
+  - nakshatra_on_tithi:
+      nakshatras:
+      - Punarvasu
+      tithis:
+      - 1
+      months:
+      - Ashadha
+reference_cases:
+- moment: '1990-03-27T06:00:00Z'
+  expect: fires
+  note: 'First firing moment found by a scan. Engine: nakshatra_on_tithi(nakshatras=[Revati], tithis=[1],
+    months=[Chaitra]): the Moon is in Revati on tithi 1 of Chaitra; nakshatra_on_tithi(nakshatras=[Bharani],
+    tithis=[1], months=[Vaishakha]): the Moon is in Revati on tithi 1 of Chaitra; wanted Bharani
+    on tithi 1; nakshatra_on_tithi(nakshatras=[Mrigashira], tithis=[1], months=[Jyeshtha]): the
+    Moon is in Revati on tithi 1 of Chaitra; wanted Mrigashira on tithi 1; nakshatra_on_tithi(nakshatras=[Punarvasu],
+    tithis=[1], months=[Ashadha]): the Moon is in Revati on tithi 1 of Chaitra; wanted Punarvasu
+    on tithi 1'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet
+    checked in JHora
+- moment: '2020-06-01T00:00:00Z'
+  expect: silent
+  note: 'A silent moment found by a scan. Engine: nakshatra_on_tithi(nakshatras=[Revati], tithis=[1],
+    months=[Chaitra]): the Moon is in Hasta on tithi 10 of Jyeshtha; wanted Revati on tithi 1; nakshatra_on_tithi(nakshatras=[Bharani],
+    tithis=[1], months=[Vaishakha]): the Moon is in Hasta on tithi 10 of Jyeshtha; wanted Bharani
+    on tithi 1; nakshatra_on_tithi(nakshatras=[Mrigashira], tithis=[1], months=[Jyeshtha]): the
+    Moon is in Hasta on tithi 10 of Jyeshtha; wanted Mrigashira on tithi 1; nakshatra_on_tithi(nakshatras=[Punarvasu],
+    tithis=[1], months=[Ashadha]): the Moon is in Hasta on tithi 10 of Jyeshtha; wanted Punarvasu
+    on tithi 1'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet
+    checked in JHora
 validation:
   status: unvalidated
 notes:
   original_condition:
-    - 'Pillar 1 (Rainfall): Chaitra Shukla 1 == Revati.'
-    - 'Pillar 2 (Fodder): Vaisakha 1 == Bharani.'
-    - 'Pillar 3 (Wind): Jyeshta Shukla 1 == Mrigashirsha.'
-    - 'Pillar 4 (Food Crops): Ashadha Shukla 1 == Punarvasu.'
-    - >-
-      Compute overall viability percentage (0-100%) and flag resource shortages for failed
-      alignments.
+  - 'Pillar 1 (Rainfall): Chaitra Shukla 1 == Revati.'
+  - 'Pillar 2 (Fodder): Vaisakha 1 == Bharani.'
+  - 'Pillar 3 (Wind): Jyeshta Shukla 1 == Mrigashirsha.'
+  - 'Pillar 4 (Food Crops): Ashadha Shukla 1 == Punarvasu.'
+  - >-
+    Compute overall viability percentage (0-100%) and flag resource shortages for failed
+    alignments.
   mapping_status: partial
   draft_conditions:
     all:
-      - nakshatra_on_tithi:
-          lunar_month: Chaitra
-          tithi: Shukla 1
-          nakshatra: Revati
-      - nakshatra_on_tithi:
-          lunar_month: Vaisakha
-          tithi: '1'
-          nakshatra: Bharani
-      - nakshatra_on_tithi:
-          lunar_month: Jyeshtha
-          tithi: Shukla 1
-          nakshatra: Mrigashirsha
-      - nakshatra_on_tithi:
-          lunar_month: Ashadha
-          tithi: Shukla 1
-          nakshatra: Punarvasu
+    - nakshatra_on_tithi:
+        lunar_month: Chaitra
+        tithi: Shukla 1
+        nakshatra: Revati
+    - nakshatra_on_tithi:
+        lunar_month: Vaisakha
+        tithi: '1'
+        nakshatra: Bharani
+    - nakshatra_on_tithi:
+        lunar_month: Jyeshtha
+        tithi: Shukla 1
+        nakshatra: Mrigashirsha
+    - nakshatra_on_tithi:
+        lunar_month: Ashadha
+        tithi: Shukla 1
+        nakshatra: Punarvasu
   event_types:
-    - agriculture
+  - agriculture
   confidence_in_app: traditional_only
   severity_in_app: elevated
   validation:
@@ -62,6 +114,7 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/validation-report.md
     empirical_backtest_result: null
-  needs_predicates: 'Not expressible yet: the vocabulary has no predicate for nakshatra_on_tithi.'
-  missing_predicates:
-    - nakshatra_on_tithi
+  encoding: Encoded 2026-11-08 when the missing predicates (nakshatra_on_tithi) were added.
+    Each pillar holds when the Moon is in its nakshatra during Shukla pratipada (tithi 1) of
+    its month; the rule fires while any pillar holds. The yearly viability score (how many of
+    the four held) is an aggregate over a year, not a condition at one moment.

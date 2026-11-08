@@ -17,52 +17,83 @@ source:
     see the export PROVENANCE.
 author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
-status: needs_predicates
-conditions: null
+status: active
+params:
+  count: {value: 2, min: 1, max: 4, step: 1, unit: count}
+conditions:
+  any:
+  - afflicted_element:
+      element: fire
+      count_gte: $count
+  - afflicted_element:
+      element: water
+      count_gte: $count
+  - afflicted_element:
+      element: air
+      count_gte: $count
+reference_cases:
+- moment: '2000-01-01T00:00:00Z'
+  expect: fires
+  note: 'First firing moment found by a scan. Engine: afflicted_element(element=fire, count_gte=2):
+    malefics in fire signs (Aries, Leo, Sagittarius): Sun in Sagittarius, Saturn in Aries (2 needed);
+    afflicted_element(element=water, count_gte=2): malefics in water signs (Cancer, Scorpio, Pisces):
+    Rahu in Cancer (2 needed); afflicted_element(element=air, count_gte=2): malefics in air signs
+    (Gemini, Libra, Aquarius): Mars in Aquarius (2 needed)'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet
+    checked in JHora
+- moment: '2000-01-15T00:00:00Z'
+  expect: silent
+  note: 'A silent moment found by a scan. Engine: afflicted_element(element=fire, count_gte=2):
+    malefics in fire signs (Aries, Leo, Sagittarius): Saturn in Aries (2 needed); afflicted_element(element=water,
+    count_gte=2): malefics in water signs (Cancer, Scorpio, Pisces): Rahu in Cancer (2 needed);
+    afflicted_element(element=air, count_gte=2): malefics in air signs (Gemini, Libra, Aquarius):
+    Mars in Aquarius (2 needed)'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet
+    checked in JHora
 validation:
   status: unvalidated
 notes:
   original_condition:
-    - >-
-      Fiery (Sun, Mars, Jupiter, Uranus / Aries, Leo, Sag): FIRE/EXPLOSION, Sabotage, Collisions,
-      Derailments.
-    - >-
-      Watery (Moon, Venus, Neptune / Cancer, Scorpio, Pisces): WATER_HAZARD, Bridge Collapses,
-      Track Flooding, Rivers.
-    - >-
-      Airy (Gemini, Libra, Aquarius): WIND/GAS/SPACE, Atmospheric shear, gas incidents.
+  - >-
+    Fiery (Sun, Mars, Jupiter, Uranus / Aries, Leo, Sag): FIRE/EXPLOSION, Sabotage, Collisions,
+    Derailments.
+  - >-
+    Watery (Moon, Venus, Neptune / Cancer, Scorpio, Pisces): WATER_HAZARD, Bridge Collapses,
+    Track Flooding, Rivers.
+  - >-
+    Airy (Gemini, Libra, Aquarius): WIND/GAS/SPACE, Atmospheric shear, gas incidents.
   mapping_status: mapped
   draft_conditions:
     any:
-      - afflicted_element:
-          element: fire
-          planets:
-            - Sun
-            - Mars
-            - Jupiter
-            - Uranus
-          signs:
-            - Aries
-            - Leo
-            - Sagittarius
-      - afflicted_element:
-          element: water
-          planets:
-            - Moon
-            - Venus
-            - Neptune
-          signs:
-            - Cancer
-            - Scorpio
-            - Pisces
-      - afflicted_element:
-          element: air
-          signs:
-            - Gemini
-            - Libra
-            - Aquarius
+    - afflicted_element:
+        element: fire
+        planets:
+        - Sun
+        - Mars
+        - Jupiter
+        - Uranus
+        signs:
+        - Aries
+        - Leo
+        - Sagittarius
+    - afflicted_element:
+        element: water
+        planets:
+        - Moon
+        - Venus
+        - Neptune
+        signs:
+        - Cancer
+        - Scorpio
+        - Pisces
+    - afflicted_element:
+        element: air
+        signs:
+        - Gemini
+        - Libra
+        - Aquarius
   event_types:
-    - transport
+  - transport
   confidence_in_app: traditional_only
   severity_in_app: elevated
   validation:
@@ -74,8 +105,6 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/validation-report.md
     empirical_backtest_result: null
-  needs_predicates: >-
-    Not expressible yet: the vocabulary has no predicate for afflicted_element; it uses Neptune,
-    Uranus, which are outside the nine grahas.
-  missing_predicates:
-    - afflicted_element
+  encoding: 'Encoded 2026-11-08 when the missing predicates (afflicted_element) were added. Same
+    encoding as mundane.ch4.elemental_hazard_tags: an element is afflicted when at least $count
+    natural malefics occupy its signs; the accident-type labels are outputs, not conditions.'

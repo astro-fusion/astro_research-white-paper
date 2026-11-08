@@ -27,8 +27,8 @@ validation:
   status: unvalidated
 notes:
   original_condition:
-    - Eclipse strength score >= 75.0.
-    - Target date between +180 and +210 days after the eclipse event.
+  - Eclipse strength score >= 75.0.
+  - Target date between +180 and +210 days after the eclipse event.
   original_thresholds:
     strength_score_threshold: 75
     delayed_start_days: 180
@@ -36,14 +36,14 @@ notes:
   mapping_status: mapped
   draft_conditions:
     all:
-      - eclipse_strength_score_gte:
-          value: 75
-      - date_within_window:
-          around: eclipse
-          after_min: 180
-          after_max: 210
+    - eclipse_strength_score_gte:
+        value: 75
+    - date_within_window:
+        around: eclipse
+        after_min: 180
+        after_max: 210
   event_types:
-    - delayed_regime_or_seismic_echo
+  - delayed_regime_or_seismic_echo
   confidence_in_app: source_based
   severity_in_app: high
   validation:
@@ -56,7 +56,11 @@ notes:
     source_file: docs/mundane/chapter5-validation-report.md
     empirical_backtest_result: null
   needs_predicates: >-
-    Not expressible yet: the vocabulary has no predicate for date_within_window, eclipse_strength_score_gte.
+    eclipse_within_days with min_magnitude now exists (2026-11-08), but the rule needs an eclipse 180 to 210
+    days before the moment, a window that does not contain the moment. Encoding it as 'a strong eclipse within
+    210 days and none within 180' never fires in 2000-2160 (3-day scan) at magnitude 0.75, because a strong
+    eclipse falls in nearly every season; the rule waits for an offset window (days_before_min) on the eclipse
+    predicates.
   missing_predicates:
-    - date_within_window
-    - eclipse_strength_score_gte
+  - an offset eclipse window (eclipse between 180 and 210 days before)
+  - the registry's eclipse strength score (read as magnitude for now)

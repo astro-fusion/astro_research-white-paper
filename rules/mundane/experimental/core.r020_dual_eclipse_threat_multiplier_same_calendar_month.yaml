@@ -21,25 +21,45 @@ window:
   unit: months
   after: $window_after
   note: 6-8 month window
-status: needs_predicates
+status: active
 params:
   window_after: {value: 8, min: 0, max: 16, step: 1, unit: months}
-conditions: null
+  pair_days: {value: 16, min: 10, max: 20, step: 1, unit: days}
+conditions:
+  eclipse_within_days:
+    kind: solar
+    days_before: 0.5
+    days_after: 0.5
+    pair_within_days: $pair_days
+reference_cases:
+- moment: '2008-08-01T10:00:00Z'
+  expect: fires
+  note: 'Chosen date. Engine: eclipse_within_days(kind=solar, days_before=0.5, days_after=0.5, pair_within_days=16.0):
+    total solar eclipse 2008-08-01, paired with the lunar of 2008-08-16 (15.5 days) (0.5 days before to
+    0.5 days after)'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in
+    JHora
+- moment: '2008-08-20T00:00:00Z'
+  expect: silent
+  note: 'Chosen date. Engine: eclipse_within_days(kind=solar, days_before=0.5, days_after=0.5, pair_within_days=16.0):
+    no eclipse from 0.5 days before to 0.5 days after the moment'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in
+    JHora
 validation:
   status: unvalidated
 notes:
   original_condition:
-    - Check if solar and lunar eclipse share the same calendar month.
-    - If yes, set Disaster_Intensity = SEVERE_AND_WIDESPREAD.
-    - >-
-      Activate 6 to 8 month vulnerability window for transportation, mass transit, and seismic
-      disruptions.
+  - Check if solar and lunar eclipse share the same calendar month.
+  - If yes, set Disaster_Intensity = SEVERE_AND_WIDESPREAD.
+  - >-
+    Activate 6 to 8 month vulnerability window for transportation, mass transit, and seismic
+    disruptions.
   mapping_status: mapped
   draft_conditions:
     all:
-      - solar_and_lunar_eclipse_same_calendar_month: {}
+    - solar_and_lunar_eclipse_same_calendar_month: {}
   event_types:
-    - disaster
+  - disaster
   confidence_in_app: source_based
   severity_in_app: critical
   validation:
@@ -50,7 +70,8 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/validation-report.md
     empirical_backtest_result: null
-  needs_predicates: >-
-    Not expressible yet: the vocabulary has no predicate for solar_and_lunar_eclipse_same_calendar_month.
-  missing_predicates:
-    - solar_and_lunar_eclipse_same_calendar_month
+  encoding: Encoded 2026-11-08 when the missing predicates
+    (solar_and_lunar_eclipse_same_calendar_month) were added. 'Same calendar month' read as a solar
+    eclipse with a lunar eclipse within $pair_days days (the two eclipses of one season are about 15
+    days apart, so they share a lunar month; Gregorian month boundaries are not tested). The rule
+    fires on the solar eclipse day; the 6-8 month vulnerability is the window.

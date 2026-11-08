@@ -17,38 +17,77 @@ source:
     see the export PROVENANCE.
 author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
-status: needs_predicates
-conditions: null
+status: active
+conditions:
+  any:
+  - all:
+    - month_paksha:
+        months:
+        - Ashadha
+        paksha: krishna
+    - in_nakshatra:
+        planet: Moon
+        nakshatras:
+        - Rohini
+  - all:
+    - month_paksha:
+        months:
+        - Ashadha
+        paksha: shukla
+    - in_nakshatra:
+        planet: Moon
+        nakshatras:
+        - Swati
+reference_cases:
+- moment: '2020-06-30T06:00:00Z'
+  expect: fires
+  note: 'First firing moment found by a scan. Engine: month_paksha(months=[Ashadha], paksha=krishna):
+    the lunar month is Ashadha, shukla paksha (tithi 10), not Ashadha krishna; in_nakshatra(planet=Moon,
+    nakshatras=[Rohini]): Moon is in Libra 10.1 deg, in Swati pada 2, not one of Rohini; month_paksha(months=[Ashadha],
+    paksha=shukla): the lunar month is Ashadha, shukla paksha (tithi 10); in_nakshatra(planet=Moon,
+    nakshatras=[Swati]): Moon is in Libra 10.1 deg, in Swati pada 2, one of Swati'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet
+    checked in JHora
+- moment: '2020-06-01T00:00:00Z'
+  expect: silent
+  note: 'A silent moment found by a scan. Engine: month_paksha(months=[Ashadha], paksha=krishna):
+    the lunar month is Jyeshtha, shukla paksha (tithi 10), not Ashadha krishna; in_nakshatra(planet=Moon,
+    nakshatras=[Rohini]): Moon is in Virgo 11.5 deg, in Hasta pada 1, not one of Rohini; month_paksha(months=[Ashadha],
+    paksha=shukla): the lunar month is Jyeshtha, shukla paksha (tithi 10), not Ashadha shukla;
+    in_nakshatra(planet=Moon, nakshatras=[Swati]): Moon is in Virgo 11.5 deg, in Hasta pada 1,
+    not one of Swati'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet
+    checked in JHora
 validation:
   status: unvalidated
 notes:
   original_condition:
-    - >-
-      If Ashadha Krishna Paksha + Moon in Rohini: Determine quantity and distribution of upcoming
-      rainfall.
-    - >-
-      If Ashadha Shukla Paksha + Moon in Swati: Triggers immediate rainfall and sets annual
-      crop prospects.
-    - Prevailing wind during Poorvashadha or Poornima locks in monsoon trajectory.
+  - >-
+    If Ashadha Krishna Paksha + Moon in Rohini: Determine quantity and distribution of upcoming
+    rainfall.
+  - >-
+    If Ashadha Shukla Paksha + Moon in Swati: Triggers immediate rainfall and sets annual
+    crop prospects.
+  - Prevailing wind during Poorvashadha or Poornima locks in monsoon trajectory.
   mapping_status: partial
   draft_conditions:
     any:
-      - all:
-          - month_paksha:
-              month: Ashadha
-              paksha: Krishna
-          - planet_in_nakshatra:
-              planet: Moon
-              nakshatra: Rohini
-      - all:
-          - month_paksha:
-              month: Ashadha
-              paksha: Shukla
-          - planet_in_nakshatra:
-              planet: Moon
-              nakshatra: Swati
+    - all:
+      - month_paksha:
+          month: Ashadha
+          paksha: Krishna
+      - planet_in_nakshatra:
+          planet: Moon
+          nakshatra: Rohini
+    - all:
+      - month_paksha:
+          month: Ashadha
+          paksha: Shukla
+      - planet_in_nakshatra:
+          planet: Moon
+          nakshatra: Swati
   event_types:
-    - weather
+  - weather
   confidence_in_app: traditional_only
   severity_in_app: moderate
   validation:
@@ -60,6 +99,6 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/validation-report.md
     empirical_backtest_result: null
-  needs_predicates: 'Not expressible yet: the vocabulary has no predicate for month_paksha.'
-  missing_predicates:
-    - month_paksha
+  encoding: Encoded 2026-11-08 when the missing predicates (month_paksha) were added. Amanta
+    months (the month that starts with the Sun in Gemini is Ashadha). The third clause
+    (prevailing wind) is an observation, not a sky condition.

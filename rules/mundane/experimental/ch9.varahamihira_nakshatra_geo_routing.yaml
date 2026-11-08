@@ -23,14 +23,14 @@ notes:
   mapping_status: mapped
   draft_conditions:
     any:
-      - kurma_direction:
-          nakshatra: Magha
-      - kurma_direction:
-          nakshatra: PurvaPhalguni
-      - kurma_direction:
-          nakshatra: UttaraPhalguni
+    - kurma_direction:
+        nakshatra: Magha
+    - kurma_direction:
+        nakshatra: PurvaPhalguni
+    - kurma_direction:
+        nakshatra: UttaraPhalguni
   event_types:
-    - regional_security
+  - regional_security
   confidence_in_app: classical_authority
   severity_in_app: targeted
   validation:
@@ -42,6 +42,8 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/chapter9-validation-report.md
     empirical_backtest_result: null
-  needs_predicates: 'Not expressible yet: the vocabulary has no predicate for kurma_direction.'
+  needs_predicates: 'kurma_direction now exists (2026-11-08), but the draft names only nakshatras
+    (Magha, Purva Phalguni, Uttara Phalguni), not the body whose nakshatra is routed; the rule
+    waits for that reading.'
   missing_predicates:
-    - kurma_direction
+  - which body (a malefic, an eclipse point) occupies the nakshatras

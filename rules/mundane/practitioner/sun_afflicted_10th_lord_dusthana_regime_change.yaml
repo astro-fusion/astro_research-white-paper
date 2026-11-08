@@ -3,19 +3,70 @@ id: mundane.practitioner.sun_afflicted_10th_lord_dusthana_regime_change
 version: 2
 name: Sun afflicted by Saturn or Rahu and the 10th lord in a dusthana, regime change
 domain: mundane
-claim: Affliction of the Sun (head of state) by Saturn or Rahu, together with the 10th lord in a dusthana
-  (6, 8, 12), indicates regime change.
+claim: Affliction of the Sun (head of state) by Saturn or Rahu, together with the 10th lord in a
+  dusthana (6, 8, 12), indicates regime change.
 source:
   url: https://anvayajyotish.com/blog/mundane-astrology-national-charts-geopolitical-predictions
   text: 'Anvaya Jyotish, "Mundane astrology: national charts and geopolitical predictions" (n.d.)'
   note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
 author: astro-research practitioner extraction (2026-11-08)
 tier: experimental
-status: needs_predicates
+status: active
 expected_effect:
   event: regime_change
   direction: increase
-conditions: null
+conditions:
+  all:
+  - any:
+    - in_house_from:
+        planet: Sun
+        from: Saturn
+        houses:
+        - 1
+    - graha_drishti:
+        planet: Saturn
+        target: Sun
+    - in_house_from:
+        planet: Sun
+        from: Rahu
+        houses:
+        - 1
+    - graha_drishti:
+        planet: Rahu
+        target: Sun
+  - lord_of_house_in:
+      house: 10
+      houses:
+      - 6
+      - 8
+      - 12
+reference_cases:
+- moment: '2000-01-15T09:36:00Z'
+  place: {lat: 28.61, lon: 77.21, tz: Asia/Kolkata}
+  expect: fires
+  note: 'First firing moment found by a scan. Engine: in_house_from(planet=Sun, from=Saturn, houses=[1]):
+    Sun is in Capricorn 0.7 deg, 10th from Saturn in Aries, which is not one of the 1st; graha_drishti(planet=Saturn,
+    target=Sun): Saturn is in Aries 16.4 deg; Sun in Capricorn is the 10th sign from it, which is one of
+    its aspects (3rd, 7th, 10th); in_house_from(planet=Sun, from=Rahu, houses=[1]): Sun is in Capricorn
+    0.7 deg, 7th from Rahu in Cancer, which is not one of the 1st; graha_drishti(planet=Rahu, target=Sun):
+    Rahu is in Cancer 10.5 deg; Sun in Capricorn is the 7th sign from it, which is one of its aspects (7th);
+    lord_of_house_in(house=10, houses=[6, 8, 12]): the 10th lord from the Lagna is Saturn, in the 12th
+    (Aries)'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in
+    JHora
+- moment: '2000-01-01T06:00:00Z'
+  place: {lat: 28.61, lon: 77.21, tz: Asia/Kolkata}
+  expect: silent
+  note: 'A silent moment found by a scan. Engine: in_house_from(planet=Sun, from=Saturn, houses=[1]): Sun
+    is in Sagittarius 16.3 deg, 9th from Saturn in Aries, which is not one of the 1st; graha_drishti(planet=Saturn,
+    target=Sun): Saturn is in Aries 16.5 deg; Sun in Sagittarius is the 9th sign from it, not one of its
+    aspects (3rd, 7th, 10th); in_house_from(planet=Sun, from=Rahu, houses=[1]): Sun is in Sagittarius 16.3
+    deg, 6th from Rahu in Cancer, which is not one of the 1st; graha_drishti(planet=Rahu, target=Sun):
+    Rahu is in Cancer 11.2 deg; Sun in Sagittarius is the 6th sign from it, not one of its aspects (7th);
+    lord_of_house_in(house=10, houses=[6, 8, 12]): the 10th lord from the Lagna is Jupiter, in the 2nd
+    (Aries), not 6th, 8th, 12th'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in
+    JHora
 validation:
   status: unvalidated
 notes:
@@ -31,11 +82,10 @@ notes:
     citation: none cited by the practitioner
   bib:
   - anvaya_nationalcharts
-  needs_predicates: '''Affliction'' is not defined by the source and the vocabulary has no house-lord
-    predicate.'
   original_condition:
   - Sun conjunct or aspected by Saturn or Rahu
   - 10th lord in the 6th, 8th or 12th house
-  missing_predicates:
-  - house_lord_in_house
-  - afflicted_by (a defined affliction test)
+  encoding: Encoded 2026-11-08 when the missing predicates (house_lord_in_house, afflicted_by (a
+    defined affliction test)) were added. 'Affliction of the Sun' read as Saturn or Rahu in the Sun's
+    sign or casting a whole-sign graha drishti on it (Saturn 3rd, 7th, 10th; Rahu 7th); the source
+    does not define it further. Chart of the moment for the place given; whole-sign houses.

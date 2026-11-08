@@ -16,24 +16,32 @@ source:
     see the export PROVENANCE.
 author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
-window:
-  unit: days
-  before: $window_before
-  after: $window_after
-  note: peak +/-30d, broad +/-100d
-status: needs_predicates
+status: active
+conditions:
+  eclipse_within_days:
+    kind: any
+    days_before: $days_before
+    days_after: $days_after
+    pair_within_days: $pair_days
+reference_cases:
+- moment: '2008-09-01T00:00:00Z'
+  expect: fires
+  note: 'Chosen date. Engine: eclipse_within_days(kind=any, days_before=100.0, days_after=100.0, pair_within_days=16.0):
+    total solar eclipse 2008-08-01, paired with the lunar of 2008-08-16 (15.5 days); partial lunar eclipse 2008-08-16,
+    paired with the solar of 2008-08-01 (15.5 days) (100 days before to 100 days after)'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
 params:
-  window_before: {value: 100, min: 0, max: 200, step: 1, unit: days}
-  window_after: {value: 100, min: 0, max: 200, step: 1, unit: days}
-conditions: null
+  days_before: {value: 100, min: 0, max: 200, step: 1, unit: days}
+  days_after: {value: 100, min: 0, max: 200, step: 1, unit: days}
+  pair_days: {value: 16, min: 10, max: 20, step: 1, unit: days}
 validation:
   status: unvalidated
 notes:
   original_condition:
-    - Days between solar and lunar eclipses <= 16 days.
-    - If target date within peak window (+/- 30 days), activate PEAK DANGER ZONE.
-    - >-
-      If target date within broad window (+/- 100 days), activate BROAD VULNERABILITY ZONE.
+  - Days between solar and lunar eclipses <= 16 days.
+  - If target date within peak window (+/- 30 days), activate PEAK DANGER ZONE.
+  - >-
+    If target date within broad window (+/- 100 days), activate BROAD VULNERABILITY ZONE.
   original_thresholds:
     fortnight_days_max: 16
     broad_window_days: 100
@@ -42,20 +50,20 @@ notes:
   mapping_status: mapped
   draft_conditions:
     all:
-      - eclipse_pair_interval_days_lte:
-          days: 16
+    - eclipse_pair_interval_days_lte:
+        days: 16
     any:
-      - date_within_window:
-          around: eclipse
-          days: 30
-          label: peak
-      - date_within_window:
-          around: eclipse
-          days: 100
-          label: broad
+    - date_within_window:
+        around: eclipse
+        days: 30
+        label: peak
+    - date_within_window:
+        around: eclipse
+        days: 100
+        label: broad
   event_types:
-    - collision_derailment
-    - human_error
+  - collision_derailment
+  - human_error
   confidence_in_app: source_based
   severity_in_app: critical
   validation:
@@ -67,8 +75,10 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/chapter4-validation-report.md
     empirical_backtest_result: null
-  needs_predicates: >-
-    Not expressible yet: the vocabulary has no predicate for date_within_window, eclipse_pair_interval_days_lte.
-  missing_predicates:
-    - date_within_window
-    - eclipse_pair_interval_days_lte
+  encoding: Encoded 2026-11-08 when the missing predicates (date_within_window,
+    eclipse_pair_interval_days_lte) were added. The broad zone (+/- 100 days around an eclipse that has a
+    partner of the other kind within 16 days) is the condition, so the window block moved into the
+    predicate. Every eclipse season has a solar and a lunar eclipse about 15 days apart and seasons recur
+    every ~173 days, so the broad zone is open on every day (a scan of 2000-2800 found no silent day); that
+    is a property of the rule, recorded rather than changed. The +/- 30 day peak zone is the same rule with
+    days_before = days_after = 30.

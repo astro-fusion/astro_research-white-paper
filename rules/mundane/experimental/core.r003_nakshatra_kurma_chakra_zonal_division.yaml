@@ -23,29 +23,29 @@ validation:
   status: unvalidated
 notes:
   original_condition:
-    - Compute transit nakshatra for transiting malefics or eclipse axes.
-    - >-
-      Map nakshatra to one of 9 spatial Kurma Chakra sectors (Central, E, SE, S, SW, W, NW,
-      N, NE).
-    - Project heat gradient over corresponding modern geographical coordinates.
+  - Compute transit nakshatra for transiting malefics or eclipse axes.
+  - >-
+    Map nakshatra to one of 9 spatial Kurma Chakra sectors (Central, E, SE, S, SW, W, NW,
+    N, NE).
+  - Project heat gradient over corresponding modern geographical coordinates.
   mapping_status: partial
   draft_conditions:
     all:
-      - kurma_direction:
-          source: transit_nakshatra_of_malefic_or_eclipse_axis
-          sectors:
-            - Central
-            - E
-            - SE
-            - S
-            - SW
-            - W
-            - NW
-            - N
-            - NE
-          nakshatras_per_sector: 3
+    - kurma_direction:
+        source: transit_nakshatra_of_malefic_or_eclipse_axis
+        sectors:
+        - Central
+        - E
+        - SE
+        - S
+        - SW
+        - W
+        - NW
+        - N
+        - NE
+        nakshatras_per_sector: 3
   event_types:
-    - geographic_mapping
+  - geographic_mapping
   confidence_in_app: traditional_only
   severity_in_app: high
   validation:
@@ -57,6 +57,8 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/validation-report.md
     empirical_backtest_result: null
-  needs_predicates: 'Not expressible yet: the vocabulary has no predicate for kurma_direction.'
+  needs_predicates: 'kurma_direction now exists (2026-11-08), but the draft maps every one of
+    the nine sectors: a lookup table, not a condition that can be true or false. Encode one rule
+    per sector (for example malefics in the northern division) to test it.'
   missing_predicates:
-    - kurma_direction
+  - one condition per Kurma sector instead of the full map

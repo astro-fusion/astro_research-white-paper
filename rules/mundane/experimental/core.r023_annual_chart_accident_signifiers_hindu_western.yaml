@@ -23,51 +23,51 @@ validation:
   status: unvalidated
 notes:
   original_condition:
-    - >-
-      Hindu Check: Mars in 4th (Capricorn/Aquarius) + Saturn in 8th -> Travel_Accident_Scale
-      = MASSIVE.
-    - Mitigation: Jupiter or Venus aspect reduces severity to MODERATE_MITIGATED.
-    - >-
-      Western Check: Retrograde Neptune in 1st + Retrograde Uranus in 12th -> Sudden_Death_Scale
-      = MASSIVE.
-    - >-
-      Samvatsara Check: "Rakshasa" Samvatsara + Scorpio/Rahu rising -> Extreme destruction
-      modifier.
+  - >-
+    Hindu Check: Mars in 4th (Capricorn/Aquarius) + Saturn in 8th -> Travel_Accident_Scale
+    = MASSIVE.
+  - Mitigation: Jupiter or Venus aspect reduces severity to MODERATE_MITIGATED.
+  - >-
+    Western Check: Retrograde Neptune in 1st + Retrograde Uranus in 12th -> Sudden_Death_Scale
+    = MASSIVE.
+  - >-
+    Samvatsara Check: "Rakshasa" Samvatsara + Scorpio/Rahu rising -> Extreme destruction
+    modifier.
   mapping_status: mapped
   draft_conditions:
     any:
-      - all:
-          - planet_in_house_from:
-              planet: Mars
-              house: 4
-              frm: annual_lagna
-              sign_in:
-                - Capricorn
-                - Aquarius
-          - planet_in_house_from:
-              planet: Saturn
-              house: 8
-              frm: annual_lagna
-      - all:
-          - planet_in_house_from:
-              planet: Neptune
-              house: 1
-              frm: annual_lagna
-              retrograde: true
-          - planet_in_house_from:
-              planet: Uranus
-              house: 12
-              frm: annual_lagna
-              retrograde: true
-      - all:
-          - samvatsara_is:
-              name: Rakshasa
-          - any:
-              - rising_sign_is:
-                  sign: Scorpio
-              - rahu_rising: {}
+    - all:
+      - planet_in_house_from:
+          planet: Mars
+          house: 4
+          frm: annual_lagna
+          sign_in:
+          - Capricorn
+          - Aquarius
+      - planet_in_house_from:
+          planet: Saturn
+          house: 8
+          frm: annual_lagna
+    - all:
+      - planet_in_house_from:
+          planet: Neptune
+          house: 1
+          frm: annual_lagna
+          retrograde: true
+      - planet_in_house_from:
+          planet: Uranus
+          house: 12
+          frm: annual_lagna
+          retrograde: true
+    - all:
+      - samvatsara_is:
+          name: Rakshasa
+      - any:
+        - rising_sign_is:
+            sign: Scorpio
+        - rahu_rising: {}
   event_types:
-    - transport
+  - transport
   confidence_in_app: traditional_only
   severity_in_app: critical
   validation:
@@ -80,8 +80,8 @@ notes:
     source_file: docs/mundane/validation-report.md
     empirical_backtest_result: null
   needs_predicates: >-
-    Not expressible yet: the vocabulary has no predicate for rahu_rising, samvatsara_is; it
-    uses Neptune, Uranus, which are outside the nine grahas.
+    samvatsara_is now exists (2026-11-08), but the rule reads the annual (Chaitra Shukla Pratipada)
+    chart, not the sky at the moment, and its Western branch needs Neptune and Uranus.
   missing_predicates:
-    - rahu_rising
-    - samvatsara_is
+  - the annual chart as the evaluation moment
+  - Neptune and Uranus

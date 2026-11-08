@@ -17,16 +17,43 @@ source:
     see the export PROVENANCE.
 author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
-status: needs_predicates
-conditions: null
+status: active
+params:
+  mars_au: {value: 0.4, min: 0.37, max: 0.6, step: 0.01, unit: au}
+  orb: {value: 8, min: 1, max: 12, step: 1, unit: deg}
+conditions:
+  any:
+  - planet_distance_au_lte:
+      planet: Mars
+      au: $mars_au
+  - conjunct_within:
+      planets:
+      - Jupiter
+      - Sun
+      orb: $orb
+reference_cases:
+- moment: '2003-08-27T00:00:00Z'
+  expect: fires
+  note: 'Chosen date. Engine: planet_distance_au_lte(planet=Mars, au=0.4): Mars is 0.373 au from Earth
+    (within 0.4 au); conjunct_within(planets=[Jupiter, Sun], orb=8.0): Jupiter is in Leo 6.0 deg and
+    Sun is in Leo 9.4 deg: 3.4 deg apart, within the 8 deg orb'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked
+    in JHora
+- moment: '2003-01-01T00:00:00Z'
+  expect: silent
+  note: 'A silent moment found by a scan. Engine: planet_distance_au_lte(planet=Mars, au=0.4): Mars
+    is 2.051 au from Earth (beyond 0.4 au); conjunct_within(planets=[Jupiter, Sun], orb=8.0): Jupiter
+    is in Cancer 23.0 deg and Sun is in Sagittarius 16.2 deg: 143.2 deg apart, outside the 8 deg orb'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked
+    in JHora
 validation:
   status: unvalidated
 notes:
   original_condition:
-    - Check if Mars distance <= 0.40 AU (eruptive illness / fever flag).
-    - >-
-      Check if Jupiter-Sun separation <= 8.0 deg (sunspot maxima / cerebrospinal inflammation
-      flag).
+  - Check if Mars distance <= 0.40 AU (eruptive illness / fever flag).
+  - >-
+    Check if Jupiter-Sun separation <= 8.0 deg (sunspot maxima / cerebrospinal inflammation
+    flag).
   original_thresholds:
     mars_perigee_threshold_au: 0.4
     mars_critical_perigee_threshold_au: 0.38
@@ -35,15 +62,15 @@ notes:
   mapping_status: mapped
   draft_conditions:
     any:
-      - planet_distance_au_lte:
-          planet: Mars
-          au: 0.4
-      - conjunction_within_orb:
-          a: Jupiter
-          b: Sun
-          orb: 8
+    - planet_distance_au_lte:
+        planet: Mars
+        au: 0.4
+    - conjunction_within_orb:
+        a: Jupiter
+        b: Sun
+        orb: 8
   event_types:
-    - health
+  - health
   confidence_in_app: traditional_only
   severity_in_app: high
   validation:
@@ -55,6 +82,6 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/validation-report.md
     empirical_backtest_result: null
-  needs_predicates: 'Not expressible yet: the vocabulary has no predicate for planet_distance_au_lte.'
-  missing_predicates:
-    - planet_distance_au_lte
+  encoding: Encoded 2026-11-08 when the missing predicates (planet_distance_au_lte) were added.
+    Mars perigee threshold and the Jupiter-Sun orb as registered; the registry's critical
+    thresholds (0.38 au, 0.5 deg cazimi) are the same rule with other parameter values.

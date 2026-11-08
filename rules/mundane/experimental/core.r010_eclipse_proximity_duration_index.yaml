@@ -17,24 +17,38 @@ source:
     see the export PROVENANCE.
 author: AstroFusion mundane rule registry (open export 2026-11-08)
 tier: experimental
-window:
-  unit: days
-  before: $window_before
-  after: $window_after
-  note: solar 180d / lunar 90d
-status: needs_predicates
+status: active
+conditions:
+  any:
+  - eclipse_within_days:
+      kind: solar
+      days_before: $solar_days
+      days_after: $solar_days
+  - eclipse_within_days:
+      kind: lunar
+      days_before: $lunar_days
+      days_after: $lunar_days
+reference_cases:
+- moment: '2008-09-01T00:00:00Z'
+  expect: fires
+  note: 'Chosen date. Engine: eclipse_within_days(kind=solar, days_before=180.0, days_after=180.0):
+    total solar eclipse 2008-08-01 magnitude 1.02; annular solar eclipse 2009-01-26 magnitude
+    0.96 (180 days before to 180 days after); eclipse_within_days(kind=lunar, days_before=90.0,
+    days_after=90.0): partial lunar eclipse 2008-08-16 magnitude 0.81 (90 days before to 90
+    days after)'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet
+    checked in JHora
 params:
-  window_before: {value: 180, min: 0, max: 360, step: 1, unit: days}
-  window_after: {value: 180, min: 0, max: 360, step: 1, unit: days}
-conditions: null
+  solar_days: {value: 180, min: 0, max: 360, step: 1, unit: days}
+  lunar_days: {value: 90, min: 0, max: 180, step: 1, unit: days}
 validation:
   status: unvalidated
 notes:
   original_condition:
-    - Check if target date is in 6-month solar window or 3-month lunar window.
-    - Check if interval between solar and lunar eclipses <= 16 days (Paksha Grahan).
-    - If dual eclipse within 16 days, apply CRITICAL_DISASTER multiplier (>= 2.5x).
-    - Highlight nations intersecting totality/annularity shadow paths.
+  - Check if target date is in 6-month solar window or 3-month lunar window.
+  - Check if interval between solar and lunar eclipses <= 16 days (Paksha Grahan).
+  - If dual eclipse within 16 days, apply CRITICAL_DISASTER multiplier (>= 2.5x).
+  - Highlight nations intersecting totality/annularity shadow paths.
   original_thresholds:
     solar_window_days: 180
     lunar_window_days: 90
@@ -43,16 +57,16 @@ notes:
   mapping_status: mapped
   draft_conditions:
     any:
-      - date_within_days_of_eclipse:
-          kind: solar
-          days: 180
-      - date_within_days_of_eclipse:
-          kind: lunar
-          days: 90
-      - eclipse_pair_interval_days_lte:
-          days: 16
+    - date_within_days_of_eclipse:
+        kind: solar
+        days: 180
+    - date_within_days_of_eclipse:
+        kind: lunar
+        days: 90
+    - eclipse_pair_interval_days_lte:
+        days: 16
   event_types:
-    - eclipse
+  - eclipse
   confidence_in_app: source_based
   severity_in_app: critical
   validation:
@@ -64,9 +78,9 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/validation-report.md
     empirical_backtest_result: null
-  needs_predicates: >-
-    Not expressible yet: the vocabulary has no predicate for date_within_days_of_eclipse,
-    eclipse_pair_interval_days_lte.
-  missing_predicates:
-    - date_within_days_of_eclipse
-    - eclipse_pair_interval_days_lte
+  encoding: Encoded 2026-11-08 when the missing predicates (date_within_days_of_eclipse,
+    eclipse_pair_interval_days_lte) were added. Solar window +/- 180 days, lunar +/- 90
+    days, as registered. With eclipse seasons every ~173 days the solar window alone
+    covers nearly every day, so the indicator is almost always on; that is a property of
+    the rule, recorded here rather than changed. The 16-day pair branch is inside the
+    solar window and adds nothing.
