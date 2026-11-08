@@ -51,7 +51,7 @@ notes:
     source_file: docs/mundane/chapter5-validation-report.md
     empirical_backtest_result: null
   needs_predicates: >-
-    The draft uses conditions the vocabulary cannot express yet: date_within_window, eclipse_strength_score_gte.
+    Not expressible yet: the vocabulary has no predicate for date_within_window, eclipse_strength_score_gte.
   missing_predicates:
     - date_within_window
     - eclipse_strength_score_gte

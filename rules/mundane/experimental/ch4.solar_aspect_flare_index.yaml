@@ -53,7 +53,6 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/chapter4-validation-report.md
     empirical_backtest_result: null
-  needs_predicates: >-
-    The draft uses conditions the vocabulary cannot express yet: planets_in_aspect_to.
+  needs_predicates: 'Not expressible yet: the vocabulary has no predicate for planets_in_aspect_to.'
   missing_predicates:
     - planets_in_aspect_to

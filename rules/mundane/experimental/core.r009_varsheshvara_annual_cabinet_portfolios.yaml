@@ -60,4 +60,5 @@ notes:
     source_file: docs/mundane/validation-report.md
     empirical_backtest_result: null
   needs_predicates: >-
-    The draft uses conditions the vocabulary cannot express yet: (none machine-readable).
+    The rule reads the weekday lord at each solar ingress to assign an annual 'cabinet' (a
+    lookup table), not a condition that holds at a moment.

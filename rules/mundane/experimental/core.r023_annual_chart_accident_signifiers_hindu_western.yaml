@@ -77,10 +77,8 @@ notes:
     source_file: docs/mundane/validation-report.md
     empirical_backtest_result: null
   needs_predicates: >-
-    The draft uses conditions the vocabulary cannot express yet: planet_in_house_from, rahu_rising,
-    rising_sign_is, samvatsara_is.
+    Not expressible yet: the vocabulary has no predicate for rahu_rising, samvatsara_is; it
+    uses Neptune, Uranus, which are outside the nine grahas.
   missing_predicates:
-    - planet_in_house_from
     - rahu_rising
-    - rising_sign_is
     - samvatsara_is

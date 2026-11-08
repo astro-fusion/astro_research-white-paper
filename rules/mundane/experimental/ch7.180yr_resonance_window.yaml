@@ -63,10 +63,7 @@ notes:
     source_file: docs/mundane/chapter7-validation-report.md
     empirical_backtest_result: null
   needs_predicates: >-
-    The draft uses conditions the vocabulary cannot express yet: aspect_within_orb, cycle_resonance,
-    node_association, opposition_axis_signs.
+    Not expressible yet: the vocabulary has no predicate for cycle_resonance, node_association.
   missing_predicates:
-    - aspect_within_orb
     - cycle_resonance
     - node_association
-    - opposition_axis_signs

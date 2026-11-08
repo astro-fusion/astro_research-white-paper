@@ -59,6 +59,6 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/validation-report.md
     empirical_backtest_result: null
-  needs_predicates: 'The draft uses conditions the vocabulary cannot express yet: nakshatra_on_tithi.'
+  needs_predicates: 'Not expressible yet: the vocabulary has no predicate for nakshatra_on_tithi.'
   missing_predicates:
     - nakshatra_on_tithi

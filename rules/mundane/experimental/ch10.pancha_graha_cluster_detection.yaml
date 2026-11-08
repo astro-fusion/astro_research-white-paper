@@ -47,6 +47,6 @@ notes:
     source_file: docs/mundane/chapter10-validation-report.md
     empirical_backtest_result: null
   needs_predicates: >-
-    The draft uses conditions the vocabulary cannot express yet: planets_in_one_sign_gte.
+    Not expressible yet: the vocabulary has no predicate for planets_in_one_sign_gte.
   missing_predicates:
     - planets_in_one_sign_gte

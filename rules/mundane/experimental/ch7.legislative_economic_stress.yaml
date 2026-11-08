@@ -57,9 +57,6 @@ notes:
     source_file: docs/mundane/chapter7-validation-report.md
     empirical_backtest_result: null
   needs_predicates: >-
-    The draft uses conditions the vocabulary cannot express yet: conjunction_within_orb, lords_conjoined_in_house,
-    planet_in_sign.
+    Not expressible yet: the vocabulary has no predicate for lords_conjoined_in_house.
   missing_predicates:
-    - conjunction_within_orb
     - lords_conjoined_in_house
-    - planet_in_sign

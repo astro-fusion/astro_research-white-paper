@@ -47,7 +47,7 @@ notes:
     source_file: docs/mundane/chapter4-validation-report.md
     empirical_backtest_result: null
   needs_predicates: >-
-    The draft uses conditions the vocabulary cannot express yet: planet_within_deg_after_sign_boundary,
+    Not expressible yet: the vocabulary has no predicate for planet_within_deg_after_sign_boundary,
     planet_within_deg_before_sign_boundary.
   missing_predicates:
     - planet_within_deg_after_sign_boundary

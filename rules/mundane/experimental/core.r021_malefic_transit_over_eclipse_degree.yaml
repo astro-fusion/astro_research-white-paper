@@ -60,6 +60,7 @@ notes:
     source_file: docs/mundane/validation-report.md
     empirical_backtest_result: null
   needs_predicates: >-
-    The draft uses conditions the vocabulary cannot express yet: transit_over_eclipse_degree.
+    Not expressible yet: the vocabulary has no predicate for transit_over_eclipse_degree;
+    it uses Uranus, which is outside the nine grahas.
   missing_predicates:
     - transit_over_eclipse_degree

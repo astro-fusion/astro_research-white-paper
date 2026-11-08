@@ -51,6 +51,6 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/chapter9-validation-report.md
     empirical_backtest_result: null
-  needs_predicates: 'The draft uses conditions the vocabulary cannot express yet: latency_filter.'
+  needs_predicates: 'Not expressible yet: the vocabulary has no predicate for latency_filter.'
   missing_predicates:
     - latency_filter

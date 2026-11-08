@@ -56,7 +56,7 @@ notes:
     source_file: docs/mundane/validation-report.md
     empirical_backtest_result: null
   needs_predicates: >-
-    The draft uses conditions the vocabulary cannot express yet: sunspot_count_gte, years_after_solar_cycle_peak_between.
+    Not expressible yet: the vocabulary has no predicate for sunspot_count_gte, years_after_solar_cycle_peak_between.
   missing_predicates:
     - sunspot_count_gte
     - years_after_solar_cycle_peak_between

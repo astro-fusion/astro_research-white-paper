@@ -71,6 +71,8 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/validation-report.md
     empirical_backtest_result: null
-  needs_predicates: 'The draft uses conditions the vocabulary cannot express yet: afflicted_element.'
+  needs_predicates: >-
+    Not expressible yet: the vocabulary has no predicate for afflicted_element; it uses Neptune,
+    Uranus, which are outside the nine grahas.
   missing_predicates:
     - afflicted_element

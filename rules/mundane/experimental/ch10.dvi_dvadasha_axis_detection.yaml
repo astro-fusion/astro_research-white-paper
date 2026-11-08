@@ -53,5 +53,3 @@ notes:
     empirical_backtest_result: null
   needs_predicates: >-
     Compares two charts' ascendants (2/12 relation between charts); needs a two-chart predicate.
-  missing_predicates:
-    - planet_in_house_from

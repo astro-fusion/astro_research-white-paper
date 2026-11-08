@@ -48,6 +48,6 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/validation-report.md
     empirical_backtest_result: null
-  needs_predicates: 'The draft uses conditions the vocabulary cannot express yet: planet_in_sign.'
-  missing_predicates:
-    - planet_in_sign
+  needs_predicates: >-
+    Descriptive in the source registry: it states an interpretation or a data layer, not a
+    condition on the sky.

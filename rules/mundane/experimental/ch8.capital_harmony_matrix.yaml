@@ -61,7 +61,7 @@ notes:
     source_file: docs/mundane/chapter8-validation-report.md
     empirical_backtest_result: null
   needs_predicates: >-
-    The draft uses conditions the vocabulary cannot express yet: elements_compatible, mutual_house_distance_in.
+    Not expressible yet: the vocabulary has no predicate for elements_compatible, mutual_house_distance_in.
   missing_predicates:
     - elements_compatible
     - mutual_house_distance_in

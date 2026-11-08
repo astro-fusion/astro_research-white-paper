@@ -63,8 +63,6 @@ notes:
     source_file: docs/mundane/chapter9-validation-report.md
     empirical_backtest_result: null
   needs_predicates: >-
-    The draft uses conditions the vocabulary cannot express yet: rising_or_capital_sign_in,
-    rising_sign_is.
+    Not expressible yet: the vocabulary has no predicate for rising_or_capital_sign_in.
   missing_predicates:
     - rising_or_capital_sign_in
-    - rising_sign_is

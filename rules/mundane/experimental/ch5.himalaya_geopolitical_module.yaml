@@ -102,10 +102,8 @@ notes:
     source_file: docs/mundane/chapter5-validation-report.md
     empirical_backtest_result: null
   needs_predicates: >-
-    The draft uses conditions the vocabulary cannot express yet: conjunction_within_orb, date_within_calendar_window,
-    planet_afflicted, planet_in_sign.
+    Not expressible yet: the vocabulary has no predicate for date_within_calendar_window,
+    planet_afflicted.
   missing_predicates:
-    - conjunction_within_orb
     - date_within_calendar_window
     - planet_afflicted
-    - planet_in_sign

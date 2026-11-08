@@ -55,8 +55,6 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/chapter7-validation-report.md
     empirical_backtest_result: null
-  needs_predicates: >-
-    The draft uses conditions the vocabulary cannot express yet: aspect_within_orb, cluster_conjunction.
+  needs_predicates: 'Not expressible yet: the vocabulary has no predicate for cluster_conjunction.'
   missing_predicates:
-    - aspect_within_orb
     - cluster_conjunction

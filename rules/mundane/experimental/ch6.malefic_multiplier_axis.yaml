@@ -69,10 +69,8 @@ notes:
     source_file: docs/mundane/chapter6-validation-report.md
     empirical_backtest_result: null
   needs_predicates: >-
-    The draft uses conditions the vocabulary cannot express yet: conjunction_or_mutual_aspect,
-    conjunction_within_orb, planet_in_sign_in, squares_axis.
+    Not expressible yet: the vocabulary has no predicate for conjunction_or_mutual_aspect,
+    squares_axis.
   missing_predicates:
     - conjunction_or_mutual_aspect
-    - conjunction_within_orb
-    - planet_in_sign_in
     - squares_axis

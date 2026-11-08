@@ -81,8 +81,6 @@ notes:
     source_file: docs/mundane/chapter5-validation-report.md
     empirical_backtest_result: null
   needs_predicates: >-
-    The draft uses conditions the vocabulary cannot express yet: aspect_to_eclipse_degree,
-    conjunction_within_orb.
+    Not expressible yet: the vocabulary has no predicate for aspect_to_eclipse_degree.
   missing_predicates:
     - aspect_to_eclipse_degree
-    - conjunction_within_orb

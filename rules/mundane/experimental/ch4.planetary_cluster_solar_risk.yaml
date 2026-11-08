@@ -71,6 +71,7 @@ notes:
     source_file: docs/mundane/chapter4-validation-report.md
     empirical_backtest_result: null
   needs_predicates: >-
-    The draft uses conditions the vocabulary cannot express yet: cluster_within_deg_of.
+    Not expressible yet: the vocabulary has no predicate for cluster_within_deg_of; it uses
+    Neptune, Pluto, Uranus, which are outside the nine grahas.
   missing_predicates:
     - cluster_within_deg_of

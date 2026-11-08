@@ -46,6 +46,6 @@ notes:
     source_file: docs/mundane/validation-report.md
     empirical_backtest_result: null
   needs_predicates: >-
-    The draft uses conditions the vocabulary cannot express yet: solar_and_lunar_eclipse_same_calendar_month.
+    Not expressible yet: the vocabulary has no predicate for solar_and_lunar_eclipse_same_calendar_month.
   missing_predicates:
     - solar_and_lunar_eclipse_same_calendar_month

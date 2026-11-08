@@ -52,8 +52,6 @@ notes:
     kind: architectural_review_verdict
     source_file: docs/mundane/validation-report.md
     empirical_backtest_result: null
-  needs_predicates: >-
-    The draft uses conditions the vocabulary cannot express yet: conjunction_within_orb, planet_distance_au_lte.
+  needs_predicates: 'Not expressible yet: the vocabulary has no predicate for planet_distance_au_lte.'
   missing_predicates:
-    - conjunction_within_orb
     - planet_distance_au_lte
