@@ -27,7 +27,7 @@ body:
         Provide exact steps to trigger the bug.
       value: |
         1. Install with `pip install -e ".[dev]"`
-        2. Run: `python3 -c "from libs.vedic_astrology_core.dignity import ...; print(...)"`
+        2. Run: `python3 -c "from vedic_astrology_core.dignity import ...; print(...)"`
         3. See error: `...`
     validations:
       required: true
@@ -57,7 +57,7 @@ body:
       options:
         - "libs/vedic_astrology_core — Core astrological engine"
         - "libs/vedic_numerology — Numerology calculators"
-        - "libs/visuals — Chart/visualization generators"
+        - "tools/visuals — Chart/visualization generators"
         - "scripts — Pipeline scripts"
         - "application/web — Flask web app"
         - "application/api — REST API"

@@ -5,28 +5,23 @@ Tests planetary dignity scoring, exaltation/debilitation matrices,
 friendship matrices, and scoring modifiers.
 """
 
-import os
-import sys
 import unittest
 from unittest.mock import Mock
 
-# Add src to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "libs"))
-
-from vedic_astrology_core.config.constants import Planet  # noqa: E402
-from vedic_astrology_core.dignity import DignityScorer  # noqa: E402
-from vedic_astrology_core.dignity.exaltation_matrix import (  # noqa: E402
+from vedic_astrology_core.config.constants import Planet
+from vedic_astrology_core.dignity import DignityScorer
+from vedic_astrology_core.dignity.exaltation_matrix import (
     get_debilitation_sign,
     get_exaltation_sign,
     is_in_exaltation,
     is_in_moolatrikona,
     is_in_own_sign,
 )
-from vedic_astrology_core.dignity.friendship_matrix import (  # noqa: E402
+from vedic_astrology_core.dignity.friendship_matrix import (
     FriendshipType,
     get_natural_friendship,
 )
-from vedic_astrology_core.dignity.modifiers import (  # noqa: E402
+from vedic_astrology_core.dignity.modifiers import (
     apply_combust_penalty,
     apply_retrograde_bonus,
 )

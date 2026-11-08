@@ -55,6 +55,8 @@ test:
 
 quality-gate:
 	@echo "🛡️ Running quality checks..."
-	@. .venv/bin/activate && flake8 libs/ src/ application/ scripts/ studies/ tests/
-	@. .venv/bin/activate && mypy libs/vedic_astrology_core/ src/ application/
+	@. .venv/bin/activate && black --check libs/ tools/ application/ scripts/ studies/ tests/
+	@. .venv/bin/activate && isort --check-only libs/ tools/ application/ scripts/ studies/ tests/
+	@. .venv/bin/activate && flake8 libs/ tools/ application/ scripts/ studies/ tests/
+	@. .venv/bin/activate && mypy libs/vedic_astrology_core/ application/
 	@. .venv/bin/activate && pytest tests/

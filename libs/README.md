@@ -42,8 +42,8 @@ The heart of the platform. Wraps the **Swiss Ephemeris** (`pyswisseph`) for astr
 ### Quick Usage
 
 ```python
-from libs.vedic_astrology_core import VedicChart
-from libs.vedic_astrology_core.dignity import calculate_planetary_dignity
+from vedic_astrology_core import VedicChart
+from vedic_astrology_core.dignity import calculate_planetary_dignity
 
 # Generate a birth chart
 chart = VedicChart(
@@ -80,7 +80,7 @@ Implements multiple numerology traditions with a unified interface.
 ### Quick Usage
 
 ```python
-from libs.vedic_numerology import NumerologyCalculator
+from vedic_numerology import NumerologyCalculator
 
 calc = NumerologyCalculator()
 result = calc.calculate_full_profile("1984-08-27")

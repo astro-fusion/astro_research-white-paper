@@ -38,7 +38,20 @@ def run_step(script_path: str, description: str):
 
     full_path = os.path.join(PROJECT_ROOT, script_path)
     try:
-        subprocess.run([sys.executable, full_path], check=True)
+        subprocess.run([sys.executable, full_path], check=True, cwd=PROJECT_ROOT)
+    except subprocess.CalledProcessError as e:  # noqa: F841
+        logger.error(f"Failed to run {description}")
+        sys.exit(1)
+
+
+def run_module(module: str, description: str):
+    """Run ``python -m module`` from the repository root."""
+    print(f"\n{'='*60}")
+    print(f"STEP: {description}")
+    print(f"{'='*60}")
+
+    try:
+        subprocess.run([sys.executable, "-m", module], check=True, cwd=PROJECT_ROOT)
     except subprocess.CalledProcessError as e:  # noqa: F841
         logger.error(f"Failed to run {description}")
         sys.exit(1)
@@ -63,9 +76,10 @@ def main():
     )
 
     # Step 4: AI Visuals Generation (Multi-Provider)
-    # Uses src.visuals.manager to generate PaperBanana, Mermaid, and LaTeX diagrams.
-    run_step(
-        "libs/visuals/manager.py",
+    # tools.visuals.manager (needs the `diagrams` extra) generates PaperBanana,
+    # Mermaid and LaTeX diagrams.
+    run_module(
+        "tools.visuals.manager",
         "Generating AI Diagrams (PaperBanana, Mermaid, LaTeX)",
     )
 

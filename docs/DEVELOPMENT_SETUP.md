@@ -57,14 +57,16 @@ python --version  # Should be 3.8+
 ```bash
 # Install the library in editable mode + dev tools (pyproject.toml is the
 # single dependency source; ops/requirements.lock.txt pins versions for CI)
-pip install -e ".[dev]"
-
-# Optional: Swiss Ephemeris (required for actual chart calculations)
-pip install -e ".[ephemeris]"
+pip install -e ".[dev,stats,data]"
 
 # Optional: Colab/Jupyter extras
 pip install -e ".[colab]"
 ```
+
+pyswisseph is a core dependency. The install exposes `vedic_astrology_core`
+and `vedic_numerology` (sources in `libs/`); no `PYTHONPATH` is needed for
+scripts, pytest or Quarto. `tools/visuals` (LLM diagrams, `diagrams` extra) is
+outside the package and runs as `python -m tools.visuals.manager`.
 
 ---
 
@@ -161,14 +163,12 @@ pre-commit install
 pre-commit run --all-files
 ```
 
-### Pytest can't import `libs`
+### Pytest can't import `vedic_astrology_core`
 
 ```bash
-# Make sure you installed the package in editable mode
+# The package must be installed (editable); PYTHONPATH is not used
 pip install -e ".[dev]"
-
-# Or set PYTHONPATH
-export PYTHONPATH="$PYTHONPATH:$(pwd)"
+python -c "import vedic_astrology_core, vedic_numerology"
 ```
 
 ---

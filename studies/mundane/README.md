@@ -31,7 +31,7 @@ the `time_known` flag. See [data/README.md](data/README.md).
 ## How to run
 
 ```bash
-export PYTHONPATH=libs:src:.
+pip install -e ".[dev]"   # once; no PYTHONPATH needed
 python studies/mundane/scripts/validate_data.py
 python studies/mundane/scripts/pipeline.py --seed 42 --limit 50   # drop --limit for all events
 python studies/mundane/scripts/fetch_catalogues.py usgs           # snapshot into data/snapshots/

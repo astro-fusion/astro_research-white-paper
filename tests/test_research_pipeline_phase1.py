@@ -1,17 +1,13 @@
 """Test suite for Phase 1 of the astrology research pipeline."""
 
-import os
 import sys
 import unittest
 from datetime import date, datetime, timezone
 
-# Add src to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../libs")))
+from vedic_astrology_core.astrology.ephemeris import EphemerisEngine
+from vedic_numerology.engine import NumerologyEngine
 
-from vedic_astrology_core.astrology.ephemeris import EphemerisEngine  # noqa: E402
-from vedic_numerology.engine import NumerologyEngine  # noqa: E402
-
-from studies._paths import study_dir  # noqa: E402
+from studies._paths import study_dir
 
 EARTHQUAKE_SCRIPTS = str(study_dir("earthquake") / "scripts")
 if EARTHQUAKE_SCRIPTS not in sys.path:

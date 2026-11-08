@@ -29,12 +29,12 @@ install:
 	pre-commit install
 
 format:
-	isort src/ tests/
-	black src/ tests/
+	isort libs/ tools/ application/ scripts/ studies/ tests/
+	black libs/ tools/ application/ scripts/ studies/ tests/
 
 lint:
-	isort --check-only --diff src/ tests/
-	black --check src/ tests/
+	isort --check-only --diff libs/ tools/ application/ scripts/ studies/ tests/
+	black --check libs/ tools/ application/ scripts/ studies/ tests/
 
 test:
 	pytest

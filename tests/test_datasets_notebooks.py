@@ -22,7 +22,7 @@ def test_notebook_executes(name, tmp_path, monkeypatch):
     monkeypatch.setenv(
         "PYTHONPATH",
         os.pathsep.join(
-            [str(ROOT / "libs"), str(ROOT / "src"), os.environ.get("PYTHONPATH", "")]
+            [str(ROOT / "libs"), str(ROOT), os.environ.get("PYTHONPATH", "")]
         ),
     )
     out = tmp_path / name

@@ -44,10 +44,20 @@ make docs         # Build Sphinx API documentation
 
 ```bash
 pip install -e ".[dev]"     # library + dev tools (pytest, flake8, black, mypy, ...)
+pip install -e ".[stats]"   # GARCH target in stats.granger
+pip install -e ".[data]"    # Parquet output of the planetary dataset
 pip install -e ".[colab]"   # notebook extras
-pip install -e ".[api]"     # API server extras
-pip install -e ".[app]"     # web app extras
+pip install -e ".[api]"     # FastAPI server (application/api)
+pip install -e ".[app]"     # Streamlit and Flask apps (application/web)
+pip install -e ".[diagrams]" # LLM diagram generator (tools/visuals)
 ```
+
+The install exposes two import roots, `vedic_astrology_core` and
+`vedic_numerology`, from `libs/` (`[tool.setuptools] package-dir`). No
+`PYTHONPATH` is needed for the package, pytest (`tests/conftest.py` adds the
+repository root for `studies`, `scripts`, `application`, `tools`) or Quarto.
+`tools/visuals` is not part of the package; run it from the repository root
+with `python -m tools.visuals.manager` after installing the `diagrams` extra.
 
 `ops/requirements.lock.txt` pins the resolved versions used by CI. The other
 `ops/requirements*.txt` files are legacy inputs for deploy targets and are not

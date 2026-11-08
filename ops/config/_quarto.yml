@@ -145,4 +145,4 @@ filters:
 # Environment variables
 environment:
   QUARTO_PROJECT_DIR: "."
-  PYTHONPATH: "src"
+  PYTHONPATH: ".:libs"

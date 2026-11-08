@@ -12,7 +12,7 @@ snapshotted with its hash under ``data/snapshots/``.
 
 Usage::
 
-    PYTHONPATH=libs:src:. python scripts/export_site_data.py --seed 42
+    python scripts/export_site_data.py --seed 42   # after pip install -e .
     python scripts/export_site_data.py --only rules,markets --offline
 """
 
@@ -38,7 +38,7 @@ import pytz
 import yaml
 
 REPO = Path(__file__).resolve().parents[1]
-for _p in (REPO, REPO / "libs", REPO / "src"):
+for _p in (REPO, REPO / "libs"):
     if str(_p) not in sys.path:
         sys.path.insert(0, str(_p))
 

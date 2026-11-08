@@ -251,7 +251,7 @@ pytest -k "retrograde" -v
 
 ```python
 import pytest
-from libs.vedic_astrology_core.dignity import calculate_planetary_dignity
+from vedic_astrology_core.dignity import calculate_planetary_dignity
 
 class TestPlanetaryDignity:
     """Test suite for planetary dignity calculations."""

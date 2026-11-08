@@ -4,18 +4,12 @@ Integration tests for the complete Vedic Numerology-Astrology system.
 Tests end-to-end workflows combining numerology, astrology, and dignity scoring.
 """
 
-import os
-import sys
 import unittest
 from datetime import date, datetime
 
 import pandas as pd
-
-# Add src to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "libs"))
-
-from vedic_numerology import VedicNumerologyAstrology, analyze_birth_chart  # noqa: E402
-from vedic_numerology.config.constants import Planet  # noqa: E402
+from vedic_numerology import VedicNumerologyAstrology, analyze_birth_chart
+from vedic_numerology.config.constants import Planet
 
 
 class TestCompleteWorkflow(unittest.TestCase):

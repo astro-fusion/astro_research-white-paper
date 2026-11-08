@@ -127,8 +127,8 @@ execute:
 
 ```python
 import pandas as pd
-from libs.vedic_astrology_core import VedicChart
-from libs.vedic_astrology_core.dignity import calculate_planetary_dignity
+from vedic_astrology_core import VedicChart
+from vedic_astrology_core.dignity import calculate_planetary_dignity
 ````
 
 ## Data Loading
@@ -190,7 +190,7 @@ def test_data_loading():
 
 def test_astrological_mapping():
     """Planetary mapping produces valid dignity scores."""
-    from libs.vedic_astrology_core.dignity import calculate_planetary_dignity
+    from vedic_astrology_core.dignity import calculate_planetary_dignity
     result = calculate_planetary_dignity("Mars", "Aries", 15.0)
     assert 0 <= result["score"] <= 100
 ````

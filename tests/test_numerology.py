@@ -5,26 +5,21 @@ Tests numerological calculations including Mulanka, Bhagyanka,
 sunrise correction, and planet mapping.
 """
 
-import os
-import sys
 import unittest
 from datetime import date, time
 
-# Add src to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "libs"))
-
-from vedic_numerology.numerology import (  # noqa: E402
+from vedic_numerology.numerology import (
     calculate_bhagyanka,
     calculate_complete_numerology,
     calculate_mulanka,
     reduce_to_single_digit,
 )
-from vedic_numerology.planet_mapping import (  # noqa: E402
+from vedic_numerology.planet_mapping import (
     NUMBER_TO_PLANET,
     Planet,
     get_planet_from_number,
 )
-from vedic_numerology.sunrise_correction import (  # noqa: E402
+from vedic_numerology.sunrise_correction import (
     adjust_date_for_vedic_day,
     get_vedic_day_info,
 )

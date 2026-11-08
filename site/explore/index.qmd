@@ -42,7 +42,7 @@ Inputs.table(files, { columns: ["file", "contents", "licence"], format: {
 ```
 
 Regenerate them with
-`PYTHONPATH=libs:src:. python scripts/export_site_data.py --seed 42`.
+`python scripts/export_site_data.py --seed 42` (after `pip install -e .`).
 The World Bank series is cited as: World Bank, *Commodity Price Data (The
 Pink Sheet)*, monthly, CC BY 4.0,
 <https://www.worldbank.org/en/research/commodity-markets>.
