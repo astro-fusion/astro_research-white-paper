@@ -5,6 +5,7 @@ Handles application settings and configuration management with YAML support.
 Provides centralized configuration for all modules in the system.
 """
 
+import os
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
 
@@ -305,9 +306,19 @@ def get_config_paths() -> Dict[str, Path]:
     home = Path.home()
     cwd = Path.cwd()
 
+    paths: Dict[str, Path] = {}
+    env_path = os.environ.get("ASTRO_CONFIG")
+    if env_path:
+        paths["env_override"] = Path(env_path).expanduser()
+    paths.update(_default_config_paths(home, cwd))
+    return paths
+
+
+def _default_config_paths(home: Path, cwd: Path) -> Dict[str, Path]:
+    """Return the standard (non-overridden) configuration file locations."""
     return {
         "user_home": home / ".vedic_numerology" / "config.yaml",
-        "project_root": cwd / "config" / "default_config.yaml",
+        "project_root": cwd / "ops" / "config" / "default_config.yaml",
         "current_dir": cwd / "vedic_config.yaml",
         "system_config": Path("/etc/vedic_numerology/config.yaml"),
     }

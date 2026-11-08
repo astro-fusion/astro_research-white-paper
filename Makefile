@@ -3,7 +3,7 @@
 # 🪐 Vedic Astrology Research - Toolkit
 # ==========================================
 
-.PHONY: help install artifacts pdfs build clean test quality-gate
+.PHONY: help install check-data artifacts pdfs build clean test quality-gate
 
 # Default target
 help:
@@ -13,7 +13,7 @@ help:
 	@echo "  make install      - Setup venv and install dependencies"
 	@echo "  make artifacts    - Generate data artifacts and figures (Python)"
 	@echo "  make pdfs         - Generate research paper PDFs (Quarto)"
-	@echo "  make build        - Run artifacts + pdfs"
+	@echo "  make build        - Run check-data + pdfs (pdfs regenerates artifacts)"
 	@echo "  make clean        - Remove build artifacts and temporary files"
 	@echo "  make test         - Run test suite"
 	@echo "  make quality-gate - Run linting, type checking, and tests"
@@ -21,10 +21,22 @@ help:
 install:
 	@echo "🚀 Setting up development environment..."
 	python3 -m venv .venv
-	@echo "Installing dependencies from ops/requirements.txt..."
+	@echo "Installing dependencies from pyproject.toml (lock: ops/requirements.lock.txt)..."
 	. .venv/bin/activate && pip install --upgrade pip
-	. .venv/bin/activate && pip install -r ops/requirements.txt
+	. .venv/bin/activate && pip install -e ".[dev]"
 	@echo "✅ Setup complete. Use 'source .venv/bin/activate' to enter the environment."
+
+REQUIRED_DATA = data/raw/gold_prices.csv data/processed/aligned_planetary_data.csv
+
+check-data:
+	@echo "Checking required input data..."
+	@missing=0; for f in $(REQUIRED_DATA); do \
+	  if [ ! -f "$$f" ]; then echo "MISSING: $$f"; missing=1; continue; fi; \
+	  sha=$$(shasum -a 256 "$$f" | cut -d' ' -f1); \
+	  rows=$$(( $$(wc -l < "$$f") - 1 )); \
+	  echo "$$f  sha256=$$sha  rows=$$rows"; \
+	done; \
+	if [ $$missing -ne 0 ]; then echo "check-data failed: required data files are missing"; exit 1; fi
 
 artifacts:
 	@echo "📊 Generating research artifacts..."
@@ -34,7 +46,7 @@ pdfs:
 	@echo "📄 Rendering research papers to PDF..."
 	@bash research/scripts/generate_pdfs.sh
 
-build: artifacts pdfs
+build: check-data pdfs  # generate_pdfs.sh already runs generate_artifacts.py
 	@echo "🎉 Platform build complete. Check the 'pdfs/' directory for outputs."
 
 clean:

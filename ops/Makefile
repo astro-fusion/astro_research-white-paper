@@ -20,7 +20,7 @@ clean:
 	rm -rf pdfs/*.pdf
 
 install:
-	pip install -r config/requirements/requirements.txt
+	pip install -e ".[dev]"
 	pip install pre-commit
 	pre-commit install
 

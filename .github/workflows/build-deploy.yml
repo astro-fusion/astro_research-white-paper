@@ -45,13 +45,10 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r ops/config/requirements/requirements.txt
-          pip install pyswisseph>=2.08.00
+          pip install -e ".[dev]"
 
       - name: Test earthquake analysis with sample data
         run: |
-          echo "Did you know? Fetching real earthquake data is crucial before analysis!"
-          python use_cases/earthquake/scripts/earthquake_data_fetcher.py
           echo "🔬 Testing earthquake-planetary correlation analysis..."
           python use_cases/earthquake/scripts/earthquake_planetary_analysis.py
           echo "✅ Sample data test completed!"
@@ -89,7 +86,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r ops/config/requirements/requirements.txt
+          pip install -e ".[dev]"
 
       - name: Build documentation structure
         run: |

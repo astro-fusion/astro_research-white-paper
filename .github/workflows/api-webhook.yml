@@ -62,7 +62,6 @@ jobs:
         )
         python -m pip install --upgrade pip
         pip install -e .
-        pip install pyswisseph>=2.08.00
 
     - name: Run calculation
       id: calculation

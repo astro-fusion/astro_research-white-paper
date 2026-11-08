@@ -25,6 +25,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `docs/DEVELOPMENT_SETUP.md` — detailed local environment setup guide
 - `.github/workflows/README.md` — CI/CD workflow documentation
 
+### Changed (build hygiene and reproducibility)
+
+- `pyproject.toml` is now the single dependency source. `pyswisseph>=2.10,<3` and `scipy` are core dependencies; new extras `fetch` (yfinance), `diagrams` (google-generativeai, paperbanana), `docs` (Quarto/Jupyter, Sphinx), `dev` (pytest, pytest-cov, flake8, flake8-docstrings, black, isort, mypy), `api`, `app`; upper bounds added.
+- `ops/requirements*.txt` are thin wrappers (`-e .[dev]` etc.); the drifted copies in `ops/config/requirements/` were removed. Exact pins: `ops/requirements.lock.txt` (generated with `uv pip compile`).
+- `make install` uses `pip install -e ".[dev]"`; `make build` depends on the new `make check-data` (prints SHA-256 and row counts of required inputs) and no longer runs `generate_artifacts.py` twice.
+- CI: flake8 now runs the full `.flake8` config instead of `--select=E9,F63,F7,F82`; every workflow installs from `pyproject.toml` extras; pip cache keys hash `pyproject.toml`.
+- `get_config_paths()` looks for `ops/config/default_config.yaml` (was the nonexistent `config/default_config.yaml`) and honours the `ASTRO_CONFIG` environment variable.
+- `.gitignore`: `_book/`, `_site/`, `site_libs/`, `*-preview.html`, `htmlcov/`, `coverage.xml`, `.mypy_cache/`, and Quarto `keep-tex` outputs under `research/` and `docs/research/`.
+
+### Fixed
+
+- CI: unquoted `pip install pyswisseph>=2.08.00 ...` (shell redirect created a file named `=2.08.00` and left pyswisseph unpinned) in five workflows.
+- CI no longer fetches live data (removed `earthquake_data_fetcher.py` step; yfinance no longer installed in CI).
+
+### Removed
+
+- Stale untracked `src/vedic_astrology_core/` (bytecode only).
+- Duplicate `ops/config/render.yaml` and `ops/config/railway.json` (identical to the copies in `ops/`).
+
 ---
 
 ## [0.1.0] — 2026-02-20

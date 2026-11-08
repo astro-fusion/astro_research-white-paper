@@ -80,3 +80,19 @@ research/use_cases/**/figures/*.jpg
 *.swp
 *.swo
 *~
+
+# ==========================================
+# Build / render / coverage outputs
+# ==========================================
+_book/
+_site/
+site_libs/
+*-preview.html
+htmlcov/
+coverage.xml
+.coverage
+.mypy_cache/
+# Quarto keep-tex render outputs (existing tracked .tex files are untouched;
+# the reorganization package untracks them)
+research/**/*.tex
+docs/research/**/*.tex
