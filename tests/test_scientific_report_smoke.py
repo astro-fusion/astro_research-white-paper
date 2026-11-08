@@ -80,10 +80,9 @@ def test_artifact_generation_fails_without_data(tmp_path):
     assert not (tmp_path / "out" / "stats_granger.json").exists()
 
 
-@pytest.mark.skipif(
-    subprocess.run(["quarto", "--version"], capture_output=True).returncode != 0,
-    reason="Quarto not installed",
-)
+# shutil.which, not subprocess.run: running a missing executable raises at
+# import and turns the skip into a collection error.
+@pytest.mark.skipif(shutil.which("quarto") is None, reason="Quarto not installed")
 def test_quarto_render_smoke(tmp_path):
     """Render a copy of the manuscript to PDF in a temporary directory.
 

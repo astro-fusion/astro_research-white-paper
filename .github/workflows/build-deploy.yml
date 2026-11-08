@@ -104,7 +104,7 @@ jobs:
 
           # Render the Quarto website (HTML; PDFs come from scientific-reporting.yml)
           echo "🏗️ Rendering Quarto project..."
-          quarto render --to html
+          quarto render --to html 2>&1 | tee quarto-render.log
 
           # Create site structure
 
@@ -127,6 +127,19 @@ jobs:
           find studies -name "*.json" -type f ! -path "*/node_modules/*" -exec cp {} _site/data/ \; 2>/dev/null || true
 
           echo "✅ Documentation structure built"
+
+      # Job logs need a login; annotations are public. On failure the first
+      # error lines of the render are surfaced as annotations.
+      - name: Report render errors as annotations
+        if: failure()
+        run: |
+          if [ -f quarto-render.log ]; then
+            grep -n -i -E "error|traceback|exception|not found|failed" quarto-render.log \
+              | head -10 | cut -c1-400 | sed 's/^/::error title=quarto render::/'
+            tail -5 quarto-render.log | cut -c1-400 | sed 's/^/::error title=quarto render (tail)::/'
+          else
+            echo "::error title=quarto render::no quarto-render.log"
+          fi
 
       # Smoke test of the rendered site (tests/site/smoke.spec.ts): serves
       # _site/ statically, opens every explorer and asserts each chart
