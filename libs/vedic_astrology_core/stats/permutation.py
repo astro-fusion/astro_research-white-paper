@@ -9,11 +9,12 @@ so it is never zero. The null is one of:
 * ``"phase"``: phase-randomise a continuous indicator ``x``.
 
 The result carries the effect (observed minus null mean), the effect in null
-standard deviations, and a percentile confidence interval for the statistic
-from a paired stationary block bootstrap of ``(x, y)``.
+standard deviations, a percentile confidence interval for the statistic
+from a paired stationary block bootstrap of ``(x, y)``, and the null
+statistics themselves (for plotting).
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Callable, Optional
 
 import numpy as np
@@ -44,6 +45,7 @@ class PermutationResult:
     n_perm: int
     null: str
     alternative: str
+    null_stats: np.ndarray = field(default=None, repr=False)
 
 
 def empirical_p_value(
@@ -147,4 +149,5 @@ def permutation_test(
         n_perm=int(n_perm),
         null=null,
         alternative=alternative,
+        null_stats=null_stats,
     )

@@ -17,6 +17,11 @@ All take ``rng=np.random.default_rng(seed)``.
 import numpy as np
 
 
+def make_rng(seed: int) -> np.random.Generator:
+    """Return ``np.random.default_rng(seed)``, the one way studies seed nulls."""
+    return np.random.default_rng(int(seed))
+
+
 def _check_rng(rng) -> np.random.Generator:
     if not isinstance(rng, np.random.Generator):
         raise TypeError("rng must be a numpy Generator: np.random.default_rng(seed)")

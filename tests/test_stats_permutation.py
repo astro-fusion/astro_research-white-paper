@@ -39,6 +39,7 @@ def test_planted_effect_is_detected_by_every_null():
         assert res.p_value == pytest.approx(1 / 200), null
         assert res.effect > 0.5
         assert res.ci_low < res.observed < res.ci_high
+        assert len(res.null_stats) == 199
 
 
 def test_independent_series_is_not_significant():

@@ -6,6 +6,7 @@ import pytest
 from vedic_astrology_core.stats.nulls import (
     circular_shift_null,
     circular_shift_offsets,
+    make_rng,
     phase_randomization,
     stationary_block_bootstrap,
     stationary_bootstrap_indices,
@@ -65,3 +66,10 @@ def test_phase_randomisation_keeps_spectrum_and_mean():
                                    rtol=1e-8, atol=1e-8)
         assert s.mean() == pytest.approx(x.mean())
         assert not np.allclose(s, x)
+
+
+def test_make_rng_is_seeded_generator():
+    """make_rng(seed) equals np.random.default_rng(seed)."""
+    a = make_rng(5).integers(0, 1000, 10)
+    b = np.random.default_rng(5).integers(0, 1000, 10)
+    np.testing.assert_array_equal(a, b)

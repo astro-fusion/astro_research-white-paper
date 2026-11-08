@@ -21,16 +21,37 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+_REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, _REPO)
+sys.path.insert(0, os.path.join(_REPO, "libs"))
 
-from libs.models.statistics import (  # noqa: E402
-    calculate_molchan_trajectory,
-    check_stationarity,
-    run_granger_causality,
-    run_lomb_scargle,
-    run_monte_carlo_permutation_test,
-)
 from studies._paths import PROCESSED_ROOT, artifacts_dir  # noqa: E402
+from vedic_astrology_core.stats.granger import exog_granger  # noqa: E402
+from vedic_astrology_core.stats.molchan import molchan_trajectory  # noqa: E402
+from vedic_astrology_core.stats.multiplicity import adjust  # noqa: E402
+from vedic_astrology_core.stats.nulls import make_rng  # noqa: E402
+from vedic_astrology_core.stats.permutation import permutation_test  # noqa: E402
+from vedic_astrology_core.stats.spectral import lomb_scargle_grid  # noqa: E402
+from vedic_astrology_core.stats.stationarity import (  # noqa: E402
+    adf_kpss,
+    is_stationary,
+)
+
+SEED = 42
+
+
+def check_stationarity(series: pd.Series, name: str) -> dict:
+    """Return one stationarity-table row (ADF and KPSS, alpha 0.05)."""
+    tests = adf_kpss(series)
+    return {
+        "Variable": name,
+        "ADF Statistic": round(tests["adf_stat"], 4),
+        "ADF p-value": round(tests["adf_p"], 4),
+        "KPSS Statistic": round(tests["kpss_stat"], 4),
+        "KPSS p-value": round(tests["kpss_p"], 4),
+        "Stationary": "Yes" if is_stationary(tests) else "No",
+    }
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -80,7 +101,8 @@ def generate_periodogram_plot(df: pd.DataFrame):
     logger.info("Generating Periodogram...")
 
     series = df.set_index("Date")["Gold_Log_Ret"].dropna()
-    periods, power, fap = run_lomb_scargle(series, min_period=2, max_period=365)
+    grid = lomb_scargle_grid(series, min_period=2, max_period=365)
+    periods, power, fap = grid["period_days"], grid["power"], grid["fap_level_01"]
 
     plt.figure(figsize=(10, 6))
     plt.plot(periods, power, color="black", linewidth=1)
@@ -112,8 +134,9 @@ def generate_granger_stats(df: pd.DataFrame):
     planets = ["Mars", "Saturn", "Jupiter"]
     results = {}
 
+    returns = df.set_index("Date")["Gold_Log_Ret"].dropna()
     for planet in planets:
-        # Predictors: Sine/Cosine components (Holistic cycle)
+        # Predictors: Sine/Cosine components, treated as exogenous regressors.
         predictors = [f"{planet}_Sin", f"{planet}_Cos"]
 
         # Check if columns exist
@@ -121,11 +144,28 @@ def generate_granger_stats(df: pd.DataFrame):
             logger.warning(f"Predictors for {planet} not found.")
             continue
 
-        # Run Test (Bonferroni n = number of planets tested = 3)
-        res = run_granger_causality(
-            df, "Gold_Log_Ret", predictors, maxlag=5, bonferroni_n=len(planets)
-        )
-        results[planet] = res
+        # ADL with HAC errors, lag 1 fixed a priori, stationarity gate.
+        res = exog_granger(returns, df.set_index("Date")[predictors],
+                           lags=(1,), y_lags=1)
+        results[planet] = {
+            "Target": "Gold_Log_Ret",
+            "Predictors": ", ".join(predictors),
+            "Lags": res["lags"],
+            "Transform": res["transform"],
+            "F-Statistic": res.get("f_stat"),
+            "p-value": res["p_value"],
+        }
+
+    # One Benjamini-Yekutieli family across the planets tested.
+    tested = [k for k, v in results.items() if v["p-value"] is not None]
+    if tested:
+        q = adjust([results[k]["p-value"] for k in tested], "by")
+        for k, qv in zip(tested, q):
+            results[k]["q-value"] = float(qv)
+            results[k]["Significant"] = "Yes" if qv < 0.05 else "No"
+    for v in results.values():
+        v.setdefault("q-value", None)
+        v.setdefault("Significant", "No")
 
     output_path = os.path.join(ARTIFACTS_DIR, "stats_granger.json")
     with open(output_path, "w") as f:
@@ -146,14 +186,16 @@ def generate_molchan_plot(df: pd.DataFrame):
     # Using absolute speed change as proxy for "activity"
     predictions = df["Mars_Speed"].abs()
 
-    # Calculate Trajectory
+    # Calculate trajectory (tau = fraction of time under alarm, sorted ascending)
     thresholds = np.linspace(predictions.min(), predictions.max(), 50)
-    molchan_df = calculate_molchan_trajectory(predictions, actuals, thresholds)
+    event_bins = np.flatnonzero(actuals.to_numpy())
+    molchan_df = molchan_trajectory(predictions.fillna(predictions.min()),
+                                    event_bins, thresholds)
 
     plt.figure(figsize=(6, 6))
     plt.plot(
-        molchan_df["Tau"],
-        molchan_df["Nu"],
+        molchan_df["tau"],
+        molchan_df["nu"],
         marker="o",
         markersize=3,
         label="Mars Speed Model",
@@ -271,14 +313,21 @@ def generate_monte_carlo_plot(df: pd.DataFrame):
     target_col = "Gold_Log_Ret"
     exog_cols = ["Mars_Speed"]
 
-    # Run Test (N=1000 for speed, usually 10000 for publication)
-    res = run_monte_carlo_permutation_test(
-        df, target_col, exog_cols, n_permutations=1000
-    )
+    # Circular-shift null of the planetary series (keeps both series'
+    # autocorrelation); statistic: R-squared of the simple regression.
+    clean = df[[target_col] + exog_cols].dropna()
+    x = clean[exog_cols[0]].to_numpy()
+    y = clean[target_col].to_numpy()
 
-    actual_score = res["actual_score"]
-    permuted_scores = res["permuted_scores"]
-    p_value = res["p_value"]
+    def r_squared(a, b):
+        return float(np.corrcoef(a, b)[0, 1] ** 2)
+
+    res = permutation_test(r_squared, x, y, rng=make_rng(SEED),
+                           null="circular_shift", n_perm=1000,
+                           min_shift=max(1, len(x) // 5), n_boot=0)
+    actual_score = res.observed
+    permuted_scores = res.null_stats
+    p_value = res.p_value
 
     plt.figure(figsize=(10, 6))
 
@@ -303,7 +352,7 @@ def generate_monte_carlo_plot(df: pd.DataFrame):
 
     plt.xlabel("R-Squared Correlation")
     plt.ylabel("Frequency")
-    plt.title("Monte Carlo Permutation Test: Mars Speed vs Gold")
+    plt.title("Circular-shift Permutation Test: Mars Speed vs Gold")
     plt.legend()
     plt.grid(True, alpha=0.3)
 
