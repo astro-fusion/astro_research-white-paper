@@ -1,0 +1,259 @@
+# Pre-registration for the earthquake study (ADR-001 rigor contract).
+#
+# Written before pipeline.py was run on the catalogue. The pipeline reads every
+# parameter below from this file; changing one after seeing results must be
+# recorded in the "amendments" list at the bottom with a date and a reason.
+#
+# Question: does the rate of shallow-to-intermediate earthquakes in the
+# Himalayan arc (India, Nepal, Bhutan and the adjacent arc) differ while
+# specific classical configurations hold?
+
+id: earthquake-himalaya-v2
+registered: "2026-11-08"
+status: registered
+
+catalogue:
+  source: USGS ComCat FDSN event web service (format=csv)
+  url: https://earthquake.usgs.gov/fdsnws/event/1/query
+  start: "1976-01-01T00:00:00Z"
+  end: "2026-11-01T00:00:00Z"
+  query_min_magnitude: 4.0
+  event_type: earthquake
+  max_depth_km: 70
+  offline_fallback: >-
+    studies/earthquake/data/india_nepal_data.json (370 events, M4.5+,
+    2015-2023, tracked). Used only with --offline or when the service is
+    unreachable; the run records which source it used.
+
+region:
+  name: Himalayan arc, 74 E to 96 E
+  description: >-
+    A band from 0.5 degrees south to 2.0 degrees north of the Main Frontal
+    Thrust (MFT), covering the Main Himalayan Thrust ramp where Himalayan
+    great earthquakes nucleate, and excluding the Tibetan plateau interior,
+    the Indo-Gangetic plain and the Bangladesh/Shillong region.
+  provenance: >-
+    Vertices were digitised by hand from the MFT trace mapped in Bilham
+    (2019), Himalayan earthquakes: a review of historical seismicity and
+    early 21st century slip potential, Geological Society, London, Special
+    Publications 483, at 1 to 2 degree longitude spacing. This is an
+    approximation of a published fault trace, not a published polygon.
+  mft_trace_lon_lat:
+    - [74.0, 32.6]
+    - [75.5, 32.0]
+    - [77.0, 30.9]
+    - [78.5, 29.9]
+    - [80.0, 28.9]
+    - [81.5, 28.2]
+    - [83.0, 27.5]
+    - [84.5, 27.1]
+    - [86.0, 26.8]
+    - [88.0, 26.7]
+    - [89.5, 26.7]
+    - [91.5, 26.8]
+    - [93.5, 27.0]
+    - [95.0, 27.6]
+    - [96.0, 28.1]
+  south_offset_deg: 0.5
+  north_offset_deg: 2.0
+
+magnitude:
+  homogenisation: >-
+    Moment magnitudes (mww, mwc, mwb, mwr, mw) are used as reported. mb and
+    Ms are converted with the global relations of Scordilis (2006, J.
+    Seismol. 10, 225-236). Any other type (ml, md, mi, unknown) is used as
+    reported and counted in the catalogue summary.
+  rules:
+    mb: {slope: 0.85, intercept: 1.03, valid: [3.5, 6.2]}
+    ms_low: {slope: 0.67, intercept: 2.07, valid: [3.0, 6.1]}
+    ms_high: {slope: 0.99, intercept: 0.08, valid: [6.2, 8.2]}
+  completeness: >-
+    Mc by maximum curvature (Wiemer and Wyss 2000) plus 0.2 (Woessner and
+    Wiemer 2005), estimated in each decade with at least 50 events on the
+    native magnitude of the dominant type (mb), because the linear mb-to-Mw
+    conversion maps 0.1-unit mb bins onto an uneven Mw grid and makes a
+    maximum-curvature estimate on Mw unreliable. The largest decade value is
+    converted to Mw with the mb rule above; only events with Mw at or above
+    it (and never below 4.0) are analysed. Maximum curvature on the
+    converted Mw is reported alongside for comparison.
+  bin_width: 0.1
+
+declustering:
+  primary: gardner_knopoff
+  methods:
+    gardner_knopoff: >-
+      Window method, Gardner and Knopoff (1974) windows in the functional
+      form of van Stiphout et al. (2012): L = 10^(0.1238 M + 0.983) km;
+      T = 10^(0.032 M + 2.7389) days for M >= 6.5, else
+      10^(0.5409 M - 0.547) days. Largest-first; foreshocks inside a
+      mainshock's window are removed as well.
+    nearest_neighbour: >-
+      Zaliapin and Ben-Zion (2013) nearest-neighbour proximity
+      eta = t * r^df * 10^(-b m_parent), t in years, r in km (epicentral),
+      df = 1.6, b = 1.0. Events whose nearest-neighbour log10(eta) is below
+      the threshold are clustered and removed. Threshold: the density
+      minimum between the two modes of a two-component Gaussian mixture
+      fitted to log10(eta); -5.0 if the mixture does not separate.
+  not_done: >-
+    Reasenberg and ETAS stochastic declustering (review Section 5) are not
+    implemented; two methods are run and both are reported.
+
+time_grid:
+  step_hours: 1
+  timezone: UTC
+  note: >-
+    Indicators are evaluated at the start of each hour; an event belongs to
+    the hour that contains its origin time.
+
+ephemeris:
+  engine: vedic_astrology_core.astrology.ephemeris.EphemerisEngine
+  zodiac: sidereal
+  ayanamsa: lahiri
+  node_model: mean
+  eclipses: >-
+    Swiss Ephemeris global eclipse search (sol_eclipse_when_glob for every
+    solar eclipse type; lun_eclipse_when for partial and total lunar
+    eclipses, penumbral-only excluded), times of maximum.
+
+indicators:
+  - id: mars_saturn_conj
+    label: Mars-Saturn conjunction
+    definition: sidereal angular separation of Mars and Saturn <= 8 degrees
+    orb_deg: 8
+    direction: greater
+  - id: mars_ketu_conj
+    label: Mars-Ketu conjunction
+    definition: separation of Mars and Ketu (mean node) <= 8 degrees
+    orb_deg: 8
+    direction: greater
+  - id: eclipse_window
+    label: Eclipse within 7 days
+    definition: within 7 days either side of a solar or lunar eclipse maximum
+    window_days: 7
+    direction: greater
+  - id: sun_ingress
+    label: Sun sign ingress (sankranti) within 2 days
+    definition: within 2 days either side of the Sun entering a sidereal sign
+    window_days: 2
+    direction: greater
+  - id: station_mars
+    label: Mars station within 3 days
+    planet: MARS
+    window_days: 3
+    direction: greater
+  - id: station_mercury
+    label: Mercury station within 3 days
+    planet: MERCURY
+    window_days: 3
+    direction: greater
+  - id: station_venus
+    label: Venus station within 3 days
+    planet: VENUS
+    window_days: 3
+    direction: greater
+  - id: station_jupiter
+    label: Jupiter station within 3 days
+    planet: JUPITER
+    window_days: 3
+    direction: greater
+  - id: station_saturn
+    label: Saturn station within 3 days
+    planet: SATURN
+    window_days: 3
+    direction: greater
+  - id: moon_mandala_vayu
+    label: Moon in a Vayu-mandala nakshatra
+    nakshatras: [Ashvini, Mrigashira, Punarvasu, Uttara Phalguni, Hasta, Chitra, Swati]
+    direction: two-sided
+  - id: moon_mandala_agni
+    label: Moon in an Agni-mandala nakshatra
+    nakshatras: [Bharani, Krittika, Pushya, Magha, Purva Phalguni, Vishakha, Purva Bhadrapada]
+    direction: two-sided
+  - id: moon_mandala_indra
+    label: Moon in an Indra-mandala nakshatra
+    nakshatras: [Rohini, Anuradha, Jyeshtha, Uttara Ashadha, Shravana, Dhanishtha]
+    direction: two-sided
+  - id: moon_mandala_varuna
+    label: Moon in a Varuna-mandala nakshatra
+    nakshatras: [Ardra, Ashlesha, Mula, Purva Ashadha, Shatabhisha, Uttara Bhadrapada, Revati]
+    direction: two-sided
+indicator_notes:
+  mandala_source: >-
+    Varahamihira, Brihat Samhita ch. 32 (Bhukampa-lakshana), which assigns
+    the nakshatras to four mandalas (Abhijit, in the Indra mandala, is not
+    one of the 27 and is dropped). The text uses the mandala to read the
+    consequences of a quake, not its likelihood, so the test is two-sided:
+    does the event rate differ by mandala? The membership above should be
+    checked against a translation (e.g. M. Ramakrishna Bhat, 1981).
+  kurma_chakra: >-
+    Omitted: there is no Kurma Chakra implementation in libs/, and
+    pre-registration forbids writing one after seeing the catalogue.
+
+test:
+  statistic: >-
+    Event-rate ratio during versus outside the indicator (events per hour),
+    exact conditional binomial 95% CI under a Poisson process.
+  null: >-
+    Circular shift of the indicator series against the fixed event series,
+    offsets uniform in [min_shift, N - min_shift] grid steps; keeps event
+    clustering and the indicator's run structure.
+  min_shift_days: 767  # 2.1 years > Mars-Saturn synodic period (2.01 years)
+  n_draws: 10000
+  seed: 42
+  p_value: (n_extreme + 1) / (n_draws + 1)
+  family: >-
+    Every indicator x declustered catalogue (Gardner-Knopoff and
+    nearest-neighbour) in the exploration period: 13 x 2 = 26 tests.
+    The undeclustered catalogue is reported descriptively, outside the
+    family.
+  correction: benjamini_yekutieli
+  alpha: 0.05
+
+split:
+  explore: ["1976-01-01", "2010-12-31"]
+  confirm: ["2011-01-01", "2026-10-31"]
+  purge_days: 0
+  rule: >-
+    An (indicator, catalogue) pair goes to confirmation only if its
+    exploration q < alpha with the rate ratio in the registered direction.
+    Confirmation repeats the same test on 2011-2026 with BY across the
+    carried pairs; confirmed means q < alpha in the same direction. All 26
+    pairs are also shown for the confirmation period, labelled descriptive.
+  forecast_check: >-
+    Hansen SPA: frozen exploration rates (inside/outside each indicator) as
+    13 daily Poisson forecasts against a constant-rate benchmark, scored
+    by Poisson log loss on confirmation days; stationary bootstrap, mean
+    block 30 days, 2000 resamples.
+
+molchan:
+  alarm_functions: >-
+    Each binary indicator gives one (tau, nu) point. The combined alarm
+    function is the number of active "greater" indicators (the nine
+    conjunction, eclipse, ingress and station indicators).
+  bounds: binomial, alpha 0.05, one-sided, for the N events of the catalogue
+  reference: >-
+    Time-random reference model: events placed uniformly in time, 2000
+    simulations, area skill score compared with the observed one.
+
+count_model:
+  description: >-
+    Monthly counts of declustered (Gardner-Knopoff) events. Negative
+    binomial (NB2) with alpha estimated in both models. Baseline: intercept
+    and linear time trend. Research: baseline plus the fraction of the month
+    each "greater" indicator is active. Likelihood-ratio test (df = 9) and
+    leave-one-year-out cross-validated predictive log-likelihood.
+
+amendments:
+  - date: "2026-11-08"
+    field: magnitude.completeness
+    before: >-
+      Maximum curvature per decade on the converted Mw catalogue, largest
+      decade value rounded up to 0.1.
+    after: Maximum curvature per decade on native mb, converted to Mw.
+    reason: >-
+      Found while checking the catalogue loader, before any indicator test
+      had been run: the converted-Mw histogram has empty and doubled bins
+      (slope 0.85 on 0.1-unit mb), and its 1976-1979 maximum falls on such
+      an artefact (Mw-scale maximum curvature gives 5.3 to 5.4 depending on
+      how converted values are rounded, versus 5.2 from native mb). The change
+      was made without looking at any rate ratio.
