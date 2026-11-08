@@ -3,11 +3,12 @@
 import os
 import sys
 import unittest
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import patch
 
 from vedic_astrology_core.astrology.ephemeris import EphemerisEngine
-from vedic_astrology_core.dignity.global_scorer import GlobalShadbalaScorer
+from vedic_astrology_core.config.constants import Planet
+from vedic_astrology_core.dignity.global_scorer import GlobalStrengthScorer
 
 
 class TestResearchPipelinePhase2(unittest.TestCase):
@@ -16,19 +17,22 @@ class TestResearchPipelinePhase2(unittest.TestCase):
     def setUp(self):
         """Set up test fixtures."""
         self.eph = EphemerisEngine()
-        self.scorer = GlobalShadbalaScorer(self.eph)
+        self.scorer = GlobalStrengthScorer(self.eph)
 
     def test_global_scorer_structure(self):
         """Test that scorer returns expected structure."""
-        jd = self.eph.datetime_to_julian_day(datetime.now())
+        jd = self.eph.datetime_to_julian_day(
+            datetime(2000, 1, 1, 12, tzinfo=timezone.utc)
+        )
         scores = self.scorer.calculate_global_power(jd)
 
-        self.assertIn("SUN", scores)
-        self.assertIn("MARS", scores)
-        self.assertGreaterEqual(scores["MARS"], 0)
-        self.assertLessEqual(
-            scores["MARS"], 100
-        )  # Should be normalized (though bonus might go over 100 on raw, but clamped)
+        self.assertEqual(set(scores), set(Planet))
+        self.assertIn("SUN", scores)  # name lookups still work
+        # J2000: sidereal Sun in Sagittarius (Jupiter's sign, friend) = 50,
+        # Mars in Aquarius (Saturn's sign, neutral) = 40, nodes fixed at 50.
+        self.assertEqual(scores[Planet.SUN], 50.0)
+        self.assertEqual(scores[Planet.MARS], 40.0)
+        self.assertEqual(scores[Planet.RAHU], 50.0)
 
     def test_chesta_bala_retrograde_boost(self):
         """Test that retrograde motion increases score."""

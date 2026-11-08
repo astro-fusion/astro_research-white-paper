@@ -9,7 +9,7 @@ planetary relationships.
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
-from ..config.constants import Planet
+from ..config.constants import Planet, PlanetDict
 
 if TYPE_CHECKING:
     from ..astrology.chart import BirthChart
@@ -30,47 +30,12 @@ class FriendshipType(Enum):
     ADHI_SHATRU = "Adhi Shatru"
 
 
-# Naisargika Maitri (Natural Friendship) Matrix
-# Based on classical Vedic astrology relationships
+# Naisargika Maitri (natural friendship), BPHS Ch. 3. Natural friendship is
+# not symmetric (e.g. the Moon has no enemies, yet Mercury counts the Moon as
+# an enemy). Rows are the planet, columns how it regards the other planet.
 NAISARGIKA_MAITRI: Dict[Planet, Dict[Planet, FriendshipType]] = {
-    # Sun's relationships
+    # Sun: friends Moon Mars Jupiter; neutral Mercury; enemies Venus Saturn
     Planet.SUN: {
-        Planet.SUN: FriendshipType.NATURAL_NEUTRAL,  # Self
-        Planet.MOON: FriendshipType.NATURAL_FRIEND,
-        Planet.MARS: FriendshipType.NATURAL_FRIEND,
-        Planet.MERCURY: FriendshipType.NATURAL_NEUTRAL,
-        Planet.JUPITER: FriendshipType.NATURAL_FRIEND,
-        Planet.VENUS: FriendshipType.NATURAL_ENEMY,
-        Planet.SATURN: FriendshipType.NATURAL_ENEMY,
-        Planet.RAHU: FriendshipType.NATURAL_ENEMY,
-        Planet.KETU: FriendshipType.NATURAL_ENEMY,
-    },
-    # Moon's relationships
-    Planet.MOON: {
-        Planet.SUN: FriendshipType.NATURAL_FRIEND,
-        Planet.MOON: FriendshipType.NATURAL_NEUTRAL,
-        Planet.MARS: FriendshipType.NATURAL_ENEMY,
-        Planet.MERCURY: FriendshipType.NATURAL_FRIEND,
-        Planet.JUPITER: FriendshipType.NATURAL_FRIEND,
-        Planet.VENUS: FriendshipType.NATURAL_FRIEND,
-        Planet.SATURN: FriendshipType.NATURAL_ENEMY,
-        Planet.RAHU: FriendshipType.NATURAL_ENEMY,
-        Planet.KETU: FriendshipType.NATURAL_ENEMY,
-    },
-    # Mars' relationships
-    Planet.MARS: {
-        Planet.SUN: FriendshipType.NATURAL_FRIEND,
-        Planet.MOON: FriendshipType.NATURAL_ENEMY,
-        Planet.MARS: FriendshipType.NATURAL_NEUTRAL,
-        Planet.MERCURY: FriendshipType.NATURAL_FRIEND,
-        Planet.JUPITER: FriendshipType.NATURAL_ENEMY,
-        Planet.VENUS: FriendshipType.NATURAL_FRIEND,
-        Planet.SATURN: FriendshipType.NATURAL_FRIEND,
-        Planet.RAHU: FriendshipType.NATURAL_FRIEND,
-        Planet.KETU: FriendshipType.NATURAL_FRIEND,
-    },
-    # Mercury's relationships
-    Planet.MERCURY: {
         Planet.SUN: FriendshipType.NATURAL_NEUTRAL,
         Planet.MOON: FriendshipType.NATURAL_FRIEND,
         Planet.MARS: FriendshipType.NATURAL_FRIEND,
@@ -81,64 +46,100 @@ NAISARGIKA_MAITRI: Dict[Planet, Dict[Planet, FriendshipType]] = {
         Planet.RAHU: FriendshipType.NATURAL_ENEMY,
         Planet.KETU: FriendshipType.NATURAL_ENEMY,
     },
-    # Jupiter's relationships
-    Planet.JUPITER: {
+    # Moon: friends Sun Mercury; neutral Mars Jupiter Venus Saturn; enemies -
+    Planet.MOON: {
         Planet.SUN: FriendshipType.NATURAL_FRIEND,
-        Planet.MOON: FriendshipType.NATURAL_FRIEND,
-        Planet.MARS: FriendshipType.NATURAL_ENEMY,
+        Planet.MOON: FriendshipType.NATURAL_NEUTRAL,
+        Planet.MARS: FriendshipType.NATURAL_NEUTRAL,
         Planet.MERCURY: FriendshipType.NATURAL_FRIEND,
         Planet.JUPITER: FriendshipType.NATURAL_NEUTRAL,
-        Planet.VENUS: FriendshipType.NATURAL_FRIEND,
-        Planet.SATURN: FriendshipType.NATURAL_ENEMY,
+        Planet.VENUS: FriendshipType.NATURAL_NEUTRAL,
+        Planet.SATURN: FriendshipType.NATURAL_NEUTRAL,
         Planet.RAHU: FriendshipType.NATURAL_ENEMY,
         Planet.KETU: FriendshipType.NATURAL_ENEMY,
     },
-    # Venus' relationships
-    Planet.VENUS: {
-        Planet.SUN: FriendshipType.NATURAL_ENEMY,
+    # Mars: friends Sun Moon Jupiter; neutral Venus Saturn; enemies Mercury
+    Planet.MARS: {
+        Planet.SUN: FriendshipType.NATURAL_FRIEND,
+        Planet.MOON: FriendshipType.NATURAL_FRIEND,
+        Planet.MARS: FriendshipType.NATURAL_NEUTRAL,
+        Planet.MERCURY: FriendshipType.NATURAL_ENEMY,
+        Planet.JUPITER: FriendshipType.NATURAL_FRIEND,
+        Planet.VENUS: FriendshipType.NATURAL_NEUTRAL,
+        Planet.SATURN: FriendshipType.NATURAL_NEUTRAL,
+        Planet.RAHU: FriendshipType.NATURAL_FRIEND,
+        Planet.KETU: FriendshipType.NATURAL_FRIEND,
+    },
+    # Mercury: friends Sun Venus; neutral Mars Jupiter Saturn; enemies Moon
+    Planet.MERCURY: {
+        Planet.SUN: FriendshipType.NATURAL_FRIEND,
+        Planet.MOON: FriendshipType.NATURAL_ENEMY,
+        Planet.MARS: FriendshipType.NATURAL_NEUTRAL,
+        Planet.MERCURY: FriendshipType.NATURAL_NEUTRAL,
+        Planet.JUPITER: FriendshipType.NATURAL_NEUTRAL,
+        Planet.VENUS: FriendshipType.NATURAL_FRIEND,
+        Planet.SATURN: FriendshipType.NATURAL_NEUTRAL,
+        Planet.RAHU: FriendshipType.NATURAL_ENEMY,
+        Planet.KETU: FriendshipType.NATURAL_ENEMY,
+    },
+    # Jupiter: friends Sun Moon Mars; neutral Saturn; enemies Mercury Venus
+    Planet.JUPITER: {
+        Planet.SUN: FriendshipType.NATURAL_FRIEND,
         Planet.MOON: FriendshipType.NATURAL_FRIEND,
         Planet.MARS: FriendshipType.NATURAL_FRIEND,
         Planet.MERCURY: FriendshipType.NATURAL_ENEMY,
-        Planet.JUPITER: FriendshipType.NATURAL_FRIEND,
+        Planet.JUPITER: FriendshipType.NATURAL_NEUTRAL,
+        Planet.VENUS: FriendshipType.NATURAL_ENEMY,
+        Planet.SATURN: FriendshipType.NATURAL_NEUTRAL,
+        Planet.RAHU: FriendshipType.NATURAL_ENEMY,
+        Planet.KETU: FriendshipType.NATURAL_ENEMY,
+    },
+    # Venus: friends Mercury Saturn; neutral Mars Jupiter; enemies Sun Moon
+    Planet.VENUS: {
+        Planet.SUN: FriendshipType.NATURAL_ENEMY,
+        Planet.MOON: FriendshipType.NATURAL_ENEMY,
+        Planet.MARS: FriendshipType.NATURAL_NEUTRAL,
+        Planet.MERCURY: FriendshipType.NATURAL_FRIEND,
+        Planet.JUPITER: FriendshipType.NATURAL_NEUTRAL,
         Planet.VENUS: FriendshipType.NATURAL_NEUTRAL,
         Planet.SATURN: FriendshipType.NATURAL_FRIEND,
         Planet.RAHU: FriendshipType.NATURAL_FRIEND,
         Planet.KETU: FriendshipType.NATURAL_FRIEND,
     },
-    # Saturn's relationships
+    # Saturn: friends Mercury Venus; neutral Jupiter; enemies Sun Moon Mars
     Planet.SATURN: {
         Planet.SUN: FriendshipType.NATURAL_ENEMY,
         Planet.MOON: FriendshipType.NATURAL_ENEMY,
-        Planet.MARS: FriendshipType.NATURAL_FRIEND,
-        Planet.MERCURY: FriendshipType.NATURAL_ENEMY,
-        Planet.JUPITER: FriendshipType.NATURAL_ENEMY,
+        Planet.MARS: FriendshipType.NATURAL_ENEMY,
+        Planet.MERCURY: FriendshipType.NATURAL_FRIEND,
+        Planet.JUPITER: FriendshipType.NATURAL_NEUTRAL,
         Planet.VENUS: FriendshipType.NATURAL_FRIEND,
         Planet.SATURN: FriendshipType.NATURAL_NEUTRAL,
         Planet.RAHU: FriendshipType.NATURAL_FRIEND,
         Planet.KETU: FriendshipType.NATURAL_FRIEND,
     },
-    # Rahu's relationships (follows Saturn)
+    # Rahu follows Saturn (and is hostile to Ketu)
     Planet.RAHU: {
         Planet.SUN: FriendshipType.NATURAL_ENEMY,
         Planet.MOON: FriendshipType.NATURAL_ENEMY,
-        Planet.MARS: FriendshipType.NATURAL_FRIEND,
-        Planet.MERCURY: FriendshipType.NATURAL_ENEMY,
-        Planet.JUPITER: FriendshipType.NATURAL_ENEMY,
+        Planet.MARS: FriendshipType.NATURAL_ENEMY,
+        Planet.MERCURY: FriendshipType.NATURAL_FRIEND,
+        Planet.JUPITER: FriendshipType.NATURAL_NEUTRAL,
         Planet.VENUS: FriendshipType.NATURAL_FRIEND,
         Planet.SATURN: FriendshipType.NATURAL_FRIEND,
         Planet.RAHU: FriendshipType.NATURAL_NEUTRAL,
-        Planet.KETU: FriendshipType.NATURAL_ENEMY,  # Rahu and Ketu are natural enemies
+        Planet.KETU: FriendshipType.NATURAL_ENEMY,
     },
-    # Ketu's relationships (follows Mars)
+    # Ketu follows Mars (and is hostile to Rahu)
     Planet.KETU: {
         Planet.SUN: FriendshipType.NATURAL_FRIEND,
-        Planet.MOON: FriendshipType.NATURAL_ENEMY,
+        Planet.MOON: FriendshipType.NATURAL_FRIEND,
         Planet.MARS: FriendshipType.NATURAL_FRIEND,
-        Planet.MERCURY: FriendshipType.NATURAL_FRIEND,
-        Planet.JUPITER: FriendshipType.NATURAL_ENEMY,
-        Planet.VENUS: FriendshipType.NATURAL_FRIEND,
-        Planet.SATURN: FriendshipType.NATURAL_FRIEND,
-        Planet.RAHU: FriendshipType.NATURAL_ENEMY,  # Ketu and Rahu are natural enemies
+        Planet.MERCURY: FriendshipType.NATURAL_ENEMY,
+        Planet.JUPITER: FriendshipType.NATURAL_FRIEND,
+        Planet.VENUS: FriendshipType.NATURAL_NEUTRAL,
+        Planet.SATURN: FriendshipType.NATURAL_NEUTRAL,
+        Planet.RAHU: FriendshipType.NATURAL_ENEMY,
         Planet.KETU: FriendshipType.NATURAL_NEUTRAL,
     },
 }
@@ -180,15 +181,14 @@ def calculate_tatkalika_maitri(
         FriendshipType (temporary relationship)
     """
     # Get planet positions
-    if (
-        not hasattr(chart, "planets")
-        or planet1.name not in chart.planets
-        or planet2.name not in chart.planets
-    ):
+    if not hasattr(chart, "planets"):
+        return FriendshipType.NATURAL_NEUTRAL
+    planets = PlanetDict(chart.planets)
+    if planet1 not in planets or planet2 not in planets:
         return FriendshipType.NATURAL_NEUTRAL
 
-    planet1_pos = chart.planets[planet1.name]
-    planet2_pos = chart.planets[planet2.name]
+    planet1_pos = planets[planet1]
+    planet2_pos = planets[planet2]
 
     # Calculate house positions relative to each other
     # Planets in 2, 3, 4, 10, 11, 12 houses from each other are temporary friends

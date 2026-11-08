@@ -211,60 +211,90 @@ def get_own_signs(planet: Planet) -> List[Tuple[int, str]]:
     return [(sign_idx, SIGN_NAMES[sign_idx]) for sign_idx in OWN_SIGNS_TABLE[planet]]
 
 
-def is_in_exaltation(longitude: float, planet: Planet, tolerance: float = 2.0) -> bool:
-    """
-    Check if a planet is in its exaltation degree (within tolerance).
+RAHU_EXALTATION_TRADITIONS = ("taurus", "gemini")
+DEFAULT_RAHU_EXALTED_IN = "taurus"
 
-    Args:
-        longitude: Planet's longitude in degrees
-        planet: Planet enum
-        tolerance: Degree tolerance for exaltation (default 2°)
 
-    Returns:
-        True if planet is exalted
+def _validate_tradition(rahu_exalted_in: str) -> str:
+    tradition = str(rahu_exalted_in).lower()
+    if tradition not in RAHU_EXALTATION_TRADITIONS:
+        raise ValueError(
+            f"rahu_exalted_in must be one of {RAHU_EXALTATION_TRADITIONS}, "
+            f"got {rahu_exalted_in!r}"
+        )
+    return tradition
+
+
+def exaltation_sign_index(
+    planet: Planet, rahu_exalted_in: str = DEFAULT_RAHU_EXALTED_IN
+) -> Optional[int]:
+    """Return the exaltation (uccha) sign of a planet, or None.
+
+    The nodes have no exaltation in BPHS proper; two traditions exist and
+    the choice is an explicit parameter: ``"taurus"`` (Rahu exalted in
+    Taurus, Ketu in Scorpio) or ``"gemini"`` (Rahu in Gemini, Ketu in
+    Sagittarius).
     """
+    if planet in (Planet.RAHU, Planet.KETU):
+        tradition = _validate_tradition(rahu_exalted_in)
+        rahu = (
+            ZodiacSign.TAURUS.value
+            if tradition == "taurus"
+            else (ZodiacSign.GEMINI.value)
+        )
+        return rahu if planet == Planet.RAHU else (rahu + 6) % 12
     if planet not in EXALTATION_TABLE:
-        return False
+        return None
+    return EXALTATION_TABLE[planet][0]
 
-    exalt_sign, exalt_deg = EXALTATION_TABLE[planet]
 
-    # Calculate the exaltation longitude
-    exalt_longitude = exalt_sign * 30 + exalt_deg
+def debilitation_sign_index(
+    planet: Planet, rahu_exalted_in: str = DEFAULT_RAHU_EXALTED_IN
+) -> Optional[int]:
+    """Return the debilitation (neecha) sign: the 7th from exaltation."""
+    exalt = exaltation_sign_index(planet, rahu_exalted_in)
+    return None if exalt is None else (exalt + 6) % 12
 
-    # Check if planet is within tolerance
-    diff = abs(longitude - exalt_longitude)
-    diff = min(diff, 360 - diff)  # Handle wraparound
 
-    return diff <= tolerance
+def is_in_exaltation(
+    longitude: float, planet: Planet, rahu_exalted_in: str = DEFAULT_RAHU_EXALTED_IN
+) -> bool:
+    """
+    Return True if the planet is in its exaltation sign (whole sign).
+
+    Classical uccha is the whole sign; the deep-exaltation degree
+    (paramoccha) only grades the strength, see :func:`uccha_bala`.
+    """
+    exalt = exaltation_sign_index(planet, rahu_exalted_in)
+    return exalt is not None and int((longitude % 360) // 30) == exalt
 
 
 def is_in_debilitation(
-    longitude: float, planet: Planet, tolerance: float = 2.0
+    longitude: float, planet: Planet, rahu_exalted_in: str = DEFAULT_RAHU_EXALTED_IN
 ) -> bool:
+    """Return True if the planet is in its debilitation sign (whole sign)."""
+    debil = debilitation_sign_index(planet, rahu_exalted_in)
+    return debil is not None and int((longitude % 360) // 30) == debil
+
+
+def uccha_bala(planet: Planet, longitude: float) -> float:
     """
-    Check if a planet is in its debilitation degree (within tolerance).
+    Uccha bala (exaltation strength) in virupas, 0 to 60 (BPHS Ch. 27).
 
-    Args:
-        longitude: Planet's longitude in degrees
-        planet: Planet enum
-        tolerance: Degree tolerance for debilitation (default 2°)
+    It is the arc from the planet's deep-debilitation point, folded to at
+    most 180 degrees, divided by 3: 60 at the paramoccha degree, 0 at the
+    deepest debilitation. Defined for the Sun to Saturn only.
 
-    Returns:
-        True if planet is debilitated
+    Raises:
+        ValueError: For Rahu and Ketu.
     """
-    if planet not in DEBILITATION_TABLE:
-        return False
-
-    debilitation_sign, debilitation_deg = DEBILITATION_TABLE[planet]
-
-    # Calculate the debilitation longitude
-    debilitation_longitude = debilitation_sign * 30 + debilitation_deg
-
-    # Check if planet is within tolerance
-    diff = abs(longitude - debilitation_longitude)
-    diff = min(diff, 360 - diff)  # Handle wraparound
-
-    return diff <= tolerance
+    if planet not in DEBILITATION_TABLE or planet in (Planet.RAHU, Planet.KETU):
+        raise ValueError(f"Uccha bala is not defined for {planet.name}")
+    sign, deg = DEBILITATION_TABLE[planet]
+    arc = abs((longitude % 360.0) - (sign * 30.0 + deg)) % 360.0
+    if arc > 180.0:
+        arc = 360.0 - arc
+    return arc / 3.0
 
 
 def is_in_moolatrikona(longitude: float, planet: Planet) -> bool:
@@ -316,24 +346,22 @@ def is_in_own_sign(longitude: float, planet: Planet) -> bool:
     return any(sign_index == sign_idx for sign_idx, _ in own_signs)
 
 
-def get_dignity_type(longitude: float, planet: Planet) -> str:
+def get_dignity_type(
+    longitude: float, planet: Planet, rahu_exalted_in: str = DEFAULT_RAHU_EXALTED_IN
+) -> str:
     """
-    Get the dignity type for a planet at a given longitude.
+    Return the dignity of a planet at a longitude.
 
-    Args:
-        longitude: Planet's longitude in degrees
-        planet: Planet enum
-
-    Returns:
-        String describing the dignity type
+    Exaltation and debilitation are by whole sign. Where BPHS places a
+    moolatrikona range inside the exaltation sign (the Moon in Taurus,
+    Mercury in Virgo), that range is reported as Moolatrikona.
     """
-    if is_in_exaltation(longitude, planet):
-        return "Exalted"
-    elif is_in_moolatrikona(longitude, planet):
+    if is_in_moolatrikona(longitude, planet):
         return "Moolatrikona"
-    elif is_in_own_sign(longitude, planet):
-        return "Own Sign"
-    elif is_in_debilitation(longitude, planet):
+    if is_in_exaltation(longitude, planet, rahu_exalted_in):
+        return "Exalted"
+    if is_in_debilitation(longitude, planet, rahu_exalted_in):
         return "Debilitated"
-    else:
-        return "Neutral"
+    if is_in_own_sign(longitude, planet):
+        return "Own Sign"
+    return "Neutral"

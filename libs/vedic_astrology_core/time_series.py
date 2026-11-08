@@ -11,7 +11,7 @@ custom date range with a fixed step size. It is designed to be reused by:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date, datetime, time, timedelta
+from datetime import date, datetime, time, timedelta, timezone
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Union
 
 import pandas as pd
@@ -87,8 +87,7 @@ class TimeSeriesConfig:
     Parameters affecting astrology strength calculation.
 
     Notes:
-      - We evaluate dignity at local noon for the provided date. This mirrors the
-        existing temporal data generator and avoids timezone complexity.
+      - Each date is evaluated at ``noon_hour``:00 UTC (not local noon).
     """
 
     latitude: float = 28.6139
@@ -126,13 +125,13 @@ def compute_astrology_strength_series(
     # Determine iteration strategy
     if is_high_res:
         # Convert dates to datetimes if needed
-        s_dt = datetime.combine(_to_date(start_date), time(0, 0))
-        e_dt = datetime.combine(_to_date(end_date), time(23, 59))
+        s_dt = datetime.combine(_to_date(start_date), time(0, 0), tzinfo=timezone.utc)
+        e_dt = datetime.combine(_to_date(end_date), time(23, 59), tzinfo=timezone.utc)
         iterator = iter_datetime_range(s_dt, e_dt, step_hours=step_hours)
     else:
         # Classic daily mode
         iterator = [
-            datetime.combine(d, time(hour=cfg.noon_hour))
+            datetime.combine(d, time(hour=cfg.noon_hour), tzinfo=timezone.utc)
             for d in iter_dates(start_date, end_date, step_days=step_days)
         ]
 
@@ -149,16 +148,10 @@ def compute_astrology_strength_series(
         # Filter for requested planets if needed
         if planets:
             for p in planets:
-                # Map to Title Case if needed by GlobalScorer (Sun, Moon, etc)
-                # Or just handle it case-insensitively
-                display_name = p.name.capitalize()
-                row[f"astrology_{p.name}"] = scores.get(
-                    display_name, scores.get(p.name, 0.0)
-                )
+                row[f"astrology_{p.name}"] = scores.get(p, 0.0)
         else:
-            # Add all
-            for pname, score in scores.items():
-                row[f"astrology_{pname.upper()}"] = score
+            for planet, score in scores.items():
+                row[f"astrology_{planet.name}"] = score
 
         rows.append(row)
 

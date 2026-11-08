@@ -11,11 +11,14 @@ from typing import Any, Dict, Optional
 
 from ..config.constants import Planet
 from .exaltation_matrix import (
+    DEFAULT_RAHU_EXALTED_IN,
+    _validate_tradition,
     get_dignity_type,
     is_in_debilitation,
     is_in_exaltation,
     is_in_moolatrikona,
     is_in_own_sign,
+    uccha_bala,
 )
 from .friendship_matrix import (
     FriendshipType,
@@ -47,9 +50,14 @@ class DignityScorer:
         "debilitation": 5,
     }
 
-    def __init__(self) -> None:
-        """Initialize the dignity scorer."""
-        pass
+    def __init__(self, rahu_exalted_in: str = DEFAULT_RAHU_EXALTED_IN) -> None:
+        """Initialize the dignity scorer.
+
+        Args:
+            rahu_exalted_in: Node-exaltation tradition, "taurus" (default;
+                Ketu in Scorpio) or "gemini" (Ketu in Sagittarius).
+        """
+        self.rahu_exalted_in = _validate_tradition(rahu_exalted_in)
 
     def calculate_base_score(
         self,
@@ -70,13 +78,16 @@ class DignityScorer:
         Returns:
             Base dignity score (0-100)
         """
-        # Check essential dignity hierarchy
-        if is_in_exaltation(longitude, planet):
-            return self.DIGNITY_SCORES["exaltation"]
-        elif is_in_debilitation(longitude, planet):
-            return self.DIGNITY_SCORES["debilitation"]
-        elif is_in_moolatrikona(longitude, planet):
+        # Essential dignity hierarchy. Exaltation/debilitation are whole-sign;
+        # a moolatrikona range inside the exaltation sign (Moon in Taurus,
+        # Mercury in Virgo) counts as moolatrikona, as in get_dignity_type.
+        tradition = self.rahu_exalted_in
+        if is_in_moolatrikona(longitude, planet):
             return self.DIGNITY_SCORES["moolatrikona"]
+        elif is_in_exaltation(longitude, planet, tradition):
+            return self.DIGNITY_SCORES["exaltation"]
+        elif is_in_debilitation(longitude, planet, tradition):
+            return self.DIGNITY_SCORES["debilitation"]
         elif is_in_own_sign(longitude, planet):
             return self.DIGNITY_SCORES["own_sign"]
         else:
@@ -115,54 +126,47 @@ class DignityScorer:
 
         return final_score
 
+    @staticmethod
+    def friendship_with_sign_lord(
+        planet: Planet, sign_lord: Planet, chart: Optional[Any] = None
+    ) -> FriendshipType:
+        """Return the friendship of ``planet`` with ``sign_lord``.
+
+        The single rule used for both the score and its description:
+        Panchadha (five-fold) Maitri when the chart has planet positions,
+        otherwise Naisargika (natural) friendship only.
+        """
+        natural = get_natural_friendship(planet, sign_lord)
+        chart_planets = getattr(chart, "planets", None)
+        if chart is not None and isinstance(chart_planets, dict) and chart_planets:
+            temporary = calculate_tatkalika_maitri(chart, planet, sign_lord)
+            return get_combined_friendship(natural, temporary)
+        return natural
+
+    _FRIENDSHIP_SCORE_KEYS = {
+        FriendshipType.ADHI_MITRA: "great_friend",
+        FriendshipType.MITRA: "friend",
+        FriendshipType.NATURAL_FRIEND: "friend",
+        FriendshipType.SHATRU: "enemy",
+        FriendshipType.NATURAL_ENEMY: "enemy",
+        FriendshipType.ADHI_SHATRU: "great_enemy",
+    }
+
     def _calculate_friendship_score(
         self, planet: Planet, sign_index: int, chart: Optional[Any] = None
     ) -> float:
         """
         Calculate dignity score based on friendship with sign lord.
 
-        Args:
-            planet: Planet in the sign
-            sign_index: Sign index (0-11)
-            chart: BirthChart object (optional)
-
         Returns:
             Dignity score based on friendship (10-65)
         """
-        # Get sign lord
         sign_lord = self._get_sign_lord(sign_index)
-
         if sign_lord is None:
             return self.DIGNITY_SCORES["neutral"]
-
-        # Get natural friendship
-        natural = get_natural_friendship(planet, sign_lord)
-
-        # If chart positions are available, use Panchadha Maitri
-        # (Natural + Temporary); otherwise fall back to natural friendship.
-        chart_planets = getattr(chart, "planets", None)
-        if chart is not None and isinstance(chart_planets, dict) and chart_planets:
-            temporary = calculate_tatkalika_maitri(chart, planet, sign_lord)
-            combined = get_combined_friendship(natural, temporary)
-
-            if combined == FriendshipType.ADHI_MITRA:
-                return self.DIGNITY_SCORES["great_friend"]
-            elif combined == FriendshipType.MITRA:
-                return self.DIGNITY_SCORES["friend"]
-            elif combined == FriendshipType.SHATRU:
-                return self.DIGNITY_SCORES["enemy"]
-            elif combined == FriendshipType.ADHI_SHATRU:
-                return self.DIGNITY_SCORES["great_enemy"]
-            else:
-                return self.DIGNITY_SCORES["neutral"]
-        else:
-            # Fallback to natural friendship only
-            if natural == FriendshipType.NATURAL_FRIEND:
-                return self.DIGNITY_SCORES["friend"]
-            elif natural == FriendshipType.NATURAL_ENEMY:
-                return self.DIGNITY_SCORES["enemy"]
-            else:
-                return self.DIGNITY_SCORES["neutral"]
+        friendship = self.friendship_with_sign_lord(planet, sign_lord, chart)
+        key = self._FRIENDSHIP_SCORE_KEYS.get(friendship, "neutral")
+        return self.DIGNITY_SCORES[key]
 
     def _get_sign_lord(self, sign_index: int) -> Optional[Planet]:
         """
@@ -209,7 +213,7 @@ class DignityScorer:
             - 'friendship': Friendship with sign lord
             - 'modifiers': Explanation of applied modifiers
         """
-        if planet.name not in chart.planets:
+        if planet not in chart.planets:
             return {
                 "score": 0.0,
                 "base_score": 0.0,
@@ -219,7 +223,7 @@ class DignityScorer:
                 "modifiers": "Planet position not available",
             }
 
-        planet_data = chart.planets[planet.name]
+        planet_data = chart.planets[planet]
         longitude = planet_data["longitude"]
         sign_index = planet_data["sign"]
 
@@ -230,20 +234,15 @@ class DignityScorer:
         )
 
         # Get dignity type
-        dignity_type = get_dignity_type(longitude, planet)
+        dignity_type = get_dignity_type(longitude, planet, self.rahu_exalted_in)
 
-        # Get sign lord and friendship
+        # Get sign lord and friendship (same rule as the score)
         sign_lord = self._get_sign_lord(sign_index)
         friendship_desc = "Neutral"
-
         if sign_lord is not None:
-            natural = get_natural_friendship(planet, sign_lord)
-            if chart is not None:
-                temporary = calculate_tatkalika_maitri(chart, planet, sign_lord)
-                combined = get_combined_friendship(natural, temporary)
-                friendship_desc = combined.value
-            else:
-                friendship_desc = natural.value
+            friendship_desc = self.friendship_with_sign_lord(
+                planet, sign_lord, chart
+            ).value
 
         # Get modifier explanation
         modifiers = get_modifier_explanation(
@@ -256,6 +255,11 @@ class DignityScorer:
             "dignity_type": dignity_type,
             "sign_lord": sign_lord.name if sign_lord else None,
             "friendship": friendship_desc,
+            "uccha_bala": (
+                None
+                if planet in (Planet.RAHU, Planet.KETU)
+                else uccha_bala(planet, longitude)
+            ),
             "modifiers": modifiers,
         }
 

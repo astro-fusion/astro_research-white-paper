@@ -107,6 +107,9 @@ def apply_exact_degree_modifiers(
     from .exaltation_matrix import DEBILITATION_TABLE, EXALTATION_TABLE
 
     modified_score = base_score
+    if planet in (Planet.RAHU, Planet.KETU):
+        # Nodes have no paramoccha degree.
+        return max(0.0, min(modified_score, 100.0))
 
     # Check for exact exaltation
     if planet in EXALTATION_TABLE:
@@ -216,8 +219,12 @@ def apply_all_modifiers(
         modified_score, is_retrograde, is_debilitated
     )
 
-    # Combustion modifier
-    is_combust = planet_data.get("combust", False)
+    # Combustion modifier (the Sun and the nodes are never combust)
+    is_combust = planet_data.get("combust", False) and planet not in (
+        Planet.SUN,
+        Planet.RAHU,
+        Planet.KETU,
+    )
     # Calculate angular separation from Sun for graduated penalty
     combust_degree = None
     if "sun_longitude" in planet_data:
@@ -276,7 +283,11 @@ def get_modifier_explanation(
             )
 
     # Check combustion
-    if planet_data.get("combust", False):
+    if planet_data.get("combust", False) and planet not in (
+        Planet.SUN,
+        Planet.RAHU,
+        Planet.KETU,
+    ):
         explanations.append(
             "Combustion penalty: Planet loses strength due to proximity to Sun"
         )
@@ -285,7 +296,8 @@ def get_modifier_explanation(
     planet_longitude = planet_data.get("longitude", 0)
     from .exaltation_matrix import DEBILITATION_TABLE, EXALTATION_TABLE
 
-    if planet in EXALTATION_TABLE:
+    is_node = planet in (Planet.RAHU, Planet.KETU)
+    if planet in EXALTATION_TABLE and not is_node:
         exalt_sign, exalt_deg = EXALTATION_TABLE[planet]
         exalt_longitude = exalt_sign * 30 + exalt_deg
         if abs(planet_longitude - exalt_longitude) <= 0.5:
@@ -293,7 +305,7 @@ def get_modifier_explanation(
                 "Exact exaltation: Additional strength from precise placement"
             )
 
-    if planet in DEBILITATION_TABLE:
+    if planet in DEBILITATION_TABLE and not is_node:
         debilitation_sign, debilitation_deg = DEBILITATION_TABLE[planet]
         debilitation_longitude = debilitation_sign * 30 + debilitation_deg
         if abs(planet_longitude - debilitation_longitude) <= 0.5:

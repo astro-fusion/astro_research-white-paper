@@ -81,12 +81,11 @@ class TestExaltationMatrix(unittest.TestCase):
         sun_debilitated_long = 6 * 30 + 10  # Libra 10°
         self.assertFalse(is_in_exaltation(sun_debilitated_long, Planet.SUN))
 
-        # Test tolerance
-        sun_near_exalted_long = 0 * 30 + 8  # Aries 8° (within 2° tolerance)
-        self.assertTrue(is_in_exaltation(sun_near_exalted_long, Planet.SUN))
-
-        sun_too_far_long = 0 * 30 + 5  # Aries 5° (more than 2° from exaltation)
-        self.assertFalse(is_in_exaltation(sun_too_far_long, Planet.SUN))
+        # Uccha is the whole sign: Aries 0.5 and 29.5 are both exalted.
+        self.assertTrue(is_in_exaltation(0.5, Planet.SUN))
+        self.assertTrue(is_in_exaltation(25.0, Planet.SUN))
+        self.assertTrue(is_in_exaltation(29.5, Planet.SUN))
+        self.assertFalse(is_in_exaltation(30.5, Planet.SUN))  # Taurus
 
     def test_moolatrikona_detection(self):
         """Test Moolatrikona detection."""
@@ -159,33 +158,38 @@ class TestFriendshipMatrix(unittest.TestCase):
             FriendshipType.NATURAL_ENEMY,
         )
 
-    def test_friendship_symmetry(self):
-        """Test that friendship relationships are symmetric."""
-        planets = [
-            Planet.SUN,
-            Planet.MOON,
-            Planet.MARS,
-            Planet.MERCURY,
-            Planet.JUPITER,
-            Planet.VENUS,
-            Planet.SATURN,
-        ]
-
-        for p1 in planets:
-            for p2 in planets:
-                friendship_1_to_2 = get_natural_friendship(p1, p2)
-                friendship_2_to_1 = get_natural_friendship(p2, p1)
-
-                with self.subTest(p1=p1, p2=p2):
-                    # Friendship should be symmetric (A friend of B means B friend of A)
-                    if friendship_1_to_2 == FriendshipType.NATURAL_FRIEND:
+    def test_natural_friendship_matches_bphs(self):
+        """Naisargika maitri equals BPHS Ch. 3 (it is not symmetric)."""
+        bphs = {
+            Planet.SUN: ("MOON MARS JUPITER", "MERCURY", "VENUS SATURN"),
+            Planet.MOON: ("SUN MERCURY", "MARS JUPITER VENUS SATURN", ""),
+            Planet.MARS: ("SUN MOON JUPITER", "VENUS SATURN", "MERCURY"),
+            Planet.MERCURY: ("SUN VENUS", "MARS JUPITER SATURN", "MOON"),
+            Planet.JUPITER: ("SUN MOON MARS", "SATURN", "MERCURY VENUS"),
+            Planet.VENUS: ("MERCURY SATURN", "MARS JUPITER", "SUN MOON"),
+            Planet.SATURN: ("MERCURY VENUS", "JUPITER", "SUN MOON MARS"),
+        }
+        kinds = (
+            FriendshipType.NATURAL_FRIEND,
+            FriendshipType.NATURAL_NEUTRAL,
+            FriendshipType.NATURAL_ENEMY,
+        )
+        for planet, groups in bphs.items():
+            for kind, names in zip(kinds, groups):
+                for name in names.split():
+                    with self.subTest(planet=planet, other=name):
                         self.assertEqual(
-                            friendship_2_to_1, FriendshipType.NATURAL_FRIEND
+                            get_natural_friendship(planet, Planet[name]), kind
                         )
-                    elif friendship_1_to_2 == FriendshipType.NATURAL_ENEMY:
-                        self.assertEqual(
-                            friendship_2_to_1, FriendshipType.NATURAL_ENEMY
-                        )
+        # Asymmetric pair: the Moon is neutral to Mars, Mars a friend to the Moon.
+        self.assertEqual(
+            get_natural_friendship(Planet.MOON, Planet.MERCURY),
+            FriendshipType.NATURAL_FRIEND,
+        )
+        self.assertEqual(
+            get_natural_friendship(Planet.MERCURY, Planet.MOON),
+            FriendshipType.NATURAL_ENEMY,
+        )
 
 
 class TestDignityScorer(unittest.TestCase):

@@ -1,108 +1,95 @@
 """
-Global Shadbala Scorer.
+Global planetary strength index (research heuristic).
 
-Calculates a 'Global Planetary Power' index for research purposes.
-Unlike full Shadbala which requires a specific location (Ascendant/Dig Bala),
-this scorer focuses on components that are consistent globally or geocentrically:
-1. Chesta Bala (Motion Strength): Retrograde/Slow = Strong.
-2. Sthana Bala (Position Strength): Exaltation/Own Sign.
-3. Yuddha Bala (Planetary War): Proximity < 1 degree.
+This is NOT Shadbala. Shadbala (BPHS Ch. 27) is the sum of six strengths
+(sthana, dig, kala, chesta, naisargika and drik bala) in virupas, several of
+which need the ascendant, the birth place and the time of day. The index here
+is an ad-hoc 0-100 score for location-independent time series:
+
+1. Base: the dignity score of :class:`DignityScorer` (sign-based).
+2. Motion: x1.3 when retrograde, x1.1 when nearly stationary (Mars to
+   Saturn only; the Sun, Moon and nodes have no chesta in this sense).
+3. Graha yuddha (planetary war): x0.8 for both planets when two of Mars,
+   Mercury, Jupiter, Venus and Saturn are within 1 degree. Classically war
+   applies only to these five; the Sun, Moon and nodes never fight.
+4. Rahu and Ketu get a fixed 50.
+
+Do not call this index "Shadbala" in papers.
 """
 
 from typing import Dict, Optional
 
 from ..astrology.ephemeris import EphemerisEngine
-from ..config.constants import Planet
+from ..config.constants import Planet, PlanetDict
 from .scorer import DignityScorer
 
+NODES = (Planet.RAHU, Planet.KETU)
+NO_CHESTA = (Planet.SUN, Planet.MOON, Planet.RAHU, Planet.KETU)
+WAR_PLANETS = (Planet.MARS, Planet.MERCURY, Planet.JUPITER, Planet.VENUS, Planet.SATURN)
+NODE_SCORE = 50.0
+RETROGRADE_FACTOR = 1.3
+STATIONARY_FACTOR = 1.1
+STATIONARY_SPEED = 0.1  # degrees/day
+WAR_ORB = 1.0  # degrees
+WAR_FACTOR = 0.8
 
-class GlobalShadbalaScorer:
-    """Calculates global planetary strength (0-100) for research matrix."""
 
-    def __init__(self, ephemeris: Optional[EphemerisEngine] = None):
-        """Docstring."""
+class GlobalStrengthScorer:
+    """Location-independent planetary strength index (0-100); not Shadbala."""
+
+    def __init__(
+        self,
+        ephemeris: Optional[EphemerisEngine] = None,
+        rahu_exalted_in: str = "taurus",
+    ):
+        """Create the scorer with an ephemeris engine and node tradition."""
         self.ephemeris = ephemeris or EphemerisEngine()
-        self.dignity_scorer = DignityScorer()
+        self.dignity_scorer = DignityScorer(rahu_exalted_in=rahu_exalted_in)
 
-    def calculate_global_power(self, julian_day: float) -> Dict[str, float]:
+    def calculate_global_power(self, julian_day: float) -> PlanetDict:
         """
-        Calculate daily power score (0-100) for all planets.
+        Calculate the strength index (0-100) of every planet.
 
         Args:
-            julian_day: The time point to score.
+            julian_day: Julian day (UT) to score.
 
         Returns:
-            Dict mapping planet name to global score.
+            :class:`PlanetDict` mapping Planet to score.
         """
-        positions = self.ephemeris.get_all_planet_positions(julian_day)
-        scores = {}
+        positions = PlanetDict(self.ephemeris.get_all_planet_positions(julian_day))
+        scores: Dict[Planet, float] = PlanetDict()
 
-        # 1. Base Scores (Sthana Bala - Positional)
-        # We reuse the existing DignityScorer for Exaltation/Own Sign logic.
-        for pname, pdata in positions.items():
-            if pname in ["Rahu", "Ketu"]:
-                # Nodes use simpler logic for now (just sign position)
-                scores[pname] = 50.0
+        for planet, pdata in positions.items():
+            if planet in NODES:
+                scores[planet] = NODE_SCORE
                 continue
-
-            planet_const = getattr(Planet, pname.upper(), None)
-            if not planet_const:
-                continue
-
-            # DignityScorer needs sign index and longitude
-            base = self.dignity_scorer.calculate_base_score(
-                planet=planet_const,
+            scores[planet] = self.dignity_scorer.calculate_base_score(
+                planet=planet,
                 sign_index=pdata["sign"],
                 longitude=pdata["longitude"],
             )
-            scores[pname] = base
 
-        # 2. Chesta Bala (Motion Strength)
-        # Ancient logic: Retrograde (Vakra) is very strong.
-        # Fast direct (Sighra) is weak.
-        # We add a bonus/penalty to the base score.
-        for pname, pdata in positions.items():
-            if pname in ["Sun", "Moon", "Rahu", "Ketu"]:
+        for planet, pdata in positions.items():
+            if planet in NO_CHESTA:
                 continue
+            speed = pdata.get("longitude_speed", 0.0)
+            if pdata.get("retrograde", speed < 0):
+                scores[planet] = min(100.0, scores[planet] * RETROGRADE_FACTOR)
+            elif abs(speed) < STATIONARY_SPEED:
+                scores[planet] = min(100.0, scores[planet] * STATIONARY_FACTOR)
 
-            speed = pdata.get("longitude_speed", 0)
-            is_retro = pdata.get("retrograde", False)
+        fighters = [p for p in WAR_PLANETS if p in positions]
+        for i, p1 in enumerate(fighters):
+            for p2 in fighters[i + 1 :]:
+                diff = abs(positions[p1]["longitude"] - positions[p2]["longitude"])
+                diff = min(diff % 360.0, 360.0 - diff % 360.0)
+                if diff < WAR_ORB:
+                    scores[p1] *= WAR_FACTOR
+                    scores[p2] *= WAR_FACTOR
 
-            if is_retro:
-                # Significant boost for retrograde
-                scores[pname] = min(100.0, scores[pname] * 1.3)
-            elif abs(speed) < 0.1:
-                # Stationary/Very slow
-                scores[pname] = min(100.0, scores[pname] * 1.1)
+        return scores  # type: ignore[return-value]
 
-        # 3. Yuddha Bala (Planetary War)
-        # If two planets are within 1 degree, they are at war.
-        # In research, we penalize BOTH for stress/volatility,
-        # or check declination for winner.
-        # Simplified for Global Index: Penalize both slightly to represent "Conflict".
-        keys = list(scores.keys())
-        for i in range(len(keys)):
-            p1 = keys[i]
-            if p1 not in positions:
-                continue
 
-            for j in range(i + 1, len(keys)):
-                p2 = keys[j]
-                if p2 not in positions:
-                    continue
-
-                # Check longitude diff
-                l1 = positions[p1]["longitude"]
-                l2 = positions[p2]["longitude"]
-
-                diff = abs(l1 - l2)
-                if diff > 180:
-                    diff = 360 - diff
-
-                if diff < 1.0:
-                    # War!
-                    # Penalize score
-                    scores[p1] *= 0.8
-                    scores[p2] *= 0.8
-
-        return scores
+# Deprecated alias kept so existing research scripts keep importing; the
+# index is not Shadbala. Use GlobalStrengthScorer.
+GlobalShadbalaScorer = GlobalStrengthScorer
