@@ -1,0 +1,175 @@
+/*-- scss:defaults --*/
+// Shared rules for both variants. Variables prefixed $af- come from
+// astrofusion-dark.scss or astrofusion-light.scss, listed before this file.
+// Spacing, radius and font stacks are the af-design token values.
+$font-family-sans-serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+$font-family-monospace: "Fira Code", "Consolas", monospace;
+$headings-font-weight: 600;
+$af-space-1: 0.25rem;
+$af-space-2: 0.5rem;
+$af-space-3: 0.75rem;
+$af-space-4: 1rem;
+$af-space-6: 1.5rem;
+$af-space-8: 2rem;
+$af-radius-sm: 0.25rem;
+$af-radius-md: 0.5rem;
+$af-radius-lg: 0.75rem;
+$af-radius-xl: 1rem;
+$af-font-size-xs: 0.75rem;
+$af-font-size-sm: 0.875rem;
+
+/*-- scss:rules --*/
+:root {
+  --af-surface: #{$af-surface};
+  --af-surface-glass: #{$af-surface-glass};
+  --af-plane: #{$af-plane};
+  --af-ink: #{$af-ink};
+  --af-ink-2: #{$af-ink-2};
+  --af-muted: #{$af-muted};
+  --af-grid: #{$af-grid};
+  --af-axis: #{$af-axis};
+  --af-border: #{$af-border};
+  --af-div-neg: #{$af-div-neg};
+  --af-div-mid: #{$af-div-mid};
+  --af-div-pos: #{$af-div-pos};
+  --af-mode: #{$af-mode};
+  @for $i from 1 through 8 {
+    --af-series-#{$i}: #{nth($af-series, $i)};
+  }
+  @for $i from 1 through 9 {
+    --af-seq-#{$i}: #{nth($af-seq, $i)};
+  }
+}
+
+// Glass surfaces: translucent panel, hairline ring, soft blur. No gradients.
+.af-glass,
+.af-panel {
+  background: var(--af-surface-glass);
+  border: 1px solid var(--af-border);
+  border-radius: $af-radius-lg;
+  padding: $af-space-4;
+  margin: $af-space-4 0;
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+}
+
+.navbar {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--af-border);
+}
+
+// Filters: one row above everything they scope.
+.af-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $af-space-3 $af-space-6;
+  align-items: flex-end;
+  margin: $af-space-4 0 $af-space-2;
+  form { margin: 0; }
+  label { font-size: $af-font-size-sm; color: var(--af-ink-2); }
+}
+
+// Chart card: solid chart surface (the palette is validated against it).
+.af-chart {
+  background: var(--af-surface);
+  border: 1px solid var(--af-border);
+  border-radius: $af-radius-lg;
+  padding: $af-space-3 $af-space-4;
+  margin: $af-space-2 0 $af-space-4;
+  overflow-x: auto;
+  svg { max-width: 100%; height: auto; overflow: visible; }
+  figcaption, .af-caption { color: var(--af-ink-2); font-size: $af-font-size-sm; }
+}
+
+.af-howto {
+  border-left: 2px solid var(--af-series-1);
+  padding: $af-space-2 $af-space-4;
+  color: var(--af-ink-2);
+  margin: $af-space-4 0;
+}
+
+.af-provenance {
+  font-family: $font-family-monospace;
+  font-size: $af-font-size-xs;
+  color: var(--af-muted);
+  border-top: 1px solid var(--af-border);
+  margin-top: $af-space-6;
+  padding-top: $af-space-3;
+  line-height: 1.6;
+  word-break: break-word;
+  a { color: var(--af-ink-2); }
+}
+
+// Status strip on the home page.
+.af-status {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: $af-space-3;
+  margin: $af-space-4 0;
+  .af-status-item {
+    background: var(--af-surface-glass);
+    border: 1px solid var(--af-border);
+    border-radius: $af-radius-lg;
+    padding: $af-space-3 $af-space-4;
+    h4 { font-size: 1rem; margin: 0 0 $af-space-1; }
+    .af-status-state { font-size: $af-font-size-sm; color: var(--af-ink-2); }
+    p { font-size: $af-font-size-sm; margin: $af-space-2 0 0; }
+  }
+}
+
+// Detail drawer (principles browser, atlas).
+.af-drawer {
+  background: var(--af-surface-glass);
+  border: 1px solid var(--af-border);
+  border-radius: $af-radius-lg;
+  padding: $af-space-4 $af-space-6;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  ul.af-tree { padding-left: $af-space-6; }
+  ul.af-tree li { margin: $af-space-1 0; }
+  .af-gloss { color: var(--af-ink-2); font-size: $af-font-size-sm; }
+}
+
+.af-notice {
+  border: 1px solid var(--af-border);
+  border-radius: $af-radius-md;
+  padding: $af-space-3 $af-space-4;
+  color: var(--af-ink-2);
+  background: var(--af-surface);
+}
+
+.af-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $af-space-2 $af-space-4;
+  font-size: $af-font-size-sm;
+  color: var(--af-ink-2);
+  margin: $af-space-2 0;
+  .af-swatch {
+    display: inline-block;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: $af-radius-sm;
+    margin-right: $af-space-1;
+    vertical-align: -1px;
+  }
+}
+
+.af-table {
+  font-size: $af-font-size-sm;
+  font-variant-numeric: tabular-nums;
+}
+
+// Observable Inputs pick up the theme.
+form.oi-3a86ea, .observablehq form {
+  --label-width: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}

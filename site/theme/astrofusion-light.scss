@@ -1,0 +1,42 @@
+/*-- scss:defaults --*/
+// Astro Research, light variant. Token values are copied from the af-design
+// token sheet, https://astro-fusion.github.io/af-design/styles/tokens.css
+// (fetched 2026-11-08). They are copied, not hot-linked.
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap");
+
+$af-mode: light;
+$af-cosmic-900: #0f0c29;
+$af-cosmic-800: #1a163a;
+$af-cosmic-700: #24204b;
+$af-cosmic-600: #2f2a5c;
+$af-starlight-100: #ffffff;
+$af-starlight-200: #f8f9fa;
+$af-starlight-300: #e9ecef;
+
+// Chart roles (dataviz reference palette, light steps; validated against
+// $af-starlight-200 with validate_palette.js --mode light: all checks pass,
+// three slots below 3:1 so every chart ships direct labels or a table view).
+$af-surface: $af-starlight-100;
+$af-surface-glass: rgba(255, 255, 255, 0.78);
+$af-plane: $af-starlight-200;
+$af-ink: #0b0b0b;
+$af-ink-2: #52514e;
+$af-muted: #6c6a74;
+$af-grid: #e6e6ee;
+$af-axis: #c3c2b7;
+$af-border: rgba(15, 12, 41, 0.1);
+$af-series: (#2a78d6, #eb6834, #1baf7a, #eda100, #e87ba4, #008300, #6250d6, #e34948);
+$af-div-neg: #2a78d6;
+$af-div-mid: #f0efec;
+$af-div-pos: #e34948;
+$af-seq: (#cde2fb, #b7d3f6, #9ec5f4, #86b6ef, #6da7ec, #5598e7, #3987e5, #2a78d6, #1c5cab);
+
+$body-bg: $af-starlight-200;
+$body-color: $af-cosmic-900;
+$link-color: #1c5cab;
+$primary: #2a78d6;
+$secondary: $af-cosmic-600;
+$navbar-bg: $af-cosmic-900;
+$navbar-fg: $af-starlight-300;
+$navbar-hl: $af-starlight-100;
+$code-bg: $af-starlight-300;

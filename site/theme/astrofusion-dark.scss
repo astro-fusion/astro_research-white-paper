@@ -1,0 +1,53 @@
+/*-- scss:defaults --*/
+// Astro Research, dark variant (the default). Token values are copied from the
+// af-design token sheet, https://astro-fusion.github.io/af-design/styles/tokens.css
+// (fetched 2026-11-08; "Design Tokens as CSS Custom Properties, auto-generated
+// from tokens/src/*.json"). They are copied, not hot-linked.
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap");
+
+$af-mode: dark;
+$af-cosmic-900: #0f0c29;
+$af-cosmic-800: #1a163a;
+$af-cosmic-700: #24204b;
+$af-cosmic-600: #2f2a5c;
+$af-starlight-100: #ffffff;
+$af-starlight-200: #f8f9fa;
+$af-starlight-300: #e9ecef;
+
+// Chart roles (dataviz reference palette, dark steps; validated against
+// $af-cosmic-800 with validate_palette.js --mode dark: all checks pass).
+$af-surface: $af-cosmic-800;
+$af-surface-glass: rgba(26, 22, 58, 0.72);
+$af-plane: $af-cosmic-900;
+$af-ink: #f0efec;
+$af-ink-2: #c3c2b7;
+$af-muted: #9a98a8;
+$af-grid: #2c2950;
+$af-axis: #433e72;
+$af-border: rgba(255, 255, 255, 0.1);
+$af-series: (#3987e5, #d95926, #199e70, #c98500, #d55181, #008300, #9085e9, #e66767);
+$af-div-neg: #3987e5;
+$af-div-mid: #383835;
+$af-div-pos: #e66767;
+$af-seq: (#104281, #184f95, #1c5cab, #256abf, #2a78d6, #3987e5, #5598e7, #6da7ec, #86b6ef);
+
+$body-bg: $af-cosmic-900;
+$body-color: $af-starlight-300;
+$link-color: #86b6ef;
+$primary: #3987e5;
+$secondary: $af-cosmic-600;
+$navbar-bg: $af-cosmic-800;
+$navbar-fg: $af-starlight-300;
+$navbar-hl: $af-starlight-100;
+$footer-bg: $af-cosmic-900;
+$code-bg: $af-cosmic-800;
+$code-color: #e9ecef;
+$border-color: rgba(255, 255, 255, 0.1);
+$table-border-color: rgba(255, 255, 255, 0.08);
+$input-bg: $af-cosmic-800;
+$input-color: $af-starlight-300;
+$input-border-color: $af-cosmic-600;
+$dropdown-bg: $af-cosmic-800;
+$dropdown-link-color: $af-starlight-300;
+$dropdown-link-hover-bg: $af-cosmic-700;
+$dropdown-link-hover-color: $af-starlight-100;
