@@ -117,7 +117,33 @@ jobs:
     # Build & Deploy workflow has; it is deselected here.
     - name: Run tests with coverage
       run: |
-        python -m pytest tests/ --cov=vedic_astrology_core --cov-report=xml --cov-report=term-missing -k "not quarto_render_smoke"
+        python -m pytest tests/ --cov=vedic_astrology_core --cov-report=xml --cov-report=term-missing -k "not quarto_render_smoke" --junitxml=pytest-report.xml
+
+    # Job logs need a login; annotations are public. Up to ten failures and
+    # collection errors are surfaced as annotations on the run.
+    - name: Report test failures as annotations
+      if: failure()
+      run: |
+        python - <<'PY'
+        import pathlib
+        import xml.etree.ElementTree as ET
+
+        report = pathlib.Path("pytest-report.xml")
+        if not report.exists():
+            print("::error title=pytest::no pytest-report.xml was written")
+            raise SystemExit
+        shown = 0
+        for case in ET.parse(report).iter("testcase"):
+            for kind in ("failure", "error"):
+                node = case.find(kind)
+                if node is None or shown >= 10:
+                    continue
+                text = (node.get("message") or node.text or "").strip()
+                text = " ".join(text.split())[:400]
+                title = f"{case.get('classname')}.{case.get('name')}"
+                print(f"::error title={title}::{kind}: {text}")
+                shown += 1
+        PY
 
     # Offline against tests/fixtures/horizons/ (HORIZONS_LIVE=1 refetches).
     - name: Ephemeris cross-check against JPL Horizons

@@ -83,10 +83,10 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      # HTML only: the site needs no TeX. The PDFs are built by
+      # scientific-reporting.yml and attached to releases.
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
-        with:
-          tinytex: true
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -102,9 +102,9 @@ jobs:
         run: |
           echo "📖 Building documentation site..."
 
-          # Render Quarto Project
+          # Render the Quarto website (HTML; PDFs come from scientific-reporting.yml)
           echo "🏗️ Rendering Quarto project..."
-          quarto render
+          quarto render --to html
 
           # Create site structure
 
