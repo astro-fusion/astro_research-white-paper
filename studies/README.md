@@ -5,7 +5,8 @@ with recorded events and reports what it finds, positive, null or mixed.
 
 | Study | Question | Status |
 |---|---|---|
-| [gold_market](gold_market/README.md) | Do classical planetary configurations coincide with changes in XAU/USD returns? | Results withdrawn 2026-11-08, re-analysis pending |
+| [gold_market](gold_market/README.md) | Do pre-registered sidereal conditions change next-day gold returns, volatility or extreme moves? | Rebuilt 2026-11-08 on `markets`; null (explore hit not replicated) |
+| [silver_market](silver_market/README.md) | The same question for silver, same pipeline | New 2026-11-08; null |
 | [earthquake](earthquake/README.md) | Does the rate of M5+ earthquakes change while specific configurations (Mars-Ketu, malefic clusters) hold? | Results withdrawn 2026-11-08, re-analysis pending |
 | [numerology_vs_astrology](numerology_vs_astrology/README.md) | Do date numerology and the Moon's nakshatra lord name the same planet more often than chance? | Re-analysis pending (sidereal correction) |
 | [remedy_conflict_matrix](remedy_conflict_matrix/README.md) | How should contradictory remedial prescriptions be detected and resolved? | Design notes |

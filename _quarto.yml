@@ -36,10 +36,10 @@ website:
         href: site/data.qmd
       - text: "Studies"
         menu:
-          - text: "Gold market: principles and alignment"
-            href: studies/gold_market/paper/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.qmd
-          - text: "Gold market: econometric manuscript"
+          - text: "Gold market"
             href: studies/gold_market/paper/manuscript.qmd
+          - text: "Silver market"
+            href: studies/silver_market/paper/manuscript.qmd
           - text: "Earthquake: India-Nepal combinations"
             href: studies/earthquake/paper/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.qmd
           - text: "Earthquake: GLM audit"

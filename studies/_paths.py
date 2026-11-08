@@ -25,6 +25,7 @@ SNAPSHOT_ROOT: Path = DATA_ROOT / "snapshots"
 
 STUDIES = (
     "gold_market",
+    "silver_market",
     "earthquake",
     "numerology_vs_astrology",
     "remedy_conflict_matrix",

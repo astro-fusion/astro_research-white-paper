@@ -35,12 +35,11 @@ TRACKS = {
     },
     "track_3_gold": {
         "dir": study_dir("gold_market"),
-        "scripts": [
-            "fetch_gold_data.py",
-            "generate_gold_astro_features.py",
-            "generate_gold_astro_catalog.py",
-            "compute_gold_astro_metrics.py",
-        ],
+        "scripts": ["pipeline.py"],  # pre-registered: hypothesis.yaml, seed 42
+    },
+    "silver_market": {
+        "dir": study_dir("silver_market"),
+        "scripts": ["pipeline.py"],
     },
 }
 

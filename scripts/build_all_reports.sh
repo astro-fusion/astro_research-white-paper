@@ -17,7 +17,8 @@ render_one() {
   echo "==> Rendering reports with profile: $profile"
   QUARTO_PYTHON="$PY" quarto render "$ROOT/studies/numerology_vs_astrology/paper/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.qmd" --to pdf --profile "$profile"
   QUARTO_PYTHON="$PY" quarto render "$ROOT/studies/earthquake/paper/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.qmd" --to pdf --profile "$profile"
-  QUARTO_PYTHON="$PY" quarto render "$ROOT/studies/gold_market/paper/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.qmd" --to pdf --profile "$profile"
+  QUARTO_PYTHON="$PY" quarto render "$ROOT/studies/gold_market/paper/manuscript.qmd" --to pdf --profile "$profile"
+  QUARTO_PYTHON="$PY" quarto render "$ROOT/studies/silver_market/paper/manuscript.qmd" --to pdf --profile "$profile"
 
   if [[ "$profile" == "generic_journal" ]]; then
     echo "==> Syncing PDFs to $ROOT/pdfs"
@@ -26,8 +27,10 @@ render_one() {
       "$ROOT/pdfs/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.pdf"
     cp -f "$ROOT/_site/studies/earthquake/paper/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf" \
       "$ROOT/pdfs/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf"
-    cp -f "$ROOT/_site/studies/gold_market/paper/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.pdf" \
-      "$ROOT/pdfs/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.pdf"
+    cp -f "$ROOT/_site/studies/gold_market/paper/manuscript.pdf" \
+      "$ROOT/pdfs/GOLD_MARKET_MANUSCRIPT.pdf"
+    cp -f "$ROOT/_site/studies/silver_market/paper/manuscript.pdf" \
+      "$ROOT/pdfs/SILVER_MARKET_MANUSCRIPT.pdf"
   fi
 }
 
@@ -65,14 +68,9 @@ run_if_missing "$ROOT/studies/earthquake/data/combination_catalog.csv" \
 "$PY" "$ROOT/studies/earthquake/scripts/compute_combination_metrics.py"
 
 
-echo "==> Preparing Gold datasets"
-run_if_missing "$ROOT/studies/gold_market/data/gold_prices.csv" \
-  "$ROOT/studies/gold_market/scripts/fetch_gold_data.py"
-run_if_missing "$ROOT/studies/gold_market/data/gold_astro_catalog.csv" \
-  "$ROOT/studies/gold_market/scripts/generate_gold_astro_catalog.py"
-run_if_missing "$ROOT/studies/gold_market/data/gold_astro_features.csv" \
-  "$ROOT/studies/gold_market/scripts/generate_gold_astro_features.py"
-"$PY" "$ROOT/studies/gold_market/scripts/compute_gold_astro_metrics.py"
+echo "==> Running the gold and silver market pipelines"
+"$PY" "$ROOT/studies/gold_market/scripts/pipeline.py" --seed 42
+"$PY" "$ROOT/studies/silver_market/scripts/pipeline.py" --seed 42
 
 echo "==> Building Vedic coverage matrix"
 "$PY" "$ROOT/scripts/generate_vedic_principles_coverage.py"

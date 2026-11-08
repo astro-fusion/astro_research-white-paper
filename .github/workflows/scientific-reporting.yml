@@ -84,11 +84,12 @@ jobs:
         quarto render studies/earthquake/paper/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.qmd \
           --to pdf -o EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf || echo "Track 2 render skipped"
 
-    - name: Render Track 3 - Gold Market Analysis
+    - name: Render Gold and Silver Market Manuscripts
       run: |
-        echo "Rendering Track 3..."
-        quarto render studies/gold_market/paper/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.qmd \
-          --to pdf -o GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.pdf || echo "Track 3 render skipped"
+        quarto render studies/gold_market/paper/manuscript.qmd \
+          --to pdf -o GOLD_MARKET_MANUSCRIPT.pdf || echo "Gold render skipped"
+        quarto render studies/silver_market/paper/manuscript.qmd \
+          --to pdf -o SILVER_MARKET_MANUSCRIPT.pdf || echo "Silver render skipped"
 
     - name: Render Scientific Manuscript (Nature Style)
       run: |
@@ -107,7 +108,7 @@ jobs:
         cp VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.pdf _site/ 2>/dev/null || true
         cp NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.pdf _site/ 2>/dev/null || true
         cp EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf _site/ 2>/dev/null || true
-        cp GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.pdf _site/ 2>/dev/null || true
+        cp GOLD_MARKET_MANUSCRIPT.pdf SILVER_MARKET_MANUSCRIPT.pdf _site/ 2>/dev/null || true
         ls -la _site/
 
     - name: Upload Research Artifacts
@@ -122,5 +123,6 @@ jobs:
           VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.pdf
           NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.pdf
           EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf
-          GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.pdf
+          GOLD_MARKET_MANUSCRIPT.pdf
+          SILVER_MARKET_MANUSCRIPT.pdf
           reports/artifacts/

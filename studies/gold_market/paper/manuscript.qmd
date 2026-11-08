@@ -1,79 +1,240 @@
 ---
-title: "Rigorous Statistical Falsification of Exogenous Planetary Predictors in Global Gold Markets"
+title: "Vedic Planetary Indicators and Gold: a Pre-registered Test"
+subtitle: "Returns, volatility and extreme moves, 2000 to 2026, explore and confirm periods"
 author:
-  - name: Computational Astrology Research Group
-    affiliation: Independent Research Initiative
-    equal-contributor: true
+  - name: Astro Research contributors
+    affiliation: astro-fusion/astro_research-white-paper
 date: last-modified
 date-format: long
+bibliography: references.bib
 format:
+  html:
+    toc: true
+    number-sections: true
   pdf:
     documentclass: article
     papersize: a4
-    geometry:
-      - top=25mm
-      - left=25mm
-      - right=25mm
-      - bottom=25mm
+    geometry: [top=25mm, left=25mm, right=25mm, bottom=25mm]
     fontsize: 11pt
     number-sections: true
-    toc: false
     fig-pos: 'H'
-    csl: ../../../styles/nature.csl
 execute:
-  cache: false
-bibliography: references.bib
+  echo: false
+  warning: false
 abstract: |
-  **Abstract.** The Efficient Market Hypothesis (EMH) posits that asset prices reflect all available information, rendering them unpredictable through historical data. Conversely, "Financial Astrology" claims that deterministic planetary cycles influence market psychology and price action. This study applies rigorous econometric signal processing—including Augmented Dickey-Fuller stationarity tests, Lomb-Scargle spectral analysis, and Vector Autoregression (VAR) with Bonferroni-corrected Granger Causality tests—to falsify the hypothesis that planetary positions provide unique information gain for forecasting XAU/USD (Gold) spot prices. Planetary positions are computed with the Swiss Ephemeris library, using its built-in Moshier analytic ephemeris unless SE data files are installed. The statistical results previously reported in this manuscript were computed from a synthetic placeholder series and are withdrawn pending re-analysis on verified data (see CORRECTIONS.md, 2026-11-08).
-keywords: [Financial Econometrics, Signal Processing, Pseudoscience Demarcation, Granger Causality, Spectral Analysis]
+  We test whether fourteen sidereal (Lahiri) planetary conditions, fixed in a
+  pre-registration before the analysis was run, are followed by a different
+  next-day gold return, absolute return or rate of extreme moves. Each
+  condition is compared with its own circular shifts, which keep the long
+  runs of planetary states and the clustering of volatility, and the 42
+  tests form one Benjamini-Yekutieli family. Findings from 2000 to 2015 are
+  checked in a frozen 2016 to 2026 period. Retrograde stations are studied
+  separately, as are exogenous Granger tests on planetary longitudes. The
+  outcome, stated in the Summary and generated from the pipeline's
+  `results.json`, is reported whether positive, null or mixed.
+keywords: [gold, financial astrology, pre-registration, circular-shift null, false discovery rate]
 ---
 
-> **Corrections notice (2026-11-08):** the results in this manuscript are withdrawn pending re-analysis. They were computed from a synthetic placeholder series, not market data. See [CORRECTIONS.md](../../../CORRECTIONS.md).
+```{python}
+import sys
+from pathlib import Path
 
-# Introduction
+REPO = Path.cwd().resolve().parents[2]
+sys.path.insert(0, str(REPO / "libs"))
+from vedic_astrology_core.markets import report  # noqa: E402
 
-The transformation of raw environmental data into actionable economic intelligence is a cornerstone of modern quantitative finance. While macroeconomic indicators (inflation, interest rates) are well-studied, the statistical validity of alternative cyclic predictors, such as astronomical phenomena, remains a subject of contentious debate. This tension—between the *process of discovery* in data science and the *product of rigor* in scientific reporting—necessitates a robust methodological framework for evaluation.
+STUDY = "gold_market"
+ART = Path("../artifacts")
+res = report.load(ART / "results.json")
+```
 
-This study applies high-dimensional spectral analysis and Granger causality tests to falsify the hypothesis that planetary orbital mechanics influence XAU/USD spot prices. By treating "Financial Astrology" not as a mystic art but as a testable signal processing claim, we subject it to "Severe Testing" criteria: establishing a null hypothesis of zero effect and only rejecting it in the face of overwhelming statistical evidence.
+```{python}
+#| output: asis
+print(report.provisional_banner(res))
+```
 
-# Methodology
+# Summary {.unnumbered}
 
-## Data Acquisition and Preprocessing
+```{python}
+#| output: asis
+print(report.verdict_sentence(res))
+print()
+print(report.headline_table(res))
+```
 
-We utilized daily closing prices for Gold (XAU/USD) sourced from COMEX via Yahoo Finance, spanning the period from January 1, 2000, to the present. As financial time series are inherently non-stationary, raw prices were transformed into Logarithmic Returns to stabilize variance and approximate continuous compounding:
+## Corrections {.unnumbered}
 
-$$ R_t = \ln(P_t) - \ln(P_{t-1}) $$
+On 2026-11-08 every result previously shown in this manuscript was withdrawn:
+it had been computed from a synthetic random-walk series written to the data
+path when the real data was missing (see
+[CORRECTIONS.md](../../../CORRECTIONS.md)). A review of the second gold
+analysis (the catalogue of 2,426 combinations) found further defects, all
+fixed in this rebuild:
 
-Planetary positions were calculated with the Swiss Ephemeris library with the built-in Moshier analytic ephemeris unless SE data files are installed. To align the continuous celestial data with the discrete trading calendar (which excludes weekends and holidays), planetary positions were sampled at 12:00 UTC on valid trading days only (see `src/data/align_astro_data.py`).
+- the expected-overlap denominator counted trading days while event windows
+  counted calendar days, inflating every z-score; windows now count bars on
+  the trading calendar (review item S1-11);
+- Uranus, Neptune and Pluto were dropped silently and nakshatra lords were
+  stored as `"Planet.MOON"`, so many tests were all-zero; unknown bodies now
+  raise and labels are enum values (S1-12);
+- the null model assumed independent days; it is now a circular shift of the
+  indicator that keeps autocorrelation (S1-13, S1-15);
+- the Granger test treated planetary positions as endogenous in a VAR and
+  chose lags on the same data; it is now an exogenous ADL with HAC errors and
+  a lag set fixed in advance, behind a stationarity gate (S1-14);
+- the data was the COMEX front-month future described as "XAU/USD spot" and
+  was neither committed nor hashed; the source is now named as what it is
+  and every run records the SHA-256 of its snapshot (S1-16).
 
-## Statistical Framework
+The second analysis has been removed; this manuscript and
+`studies/gold_market/scripts/pipeline.py` are the only gold analysis.
 
-### Stationarity Testing
+# Question
 
-A prerequisite for most econometric inferences is stationarity. We employed the **Augmented Dickey-Fuller (ADF)** test to verify that our differenced target variable (Gold Log Returns) and our engineered features (Planetary Sine/Cosine components) do not possess a unit root.
+Classical texts make the Sun and Jupiter the significators (karakas) of gold,
+and financial astrologers associate retrograde, combust and dignified
+planets with turns in value. If such conditions carried information about
+the gold market, the days on which they hold would differ from other days in
+return, volatility or the frequency of large moves. Under the efficient-market
+view [@fama1970] a deterministic, publicly computable calendar should carry no
+such information. The test asks the question in the form a hazard model can
+answer: is the next-day outcome different when the condition holds?
 
-### Spectral Analysis
+# Pre-registration
 
-To detect potential cyclic signals in the unevenly sampled financial data, we utilized the **Lomb-Scargle Periodogram**, which avoids the spectral leakage issues associated with the standard Fast Fourier Transform (FFT) on non-contiguous data.
+`studies/gold_market/hypothesis.yaml` was written before the rebuilt pipeline
+first ran and is the only place where choices are made. It fixes:
 
-### Granger Causality
+```{python}
+#| output: asis
+print(report.indicator_table(REPO / "studies" / STUDY / "hypothesis.yaml"))
+```
 
-Predictive precedence was evaluated using a **Vector Autoregression (VAR)** model. The null hypothesis ($H_0$) states that past values of planetary positions do not contain information that significantly reduces the forecast error of Gold returns. To mitigate the "p-hacking" risk inherent in testing multiple planets, we applied the **Bonferroni Correction**, adjusting our significance threshold ($\alpha = 0.05$) by dividing it by the number of independent hypotheses tested.
+- **Outcomes:** daily log return; absolute return; an extreme-move flag
+  (absolute return above the rolling 95th percentile of the previous 250
+  bars, so the threshold never uses the future).
+- **Statistic:** indicator state on bar $t-1$ against the outcome on bar $t$;
+  mean when active minus mean when inactive, two-sided.
+- **Null:** circular shift of the indicator by at least 400 trading days,
+  10,000 draws, seed 42; $p = (k+1)/(n+1)$ [@phipson2010]. Effect intervals
+  come from a paired stationary block bootstrap, mean block 20 bars
+  [@politis1994].
+- **Multiplicity:** Benjamini-Yekutieli [@benjamini2001] across all
+  indicators and outcomes in a period, $\alpha = 0.05$.
+- **Explore and confirm:** explore to 2015-12-31, confirm from 2016-01-01. A
+  finding counts only if it is significant in explore and has the same sign
+  and BY $q < \alpha$ in confirm.
+- **Best rule:** Hansen's SPA [@hansen2005] over the one-day long/short rules
+  in the confirm period, against being flat.
+- **Secondary families:** forward 5, 21 and 63-day returns after retrograde
+  stations of Mercury to Saturn against a stationary-bootstrap band; and an
+  exogenous ADL Wald test of $\sin$ and $\cos$ of the sidereal longitude of
+  the Sun, Mars, Jupiter and Saturn, HAC errors [@neweywest1987], on returns
+  and GARCH-standardised absolute returns [@granger1969].
+
+# Data
+
+```{python}
+#| output: asis
+print(report.data_paragraph(res))
+```
+
+The pre-registered first choice, the LBMA gold PM fix, was published on FRED
+until 2022 and is no longer available there; the LBMA's own feed is not open
+to automated download. The COMEX future is the best open long series. The
+astro state for each bar is computed by the project's Swiss Ephemeris engine
+(sidereal Lahiri, whole-sign, mean node) at the COMEX settlement time, and the
+two registry rules come from the combination registry, evaluated at the same
+instant.
+
+# Methods
+
+All steps are in `vedic_astrology_core.markets` and
+`vedic_astrology_core.stats`, shared with the silver study. The alignment
+layer maps every quantity to bars of the trading calendar, so windows and
+exposures count trading days. Stationarity is checked with ADF and KPSS
+[@kwiatkowski1992] before any regression:
+
+```{python}
+#| output: asis
+print(report.stationarity_table(res))
+```
 
 # Results
 
-*Results withdrawn 2026-11-08.* The stationarity table, Lomb-Scargle periodogram, Granger causality table, Molchan diagram and Monte Carlo permutation distribution previously shown here were computed from a synthetic random-walk series that the pipeline wrote to the data path when real data was absent. They will be replaced by a re-analysis on verified data. See CORRECTIONS.md.
+## Indicator tests
+
+```{python}
+#| output: asis
+print(report.tests_table(res, "explore", top=10))
+```
+
+: The ten smallest explore-period p-values of the 42 pre-registered tests (2000 to 2015). Effects are active minus inactive. {#tbl-explore}
+
+```{python}
+#| output: asis
+print(report.confirmation_table(res))
+```
+
+![Every indicator and outcome in both periods. Filled markers pass the BY correction within their period.](../artifacts/fig_effects.png){#fig-effects}
+
+```{python}
+#| output: asis
+print(report.tests_table(res, "confirm", top=5))
+```
+
+: The five smallest confirm-period p-values (2016 to 2026), for description; only tests carried from the explore period can confirm. {#tbl-confirm}
+
+```{python}
+#| output: asis
+print(report.spa_sentence(res))
+```
+
+## Retrograde stations
+
+```{python}
+#| output: asis
+print(report.event_table(res))
+```
+
+: Mean forward log return from the first bar on which each planet is seen retrograde. The null band comes from stationary-bootstrap resamples of daily returns; "All bars" is the unconditional mean over the same horizon. {#tbl-events}
+
+![Mean forward return after retrograde stations against the 95% null band.](../artifacts/fig_event_study.png){#fig-events}
+
+## Exogenous Granger tests
+
+```{python}
+#| output: asis
+print(report.granger_table(res))
+```
+
+## Price and indicator overlay
+
+![Gold on a log scale with Jupiter's retrograde periods shaded, and the forward 21-day return below. The figure shows the whole sample; it illustrates the data and is not evidence.](../artifacts/fig_overlay.png){#fig-overlay}
+
+![Gold with Jupiter's retrograde stations marked.](../artifacts/fig_stations.png){#fig-stations}
+
+The same data, one row per trading day with every indicator, is in
+`artifacts/overlay_frame.csv` for the website's explorer.
 
 # Discussion
 
-No conclusion about planetary predictors of gold returns is drawn until the re-analysis on verified data is complete.
+```{python}
+#| output: asis
+print(report.discussion(res))
+```
 
-# Conclusion
+**Limitations.** The series is a futures contract with unadjusted rolls; the
+indicator family is fourteen conditions out of many that astrologers use, so
+a null here does not cover others; the confirm period is eleven years, which
+limits power for rare conditions; and the outcome is next-day, so slower
+effects are covered only by the station event study.
 
-We have presented a reproducible, automated pipeline for rigorously evaluating the claims of Financial Astrology. By establishing a standard directory structure and adhering to international reporting standards (Nature/IEEE), this framework transforms disparate scripts into a cohesive scientific instrument.
+# Reproducibility {.unnumbered}
 
-# References
+```{python}
+#| output: asis
+print(report.reproducibility(res, STUDY))
+```
 
-1. *Varahamihira*, Brihat Samhita.
-2. *Granger, C. W. J.* (1969). Investigating Causal Relations by Econometric Models and Cross-spectral Methods.
-3. *Lomb, N. R.* (1976). Least-squares frequency analysis of unequally spaced data.
+# References {.unnumbered}

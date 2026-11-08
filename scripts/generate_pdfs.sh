@@ -55,7 +55,7 @@ render_and_move "studies/numerology_vs_astrology/paper/NUMEROLOGY_ASTROLOGY_TEMP
 render_and_move "studies/earthquake/paper/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.qmd" "EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf"
 
 # 4. Track 3
-render_and_move "studies/gold_market/paper/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.qmd" "GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.pdf"
+render_and_move "studies/silver_market/paper/manuscript.qmd" "SILVER_MARKET_MANUSCRIPT.pdf"
 
 # 5. Manuscripts & Consolidated Binder
 render_and_move "papers/COMPREHENSIVE_RESEARCH_THESIS.qmd" "COMPREHENSIVE_RESEARCH_THESIS.pdf"

@@ -1,34 +1,45 @@
 # Gold market
 
-**Question.** Do classical planetary configurations (Vedic and Western catalogue
-entries) coincide with changes in XAU/USD returns more often than a
-time-randomised baseline would predict?
+**Question.** On days when a pre-registered sidereal (Lahiri) planetary
+condition holds, is the next trading day's gold return, absolute return or
+probability of an extreme move different from other days?
 
-**Status.** The statistical results in both manuscripts are withdrawn pending
-re-analysis on verified data (see [CORRECTIONS.md](../../CORRECTIONS.md), items
-b and c). The pipeline now refuses to run without its real input.
+**Status.** Rebuilt 2026-11-08 on `vedic_astrology_core.markets` after the
+earlier results were withdrawn (see [CORRECTIONS.md](../../CORRECTIONS.md)).
+Outcome of the pre-registered run (seed 42): **null**. One of 42 explore-period
+tests (Jupiter in Capricorn, absolute return) passed the Benjamini-Yekutieli
+correction and did not replicate in the frozen 2016-2026 period; Hansen's SPA
+finds no rule that beats being flat. The paper states the numbers.
 
 ## Contents
 
-- `paper/GOLD_MARKET_PLANETARY_CORRELATION_ANALYSIS.qmd` with `paper/sections/`: principles catalogue, algorithms, frequency and alignment graphs.
-- `paper/manuscript.qmd`: the econometric manuscript (stationarity, Lomb-Scargle, Granger, Molchan, permutation tests); artifacts come from `scripts/generate_artifacts.py`.
-- `scripts/`: `fetch_gold_data.py`, `generate_gold_astro_catalog.py`, `generate_gold_astro_features.py`, `compute_gold_astro_metrics.py`.
+- `hypothesis.yaml`: the pre-registration (sources, 14 indicators, outcomes,
+  null, correction, explore and confirm periods, SPA, event study, Granger).
+- `scripts/pipeline.py`: a configuration of the shared pipeline
+  `vedic_astrology_core.markets.study`; it holds no gold-specific logic.
+- `paper/manuscript.qmd`: the paper; its Results and Discussion are generated
+  from `artifacts/results.json`.
+- `artifacts/`: committed outputs the paper reads: `results.json`,
+  `manifest.json`, `tbl_*.csv`, `fig_*.png`, and `overlay_frame.csv` (one row
+  per trading day with every indicator, for the website explorer).
 
 ## How to run
 
 ```bash
-pip install -e ".[dev]"
-python studies/gold_market/scripts/fetch_gold_data.py          # writes studies/gold_market/data/gold_prices.csv
-python studies/gold_market/scripts/generate_gold_astro_catalog.py
-python studies/gold_market/scripts/generate_gold_astro_features.py
-python studies/gold_market/scripts/compute_gold_astro_metrics.py
-python scripts/generate_artifacts.py                            # reads data/processed/aligned_planetary_data.csv
-quarto render studies/gold_market/paper/manuscript.qmd --to pdf
+pip install -e ".[dev,fetch]"
+python studies/gold_market/scripts/pipeline.py --seed 42      # about 40 s
+quarto render studies/gold_market/paper/manuscript.qmd --to html
 ```
+
+`--offline` uses the fixture `tests/fixtures/markets/yahoo_gold_GCF_2015_2020.csv`
+and marks every result `provisional: true`.
 
 ## Data
 
-`data/` is gitignored. `gold_prices.csv` is fetched from Yahoo Finance (`XAUUSD=X`, falling back to `GC=F`)
-by `fetch_gold_data.py`; the catalogue, feature and metric CSVs are generated.
-`scripts/generate_artifacts.py` reads `data/processed/aligned_planetary_data.csv`
-from the root data folder (see [data/README.md](../../data/README.md)).
+Sources are tried in the order of `hypothesis.yaml`. The LBMA PM fix
+(`GOLDPMGBD228NLBM`) is no longer served by FRED (HTTP 404 since 2022), so the
+run uses COMEX front-month continuous futures (Yahoo `GC=F`), which are labelled
+as futures, never spot. Zero-volume rows (stale quotes) are dropped. The raw
+download is written to `data/snapshots/gold_market_<sha256[:12]>.csv`
+(gitignored); its SHA-256, row count and date range are in
+`artifacts/results.json` and `artifacts/manifest.json`.
