@@ -254,3 +254,135 @@ Always include the full citation in your README:
 USGS Earthquake Catalog. (2024). Retrieved from https://earthquake.usgs.gov/earthquakes/search/
 Accessed: [date]. License: Public Domain (U.S. Government data).
 ```
+
+---
+
+## Beyond a single test: what a result is worth
+
+The tools below (ADR-003) do not change how a registered family is tested.
+They answer the questions a reader asks next: does the result depend on one
+analytic choice, could the study have found an effect at all, does the method
+find a real effect when one exists, and is anything in the sky predictive
+when no rule is named?
+
+### Specification curves
+
+A rate ratio that holds for an 8-degree orb but not 6 or 10, or for one
+declustering method but not the other, reflects one path through many
+defensible choices. `stats.speccurve.specification_curve(estimator, grid,
+rng, n=...)` runs the estimator on every cell of a declared grid of choices
+(orb, window, catalogue, declustering, ayanamsa, node model, house system)
+and returns the curve sorted by estimate, each cell's interval, and the share
+of cells whose interval excludes the null. `stats.plots.specification_curve_figure`
+draws the curve above a matrix of the choices behind each cell (Simonsohn,
+Simmons and Nelson 2020, *Nature Human Behaviour* 4, 1208-1214; Steegen,
+Tuerlinckx, Gelman and Vanpaemel 2016, *Perspectives on Psychological
+Science* 11, 702-712).
+
+The cells share data, so their p-values are not independent and the share of
+"significant" cells means nothing on its own. The joint test rotates the
+outcome once per draw by a random circular shift and recomputes the whole
+curve with that shift; the p-value of the median estimate (and of the share)
+is its rank among those draws. The grid is declared before the run, like the
+family, and goes into `hypothesis.yaml` or the rule's `params` ranges.
+
+### Power
+
+A null result from a small catalogue excludes only large effects.
+`stats.power.minimum_detectable_rate_ratio(n_events, duty_cycle, alpha,
+power, rng, n_sim)` simulates studies with a Poisson number of events and the
+circular-shift null (for Poisson events the shifted in-count is exactly
+binomial whatever the indicator's run structure) and finds by bisection the
+smallest rate ratio the test detects with the target power; `power_table`
+does this for every registered indicator, and
+`minimum_detectable_difference` gives the analogue for a difference in means
+from a reported interval (Cohen 1988, *Statistical Power Analysis for the
+Behavioral Sciences*; Gelman and Carlin 2014, *Perspectives on Psychological
+Science* 9, 641-651).
+
+Every study README and paper prints its power table. The numbers are lower
+bounds on what the study could miss, because declustered catalogues keep
+some clustering and market returns have volatility clusters, both of which
+widen the null. A reader should compare a claimed effect with the table: a
+practitioner's "Mars-Saturn raises quake risk by 20%" is untestable with a
+study whose minimum detectable rate ratio is 2.
+
+### Positive and negative controls
+
+`stats.controls` makes controls first-class study inputs. A positive control
+is a time-varying driver with a documented, small, real effect, tested
+exactly like an indicator: for earthquakes the semidiurnal and spring-neap
+tidal phase, built from the Moon's hour angle and the Moon-Sun elongation
+(Ide, Yabe and Tanaka 2016, *Nature Geoscience* 9, 834-837; Cochran, Vidale
+and Tanaka 2004, *Science* 306, 1164-1166); for floods the monsoon season. A
+negative control is every registered indicator on a sky rotated by a fixed,
+pre-declared offset (`shifted_sky`), which cannot carry a real signal
+(Lipsitch, Tchetgen Tchetgen and Cohen 2010, *Epidemiology* 21, 383-388).
+
+The paper then states one of two things. "The method detected the positive
+control at RR x" means its nulls for the astrological indicators exclude
+effects of about that size. "The method did not detect it" means those nulls
+are uninformative about effects of the size a real geophysical driver has,
+and the study can speak only to larger effects. The negative control should
+give about alpha nominal results and none after correction; anything else
+points to a broken null.
+
+### The rule-free classifier
+
+Rules name configurations; a classifier asks whether *any* function of the
+sky predicts event days. `stats.classify.shifted_sky_auc_test` fits an
+L2-penalised logistic model (scikit-learn when installed, otherwise the same
+likelihood with L-BFGS) from sky features (sine and cosine of the
+longitudes, speeds, tithi and nakshatra one-hot) to a 0/1 event series and
+scores it with forward-chaining cross-validation, so no fold trains on its
+own future (Bergmeir and Benitez 2012, *Information Sciences* 191, 192-213).
+The penalty is fixed in advance; tuning it on test folds would leak.
+
+The null is the same model refitted on the sky circularly shifted against the
+events, which keeps every periodicity and autocorrelation of both and breaks
+only their alignment. A seasonal or decadal pattern in the catalogue raises
+the shifted-sky AUCs as much as the real one, so only alignment-specific
+skill shows up as a small p. The report gives the AUC, the 5th, 50th and
+95th percentiles of the shifted-sky AUCs and p, plus one frozen
+train-on-explore, score-on-confirm AUC (Hanley and McNeil 1982, *Radiology*
+143, 29-36).
+
+### Bayesian summaries
+
+A p-value above 0.05 does not distinguish "no effect" from "too little data".
+`stats.bayes.posterior_log_rr` computes the posterior of log RR on a fine
+grid, with the Poisson likelihood conditioned on the total count (which
+removes the baseline rate), under a sceptical prior N(0, 0.1^2) (95% prior
+mass between RR 0.82 and 1.22) and an enthusiastic prior N(0, 0.5^2) (RR 0.38
+to 2.7); `summarise` reports both (Spiegelhalter, Freedman and Parmar 1994,
+*JRSS A* 157, 357-416, for the sceptical and enthusiastic prior pair).
+
+The Bayes factor against RR = 1 is the Savage-Dickey density ratio,
+posterior over prior density at log RR = 0 (Dickey 1971, *Annals of
+Mathematical Statistics* 42, 204-223; Wagenmakers et al. 2010, *Cognitive
+Psychology* 60, 158-189). BF10 > 3 is moderate evidence for an effect, BF10 <
+1/3 moderate evidence for none, and anything in between says the data cannot
+decide. The prior widths are registered, not chosen per result.
+
+### The combination atlas
+
+Classical texts combine conditions (a planet in a sign, aspecting another,
+during a dasha), and searching such combinations is the garden of forking
+paths at scale (Gelman and Loken 2014, *American Scientist* 102, 460). The
+atlas (`studies/combinations/`) declares the grammar in advance
+(`grammar.yaml`), expands it deterministically into thousands of candidates
+with ids (`scripts/enumerate.py`), and tests every testable candidate on the
+exploration period against the circular-shift null with shared offsets,
+corrects across the whole family with Benjamini-Yekutieli (Benjamini and
+Yekutieli 2001, *Annals of Statistics* 29, 1165-1188) and gives the best
+candidate a single-step Romano-Wolf max-|z| adjusted p (Romano and Wolf 2005,
+*Econometrica* 73, 1237-1282).
+
+Only survivors are tested once on the frozen confirmation period, and the
+frozen exploration rates of the twenty best candidates are scored out of
+sample with Hansen's SPA test (Hansen 2005, *Journal of Business and Economic
+Statistics* 23, 365-380). Every candidate is published in
+`artifacts/atlas.csv`, winners and losers, with its plain-words definition,
+so a reader sees the full denominator. With thousands of candidates, dozens
+of nominal p < 0.05 are expected by chance; the atlas's honest headline is
+the number that survive correction and confirmation.

@@ -54,3 +54,14 @@ Dates, coordinates and titles come from the AstroFusion mundane dataset (export
 2026-11-08), CC BY 4.0; event titles and URLs point to Wikipedia and Wikidata
 (facts, CC0). The event descriptions in the source are Wikipedia text under
 CC BY-SA and were left out on purpose.
+
+## Power
+
+Not computed yet. The minimum detectable rate ratio
+(`vedic_astrology_core.stats.power.minimum_detectable_rate_ratio`) needs the
+number of events per country and the time fraction of each indicator, and
+the indicators that matter here (houses and lagna of a founding chart) need
+founding times. Until countries have sourced founding times, the only
+testable features are sign-level transits, and a power table for those would
+describe a study nobody has registered. The table will be added when
+`hypothesis.yaml` leaves `draft`.
