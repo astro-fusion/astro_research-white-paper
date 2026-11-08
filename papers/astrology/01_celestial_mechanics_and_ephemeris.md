@@ -4,7 +4,8 @@
 
 > **Repository path**: `papers/astrology/01_celestial_mechanics_and_ephemeris.md`
 > **Symbol reference**: [SYMBOLOGY.md](../../SYMBOLOGY.md) — Section II.A–II.B
-> **Code implementation**: [`src/celestial/ephemeris_engine.py`](../../src/celestial/ephemeris_engine.py)
+> **Code implementation**: [`libs/vedic_astrology_core/astrology/ephemeris.py`](../../libs/vedic_astrology_core/astrology/ephemeris.py)
+> **Note (WP-7)**: The excerpts below are illustrative; the maintained code is the linked module (sidereal `FLG_SIDEREAL | FLG_SPEED`, one node model, Ketu = Rahu + 180).
 
 ---
 
@@ -137,7 +138,7 @@ Bodies computed and stored in `data/ephemeris/jpl_horizons_planets_2000_2100.par
 ## 6. Implementation Reference
 
 ```python
-# src/celestial/ephemeris_engine.py  (simplified excerpt)
+# illustrative (was the retired engine's ephemeris_engine.py)  (simplified excerpt)
 import swisseph as swe
 import numpy as np
 from dataclasses import dataclass

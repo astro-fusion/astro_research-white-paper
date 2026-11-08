@@ -37,12 +37,13 @@ All three categories are codified here.
 
 The Placidus and Koch house systems break down at geographic latitudes approaching
 the polar circles. The following thresholds are **hard-coded** in
-`src/celestial/house_systems.py`:
+`libs/vedic_astrology_core/astrology/chart.py`
+(`resolve_house_system_for_latitude`):
 
 ```python
-PLACIDUS_HIGH_DISTORTION_LAT = 60.0   # degrees N/S — smoothing applied above here
-PLACIDUS_SINGULARITY_LAT     = 66.5   # degrees N/S — algorithm falls back automatically
-FALLBACK_SYSTEM_DEFAULT      = "whole_sign"   # configurable via ops/config/house_config.yml
+PLACIDUS_HIGH_DISTORTION_LAT = 60.0   # degrees N/S: warning, cusps compressed
+POLAR_SINGULARITY_LAT        = 66.5   # degrees N/S: quadrant systems fall back
+DEFAULT_HOUSE_SYSTEM         = "W"    # whole sign: the default and the fallback
 ```
 
 ### 2.3 Retrograde Detection Tolerance

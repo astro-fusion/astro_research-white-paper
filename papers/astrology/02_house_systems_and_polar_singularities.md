@@ -3,7 +3,8 @@
 ## Topological Failure Modes and Algorithmic Fallback Architecture
 
 > **Symbol reference**: [SYMBOLOGY.md §II.E](../../SYMBOLOGY.md)
-> **Code**: [`src/celestial/house_systems.py`](../../src/celestial/house_systems.py)
+> **Code**: [`libs/vedic_astrology_core/astrology/chart.py`](../../libs/vedic_astrology_core/astrology/chart.py)
+> **Note (WP-7)**: The excerpt below is illustrative; the maintained polar fallback is `resolve_house_system_for_latitude` in the linked module (whole sign is the default and the fallback).
 > **Validation**: [docs/VALIDATION_AND_EPISTEMOLOGY.md §3.2](../../docs/VALIDATION_AND_EPISTEMOLOGY.md)
 
 ---
@@ -70,7 +71,7 @@ To prevent runtime arithmetic exceptions (`ValueError: math domain error`) and e
 ### 2.1 Implementation
 
 ```python
-# src/celestial/house_systems.py
+# illustrative (was the retired engine's house_systems.py)
 from enum import Enum
 import numpy as np
 import swisseph as swe

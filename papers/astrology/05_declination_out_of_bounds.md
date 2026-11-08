@@ -3,7 +3,8 @@
 ## Multi-Dimensional Celestial Geometry Beyond Ecliptic Longitude
 
 > **Symbol reference**: [SYMBOLOGY.md §II.G](../../SYMBOLOGY.md)
-> **Code**: [`src/celestial/aspect_matrix.py`](../../src/celestial/aspect_matrix.py) (parallel / contra-parallel detection)
+> **Code**: [`libs/vedic_astrology_core/astrology/aspects.py`](../../libs/vedic_astrology_core/astrology/aspects.py) (parallel / contra-parallel detection)
+> **Note (WP-7)**: The excerpts below are illustrative; `detect_out_of_bounds` and `compute_parallel_matrix` in the linked module are the maintained implementation.
 
 ---
 
@@ -62,7 +63,7 @@ OOB bodies are beyond the Sun's annual declination range. In the geocentric obse
 ### 2.4 Implementation
 
 ```python
-# src/celestial/aspect_matrix.py — OOB detection extension
+# illustrative (was the retired engine's aspect_matrix.py) — OOB detection extension
 
 import numpy as np
 

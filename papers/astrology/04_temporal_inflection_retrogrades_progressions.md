@@ -3,7 +3,8 @@
 ## Derivative Calculus for Non-Linear Temporal Astrological Dynamics
 
 > **Symbol reference**: [SYMBOLOGY.md §II.D, II.B](../../SYMBOLOGY.md)
-> **Code**: [`src/celestial/retrograde_detector.py`](../../src/celestial/retrograde_detector.py)
+> **Code**: [`libs/vedic_astrology_core/astrology/ephemeris.py`](../../libs/vedic_astrology_core/astrology/ephemeris.py)
+> **Note (WP-7)**: The station-detection excerpt below is illustrative and is not shipped: the engine reads retrograde motion from the Swiss Ephemeris longitude speed (`FLG_SPEED`), which avoids the 0/360 wrap and false stations of a finite-difference detector.
 
 ---
 
@@ -52,7 +53,7 @@ def short_arc_diff(lambda_a: float, lambda_b: float) -> float:
 ### 1.3 Station Detection Algorithm
 
 ```python
-# src/celestial/retrograde_detector.py
+# illustrative (was the retired engine's retrograde_detector.py)
 import numpy as np
 import swisseph as swe
 from dataclasses import dataclass

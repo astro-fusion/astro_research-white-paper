@@ -3,7 +3,8 @@
 ## Quantised Qualitative Astrological Weights as O(1) Hash Maps
 
 > **Symbol reference**: [SYMBOLOGY.md §II.F](../../SYMBOLOGY.md)
-> **Code**: [`src/celestial/dignity_scoring.py`](../../src/celestial/dignity_scoring.py)
+> **Code**: [`libs/vedic_astrology_core/dignity/scorer.py`](../../libs/vedic_astrology_core/dignity/scorer.py)
+> **Note (WP-7)**: The Western essential-dignity scheme in this paper (domicile, exaltation, triplicity, term, face) was retired with the second engine in WP-7 and is not implemented. The engine scores dignity on the Vedic scheme (exaltation, moolatrikona, own sign, friendship) in the linked module; the excerpt below is kept as a description of the Western scheme only.
 
 ---
 
@@ -83,7 +84,7 @@ The maximum dignity score (+10) is awarded only at the **specific degree** of ex
 The dignity scorer uses a nested `dict` (Python) for O(1) lookup, keyed on `(planet, sign)` pairs:
 
 ```python
-# src/celestial/dignity_scoring.py
+# illustrative (was the retired engine's dignity_scoring.py)
 from __future__ import annotations
 from dataclasses import dataclass
 from typing import Literal

@@ -7,8 +7,8 @@ House systems: the ``house_system`` argument is honoured everywhere. The
 default is whole sign (bhava = rashi), the Parashari practice. The ascendant,
 the cusps and the house of each planet all come from the same system. Near
 the poles quadrant systems (Placidus, Koch, ...) are undefined; above
-66.5 deg latitude they fall back to whole sign with a warning (ported from
-``src/celestial/house_systems.py``).
+66.5 deg latitude they fall back to whole sign with a warning (ported from the
+retired second engine's ``house_systems.py``).
 """
 
 import logging

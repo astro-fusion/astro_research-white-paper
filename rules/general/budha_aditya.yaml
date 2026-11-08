@@ -8,7 +8,7 @@ source:
   note: >-
     The name is common in modern practice; no BPHS chapter defines it as a yoga, so the rule
     is experimental.
-author: astro-research (from src/celestial/dignity_scoring.py detect_yogas)
+author: astro-research (from the retired engine's detect_yogas)
 tier: experimental
 conditions:
   in_house_from:

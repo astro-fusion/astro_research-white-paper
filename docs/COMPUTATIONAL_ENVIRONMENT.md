@@ -108,7 +108,7 @@ ENTRYPOINT ["python"]
 # Build and run
 docker build -t astro-fusion:latest -f ops/Dockerfile .
 docker run --rm -v $(pwd)/data:/workspace/data astro-fusion:latest \
-    src/celestial/ephemeris_engine.py --help
+    scripts/generate_planetary_dataset.py --help
 ```
 
 ---

@@ -266,7 +266,7 @@ def general():
             " fame, wealth and lasting reputation."
         ),
         "source": BPHS_GK,
-        "author": "astro-research (from src/celestial/dignity_scoring.py detect_yogas)",
+        "author": "astro-research (from the retired engine's detect_yogas)",
         "tier": "classical",
         "conditions": {"in_kendra_from": {"planet": "Jupiter", "from": "Moon"}},
     }
@@ -311,7 +311,7 @@ def general():
             " enemy's sign; see general.gaja_kesari.classical."
         ),
         "fixes": (
-            "src/celestial/dignity_scoring.py detect_yogas counted int((Jupiter - Moon)"
+            "the retired engine's detect_yogas counted int((Jupiter - Moon)"
             " // 30), a degree difference, so Moon Aries 29 with Jupiter Cancer 28 (89"
             " deg) was missed (review S3-3). Counting is by sign here."
         ),
@@ -403,7 +403,7 @@ def general():
                 " yoga, so the rule is experimental."
             ),
         },
-        "author": "astro-research (from src/celestial/dignity_scoring.py detect_yogas)",
+        "author": "astro-research (from the retired engine's detect_yogas)",
         "tier": "experimental",
         "conditions": {
             "in_house_from": {"planet": "Mercury", "from": "Sun", "houses": [1]}

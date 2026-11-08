@@ -50,12 +50,11 @@ pip install pyswisseph  # downloads binary ephemeris files to SE_EPHE_PATH
 ### 3.1 Astrological Chart Pipeline
 
 ```bash
-python src/celestial/ephemeris_engine.py \
-    --body_list Sun Moon Mars Mercury Jupiter Venus Saturn \
-    --start_jd 2451545.0 \
-    --end_jd 2488069.5 \
-    --step_days 1 \
-    --output data/ephemeris/jpl_horizons_planets_2000_2100.parquet
+python scripts/generate_planetary_dataset.py \
+    --years 2000-2100 \
+    --step 1D \
+    --fmt parquet \
+    --out data/datasets/planetary
 ```
 
 ---

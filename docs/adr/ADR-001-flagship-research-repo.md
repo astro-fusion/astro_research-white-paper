@@ -11,7 +11,7 @@ Status: accepted 2026-11-08; packages WP-0..WP-2, WP-4..WP-6, WP-8 and WP-M deli
    - Astronomers: the ephemeris layer is validated against JPL Horizons and Swiss Ephemeris reference values in CI, with the ayanamsa and node model stated explicitly in every output.
    - Economists and market analysts: a generic overlay module aligns any price series (gold, silver, any ticker) with any astrological indicator and produces the same standard plots and tests.
 3. Rendered output (HTML, PDF, TeX, `_book`, `site_libs`, `_freeze`) is never tracked. CI renders to GitHub Pages and Releases.
-4. One Python package. The two competing engines (`libs/vedic_astrology_core/astrology` and `src/celestial`) are consolidated after the review identifies which is correct per function.
+4. One Python package. The two competing engines (`libs/vedic_astrology_core/astrology` and the `celestial` package under `src/`) are consolidated after the review identifies which is correct per function.
 
 ## Target layout
 

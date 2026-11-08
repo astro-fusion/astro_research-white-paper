@@ -13,7 +13,7 @@ source:
   note: >-
     Gaja Kesari is the first yoga of the chapter on various yogas (Nana Yoga). Chapter and
     verse numbering differ between editions; check against yours.
-author: astro-research (from src/celestial/dignity_scoring.py detect_yogas)
+author: astro-research (from the retired engine's detect_yogas)
 tier: classical
 conditions:
   in_kendra_from:
@@ -46,6 +46,6 @@ notes:
     This is the common short form. BPHS also requires a benefic to join or aspect Jupiter
     and Jupiter to be free of debilitation, combustion and an enemy's sign; see general.gaja_kesari.classical.
   fixes: >-
-    src/celestial/dignity_scoring.py detect_yogas counted int((Jupiter - Moon) // 30), a degree
+    the retired engine's detect_yogas counted int((Jupiter - Moon) // 30), a degree
     difference, so Moon Aries 29 with Jupiter Cancer 28 (89 deg) was missed (review S3-3).
     Counting is by sign here.

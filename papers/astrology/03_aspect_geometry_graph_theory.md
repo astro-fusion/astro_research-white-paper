@@ -3,7 +3,8 @@
 ## High-Velocity Computation of Planetary Angular Relationships
 
 > **Symbol reference**: [SYMBOLOGY.md §II.C](../../SYMBOLOGY.md)
-> **Code**: [`src/celestial/aspect_matrix.py`](../../src/celestial/aspect_matrix.py)
+> **Code**: [`libs/vedic_astrology_core/astrology/aspects.py`](../../libs/vedic_astrology_core/astrology/aspects.py)
+> **Note (WP-7)**: The excerpt below is illustrative; the maintained implementation is the linked module. For the Vedic whole-sign aspect use the `graha_drishti` rule predicate.
 
 ---
 
@@ -56,7 +57,7 @@ $$|a_{ij} - \theta_{\rm asp}| \leq \Delta\theta$$
 ## 3. NumPy Vectorised Implementation
 
 ```python
-# src/celestial/aspect_matrix.py
+# illustrative (was the retired engine's aspect_matrix.py)
 import numpy as np
 from dataclasses import dataclass
 from typing import NamedTuple

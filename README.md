@@ -161,7 +161,7 @@ Phase II  (v0.2)     — Dynamic CI/CD
            → automated TDD tests, unified API layer
 
 Phase III (v0.3)     — Astrological logic engine (all cases)
-           → src/celestial/ engines, papers/astrology/ (6 papers), exhaustive house/aspect/dignity logic
+           → one engine in libs/vedic_astrology_core/, papers/astrology/ (6 papers), exhaustive house/aspect/dignity logic
 
 Phase IV  (v1.0)     — Multi-domain ML synthesis
            → PCA, clustering, neural networks across astrology, numerology and terrestrial time-series
@@ -174,7 +174,7 @@ Phase IV  (v1.0)     — Multi-domain ML synthesis
 | I     | docs: VALIDATION, DATA_PROVENANCE, COMPUTATIONAL_ENVIRONMENT | ✅ Complete   |
 | I     | data/ directory structure + READMEs                          | ✅ Complete   |
 | III   | papers/astrology/ (6 papers)                                 | ✅ Complete   |
-| III   | src/celestial/ Python engines                                | ✅ Scaffolded |
+| III   | libs/vedic_astrology_core/ (single engine, golden-tested)    | ✅ Complete   |
 | II–IV | CI/CD, API, ML pipeline                                      | 🔄 Planned    |
 
 ---
