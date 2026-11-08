@@ -243,6 +243,73 @@ count_model:
     each "greater" indicator is active. Likelihood-ratio test (df = 9) and
     leave-one-year-out cross-validated predictive log-likelihood.
 
+controls:
+  # Added by the 2026-11-08 amendment (see the end of this file).
+  positive:
+    description: >-
+      Tidal phase, a driver with a documented small real effect on
+      earthquake occurrence (Ide, Yabe and Tanaka 2016, Nature Geoscience
+      9, 834-837; Cochran, Vidale and Tanaka 2004, Science 306, 1164-1166).
+      Phase proxies from the sky only: semidiurnal (Moon's local hour angle
+      at the arc centre within 45 degrees of upper or lower culmination)
+      and fortnightly spring-neap (Moon-Sun elongation within 45 degrees of
+      new or full Moon). Tested exactly like an indicator (same null, same
+      draws, one-sided greater).
+    longitude_deg_e: 85.0
+    semidiurnal_half_width_deg: 45
+    spring_half_width_deg: 45
+    indicators:
+      - id: tide_semidiurnal_peak
+        label: Semidiurnal tidal peak (Moon within 3 h of culmination)
+        direction: greater
+      - id: tide_spring
+        label: Spring tide (within 45 deg of new or full Moon)
+        direction: greater
+      - id: tide_spring_and_peak
+        label: Spring tide and semidiurnal peak
+        direction: greater
+    decision_period: full
+    decision_catalogues: [gk, nn]
+    decision_rule: >-
+      Detected if any of the 3 x 2 tests has BY q < alpha with RR > 1 on the
+      full 1976-2026 period. The nulls of the registered family are then
+      read against the detected effect size; if it is not detected, they are
+      uninformative about effects of the tidal size.
+  negative:
+    description: >-
+      Every registered indicator evaluated on a sky rotated by a fixed
+      offset against the fixed event series, then tested exactly like the
+      exploration family (13 x 2 tests, BY). Expected: about alpha of them
+      nominal, none after correction.
+    offset_days: 3001
+
+secondary:
+  # Added by the 2026-11-08 amendment. Outside the registered family.
+  classifier:
+    description: >-
+      L2 logistic model (penalty fixed at 1 on standardised features) from
+      daily sky features at 12:00 UTC (sin and cos of nine sidereal
+      longitudes, eight speeds, tithi one-hot, Moon nakshatra one-hot) to
+      Gardner-Knopoff event days. Forward-chaining CV with 5 folds inside
+      the exploration period, and one fit on exploration scored on the
+      confirmation period. Null: the same model on the sky circularly
+      shifted by at least min_shift_days.
+    n_folds: 5
+    l2: 1.0
+    n_draws: 200
+  bayes:
+    priors_log_rr_sd: {sceptical: 0.1, enthusiastic: 0.5}
+    likelihood: Poisson, conditioned on the total count (binomial in n_in)
+    bayes_factor: Savage-Dickey density ratio at log RR = 0
+  power:
+    alpha: 0.05
+    power: 0.8
+    n_sim: 4000
+    method: >-
+      Minimum detectable rate ratio by simulation with Poisson event counts
+      and the circular-shift null, at the observed event count and time
+      fraction of each test; two-sided indicators use alpha / 2 per tail.
+
 amendments:
   - date: "2026-11-08"
     field: magnitude.completeness
@@ -257,3 +324,15 @@ amendments:
       an artefact (Mw-scale maximum curvature gives 5.3 to 5.4 depending on
       how converted values are rounded, versus 5.2 from native mb). The change
       was made without looking at any rate ratio.
+  - date: "2026-11-08"
+    field: controls, secondary
+    before: Not specified.
+    after: >-
+      Added the controls block (tidal positive control, fixed-offset
+      shifted-sky negative control) and the secondary block (rule-free
+      classifier, Bayesian summaries, power).
+    reason: >-
+      Added after the first run had reported the registered family as null,
+      to say what that null is worth (ADR-003). These analyses are outside
+      the registered family and cannot change its verdict; the registered
+      indicators, null, correction and split are unchanged.

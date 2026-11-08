@@ -1,0 +1,97 @@
+catalogue,period,id,label,n_events,duty_cycle,expected_in,direction,mdrr,alpha,power
+gk,explore,mars_saturn_conj,Mars-Saturn conjunction,128.0,0.05310022945348352,6.796829370045891,greater,2.2453944362445166,0.05,0.8
+gk,explore,mars_ketu_conj,Mars-Ketu conjunction,128.0,0.03545121506049228,4.537755527743012,greater,2.5272028804006403,0.05,0.8
+gk,explore,eclipse_window,Eclipse within 7 days,128.0,0.13643030350438048,17.463078848560702,greater,1.757285358587161,0.05,0.8
+gk,explore,sun_ingress,Sun sign ingress (sankranti) within 2 days,128.0,0.1327831664580726,16.99624530663329,greater,1.7834614107946305,0.05,0.8
+gk,explore,station_mars,Mars station within 3 days,128.0,0.015595666458072591,1.9962453066332917,greater,3.4993828455520095,0.05,0.8
+gk,explore,station_mercury,Mercury station within 3 days,128.0,0.1048087453066333,13.415519399249062,greater,1.8761277047351304,0.05,0.8
+gk,explore,station_venus,Venus station within 3 days,128.0,0.02079422194409679,2.661660408844389,greater,3.0660047029775592,0.05,0.8
+gk,explore,station_jupiter,Jupiter station within 3 days,128.0,0.03024614100959533,3.871506049228202,greater,2.7168511616427216,0.05,0.8
+gk,explore,station_saturn,Saturn station within 3 days,128.0,0.031663928869420106,4.052982895285774,greater,2.681989442756357,0.05,0.8
+gk,explore,moon_mandala_vayu,Moon in a Vayu-mandala nakshatra,128.0,0.2594291040884439,33.20692532332082,two-sided,1.7032307737525798,0.05,0.8
+gk,explore,moon_mandala_agni,Moon in an Agni-mandala nakshatra,128.0,0.2593997705465165,33.20317062995411,two-sided,1.6909948387204445,0.05,0.8
+gk,explore,moon_mandala_indra,Moon in an Indra-mandala nakshatra,128.0,0.22199950458906967,28.415936587400918,two-sided,1.753563587859207,0.05,0.8
+gk,explore,moon_mandala_varuna,Moon in a Varuna-mandala nakshatra,128.0,0.25917162077596995,33.17396745932415,two-sided,1.7095175663369675,0.05,0.8
+gk,confirm,mars_saturn_conj,Mars-Saturn conjunction,58.0,0.04239437431552251,2.4588737103003053,greater,3.277318840860511,0.05,0.8
+gk,confirm,mars_ketu_conj,Mars-Ketu conjunction,58.0,0.05446279324456741,3.15884200818491,greater,3.049979721801203,0.05,0.8
+gk,confirm,eclipse_window,Eclipse within 7 days,58.0,0.14257305896593464,8.26923742002421,greater,2.2354265724273277,0.05,0.8
+gk,confirm,sun_ingress,Sun sign ingress (sankranti) within 2 days,58.0,0.1327886333506254,7.701740734336274,greater,2.2377344841653195,0.05,0.8
+gk,confirm,station_mars,Mars station within 3 days,58.0,0.014626203239379791,0.8483197878840278,greater,5.525772371409564,0.05,0.8
+gk,confirm,station_mercury,Mercury station within 3 days,58.0,0.10366591734393914,6.01262320594847,greater,2.4451116675794893,0.05,0.8
+gk,confirm,station_venus,Venus station within 3 days,58.0,0.019849847253444002,1.1512911406997521,greater,4.748352528956239,0.05,0.8
+gk,confirm,station_jupiter,Jupiter station within 3 days,58.0,0.029252406478759582,1.6966395757680557,greater,3.897832970124945,0.05,0.8
+gk,confirm,station_saturn,Saturn station within 3 days,58.0,0.03238659288719811,1.8784223874574906,greater,3.6851508206900716,0.05,0.8
+gk,confirm,moon_mandala_vayu,Moon in a Vayu-mandala nakshatra,58.0,0.26057697850020173,15.1134647530117,two-sided,2.20379531372684,0.05,0.8
+gk,confirm,moon_mandala_agni,Moon in an Agni-mandala nakshatra,58.0,0.2599645512709666,15.077943973716064,two-sided,2.1946951031500324,0.05,0.8
+gk,confirm,moon_mandala_indra,Moon in an Indra-mandala nakshatra,58.0,0.22097815436048188,12.816732952907948,two-sided,2.27123005374392,0.05,0.8
+gk,confirm,moon_mandala_varuna,Moon in a Varuna-mandala nakshatra,58.0,0.25848031586834974,14.991858320364285,two-sided,2.2083346695916624,0.05,0.8
+gk,full,mars_saturn_conj,Mars-Saturn conjunction,186.0,0.04976571336241719,9.256422685409598,greater,2.0434680010225206,0.05,0.8
+gk,full,mars_ketu_conj,Mars-Ketu conjunction,186.0,0.04137268630724763,7.695319653148059,greater,2.1382357121943376,0.05,0.8
+gk,full,eclipse_window,Eclipse within 7 days,186.0,0.13834356654279098,25.73190337695912,greater,1.6364486908811269,0.05,0.8
+gk,full,sun_ingress,Sun sign ingress (sankranti) within 2 days,186.0,0.13278486921240193,24.697985673506757,greater,1.6406246516829088,0.05,0.8
+gk,full,station_mars,Mars station within 3 days,186.0,0.015293711064433314,2.8446302579845963,greater,2.9608452131470324,0.05,0.8
+gk,full,station_mercury,Mercury station within 3 days,186.0,0.10445279258900199,19.42821942155437,greater,1.6986078446246315,0.05,0.8
+gk,full,station_venus,Venus station within 3 days,186.0,0.020500080788495717,3.8130150266602034,greater,2.5939148403582006,0.05,0.8
+gk,full,station_jupiter,Jupiter station within 3 days,186.0,0.029936625913358827,5.568212419884742,greater,2.3640762839463645,0.05,0.8
+gk,full,station_saturn,Saturn station within 3 days,186.0,0.03188901455988223,5.931356708138095,greater,2.2759970418639757,0.05,0.8
+gk,full,moon_mandala_vayu,Moon in a Vayu-mandala nakshatra,186.0,0.2597866286063087,48.32031292077342,two-sided,1.5631754618158378,0.05,0.8
+gk,full,moon_mandala_agni,Moon in an Agni-mandala nakshatra,186.0,0.2595756808674889,48.28107664135293,two-sided,1.562087429802804,0.05,0.8
+gk,full,moon_mandala_indra,Moon in an Indra-mandala nakshatra,186.0,0.22168138812588642,41.232738191414875,two-sided,1.5894598794043826,0.05,0.8
+gk,full,moon_mandala_varuna,Moon in a Varuna-mandala nakshatra,186.0,0.258956302400316,48.16587224645877,two-sided,1.5500976312289703,0.05,0.8
+nn,explore,mars_saturn_conj,Mars-Saturn conjunction,144.0,0.05310022945348352,7.646433041301627,greater,2.194413824832604,0.05,0.8
+nn,explore,mars_ketu_conj,Mars-Ketu conjunction,144.0,0.03545121506049228,5.104974968710888,greater,2.4192023869159707,0.05,0.8
+nn,explore,eclipse_window,Eclipse within 7 days,144.0,0.13643030350438048,19.64596370463079,greater,1.721149161555299,0.05,0.8
+nn,explore,sun_ingress,Sun sign ingress (sankranti) within 2 days,144.0,0.1327831664580726,19.12077596996245,greater,1.7265676512278623,0.05,0.8
+nn,explore,station_mars,Mars station within 3 days,144.0,0.015595666458072591,2.245775969962453,greater,3.3435329244232026,0.05,0.8
+nn,explore,station_mercury,Mercury station within 3 days,144.0,0.1048087453066333,15.092459324155195,greater,1.8005350405991336,0.05,0.8
+nn,explore,station_venus,Venus station within 3 days,144.0,0.02079422194409679,2.9943679599499378,greater,2.952640173869995,0.05,0.8
+nn,explore,station_jupiter,Jupiter station within 3 days,144.0,0.03024614100959533,4.355444305381727,greater,2.587993216856185,0.05,0.8
+nn,explore,station_saturn,Saturn station within 3 days,144.0,0.031663928869420106,4.559605757196495,greater,2.5412042836837387,0.05,0.8
+nn,explore,moon_mandala_vayu,Moon in a Vayu-mandala nakshatra,144.0,0.2594291040884439,37.35779098873592,two-sided,1.686672676361994,0.05,0.8
+nn,explore,moon_mandala_agni,Moon in an Agni-mandala nakshatra,144.0,0.2593997705465165,37.35356695869837,two-sided,1.672523572284157,0.05,0.8
+nn,explore,moon_mandala_indra,Moon in an Indra-mandala nakshatra,144.0,0.22199950458906967,31.967928660826033,two-sided,1.6743181161902911,0.05,0.8
+nn,explore,moon_mandala_varuna,Moon in a Varuna-mandala nakshatra,144.0,0.25917162077596995,37.32071339173967,two-sided,1.6734407643608433,0.05,0.8
+nn,confirm,mars_saturn_conj,Mars-Saturn conjunction,70.0,0.04239437431552251,2.967606202086576,greater,3.073448623611198,0.05,0.8
+nn,confirm,mars_ketu_conj,Mars-Ketu conjunction,70.0,0.05446279324456741,3.8123955271197185,greater,2.7416830447858724,0.05,0.8
+nn,confirm,eclipse_window,Eclipse within 7 days,70.0,0.14257305896593464,9.980114127615424,greater,2.1173370618872442,0.05,0.8
+nn,confirm,sun_ingress,Sun sign ingress (sankranti) within 2 days,70.0,0.1327886333506254,9.29520433454378,greater,2.1377338718176664,0.05,0.8
+nn,confirm,station_mars,Mars station within 3 days,70.0,0.014626203239379791,1.0238342267565854,greater,5.0618753585911245,0.05,0.8
+nn,confirm,station_mercury,Mercury station within 3 days,70.0,0.10366591734393914,7.256614214075739,greater,2.289865648255975,0.05,0.8
+nn,confirm,station_venus,Venus station within 3 days,70.0,0.019849847253444002,1.3894893077410801,greater,4.336592555013389,0.05,0.8
+nn,confirm,station_jupiter,Jupiter station within 3 days,70.0,0.029252406478759582,2.047668453513171,greater,3.621615251248756,0.05,0.8
+nn,confirm,station_saturn,Saturn station within 3 days,70.0,0.03238659288719811,2.267061502103868,greater,3.424206370235945,0.05,0.8
+nn,confirm,moon_mandala_vayu,Moon in a Vayu-mandala nakshatra,70.0,0.26057697850020173,18.24038849501412,two-sided,2.0306648106629157,0.05,0.8
+nn,confirm,moon_mandala_agni,Moon in an Agni-mandala nakshatra,70.0,0.2599645512709666,18.197518588967664,two-sided,2.069125878863836,0.05,0.8
+nn,confirm,moon_mandala_indra,Moon in an Indra-mandala nakshatra,70.0,0.22097815436048188,15.468470805233732,two-sided,2.128749766590942,0.05,0.8
+nn,confirm,moon_mandala_varuna,Moon in a Varuna-mandala nakshatra,70.0,0.25848031586834974,18.09362211078448,two-sided,2.058199360536069,0.05,0.8
+nn,full,mars_saturn_conj,Mars-Saturn conjunction,214.0,0.04976571336241719,10.649862659557279,greater,1.95105326564683,0.05,0.8
+nn,full,mars_ketu_conj,Mars-Ketu conjunction,214.0,0.04137268630724763,8.853754869750993,greater,2.0352625573575955,0.05,0.8
+nn,full,eclipse_window,Eclipse within 7 days,214.0,0.13834356654279098,29.605523240157268,greater,1.577636841738234,0.05,0.8
+nn,full,sun_ingress,Sun sign ingress (sankranti) within 2 days,214.0,0.13278486921240193,28.415962011454013,greater,1.57350118097939,0.05,0.8
+nn,full,station_mars,Mars station within 3 days,214.0,0.015293711064433314,3.2728541677887293,greater,2.8040512098583936,0.05,0.8
+nn,full,station_mercury,Mercury station within 3 days,214.0,0.10445279258900199,22.352897614046427,greater,1.642484370971191,0.05,0.8
+nn,full,station_venus,Venus station within 3 days,214.0,0.020500080788495717,4.387017288738083,greater,2.5496646415732904,0.05,0.8
+nn,full,station_jupiter,Jupiter station within 3 days,214.0,0.029936625913358827,6.406437945458789,greater,2.2728943717075203,0.05,0.8
+nn,full,station_saturn,Saturn station within 3 days,214.0,0.03188901455988223,6.824249115814798,greater,2.195591329741641,0.05,0.8
+nn,full,moon_mandala_vayu,Moon in a Vayu-mandala nakshatra,214.0,0.2597866286063087,55.59433852175006,two-sided,1.5059659291540506,0.05,0.8
+nn,full,moon_mandala_agni,Moon in an Agni-mandala nakshatra,214.0,0.2595756808674889,55.549195705642624,two-sided,1.5191721382071655,0.05,0.8
+nn,full,moon_mandala_indra,Moon in an Indra-mandala nakshatra,214.0,0.22168138812588642,47.439817058939695,two-sided,1.553617871830059,0.05,0.8
+nn,full,moon_mandala_varuna,Moon in a Varuna-mandala nakshatra,214.0,0.258956302400316,55.41664871366762,two-sided,1.5213276773803368,0.05,0.8
+gk,explore,tide_semidiurnal_peak,Semidiurnal tidal peak (Moon within 3 h of culmination),128.0,0.5002900761368377,64.03712974551523,greater,1.5676735343833135,0.05,0.8
+gk,explore,tide_spring,Spring tide (within 45 deg of new or full Moon),128.0,0.4941756622861911,63.25448477263246,greater,1.5556632911704775,0.05,0.8
+gk,explore,tide_spring_and_peak,Spring tide and semidiurnal peak,128.0,0.247324129119733,31.657488527325825,greater,1.6212447694101526,0.05,0.8
+gk,confirm,tide_semidiurnal_peak,Semidiurnal tidal peak (Moon within 3 h of culmination),58.0,0.49961092858378003,28.977433857859243,greater,1.9422365508351411,0.05,0.8
+gk,confirm,tide_spring,Spring tide (within 45 deg of new or full Moon),58.0,0.494538590120468,28.683238226987147,greater,1.9579841866403833,0.05,0.8
+gk,confirm,tide_spring_and_peak,Spring tide and semidiurnal peak,58.0,0.24706755432589775,14.329918150902069,greater,2.0663367059597757,0.05,0.8
+gk,full,tide_semidiurnal_peak,Semidiurnal tidal peak (Moon within 3 h of culmination),186.0,0.5000785443708371,93.0146092529757,greater,1.4283667149297588,0.05,0.8
+gk,full,tide_spring,Spring tide (within 45 deg of new or full Moon),186.0,0.49428870217769877,91.93769860505198,greater,1.4495779646940667,0.05,0.8
+gk,full,tide_spring_and_peak,Spring tide and semidiurnal peak,186.0,0.24724421464605661,45.98742392416653,greater,1.4985633442622728,0.05,0.8
+nn,explore,tide_semidiurnal_peak,Semidiurnal tidal peak (Moon within 3 h of culmination),144.0,0.5002900761368377,72.04177096370464,greater,1.5189676455866112,0.05,0.8
+nn,explore,tide_spring,Spring tide (within 45 deg of new or full Moon),144.0,0.4941756622861911,71.16129536921152,greater,1.5184333195414994,0.05,0.8
+nn,explore,tide_spring_and_peak,Spring tide and semidiurnal peak,144.0,0.247324129119733,35.61467459324155,greater,1.5650965880346324,0.05,0.8
+nn,confirm,tide_semidiurnal_peak,Semidiurnal tidal peak (Moon within 3 h of culmination),70.0,0.49961092858378003,34.972765000864605,greater,1.8441748406149543,0.05,0.8
+nn,confirm,tide_spring,Spring tide (within 45 deg of new or full Moon),70.0,0.494538590120468,34.617701308432764,greater,1.8399801260206932,0.05,0.8
+nn,confirm,tide_spring_and_peak,Spring tide and semidiurnal peak,70.0,0.24706755432589775,17.29472880281284,greater,1.9040246003264294,0.05,0.8
+nn,full,tide_semidiurnal_peak,Semidiurnal tidal peak (Moon within 3 h of culmination),214.0,0.5000785443708371,107.01680849535914,greater,1.4041122345743098,0.05,0.8
+nn,full,tide_spring,Spring tide (within 45 deg of new or full Moon),214.0,0.49428870217769877,105.77778226602754,greater,1.4206219151358086,0.05,0.8
+nn,full,tide_spring_and_peak,Spring tide and semidiurnal peak,214.0,0.24724421464605661,52.91026193425611,greater,1.4538545523739015,0.05,0.8

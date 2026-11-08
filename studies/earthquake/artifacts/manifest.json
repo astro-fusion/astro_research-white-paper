@@ -3,6 +3,8 @@
     ".gitkeep",
     "catalogue_summary.csv",
     "confirmation.csv",
+    "events_declustered_gk.csv",
+    "events_declustered_gk.json",
     "family_explore.csv",
     "fig_declustering.png",
     "fig_mc.png",
@@ -11,14 +13,17 @@
     "fig_region.png",
     "rate_tests_all.csv",
     "raw_descriptive.csv",
-    "results.json"
+    "results.json",
+    "tbl_bayes.csv",
+    "tbl_controls.csv",
+    "tbl_power.csv"
   ],
   "ayanamsa": "lahiri",
   "catalogue_source": "usgs_fdsn",
-  "created_utc": "2026-11-08T02:26:50+00:00",
+  "created_utc": "2026-11-08T07:04:45+00:00",
   "ephemeris_model": "moshier",
   "git": {
-    "commit": "8dbfa59b6fda4aa22058d2292b0d1c84f07ae7b0",
+    "commit": "6c2c9c3a5842f8d42280faaf8698472ca74f9cc7",
     "dirty": true
   },
   "inputs": [
@@ -33,7 +38,7 @@
     },
     {
       "path": "studies/earthquake/hypothesis.yaml",
-      "sha256": "d8e209709108fa6fbc7ff67e44b246bb74bb092de389fdc28e329647f229b455"
+      "sha256": "50150a61bcc043929e921cdeb38860a3506bad9d7135a2d0fe89893663a1c3bc"
     }
   ],
   "n_draws": 10000,

@@ -31,6 +31,7 @@ for p in (HERE, REPO, REPO / "libs"):
 import decluster  # noqa: E402
 import fetch_catalogue as fc  # noqa: E402
 import indicators as ind  # noqa: E402
+import robustness as rb  # noqa: E402
 from count_models import compare_nb_models, monthly_design  # noqa: E402
 
 from studies._paths import SNAPSHOT_ROOT, artifacts_dir  # noqa: E402
@@ -340,6 +341,37 @@ def molchan_summary(hyp, frame, bins, seed, tag) -> Dict:
     }
 
 
+def secondary_analyses(hyp, grid, eph, frame, bins_by_cat, tables, tests,
+                       seed, n_draws) -> Dict:
+    """Run the controls, classifier, Bayes and power (amendment 2)."""
+    pos = rb.positive_control(hyp, grid, eph, bins_by_cat, seed, n_draws, run_tests)
+    neg = rb.negative_control(hyp, grid, frame, bins_by_cat, seed, n_draws,
+                              run_tests)
+    clf = rb.classifier(hyp, grid, eph, bins_by_cat["gk"],
+                        period_slices(hyp, grid), seed)
+    bayes_tab = rb.bayes_table(tables["family"], tables["confirmation"])
+    power_tab = rb.power_rows(hyp, tests, pos["tests"], seed)
+    ctrl_tab = pd.concat(
+        [pos["tests"].assign(control="positive"),
+         neg["tests"].assign(control="negative")], ignore_index=True)
+    controls = {
+        "positive": {
+            "references": pos["references"],
+            "time_fraction": pos["time_fraction"],
+            "detected": pos["detected"],
+            "best": {k: (v.item() if hasattr(v, "item") else v)
+                     for k, v in pos["best"].items()},
+            "decision": rb.records(pos["decision"]),
+            "all": rb.records(pos["tests"]),
+        },
+        "negative": {k: v for k, v in neg.items() if k != "tests"}
+        | {"tests": rb.records(neg["tests"])},
+    }
+    return {"controls": controls, "classifier": clf,
+            "tables": {"controls": ctrl_tab, "bayes": bayes_tab,
+                       "power": power_tab}}
+
+
 # -------------------------------------------------------------- figures
 def make_figures(art, hyp, cat, info, masks, tests, fam, molchan, prov):
     """Write the paper figures with provenance footers."""
@@ -532,6 +564,9 @@ def run(
         monthly_design(cat.loc[masks["gk"], "time"], frame, greater), greater
     )
 
+    sec = secondary_analyses(hyp, grid, eph, frame, bins_by_cat, tables, tests,
+                             seed, n_draws)
+
     eph_info = engine.get_ephemeris_info()
     git = git_commit(REPO)
     prov = {"data_sha256": info["sha256"], "commit": git["commit"], "seed": seed}
@@ -568,6 +603,8 @@ def run(
     tables["family"].to_csv(art / "family_explore.csv", index=False)
     tables["confirmation"].to_csv(art / "confirmation.csv", index=False)
     tables["raw"].to_csv(art / "raw_descriptive.csv", index=False)
+    for name in ("controls", "bayes", "power"):
+        sec["tables"][name].to_csv(art / f"tbl_{name}.csv", index=False)
 
     fam = tables["family"]
     conf = tables["confirmation"]
@@ -604,6 +641,10 @@ def run(
         "molchan": molchan,
         "count_model": counts,
         "figures": figures,
+        "controls": sec["controls"],
+        "classifier": sec["classifier"],
+        "bayes": rb.records(sec["tables"]["bayes"]),
+        "power": rb.records(sec["tables"]["power"]),
         "headline": {
             "family_size": int(len(fam)),
             "n_significant_explore": int(fam["significant"].sum()),
@@ -669,6 +710,18 @@ def main(argv=None) -> int:
         f"significant in exploration, {h['n_carried']} carried, "
         f"{h['n_confirmed']} confirmed"
     )
+    pc = res["controls"]["positive"]
+    print(
+        f"positive control (tides) {'detected' if pc['detected'] else 'not detected'}"
+        f": best {pc['best']['indicator']} RR {pc['best']['rate_ratio']:.2f}, "
+        f"p {pc['best']['p_value']:.3f}"
+    )
+    nc = res["controls"]["negative"]
+    print(f"negative control: {nc['n_nominal']}/{nc['family_size']} nominal, "
+          f"{nc['n_significant']} after BY")
+    cv = res["classifier"]["explore_cv"]
+    print(f"classifier AUC {cv['auc']:.3f} vs shifted median {cv['null_q50']:.3f}"
+          f" (p {cv['p_value']:.3f})")
     return 0
 
 
