@@ -172,6 +172,20 @@ class DashaWeightBody(Strict):
         return value
 
 
+class EclipseMagnitudeBody(Strict):
+    """Largest eclipse magnitude in the window, clipped to [0, 1]."""
+
+    kind: Literal["solar", "lunar", "any"] = "any"
+    days_before: float = Field(default=0.0, ge=0, le=400)
+    days_after: float = Field(default=0.0, ge=0, le=400)
+
+
+class EclipseMagnitude(Strict):
+    """Strength term ``eclipse_magnitude``."""
+
+    eclipse_magnitude: EclipseMagnitudeBody
+
+
 class OrbCloseness(Strict):
     """Strength term ``orb_closeness``."""
 
@@ -196,8 +210,16 @@ class DashaWeight(Strict):
     dasha_weight: DashaWeightBody
 
 
-StrengthTerm = Union[OrbCloseness, AspectCloseness, DignityWeight, DashaWeight]
-TERM_NAMES = ("orb_closeness", "aspect_closeness", "dignity_weight", "dasha_weight")
+StrengthTerm = Union[
+    OrbCloseness, AspectCloseness, DignityWeight, DashaWeight, EclipseMagnitude
+]
+TERM_NAMES = (
+    "orb_closeness",
+    "aspect_closeness",
+    "dignity_weight",
+    "dasha_weight",
+    "eclipse_magnitude",
+)
 
 
 class Strength(Strict):

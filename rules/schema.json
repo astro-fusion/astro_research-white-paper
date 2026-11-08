@@ -90,6 +90,27 @@
               },
               {
                 "$ref": "#/$defs/Leaf_ingress"
+              },
+              {
+                "$ref": "#/$defs/Leaf_planets_in_one_sign_gte"
+              },
+              {
+                "$ref": "#/$defs/Leaf_eclipse_within_days"
+              },
+              {
+                "$ref": "#/$defs/Leaf_eclipse_degree_transited_by"
+              },
+              {
+                "$ref": "#/$defs/Leaf_kurma_direction"
+              },
+              {
+                "$ref": "#/$defs/Leaf_moon_mandala"
+              },
+              {
+                "$ref": "#/$defs/Leaf_planet_distance_au_lte"
+              },
+              {
+                "$ref": "#/$defs/Leaf_samvatsara_is"
               }
             ]
           },
@@ -194,6 +215,27 @@
               },
               {
                 "$ref": "#/$defs/Leaf_ingress"
+              },
+              {
+                "$ref": "#/$defs/Leaf_planets_in_one_sign_gte"
+              },
+              {
+                "$ref": "#/$defs/Leaf_eclipse_within_days"
+              },
+              {
+                "$ref": "#/$defs/Leaf_eclipse_degree_transited_by"
+              },
+              {
+                "$ref": "#/$defs/Leaf_kurma_direction"
+              },
+              {
+                "$ref": "#/$defs/Leaf_moon_mandala"
+              },
+              {
+                "$ref": "#/$defs/Leaf_planet_distance_au_lte"
+              },
+              {
+                "$ref": "#/$defs/Leaf_samvatsara_is"
               }
             ]
           },
@@ -416,6 +458,27 @@
               },
               {
                 "$ref": "#/$defs/Leaf_ingress"
+              },
+              {
+                "$ref": "#/$defs/Leaf_planets_in_one_sign_gte"
+              },
+              {
+                "$ref": "#/$defs/Leaf_eclipse_within_days"
+              },
+              {
+                "$ref": "#/$defs/Leaf_eclipse_degree_transited_by"
+              },
+              {
+                "$ref": "#/$defs/Leaf_kurma_direction"
+              },
+              {
+                "$ref": "#/$defs/Leaf_moon_mandala"
+              },
+              {
+                "$ref": "#/$defs/Leaf_planet_distance_au_lte"
+              },
+              {
+                "$ref": "#/$defs/Leaf_samvatsara_is"
               }
             ]
           },
@@ -889,6 +952,63 @@
       "title": "DignityWeightBody",
       "type": "object"
     },
+    "DistanceAU": {
+      "additionalProperties": false,
+      "description": "Parameters of ``planet_distance_au_lte``.",
+      "properties": {
+        "au": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 12,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Au"
+        },
+        "planet": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya"
+          ],
+          "title": "Planet",
+          "type": "string"
+        }
+      },
+      "required": [
+        "planet",
+        "au"
+      ],
+      "title": "DistanceAU",
+      "type": "object"
+    },
     "Drishti": {
       "additionalProperties": false,
       "description": "Parameters of ``graha_drishti``.",
@@ -986,6 +1106,108 @@
         "target"
       ],
       "title": "Drishti",
+      "type": "object"
+    },
+    "EclipseDegree": {
+      "additionalProperties": false,
+      "description": "Parameters of ``eclipse_degree_transited_by``.",
+      "properties": {
+        "angles": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                "type": "string"
+              }
+            ]
+          },
+          "minItems": 1,
+          "title": "Angles",
+          "type": "array"
+        },
+        "kind": {
+          "default": "any",
+          "enum": [
+            "solar",
+            "lunar",
+            "any"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "lookback_days": {
+          "anyOf": [
+            {
+              "default": 365.0,
+              "exclusiveMinimum": 0,
+              "maximum": 1100,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Lookback Days"
+        },
+        "orb": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 15,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Orb"
+        },
+        "planets": {
+          "items": {
+            "enum": [
+              "Sun",
+              "Moon",
+              "Mars",
+              "Mercury",
+              "Jupiter",
+              "Venus",
+              "Saturn",
+              "Rahu",
+              "Ketu",
+              "Brihaspati",
+              "Budha",
+              "Chandra",
+              "Guru",
+              "Kuja",
+              "Mangal",
+              "Mangala",
+              "Northnode",
+              "Ravi",
+              "Sani",
+              "Shani",
+              "Shukra",
+              "Soma",
+              "Southnode",
+              "Sukra",
+              "Surya"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Planets",
+          "type": "array"
+        }
+      },
+      "required": [
+        "planets",
+        "orb"
+      ],
+      "title": "EclipseDegree",
       "type": "object"
     },
     "EclipseInSign": {
@@ -1165,6 +1387,165 @@
         }
       },
       "title": "EclipseInSign",
+      "type": "object"
+    },
+    "EclipseMagnitude": {
+      "additionalProperties": false,
+      "description": "Strength term ``eclipse_magnitude``.",
+      "properties": {
+        "eclipse_magnitude": {
+          "$ref": "#/$defs/EclipseMagnitudeBody"
+        }
+      },
+      "required": [
+        "eclipse_magnitude"
+      ],
+      "title": "EclipseMagnitude",
+      "type": "object"
+    },
+    "EclipseMagnitudeBody": {
+      "additionalProperties": false,
+      "description": "Largest eclipse magnitude in the window, clipped to [0, 1].",
+      "properties": {
+        "days_after": {
+          "anyOf": [
+            {
+              "default": 0.0,
+              "maximum": 400,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Days After"
+        },
+        "days_before": {
+          "anyOf": [
+            {
+              "default": 0.0,
+              "maximum": 400,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Days Before"
+        },
+        "kind": {
+          "default": "any",
+          "enum": [
+            "solar",
+            "lunar",
+            "any"
+          ],
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "title": "EclipseMagnitudeBody",
+      "type": "object"
+    },
+    "EclipseWithin": {
+      "additionalProperties": false,
+      "description": "Parameters of ``eclipse_within_days``.",
+      "properties": {
+        "days_after": {
+          "anyOf": [
+            {
+              "default": 0.0,
+              "maximum": 400,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Days After"
+        },
+        "days_before": {
+          "anyOf": [
+            {
+              "default": 0.0,
+              "maximum": 400,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Days Before"
+        },
+        "kind": {
+          "default": "any",
+          "enum": [
+            "solar",
+            "lunar",
+            "any"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "min_magnitude": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": -1,
+                  "maximum": 2,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Magnitude"
+        },
+        "pair_within_days": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "exclusiveMinimum": 0,
+                  "maximum": 60,
+                  "type": "number"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pair Within Days"
+        },
+        "penumbral": {
+          "default": true,
+          "title": "Penumbral",
+          "type": "boolean"
+        }
+      },
+      "title": "EclipseWithin",
       "type": "object"
     },
     "ExpectedEffect": {
@@ -1974,6 +2355,79 @@
       "title": "Ingress",
       "type": "object"
     },
+    "KurmaDirection": {
+      "additionalProperties": false,
+      "description": "Parameters of ``kurma_direction``.",
+      "properties": {
+        "directions": {
+          "items": {
+            "enum": [
+              "centre",
+              "east",
+              "south_east",
+              "south",
+              "south_west",
+              "west",
+              "north_west",
+              "north",
+              "north_east"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Directions",
+          "type": "array"
+        },
+        "planet": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya",
+            "Lagna",
+            "Ascendant"
+          ],
+          "title": "Planet",
+          "type": "string"
+        },
+        "start": {
+          "default": "krittika",
+          "enum": [
+            "krittika",
+            "ashwini"
+          ],
+          "title": "Start",
+          "type": "string"
+        }
+      },
+      "required": [
+        "planet",
+        "directions"
+      ],
+      "title": "KurmaDirection",
+      "type": "object"
+    },
     "Leaf_antardasha_lord_is": {
       "additionalProperties": false,
       "properties": {
@@ -2044,6 +2498,20 @@
       "title": "Leaf_dignity_in",
       "type": "object"
     },
+    "Leaf_eclipse_degree_transited_by": {
+      "additionalProperties": false,
+      "properties": {
+        "eclipse_degree_transited_by": {
+          "$ref": "#/$defs/EclipseDegree",
+          "description": "Check that a planet now stands at ``angles`` from a recent eclipse degree."
+        }
+      },
+      "required": [
+        "eclipse_degree_transited_by"
+      ],
+      "title": "Leaf_eclipse_degree_transited_by",
+      "type": "object"
+    },
     "Leaf_eclipse_in_sign": {
       "additionalProperties": false,
       "properties": {
@@ -2056,6 +2524,20 @@
         "eclipse_in_sign"
       ],
       "title": "Leaf_eclipse_in_sign",
+      "type": "object"
+    },
+    "Leaf_eclipse_within_days": {
+      "additionalProperties": false,
+      "properties": {
+        "eclipse_within_days": {
+          "$ref": "#/$defs/EclipseWithin",
+          "description": "Check that an eclipse falls between ``days_before`` and ``days_after``."
+        }
+      },
+      "required": [
+        "eclipse_within_days"
+      ],
+      "title": "Leaf_eclipse_within_days",
       "type": "object"
     },
     "Leaf_graha_drishti": {
@@ -2170,6 +2652,20 @@
       "title": "Leaf_ingress",
       "type": "object"
     },
+    "Leaf_kurma_direction": {
+      "additionalProperties": false,
+      "properties": {
+        "kurma_direction": {
+          "$ref": "#/$defs/KurmaDirection",
+          "description": "Check that the point's nakshatra lies in a listed Kurma Chakra division."
+        }
+      },
+      "required": [
+        "kurma_direction"
+      ],
+      "title": "Leaf_kurma_direction",
+      "type": "object"
+    },
     "Leaf_longitude_between": {
       "additionalProperties": false,
       "properties": {
@@ -2182,6 +2678,20 @@
         "longitude_between"
       ],
       "title": "Leaf_longitude_between",
+      "type": "object"
+    },
+    "Leaf_moon_mandala": {
+      "additionalProperties": false,
+      "properties": {
+        "moon_mandala": {
+          "$ref": "#/$defs/MoonMandala",
+          "description": "Check that the Moon's nakshatra belongs to a listed earthquake circle."
+        }
+      },
+      "required": [
+        "moon_mandala"
+      ],
+      "title": "Leaf_moon_mandala",
       "type": "object"
     },
     "Leaf_moon_phase": {
@@ -2212,6 +2722,20 @@
       "title": "Leaf_nakshatra_lord_is",
       "type": "object"
     },
+    "Leaf_planet_distance_au_lte": {
+      "additionalProperties": false,
+      "properties": {
+        "planet_distance_au_lte": {
+          "$ref": "#/$defs/DistanceAU",
+          "description": "Check that the planet's geocentric distance is at most ``au``."
+        }
+      },
+      "required": [
+        "planet_distance_au_lte"
+      ],
+      "title": "Leaf_planet_distance_au_lte",
+      "type": "object"
+    },
     "Leaf_planet_speed_below": {
       "additionalProperties": false,
       "properties": {
@@ -2226,6 +2750,20 @@
       "title": "Leaf_planet_speed_below",
       "type": "object"
     },
+    "Leaf_planets_in_one_sign_gte": {
+      "additionalProperties": false,
+      "properties": {
+        "planets_in_one_sign_gte": {
+          "$ref": "#/$defs/SignCluster",
+          "description": "Check that at least ``count`` of ``bodies`` occupy one sidereal sign."
+        }
+      },
+      "required": [
+        "planets_in_one_sign_gte"
+      ],
+      "title": "Leaf_planets_in_one_sign_gte",
+      "type": "object"
+    },
     "Leaf_retrograde": {
       "additionalProperties": false,
       "properties": {
@@ -2238,6 +2776,20 @@
         "retrograde"
       ],
       "title": "Leaf_retrograde",
+      "type": "object"
+    },
+    "Leaf_samvatsara_is": {
+      "additionalProperties": false,
+      "properties": {
+        "samvatsara_is": {
+          "$ref": "#/$defs/SamvatsaraIs",
+          "description": "Check that the sixty-year samvatsara running at the moment is listed."
+        }
+      },
+      "required": [
+        "samvatsara_is"
+      ],
+      "title": "Leaf_samvatsara_is",
       "type": "object"
     },
     "Leaf_separation_within": {
@@ -2440,6 +2992,65 @@
         "lords"
       ],
       "title": "LordsOnly",
+      "type": "object"
+    },
+    "MoonMandala": {
+      "additionalProperties": false,
+      "description": "Parameters of ``moon_mandala``.",
+      "properties": {
+        "mandalas": {
+          "items": {
+            "enum": [
+              "vayu",
+              "agni",
+              "indra",
+              "varuna"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Mandalas",
+          "type": "array"
+        },
+        "planet": {
+          "default": "Moon",
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya",
+            "Lagna",
+            "Ascendant"
+          ],
+          "title": "Planet",
+          "type": "string"
+        }
+      },
+      "required": [
+        "mandalas"
+      ],
+      "title": "MoonMandala",
       "type": "object"
     },
     "MoonPhase": {
@@ -2660,6 +3271,27 @@
             },
             {
               "$ref": "#/$defs/Leaf_ingress"
+            },
+            {
+              "$ref": "#/$defs/Leaf_planets_in_one_sign_gte"
+            },
+            {
+              "$ref": "#/$defs/Leaf_eclipse_within_days"
+            },
+            {
+              "$ref": "#/$defs/Leaf_eclipse_degree_transited_by"
+            },
+            {
+              "$ref": "#/$defs/Leaf_kurma_direction"
+            },
+            {
+              "$ref": "#/$defs/Leaf_moon_mandala"
+            },
+            {
+              "$ref": "#/$defs/Leaf_planet_distance_au_lte"
+            },
+            {
+              "$ref": "#/$defs/Leaf_samvatsara_is"
             }
           ],
           "title": "Not"
@@ -3077,6 +3709,31 @@
       "title": "ReviewEntry",
       "type": "object"
     },
+    "SamvatsaraIs": {
+      "additionalProperties": false,
+      "description": "Parameters of ``samvatsara_is``.",
+      "properties": {
+        "convention": {
+          "const": "luni_solar",
+          "default": "luni_solar",
+          "title": "Convention",
+          "type": "string"
+        },
+        "names": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Names",
+          "type": "array"
+        }
+      },
+      "required": [
+        "names"
+      ],
+      "title": "SamvatsaraIs",
+      "type": "object"
+    },
     "Separation": {
       "additionalProperties": false,
       "description": "Two planets, a target angle and an orb.",
@@ -3152,6 +3809,113 @@
         "orb"
       ],
       "title": "Separation",
+      "type": "object"
+    },
+    "SignCluster": {
+      "additionalProperties": false,
+      "description": "Parameters of ``planets_in_one_sign_gte``.",
+      "properties": {
+        "bodies": {
+          "items": {
+            "enum": [
+              "Sun",
+              "Moon",
+              "Mars",
+              "Mercury",
+              "Jupiter",
+              "Venus",
+              "Saturn",
+              "Rahu",
+              "Ketu",
+              "Brihaspati",
+              "Budha",
+              "Chandra",
+              "Guru",
+              "Kuja",
+              "Mangal",
+              "Mangala",
+              "Northnode",
+              "Ravi",
+              "Sani",
+              "Shani",
+              "Shukra",
+              "Soma",
+              "Southnode",
+              "Sukra",
+              "Surya"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Bodies",
+          "type": "array"
+        },
+        "count": {
+          "anyOf": [
+            {
+              "maximum": 9,
+              "minimum": 2,
+              "type": "integer"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Count"
+        },
+        "signs": {
+          "anyOf": [
+            {
+              "items": {
+                "enum": [
+                  "Aries",
+                  "Taurus",
+                  "Gemini",
+                  "Cancer",
+                  "Leo",
+                  "Virgo",
+                  "Libra",
+                  "Scorpio",
+                  "Sagittarius",
+                  "Capricorn",
+                  "Aquarius",
+                  "Pisces",
+                  "Dhanu",
+                  "Dhanus",
+                  "Kanya",
+                  "Karka",
+                  "Karkata",
+                  "Kataka",
+                  "Kumbha",
+                  "Makara",
+                  "Meena",
+                  "Mesha",
+                  "Mina",
+                  "Mithuna",
+                  "Simha",
+                  "Tula",
+                  "Vrischika",
+                  "Vrishabha",
+                  "Vrishabham",
+                  "Vrishchika"
+                ],
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Signs"
+        }
+      },
+      "required": [
+        "count"
+      ],
+      "title": "SignCluster",
       "type": "object"
     },
     "Source": {
@@ -3347,6 +4111,9 @@
               },
               {
                 "$ref": "#/$defs/DashaWeight"
+              },
+              {
+                "$ref": "#/$defs/EclipseMagnitude"
               }
             ]
           },
@@ -4046,6 +4813,27 @@
             },
             {
               "$ref": "#/$defs/Leaf_ingress"
+            },
+            {
+              "$ref": "#/$defs/Leaf_planets_in_one_sign_gte"
+            },
+            {
+              "$ref": "#/$defs/Leaf_eclipse_within_days"
+            },
+            {
+              "$ref": "#/$defs/Leaf_eclipse_degree_transited_by"
+            },
+            {
+              "$ref": "#/$defs/Leaf_kurma_direction"
+            },
+            {
+              "$ref": "#/$defs/Leaf_moon_mandala"
+            },
+            {
+              "$ref": "#/$defs/Leaf_planet_distance_au_lte"
+            },
+            {
+              "$ref": "#/$defs/Leaf_samvatsara_is"
             }
           ]
         },

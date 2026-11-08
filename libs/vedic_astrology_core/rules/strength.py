@@ -10,6 +10,9 @@ mean) of its terms, each in [0, 1]:
   planet's deep-debilitation point over 180 degrees, 1 at the paramoccha.
 * ``dasha_weight``: 1 when ``lord`` runs the mahadasha, 1/2 the antardasha,
   1/4 the pratyantardasha (the first listed level that matches), else 0.
+* ``eclipse_magnitude``: the largest magnitude at greatest eclipse among
+  the eclipses in the window, clipped to [0, 1] (Swiss Ephemeris
+  ``sol_eclipse_how`` / ``lun_eclipse_how``; 0 for a penumbral-only one).
 """
 
 from typing import List, Tuple
@@ -55,6 +58,18 @@ def term_value(term, ctx: EvalContext) -> Tuple[float, str]:
                 v = LEVEL_WEIGHT[level]
                 return v, f"{body.lord} runs dasha level {level}: {v:.2f}"
         return 0.0, f"{body.lord} runs none of levels {body.levels}: 0.00"
+    if name == "eclipse_magnitude":
+        from ..astrology.mundane import eclipse_magnitude, magnitude_strength
+        from .eclipses import eclipses_between
+
+        found = eclipses_between(
+            sky.jd - body.days_before, sky.jd + body.days_after, body.kind
+        )
+        if not found:
+            return 0.0, "no eclipse in the window: 0.00"
+        mags = [eclipse_magnitude(e.kind, e.jd) for e in found]
+        v = magnitude_strength(max(mags))
+        return v, f"largest eclipse magnitude {max(mags):.2f}: {v:.2f}"
     raise ValueError(f"unknown strength term {name}")  # pragma: no cover
 
 

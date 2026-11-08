@@ -171,6 +171,7 @@ def point_label(point: str) -> str:
 # Register the vocabulary (imports are for their side effect). The order is
 # the registration order, which fixes rules/schema.json: do not sort.
 from . import placement, relations, timing, mundane  # noqa: E402,F401  # isort: skip
+from . import samhita  # noqa: E402,F401  # isort: skip
 
 __all__ = [
     "PREDICATES",

@@ -465,8 +465,11 @@ def test_ingress():
 
 
 def test_every_predicate_is_covered_here():
-    """Each registered predicate appears in a test in this file."""
-    text = Path(__file__).read_text()
+    """Each registered predicate appears in a test here or in a sibling file."""
+    here = Path(__file__).parent
+    files = [Path(__file__), here / "test_mundane_predicates.py"]
+    files += sorted(here.glob("test_rules_predicates_*.py"))
+    text = "".join(f.read_text() for f in files)
     missing = [name for name in PREDICATES if f'"{name}"' not in text]
     assert not missing
 

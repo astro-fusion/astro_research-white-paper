@@ -193,6 +193,13 @@ a list.
 | `transit_conjunct_natal` | mundane | the transiting planet is within `orb` degrees of a natal point | `{transit_conjunct_natal: {planet: Saturn, natal_point: Sun, orb: 3}}` |
 | `eclipse_in_sign` | mundane | a solar or lunar eclipse falls in the window and in the listed signs or nakshatras | `{eclipse_in_sign: {kind: solar, signs: [Leo], days_before: 15, days_after: 15}}` |
 | `ingress` | mundane | the planet enters a sign (sankranti for the Sun) within the window | `{ingress: {planet: Sun, signs: [Aries], days_before: 1}}` |
+| `planets_in_one_sign_gte` | mundane | at least `count` of `bodies` (default the seven visible grahas) share one sign (Brihat Jataka 12 sankhya yogas; the pancha graha cluster) | `{planets_in_one_sign_gte: {count: 5}}` |
+| `eclipse_within_days` | mundane | an eclipse falls in the window; optionally paired with one of the other kind within `pair_within_days`, and of at least `min_magnitude` (BS 5) | `{eclipse_within_days: {days_before: 30, days_after: 30, pair_within_days: 16}}` |
+| `eclipse_degree_transited_by` | mundane | a listed planet stands within `orb` of `angles` (0 conjunction, 180 opposition) from the degree of an eclipse in the last `lookback_days` | `{eclipse_degree_transited_by: {planets: [Mars, Saturn], orb: 3, angles: [0, 180]}}` |
+| `kurma_direction` | mundane | the point's nakshatra lies in a listed Kurma Chakra division (BS 14; `start: krittika` as the text, `ashwini` as the practitioner table) | `{kurma_direction: {planet: Saturn, directions: [north], start: krittika}}` |
+| `moon_mandala` | mundane | the Moon's nakshatra is in a listed earthquake circle: vayu, agni, indra, varuna (BS 32) | `{moon_mandala: {mandalas: [agni]}}` |
+| `planet_distance_au_lte` | mundane | the planet's geocentric distance is at most `au` astronomical units (BS 6 reads a large, bright Mars) | `{planet_distance_au_lte: {planet: Mars, au: 0.45}}` |
+| `samvatsara_is` | time | the sixty-year samvatsara (BS 8; luni-solar, Prabhava = 1987-88) is listed | `{samvatsara_is: {names: [Krodhi]}}` |
 
 The full definition of each predicate, with its classical source, is
 printed by `astro-rules list --predicates` and lives in the docstrings of
