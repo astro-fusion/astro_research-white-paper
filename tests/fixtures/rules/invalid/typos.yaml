@@ -1,0 +1,17 @@
+id: test.typos
+name: Typos everywhere
+domain: seismic
+claim: A rule with mistakes.
+source: {text: Folk tradition}
+author: "@tests"
+tier: experimental
+conditions:
+  all:
+    - conjunct_within: {planets: [Mars, Ketu], orb_degs: 13}
+    - house_frm: {planet: Mars}
+    - in_sign: {planet: Jupitor, signs: [Leo]}
+    - graha_drishti: {planet: Mars, target: Moon, aspects: [10]}
+reference_cases:
+  - moment: "2000-01-01T12:00:00"
+    expect: fires
+    note: naive moment

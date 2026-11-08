@@ -1,0 +1,12 @@
+id: test.no_chapter
+name: Classical without a chapter
+domain: general
+claim: Claims to be classical.
+source: {text: BPHS}
+author: "@tests"
+tier: classical
+conditions:
+  retrograde: {planet: Saturn}
+reference_cases:
+  - {moment: "2000-01-01T12:00:00Z", expect: fires, note: Saturn retrograde}
+  - {moment: "2001-09-11T12:46:00Z", expect: silent, note: Saturn direct}

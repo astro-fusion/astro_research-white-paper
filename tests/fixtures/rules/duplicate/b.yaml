@@ -1,0 +1,14 @@
+id: test.saturn_tenth
+name: Saturn in the 10th from the Lagna
+domain: natal
+claim: Test rule that needs a place.
+source: {url: "https://example.org/test"}
+author: "@tests"
+tier: experimental
+conditions:
+  in_house: {planet: Saturn, houses: [1]}
+reference_cases:
+  - moment: "2000-01-01T12:00:00Z"
+    place: {lat: 51.4769, lon: 0.0, tz: UTC}
+    expect: fires
+    note: Lagna Aries 0.4, Saturn Aries 16.5.

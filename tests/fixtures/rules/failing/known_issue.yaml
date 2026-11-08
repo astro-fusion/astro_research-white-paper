@@ -1,0 +1,12 @@
+id: test.known_issue
+name: A mismatch already flagged
+domain: general
+claim: test
+source: {text: test}
+author: "@tests"
+tier: experimental
+status: needs_verification
+conditions:
+  retrograde: {planet: Jupiter}
+reference_cases:
+  - {moment: "2000-01-01T12:00:00Z", expect: fires, note: flagged}

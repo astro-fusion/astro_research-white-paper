@@ -1,0 +1,32 @@
+id: test.gaja_kesari
+name: Gaja Kesari (test copy)
+domain: general
+claim: Jupiter in a kendra from the Moon, not combust.
+source: {text: Brihat Parashara Hora Shastra, chapter: 36, verse: "3-4"}
+author: "@tests"
+tier: classical
+conditions:
+  all:
+    - planet: Jupiter
+      in_kendra_from: Moon
+    - planet: Jupiter
+      not: combust
+reference_cases:
+  - moment: "2000-01-01T12:00:00Z"
+    expect: fires
+    note: Jupiter Aries 1.4 is 7th from the Moon in Libra; 105 deg from the Sun.
+  - moment: "1947-08-14T18:30:00Z"
+    expect: fires
+    note: Jupiter Libra is 4th from the Moon in Cancer.
+  - moment: "1990-05-15T04:45:00Z"
+    expect: fires
+    note: Jupiter Gemini is 7th from the Moon in Sagittarius.
+  - moment: "2024-02-28T19:00:00Z"
+    expect: fires
+    note: Jupiter Aries is 7th from the Moon in Libra.
+  - moment: "2001-09-11T12:46:00Z"
+    expect: fires
+    note: Jupiter and the Moon both in Gemini (1st, a kendra).
+  - moment: "2024-05-16T12:00:00Z"
+    expect: silent
+    note: Jupiter Taurus is 10th from the Moon in Leo but 1.7 deg from the Sun (combust).

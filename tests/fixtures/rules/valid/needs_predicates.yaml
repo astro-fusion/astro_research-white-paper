@@ -1,0 +1,11 @@
+id: test.waiting
+name: A rule waiting for a predicate
+domain: mundane
+claim: Something the vocabulary cannot yet express.
+source: {app_registry: docs/mundane/rule-registry.yaml, id: RULE-999}
+author: "@tests"
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition: ["Sunspot count above 150"]
