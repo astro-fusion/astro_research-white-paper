@@ -1,0 +1,115 @@
+# Pre-registration for the silver-market study (ADR-001 scientific rigor contract).
+# Written 2026-11-08 before the rebuilt pipeline was first run. Any change after
+# the first run is logged in "amendments" with its date and reason; nothing here
+# is tuned on results.
+study: silver_market
+title: >-
+  Do Vedic planetary indicators change the returns or volatility of silver?
+title_short: Silver
+registered: "2026-11-08"
+amendments: []
+
+question: >-
+  On days when a pre-specified sidereal (Lahiri) planetary condition holds, is
+  the next trading day's silver return, absolute return or probability of an
+  extreme move different from days when it does not hold?
+
+data:
+  # Tried in order; the first that answers is used and snapshotted (SHA-256).
+  sources:
+    - adapter: fred
+      series_id: SLVPRUSD
+      label: LBMA silver price (USD/oz), via FRED
+      sample_time: "12:00"   # LBMA silver price auction, London
+      tz: Europe/London
+    - adapter: yahoo
+      series_id: SI=F
+      label: COMEX silver front-month continuous futures (Yahoo SI=F), not spot
+      sample_time: "13:25"   # COMEX silver settlement, New York
+      tz: America/New_York
+  start: "1968-04-01"
+  end: "2026-10-30"
+  fixture:
+    path: tests/fixtures/markets/yahoo_silver_SIF_2015_2020.csv
+    label: COMEX silver futures fixture 2015-2020 (offline fallback, provisional)
+    sample_time: "13:25"
+    tz: America/New_York
+  cleaning: >-
+    Zero-volume Yahoo rows are stale quotes and are dropped. Futures roll days
+    are not back-adjusted; the silver carry is small relative to daily volatility
+    and roll days are not aligned with any indicator.
+
+node_model: mean
+rules_use_case: financial   # combination registry rules evaluated per bar
+
+# The fixed indicator family. Moon and Venus are the classical karakas of silver.
+indicators:
+  - {id: mercury_retrograde, kind: retrograde, body: MERCURY}
+  - {id: venus_retrograde, kind: retrograde, body: VENUS}
+  - {id: mars_retrograde, kind: retrograde, body: MARS}
+  - {id: jupiter_retrograde, kind: retrograde, body: JUPITER}
+  - {id: saturn_retrograde, kind: retrograde, body: SATURN}
+  - {id: venus_combust, kind: combust, body: VENUS}
+  - {id: moon_exalted, kind: in_sign, body: MOON, signs: [Taurus]}
+  - {id: moon_debilitated, kind: in_sign, body: MOON, signs: [Scorpio]}
+  - {id: venus_exalted, kind: in_sign, body: VENUS, signs: [Pisces]}
+  - {id: venus_debilitated, kind: in_sign, body: VENUS, signs: [Virgo]}
+  - {id: purnima, kind: tithi, tithis: [15]}
+  - {id: amavasya, kind: tithi, tithis: [30]}
+  - {id: venus_jupiter_conjunction, kind: rule, rule: Shukra-Guru-Wealth}
+  - {id: venus_own_sign, kind: rule, rule: Venus-Own-Sign}
+
+tests:
+  # Indicator state on trading bar t-1 against the outcome on bar t.
+  # Statistic: mean(outcome | active) - mean(outcome | inactive), two-sided.
+  targets:
+    ret: daily log return
+    absret: absolute daily log return
+    extreme: absolute return above the rolling past-only 95th percentile (250 bars)
+  extreme_window_bars: 250
+  extreme_quantile: 0.95
+  null: circular shift of the indicator series (bar index), min shift 400 bars
+  min_shift_bars: 400
+  n_perm: 10000
+  mean_block_bars: 20      # stationary block bootstrap for the effect CI
+  n_boot_ci: 1000
+  min_active_bars: 20      # fewer active or inactive bars: reported, not tested
+  correction: by           # Benjamini-Yekutieli across indicators x targets
+  alpha: 0.05
+
+periods:
+  explore_end: "2015-12-31"
+  confirm_start: "2016-01-01"
+  rule: >-
+    A hypothesis is confirmed only if it is BY-significant in the explore
+    period AND, in the confirm period, its effect has the same sign with a
+    BY-adjusted p < alpha across the set carried forward. Full-sample results
+    are reported for description only.
+
+spa:
+  # Hansen SPA in the confirm period: each indicator as a long (or short, by
+  # the sign of its explore-period return effect) one-day rule against being
+  # flat. No "best rule" claim is made unless p_consistent < alpha.
+  n_boot: 2000
+  mean_block_bars: 20
+
+event_study:
+  # Station retrograde (first bar seen retrograde); forward log return
+  # log C[b+h] - log C[b]; stationary-block-bootstrap null band; BY across
+  # bodies x horizons (a secondary family).
+  bodies: [MERCURY, VENUS, MARS, JUPITER, SATURN]
+  horizons: [5, 21, 63]
+  n_boot: 2000
+  mean_block_bars: 20
+
+granger:
+  # Exogenous ADL with HAC errors (stats.granger): sin/cos of sidereal
+  # longitude lagged 1 bar, 5 AR lags of the outcome; one BY family.
+  bodies: [MOON, VENUS, JUPITER, SATURN]
+  targets: [returns, garch_abs]
+  lags: [1]
+  y_lags: 5
+
+figures:
+  overlay_indicator: venus_retrograde
+  station_body: VENUS
