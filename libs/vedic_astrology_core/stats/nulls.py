@@ -41,9 +41,7 @@ def circular_shift_offsets(
     if min_shift < 1:
         raise ValueError("min_shift must be at least 1")
     if n - min_shift < min_shift:
-        raise ValueError(
-            f"series of length {n} is too short for min_shift {min_shift}"
-        )
+        raise ValueError(f"series of length {n} is too short for min_shift {min_shift}")
     return rng.integers(min_shift, n - min_shift + 1, size=int(n_draws))
 
 

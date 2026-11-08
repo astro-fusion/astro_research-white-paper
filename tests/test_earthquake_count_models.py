@@ -20,9 +20,15 @@ def _frame(effect, seed, months=240):
     alpha = 0.3
     y = rng.negative_binomial(1 / alpha, 1 / (1 + alpha * mu))
     periods = pd.period_range("2000-01", periods=months, freq="M")
-    return pd.DataFrame({"count": y, "trend": np.linspace(-1, 1, months),
-                         "x": x, "year": [p.year for p in periods]},
-                        index=periods)
+    return pd.DataFrame(
+        {
+            "count": y,
+            "trend": np.linspace(-1, 1, months),
+            "x": x,
+            "year": [p.year for p in periods],
+        },
+        index=periods,
+    )
 
 
 def test_effect_detected_by_lr_and_cv():
@@ -44,11 +50,11 @@ def test_monthly_design_and_no_files_written(tmp_path):
     old = os.getcwd()
     os.chdir(tmp_path)
     try:
-        grid = pd.date_range("2000-01-01", "2000-03-01", freq="h", tz="UTC",
-                             inclusive="left")
+        grid = pd.date_range(
+            "2000-01-01", "2000-03-01", freq="h", tz="UTC", inclusive="left"
+        )
         ind = pd.DataFrame({"a": np.arange(len(grid)) % 2 == 0}, index=grid)
-        times = ["2000-01-05T00:00:00Z", "2000-02-10T00:00:00Z",
-                 "2000-02-11T00:00:00Z"]
+        times = ["2000-01-05T00:00:00Z", "2000-02-10T00:00:00Z", "2000-02-11T00:00:00Z"]
         frame = monthly_design(times, ind, ["a"])
         assert frame["count"].tolist() == [1, 2]
         assert np.allclose(frame["a"], 0.5)

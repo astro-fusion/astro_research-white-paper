@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 """Compute personal numerology metrics from birth data (optional)."""
-from pathlib import Path
-import pandas as pd
-from datetime import datetime
+
 import sys
+from datetime import datetime
+from pathlib import Path
+
+import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
 from studies._paths import study_data_dir  # noqa: E402
 
 DATA_PATH = study_data_dir("numerology_vs_astrology") / "births.csv"
-OUT_PATH = (
-    study_data_dir("numerology_vs_astrology") / "personal_numerology_metrics.csv"
-)
+OUT_PATH = study_data_dir("numerology_vs_astrology") / "personal_numerology_metrics.csv"
 
 if not DATA_PATH.exists():
     print(f"Birth dataset not found at {DATA_PATH}. Skipping personal metrics.")

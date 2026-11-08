@@ -4,7 +4,8 @@ This module provides logical combinators to group atomic astrological conditions
 into complex, multi-factor rules.
 """
 
-from typing import Dict, List, Any
+from typing import Any, Dict, List
+
 from .conditions import AstroCondition, create_condition
 
 

@@ -8,6 +8,7 @@ import unittest
 from datetime import date, datetime
 
 import pandas as pd
+
 from vedic_numerology import VedicNumerologyAstrology, analyze_birth_chart
 from vedic_numerology.config.constants import Planet
 

@@ -39,12 +39,14 @@ def lomb_scargle_at_periods(
     power = LombScargle(t, y, normalization="standard").power(1.0 / periods)
     n = len(y)
     fap = np.clip((1.0 - power) ** ((n - 3) / 2.0), 0.0, 1.0)
-    return pd.DataFrame({
-        "period_days": periods,
-        "power": power,
-        "fap_single": fap,
-        "fap_bonferroni": np.minimum(1.0, fap * len(periods)),
-    })
+    return pd.DataFrame(
+        {
+            "period_days": periods,
+            "power": power,
+            "fap_single": fap,
+            "fap_bonferroni": np.minimum(1.0, fap * len(periods)),
+        }
+    )
 
 
 def lomb_scargle_grid(

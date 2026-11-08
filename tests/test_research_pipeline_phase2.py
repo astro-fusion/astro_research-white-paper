@@ -5,11 +5,10 @@ import unittest
 from datetime import datetime, timezone
 from unittest.mock import patch
 
+from studies._paths import study_dir  # noqa: E402
 from vedic_astrology_core.astrology.ephemeris import EphemerisEngine
 from vedic_astrology_core.config.constants import Planet
 from vedic_astrology_core.dignity.global_scorer import GlobalStrengthScorer
-
-from studies._paths import study_dir  # noqa: E402
 
 EARTHQUAKE_SCRIPTS = str(study_dir("earthquake") / "scripts")
 if EARTHQUAKE_SCRIPTS not in sys.path:

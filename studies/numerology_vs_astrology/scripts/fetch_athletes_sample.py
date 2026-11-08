@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Fetch athlete dataset and create sampled names/births files."""
+
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
 
 import pandas as pd
-import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
 from studies._paths import study_data_dir  # noqa: E402

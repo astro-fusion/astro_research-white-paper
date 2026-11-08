@@ -15,12 +15,13 @@ Output:
     - data/temporal_analysis_summary.json: Statistical summary
 """
 
-import sys
-import os
 import json
+import os
+import sys
 from datetime import date, datetime, time, timedelta
 from typing import Any, Dict, List, Optional
 from zoneinfo import ZoneInfo
+
 import pandas as pd
 
 sys.path.insert(
@@ -28,11 +29,11 @@ sys.path.insert(
 )  # repo root
 
 from studies._paths import study_data_dir  # noqa: E402
-from vedic_numerology.numerology import calculate_mulanka  # noqa: E402
 from vedic_astrology_core.astrology import EphemerisEngine  # noqa: E402
 from vedic_astrology_core.astrology.chart import get_nakshatra  # noqa: E402
 from vedic_astrology_core.config import Planet  # noqa: E402
 from vedic_astrology_core.dignity import DignityScorer  # noqa: E402
+from vedic_numerology.numerology import calculate_mulanka  # noqa: E402
 
 
 class TemporalDataGenerator:

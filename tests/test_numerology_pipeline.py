@@ -32,8 +32,7 @@ def test_every_day_is_generated(generator_module):
     gen = generator_module.TemporalDataGenerator(date(2024, 1, 1), date(2024, 2, 1))
     rows = gen.generate_data()
     assert len(rows) == 31
-    assert {"astrology_moon_nakshatra_lord", "numerology_active_planet"} <= set(
-        rows[0])
+    assert {"astrology_moon_nakshatra_lord", "numerology_active_planet"} <= set(rows[0])
 
 
 def test_zone_changes_the_sampled_moment(generator_module):
@@ -41,12 +40,14 @@ def test_zone_changes_the_sampled_moment(generator_module):
     span = (date(2024, 1, 1), date(2024, 2, 1))
     utc = generator_module.TemporalDataGenerator(*span, tz="UTC").generate_data()
     ktm = generator_module.TemporalDataGenerator(
-        *span, tz="Asia/Kathmandu").generate_data()
+        *span, tz="Asia/Kathmandu"
+    ).generate_data()
     a = [r["astrology_moon_nakshatra"] for r in utc]
     b = [r["astrology_moon_nakshatra"] for r in ktm]
     assert a != b
     assert [r["numerology_active_planet"] for r in utc] == [
-        r["numerology_active_planet"] for r in ktm]
+        r["numerology_active_planet"] for r in ktm
+    ]
 
 
 def test_pipeline_writes_results(generator_module, tmp_path):

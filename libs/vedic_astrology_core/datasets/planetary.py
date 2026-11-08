@@ -148,11 +148,7 @@ def _year_frame(
     frames = []
     for name in bodies:
         planet = Planet[name]
-        body = (
-            node_body
-            if planet in (Planet.RAHU, Planet.KETU)
-            else SWE_BODIES[planet]
-        )
+        body = node_body if planet in (Planet.RAHU, Planet.KETU) else SWE_BODIES[planet]
         raw = np.array([swe.calc_ut(float(jd), body, _FLAGS)[0] for jd in jds])
         lon, lat, speed = raw[:, 0] % 360.0, raw[:, 1], raw[:, 3]
         if planet == Planet.KETU:

@@ -15,8 +15,17 @@ CANDIDATES = [
     (c["iso"], i, cc) for c in ROWS for i, cc in enumerate(c["candidate_charts"])
 ]
 FIELDS = {
-    "event", "date", "time", "time_zone", "place", "lat", "lon",
-    "used_by", "source", "confidence", "notes",
+    "event",
+    "date",
+    "time",
+    "time_zone",
+    "place",
+    "lat",
+    "lon",
+    "used_by",
+    "source",
+    "confidence",
+    "notes",
 }
 CONFIDENCE = {"documented", "conventional", "disputed"}
 

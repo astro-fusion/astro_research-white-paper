@@ -464,8 +464,7 @@ with tab3:
 with tab4:
     st.header("ℹ️ About This Research")
 
-    st.markdown(
-        """
+    st.markdown("""
     ## 🪐 Vedic Numerology-Astrology Integration
 
     This interactive research platform explores the computational
@@ -507,8 +506,7 @@ with tab4:
     - 📱 Mobile app version
     - 🎓 Educational modules
     - 🔬 Advanced statistical analysis tools
-    """
-    )
+    """)
 
     st.markdown("---")
 
@@ -516,25 +514,21 @@ with tab4:
 
     with col1:
         st.subheader("📞 Contact")
-        st.markdown(
-            """
+        st.markdown("""
         **Bishal Ghimire**
         Astro Fusion Research
         [astrofusion369@gmail.com](mailto:astrofusion369@gmail.com)
-        """
-        )
+        """)
 
     with col2:
         st.subheader("🔗 Links")
-        st.markdown(
-            """
+        st.markdown("""
         [📚 GitHub Repository](
             https://github.com/astro-fusion/astro_research-white-paper
         )
         [🌐 Research Website](https://astro-fusion.com)
         [📖 Documentation](https://astro-research-white-paper.readthedocs.io/)
-        """
-        )
+        """)
 
 # Footer
 st.markdown("---")

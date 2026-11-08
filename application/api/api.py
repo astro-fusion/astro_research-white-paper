@@ -10,7 +10,6 @@ Provides endpoints for real-time calculations and data retrieval.
 
 import os
 import sys
-
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
@@ -494,7 +493,6 @@ async def general_exception_handler(request, exc):
     import logging
 
     #     import traceback
-
     # Log the full exception details with traceback
     logging.exception(f"Unhandled exception in request to {request.url}: {exc}")
 

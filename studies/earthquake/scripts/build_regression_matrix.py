@@ -12,7 +12,7 @@ Output: CSV file ready for statistical modeling.
 
 import json
 import sys
-from datetime import date, timedelta, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 import pandas as pd
@@ -20,13 +20,13 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
 sys.path.insert(0, str(Path(__file__).resolve().parent))  # sibling scripts
 
-from studies._paths import study_data_dir  # noqa: E402
-
 from earthquake_data_fetcher import EarthquakeDataFetcher  # noqa: E402
+
+from studies._paths import study_data_dir  # noqa: E402
 from vedic_astrology_core.astrology.ephemeris import EphemerisEngine  # noqa: E402
 from vedic_astrology_core.dignity.global_scorer import (  # noqa: E402
     GlobalStrengthScorer,
-)  # noqa: E402
+)
 from vedic_numerology.engine import NumerologyEngine  # noqa: E402
 
 

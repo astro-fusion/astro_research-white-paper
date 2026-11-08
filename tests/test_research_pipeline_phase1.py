@@ -4,10 +4,9 @@ import sys
 import unittest
 from datetime import date, datetime, timezone
 
+from studies._paths import study_dir
 from vedic_astrology_core.astrology.ephemeris import EphemerisEngine
 from vedic_numerology.engine import NumerologyEngine
-
-from studies._paths import study_dir
 
 EARTHQUAKE_SCRIPTS = str(study_dir("earthquake") / "scripts")
 if EARTHQUAKE_SCRIPTS not in sys.path:

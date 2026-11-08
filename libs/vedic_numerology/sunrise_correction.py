@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import math
 from datetime import date, datetime, time, timedelta
-
 from typing import Optional, cast
 
 try:

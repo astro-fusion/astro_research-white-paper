@@ -12,8 +12,9 @@ FIX = "tests/fixtures/markets/yahoo_gold_GCF_2015_2020.csv"
 def test_forward_window_starts_at_the_event_bar():
     """Check forward window starts at the event bar."""
     prices = pd.DataFrame({"close": np.exp(np.arange(10.0) * 0.01)})
-    out = es.event_study(prices, [2, 5], horizons=(1, 3), n_boot=50,
-                         rng=np.random.default_rng(0))
+    out = es.event_study(
+        prices, [2, 5], horizons=(1, 3), n_boot=50, rng=np.random.default_rng(0)
+    )
     assert out["mean"].tolist() == pytest.approx([0.01, 0.03])
     assert out["n_events"].tolist() == [2, 2]
 
@@ -21,8 +22,9 @@ def test_forward_window_starts_at_the_event_bar():
 def test_events_without_full_window_are_dropped_from_that_horizon():
     """Check events without full window are dropped from that horizon."""
     prices = pd.DataFrame({"close": np.exp(np.arange(10.0))})
-    out = es.event_study(prices, [1, 8], horizons=(1, 5), n_boot=20,
-                         rng=np.random.default_rng(0))
+    out = es.event_study(
+        prices, [1, 8], horizons=(1, 5), n_boot=20, rng=np.random.default_rng(0)
+    )
     assert out["n_events"].tolist() == [2, 1]
 
 
@@ -56,6 +58,7 @@ def test_rate_during_vs_outside_counts_bars():
     counts = (out["n_in"], out["bars_in"], out["n_out"], out["bars_out"])
     assert counts == (2, 10, 2, 30)
     assert out["rate_ratio"] == pytest.approx((2 / 10) / (2 / 30))
-    shifted = es.rate_during_vs_outside(flags, ind, rng=np.random.default_rng(1),
-                                        min_shift=10, n_draws=200)
+    shifted = es.rate_during_vs_outside(
+        flags, ind, rng=np.random.default_rng(1), min_shift=10, n_draws=200
+    )
     assert 0 < shifted["p_shift"] <= 1

@@ -47,7 +47,6 @@ def test_spa_null_when_no_model_is_better():
     """Models no better than the benchmark give a large p-value."""
     rng = np.random.default_rng(2)
     bench = rng.normal(1.0, 0.2, size=800)
-    models = np.column_stack([bench + rng.normal(0.05, 0.2, 800)
-                              for _ in range(10)])
+    models = np.column_stack([bench + rng.normal(0.05, 0.2, 800) for _ in range(10)])
     res = spa_test(bench, models, np.random.default_rng(3), n_boot=499)
     assert res.p_consistent > 0.2

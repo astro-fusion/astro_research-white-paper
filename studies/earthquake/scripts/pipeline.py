@@ -32,6 +32,7 @@ import decluster  # noqa: E402
 import fetch_catalogue as fc  # noqa: E402
 import indicators as ind  # noqa: E402
 from count_models import compare_nb_models, monthly_design  # noqa: E402
+
 from studies._paths import SNAPSHOT_ROOT, artifacts_dir  # noqa: E402
 from vedic_astrology_core.astrology.ephemeris import EphemerisEngine  # noqa: E402
 from vedic_astrology_core.stats.manifest import (  # noqa: E402
@@ -51,8 +52,11 @@ from vedic_astrology_core.stats.multiplicity import adjust, family  # noqa: E402
 from vedic_astrology_core.stats.rates import rate_ratio_shift_test  # noqa: E402
 from vedic_astrology_core.stats.walk_forward import spa_test  # noqa: E402
 
-CATALOGUES = {"raw": "Undeclustered", "gk": "Gardner-Knopoff",
-              "nn": "Nearest-neighbour"}
+CATALOGUES = {
+    "raw": "Undeclustered",
+    "gk": "Gardner-Knopoff",
+    "nn": "Nearest-neighbour",
+}
 PERIODS = ("explore", "confirm", "full")
 MIN_EVENTS = 5
 
@@ -67,7 +71,8 @@ def latest_snapshot(hyp: Dict) -> Optional[Path]:
             continue
         meta = json.loads(man.read_text())
         if meta.get("hypothesis_id") == hyp["id"] and meta.get("query") == (
-                hyp["catalogue"]):
+            hyp["catalogue"]
+        ):
             if best is None or meta["created_utc"] > best[0]:
                 best = (meta["created_utc"], path)
     return best[1] if best else None
@@ -86,8 +91,11 @@ def load_catalogue(
         if snapshot is None:
             snapshot, source = fc.snapshot(hyp=hyp)
     else:
-        source = "offline_json" if Path(snapshot).name.startswith(
-            "offline_") else "usgs_fdsn"
+        source = (
+            "offline_json"
+            if Path(snapshot).name.startswith("offline_")
+            else "usgs_fdsn"
+        )
     snapshot = Path(snapshot)
     raw = pd.read_csv(snapshot)
     raw["time"] = pd.to_datetime(raw["time"], utc=True, format="ISO8601")
@@ -96,14 +104,18 @@ def load_catalogue(
     analysed = cat[cat["mw"] >= comp["threshold"] - 1e-6].reset_index(drop=True)
     info = {
         "source": source,
-        "snapshot": str(snapshot.relative_to(REPO)) if snapshot.is_relative_to(
-            REPO) else str(snapshot),
+        "snapshot": (
+            str(snapshot.relative_to(REPO))
+            if snapshot.is_relative_to(REPO)
+            else str(snapshot)
+        ),
         "sha256": file_sha256(snapshot),
         "n_polygon": int(len(raw)),
-        "mag_types": {str(k): int(v) for k, v in
-                      raw["magType"].fillna("unknown").value_counts().items()},
-        "mw_rules": {str(k): int(v) for k, v in
-                     cat["mw_rule"].value_counts().items()},
+        "mag_types": {
+            str(k): int(v)
+            for k, v in raw["magType"].fillna("unknown").value_counts().items()
+        },
+        "mw_rules": {str(k): int(v) for k, v in cat["mw_rule"].value_counts().items()},
         "completeness": comp,
         "n_analysed": int(len(analysed)),
         "first_event": str(raw["time"].min()),
@@ -129,8 +141,9 @@ def period_slices(hyp: Dict, grid: pd.DatetimeIndex) -> Dict[str, slice]:
 
 def run_tests(hyp, grid, frame, bins_by_cat, seed, n_draws) -> pd.DataFrame:
     """Run the circular-shift rate test for every catalogue/period/indicator."""
-    min_shift = int(hyp["test"]["min_shift_days"]) * int(round(
-        pd.Timedelta(days=1) / (grid[1] - grid[0])))
+    min_shift = int(hyp["test"]["min_shift_days"]) * int(
+        round(pd.Timedelta(days=1) / (grid[1] - grid[0]))
+    )
     slices = period_slices(hyp, grid)
     rows = []
     for ci, (cat, bins) in enumerate(bins_by_cat.items()):
@@ -139,29 +152,44 @@ def run_tests(hyp, grid, frame, bins_by_cat, seed, n_draws) -> pd.DataFrame:
             ev = bins[(bins >= sl.start) & (bins < sl.stop)] - sl.start
             for ii, spec in enumerate(hyp["indicators"]):
                 alt = spec["direction"]
-                row = {"catalogue": cat, "period": period,
-                       "indicator": spec["id"], "label": spec["label"],
-                       "direction": alt, "n_events": int(len(ev))}
+                row = {
+                    "catalogue": cat,
+                    "period": period,
+                    "indicator": spec["id"],
+                    "label": spec["label"],
+                    "direction": alt,
+                    "n_events": int(len(ev)),
+                }
                 series = frame[spec["id"]].to_numpy()[sl]
                 if len(ev) < MIN_EVENTS or series.all() or not series.any():
                     row["skipped"] = "too few events or degenerate indicator"
                     rows.append(row)
                     continue
                 rng = np.random.default_rng([seed, ci, pi, ii])
-                res = rate_ratio_shift_test(ev, series, min_shift, n_draws, rng,
-                                            alternative=alt)
+                res = rate_ratio_shift_test(
+                    ev, series, min_shift, n_draws, rng, alternative=alt
+                )
                 ex = res.exact
-                row.update({
-                    "n_in": ex.n_in, "t_in_days": ex.t_in / 24.0,
-                    "n_out": ex.n_out, "t_out_days": ex.t_out / 24.0,
-                    "time_fraction": ex.t_in / (ex.t_in + ex.t_out),
-                    "rate_ratio": ex.rate_ratio, "ci_low": ex.ci_low,
-                    "ci_high": ex.ci_high, "p_value": res.p_value,
-                    "p_poisson": ex.p_greater if alt == "greater" else (
-                        ex.p_two_sided),
-                    "null_median": res.null_median, "null_q025": res.null_q025,
-                    "null_q975": res.null_q975, "skipped": "",
-                })
+                row.update(
+                    {
+                        "n_in": ex.n_in,
+                        "t_in_days": ex.t_in / 24.0,
+                        "n_out": ex.n_out,
+                        "t_out_days": ex.t_out / 24.0,
+                        "time_fraction": ex.t_in / (ex.t_in + ex.t_out),
+                        "rate_ratio": ex.rate_ratio,
+                        "ci_low": ex.ci_low,
+                        "ci_high": ex.ci_high,
+                        "p_value": res.p_value,
+                        "p_poisson": (
+                            ex.p_greater if alt == "greater" else (ex.p_two_sided)
+                        ),
+                        "null_median": res.null_median,
+                        "null_q025": res.null_q025,
+                        "null_q975": res.null_q975,
+                        "skipped": "",
+                    }
+                )
                 rows.append(row)
     return pd.DataFrame(rows)
 
@@ -178,22 +206,34 @@ def in_direction(rr: float, direction: str) -> bool:
 def family_tables(hyp, tests: pd.DataFrame) -> Dict[str, pd.DataFrame]:
     """Return the exploration family, confirmation and raw descriptive tables."""
     alpha = float(hyp["test"]["alpha"])
-    method = {"benjamini_yekutieli": "by", "benjamini_hochberg": "bh",
-              "bonferroni": "bonferroni"}[hyp["test"]["correction"]]
+    method = {
+        "benjamini_yekutieli": "by",
+        "benjamini_hochberg": "bh",
+        "bonferroni": "bonferroni",
+    }[hyp["test"]["correction"]]
     ok = tests["skipped"].fillna("") == ""
-    ex = tests[ok & (tests["period"] == "explore")
-               & tests["catalogue"].isin(["gk", "nn"])]
-    fam = family(ex.rename(columns={"indicator": "rule", "catalogue": "target"}),
-                 method=method, alpha=alpha)
+    ex = tests[
+        ok & (tests["period"] == "explore") & tests["catalogue"].isin(["gk", "nn"])
+    ]
+    fam = family(
+        ex.rename(columns={"indicator": "rule", "catalogue": "target"}),
+        method=method,
+        alpha=alpha,
+    )
     fam = fam.rename(columns={"rule": "indicator", "target": "catalogue"})
-    fam["carried"] = fam["significant"].to_numpy() & np.array([
-        in_direction(r, d) for r, d in zip(fam["rate_ratio"], fam["direction"])],
-        dtype=bool)
+    fam["carried"] = fam["significant"].to_numpy() & np.array(
+        [in_direction(r, d) for r, d in zip(fam["rate_ratio"], fam["direction"])],
+        dtype=bool,
+    )
 
-    conf = tests[ok & (tests["period"] == "confirm")
-                 & tests["catalogue"].isin(["gk", "nn"])].copy()
-    conf = conf.merge(fam[["catalogue", "indicator", "carried"]],
-                      on=["catalogue", "indicator"], how="left")
+    conf = tests[
+        ok & (tests["period"] == "confirm") & tests["catalogue"].isin(["gk", "nn"])
+    ].copy()
+    conf = conf.merge(
+        fam[["catalogue", "indicator", "carried"]],
+        on=["catalogue", "indicator"],
+        how="left",
+    )
     conf["carried"] = conf["carried"].fillna(False).astype(bool)
     conf["q_value"] = np.nan
     conf["confirmed"] = False
@@ -201,18 +241,23 @@ def family_tables(hyp, tests: pd.DataFrame) -> Dict[str, pd.DataFrame]:
         sub = conf["carried"]
         conf.loc[sub, "q_value"] = adjust(conf.loc[sub, "p_value"], method)
         conf.loc[sub, "confirmed"] = (
-            conf.loc[sub, "q_value"].to_numpy() < alpha) & np.array([
-                in_direction(r, d) for r, d in
-                zip(conf.loc[sub, "rate_ratio"], conf.loc[sub, "direction"])],
-                dtype=bool)
+            conf.loc[sub, "q_value"].to_numpy() < alpha
+        ) & np.array(
+            [
+                in_direction(r, d)
+                for r, d in zip(conf.loc[sub, "rate_ratio"], conf.loc[sub, "direction"])
+            ],
+            dtype=bool,
+        )
 
     raw = tests[ok & (tests["catalogue"] == "raw")].copy()
     raw["q_value_descriptive"] = np.nan
     for period in PERIODS:
         sel = raw["period"] == period
         if sel.any():
-            raw.loc[sel, "q_value_descriptive"] = adjust(raw.loc[sel, "p_value"],
-                                                         method)
+            raw.loc[sel, "q_value_descriptive"] = adjust(
+                raw.loc[sel, "p_value"], method
+            )
     return {"family": fam, "confirmation": conf, "raw": raw}
 
 
@@ -229,7 +274,7 @@ def spa_check(hyp, grid, frame, bins, seed) -> Dict:
     base_rate = n_ex / (ex.stop - ex.start)
     n_days = (co.stop - co.start) // per_day
     stop = co.start + n_days * per_day
-    daily = counts[co.start:stop].reshape(n_days, per_day).sum(axis=1)
+    daily = counts[co.start : stop].reshape(n_days, per_day).sum(axis=1)
     bench_mu = np.full(n_days, base_rate * per_day)
     losses = []
     for iid in ids:
@@ -237,12 +282,16 @@ def spa_check(hyp, grid, frame, bins, seed) -> Dict:
         a_ex = a[ex]
         r_in = counts[ex][a_ex].sum() / max(a_ex.sum(), 1)
         r_out = counts[ex][~a_ex].sum() / max((~a_ex).sum(), 1)
-        a_co = a[co.start:stop].reshape(n_days, per_day)
+        a_co = a[co.start : stop].reshape(n_days, per_day)
         mu = (a_co * r_in + (~a_co) * r_out).sum(axis=1)
         losses.append(-poisson.logpmf(daily, np.maximum(mu, 1e-12)))
-    res = spa_test(-poisson.logpmf(daily, bench_mu), np.column_stack(losses),
-                   np.random.default_rng([seed, 99]), n_boot=2000,
-                   mean_block=30.0)
+    res = spa_test(
+        -poisson.logpmf(daily, bench_mu),
+        np.column_stack(losses),
+        np.random.default_rng([seed, 99]),
+        n_boot=2000,
+        mean_block=30.0,
+    )
     return {
         "catalogue": "gk",
         "n_days": int(n_days),
@@ -252,7 +301,8 @@ def spa_check(hyp, grid, frame, bins, seed) -> Dict:
         "p_upper": res.p_upper,
         "best_indicator": ids[res.best_model],
         "mean_log_loss_gain_per_day": {
-            k: float(v) for k, v in zip(ids, res.mean_loss_diff)},
+            k: float(v) for k, v in zip(ids, res.mean_loss_diff)
+        },
     }
 
 
@@ -263,17 +313,31 @@ def molchan_summary(hyp, frame, bins, seed, tag) -> Dict:
     points = []
     for spec in hyp["indicators"]:
         tau, nu = molchan_point(frame[spec["id"]].to_numpy(), bins)
-        points.append({"indicator": spec["id"], "tau": tau, "nu": nu,
-                       "bound_nu": float(binomial_bound(n, tau)[0]),
-                       "p_value": molchan_p_value(n, tau, nu)})
+        points.append(
+            {
+                "indicator": spec["id"],
+                "tau": tau,
+                "nu": nu,
+                "bound_nu": float(binomial_bound(n, tau)[0]),
+                "p_value": molchan_p_value(n, tau, nu),
+            }
+        )
     score = frame[greater].to_numpy().sum(axis=1).astype(float)
     traj = molchan_trajectory(score, bins)
     ass = area_skill_score(traj["tau"], traj["nu"])
-    ref = time_random_reference(score, n, np.random.default_rng([seed, 7, tag]),
-                                n_sims=2000, observed_ass=ass)
-    return {"n_events": int(n), "points": points,
-            "combined": {"tau": traj["tau"].tolist(), "nu": traj["nu"].tolist(),
-                         "area_skill_score": ass, "reference": ref}}
+    ref = time_random_reference(
+        score, n, np.random.default_rng([seed, 7, tag]), n_sims=2000, observed_ass=ass
+    )
+    return {
+        "n_events": int(n),
+        "points": points,
+        "combined": {
+            "tau": traj["tau"].tolist(),
+            "nu": traj["nu"].tolist(),
+            "area_skill_score": ass,
+            "reference": ref,
+        },
+    }
 
 
 # -------------------------------------------------------------- figures
@@ -291,11 +355,21 @@ def make_figures(art, hyp, cat, info, masks, tests, fam, molchan, prov):
     with matplotlib.rc_context(HOUSE_STYLE):
         fig, ax = plt.subplots(figsize=(7.0, 3.6))
         ax.plot(poly[:, 0], poly[:, 1], color="0.2", lw=1.0, label="Region")
-        ax.scatter(cat["longitude"], cat["latitude"], s=4, color="0.7",
-                   label="All events (Mw >= Mc)")
+        ax.scatter(
+            cat["longitude"],
+            cat["latitude"],
+            s=4,
+            color="0.7",
+            label="All events (Mw >= Mc)",
+        )
         gk = cat[masks["gk"]]
-        ax.scatter(gk["longitude"], gk["latitude"], s=6, color=PALETTE[0],
-                   label="Gardner-Knopoff mainshocks")
+        ax.scatter(
+            gk["longitude"],
+            gk["latitude"],
+            s=6,
+            color=PALETTE[0],
+            label="Gardner-Knopoff mainshocks",
+        )
         ax.set_xlabel("Longitude (deg E)")
         ax.set_ylabel("Latitude (deg N)")
         ax.set_aspect("equal")
@@ -309,10 +383,15 @@ def make_figures(art, hyp, cat, info, masks, tests, fam, molchan, prov):
         hist, edges = np.histogram(mw, bins=bins)
         cum = hist[::-1].cumsum()[::-1]
         fig, ax = plt.subplots(figsize=(6.0, 3.4))
-        ax.semilogy(edges[:-1], np.maximum(hist, 0.8), "o", ms=3,
-                    color=PALETTE[0], label="Non-cumulative")
-        ax.semilogy(edges[:-1], cum, "s", ms=3, color=PALETTE[1],
-                    label="Cumulative")
+        ax.semilogy(
+            edges[:-1],
+            np.maximum(hist, 0.8),
+            "o",
+            ms=3,
+            color=PALETTE[0],
+            label="Non-cumulative",
+        )
+        ax.semilogy(edges[:-1], cum, "s", ms=3, color=PALETTE[1], label="Cumulative")
         thr = info["completeness"]["threshold"]
         ax.axvline(thr, color="0.3", ls="--", lw=1)
         ax.text(thr + 0.05, cum.max() / 2, f"Mc used = {thr:.1f}", fontsize=8)
@@ -324,11 +403,15 @@ def make_figures(art, hyp, cat, info, masks, tests, fam, molchan, prov):
 
         fig, ax = plt.subplots(figsize=(6.5, 3.4))
         t = cat["time"].dt.tz_localize(None)
-        for key, colour in (("raw", "0.55"), ("gk", PALETTE[0]),
-                            ("nn", PALETTE[1])):
+        for key, colour in (("raw", "0.55"), ("gk", PALETTE[0]), ("nn", PALETTE[1])):
             m = masks[key]
-            ax.step(t[m], np.arange(1, m.sum() + 1), where="post", color=colour,
-                    label=f"{CATALOGUES[key]} (n = {int(m.sum())})")
+            ax.step(
+                t[m],
+                np.arange(1, m.sum() + 1),
+                where="post",
+                color=colour,
+                label=f"{CATALOGUES[key]} (n = {int(m.sum())})",
+            )
         ax.set_xlabel("Year")
         ax.set_ylabel("Cumulative events")
         ax.legend(loc="upper left")
@@ -338,15 +421,25 @@ def make_figures(art, hyp, cat, info, masks, tests, fam, molchan, prov):
         fig, ax = plt.subplots(figsize=(7.0, 4.6))
         labels = [s["label"] for s in hyp["indicators"]]
         ypos = np.arange(len(labels))
-        for k, (key, colour, off) in enumerate((("gk", PALETTE[0], -0.15),
-                                                ("nn", PALETTE[1], 0.15))):
+        for k, (key, colour, off) in enumerate(
+            (("gk", PALETTE[0], -0.15), ("nn", PALETTE[1], 0.15))
+        ):
             sub = fam[fam["catalogue"] == key].set_index("indicator")
             sub = sub.reindex([s["id"] for s in hyp["indicators"]])
-            ax.errorbar(sub["rate_ratio"], ypos + off,
-                        xerr=[sub["rate_ratio"] - sub["ci_low"],
-                              sub["ci_high"] - sub["rate_ratio"]],
-                        fmt="o", ms=3, color=colour, capsize=2, lw=1,
-                        label=CATALOGUES[key])
+            ax.errorbar(
+                sub["rate_ratio"],
+                ypos + off,
+                xerr=[
+                    sub["rate_ratio"] - sub["ci_low"],
+                    sub["ci_high"] - sub["rate_ratio"],
+                ],
+                fmt="o",
+                ms=3,
+                color=colour,
+                capsize=2,
+                lw=1,
+                label=CATALOGUES[key],
+            )
         ax.axvline(1.0, color="0.3", lw=1)
         ax.set_xscale("log")
         ax.set_yticks(ypos)
@@ -361,12 +454,24 @@ def make_figures(art, hyp, cat, info, masks, tests, fam, molchan, prov):
         for ax, key in zip(axes, ("gk", "nn")):
             mol = molchan[key]
             grid_tau = np.linspace(0.0, 1.0, 201)
-            ax.plot(grid_tau, 1 - grid_tau, color="0.4", lw=1,
-                    label="Time-random")
-            ax.plot(grid_tau, binomial_bound(mol["n_events"], grid_tau), ":",
-                    color="0.2", lw=1, label="95% bound")
-            ax.plot(mol["combined"]["tau"], mol["combined"]["nu"], "-",
-                    marker=".", ms=4, color=PALETTE[0], label="Combined score")
+            ax.plot(grid_tau, 1 - grid_tau, color="0.4", lw=1, label="Time-random")
+            ax.plot(
+                grid_tau,
+                binomial_bound(mol["n_events"], grid_tau),
+                ":",
+                color="0.2",
+                lw=1,
+                label="95% bound",
+            )
+            ax.plot(
+                mol["combined"]["tau"],
+                mol["combined"]["nu"],
+                "-",
+                marker=".",
+                ms=4,
+                color=PALETTE[0],
+                label="Combined score",
+            )
             taus = [p["tau"] for p in mol["points"]]
             nus = [p["nu"] for p in mol["points"]]
             ax.plot(taus, nus, "o", ms=3, color=PALETTE[1], label="Indicators")
@@ -386,25 +491,30 @@ def _records(df: pd.DataFrame):
     return json.loads(df.to_json(orient="records", double_precision=10))
 
 
-def run(seed: int, snapshot: Optional[Path], offline: bool,
-        n_draws: Optional[int]) -> Dict:
+def run(
+    seed: int, snapshot: Optional[Path], offline: bool, n_draws: Optional[int]
+) -> Dict:
     """Run the whole study and return the results dictionary."""
     hyp = fc.load_hypothesis()
     n_draws = int(n_draws or hyp["test"]["n_draws"])
     art = artifacts_dir("earthquake")
     cat, info = load_catalogue(snapshot, offline)
-    cat = cat[(cat["time"] >= pd.Timestamp(hyp["catalogue"]["start"]))
-              & (cat["time"] < pd.Timestamp(hyp["catalogue"]["end"]))]
+    cat = cat[
+        (cat["time"] >= pd.Timestamp(hyp["catalogue"]["start"]))
+        & (cat["time"] < pd.Timestamp(hyp["catalogue"]["end"]))
+    ]
     cat = cat.reset_index(drop=True)
 
     gk = decluster.gardner_knopoff(cat).to_numpy()
     nn_mask, nn_fit = decluster.nearest_neighbour(cat)
-    masks = {"raw": np.ones(len(cat), dtype=bool), "gk": gk,
-             "nn": nn_mask.to_numpy()}
+    masks = {"raw": np.ones(len(cat), dtype=bool), "gk": gk, "nn": nn_mask.to_numpy()}
 
     engine = EphemerisEngine(node_model=hyp["ephemeris"]["node_model"])
-    grid = ind.time_grid(hyp["catalogue"]["start"], hyp["catalogue"]["end"],
-                         hyp["time_grid"]["step_hours"])
+    grid = ind.time_grid(
+        hyp["catalogue"]["start"],
+        hyp["catalogue"]["end"],
+        hyp["time_grid"]["step_hours"],
+    )
     eph = ind.ephemeris_frame(grid, engine)
     frame = ind.build_indicators(hyp, eph)
     all_bins = ind.event_bins(cat["time"], grid)
@@ -413,29 +523,45 @@ def run(seed: int, snapshot: Optional[Path], offline: bool,
     tests = run_tests(hyp, grid, frame, bins_by_cat, seed, n_draws)
     tables = family_tables(hyp, tests)
     spa = spa_check(hyp, grid, frame, bins_by_cat["gk"], seed)
-    molchan = {k: molchan_summary(hyp, frame, bins_by_cat[k], seed, t)
-               for t, k in enumerate(("gk", "nn"))}
+    molchan = {
+        k: molchan_summary(hyp, frame, bins_by_cat[k], seed, t)
+        for t, k in enumerate(("gk", "nn"))
+    }
     greater = [s["id"] for s in hyp["indicators"] if s["direction"] == "greater"]
     counts = compare_nb_models(
-        monthly_design(cat.loc[masks["gk"], "time"], frame, greater), greater)
+        monthly_design(cat.loc[masks["gk"], "time"], frame, greater), greater
+    )
 
     eph_info = engine.get_ephemeris_info()
     git = git_commit(REPO)
     prov = {"data_sha256": info["sha256"], "commit": git["commit"], "seed": seed}
-    figures = make_figures(art, hyp, cat, info, masks, tests, tables["family"],
-                           molchan, prov)
+    figures = make_figures(
+        art, hyp, cat, info, masks, tests, tables["family"], molchan, prov
+    )
 
     summary_rows = []
     for key in ("raw", "gk", "nn"):
         sub = cat[masks[key]]
-        summary_rows.append({
-            "catalogue": key, "label": CATALOGUES[key], "n_events": int(len(sub)),
-            "n_explore": int((sub["time"] < pd.Timestamp(
-                hyp["split"]["confirm"][0], tz="UTC")).sum()),
-            "n_confirm": int((sub["time"] >= pd.Timestamp(
-                hyp["split"]["confirm"][0], tz="UTC")).sum()),
-            "max_mw": float(sub["mw"].max()), "median_mw": float(sub["mw"].median()),
-        })
+        summary_rows.append(
+            {
+                "catalogue": key,
+                "label": CATALOGUES[key],
+                "n_events": int(len(sub)),
+                "n_explore": int(
+                    (
+                        sub["time"] < pd.Timestamp(hyp["split"]["confirm"][0], tz="UTC")
+                    ).sum()
+                ),
+                "n_confirm": int(
+                    (
+                        sub["time"]
+                        >= pd.Timestamp(hyp["split"]["confirm"][0], tz="UTC")
+                    ).sum()
+                ),
+                "max_mw": float(sub["mw"].max()),
+                "median_mw": float(sub["mw"].median()),
+            }
+        )
     summary = pd.DataFrame(summary_rows)
     summary.to_csv(art / "catalogue_summary.csv", index=False)
     tests.to_csv(art / "rate_tests_all.csv", index=False)
@@ -456,14 +582,20 @@ def run(seed: int, snapshot: Optional[Path], offline: bool,
         "declustering": {
             "summary": _records(summary),
             "nn_threshold_log10_eta": nn_fit["threshold"],
-            "nn_mixture": {k: nn_fit[k] for k in ("means", "sds", "weights",
-                                                  "separated")},
+            "nn_mixture": {
+                k: nn_fit[k] for k in ("means", "sds", "weights", "separated")
+            },
         },
-        "grid": {"start": str(grid[0]), "end": str(grid[-1]),
-                 "step_hours": hyp["time_grid"]["step_hours"],
-                 "n_steps": int(len(grid))},
-        "eclipses": {"solar": frame.attrs["n_solar_eclipses"],
-                     "lunar": frame.attrs["n_lunar_eclipses"]},
+        "grid": {
+            "start": str(grid[0]),
+            "end": str(grid[-1]),
+            "step_hours": hyp["time_grid"]["step_hours"],
+            "n_steps": int(len(grid)),
+        },
+        "eclipses": {
+            "solar": frame.attrs["n_solar_eclipses"],
+            "lunar": frame.attrs["n_lunar_eclipses"],
+        },
         "indicator_time_fraction": {c: float(frame[c].mean()) for c in frame},
         "family": _records(fam),
         "confirmation": _records(conf),
@@ -484,13 +616,24 @@ def run(seed: int, snapshot: Optional[Path], offline: bool,
     (art / "results.json").write_text(json.dumps(results, indent=1, default=str))
     write_manifest(
         art,
-        inputs=[{"path": REPO / info["snapshot"], "row_count": info["n_polygon"],
-                 "date_range": [info["first_event"], info["last_event"]]},
-                {"path": fc.HYPOTHESIS}],
-        seed=seed, engine=eph_info, repo_root=REPO,
-        extra={"catalogue_source": info["source"], "n_draws": n_draws,
-               "artifacts": sorted(p.name for p in art.iterdir()
-                                   if p.name != "manifest.json")},
+        inputs=[
+            {
+                "path": REPO / info["snapshot"],
+                "row_count": info["n_polygon"],
+                "date_range": [info["first_event"], info["last_event"]],
+            },
+            {"path": fc.HYPOTHESIS},
+        ],
+        seed=seed,
+        engine=eph_info,
+        repo_root=REPO,
+        extra={
+            "catalogue_source": info["source"],
+            "n_draws": n_draws,
+            "artifacts": sorted(
+                p.name for p in art.iterdir() if p.name != "manifest.json"
+            ),
+        },
     )
     return results
 
@@ -498,23 +641,34 @@ def run(seed: int, snapshot: Optional[Path], offline: bool,
 def main(argv=None) -> int:
     """Command-line entry point."""
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--seed", type=int, default=None,
-                    help="RNG seed (default: hypothesis.yaml test.seed)")
+    ap.add_argument(
+        "--seed",
+        type=int,
+        default=None,
+        help="RNG seed (default: hypothesis.yaml test.seed)",
+    )
     ap.add_argument("--snapshot", type=Path, default=None)
     ap.add_argument("--offline", action="store_true")
     ap.add_argument("--n-draws", type=int, default=None)
     args = ap.parse_args(argv)
-    seed = args.seed if args.seed is not None else int(
-        fc.load_hypothesis()["test"]["seed"])
+    seed = (
+        args.seed
+        if args.seed is not None
+        else int(fc.load_hypothesis()["test"]["seed"])
+    )
     res = run(seed, args.snapshot, args.offline, args.n_draws)
     h = res["headline"]
-    print(f"source {res['catalogue']['source']}, snapshot "
-          f"{res['catalogue']['snapshot']}")
+    print(
+        f"source {res['catalogue']['source']}, snapshot "
+        f"{res['catalogue']['snapshot']}"
+    )
     for row in res["declustering"]["summary"]:
         print(f"  {row['label']}: {row['n_events']} events")
-    print(f"family {h['family_size']} tests, {h['n_significant_explore']} "
-          f"significant in exploration, {h['n_carried']} carried, "
-          f"{h['n_confirmed']} confirmed")
+    print(
+        f"family {h['family_size']} tests, {h['n_significant_explore']} "
+        f"significant in exploration, {h['n_carried']} carried, "
+        f"{h['n_confirmed']} confirmed"
+    )
     return 0
 
 

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Generate shared Vedic principles catalog for all reports."""
-from pathlib import Path
+
 import importlib.util
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG_PATH = ROOT / "libs" / "vedic_astrology_core" / "principles" / "catalog.py"

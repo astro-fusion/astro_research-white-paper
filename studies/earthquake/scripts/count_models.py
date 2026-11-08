@@ -38,8 +38,9 @@ def monthly_design(
 def _fit_nb2(y, x):
     import statsmodels.api as sm
 
-    model = sm.NegativeBinomial(y, sm.add_constant(x, has_constant="add"),
-                                loglike_method="nb2")
+    model = sm.NegativeBinomial(
+        y, sm.add_constant(x, has_constant="add"), loglike_method="nb2"
+    )
     return model.fit(disp=0, maxiter=500, method="bfgs")
 
 
@@ -71,20 +72,28 @@ def compare_nb_models(frame: pd.DataFrame, astro_cols: List[str]) -> Dict:
         train = ~test
         fb = _fit_nb2(y[train], base_x[train])
         ff = _fit_nb2(y[train], full_x[train])
-        cv_base += _nb2_logpmf(y[test], _predict(fb, base_x[test]),
-                               float(fb.params.iloc[-1])).sum()
-        cv_full += _nb2_logpmf(y[test], _predict(ff, full_x[test]),
-                               float(ff.params.iloc[-1])).sum()
+        cv_base += _nb2_logpmf(
+            y[test], _predict(fb, base_x[test]), float(fb.params.iloc[-1])
+        ).sum()
+        cv_full += _nb2_logpmf(
+            y[test], _predict(ff, full_x[test]), float(ff.params.iloc[-1])
+        ).sum()
     names = list(full.params.index)
     return {
         "n_months": int(len(frame)),
         "n_events": int(y.sum()),
-        "baseline": {"llf": float(base.llf), "alpha": float(base.params.iloc[-1]),
-                     "aic": float(base.aic)},
-        "research": {"llf": float(full.llf), "alpha": float(full.params.iloc[-1]),
-                     "aic": float(full.aic),
-                     "coefficients": {k: float(full.params[k]) for k in names},
-                     "std_errors": {k: float(full.bse[k]) for k in names}},
+        "baseline": {
+            "llf": float(base.llf),
+            "alpha": float(base.params.iloc[-1]),
+            "aic": float(base.aic),
+        },
+        "research": {
+            "llf": float(full.llf),
+            "alpha": float(full.params.iloc[-1]),
+            "aic": float(full.aic),
+            "coefficients": {k: float(full.params[k]) for k in names},
+            "std_errors": {k: float(full.bse[k]) for k in names},
+        },
         "lr_stat": float(lr),
         "lr_df": int(df),
         "lr_p_value": float(sps.chi2.sf(lr, df)),

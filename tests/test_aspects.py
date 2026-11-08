@@ -7,6 +7,7 @@ are the orb-based geometric aspects that papers 03 and 05 describe.
 
 import numpy as np
 import pytest
+
 from vedic_astrology_core.astrology.aspects import (
     ASPECT_CATALOGUE,
     MEAN_OBLIQUITY_J2000,

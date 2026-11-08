@@ -185,16 +185,19 @@ def load_offline(path: Path = OFFLINE_JSON) -> pd.DataFrame:
     """Return the tracked India-Nepal JSON in the FDSN column schema."""
     rows = json.loads(Path(path).read_text())
     df = pd.DataFrame(rows)
-    out = pd.DataFrame({
-        "time": pd.to_datetime(df["time"], utc=True, format="ISO8601").dt.strftime(
-            "%Y-%m-%dT%H:%M:%S.%fZ"),
-        "latitude": df["latitude"],
-        "longitude": df["longitude"],
-        "depth": df["depth_km"],
-        "mag": df["magnitude_raw"].fillna(df["magnitude"]),
-        "magType": df["magnitude_type"],
-        "id": df["usgs_url"].str.rsplit("/", n=1).str[-1],
-    })
+    out = pd.DataFrame(
+        {
+            "time": pd.to_datetime(df["time"], utc=True, format="ISO8601").dt.strftime(
+                "%Y-%m-%dT%H:%M:%S.%fZ"
+            ),
+            "latitude": df["latitude"],
+            "longitude": df["longitude"],
+            "depth": df["depth_km"],
+            "mag": df["magnitude_raw"].fillna(df["magnitude"]),
+            "magType": df["magnitude_type"],
+            "id": df["usgs_url"].str.rsplit("/", n=1).str[-1],
+        }
+    )
     return out
 
 
@@ -224,8 +227,9 @@ def snapshot(
     source = "usgs_fdsn"
     if not offline:
         try:
-            text = fetch_usgs(hyp["catalogue"], bounding_box(region_polygon(
-                hyp["region"])))
+            text = fetch_usgs(
+                hyp["catalogue"], bounding_box(region_polygon(hyp["region"]))
+            )
             raw = pd.read_csv(io.StringIO(text))
         except (urllib.error.URLError, OSError, TimeoutError) as exc:
             print(f"USGS service unreachable ({exc}); using offline JSON")
@@ -245,12 +249,20 @@ def snapshot(
     times = pd.to_datetime(df["time"], utc=True)
     write_manifest(
         path,
-        inputs=[{"path": path, "row_count": int(len(df)),
-                 "date_range": [str(times.min()), str(times.max())]}],
+        inputs=[
+            {
+                "path": path,
+                "row_count": int(len(df)),
+                "date_range": [str(times.min()), str(times.max())],
+            }
+        ],
         repo_root=REPO,
-        extra={"source": source, "query": hyp["catalogue"],
-               "rows_before_polygon": int(len(raw)),
-               "hypothesis_id": hyp["id"]},
+        extra={
+            "source": source,
+            "query": hyp["catalogue"],
+            "rows_before_polygon": int(len(raw)),
+            "hypothesis_id": hyp["id"],
+        },
     )
     return path, source
 
@@ -258,8 +270,9 @@ def snapshot(
 def main(argv=None) -> int:
     """Command-line entry point."""
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--offline", action="store_true",
-                    help="use the tracked india_nepal_data.json")
+    ap.add_argument(
+        "--offline", action="store_true", help="use the tracked india_nepal_data.json"
+    )
     args = ap.parse_args(argv)
     path, source = snapshot(offline=args.offline)
     print(f"source: {source}")

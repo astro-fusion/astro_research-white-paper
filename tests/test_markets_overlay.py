@@ -26,8 +26,14 @@ def test_overlay_frame_columns_and_types():
     aligned = prices.assign(is_trading=True, **{"rule:X": [True, False] * 740})
     ind = pd.DataFrame({"jup_retro": np.arange(len(prices)) % 3 == 0})
     frame = overlay.overlay_frame(aligned, ind, horizons=(5,))
-    assert list(frame.columns) == ["date", "close", "log_return", "fwd_5",
-                                   "jup_retro", "rule:X"]
+    assert list(frame.columns) == [
+        "date",
+        "close",
+        "log_return",
+        "fwd_5",
+        "jup_retro",
+        "rule:X",
+    ]
     assert frame["date"].iloc[0] == "2015-01-02"
     assert set(frame["jup_retro"].unique()) == {0, 1}
     assert frame["fwd_5"].isna().sum() == 5
@@ -42,8 +48,9 @@ def test_overlay_plot_writes_png_with_footer(tmp_path, kind):
     else:
         target = ["2016-06-24", "2020-03-09"]
     path = tmp_path / f"{kind}.png"
-    fig = overlay.overlay_plot(prices, target, "Gold and a test indicator",
-                               provenance=PROV, path=str(path))
+    fig = overlay.overlay_plot(
+        prices, target, "Gold and a test indicator", provenance=PROV, path=str(path)
+    )
     assert path.exists() and path.stat().st_size > 10_000
     texts = " ".join(t.get_text() for t in fig.texts)
     assert "4aa16ff6166f" in texts and "seed 42" in texts and "EXPLORATORY" in texts

@@ -174,8 +174,8 @@ class PDFGenerator:
 
             print("Generating planet comparison figure...")
             # Generate Mars comparison (first 6 months for clarity)
-            import pandas as pd
             import matplotlib.pyplot as plt
+            import pandas as pd
 
             df = pd.read_csv(data_path)
             plot_data = df.head(180)  # 6 months

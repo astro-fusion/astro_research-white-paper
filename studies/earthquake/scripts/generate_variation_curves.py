@@ -21,7 +21,7 @@ from studies._paths import PROCESSED_ROOT  # noqa: E402
 # from vedic_astrology_core.config.constants import Planet  # noqa: E402
 from vedic_astrology_core.time_series import (  # noqa: E402
     compute_astrology_strength_series,
-)  # noqa: E402
+)
 
 
 def generate_curves(year: int = 2023):

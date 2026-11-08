@@ -23,8 +23,15 @@ def _rows(name):
 
 def test_stamp_has_contract_keys():
     """Stamp carries every key the contract lists."""
-    for key in ("bundle_version", "exported_at", "row_counts", "sha256",
-                "exporter_commit", "licence", "attribution"):
+    for key in (
+        "bundle_version",
+        "exported_at",
+        "row_counts",
+        "sha256",
+        "exporter_commit",
+        "licence",
+        "attribution",
+    ):
         assert key in STAMP, f"UPSTREAM.yaml missing {key}"
     assert STAMP["licence"] == "CC-BY-4.0"
 
@@ -33,15 +40,16 @@ def test_stamp_has_contract_keys():
 def test_hash_matches(name):
     """Each committed bundle file hashes to the stamped value."""
     actual = hashlib.sha256((DATA / name).read_bytes()).hexdigest()
-    assert actual == STAMP["sha256"][name], (
-        f"{name} is stale: hash differs from UPSTREAM.yaml; {HINT}"
-    )
+    assert (
+        actual == STAMP["sha256"][name]
+    ), f"{name} is stale: hash differs from UPSTREAM.yaml; {HINT}"
 
 
-@pytest.mark.parametrize("key,name", [("countries", "countries.yaml"),
-                                      ("events", "events.jsonl")])
+@pytest.mark.parametrize(
+    "key,name", [("countries", "countries.yaml"), ("events", "events.jsonl")]
+)
 def test_row_count_matches(key, name):
     """Stamped row counts match the files."""
-    assert _rows(name) == STAMP["row_counts"][key], (
-        f"{name} is stale: row count differs from UPSTREAM.yaml; {HINT}"
-    )
+    assert (
+        _rows(name) == STAMP["row_counts"][key]
+    ), f"{name} is stale: row count differs from UPSTREAM.yaml; {HINT}"

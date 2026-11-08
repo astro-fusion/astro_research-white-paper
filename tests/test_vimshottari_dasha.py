@@ -82,9 +82,10 @@ def test_periods_cover_total_years():
     periods = compute_vimshottari_periods(birth, 200.0, total_years=120)
     for a, b in zip(periods, periods[1:]):
         assert a.end == b.start
-        assert VIMSHOTTARI_SEQUENCE.index(b.lord) == (
-            VIMSHOTTARI_SEQUENCE.index(a.lord) + 1
-        ) % 9
+        assert (
+            VIMSHOTTARI_SEQUENCE.index(b.lord)
+            == (VIMSHOTTARI_SEQUENCE.index(a.lord) + 1) % 9
+        )
     assert periods[-1].end >= birth + timedelta(days=120 * 365.25)
 
 

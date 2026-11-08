@@ -20,11 +20,32 @@ from vedic_astrology_core.config.constants import Planet
 UTC = ZoneInfo("UTC")
 BODIES = ("SUN", "MOON", "MARS", "MERCURY", "VENUS", "JUPITER", "SATURN", "KETU")
 NAKSHATRAS = (
-    "Ashvini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra",
-    "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni",
-    "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha",
-    "Jyeshtha", "Mula", "Purva Ashadha", "Uttara Ashadha", "Shravana",
-    "Dhanishtha", "Shatabhisha", "Purva Bhadrapada", "Uttara Bhadrapada",
+    "Ashvini",
+    "Bharani",
+    "Krittika",
+    "Rohini",
+    "Mrigashira",
+    "Ardra",
+    "Punarvasu",
+    "Pushya",
+    "Ashlesha",
+    "Magha",
+    "Purva Phalguni",
+    "Uttara Phalguni",
+    "Hasta",
+    "Chitra",
+    "Swati",
+    "Vishakha",
+    "Anuradha",
+    "Jyeshtha",
+    "Mula",
+    "Purva Ashadha",
+    "Uttara Ashadha",
+    "Shravana",
+    "Dhanishtha",
+    "Shatabhisha",
+    "Purva Bhadrapada",
+    "Uttara Bhadrapada",
     "Revati",
 )
 
@@ -52,7 +73,8 @@ def ephemeris_frame(grid: pd.DatetimeIndex, engine: EphemerisEngine) -> pd.DataF
     """Return sidereal longitude and speed of every body at every grid step."""
     first = grid[0].to_pydatetime()
     jd0 = engine.datetime_to_julian_day(
-        datetime(first.year, first.month, first.day, first.hour, tzinfo=UTC))
+        datetime(first.year, first.month, first.day, first.hour, tzinfo=UTC)
+    )
     step_days = (grid[1] - grid[0]) / pd.Timedelta(days=1)
     jds = jd0 + step_days * np.arange(len(grid))
     lon = np.empty((len(grid), len(BODIES)))
@@ -122,8 +144,9 @@ def build_indicators(hyp: Dict, eph: pd.DataFrame) -> pd.DataFrame:
     per_day = int(round(1.0 / step_days))
     jd0 = float(eph["jd"].iloc[0])
     eclipses = eclipse_jds(jd0, float(eph["jd"].iloc[-1]))
-    ecl_bins = [int(round((j - jd0) / step_days))
-                for j in eclipses["solar"] + eclipses["lunar"]]
+    ecl_bins = [
+        int(round((j - jd0) / step_days)) for j in eclipses["solar"] + eclipses["lunar"]
+    ]
     nak = np.floor(eph["lon_MOON"].to_numpy() / (360.0 / 27.0)).astype(int) % 27
     out = {}
     for ind in hyp["indicators"]:

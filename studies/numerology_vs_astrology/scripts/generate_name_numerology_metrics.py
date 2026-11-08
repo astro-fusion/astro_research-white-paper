@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Compute name-based numerology metrics (Pythagorean + Chaldean)."""
-from pathlib import Path
-import pandas as pd
+
 import sys
+from pathlib import Path
+
+import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
 from studies._paths import study_data_dir  # noqa: E402

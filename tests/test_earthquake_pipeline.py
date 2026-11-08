@@ -36,13 +36,23 @@ def test_period_slices_do_not_overlap():
 
 def _tests_frame(p_explore, rr_explore, p_confirm):
     rows = []
-    for period, ps, rrs in (("explore", p_explore, rr_explore),
-                            ("confirm", p_confirm, rr_explore)):
+    for period, ps, rrs in (
+        ("explore", p_explore, rr_explore),
+        ("confirm", p_confirm, rr_explore),
+    ):
         for k, (p, rr) in enumerate(zip(ps, rrs)):
             for cat in ("gk", "nn", "raw"):
-                rows.append({"catalogue": cat, "period": period,
-                             "indicator": f"i{k}", "direction": "greater",
-                             "rate_ratio": rr, "p_value": p, "skipped": ""})
+                rows.append(
+                    {
+                        "catalogue": cat,
+                        "period": period,
+                        "indicator": f"i{k}",
+                        "direction": "greater",
+                        "rate_ratio": rr,
+                        "p_value": p,
+                        "skipped": "",
+                    }
+                )
     return pd.DataFrame(rows)
 
 

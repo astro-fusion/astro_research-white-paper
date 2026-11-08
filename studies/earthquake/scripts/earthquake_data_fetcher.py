@@ -7,12 +7,12 @@ and store it locally for offline research analysis.
 
 import json
 import os
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import requests
-import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
 from studies._paths import study_data_dir  # noqa: E402
@@ -38,9 +38,7 @@ class EarthquakeDataFetcher:
         """
         self.use_sample_data = use_sample_data
         self.verbose = verbose
-        self.sample_data_path = (
-            study_data_dir("earthquake") / "sample_earthquakes.json"
-        )
+        self.sample_data_path = study_data_dir("earthquake") / "sample_earthquakes.json"
 
     def fetch_earthquakes(
         self,

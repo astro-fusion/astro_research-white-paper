@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Generate daily astrology base features for mundane analysis."""
+
 import sys
 from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 
@@ -11,7 +12,6 @@ repo_root = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(repo_root))
 
 from studies._paths import study_data_dir  # noqa: E402
-
 from vedic_astrology_core.astrology.chart import (  # noqa: E402
     calculate_chart,
     get_nakshatra,

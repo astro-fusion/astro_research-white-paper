@@ -8,20 +8,20 @@ Part of the multi-use-case validation system for planetary influence analysis.
 """
 
 import json
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from datetime import datetime
-from typing import Dict, List, Tuple, Optional
 import os
 import sys
+from datetime import datetime
+from typing import Dict, List, Optional, Tuple
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
 sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 )  # repo root
 
 from studies._paths import figures_dir, study_data_dir  # noqa: E402
-
 from vedic_astrology_core.astrology.ephemeris import EphemerisEngine  # noqa: E402
 
 
@@ -278,9 +278,9 @@ class EarthquakeAstrologicalAnalysis:
     def run_all_correlations(self) -> Dict:
         """Run all defined correlation tests using the Modular Registry."""
         try:
+            from vedic_astrology_core.astrology.ephemeris import EphemerisEngine
             from vedic_astrology_core.combinations.evaluator import CombinationEvaluator
             from vedic_astrology_core.combinations.registry import get_registry
-            from vedic_astrology_core.astrology.ephemeris import EphemerisEngine
         except ImportError as e:
             print(f"Error importing combination engine: {e}")
             return {}

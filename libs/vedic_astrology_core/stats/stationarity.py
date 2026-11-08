@@ -105,7 +105,7 @@ def stationarity_gate(series: pd.Series, alpha: float = 0.05) -> StationarityRes
     transform = "log-diff" if (raw > 0).all() else "diff"
     transformed = apply_transform(raw, transform)
     tests[transform] = adf_kpss(transformed)
-    verdict = "stationary" if is_stationary(tests[transform], alpha) else (
-        "nonstationary"
+    verdict = (
+        "stationary" if is_stationary(tests[transform], alpha) else ("nonstationary")
     )
     return StationarityResult(verdict, transform, transformed, tests)

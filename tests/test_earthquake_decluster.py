@@ -39,13 +39,16 @@ def test_gk_removes_aftershocks_and_foreshocks_only(unit):
     Run with several datetime units: a units bug once made every event a
     few days apart.
     """
-    cat = _catalogue([
-        ("2000-01-01", 28.0, 85.0, 6.0),   # mainshock
-        ("2000-01-05", 28.1, 85.1, 5.0),   # aftershock, 15 km, 4 days
-        ("1999-12-30", 28.05, 85.0, 4.8),  # foreshock
-        ("2000-01-05", 31.0, 79.0, 5.0),   # far away
-        ("2003-01-01", 28.0, 85.0, 5.0),   # years later
-    ], unit)
+    cat = _catalogue(
+        [
+            ("2000-01-01", 28.0, 85.0, 6.0),  # mainshock
+            ("2000-01-05", 28.1, 85.1, 5.0),  # aftershock, 15 km, 4 days
+            ("1999-12-30", 28.05, 85.0, 4.8),  # foreshock
+            ("2000-01-05", 31.0, 79.0, 5.0),  # far away
+            ("2003-01-01", 28.0, 85.0, 5.0),  # years later
+        ],
+        unit,
+    )
     keep = dc.gardner_knopoff(cat)
     assert keep.tolist() == [True, False, False, True, True]
 
@@ -56,15 +59,22 @@ def test_nearest_neighbour_separates_clusters_from_background():
     rows = []
     for k in range(60):  # background: random times over 30 years, random places
         t = pd.Timestamp("1990-01-01", tz="UTC") + pd.Timedelta(
-            days=float(rng.uniform(0, 30 * 365)))
+            days=float(rng.uniform(0, 30 * 365))
+        )
         rows.append((t, rng.uniform(27, 31), rng.uniform(78, 92), 5.3))
     for k in range(8):  # clusters: 6 aftershocks within hours and 5 km
         t0 = pd.Timestamp("1990-01-01", tz="UTC") + pd.Timedelta(days=1000 * k + 7)
         lat, lon = rng.uniform(27, 31), rng.uniform(78, 92)
         rows.append((t0, lat, lon, 6.0))
         for _ in range(6):
-            rows.append((t0 + pd.Timedelta(hours=float(rng.uniform(1, 48))),
-                         lat + rng.normal(0, 0.03), lon + rng.normal(0, 0.03), 5.2))
+            rows.append(
+                (
+                    t0 + pd.Timedelta(hours=float(rng.uniform(1, 48))),
+                    lat + rng.normal(0, 0.03),
+                    lon + rng.normal(0, 0.03),
+                    5.2,
+                )
+            )
     cat = _catalogue(rows).sort_values("time").reset_index(drop=True)
     keep, fit = dc.nearest_neighbour(cat)
     is_after = cat["mw"].eq(5.2).to_numpy()

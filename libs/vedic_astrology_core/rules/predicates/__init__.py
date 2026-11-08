@@ -168,8 +168,9 @@ def point_label(point: str) -> str:
     return "the Lagna" if point == LAGNA else point
 
 
-# Register the vocabulary (imports are for their side effect).
-from . import placement, relations, timing, mundane  # noqa: E402,F401
+# Register the vocabulary (imports are for their side effect). The order is
+# the registration order, which fixes rules/schema.json: do not sort.
+from . import placement, relations, timing, mundane  # noqa: E402,F401  # isort: skip
 
 __all__ = [
     "PREDICATES",

@@ -10,9 +10,9 @@ are no longer used by the registry.
 """
 
 from .conditions import AstroCondition, create_condition
-from .rules import CombinationRule, create_rule_from_config
 from .evaluator import CombinationEvaluator
 from .registry import CombinationRegistry, RegistryRule, get_registry
+from .rules import CombinationRule, create_rule_from_config
 
 __all__ = [
     "AstroCondition",

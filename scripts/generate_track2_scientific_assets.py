@@ -1,8 +1,10 @@
 """Generate Track 2 (earthquake) figures from real catalogue data."""
+
+import json
 import os
 import sys
-import json
 from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd

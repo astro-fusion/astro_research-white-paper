@@ -10,12 +10,13 @@ prefix and a "SIMULATED, NOT DATA" watermark (see CORRECTIONS.md, 2026-11-08).
 
 import argparse
 import json
-import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
 from datetime import datetime, timedelta
 from typing import Dict
+
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 try:
     import plotly.graph_objects as go

@@ -61,9 +61,14 @@ def test_shift_test_null_for_unrelated_clustered_events():
     """Clustered events unrelated to the indicator are not significant."""
     rng = np.random.default_rng(2)
     centres = rng.integers(0, 5000, size=8)
-    events = np.clip((centres[:, None] + rng.integers(0, 15, (8, 10))).ravel(),
-                     0, 4999)
-    res = rate_ratio_shift_test(events, _runs(5000, 1.3), 500, 999,
-                                np.random.default_rng(3), alternative="two-sided")
+    events = np.clip((centres[:, None] + rng.integers(0, 15, (8, 10))).ravel(), 0, 4999)
+    res = rate_ratio_shift_test(
+        events,
+        _runs(5000, 1.3),
+        500,
+        999,
+        np.random.default_rng(3),
+        alternative="two-sided",
+    )
     assert res.p_value > 0.05
     assert res.null_q025 <= res.null_median <= res.null_q975

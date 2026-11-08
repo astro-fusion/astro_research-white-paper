@@ -8,9 +8,8 @@ Validates the complete workflow:
 4. Report generation
 """
 
-from pathlib import Path
-
 import sys
+from pathlib import Path
 
 # Add parent to path for imports
 sys.path.insert(0, str(Path(__file__).parent))

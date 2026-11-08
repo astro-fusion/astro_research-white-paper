@@ -25,10 +25,11 @@ import pandas as pd
 import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
-from studies.mundane.scripts import features, validate_data  # noqa: E402
 from studies._paths import REPO_ROOT, artifacts_dir  # noqa: E402
+from studies.mundane.scripts import features, validate_data  # noqa: E402
 from studies.mundane.scripts.validate_data import (  # noqa: E402
-    COUNTRIES_FILE, EVENTS_FILE,
+    COUNTRIES_FILE,
+    EVENTS_FILE,
 )
 
 log = logging.getLogger("mundane.pipeline")
@@ -46,8 +47,9 @@ def load_events(path: Path = EVENTS_FILE) -> List[Dict[str, Any]]:
         return [json.loads(line) for line in fh if line.strip()]
 
 
-def select_events(events: List[Dict[str, Any]], limit: Optional[int], seed: int
-                  ) -> List[Dict[str, Any]]:
+def select_events(
+    events: List[Dict[str, Any]], limit: Optional[int], seed: int
+) -> List[Dict[str, Any]]:
     """Seeded random subset (by position) when ``limit`` is set."""
     if limit is None or limit >= len(events):
         return events
@@ -55,9 +57,9 @@ def select_events(events: List[Dict[str, Any]], limit: Optional[int], seed: int
     return [events[i] for i in idx]
 
 
-def build_feature_table(events: List[Dict[str, Any]],
-                        countries: Dict[str, Dict[str, Any]],
-                        window_days: int) -> tuple:
+def build_feature_table(
+    events: List[Dict[str, Any]], countries: Dict[str, Dict[str, Any]], window_days: int
+) -> tuple:
     """Return ``(rows, skipped)`` feature rows and the skipped-event count."""
     engine = features.get_engine()
     natal_cache: Dict[str, Dict[str, Any]] = {}
@@ -78,11 +80,18 @@ def build_feature_table(events: List[Dict[str, Any]],
             skipped["bad_date"] += 1
             continue
         for row in features.moment_features(
-            country, when, window_days=window_days, natal=natal_cache[iso],
+            country,
+            when,
+            window_days=window_days,
+            natal=natal_cache[iso],
             engine=engine,
         ):
-            row.update(event_id=ev["id"], event_title=ev["title"],
-                       event_date=ev["date"], event_type=ev["event_type"])
+            row.update(
+                event_id=ev["id"],
+                event_title=ev["title"],
+                event_date=ev["date"],
+                event_type=ev["event_type"],
+            )
             rows.append(row)
     return rows, skipped
 
@@ -91,6 +100,7 @@ def write_table(df: pd.DataFrame, out_dir: Path) -> str:
     """Write Parquet if pyarrow is installed, otherwise CSV; return the format."""
     try:
         import pyarrow  # noqa: F401
+
         df.to_parquet(out_dir / "features.parquet", index=False)
         return "parquet"
     except ImportError:
@@ -105,14 +115,21 @@ def run_stats_stub() -> str:
     except ImportError:
         log.info("stats module pending")
         return "pending"
-    log.info("stats module found; testing is not wired until hypothesis.yaml "
-             "is final and has sourced founding times")
+    log.info(
+        "stats module found; testing is not wired until hypothesis.yaml "
+        "is final and has sourced founding times"
+    )
     return "available_not_wired"
 
 
-def run(seed: int = 42, limit: Optional[int] = None, window_days: int = 30,
-        out_dir: Optional[Path] = None, events_path: Path = EVENTS_FILE,
-        countries_path: Path = COUNTRIES_FILE) -> Dict[str, Any]:
+def run(
+    seed: int = 42,
+    limit: Optional[int] = None,
+    window_days: int = 30,
+    out_dir: Optional[Path] = None,
+    events_path: Path = EVENTS_FILE,
+    countries_path: Path = COUNTRIES_FILE,
+) -> Dict[str, Any]:
     """Run the pipeline and return the summary dictionary."""
     libs = str(REPO_ROOT / "libs")
     if libs not in sys.path:
@@ -122,8 +139,9 @@ def run(seed: int = 42, limit: Optional[int] = None, window_days: int = 30,
     out_dir = Path(out_dir or artifacts_dir("mundane"))
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    problems = (validate_data.validate_countries(countries_path)
-                + validate_data.validate_events(events_path, countries_path))
+    problems = validate_data.validate_countries(
+        countries_path
+    ) + validate_data.validate_events(events_path, countries_path)
     if problems:
         raise SystemExit("validation failed:\n" + "\n".join(problems[:20]))
 
@@ -133,17 +151,23 @@ def run(seed: int = 42, limit: Optional[int] = None, window_days: int = 30,
     df = pd.DataFrame(rows)
     fmt = write_table(df, out_dir)
     summary = {
-        "seed": seed, "limit": limit, "window_days": window_days,
-        "countries": len(countries), "events_selected": len(events),
+        "seed": seed,
+        "limit": limit,
+        "window_days": window_days,
+        "countries": len(countries),
+        "events_selected": len(events),
         "events_featured": int(df["event_id"].nunique()) if len(df) else 0,
-        "events_skipped": dict(skipped), "feature_rows": len(df),
+        "events_skipped": dict(skipped),
+        "feature_rows": len(df),
         "rows_by_family": dict(Counter(df["family"])) if len(df) else {},
         "events_by_type": dict(Counter(e["event_type"] for e in events)),
         "rows_time_known_false": int((~df["time_known"]).sum()) if len(df) else 0,
-        "table_format": fmt, "stats": run_stats_stub(),
+        "table_format": fmt,
+        "stats": run_stats_stub(),
     }
     (out_dir / "summary.json").write_text(
-        json.dumps(summary, indent=2, sort_keys=True), encoding="utf-8")
+        json.dumps(summary, indent=2, sort_keys=True), encoding="utf-8"
+    )
     return summary
 
 

@@ -32,7 +32,8 @@ from typing import Any, Dict, Optional
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
 from studies.mundane.scripts.validate_data import (  # noqa: E402
-    EVENTS_FILE, SNAPSHOT_DIR,
+    EVENTS_FILE,
+    SNAPSHOT_DIR,
 )
 
 USGS_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query"
@@ -103,13 +104,19 @@ def fetch_usgs(out_dir: Path = SNAPSHOT_DIR) -> Path:
     resp.raise_for_status()
     dest = out_dir / "usgs_m6_1900_2026.csv"
     dest.write_bytes(resp.content)
-    write_manifest(dest, "USGS FDSN event service", {
-        "url": resp.url, "query": USGS_PARAMS, "licence": "public domain"})
+    write_manifest(
+        dest,
+        "USGS FDSN event service",
+        {"url": resp.url, "query": USGS_PARAMS, "licence": "public domain"},
+    )
     return dest
 
 
-def fetch_dfo(out_dir: Path = SNAPSHOT_DIR, url: Optional[str] = None,
-              local: Optional[Path] = None) -> Path:
+def fetch_dfo(
+    out_dir: Path = SNAPSHOT_DIR,
+    url: Optional[str] = None,
+    local: Optional[Path] = None,
+) -> Path:
     """Snapshot the Dartmouth Flood Observatory archive from a URL or a file."""
     out_dir.mkdir(parents=True, exist_ok=True)
     if local is not None:
@@ -121,7 +128,8 @@ def fetch_dfo(out_dir: Path = SNAPSHOT_DIR, url: Optional[str] = None,
         if not url:
             raise SystemExit(
                 "DFO archive URL not set (see the TODO in fetch_catalogues.py). "
-                "Pass --url <link> or --local <downloaded file>.")
+                "Pass --url <link> or --local <downloaded file>."
+            )
         import requests
 
         resp = requests.get(url, timeout=300)
@@ -129,13 +137,17 @@ def fetch_dfo(out_dir: Path = SNAPSHOT_DIR, url: Optional[str] = None,
         dest = out_dir / ("dfo_" + url.rsplit("/", 1)[-1].split("?")[0])
         dest.write_bytes(resp.content)
         source_url = url
-    write_manifest(dest, "Dartmouth Flood Observatory", {
-        "url": source_url, "licence": "see the DFO site; cite the archive"})
+    write_manifest(
+        dest,
+        "Dartmouth Flood Observatory",
+        {"url": source_url, "licence": "see the DFO site; cite the archive"},
+    )
     return dest
 
 
-def fetch_emdat(out_dir: Path = SNAPSHOT_DIR, local: Optional[Path] = None
-                ) -> Optional[Path]:
+def fetch_emdat(
+    out_dir: Path = SNAPSHOT_DIR, local: Optional[Path] = None
+) -> Optional[Path]:
     """EM-DAT stub: explain the licence, or hash a file the user downloaded."""
     if local is None:
         print(EMDAT_NOTICE)
@@ -143,8 +155,11 @@ def fetch_emdat(out_dir: Path = SNAPSHOT_DIR, local: Optional[Path] = None
     out_dir.mkdir(parents=True, exist_ok=True)
     dest = out_dir / f"emdat_{Path(local).name}"
     shutil.copyfile(local, dest)
-    write_manifest(dest, "EM-DAT (CRED, UCLouvain)", {
-        "licence": "registration required; not redistributable"})
+    write_manifest(
+        dest,
+        "EM-DAT (CRED, UCLouvain)",
+        {"licence": "registration required; not redistributable"},
+    )
     return dest
 
 
@@ -153,8 +168,11 @@ def snapshot_offline(out_dir: Path = SNAPSHOT_DIR) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
     dest = out_dir / "events_tracked.jsonl"
     shutil.copyfile(EVENTS_FILE, dest)
-    write_manifest(dest, "tracked studies/mundane/data/events.jsonl", {
-        "licence": "CC BY 4.0 (AstroFusion mundane dataset)"})
+    write_manifest(
+        dest,
+        "tracked studies/mundane/data/events.jsonl",
+        {"licence": "CC BY 4.0 (AstroFusion mundane dataset)"},
+    )
     return dest
 
 
@@ -162,8 +180,11 @@ def main(argv: Optional[list] = None) -> int:
     """CLI entry point."""
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("source", choices=["usgs", "dfo", "emdat", "all"])
-    ap.add_argument("--offline", action="store_true",
-                    help="no network: snapshot the tracked events.jsonl")
+    ap.add_argument(
+        "--offline",
+        action="store_true",
+        help="no network: snapshot the tracked events.jsonl",
+    )
     ap.add_argument("--local", type=Path, help="use a file you downloaded")
     ap.add_argument("--url", help="DFO archive URL")
     ap.add_argument("--out-dir", type=Path, default=SNAPSHOT_DIR)

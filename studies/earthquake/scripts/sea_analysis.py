@@ -5,9 +5,10 @@ Statistical validation tool for the Research Pipeline.
 "Stacks" the timelines of the largest earthquakes to detect common precursors.
 """
 
-import pandas as pd
-import matplotlib.pyplot as plt
 import os
+
+import matplotlib.pyplot as plt
+import pandas as pd
 
 
 def perform_sea_analysis(

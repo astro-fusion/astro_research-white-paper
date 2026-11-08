@@ -118,9 +118,9 @@ def test_simulation_is_opt_in_and_labelled(path):
     source, finder = _scan(path)
     if finder.simulated_calls == 0:
         return
-    assert '"--simulation"' in source, (
-        f"{path.relative_to(REPO_ROOT)} simulates data but has no --simulation flag"
-    )
+    assert (
+        '"--simulation"' in source
+    ), f"{path.relative_to(REPO_ROOT)} simulates data but has no --simulation flag"
     assert "SIMULATED_" in source, (
         f"{path.relative_to(REPO_ROOT)} simulates data but its outputs are not "
         "named SIMULATED_*"

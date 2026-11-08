@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Generate daily numerology metrics and pattern frequencies for a date range."""
+
+import sys
 from datetime import date, timedelta
 from pathlib import Path
+
 import pandas as pd
-import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
 from studies._paths import study_data_dir  # noqa: E402

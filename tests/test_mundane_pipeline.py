@@ -49,6 +49,7 @@ def test_emdat_stub_explains_licence(capsys, tmp_path):
 def test_dfo_without_url_exits_with_hint(tmp_path):
     """Dfo without url exits with hint."""
     import pytest
+
     with pytest.raises(SystemExit) as exc:
         fc.fetch_dfo(tmp_path)
     assert "--local" in str(exc.value)
@@ -60,5 +61,6 @@ def test_dfo_local_file_is_hashed(tmp_path):
     src.write_text("a,b\n1,2\n3,4\n")
     dest = fc.fetch_dfo(tmp_path / "snap", local=src)
     manifest = json.loads(
-        (tmp_path / "snap" / (dest.name + ".manifest.json")).read_text())
+        (tmp_path / "snap" / (dest.name + ".manifest.json")).read_text()
+    )
     assert manifest["rows"] == 2 and manifest["sha256"] == fc.sha256_of(dest)

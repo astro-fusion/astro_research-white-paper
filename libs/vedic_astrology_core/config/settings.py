@@ -15,7 +15,7 @@ try:
     YAML_AVAILABLE = True
 except ImportError:
     YAML_AVAILABLE = False
-    yaml = None
+    yaml = None  # type: ignore[assignment]
 
 from .constants import AYANAMSA_SYSTEMS, HOUSE_SYSTEMS
 

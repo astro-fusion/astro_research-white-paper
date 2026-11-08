@@ -4,7 +4,8 @@ from typing import List, Literal, Optional, Set
 
 from pydantic import Field, field_validator
 
-from ...astrology.divisional import VARGA_FACTORS, varga_sign as _varga_sign
+from ...astrology.divisional import VARGA_FACTORS
+from ...astrology.divisional import varga_sign as _varga_sign
 from ...config.constants import Planet
 from ...dignity.exaltation_matrix import (
     OWN_SIGNS_TABLE,

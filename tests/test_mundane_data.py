@@ -75,12 +75,25 @@ def test_bad_country_iso_and_coordinates(tmp_countries):
 def test_bad_events(tmp_path):
     """Bad events."""
     good = json.loads(EVENTS_FILE.read_text().splitlines()[0])
-    bad = dict(good, id="x", date="2020-13-01", country_iso="QQ", lat=95, lon=0,
-               description="Wikipedia text", event_type_reviewed="no")
+    bad = dict(
+        good,
+        id="x",
+        date="2020-13-01",
+        country_iso="QQ",
+        lat=95,
+        lon=0,
+        description="Wikipedia text",
+        event_type_reviewed="no",
+    )
     path = tmp_path / "events.jsonl"
     path.write_text(json.dumps(good) + "\n" + json.dumps(bad) + "\nnot json\n")
     problems = " ".join(vd.validate_events(path))
-    for expected in ("is not a date", "invalid ISO code 'QQ'", "outside -90..90",
-                     "description must not be present", "must be a boolean",
-                     "invalid JSON"):
+    for expected in (
+        "is not a date",
+        "invalid ISO code 'QQ'",
+        "outside -90..90",
+        "description must not be present",
+        "must be a boolean",
+        "invalid JSON",
+    ):
         assert expected in problems

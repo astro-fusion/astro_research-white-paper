@@ -19,8 +19,10 @@ def test_hypothesis_is_complete():
     assert cfg["tests"]["n_perm"] >= 10000 and cfg["tests"]["min_shift_bars"] >= 400
     assert cfg["periods"]["confirm_start"] == "2016-01-01"
     assert len(cfg["indicators"]) == 14
-    assert all(s["kind"] in ("retrograde", "combust", "in_sign", "tithi", "rule")
-               for s in cfg["indicators"])
+    assert all(
+        s["kind"] in ("retrograde", "combust", "in_sign", "tithi", "rule")
+        for s in cfg["indicators"]
+    )
     assert cfg["data"]["sources"][0]["adapter"] == "fred"
 
 
@@ -38,12 +40,15 @@ def test_committed_results_match_the_preregistration():
     cfg = study.load_hypothesis(STUDY / "hypothesis.yaml")
     assert res["seed"] == 42
     ids = [s["id"] for s in cfg["indicators"]]
-    assert res["family"]["indicators"] + res["family"]["indicators_not_evaluated"] \
-        == ids
+    assert (
+        res["family"]["indicators"] + res["family"]["indicators_not_evaluated"] == ids
+    )
     assert res["family"]["size_explore"] == 3 * len(res["family"]["indicators"])
     assert res["data"]["is_futures"] is (res["data"]["adapter"] != "fred")
     if res["data"]["is_futures"]:
         assert "not spot" in res["data"]["label"]
     explore = [t for t in res["tests"] if t["period"] == "explore" and t["testable"]]
-    assert sum(t["significant"] for t in explore) \
+    assert (
+        sum(t["significant"] for t in explore)
         == res["headline"]["n_significant_explore"]
+    )

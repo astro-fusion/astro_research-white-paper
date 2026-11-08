@@ -31,11 +31,21 @@ def test_planted_effect_is_detected_by_every_null():
     rng = np.random.default_rng(0)
     x = (np.sin(np.arange(3000) / 40.0) > 0.6).astype(int)
     y = rng.normal(size=3000) + 1.0 * x
-    for null, kw in (("circular_shift", {"min_shift": 300}),
-                     ("block_bootstrap", {"mean_block": 20}),
-                     ("phase", {})):
-        res = permutation_test(_mean_in, x, y, rng=np.random.default_rng(1),
-                               null=null, n_perm=199, n_boot=99, **kw)
+    for null, kw in (
+        ("circular_shift", {"min_shift": 300}),
+        ("block_bootstrap", {"mean_block": 20}),
+        ("phase", {}),
+    ):
+        res = permutation_test(
+            _mean_in,
+            x,
+            y,
+            rng=np.random.default_rng(1),
+            null=null,
+            n_perm=199,
+            n_boot=99,
+            **kw,
+        )
         assert res.p_value == pytest.approx(1 / 200), null
         assert res.effect > 0.5
         assert res.ci_low < res.observed < res.ci_high
@@ -47,8 +57,15 @@ def test_independent_series_is_not_significant():
     rng = np.random.default_rng(4)
     x = (np.sin(np.arange(3000) / 40.0) > 0.6).astype(int)
     y = rng.normal(size=3000)
-    res = permutation_test(_mean_in, x, y, rng=np.random.default_rng(5),
-                           min_shift=300, n_perm=499, n_boot=0)
+    res = permutation_test(
+        _mean_in,
+        x,
+        y,
+        rng=np.random.default_rng(5),
+        min_shift=300,
+        n_perm=499,
+        n_boot=0,
+    )
     assert res.p_value > 0.05
     assert abs(res.effect_z) < 2.5
     assert np.isnan(res.ci_low)

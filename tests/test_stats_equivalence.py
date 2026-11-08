@@ -100,10 +100,8 @@ def test_kappa_block_bootstrap_is_reproducible_and_wider_for_runs():
     rng = np.random.default_rng(11)
     a = np.repeat(rng.integers(0, 9, 300), 10)
     b = np.repeat(rng.integers(0, 9, 300), 10)
-    r1 = cohen_kappa_ci(a, b, n_boot=500, mean_block=20,
-                        rng=np.random.default_rng(42))
-    r2 = cohen_kappa_ci(a, b, n_boot=500, mean_block=20,
-                        rng=np.random.default_rng(42))
+    r1 = cohen_kappa_ci(a, b, n_boot=500, mean_block=20, rng=np.random.default_rng(42))
+    r2 = cohen_kappa_ci(a, b, n_boot=500, mean_block=20, rng=np.random.default_rng(42))
     assert r1.method == "block_bootstrap"
     assert (r1.ci_low, r1.ci_high) == (r2.ci_low, r2.ci_high)
     analytic = cohen_kappa_ci(a, b)

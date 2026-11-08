@@ -5,8 +5,8 @@ import os
 from datetime import datetime, timedelta, timezone
 
 import yaml
-
 from common import REPO, daily, make_cases, moments, write_rule
+
 from vedic_astrology_core.rules.predicates import PREDICATES
 
 # Draft YAML files from the AstroFusion open export (not in this repository).

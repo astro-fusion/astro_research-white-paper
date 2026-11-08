@@ -1,4 +1,5 @@
 """Visuals management and orchestration."""
+
 import asyncio
 import logging
 from typing import Dict, List

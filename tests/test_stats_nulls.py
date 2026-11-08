@@ -62,8 +62,9 @@ def test_phase_randomisation_keeps_spectrum_and_mean():
     for n in (512, 513):
         x = np.cumsum(rng.normal(size=n))
         s = phase_randomization(x, np.random.default_rng(2))
-        np.testing.assert_allclose(np.abs(np.fft.rfft(s)), np.abs(np.fft.rfft(x)),
-                                   rtol=1e-8, atol=1e-8)
+        np.testing.assert_allclose(
+            np.abs(np.fft.rfft(s)), np.abs(np.fft.rfft(x)), rtol=1e-8, atol=1e-8
+        )
         assert s.mean() == pytest.approx(x.mean())
         assert not np.allclose(s, x)
 

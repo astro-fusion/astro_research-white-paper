@@ -9,17 +9,17 @@ Scientific Reporting Pipeline. It replaces the old monolithic ReportLab generato
 New Pipeline Workflow:
 1. Data Ingestion: src/data/fetch_market_data.py
 2. Astro Alignment: src/data/align_astro_data.py
-3. Artifact Generation: src/generate_artifacts.py
+3. Artifact Generation: scripts/generate_artifacts.py
 4. Manuscript Rendering: Quarto
 
 Usage:
     python scripts/generate/generate_research_report.py
 """
 
-import os
-import sys
-import subprocess
 import logging
+import os
+import subprocess
+import sys
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

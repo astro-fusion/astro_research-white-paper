@@ -12,6 +12,7 @@ sys.path.insert(0, str(study_dir("earthquake") / "scripts"))
 
 import fetch_catalogue as fc  # noqa: E402
 import indicators as ind  # noqa: E402
+
 from vedic_astrology_core.astrology.ephemeris import EphemerisEngine  # noqa: E402
 
 HYP = fc.load_hypothesis()

@@ -39,10 +39,12 @@ def test_area_skill_score_known_answers_and_order_invariance():
     tau = np.array([0.0, 0.2, 0.5, 1.0])
     nu = np.array([1.0, 0.4, 0.2, 0.0])
     assert area_skill_score(tau[::-1], nu[::-1]) == pytest.approx(
-        area_skill_score(tau, nu))
+        area_skill_score(tau, nu)
+    )
     # Bug class: np.interp on a decreasing xp returned garbage.
     assert area_skill_score(tau, nu) == pytest.approx(
-        1 - (0.2 * 0.7 + 0.3 * 0.3 + 0.5 * 0.1))
+        1 - (0.2 * 0.7 + 0.3 * 0.3 + 0.5 * 0.1)
+    )
 
 
 def test_perfect_score_has_high_skill():
@@ -65,8 +67,9 @@ def test_binomial_bound_known_answer():
 def test_time_random_reference_centres_on_half():
     """Uniform random events have expected ASS 0.5."""
     score = np.random.default_rng(1).normal(size=2000)
-    ref = time_random_reference(score, 50, np.random.default_rng(2), n_sims=400,
-                                observed_ass=0.9)
+    ref = time_random_reference(
+        score, 50, np.random.default_rng(2), n_sims=400, observed_ass=0.9
+    )
     assert ref["mean"] == pytest.approx(0.5, abs=0.02)
     assert ref["q025"] < 0.5 < ref["q975"]
     assert ref["p_value"] == pytest.approx(1 / 401)

@@ -172,7 +172,7 @@ class AtLeast(Strict):
 
 
 def _leaf_model(name: str, params: type) -> type:
-    model = create_model(
+    model = create_model(  # type: ignore[call-overload]
         f"Leaf_{name}",
         __base__=Leaf,
         **{name: (params, Field(description=PREDICATES[name].doc.split("\n")[0]))},
@@ -192,11 +192,13 @@ _MEMBERS = [
     Annotated[AtLeast, Tag("at_least")],
 ] + [Annotated[model, Tag(name)] for name, model in LEAF_MODELS.items()]
 
-_TaggedUnion = Annotated[
+_TaggedUnion = Annotated[  # type: ignore[valid-type]
     Union[tuple(_MEMBERS)],  # type: ignore[valid-type]
     Discriminator(_tag),
 ]
-Condition = Annotated[_TaggedUnion, BeforeValidator(normalize_condition)]
+Condition = Annotated[
+    _TaggedUnion, BeforeValidator(normalize_condition)  # type: ignore[valid-type]
+]
 
 for _model in (AllOf, AnyOf, NotOf, AtLeastBody, AtLeast):
     _model.model_rebuild()

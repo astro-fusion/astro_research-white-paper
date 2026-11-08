@@ -40,8 +40,9 @@ def test_fred_html_or_wrong_columns_raise():
 
 def _fake_yahoo(ticker, start, end):
     idx = pd.DatetimeIndex(["2020-01-02", "2020-01-03", "2020-01-06"], name="Date")
-    return pd.DataFrame({"Close": [1520.0, 1550.0, 1570.0], "Volume": [10, 0, 5]},
-                        index=idx)
+    return pd.DataFrame(
+        {"Close": [1520.0, 1550.0, 1570.0], "Volume": [10, 0, 5]}, index=idx
+    )
 
 
 def test_yahoo_futures_flagged_and_zero_volume_dropped():
@@ -70,8 +71,13 @@ def test_tidy_rejects_duplicates_and_nonpositive():
 def test_snapshot_roundtrip_hash_and_manifest(tmp_path):
     """Check snapshot roundtrip hash and manifest."""
     df = fetch.read_tidy_csv(FIX / "yahoo_gold_GCF_2015_2020.csv")
-    path = fetch.snapshot(df, "gold", root=tmp_path, source_url="u",
-                          fetched_at="2026-11-08T00:00:00+00:00")
+    path = fetch.snapshot(
+        df,
+        "gold",
+        root=tmp_path,
+        source_url="u",
+        fetched_at="2026-11-08T00:00:00+00:00",
+    )
     digest = fetch.sha256_bytes(path.read_bytes())
     assert path.name == f"gold_{digest[:12]}.csv"
     manifest = json.loads(path.with_suffix(".manifest.json").read_text())

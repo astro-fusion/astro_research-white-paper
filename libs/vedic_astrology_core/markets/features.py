@@ -39,8 +39,7 @@ def resolve_bodies(bodies: Iterable) -> List[Planet]:
             out.append(to_planet(body))
         except KeyError:
             raise ValueError(
-                f"Unknown body {body!r}; expected one of "
-                f"{[p.name for p in Planet]}"
+                f"Unknown body {body!r}; expected one of " f"{[p.name for p in Planet]}"
             ) from None
     if not out:
         raise ValueError("no bodies requested")

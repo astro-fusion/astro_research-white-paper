@@ -31,12 +31,18 @@ def git_commit(repo_root: Optional[PathLike] = None) -> Dict[str, Any]:
     cwd = str(repo_root) if repo_root else None
     try:
         sha = subprocess.run(
-            ["git", "rev-parse", "HEAD"], cwd=cwd, capture_output=True,
-            text=True, check=True,
+            ["git", "rev-parse", "HEAD"],
+            cwd=cwd,
+            capture_output=True,
+            text=True,
+            check=True,
         ).stdout.strip()
         status = subprocess.run(
-            ["git", "status", "--porcelain", "--untracked-files=no"], cwd=cwd,
-            capture_output=True, text=True, check=True,
+            ["git", "status", "--porcelain", "--untracked-files=no"],
+            cwd=cwd,
+            capture_output=True,
+            text=True,
+            check=True,
         ).stdout.strip()
     except (OSError, subprocess.CalledProcessError):
         return {"commit": None, "dirty": None}
@@ -82,8 +88,9 @@ def build_manifest(
         rec["sha256"] = file_sha256(rec["path"])
         if repo_root is not None:
             try:
-                rec["path"] = str(Path(rec["path"]).resolve().relative_to(
-                    Path(repo_root).resolve()))
+                rec["path"] = str(
+                    Path(rec["path"]).resolve().relative_to(Path(repo_root).resolve())
+                )
             except ValueError:
                 pass
         records.append(rec)

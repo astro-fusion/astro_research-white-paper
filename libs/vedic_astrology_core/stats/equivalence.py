@@ -68,11 +68,18 @@ def tost(
     p_value = max(p_lower, p_upper)
     q = float(dist.ppf(1.0 - alpha))
     return TostResult(
-        estimate=float(estimate), se=float(se), low=float(low), high=float(high),
-        p_lower=p_lower, p_upper=p_upper, p_value=p_value,
+        estimate=float(estimate),
+        se=float(se),
+        low=float(low),
+        high=float(high),
+        p_lower=p_lower,
+        p_upper=p_upper,
+        p_value=p_value,
         equivalent=bool(p_value < alpha),
-        ci_low=float(estimate - q * se), ci_high=float(estimate + q * se),
-        alpha=float(alpha), df=None if df is None else float(df),
+        ci_low=float(estimate - q * se),
+        ci_high=float(estimate + q * se),
+        alpha=float(alpha),
+        df=None if df is None else float(df),
     )
 
 
@@ -129,8 +136,11 @@ def _codes(a, b, labels):
         labels = sorted(set(a) | set(b), key=repr)
     index = {k: i for i, k in enumerate(labels)}
     try:
-        return (np.array([index[x] for x in a]), np.array([index[x] for x in b]),
-                len(labels))
+        return (
+            np.array([index[x] for x in a]),
+            np.array([index[x] for x in b]),
+            len(labels),
+        )
     except KeyError as exc:
         raise ValueError(f"rating {exc.args[0]!r} is not in labels") from None
 
@@ -169,8 +179,19 @@ def cohen_kappa_ci(
     if n_boot <= 0:
         se = _kappa_se(table)
         z = float(sps.norm.ppf(0.5 + ci_level / 2))
-        return KappaResult(kappa, po, pe, n, se, kappa - z * se, kappa + z * se,
-                           ci_level, "analytic", 0, None)
+        return KappaResult(
+            kappa,
+            po,
+            pe,
+            n,
+            se,
+            kappa - z * se,
+            kappa + z * se,
+            ci_level,
+            "analytic",
+            0,
+            None,
+        )
     if mean_block is None or rng is None:
         raise ValueError("a bootstrap needs mean_block and rng")
     _check_rng(rng)
@@ -180,6 +201,16 @@ def cohen_kappa_ci(
         draws[i] = _kappa(_table(ca[idx], cb[idx], k))
     tail = (1 - ci_level) / 2
     lo, hi = np.nanquantile(draws, [tail, 1 - tail])
-    return KappaResult(kappa, po, pe, n, float(np.nanstd(draws, ddof=1)),
-                       float(lo), float(hi), ci_level, "block_bootstrap",
-                       int(n_boot), float(mean_block))
+    return KappaResult(
+        kappa,
+        po,
+        pe,
+        n,
+        float(np.nanstd(draws, ddof=1)),
+        float(lo),
+        float(hi),
+        ci_level,
+        "block_bootstrap",
+        int(n_boot),
+        float(mean_block),
+    )

@@ -58,11 +58,13 @@ def molchan_trajectory(score, event_bins, thresholds=None) -> pd.DataFrame:
     rows = [{"threshold": np.inf, "tau": 0.0, "nu": 1.0}]
     ev_scores = s[ev]
     for th in np.asarray(thresholds, dtype=float):
-        rows.append({
-            "threshold": float(th),
-            "tau": float(np.mean(s >= th)),
-            "nu": float(1.0 - np.mean(ev_scores >= th)),
-        })
+        rows.append(
+            {
+                "threshold": float(th),
+                "tau": float(np.mean(s >= th)),
+                "nu": float(1.0 - np.mean(ev_scores >= th)),
+            }
+        )
     rows.append({"threshold": -np.inf, "tau": 1.0, "nu": 0.0})
     df = pd.DataFrame(rows).sort_values(["tau", "nu"], ascending=[True, False])
     return df.reset_index(drop=True)

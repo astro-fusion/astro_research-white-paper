@@ -27,22 +27,37 @@ from vedic_astrology_core.astrology.ephemeris import EphemerisEngine  # noqa: E4
 from vedic_astrology_core.config.constants import Planet, PlanetDict  # noqa: E402
 
 TRANSIT_PLANETS = (
-    Planet.SUN, Planet.MOON, Planet.MARS, Planet.MERCURY, Planet.JUPITER,
-    Planet.VENUS, Planet.SATURN, Planet.RAHU, Planet.KETU,
+    Planet.SUN,
+    Planet.MOON,
+    Planet.MARS,
+    Planet.MERCURY,
+    Planet.JUPITER,
+    Planet.VENUS,
+    Planet.SATURN,
+    Planet.RAHU,
+    Planet.KETU,
 )
 NATAL_PLANETS = TRANSIT_PLANETS
 STATION_PLANETS = (
-    Planet.MARS, Planet.MERCURY, Planet.JUPITER, Planet.VENUS, Planet.SATURN,
+    Planet.MARS,
+    Planet.MERCURY,
+    Planet.JUPITER,
+    Planet.VENUS,
+    Planet.SATURN,
 )
 # Whole-sign Parashari aspects as house offsets counted from the aspecting
 # planet's own sign (1 = same sign, 7 = opposite). Rahu and Ketu use the 5-7-9
 # convention several schools apply to them; it is a rule choice, not a fact.
 ASPECT_OFFSETS: Dict[Planet, frozenset] = {
-    Planet.SUN: frozenset({7}), Planet.MOON: frozenset({7}),
-    Planet.MERCURY: frozenset({7}), Planet.VENUS: frozenset({7}),
-    Planet.MARS: frozenset({4, 7, 8}), Planet.JUPITER: frozenset({5, 7, 9}),
+    Planet.SUN: frozenset({7}),
+    Planet.MOON: frozenset({7}),
+    Planet.MERCURY: frozenset({7}),
+    Planet.VENUS: frozenset({7}),
+    Planet.MARS: frozenset({4, 7, 8}),
+    Planet.JUPITER: frozenset({5, 7, 9}),
     Planet.SATURN: frozenset({3, 7, 10}),
-    Planet.RAHU: frozenset({5, 7, 9}), Planet.KETU: frozenset({5, 7, 9}),
+    Planet.RAHU: frozenset({5, 7, 9}),
+    Planet.KETU: frozenset({5, 7, 9}),
 }
 LOCAL_NOON = time(12, 0)
 _ENGINE: Optional[EphemerisEngine] = None
@@ -74,8 +89,9 @@ def planet_signs(dt: datetime, engine: Optional[EphemerisEngine] = None) -> Plan
     return PlanetDict({p: pos["sign"] for p, pos in positions.items()})
 
 
-def natal_chart(country: Dict[str, Any], engine: Optional[EphemerisEngine] = None
-                ) -> Dict[str, Any]:
+def natal_chart(
+    country: Dict[str, Any], engine: Optional[EphemerisEngine] = None
+) -> Dict[str, Any]:
     """Natal planet signs for a country entry; houses only with a sourced time."""
     engine = engine or get_engine()
     f = country["founding"]
@@ -145,8 +161,9 @@ def _bisect(fn, lo: float, hi: float, steps: int = 40) -> float:
     return (lo + hi) / 2
 
 
-def sun_ingresses(jd: float, days: float, engine: Optional[EphemerisEngine] = None
-                  ) -> List[Dict[str, Any]]:
+def sun_ingresses(
+    jd: float, days: float, engine: Optional[EphemerisEngine] = None
+) -> List[Dict[str, Any]]:
     """Sidereal Sun sign changes within ``days`` of ``jd``."""
     engine = engine or get_engine()
     out = []
@@ -157,16 +174,24 @@ def sun_ingresses(jd: float, days: float, engine: Optional[EphemerisEngine] = No
         cur = min(start + i, jd + days)
         sign = _sign_at(engine, cur, Planet.SUN)
         if sign != prev_sign:
-            t = _bisect(lambda x: _sign_at(engine, x, Planet.SUN) == prev_sign,
-                        prev_jd, cur)
-            out.append({"family": "ingress", "planet": "SUN",
-                        "days_offset": round(t - jd, 3), "to_sign": sign})
+            t = _bisect(
+                lambda x: _sign_at(engine, x, Planet.SUN) == prev_sign, prev_jd, cur
+            )
+            out.append(
+                {
+                    "family": "ingress",
+                    "planet": "SUN",
+                    "days_offset": round(t - jd, 3),
+                    "to_sign": sign,
+                }
+            )
         prev_jd, prev_sign = cur, sign
     return out
 
 
-def stations(jd: float, days: float, engine: Optional[EphemerisEngine] = None
-             ) -> List[Dict[str, Any]]:
+def stations(
+    jd: float, days: float, engine: Optional[EphemerisEngine] = None
+) -> List[Dict[str, Any]]:
     """Find planetary stations within ``days`` of ``jd``."""
     engine = engine or get_engine()
     out = []
@@ -179,18 +204,22 @@ def stations(jd: float, days: float, engine: Optional[EphemerisEngine] = None
             v = _speed_at(engine, cur, planet)
             if (v < 0) != (prev_v < 0):
                 t = _bisect(lambda x: _speed_at(engine, x, planet) < 0, prev_jd, cur)
-                out.append({
-                    "family": "station", "planet": planet.name,
-                    "days_offset": round(t - jd, 3),
-                    "kind": "retrograde" if v < 0 else "direct",
-                    "sign": _sign_at(engine, t, planet),
-                })
+                out.append(
+                    {
+                        "family": "station",
+                        "planet": planet.name,
+                        "days_offset": round(t - jd, 3),
+                        "kind": "retrograde" if v < 0 else "direct",
+                        "sign": _sign_at(engine, t, planet),
+                    }
+                )
             prev_jd, prev_v = cur, v
     return out
 
 
-def eclipses(jd: float, days: float, engine: Optional[EphemerisEngine] = None
-             ) -> List[Dict[str, Any]]:
+def eclipses(
+    jd: float, days: float, engine: Optional[EphemerisEngine] = None
+) -> List[Dict[str, Any]]:
     """Find global solar and lunar eclipses within ``days`` of ``jd``."""
     engine = engine or get_engine()
     out = []
@@ -205,11 +234,14 @@ def eclipses(jd: float, days: float, engine: Optional[EphemerisEngine] = None
                 t = tret[0]
                 if abs(t - jd) > days:
                     break
-                out.append({
-                    "family": "eclipse", "kind": kind,
-                    "days_offset": round(t - jd, 3),
-                    "sign": _sign_at(engine, t, Planet.SUN),
-                })
+                out.append(
+                    {
+                        "family": "eclipse",
+                        "kind": kind,
+                        "days_offset": round(t - jd, 3),
+                        "sign": _sign_at(engine, t, Planet.SUN),
+                    }
+                )
                 cursor = t + (-1 if back else 1)
     seen, uniq = set(), []
     for row in sorted(out, key=lambda r: r["days_offset"]):
@@ -220,9 +252,14 @@ def eclipses(jd: float, days: float, engine: Optional[EphemerisEngine] = None
     return uniq
 
 
-def moment_features(country: Dict[str, Any], when: datetime, *, window_days: int = 30,
-                    natal: Optional[Dict[str, Any]] = None,
-                    engine: Optional[EphemerisEngine] = None) -> List[Dict[str, Any]]:
+def moment_features(
+    country: Dict[str, Any],
+    when: datetime,
+    *,
+    window_days: int = 30,
+    natal: Optional[Dict[str, Any]] = None,
+    engine: Optional[EphemerisEngine] = None,
+) -> List[Dict[str, Any]]:
     """All feature rows for ``country`` at the aware datetime ``when``."""
     engine = engine or get_engine()
     natal = natal or natal_chart(country, engine)

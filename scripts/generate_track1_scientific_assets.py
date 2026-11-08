@@ -73,9 +73,7 @@ def simulate_mars_strength(start_date: datetime, end_date: datetime):
     while current <= end_date:
         t_hour = (current - start_date).total_seconds() / 3600
         mars_strength = (
-            50
-            + 40 * np.sin(t_hour / (24 * 60) * 2 * np.pi)
-            + np.random.normal(0, 2)
+            50 + 40 * np.sin(t_hour / (24 * 60) * 2 * np.pi) + np.random.normal(0, 2)
         )
         rows.append({"time": current, "Mars": np.clip(mars_strength, 0, 100)})
         current += timedelta(hours=1)

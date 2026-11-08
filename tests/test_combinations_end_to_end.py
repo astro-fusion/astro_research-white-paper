@@ -67,8 +67,11 @@ def _moment_only_rules(domain):
     """
     loaded, problems = load_rules([RULES_DIR / domain])
     assert not problems
-    return [item.rule for item in loaded
-            if item.rule.conditions is not None and not rule_inputs(item.rule)]
+    return [
+        item.rule
+        for item in loaded
+        if item.rule.conditions is not None and not rule_inputs(item.rule)
+    ]
 
 
 def test_registry_reads_the_migrated_rules():
@@ -77,8 +80,12 @@ def test_registry_reads_the_migrated_rules():
     seismic = {r.name for r in registry.get_rules_by_usecase("seismic")}
     assert len(seismic) == 8 and "Mangal-Ketu-Primary" in seismic
     financial = {r.name for r in registry.get_rules_by_usecase("financial")}
-    migrated = {"Venus-Retrograde-Reversal", "Jupiter-Retrograde-Contraction",
-                "Shukra-Guru-Wealth", "Venus-Own-Sign"}
+    migrated = {
+        "Venus-Retrograde-Reversal",
+        "Jupiter-Retrograde-Contraction",
+        "Shukra-Guru-Wealth",
+        "Venus-Own-Sign",
+    }
     assert migrated <= financial
     assert len(financial) == len(_moment_only_rules("financial"))
     rule = registry.get_rule("Mangal-Ketu-Primary")

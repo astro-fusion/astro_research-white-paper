@@ -7,7 +7,7 @@ release.
 """
 
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Sequence, Union
+from typing import Any, Dict, List, Optional, Sequence, Union
 
 import pandas as pd
 
@@ -29,9 +29,9 @@ class CombinationEvaluator:
     ):
         """Initialize with an ephemeris engine and rules (default: all of rules/)."""
         self.ephemeris = ephemeris or EphemerisEngine()
-        self.rules: List[AnyRule] = (
-            list(rules) if rules is not None else get_registry().get_all_rules()
-        )
+        self.rules: List[AnyRule] = []
+        source = rules if rules is not None else get_registry().get_all_rules()
+        self.rules.extend(source)
 
     def evaluate_date(self, dt: datetime) -> Dict[str, Dict]:
         """Evaluate all rules for one timezone-aware datetime."""
@@ -59,7 +59,7 @@ class CombinationEvaluator:
         while current <= end_date:
             day_res = self.evaluate_date(current)
 
-            row = {"date": current}
+            row: Dict[str, Any] = {"date": current}
             for rule_name, ev in day_res.items():
                 row[f"{rule_name}_active"] = 1 if ev["is_active"] else 0
                 row[f"{rule_name}_score"] = ev["score"]

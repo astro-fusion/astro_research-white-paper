@@ -145,8 +145,9 @@ def generate_granger_stats(df: pd.DataFrame):
             continue
 
         # ADL with HAC errors, lag 1 fixed a priori, stationarity gate.
-        res = exog_granger(returns, df.set_index("Date")[predictors],
-                           lags=(1,), y_lags=1)
+        res = exog_granger(
+            returns, df.set_index("Date")[predictors], lags=(1,), y_lags=1
+        )
         results[planet] = {
             "Target": "Gold_Log_Ret",
             "Predictors": ", ".join(predictors),
@@ -189,8 +190,9 @@ def generate_molchan_plot(df: pd.DataFrame):
     # Calculate trajectory (tau = fraction of time under alarm, sorted ascending)
     thresholds = np.linspace(predictions.min(), predictions.max(), 50)
     event_bins = np.flatnonzero(actuals.to_numpy())
-    molchan_df = molchan_trajectory(predictions.fillna(predictions.min()),
-                                    event_bins, thresholds)
+    molchan_df = molchan_trajectory(
+        predictions.fillna(predictions.min()), event_bins, thresholds
+    )
 
     plt.figure(figsize=(6, 6))
     plt.plot(
@@ -322,9 +324,16 @@ def generate_monte_carlo_plot(df: pd.DataFrame):
     def r_squared(a, b):
         return float(np.corrcoef(a, b)[0, 1] ** 2)
 
-    res = permutation_test(r_squared, x, y, rng=make_rng(SEED),
-                           null="circular_shift", n_perm=1000,
-                           min_shift=max(1, len(x) // 5), n_boot=0)
+    res = permutation_test(
+        r_squared,
+        x,
+        y,
+        rng=make_rng(SEED),
+        null="circular_shift",
+        n_perm=1000,
+        min_shift=max(1, len(x) // 5),
+        n_boot=0,
+    )
     actual_score = res.observed
     permuted_scores = res.null_stats
     p_value = res.p_value

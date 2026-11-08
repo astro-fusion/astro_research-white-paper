@@ -55,13 +55,9 @@ def _check_coord(obj: Dict[str, Any], lat_key: str, lon_key: str) -> List[str]:
     lat, lon = obj.get(lat_key), obj.get(lon_key)
     if (lat is None) != (lon is None):
         out.append(f"{lat_key}/{lon_key}: only one of the pair is set")
-    if lat is not None and not (
-        isinstance(lat, (int, float)) and -90 <= lat <= 90
-    ):
+    if lat is not None and not (isinstance(lat, (int, float)) and -90 <= lat <= 90):
         out.append(f"{lat_key}: {lat!r} outside -90..90")
-    if lon is not None and not (
-        isinstance(lon, (int, float)) and -180 <= lon <= 180
-    ):
+    if lon is not None and not (isinstance(lon, (int, float)) and -180 <= lon <= 180):
         out.append(f"{lon_key}: {lon!r} outside -180..180")
     return out
 
@@ -90,8 +86,7 @@ def validate_countries(path: Path = COUNTRIES_FILE) -> List[str]:
         except (ZoneInfoNotFoundError, ValueError, OSError):
             problems.append(f"{where}: unknown timezone {c.get('timezone')!r}")
         problems += [
-            f"{where}: {p}"
-            for p in _check_coord(c, "capital_lat", "capital_lon")
+            f"{where}: {p}" for p in _check_coord(c, "capital_lat", "capital_lon")
         ]
         if c.get("capital_lat") is None:
             problems.append(f"{where}: capital coordinates are required")

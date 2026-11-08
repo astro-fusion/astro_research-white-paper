@@ -21,8 +21,12 @@ def res():
 
 def test_verdict_sentence_follows_outcome(res):
     """Check each verdict produces its own wording."""
-    for verdict, word in (("null", "**null**"), ("not_replicated", "not replicated"),
-                          ("positive", "**positive**"), ("mixed", "**mixed**")):
+    for verdict, word in (
+        ("null", "**null**"),
+        ("not_replicated", "not replicated"),
+        ("positive", "**positive**"),
+        ("mixed", "**mixed**"),
+    ):
         r = copy.deepcopy(res)
         r["headline"]["verdict"] = verdict
         assert word in report.verdict_sentence(r)
@@ -33,8 +37,10 @@ def test_tables_are_markdown_with_numbers_from_results(res):
     table = report.tests_table(res, "explore", top=3)
     lines = table.splitlines()
     assert len(lines) == 5 and lines[1].startswith("|---")
-    best = min((t for t in res["tests"] if t["period"] == "explore" and t["testable"]),
-               key=lambda t: t["p_value"])
+    best = min(
+        (t for t in res["tests"] if t["period"] == "explore" and t["testable"]),
+        key=lambda t: t["p_value"],
+    )
     assert best["indicator"].replace("_", " ") in lines[2]
     assert report.headline_table(res).count("\n") == 7
     assert res["data"]["sha256"][:16] in report.data_paragraph(res)

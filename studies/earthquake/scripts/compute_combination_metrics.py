@@ -15,8 +15,9 @@ import sys
 # import os
 # from datetime import datetime, timedelta
 from pathlib import Path
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 
 root = Path(__file__).resolve().parents[3]  # repo root
 sys.path.insert(0, str(root))
@@ -30,9 +31,11 @@ from vedic_astrology_core.stats.multiplicity import adjust
 def calculate_chi_square(a, b, c, d):
     """Return the uncorrected 2x2 chi-square p-value (1.0 if undefined)."""
     table = np.array([[a, b], [c, d]], dtype=float)
-    if table.sum() == 0 or (table.sum(axis=0) == 0).any() or (
-        table.sum(axis=1) == 0
-    ).any():
+    if (
+        table.sum() == 0
+        or (table.sum(axis=0) == 0).any()
+        or (table.sum(axis=1) == 0).any()
+    ):
         return 1.0
     return float(chi2_contingency(table, correction=False)[1])
 
@@ -40,6 +43,8 @@ def calculate_chi_square(a, b, c, d):
 def apply_fdr_correction(p, method="fdr_bh"):
     """Return Benjamini-Hochberg q-values."""
     return adjust(np.asarray(p, dtype=float), "bh")
+
+
 from studies._paths import study_data_dir
 
 # Paths

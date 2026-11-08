@@ -41,6 +41,7 @@ def test_extreme_flag_uses_only_the_past():
 
 def test_acquire_falls_back_to_fixture_and_marks_provisional(monkeypatch):
     """Check unreachable sources lead to the fixture and provisional=True."""
+
     def down(*args, **kwargs):
         raise fetch.FetchError("offline")
 
@@ -49,9 +50,12 @@ def test_acquire_falls_back_to_fixture_and_marks_provisional(monkeypatch):
     prices, record = study.acquire(study.load_hypothesis(GOLD), REPO)
     assert record["provisional"] is True and len(prices) == 1480
     assert [t["series_id"] for t in record["sources_tried"]] == [
-        "GOLDPMGBD228NLBM", "GC=F"]
+        "GOLDPMGBD228NLBM",
+        "GC=F",
+    ]
     assert record["sha256"] == fetch.sha256_bytes(
-        (REPO / "tests/fixtures/markets/yahoo_gold_GCF_2015_2020.csv").read_bytes())
+        (REPO / "tests/fixtures/markets/yahoo_gold_GCF_2015_2020.csv").read_bytes()
+    )
 
 
 def test_load_hypothesis_rejects_duplicates(tmp_path):
@@ -71,9 +75,16 @@ def test_offline_run_is_complete_and_reproducible(tmp_path):
     a = study.run_study(hyp, tmp_path / "a", REPO, seed=7, offline=True)
     study.run_study(hyp, tmp_path / "b", REPO, seed=7, offline=True)
     assert a["provisional"] is True and a["data"]["adapter"] == "fixture"
-    for name in ("results.json", "manifest.json", "tbl_indicator_tests.csv",
-                 "overlay_frame.csv", "fig_overlay.png", "fig_effects.png",
-                 "fig_event_study.png", "fig_stations.png"):
+    for name in (
+        "results.json",
+        "manifest.json",
+        "tbl_indicator_tests.csv",
+        "overlay_frame.csv",
+        "fig_overlay.png",
+        "fig_effects.png",
+        "fig_event_study.png",
+        "fig_stations.png",
+    ):
         assert (tmp_path / "a" / name).exists(), name
     ta = pd.read_csv(tmp_path / "a" / "tbl_indicator_tests.csv")
     tb = pd.read_csv(tmp_path / "b" / "tbl_indicator_tests.csv")

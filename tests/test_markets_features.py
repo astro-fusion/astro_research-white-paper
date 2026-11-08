@@ -28,8 +28,9 @@ def test_naive_instants_raise():
 
 def test_frame_matches_engine_and_uses_enum_values():
     """Check frame matches engine and uses enum values."""
-    frame = features.indicator_frame(J2000, ["Sun", "Moon", "Jupiter"], ENGINE,
-                                     lagna_sign=0)
+    frame = features.indicator_frame(
+        J2000, ["Sun", "Moon", "Jupiter"], ENGINE, lagna_sign=0
+    )
     jd = ENGINE.datetime_to_julian_day(datetime(2000, 1, 1, 12, tzinfo=timezone.utc))
     pos = ENGINE.get_all_planet_positions(jd)
     row = frame.iloc[0]
@@ -47,8 +48,9 @@ def test_dasha_lord_from_natal_chart():
     """Check dasha lord from natal chart."""
     natal = {"birth": datetime(1990, 1, 1, tzinfo=timezone.utc), "moon_longitude": 0.5}
     # Moon in Ashwini (Ketu) at 0.5 deg: Ketu mahadasha runs about 6.6 more years.
-    idx = pd.DatetimeIndex([pd.Timestamp("1991-01-01", tz="UTC"),
-                            pd.Timestamp("2000-01-01", tz="UTC")])
+    idx = pd.DatetimeIndex(
+        [pd.Timestamp("1991-01-01", tz="UTC"), pd.Timestamp("2000-01-01", tz="UTC")]
+    )
     frame = features.indicator_frame(idx, ["Moon"], ENGINE, natal=natal)
     assert frame["dasha_lord"].tolist() == ["KETU", "VENUS"]
 
@@ -56,8 +58,9 @@ def test_dasha_lord_from_natal_chart():
 def test_rule_firings_from_registry_agree_with_engine():
     """Check rule firings from registry agree with engine."""
     idx = pd.date_range("2020-01-01", periods=60, freq="7D", tz="UTC")
-    frame = features.indicator_frame(idx, ["Venus", "Jupiter"], ENGINE,
-                                     rules_use_case="financial")
+    frame = features.indicator_frame(
+        idx, ["Venus", "Jupiter"], ENGINE, rules_use_case="financial"
+    )
     if frame.attrs.get("rules_skipped"):
         pytest.skip(f"registry unavailable: {frame.attrs['rules_skipped']}")
     assert "rule:Venus-Retrograde-Reversal" in frame.columns
@@ -93,7 +96,8 @@ def test_build_indicators_specs_and_failures():
     assert 28 <= ind["sun_aries"].sum() <= 32
     assert 12 <= ind["purnima"].sum() <= 16
     with pytest.raises(ValueError, match="never active"):
-        features.build_indicators(frame, [{"id": "x", "kind": "in_sign", "body": "Sun",
-                                           "signs": ["Nowhere"]}])
+        features.build_indicators(
+            frame, [{"id": "x", "kind": "in_sign", "body": "Sun", "signs": ["Nowhere"]}]
+        )
     with pytest.raises(ValueError, match="unknown indicator kind"):
         features.build_indicators(frame, [{"id": "x", "kind": "vibes"}])

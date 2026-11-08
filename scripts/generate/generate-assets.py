@@ -7,9 +7,9 @@ and stores them in studies/numerology_vs_astrology/artifacts/releases/.
 """
 
 import os
-import sys
-import subprocess
 import shutil
+import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 

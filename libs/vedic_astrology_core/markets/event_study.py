@@ -13,7 +13,7 @@ The bands answer "how large would the mean be at these dates if returns had
 the same dependence but no link to the events".
 """
 
-from typing import Dict, Iterable, Sequence
+from typing import Dict, Iterable, Optional, Sequence
 
 import numpy as np
 import pandas as pd
@@ -35,7 +35,7 @@ def event_study(
     prices: pd.DataFrame,
     event_bars: Iterable[int],
     horizons: Sequence[int] = (5, 21, 63),
-    rng: np.random.Generator = None,
+    rng: Optional[np.random.Generator] = None,
     n_boot: int = 2000,
     mean_block: float = 20.0,
     ci_level: float = 0.95,
@@ -116,7 +116,7 @@ def event_profile(
 def rate_during_vs_outside(
     event_flags: Iterable[bool],
     indicator: Iterable[bool],
-    rng: np.random.Generator = None,
+    rng: Optional[np.random.Generator] = None,
     min_shift: int = 400,
     n_draws: int = 10000,
     alternative: str = "two-sided",

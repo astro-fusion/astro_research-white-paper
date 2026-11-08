@@ -29,6 +29,7 @@ for _p in (REPO, REPO / "libs", Path(__file__).resolve().parent):
 
 from correlation_analysis import CorrelationAnalyzer  # noqa: E402
 from generate_temporal_analysis import TemporalDataGenerator  # noqa: E402
+
 from studies._paths import artifacts_dir, study_data_dir, study_dir  # noqa: E402
 from vedic_astrology_core.stats.manifest import (  # noqa: E402
     git_commit,
@@ -80,14 +81,19 @@ def describe(frame: pd.DataFrame) -> Dict[str, Any]:
         "numerology_changes_per_year": changes(frame["numerology_active_planet"])
         / years,
         "nakshatra_lord_changes_per_year": changes(
-            frame["astrology_moon_nakshatra_lord"]) / years,
+            frame["astrology_moon_nakshatra_lord"]
+        )
+        / years,
         "mean_nakshatra_days": SIDEREAL_MONTH_DAYS / 27.0,
     }
 
 
-def run(seed: int, out_dir: Optional[Path] = None,
-        frame: Optional[pd.DataFrame] = None,
-        data_dir: Optional[Path] = None) -> Dict[str, Any]:
+def run(
+    seed: int,
+    out_dir: Optional[Path] = None,
+    frame: Optional[pd.DataFrame] = None,
+    data_dir: Optional[Path] = None,
+) -> Dict[str, Any]:
     """Run the study and return the results dictionary.
 
     ``frame`` and ``data_dir`` let tests pass a short frame and a temporary
@@ -109,8 +115,10 @@ def run(seed: int, out_dir: Optional[Path] = None,
     margins = {h["id"]: float(h["margin"]) for h in hyp["hypotheses"]}
     unc = hyp["uncertainty"]
     tests = analyzer.perform_hypothesis_tests(
-        margin_r=margins["H2"], margin_kappa=margins["H1"],
-        alpha=float(hyp["alpha"]), n_boot=int(unc["n_boot"]),
+        margin_r=margins["H2"],
+        margin_kappa=margins["H1"],
+        alpha=float(hyp["alpha"]),
+        n_boot=int(unc["n_boot"]),
         mean_block=float(unc["mean_block_days"]),
         rng=np.random.default_rng(seed),
     )
@@ -127,9 +135,12 @@ def run(seed: int, out_dir: Optional[Path] = None,
         "seed": seed,
         "git": git_commit(REPO),
         "ephemeris": engine,
-        "sampling": {"time": hyp["sample_time"], "tz": hyp["tz"],
-                     "start": hyp["period"]["start"],
-                     "end_exclusive": hyp["period"]["end"]},
+        "sampling": {
+            "time": hyp["sample_time"],
+            "tz": hyp["tz"],
+            "start": hyp["period"]["start"],
+            "end_exclusive": hyp["period"]["end"],
+        },
         "data": {"file": csv.name, "sha256": sha, "rows": int(len(frame))},
         "description": describe(frame),
         "H1_kappa": k,
@@ -147,11 +158,17 @@ def run(seed: int, out_dir: Optional[Path] = None,
     (art / "results.json").write_text(json.dumps(results, indent=1, default=str))
     write_manifest(
         art,
-        inputs=[{"path": csv, "row_count": int(len(frame)),
-                 "date_range": [str(frame["date"].iloc[0]),
-                                str(frame["date"].iloc[-1])]},
-                {"path": HYPOTHESIS}],
-        seed=seed, engine=engine or None, repo_root=REPO,
+        inputs=[
+            {
+                "path": csv,
+                "row_count": int(len(frame)),
+                "date_range": [str(frame["date"].iloc[0]), str(frame["date"].iloc[-1])],
+            },
+            {"path": HYPOTHESIS},
+        ],
+        seed=seed,
+        engine=engine or None,
+        repo_root=REPO,
         extra={"artifacts": ["results.json"]},
     )
     return results
@@ -160,14 +177,19 @@ def run(seed: int, out_dir: Optional[Path] = None,
 def main(argv=None) -> int:
     """Command-line entry point."""
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--seed", type=int, default=None,
-                    help="RNG seed (default: hypothesis.yaml seed)")
+    ap.add_argument(
+        "--seed",
+        type=int,
+        default=None,
+        help="RNG seed (default: hypothesis.yaml seed)",
+    )
     args = ap.parse_args(argv)
     seed = args.seed if args.seed is not None else int(load_hypothesis()["seed"])
     res = run(seed)
     h = res["headline"]
-    print(f"H1 kappa {h['kappa']:.4f}, equivalent within margin: "
-          f"{h['h1_equivalent']}")
+    print(
+        f"H1 kappa {h['kappa']:.4f}, equivalent within margin: " f"{h['h1_equivalent']}"
+    )
     print(f"H2 planets equivalent: {h['h2_n_equivalent']}/{h['h2_n_tested']}")
     return 0
 

@@ -5,9 +5,10 @@ Analyzes the frequency components of numerology and astrology systems.
 
 import os
 import sys
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from scipy.fft import fft, fftfreq
 
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
@@ -16,11 +17,11 @@ sys.path.insert(0, ROOT_DIR)  # repo root
 from studies._paths import artifacts_dir, figures_dir  # noqa: E402
 
 try:
+    from vedic_astrology_core.config.constants import Planet
     from vedic_astrology_core.time_series import (
         compute_astrology_strength_series,
         compute_numerology_series,
     )
-    from vedic_astrology_core.config.constants import Planet
 except ImportError as e:
     print(f"Error importing core libraries: {e}")
     print(f"Current sys.path: {sys.path}")

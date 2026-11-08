@@ -16,7 +16,7 @@ import json
 import os
 import sys
 from datetime import datetime
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 import numpy as np
 import pandas as pd
@@ -27,8 +27,7 @@ sys.path.insert(
 )  # repo root
 
 from studies._paths import study_data_dir  # noqa: E402
-
-from vedic_astrology_core.config import Planet, PLANET_NAMES
+from vedic_astrology_core.config import PLANET_NAMES, Planet
 from vedic_astrology_core.stats.equivalence import cohen_kappa_ci, tost
 from vedic_astrology_core.stats.nulls import stationary_bootstrap_indices
 

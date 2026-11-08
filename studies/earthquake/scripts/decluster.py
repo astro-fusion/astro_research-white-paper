@@ -100,8 +100,7 @@ def nearest_neighbour_eta(
         ok = dt > 0
         if not ok.any():
             continue
-        r = np.maximum(haversine_km(lat[j], lon[j], lat[:j][ok], lon[:j][ok]),
-                       r_min_km)
+        r = np.maximum(haversine_km(lat[j], lon[j], lat[:j][ok], lon[:j][ok]), r_min_km)
         val = np.log10(dt[ok]) + df_frac * np.log10(r) - b * m[:j][ok]
         log_eta[j] = val.min()
     out = np.empty(len(df))
@@ -121,8 +120,9 @@ def gmm_threshold(x, fallback: float = -5.0, n_iter: int = 300) -> Dict:
     sd = np.array([x.std(), x.std()]) / 2 + 1e-6
     w = np.array([0.5, 0.5])
     for _ in range(n_iter):
-        dens = w * np.exp(-0.5 * ((x[:, None] - mu) / sd) ** 2) / (
-            sd * np.sqrt(2 * np.pi))
+        dens = (
+            w * np.exp(-0.5 * ((x[:, None] - mu) / sd) ** 2) / (sd * np.sqrt(2 * np.pi))
+        )
         resp = dens / np.maximum(dens.sum(axis=1, keepdims=True), 1e-300)
         nk = resp.sum(axis=0)
         w = nk / len(x)
@@ -130,11 +130,15 @@ def gmm_threshold(x, fallback: float = -5.0, n_iter: int = 300) -> Dict:
         sd = np.sqrt((resp * (x[:, None] - mu) ** 2).sum(axis=0) / nk) + 1e-6
     lo, hi = np.argsort(mu)
     grid = np.linspace(mu[lo], mu[hi], 2001)
-    mix = sum(w[k] * np.exp(-0.5 * ((grid - mu[k]) / sd[k]) ** 2) / sd[k]
-              for k in (lo, hi))
+    mix = sum(
+        w[k] * np.exp(-0.5 * ((grid - mu[k]) / sd[k]) ** 2) / sd[k] for k in (lo, hi)
+    )
     interior = mix[1:-1]
-    separated = bool(len(interior) and (mu[hi] - mu[lo]) > max(sd) and (
-        interior.min() < min(mix[0], mix[-1])))
+    separated = bool(
+        len(interior)
+        and (mu[hi] - mu[lo]) > max(sd)
+        and (interior.min() < min(mix[0], mix[-1]))
+    )
     threshold = float(grid[1:-1][np.argmin(interior)]) if separated else fallback
     return {
         "threshold": threshold,
@@ -170,8 +174,10 @@ def main(argv=None) -> int:
     print(f"source {info['source']}; Mw >= {info['completeness']['threshold']}")
     print(f"raw events:               {len(cat)}")
     print(f"Gardner-Knopoff mainshocks: {int(gk.sum())}")
-    print(f"nearest-neighbour mainshocks: {int(nn.sum())} "
-          f"(log10 eta0 = {fit['threshold']:.2f})")
+    print(
+        f"nearest-neighbour mainshocks: {int(nn.sum())} "
+        f"(log10 eta0 = {fit['threshold']:.2f})"
+    )
     return 0
 
 

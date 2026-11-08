@@ -26,13 +26,20 @@ def test_polygon_contains_known_himalayan_events_only():
 
 def test_homogenise_known_conversions():
     """Scordilis (2006) mb and Ms relations; moment magnitudes unchanged."""
-    df = pd.DataFrame({"mag": [5.0, 5.0, 6.5, 7.8, 4.5],
-                       "magType": ["mb", "ms", "ms", "mww", "ml"]})
+    df = pd.DataFrame(
+        {"mag": [5.0, 5.0, 6.5, 7.8, 4.5], "magType": ["mb", "ms", "ms", "mww", "ml"]}
+    )
     out = fc.homogenise_mw(df, HYP["magnitude"]["rules"])
-    np.testing.assert_allclose(out["mw"], [0.85 * 5 + 1.03, 0.67 * 5 + 2.07,
-                                           0.99 * 6.5 + 0.08, 7.8, 4.5])
-    assert out["mw_rule"].tolist() == ["scordilis_mb", "scordilis_ms",
-                                       "scordilis_ms", "moment", "as_reported"]
+    np.testing.assert_allclose(
+        out["mw"], [0.85 * 5 + 1.03, 0.67 * 5 + 2.07, 0.99 * 6.5 + 0.08, 7.8, 4.5]
+    )
+    assert out["mw_rule"].tolist() == [
+        "scordilis_mb",
+        "scordilis_ms",
+        "scordilis_ms",
+        "moment",
+        "as_reported",
+    ]
 
 
 def test_maximum_curvature_known_answer():
@@ -45,7 +52,7 @@ def test_maximum_curvature_known_answer():
 
 def test_completeness_uses_worst_decade_on_mb():
     """The worst decade's mb Mc, converted to Mw, is the threshold."""
-    times = (["1985-06-01T00:00:00Z"] * 60 + ["1995-06-01T00:00:00Z"] * 60)
+    times = ["1985-06-01T00:00:00Z"] * 60 + ["1995-06-01T00:00:00Z"] * 60
     mags = [4.6] * 40 + [4.9] * 20 + [4.3] * 40 + [4.8] * 20
     df = pd.DataFrame({"time": times, "mag": mags, "magType": "mb"})
     df = fc.homogenise_mw(df, HYP["magnitude"]["rules"])

@@ -49,9 +49,7 @@ def garch_standardised_abs(returns: pd.Series) -> pd.Series:
     from arch import arch_model
 
     r = pd.Series(returns).dropna().astype(float)
-    res = arch_model(100.0 * r, mean="Constant", vol="GARCH", p=1, q=1).fit(
-        disp="off"
-    )
+    res = arch_model(100.0 * r, mean="Constant", vol="GARCH", p=1, q=1).fit(disp="off")
     z = res.resid / res.conditional_volatility
     return z.abs().dropna()
 
@@ -128,20 +126,20 @@ def exog_granger(
         raise ValueError("too few observations for the requested lag set")
     maxlags = newey_west_lags(n) if hac_maxlags is None else int(hac_maxlags)
     design = sm.add_constant(frame.drop(columns="y"))
-    fit = sm.OLS(frame["y"], design).fit(
-        cov_type="HAC", cov_kwds={"maxlags": maxlags}
-    )
+    fit = sm.OLS(frame["y"], design).fit(cov_type="HAC", cov_kwds={"maxlags": maxlags})
     restriction = np.zeros((len(exog_names), design.shape[1]))
     for row, name in enumerate(exog_names):
         restriction[row, list(design.columns).index(name)] = 1.0
     wald = fit.wald_test(restriction, use_f=True, scalar=True)
-    out.update({
-        "n": int(n),
-        "hac_maxlags": maxlags,
-        "f_stat": float(wald.statistic),
-        "df_num": int(wald.df_num),
-        "df_denom": float(wald.df_denom),
-        "p_value": float(wald.pvalue),
-        "exog_coefficients": {k: float(fit.params[k]) for k in exog_names},
-    })
+    out.update(
+        {
+            "n": int(n),
+            "hac_maxlags": maxlags,
+            "f_stat": float(wald.statistic),
+            "df_num": int(wald.df_num),
+            "df_denom": float(wald.df_denom),
+            "p_value": float(wald.pvalue),
+            "exog_coefficients": {k: float(fit.params[k]) for k in exog_names},
+        }
+    )
     return out

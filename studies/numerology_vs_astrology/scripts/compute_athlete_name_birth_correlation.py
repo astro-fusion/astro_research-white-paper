@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """Compute correlation between name and birth numerology for athletes."""
-from pathlib import Path
-import pandas as pd
-import numpy as np
-from scipy.stats import chi2
+
 import sys
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+from scipy.stats import chi2
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
 from studies._paths import study_data_dir  # noqa: E402

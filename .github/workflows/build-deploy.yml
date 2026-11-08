@@ -13,6 +13,10 @@ on:
       - 'papers/**'
       - '_quarto.yml'
       - 'scripts/**'
+      - 'libs/**'
+      - 'rules/**'
+      - 'tests/**'
+      - 'pyproject.toml'
       - 'README.md'
       - 'ARCHITECTURE.md'
       - '.github/workflows/build-deploy.yml'
@@ -53,19 +57,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[dev,docs,stats]"
 
-      - name: Test earthquake analysis with sample data
+      # The pre-registered earthquake pipeline (studies/earthquake/scripts/
+      # pipeline.py) on synthetic and fixture data: catalogue homogenisation,
+      # declustering, indicators, count models, family and split logic. The
+      # withdrawn earthquake_planetary_analysis.py is kept for audit only and
+      # is not run (it predates the timezone-aware engine).
+      - name: Test the earthquake pipeline on sample data
         run: |
-          echo "🔬 Testing earthquake-planetary correlation analysis..."
-          python studies/earthquake/scripts/earthquake_planetary_analysis.py
-          echo "✅ Sample data test completed!"
-
-          # Check if results were generated
-          if [ -f "studies/earthquake/data/earthquake_planetary_correlation_analysis.json" ]; then
-            echo "✅ Analysis results generated successfully"
-            echo "📊 Result file size: $(du -h studies/earthquake/data/earthquake_planetary_correlation_analysis.json | cut -f1)"
-          else
-            echo "⚠️ Analysis results not found"
-          fi
+          python -m pytest --no-cov -q \
+            tests/test_earthquake_pipeline.py \
+            tests/test_earthquake_catalogue.py \
+            tests/test_earthquake_decluster.py \
+            tests/test_earthquake_indicators.py \
+            tests/test_earthquake_count_models.py
 
   # Step 2: Build Documentation Site
   build:

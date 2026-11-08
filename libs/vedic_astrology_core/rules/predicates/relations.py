@@ -7,8 +7,7 @@ from pydantic import Field, field_validator, model_validator
 from ...astrology.combustion import angular_separation, combustion_orb
 from ..context import EvalContext
 from ..vocabulary import SIGN_NAMES, ordinal, to_planet_enum
-from . import Outcome, Params, PlanetName, PointName, house_from, point_label
-from . import predicate
+from . import Outcome, Params, PlanetName, PointName, house_from, point_label, predicate
 
 # Whole-sign aspects (graha drishti) each planet casts, counted from its own
 # sign. Every planet aspects the 7th; Mars also the 4th and 8th, Jupiter the
