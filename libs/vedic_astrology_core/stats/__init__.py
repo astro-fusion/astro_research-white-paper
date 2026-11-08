@@ -14,6 +14,16 @@ place:
 * :mod:`.walk_forward` splits by time and runs Hansen's SPA test.
 * :mod:`.spectral` runs Lomb-Scargle at pre-specified periods.
 * :mod:`.equivalence` runs TOST equivalence tests and Cohen's kappa with a CI.
+* :mod:`.speccurve` runs a specification curve over declared analytic
+  choices with a joint circular-shift test of the median estimate.
+* :mod:`.power` gives the minimum detectable rate ratio by simulation.
+* :mod:`.controls` builds positive (tidal phase, monsoon) and negative
+  (shifted-sky) controls.
+* :mod:`.classify` runs the rule-free classifier test (out-of-sample AUC
+  against circularly shifted skies).
+* :mod:`.bayes` gives posterior rate ratios under sceptical and enthusiastic
+  priors and the Savage-Dickey Bayes factor.
+* :mod:`.dose` runs dose-response trend tests across strength bins.
 * :mod:`.manifest` writes the provenance ``manifest.json`` for any artifact.
 * :mod:`.plots` saves figures in the house style with a provenance footer.
 

@@ -7,6 +7,8 @@ the data hash, git commit and seed so a reader can trace it to a run.
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
 
+import numpy as np
+
 HOUSE_STYLE: Dict[str, Any] = {
     "figure.dpi": 100,
     "savefig.dpi": 150,
@@ -68,3 +70,45 @@ def save_figure(
         metadata={"Software": None},
     )
     return out
+
+
+def specification_curve_figure(curve, choices, null_value: float = 1.0,
+                               ylabel: str = "Rate ratio", log_scale: bool = True):
+    """Return a two-panel figure of a :class:`.speccurve.SpecCurve`.
+
+    Top: estimates sorted by size with their intervals (filled where the
+    interval excludes ``null_value``). Bottom: one row per value of each
+    choice in ``choices``, marked under the cells that use it. Save it with
+    :func:`save_figure`.
+    """
+    import matplotlib.pyplot as plt
+
+    f = curve.frame
+    rows = [(c, v) for c in choices for v in dict.fromkeys(f[c].tolist())]
+    with plt.rc_context(HOUSE_STYLE):
+        fig, (ax, bx) = plt.subplots(
+            2, 1, figsize=(7.0, 2.6 + 0.16 * len(rows)), sharex=True,
+            gridspec_kw={"height_ratios": [2.2, max(1.0, 0.16 * len(rows))]},
+        )
+        x = f["rank"].to_numpy()
+        est = f["estimate"].to_numpy()
+        ax.vlines(x, f["ci_low"], f["ci_high"], color="0.65", lw=0.8)
+        excl = f["excludes_null"].to_numpy()
+        ax.plot(x[~excl], est[~excl], "o", ms=3, mfc="white", color=PALETTE[0])
+        ax.plot(x[excl], est[excl], "o", ms=3, color=PALETTE[1])
+        ax.axhline(null_value, color="0.3", lw=0.8)
+        if log_scale:
+            ax.set_yscale("log")
+        ax.set_ylabel(ylabel)
+        ax.set_title(
+            f"median {curve.median_estimate:.2f}, joint p = {curve.p_median:.3f}, "
+            f"{100 * curve.share_excluding_null:.0f}% of cells exclude the null"
+        )
+        for j, (c, v) in enumerate(rows):
+            used = (f[c] == v).to_numpy()
+            bx.plot(x[used], np.full(used.sum(), j), "|", ms=6, color="0.2")
+        bx.set_yticks(range(len(rows)))
+        bx.set_yticklabels([f"{c} = {v}" for c, v in rows], fontsize=7)
+        bx.invert_yaxis()
+        bx.set_xlabel("Specification (sorted by estimate)")
+    return fig
