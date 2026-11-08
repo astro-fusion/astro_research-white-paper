@@ -2,6 +2,7 @@
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 
@@ -83,17 +84,20 @@ def test_artifact_generation_fails_without_data(tmp_path):
     subprocess.run(["quarto", "--version"], capture_output=True).returncode != 0,
     reason="Quarto not installed",
 )
-def test_quarto_render_smoke():
-    """Attempt a dry-run or partial render of the manuscript."""
-    output_pdf = os.path.join(os.path.dirname(MANUSCRIPT_QMD), "smoke_test_render.pdf")
+def test_quarto_render_smoke(tmp_path):
+    """Render a copy of the manuscript to PDF in a temporary directory.
 
-    # We use --to pdf and a specific output filename
-    # We also use --execute to ensure the python blocks run
+    Rendering a copy keeps quarto's intermediates (``.tex``, ``*_files``)
+    out of the repository.
+    """
+    paper_dir = tmp_path / "paper"
+    shutil.copytree(os.path.dirname(MANUSCRIPT_QMD), paper_dir)
+    manuscript = paper_dir / os.path.basename(MANUSCRIPT_QMD)
     result = subprocess.run(
         [
             "quarto",
             "render",
-            MANUSCRIPT_QMD,
+            str(manuscript),
             "--to",
             "pdf",
             "-o",
@@ -103,10 +107,4 @@ def test_quarto_render_smoke():
         capture_output=True,
         text=True,
     )
-
-    try:
-        assert result.returncode == 0, f"Quarto render failed: {result.stderr}"
-    finally:
-        # Cleanup
-        if os.path.exists(output_pdf):
-            os.remove(output_pdf)
+    assert result.returncode == 0, f"Quarto render failed: {result.stderr}"
