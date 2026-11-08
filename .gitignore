@@ -46,9 +46,21 @@ studies/*/data/*
 !**/data/**/.gitkeep
 !**/data/README.md
 !**/data/.gitkeep
-# Generated study outputs
+# Mundane study inputs are hand-curated and committed.
+!studies/mundane/data/**
+# Generated study outputs. Small summary artifacts the papers read are
+# committed; snapshots and large frames (overlay_frame.csv) stay ignored.
 studies/*/artifacts/*
 !studies/*/artifacts/.gitkeep
+!studies/*/artifacts/results.json
+!studies/*/artifacts/manifest.json
+!studies/*/artifacts/tbl_*.csv
+!studies/*/artifacts/fig_*.png
+!studies/earthquake/artifacts/catalogue_summary.csv
+!studies/earthquake/artifacts/confirmation.csv
+!studies/earthquake/artifacts/family_explore.csv
+!studies/earthquake/artifacts/rate_tests_all.csv
+!studies/earthquake/artifacts/raw_descriptive.csv
 docs/_build/
 
 /.quarto/
