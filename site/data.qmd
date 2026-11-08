@@ -25,3 +25,17 @@ fetched by a script from its source or generated from other files.
 file, so a result can be tied to the exact data it used. The list of sources,
 licences and hashes is kept in
 [data/README.md](https://github.com/astro-fusion/astro_research-white-paper/blob/main/data/README.md).
+
+## Mundane datasets
+
+The mundane study keeps two small tracked files in `studies/mundane/data/` and
+fetches larger catalogues on demand into the gitignored `data/snapshots/`, each
+with a manifest holding its SHA-256.
+
+| Dataset | Source | Licence | Used by |
+|---|---|---|---|
+| Founding dates and capitals (113 countries) | AstroFusion mundane dataset, export 2026-11-08; founding times are unknown and recorded as null | CC BY 4.0 (dates, coordinates, titles) | Mundane study |
+| National events (825; titles, dates, types, Wikipedia and Wikidata links, no descriptions) | AstroFusion mundane dataset, built from Wikipedia lists and Wikidata; types unreviewed | CC BY 4.0; event descriptions omitted (Wikipedia text is CC BY-SA) | Mundane study |
+| Earthquake catalogue (M6+, 1900-2026) | [USGS FDSN event service](https://earthquake.usgs.gov/fdsnws/event/1/) | Public domain (US Government) | Mundane study |
+| Global flood archive | Dartmouth Flood Observatory | See the DFO site; fetched on demand with a local file or URL | Mundane study |
+| EM-DAT disaster database | CRED, UCLouvain | Registration required; not redistributable; fetch-on-demand only | Mundane study (optional) |
