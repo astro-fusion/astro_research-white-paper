@@ -1,0 +1,11 @@
+{
+  "name": "astro-research-site-smoke",
+  "private": true,
+  "description": "Playwright smoke test for the Quarto website (tests/site).",
+  "scripts": {
+    "test:site": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.48.2"
+  }
+}

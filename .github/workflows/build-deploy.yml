@@ -7,6 +7,9 @@ on:
       - 'docs/**'
       - 'studies/**'
       - 'site/**'
+      - 'tests/site/**'
+      - 'playwright.config.ts'
+      - 'package.json'
       - 'papers/**'
       - '_quarto.yml'
       - 'scripts/**'
@@ -120,6 +123,22 @@ jobs:
           find studies -name "*.json" -type f ! -path "*/node_modules/*" -exec cp {} _site/data/ \; 2>/dev/null || true
 
           echo "✅ Documentation structure built"
+
+      # Smoke test of the rendered site (tests/site/smoke.spec.ts): serves
+      # _site/ statically, opens every explorer and asserts each chart
+      # renders with its default filters and no console errors.
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Playwright (Chromium only)
+        run: |
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+
+      - name: Site smoke test
+        run: npx playwright test --config playwright.config.ts
 
       # The home page is site/index.qmd: Quarto writes _site/index.html as a
       # redirect to it. No step may write its own _site/index.html, and no
