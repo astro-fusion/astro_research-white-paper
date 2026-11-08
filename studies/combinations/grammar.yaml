@@ -1,0 +1,134 @@
+# Combination atlas: the declared search space, fixed before any candidate is
+# evaluated. scripts/enumerate.py expands it deterministically; every
+# candidate it produces is evaluated and published, winners and losers.
+#
+# ADR-003 ("Combination atlas"). Replaces the withdrawn 2,426-combination
+# gold catalogue with a family that is declared in advance, tested against a
+# clustering-preserving null, corrected across the whole family and
+# confirmed on a frozen holdout.
+
+id: combination-atlas-v1
+registered: "2026-11-08"
+
+planets: [SUN, MOON, MARS, MERCURY, VENUS, JUPITER, SATURN, RAHU, KETU]
+
+placements:
+  sign: >-
+    Sidereal (Lahiri) sign of the planet, 12 values.
+  house_from_lagna: >-
+    Whole-sign house of the planet counted from the sign of the moment's
+    sidereal ascendant at the study's reference location, 12 values.
+  house_from_moon: >-
+    Whole-sign house counted from the Moon's sign, 12 values (not for the
+    Moon itself).
+  nakshatra_group: >-
+    The Vimshottari lord of the planet's nakshatra, 9 groups of three
+    nakshatras (Ketu: Ashvini, Magha, Mula; Venus: Bharani, Purva Phalguni,
+    Purva Ashadha; and so on in Vimshottari order).
+
+relations:
+  aspect:
+    definition: >-
+      Parashari graha drishti on whole signs: planet A aspects planet B when
+      B's sign is one of A's aspected houses counted from A's sign (A's own
+      sign is house 1, which is conjunction, not aspect).
+    houses:
+      default: [7]
+      MARS: [4, 7, 8]
+      JUPITER: [5, 7, 9]
+      SATURN: [3, 7, 10]
+    note: >-
+      The special aspects of Rahu and Ketu (5 and 9 in some texts) are
+      disputed; the nodes cast only the 7th here.
+  conjunction:
+    definition: sidereal angular separation within orb_deg
+    orb_deg: 8
+
+dasha:
+  definition: >-
+    Vimshottari lord at level 1 (mahadasha) or level 2 (antardasha) of the
+    reference chart, Julian dasha year.
+  levels: [1, 2]
+
+templates:
+  # Each candidate is a conjunction (logical AND) of at most three clauses.
+  - id: T1
+    clauses: [placement]
+  - id: T2
+    clauses: [relation]
+  - id: T3
+    clauses: [dasha]
+  - id: T4
+    clauses: [placement, relation]
+    restrict: >-
+      placement kind sign only; the relation's first planet is the placed
+      planet (A aspects B, or A within orb of B, for every B != A)
+  - id: T5
+    clauses: [placement, dasha]
+    restrict: the dasha lord is the placed planet; levels 1 and 2
+  - id: T6
+    clauses: [relation, dasha]
+    restrict: level 1 only; the dasha lord is either planet of the relation
+  - id: T7
+    clauses: [placement, relation, dasha]
+    restrict: T4 with the placed planet as mahadasha lord (level 1)
+max_depth: 3
+
+studies:
+  - id: earthquake
+    status: run
+    order: 1
+    outcome: >-
+      Gardner-Knopoff mainshocks of the earthquake study (same catalogue,
+      completeness threshold, region and hourly UTC grid as
+      studies/earthquake/hypothesis.yaml).
+    reference_location: {name: Kathmandu, lat: 27.7172, lon: 85.3240}
+    reference_chart:
+      name: India, 1947-08-15 00:00 IST, New Delhi
+      datetime: "1947-08-15T00:00:00+05:30"
+      lat: 28.6139
+      lon: 77.2090
+    split: {explore: ["1976-01-01", "2010-12-31"], confirm: ["2011-01-01", "2026-10-31"]}
+  - id: gold_market
+    status: declared, not yet run
+    order: 2
+    outcome: >-
+      Extreme-move days of the gold study (absolute next-day return above
+      the rolling past-only quantile), on the gold study's explore/confirm
+      split; lagna at London, dasha of the same India chart.
+
+test:
+  statistic: >-
+    Event-rate ratio inside versus outside the candidate (events per hour),
+    exact conditional binomial 95% CI.
+  null: >-
+    Circular shift of the candidate series against the fixed event series,
+    offsets uniform in [min_shift, N - min_shift]; the same offsets for every
+    candidate (so the max statistic can be taken across the family).
+  alternative: two-sided
+  min_shift_days: 767
+  n_draws: 2000
+  n_draws_note: >-
+    2,000 draws, not the 10,000 of the single-study tests: thousands of
+    candidates times 10,000 draws is needless when the smallest attainable
+    p (1/2001) is already far below any BY threshold this family can reach.
+  seed: 42
+  testable: >-
+    A candidate is testable when at least min_expected events are expected
+    both inside and outside it under the null (n_events x time fraction).
+  min_expected: 3
+  family: every testable candidate in the exploration period
+  correction: benjamini_yekutieli
+  alpha: 0.05
+  best_candidate: >-
+    Single-step Romano-Wolf (Westfall-Young max-|z|): per draw, the largest
+    standardised deviation of the in-count across all testable candidates;
+    the adjusted p of a candidate is the share of draws whose maximum reaches
+    its own |z|. Controls the family-wise error rate for the best candidate.
+  confirm: >-
+    Only candidates with BY q < alpha are tested on the confirmation period,
+    BY across them, same direction required.
+  forecast_check: >-
+    Hansen SPA: the 20 candidates with the smallest exploration p, frozen
+    exploration rates as daily Poisson forecasts against a constant rate on
+    the confirmation period, stationary bootstrap mean block 30 days.

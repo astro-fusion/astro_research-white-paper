@@ -1,0 +1,161 @@
+{
+ "grammar_id": "combination-atlas-v1",
+ "grammar_sha256": "1544cd97e79b2fe33ef27e3877c4cbbad2da795ebef1fdfafe167d999a0f813e",
+ "study": "earthquake",
+ "seed": 42,
+ "n_draws": 2000,
+ "git": {
+  "commit": "6c2c9c3a5842f8d42280faaf8698472ca74f9cc7",
+  "dirty": true
+ },
+ "ephemeris": {
+  "swisseph_available": true,
+  "sidereal_mode_set": true,
+  "ayanamsa_system": "lahiri",
+  "node_model": "mean",
+  "ephemeris_model": "moshier",
+  "flags": "FLG_SWIEPH|FLG_SPEED|FLG_SIDEREAL",
+  "version": "2.10.03"
+ },
+ "catalogue": {
+  "source": "usgs_fdsn",
+  "snapshot": "data/snapshots/usgs_d3d3d6ec8405.csv",
+  "sha256": "d3d3d6ec840599341782147b35579b69dae3919dd2668d762659270baef19972",
+  "n_polygon": 1645,
+  "mag_types": {
+   "mb": 1563,
+   "mww": 30,
+   "mwc": 20,
+   "mwb": 10,
+   "mw": 8,
+   "ms": 7,
+   "ml": 5,
+   "mwr": 2
+  },
+  "mw_rules": {
+   "scordilis_mb": 1563,
+   "moment": 70,
+   "scordilis_ms": 7,
+   "as_reported": 5
+  },
+  "completeness": {
+   "mc_mb_per_decade": {
+    "1970": 4.9,
+    "1980": 4.7,
+    "1990": 4.7,
+    "2000": 4.3,
+    "2010": 4.2,
+    "2020": 4.4
+   },
+   "mc_mb_max": 4.9,
+   "mc_mw_scale_per_decade": {
+    "1970": 5.3,
+    "1980": 5.3,
+    "1990": 4.8,
+    "2000": 4.8,
+    "2010": 4.8,
+    "2020": 4.8
+   },
+   "threshold": 5.195
+  },
+  "n_analysed": 297,
+  "first_event": "1976-01-07 00:24:54.100000+00:00",
+  "last_event": "2026-10-25 07:21:37.857000+00:00"
+ },
+ "events": {
+  "explore": 128,
+  "confirm": 58
+ },
+ "counts": {
+  "candidates": 4977,
+  "testable": 705,
+  "explore_nominal_p_lt_alpha": 25,
+  "expected_nominal_by_chance": 35.25,
+  "survived_by": 0,
+  "confirmed": 0
+ },
+ "by_template": [
+  {
+   "template": "T1",
+   "candidates": 393,
+   "testable": 393,
+   "nominal": 16
+  },
+  {
+   "template": "T2",
+   "candidates": 108,
+   "testable": 99,
+   "nominal": 7
+  },
+  {
+   "template": "T3",
+   "candidates": 18,
+   "testable": 13,
+   "nominal": 1
+  },
+  {
+   "template": "T4",
+   "candidates": 1728,
+   "testable": 94,
+   "nominal": 0
+  },
+  {
+   "template": "T5",
+   "candidates": 786,
+   "testable": 73,
+   "nominal": 0
+  },
+  {
+   "template": "T6",
+   "candidates": 216,
+   "testable": 28,
+   "nominal": 1
+  },
+  {
+   "template": "T7",
+   "candidates": 1728,
+   "testable": 5,
+   "nominal": 0
+  }
+ ],
+ "best_explore": {
+  "id": "atl-00062",
+  "definition": "Moon in house 5 from the moment's lagna at Kathmandu",
+  "rate_ratio": 1.7990788257871917,
+  "ci_low": 1.028209915447297,
+  "ci_high": 2.977642309524988,
+  "p_value": 0.004997501249375313,
+  "q_value": 1.0,
+  "p_romano_wolf": 0.8395802098950524
+ },
+ "spa": {
+  "candidates": [
+   "atl-00062",
+   "atl-00392",
+   "atl-00413",
+   "atl-00412",
+   "atl-00225",
+   "atl-00393",
+   "atl-00203",
+   "atl-00114",
+   "atl-00180",
+   "atl-00506",
+   "atl-00344",
+   "atl-00410",
+   "atl-00253",
+   "atl-00302",
+   "atl-00047",
+   "atl-00488",
+   "atl-00294",
+   "atl-00425",
+   "atl-00461",
+   "atl-03122"
+  ],
+  "n_days": 5783,
+  "p_consistent": 0.9065467266366817,
+  "p_lower": 0.7276361819090454,
+  "p_upper": 0.9065467266366817,
+  "best": "atl-00425",
+  "best_log_score_gain_per_day": 0.00030767370381621517
+ }
+}

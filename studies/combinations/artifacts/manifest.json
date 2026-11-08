@@ -1,0 +1,32 @@
+{
+  "artifacts": [
+    "atlas.csv",
+    "results.json"
+  ],
+  "ayanamsa": "lahiri",
+  "created_utc": "2026-11-08T07:07:48+00:00",
+  "ephemeris_model": "moshier",
+  "git": {
+    "commit": "6c2c9c3a5842f8d42280faaf8698472ca74f9cc7",
+    "dirty": true
+  },
+  "inputs": [
+    {
+      "path": "data/snapshots/usgs_d3d3d6ec8405.csv",
+      "sha256": "d3d3d6ec840599341782147b35579b69dae3919dd2668d762659270baef19972"
+    },
+    {
+      "path": "studies/combinations/grammar.yaml",
+      "sha256": "1544cd97e79b2fe33ef27e3877c4cbbad2da795ebef1fdfafe167d999a0f813e"
+    },
+    {
+      "path": "studies/earthquake/hypothesis.yaml",
+      "sha256": "50150a61bcc043929e921cdeb38860a3506bad9d7135a2d0fe89893663a1c3bc"
+    }
+  ],
+  "n_draws": 2000,
+  "node_model": "mean",
+  "python": "3.14.7",
+  "seed": 42,
+  "swisseph_version": "2.10.03"
+}
