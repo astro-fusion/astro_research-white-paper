@@ -9,12 +9,17 @@ Mars Aquarius 4.1 (304.1), Jupiter Aries 1.4 (speed +0.041), Venus Scorpio
 """
 
 from datetime import datetime, timezone
+from pathlib import Path
 
 from vedic_astrology_core.astrology.ephemeris import EphemerisEngine
 from vedic_astrology_core.combinations import RegistryRule
 from vedic_astrology_core.combinations.evaluator import CombinationEvaluator
 from vedic_astrology_core.combinations.registry import CombinationRegistry
 from vedic_astrology_core.config.constants import Planet, PlanetDict
+from vedic_astrology_core.rules.engine import rule_inputs
+from vedic_astrology_core.rules.loader import load_rules
+
+RULES_DIR = Path(__file__).resolve().parents[1] / "rules"
 
 WHEN = datetime(2000, 1, 1, 12, tzinfo=timezone.utc)
 
@@ -53,12 +58,29 @@ def test_positions_use_canonical_planet_keys():
     ]
 
 
+def _moment_only_rules(domain):
+    """Rule files under rules/<domain>/ (any depth) the registry can evaluate.
+
+    The registry keeps rules that have conditions and need nothing beyond a
+    moment, so the expected count follows the files on disk, including the
+    practitioner rules added after the migration.
+    """
+    loaded, problems = load_rules([RULES_DIR / domain])
+    assert not problems
+    return [item.rule for item in loaded
+            if item.rule.conditions is not None and not rule_inputs(item.rule)]
+
+
 def test_registry_reads_the_migrated_rules():
     """The old names are kept; seismic and financial come from rules/."""
     registry = CombinationRegistry()
     seismic = {r.name for r in registry.get_rules_by_usecase("seismic")}
     assert len(seismic) == 8 and "Mangal-Ketu-Primary" in seismic
-    assert len(registry.get_rules_by_usecase("financial")) == 4
+    financial = {r.name for r in registry.get_rules_by_usecase("financial")}
+    migrated = {"Venus-Retrograde-Reversal", "Jupiter-Retrograde-Contraction",
+                "Shukra-Guru-Wealth", "Venus-Own-Sign"}
+    assert migrated <= financial
+    assert len(financial) == len(_moment_only_rules("financial"))
     rule = registry.get_rule("Mangal-Ketu-Primary")
     assert isinstance(rule, RegistryRule)
     assert rule.id == "seismic.mangal_ketu_primary"

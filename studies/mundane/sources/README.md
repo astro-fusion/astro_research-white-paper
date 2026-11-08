@@ -18,57 +18,84 @@ citations for founding times, and the output of the research questions below.
 
 ## Open research questions for practitioners' methods
 
-Run each prompt in a Deep Research tool, then save the result as described
-above. They ask for what practitioners claim, not for what is true.
+These are the four prompts the owner ran on 2026-11-08 (Gemini Deep
+Research; the financial one also through Grok), reproduced verbatim. They
+ask for what practitioners claim, not for what is true. Save each result
+as described above.
 
-1. **Practitioners' methods on social media.** Which mundane-astrology methods
-   (transits to national charts, eclipses, ingresses, Mars-Saturn
-   configurations) do practitioners describe on YouTube, X, Instagram and
-   blogs? For each method, list the exact rule as stated, who states it, and a
-   link. Do not judge accuracy.
-2. **Earthquake and flood predictions and after-the-fact explanations.** Find
-   dated, public predictions of earthquakes or floods made by astrologers
-   before the event, and separately the explanations offered afterwards. Record
-   the posting date, the claim, the event it was matched to, and whether the
-   prediction named place, date window and size.
-3. **Financial astrology forecasts.** Find published forecasts for equity
-   indices, gold, silver or currencies with a dated posting, the indicators
-   used and the stated window, so they can be pre-registered and scored later.
-4. **National charts in use, and the disputes.** For each country, which
-   founding chart (date, time, place) do practitioners use? Where charts are
-   disputed (India: midnight vs other times; USA: Sibly vs alternatives), list
-   each candidate with its source and the argument for it.
+### Prompt 1: Contemporary practitioners' mundane methods (2026-11-08)
 
+> "Research how contemporary Vedic (Jyotish) astrologers make mundane
+> predictions for countries, markets and natural disasters, using their public
+> YouTube videos, podcasts, X/Twitter threads, Telegram and Facebook posts, and
+> blog articles from 2015 to today, not classical texts. Cover at least 15
+> named practitioners across India, Nepal, the diaspora and English-language
+> channels. For each, document: which national chart they use (independence,
+> constitution, coronation, or other, with the exact date, time and place they
+> state), which ayanamsa, which house system, whether they use divisional
+> charts and which ones, which dasha systems, how they treat eclipses,
+> planetary ingresses, stations, retrogrades and conjunctions (especially
+> Saturn, Mars, Rahu, Ketu), how they define the window of effect before and
+> after an event, and what they count as a successful prediction. Extract their
+> recurring rules as 'if X then Y within Z days' statements with the video or
+> post URL and timestamp as the citation. Note disagreements between
+> practitioners. Output a structured table plus a narrative summary of common
+> methods and open disputes."
+
+### Prompt 2: Natural-disaster predictions and post-hoc explanations (2026-11-08)
+
+> "Collect and analyse public predictions and post-hoc explanations by Vedic
+> and Western astrologers for earthquakes, floods, cyclones and volcanic
+> eruptions from 2010 to today, from YouTube, X/Twitter, blogs and astrology
+> forums. For each case, record the astrological configuration cited (eclipses,
+> Saturn-Mars aspects, Rahu/Ketu axis, Kurma Chakra direction, planetary war,
+> ingress of a planet into a sign, nakshatra of the Moon, specific transits to
+> a national chart), the claimed window, whether the statement was made before
+> or after the event, and the event it refers to with its USGS or official
+> identifier. Separately document the methods astrologers describe for mapping
+> sky to geography: Brihat Samhita Kurma Chakra, nakshatra-to-region tables,
+> country ruling signs, capital-city charts. Summarise which configurations are
+> cited most often, which are cited only after the fact, and any practitioner
+> who publishes a running record of hits and misses. Provide URLs for every
+> claim."
+
+### Prompt 3: Financial astrology forecasts and track records (2026-11-08)
+
+> "Survey how financial astrologers, both Vedic and Western, publicly forecast
+> gold, silver, crude oil and stock indices, using YouTube, X/Twitter,
+> Substack, Telegram and blogs from 2012 to today. Document the indicators they
+> use (Jupiter and Venus transits for gold and silver, Saturn-Jupiter cycles,
+> nodal axis, eclipses, Mercury retrograde, lunar phases, planetary ingress
+> dates, Vimshottari dasha of a market's 'birth chart' such as the exchange
+> founding chart or a country chart), the exact rules they state, the time
+> horizons, and the national or exchange charts they use with date, time and
+> place. Record any published track records or audits of financial astrology
+> accuracy, academic or journalistic, and any known backtests. Note the
+> difference between astrologers who give dates in advance and those who
+> explain moves afterwards. Provide a table of rules with citations and a
+> summary of what would be needed to test each rule statistically."
+
+### Prompt 4: National charts in use for 40 countries (2026-11-08)
+
+> "Compile the national birth charts used by practising mundane astrologers for
+> 40 countries (prioritise India, Nepal, USA, China, UK, Pakistan, Bangladesh,
+> Sri Lanka, Japan, Russia, Germany, France, Brazil, Australia, Canada,
+> Indonesia, Iran, Israel, Ukraine, Turkey, Egypt, Nigeria, South Africa,
+> Mexico, Argentina, South Korea, Taiwan, Saudi Arabia, UAE, Italy, Spain,
+> Switzerland, Netherlands, Sweden, Norway, Poland, Greece, Thailand, Vietnam,
+> Philippines). For each, list every chart in public use with its date, time,
+> place, the event it represents (independence, constitution, republic,
+> coronation, reunification, revolution), who uses it, and the source they
+> cite. Where astrologers disagree, state the competing charts and the
+> arguments made for each. Flag charts whose stated time is a convention
+> (midnight, noon) rather than a documented moment. Output as a table suitable
+> for conversion to YAML, with URLs."
 ## The 2026-11-08 Deep Research runs
 
-The owner ran the four questions above through Gemini Deep Research (and the
-financial one also through Grok) on 2026-11-08. The exact prompt text was not
-available when this section was written, so the prompts below are
-reconstructed from the topic names; replace them with the verbatim text when
-it is to hand.
-
-1. *Practitioners' methods on social media, 2015 to today.* "Survey Vedic
-   mundane astrologers active on YouTube, X, Instagram, Substack and blogs
-   from 2015 to today. For each, record the national chart they use (date,
-   time, place), ayanamsa, house system, dasha system and secondary charts,
-   and every concretely stated predictive rule with a link and a date. Record
-   disagreements between practitioners. Do not judge accuracy."
-2. *Earthquake and flood predictions and post-hoc explanations.* "Find dated,
-   public predictions of earthquakes and floods by astrologers, and
-   separately the explanations offered after events. For each, record the
-   posting date, the claim, the event matched, and whether it named a place,
-   a date window and a size. Describe the methods used to map the sky to
-   geography (Kurma Chakra, nakshatra-to-region tables, country ruling signs,
-   geodetic charts)."
-3. *Financial astrology forecasts for gold, silver, oil and indices.* "Find
-   published forecasts for gold, silver, crude oil and equity indices with a
-   dated posting, the indicators used and the stated window, the charts used
-   (exchange and first-trade charts), any audited track records and any
-   peer-reviewed tests, so the rules can be pre-registered and scored."
-4. *National charts in use for 40 countries, with disputes.* "For about 40
-   countries, list each founding chart practitioners use (event, date, time,
-   place), who uses it, the source, and the argument for it; list every
-   competing chart where charts are disputed."
+The owner ran Prompts 1-4 above through Gemini Deep Research (and Prompt 3
+also through Grok) on 2026-11-08. The prompt text above is verbatim; an
+earlier version of this file carried prompts reconstructed from the topic
+names, which this replaces.
 
 ### Convention for commissioned results
 
