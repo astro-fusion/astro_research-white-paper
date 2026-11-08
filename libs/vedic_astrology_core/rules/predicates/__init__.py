@@ -93,11 +93,11 @@ class Params(BaseModel):
         return needed
 
     def label(self) -> str:
-        """Short "key=value" rendering for explain output."""
+        """Short "key=value" rendering of the parameters the author wrote."""
         parts = []
         for name, info in type(self).model_fields.items():
             value = getattr(self, name)
-            if value is None:
+            if value is None or name not in self.model_fields_set:
                 continue
             key = info.alias or name
             if isinstance(value, list):

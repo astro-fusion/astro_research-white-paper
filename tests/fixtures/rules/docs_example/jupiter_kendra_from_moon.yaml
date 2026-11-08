@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.gold.jupiter_kendra_from_moon
+name: Jupiter strong in a kendra from the Moon (Gaja Kesari variant)
+domain: financial
+claim: Gold tends to rise in the 30 days after this configuration begins.
+source:
+  text: Brihat Parashara Hora Shastra
+  chapter: "36"
+  verse: "3-4"
+author: "@your-handle"
+tier: classical
+conditions:
+  all:
+    - planet: Jupiter
+      in_kendra_from: Moon
+    - planet: Jupiter
+      not: combust
+    - planet: Jupiter
+      dignity_in: [own, exaltation]
+window: {unit: days, before: 0, after: 30}
+expected_effect: {series: gold_usd, direction: up}
+reference_cases:
+  - moment: "2014-09-01T06:00:00Z"
+    expect: fires
+    note: Jupiter exalted in Cancer 16, 10th from the Moon in Libra, 28 deg from the Sun.
+  - moment: "2014-07-20T06:00:00Z"
+    expect: silent
+    note: Jupiter exalted and 4th from the Moon in Aries, but combust (3.4 deg from the Sun).

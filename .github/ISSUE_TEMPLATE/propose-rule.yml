@@ -1,0 +1,117 @@
+name: Propose a rule
+description: Suggest an astrological principle to test, without writing code or YAML.
+title: "[Rule]: "
+labels: ["rule-proposal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for proposing a principle. A maintainer will turn it into a rule
+        file under `rules/` (see CONTRIBUTING_ASTROLOGERS.md), run its reference
+        cases with `astro-rules test`, and link the result here. All positions are
+        sidereal (Lahiri), houses whole sign, nodes mean, unless you say otherwise.
+  - type: input
+    id: name
+    attributes:
+      label: Rule name
+      description: A short name, e.g. "Gaja Kesari Yoga (BPHS form)".
+    validations:
+      required: true
+  - type: textarea
+    id: claim
+    attributes:
+      label: Claim
+      description: What does the rule predict, in plain words?
+      placeholder: Gold tends to rise in the 30 days after Jupiter is strong in a kendra from the Moon.
+    validations:
+      required: true
+  - type: dropdown
+    id: domain
+    attributes:
+      label: Domain
+      options:
+        - financial
+        - seismic
+        - mundane
+        - natal
+        - general
+    validations:
+      required: true
+  - type: input
+    id: source_text
+    attributes:
+      label: Source text
+      description: Book or web page. Leave the chapter empty if there is none; the rule is then experimental.
+      placeholder: Brihat Parashara Hora Shastra (R. Santhanam tr.)
+    validations:
+      required: true
+  - type: input
+    id: source_chapter
+    attributes:
+      label: Chapter and verse
+      placeholder: "Ch. 36, v. 3-4"
+  - type: dropdown
+    id: tier
+    attributes:
+      label: Tier
+      description: Classical needs a text and a chapter. Everything else is experimental.
+      options:
+        - classical
+        - experimental
+    validations:
+      required: true
+  - type: textarea
+    id: conditions
+    attributes:
+      label: Conditions
+      description: >-
+        The configuration in your own words, or using the predicate vocabulary
+        (in_sign, in_house_from, in_kendra_from, in_nakshatra, dignity_in,
+        combust, retrograde, conjunct_within, graha_drishti, varga_sign,
+        dasha_lord_is, moon_phase, weekday_lord_is, eclipse_in_sign, ingress, ...).
+      placeholder: |
+        all of:
+          - Jupiter in a kendra from the Moon
+          - Jupiter not combust
+          - Jupiter in own sign or exalted
+    validations:
+      required: true
+  - type: input
+    id: window
+    attributes:
+      label: Time window
+      description: When should the effect appear, relative to the configuration?
+      placeholder: 0 days before to 30 days after
+  - type: input
+    id: expected_effect
+    attributes:
+      label: Expected effect
+      placeholder: "gold_usd up / earthquakes increase"
+  - type: textarea
+    id: fires_on
+    attributes:
+      label: Dates when the rule should fire
+      description: Date, time with time zone, and place if the rule uses the Lagna. Say how you checked them (e.g. JHora 8.0, Lahiri, mean node).
+      placeholder: "2014-09-01 11:45 +05:45, Kathmandu (27.72 N, 85.32 E) - checked in JHora 8.0"
+    validations:
+      required: true
+  - type: textarea
+    id: silent_on
+    attributes:
+      label: Dates when the rule should stay silent
+      placeholder: "2014-07-20 11:45 +05:45 - Jupiter combust"
+  - type: textarea
+    id: natal
+    attributes:
+      label: Natal chart (only for dasha or transit-to-natal rules)
+      placeholder: "India 1947-08-15 00:00 +05:30, Delhi (28.61 N, 77.21 E)"
+  - type: textarea
+    id: missing
+    attributes:
+      label: Anything the vocabulary cannot express?
+      description: Describe any condition that is not in the predicate list; we will add a predicate or mark the rule needs_predicates.
+  - type: input
+    id: author
+    attributes:
+      label: Credit as
+      description: Your name or handle for the rule's author field.
