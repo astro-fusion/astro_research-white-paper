@@ -1,6 +1,6 @@
 # ADR-001: One flagship research repository
 
-Status: accepted 2026-11-08; packages WP-0..WP-2, WP-4..WP-6, WP-8 and WP-M delivered; WP-3 and WP-7 open (see Outcome). Owner: astro-fusion. Applies to `astro_research-white-paper`.
+Status: accepted 2026-11-08; packages WP-0..WP-2, WP-4..WP-8 and WP-M delivered; WP-3 open (see Outcome). Owner: astro-fusion. Applies to `astro_research-white-paper`.
 
 ## Decision
 
@@ -183,12 +183,30 @@ Delivered on `main`, by package (commit ranges inclusive, oldest first):
 | WP-4 | Rules engine v2: schema, predicates, loader, `explain()`, `astro-rules` CLI, migration of the catalog and 67 mundane drafts, `CONTRIBUTING_ASTROLOGERS.md` | `c362c7e`..`eed142d`, `4f55153`..`b272929`, `c7b1e46` |
 | WP-5 | `vedic_astrology_core.stats` rigor-contract module; earthquake pre-registration, catalogue snapshot, declustering, one-command pipeline and paper from `results.json` | `085bc52`, `a078cb4`, `298512e`, `12cb679`, `51b2fa9`, `8dbfa59`, `a6b11d7`, `129e69a` |
 | WP-6 | `vedic_astrology_core.markets` overlay and study pipeline; gold rebuilt and silver added on it, seed-42 results | `fa2f92f`, `2af434e`..`9332c25` |
+| WP-7 | One engine: `src/celestial` retired (its geometric aspects ported to `astrology/aspects.py`, everything else already had a corrected equivalent), `src/` removed; package installable without `PYTHONPATH` (`libs/` holds `vedic_astrology_core` and `vedic_numerology`, the LLM diagram tool moved to `tools/visuals`), `application/` on the installed package; JPL Horizons cross-check in CI; smoke-only tests, the `GlobalShadbalaScorer` alias and the invented Nepal constitution time removed; CI quality and earthquake jobs repaired | `3df4328`, `1397f74`..`fd9f46f` and this ADR update |
 | WP-8 | Consolidation: immutable ephemeris model, pydantic and Python 3.9 in packaging, migration scripts kept, ignores for committed artifacts, mundane on `_paths`, caption and deploy home page, README with three quick starts and results, numerology re-analysis with TOST and Cohen's kappa | `9d77cea`..`f6016cf` and this ADR update |
 
 Not delivered: WP-3 (dataset generator and Parquet release, notebook and
-geocoding migration, archive banner on the old repository) and WP-7 (merging
-`libs/` and `src/` into one package, ephemeris validation against JPL
-Horizons in CI). They remain open.
+geocoding migration, archive banner on the old repository). It remains open.
+
+WP-7 notes:
+
+- Package name kept. The import root stays `vedic_astrology_core` rather
+  than the `vedic_research` of the target layout: renaming it touches more
+  than 100 files and every notebook and paper that imports it, and is a
+  separate decision from collapsing the two engines.
+- JPL Horizons cross-check (`tests/test_horizons_crosscheck.py`, fixtures
+  fetched 2026-11-08 from DE441, quantity 31, geocentric apparent ecliptic
+  longitude of date at six UT instants 1950-2040). Maximum deviation of the
+  engine (Moshier, no `.se1` files) per body: Sun 0.10, Moon 1.94, Mars 0.12,
+  Jupiter 0.31, Saturn 0.20 arcseconds; tolerance 10 arcseconds for Moshier
+  and 1 for `swieph`.
+- Behaviour changes: the Western essential-dignity scheme and the
+  finite-difference retrograde detector of the retired engine were not
+  ported (nothing used them; papers 04 and 06 now point at the speed flag and
+  the Vedic scorer). The Nepal 2015 reference chart has no time
+  (`datetime=None`, `time_known=False`). The Sphinx docs job no longer
+  deploys to Pages, and the release job runs only on `v*` tags.
 
 Current results (pre-registered runs, seed 42, from each study's
 `artifacts/results.json`):

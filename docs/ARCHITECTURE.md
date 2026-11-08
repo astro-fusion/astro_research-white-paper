@@ -17,22 +17,21 @@ This document describes the high-level architecture of the Vedic Astrology Resea
            │                         │                   │
            ▼                         ▼                   ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                        LIBRARY LAYER (libs/)                    │
+│        LIBRARY LAYER (libs/, installed with pip install -e .)   │
 │                                                                 │
 │   🪐 vedic_astrology_core      🔢 vedic_numerology              │
 │   ┌───────────────────────┐   ┌───────────────────────┐        │
-│   │ astrology/            │   │ mulanka.py            │        │
-│   │ dignity/              │   │ bhagyanka.py          │        │
-│   │ dasha/                │   │ lo_shu.py             │        │
-│   │ combinations/         │   │ chaldean.py           │        │
-│   │ utils/                │   └───────────────────────┘        │
-│   │ time_series.py        │                                     │
-│   └───────────────────────┘   📊 visuals/                      │
-│           │                   ┌───────────────────────┐        │
-│           ▼                   │ birth_chart.py        │        │
-│   🔭 Swiss Ephemeris          │ timeline_plot.py      │        │
-│   (pyswisseph)                │ dignity_heatmap.py    │        │
-│   Lahiri Ayanamsa             └───────────────────────┘        │
+│   │ astrology/  ephemeris │   │ numerology.py         │        │
+│   │   houses, vargas,     │   │ engine.py, analysis   │        │
+│   │   aspects, combustion │   └───────────────────────┘        │
+│   │ dasha/  dignity/      │                                     │
+│   │ rules/  stats/        │   tools/visuals (not installed:     │
+│   │ markets/ datasets/    │   LLM diagrams, `diagrams` extra)   │
+│   └───────────────────────┘                                     │
+│           │                                                     │
+│           ▼                                                     │
+│   🔭 Swiss Ephemeris (pyswisseph), sidereal Lahiri, Moshier     │
+│   unless .se1 files; cross-checked against JPL Horizons in CI   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
            │
@@ -64,10 +63,17 @@ This document describes the high-level architecture of the Vedic Astrology Resea
 ### 1. Library Layer (`libs/`)
 
 The core computational engine. **This is the most stable component** — changes here affect everything.
+There is one engine: the former second implementation under `src/` was
+retired in WP-7 (see ADR-001) and `src/` no longer exists.
 
-- **`vedic_astrology_core/`**: Wraps `pyswisseph` (built-in Moshier analytic ephemeris unless SE data files are installed). Uses the Lahiri Ayanamsa (sidereal coordinate system).
+`pip install -e .` installs two import roots from `libs/` (setuptools
+`package-dir`); nothing needs `PYTHONPATH`:
+
+- **`vedic_astrology_core/`**: Wraps `pyswisseph` (built-in Moshier analytic ephemeris unless SE data files are installed). Sidereal (Lahiri by default) with one node model, whole-sign houses with a polar fallback, 16 BPHS vargas, Vimshottari dasha, Vedic dignity, geometric aspects, the YAML rules engine, `stats`, `markets` and the planetary `datasets` generator. Golden-tested against PyJHora and cross-checked against JPL Horizons.
 - **`vedic_numerology/`**: Implements Vedic, Chaldean, and Lo Shu numerology systems.
-- **`visuals/`**: Generates publication-quality charts and diagrams.
+
+`tools/visuals/` (the LLM diagram generator, `diagrams` extra) is outside the
+package and runs as `python -m tools.visuals.manager`.
 
 **No external I/O** — pure computation only. This enables easy testing and reproducibility.
 
@@ -92,8 +98,10 @@ The pipeline is **parameterized via YAML** (in `ops/config/`) so that research t
 
 Provides user-facing interfaces built **on top of** the library layer:
 
-- **`web/`**: A Flask web app for interactive, point-and-click chart generation and exploration.
-- **`api/`**: A REST API that exposes library functions as HTTP endpoints.
+- **`web/`**: A Streamlit explorer (`app.py`) and a Flask timeline (`web.py`), extra `app`.
+- **`api/`**: A FastAPI REST API (`api.py`) that exposes library functions as HTTP endpoints, extra `api`.
+
+Both import the installed package; there are no `sys.path` entries.
 
 Both are **stateless** — each request computes fresh results from the library. This simplifies deployment and eliminates database dependencies.
 
@@ -101,9 +109,9 @@ Both are **stateless** — each request computes fresh results from the library.
 
 | Workflow                   | Trigger            | Purpose                                        |
 | -------------------------- | ------------------ | ---------------------------------------------- |
-| `ci.yml`                   | Push / PR          | Lint, type-check, test all code                |
-| `build-deploy.yml`         | Push to main       | Build and deploy the full platform             |
-| `publish-research.yml`     | Push to main       | Render and push Quarto reports to GitHub Pages |
+| `ci.yml`                   | Push / PR, `v*` tag | black, isort, flake8, mypy, bandit, pip-audit; tests incl. the JPL Horizons cross-check; Sphinx build; release only on a `v*` tag |
+| `build-deploy.yml`         | Push to main       | Earthquake pipeline tests, Quarto site render, Playwright smoke, GitHub Pages deploy (the only Pages deployer) |
+| `publish-research.yml`     | Release published  | Render and attach the research PDFs            |
 | `data-analysis.yml`        | Scheduled (weekly) | Automated data refresh and re-analysis         |
 | `scientific-reporting.yml` | Manual             | Generate PDF scientific manuscripts            |
 
@@ -160,4 +168,4 @@ To **add a new numerology system**: Create a new module in `libs/vedic_numerolog
 
 To **add a new research track**: See [docs/RESEARCH_METHODOLOGY.md](RESEARCH_METHODOLOGY.md)
 
-To **add a new API endpoint**: Add route to `application/api/api.py` with matching test in `tests/test_e2e_complete.py`
+To **add a new API endpoint**: Add route to `application/api/api.py` with a matching test under `tests/` (FastAPI `TestClient`)

@@ -59,19 +59,19 @@ astro_research-white-paper/
 │   ├── remedy_conflict_matrix/
 │   └── _paths.py              the one place that knows repository paths
 ├── rules/                     astrological rules as YAML (financial/, seismic/, general/, mundane/), schema.json
-├── libs/                      Python packages
-│   ├── vedic_astrology_core/  engine, rules, stats, markets
-│   ├── vedic_numerology/
-│   └── visuals/
+├── libs/                      sources of the installed package (pip install -e .)
+│   ├── vedic_astrology_core/  the one engine: ephemeris, houses, vargas, dasha, dignity,
+│   │                          aspects, rules, stats, markets, datasets
+│   └── vedic_numerology/
+├── tools/visuals/             LLM diagram generator, not installed (`diagrams` extra)
 ├── site/                      website pages: home, methods, principles, data, mundane, contribute, corrections
 ├── papers/                    cross-study papers; astrology/ white papers
 │   └── pdf/                   pre-correction PDFs, kept for the record
 ├── data/                      single data root: raw/, processed/, snapshots/ (gitignored)
 ├── scripts/                   repository CLIs; migrations/ holds one-shot scripts
 ├── docs/                      methodology, provenance, architecture, adr/, archive/
-├── tests/                     pytest suite
-├── src/                       celestial engines (to be consolidated with libs/, ADR-001)
-├── application/               web interface and REST API (out of scope for now)
+├── tests/                     pytest suite (golden charts, JPL Horizons cross-check, studies)
+├── application/               Streamlit/Flask web apps and FastAPI API on the installed package
 ├── templates/, styles/        Quarto paper template and LaTeX/CSL styles
 └── ops/                       config, deploy files, requirements.lock.txt
 ```
@@ -124,9 +124,9 @@ quarto render --to html          # the website, papers read results.json; output
 **Developers: install and test.**
 
 ```bash
-pip install -e ".[dev]"
+pip install -e ".[dev,stats,data]"   # no PYTHONPATH needed
 pytest tests/
-flake8 libs/ scripts/ studies/ tests/
+flake8 libs/ tools/ scripts/ studies/ tests/ application/
 ```
 
 ---
