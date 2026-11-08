@@ -105,5 +105,5 @@ cp ops/config/.env.example .env
 ## 🤝 Contributing to the Application
 
 - Follow the Flask patterns already established in `app.py`
-- Add tests for new routes in `tests/test_e2e_complete.py` or `tests/test_e2e_playwright.py`
+- Add tests for new routes under `tests/` (FastAPI `TestClient` against `application.api.api:app`)
 - Never commit API keys or secrets — use environment variables only

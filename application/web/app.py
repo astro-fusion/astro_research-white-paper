@@ -8,8 +8,6 @@ A Streamlit application for real-time exploration of numerological
 and astrological relationships with interactive controls.
 """
 
-import os
-import sys
 from datetime import datetime, timedelta
 
 import numpy as np
@@ -19,13 +17,7 @@ import pandas as pd
 # import plotly.graph_objects as go
 import streamlit as st
 
-# Add the src directory to Python path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
-# Add use cases to path
-sys.path.insert(
-    0, os.path.join(os.path.dirname(__file__), "use_cases", "numerology", "src")
-)
-
+# The engine comes from the installed package: pip install -e ".[app]".
 try:
     #     import matplotlib.pyplot as plt
     #     import seaborn as sns

@@ -19,9 +19,7 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, validator
 
-# Add the src directory to Python path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
-
+# The engine comes from the installed package: pip install -e ".[api]".
 try:
     from vedic_astrology_core import VedicAstrologyChart
     from vedic_astrology_core.config import Planet
@@ -63,22 +61,22 @@ class BirthData(BaseModel):
     """Birth data input model."""
 
     birth_date: str = Field(
-        ..., description="Birth date in YYYY-MM-DD format", example="1984-08-27"
+        ..., description="Birth date in YYYY-MM-DD format", examples=["1984-08-27"]
     )
     birth_time: Optional[str] = Field(
-        "12:00", description="Birth time in HH:MM format", example="10:30"
+        "12:00", description="Birth time in HH:MM format", examples=["10:30"]
     )
     latitude: float = Field(
-        28.6139, description="Birth latitude in decimal degrees", example=28.6139
+        28.6139, description="Birth latitude in decimal degrees", examples=[28.6139]
     )
     longitude: float = Field(
-        77.1025, description="Birth longitude in decimal degrees", example=77.1025
+        77.1025, description="Birth longitude in decimal degrees", examples=[77.1025]
     )
     timezone: str = Field(
-        "Asia/Kolkata", description="Timezone string", example="Asia/Kolkata"
+        "Asia/Kolkata", description="Timezone string", examples=["Asia/Kolkata"]
     )
     ayanamsa_system: str = Field(
-        "lahiri", description="Ayanamsa system (lahiri/raman)", example="lahiri"
+        "lahiri", description="Ayanamsa system (lahiri/raman)", examples=["lahiri"]
     )
 
     @validator("birth_date")
