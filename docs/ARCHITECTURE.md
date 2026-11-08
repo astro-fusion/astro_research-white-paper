@@ -65,7 +65,7 @@ This document describes the high-level architecture of the Vedic Astrology Resea
 
 The core computational engine. **This is the most stable component** — changes here affect everything.
 
-- **`vedic_astrology_core/`**: Wraps `pyswisseph` for sub-arcsecond astronomical calculations. Uses the Lahiri Ayanamsa (sidereal coordinate system).
+- **`vedic_astrology_core/`**: Wraps `pyswisseph` (built-in Moshier analytic ephemeris unless SE data files are installed). Uses the Lahiri Ayanamsa (sidereal coordinate system).
 - **`vedic_numerology/`**: Implements Vedic, Chaldean, and Lo Shu numerology systems.
 - **`visuals/`**: Generates publication-quality charts and diagrams.
 

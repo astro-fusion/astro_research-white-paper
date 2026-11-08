@@ -409,7 +409,7 @@ The "Look-Elsewhere" analysis tested whether observed results could arise by cha
 
 **Result**: The real data signal (22.13) falls **below** the 95th percentile of random noise (27.95), indicating the observed "signal" is indistinguishable from chance.
 
-![](figures/monte_carlo_distribution.png){#fig-montecarlo width=90%}
+*Figure withdrawn 2026-11-08: it was generated from simulated data. See CORRECTIONS.md.*
 
 ## Pattern Mapping Visualization
 
@@ -419,7 +419,7 @@ Overlaying the Planetary Stress Index with actual earthquake occurrences reveals
 - The 2015 Gorkha sequence occurred during a moderate (not extreme) stress period
 - Several "High Stress" periods passed without significant seismicity
 
-![](figures/phase2_astro_pattern_map.png){#fig-phase2 width=90%}
+*Figure withdrawn 2026-11-08: it was generated from simulated data. See CORRECTIONS.md.*
 
 ## Scatter Plot Analysis
 
@@ -434,7 +434,7 @@ Plotting Earthquake Magnitude against Planetary Stress Index:
 
 Large magnitude events occur at both high and low stress levels with equal probability.
 
-![](figures/phase3_validation_scatter.png){#fig-phase3 width=90%}
+*Figure withdrawn 2026-11-08: it was generated from simulated data. See CORRECTIONS.md.*
 
 \FloatBarrier
 

@@ -18,9 +18,9 @@ Table 1 presents the estimated coefficients from the Negative Binomial model app
 
 ## Temporal Prediction
 
-The model's ability to track the aggregate monthly seismic rate is visualized in @fig-pred-actual. The "Prediction Gap" is visible where the model captures the structural trend but misses extreme outliers (Mega-Quakes), which are theoretically driven by short-term high-impact Yogas rather than baseline trends.
+The figure that showed the model's predicted versus actual monthly seismic rate has been withdrawn.
 
-![Time series of Predicted Rate vs. Actual Rate (Monthly Aggregated). The red dashed line represents the Negative Binomial model fit.](../figures/predicted_vs_actual.png){#fig-pred-actual}
+*Figure withdrawn 2026-11-08: it was generated from simulated data. See CORRECTIONS.md.*
 
 ## Molchan Error Diagram Analysis
 
@@ -30,9 +30,9 @@ To evaluate the predictive utility of the "Astro-Fusion" model against a random 
 
 ## "Look-Elsewhere" Analysis
 
-To ensure any detected signal is not a result of p-hacking, we performed a Monte Carlo Shuffle Test as shown in @fig-monte-carlo.
+To ensure any detected signal is not a result of p-hacking, a Monte Carlo shuffle test was planned; the figure previously shown here has been withdrawn.
 
-![The histogram shows the distribution of Delta-AIC values for random shuffles. The red line marks the Real Data performance consistently falling within the noise floor.](../figures/monte_carlo_distribution.png){#fig-monte-carlo}
+*Figure withdrawn 2026-11-08: it was generated from simulated data. See CORRECTIONS.md.*
 
 ::: {.callout-warning}
 ## Interpretation

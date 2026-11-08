@@ -16,18 +16,36 @@ GENERATE_ARTIFACTS_SCRIPT = os.path.join(
 )
 
 
-def test_artifact_generation(tmp_path):
-    """Verify that the script runs and produces all required files.
+# 50 trading days of real COMEX gold closes (Yahoo Finance GC=F, from
+# 2000-08-30) with planetary columns from the engine as it stood before the
+# 2026-11-08 corrections (tropical longitudes). A pipeline smoke fixture only;
+# not an input for any reported result.
+FIXTURE_CSV = os.path.join(
+    BASE_DIR, "tests", "fixtures", "gold_comex_tropical_planets_2000-08-30_50rows.csv"
+)
 
-    Output goes to a temporary directory so tracked artifacts stay untouched.
-    """
-    env = dict(os.environ, ASTRO_ARTIFACTS_DIR=str(tmp_path))
-    result = subprocess.run(
+
+def _run_generate_artifacts(tmp_path, data_path):
+    env = dict(
+        os.environ,
+        ASTRO_ARTIFACTS_DIR=str(tmp_path),
+        ASTRO_PROCESSED_DATA_PATH=str(data_path),
+        MPLBACKEND="Agg",
+    )
+    return subprocess.run(
         [sys.executable, GENERATE_ARTIFACTS_SCRIPT],
         capture_output=True,
         text=True,
         env=env,
     )
+
+
+def test_artifact_generation(tmp_path):
+    """Verify that the script runs on a real fixture and writes all artifacts.
+
+    Output goes to a temporary directory so the repository stays untouched.
+    """
+    result = _run_generate_artifacts(tmp_path, FIXTURE_CSV)
     assert result.returncode == 0, f"Artifact generation failed: {result.stderr}"
 
     expected_files = [
@@ -41,19 +59,24 @@ def test_artifact_generation(tmp_path):
         path = tmp_path / filename
         assert path.exists(), f"Missing expected artifact: {filename}"
 
-
-def test_dynamic_stats_integrity():
-    """Verify that the committed JSON stats contain the expected keys and types."""
-    json_path = os.path.join(ARTIFACTS_DIR, "stats_granger.json")
-    with open(json_path, "r") as f:
+    with open(tmp_path / "stats_granger.json", "r") as f:
         data = json.load(f)
-
     for planet in ["Mars", "Saturn", "Jupiter"]:
         assert planet in data, f"Planet {planet} missing from granger stats"
         stats = data[planet]
         assert "F-Statistic" in stats
         assert "p-value" in stats
         assert "Significant" in stats
+
+
+def test_artifact_generation_fails_without_data(tmp_path):
+    """Missing input must fail loudly and never write placeholder data."""
+    missing = tmp_path / "data" / "aligned_planetary_data.csv"
+    result = _run_generate_artifacts(tmp_path / "out", missing)
+    assert result.returncode != 0
+    assert "not found" in result.stderr
+    assert not missing.exists()
+    assert not (tmp_path / "out" / "stats_granger.json").exists()
 
 
 @pytest.mark.skipif(

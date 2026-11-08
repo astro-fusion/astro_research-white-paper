@@ -13,6 +13,10 @@
 
 ---
 
+> **Corrections notice (2026-11-08).** Published results in this repository are withdrawn pending re-analysis. Some earthquake figures were generated from random numbers, the gold-market statistics were computed from a synthetic placeholder series, planetary positions were tropical rather than sidereal (and Ketu was computed as Rahu), and the DE440 ephemeris claim was incorrect. Details: [CORRECTIONS.md](CORRECTIONS.md).
+
+---
+
 ## 🌐 Live Research & Downloads
 
 | Resource                | Link                                                                                                            |
@@ -36,7 +40,7 @@
 
 This repository is an **open multi-domain research platform** that:
 
-1. **Applies classical Vedic astrological principles** to empirical, reproducible data science using Swiss Ephemeris (sub-arcsecond precision), statistical validation, Granger Causality, and Monte Carlo permutations.
+1. **Applies classical Vedic astrological principles** to empirical, reproducible data science using the Swiss Ephemeris library with the built-in Moshier analytic ephemeris unless SE data files are installed, statistical validation, Granger Causality, and Monte Carlo permutations.
 2. **Studies Vedic numerology** — Lo Shu, Mulanka, Bhagyanka and Chaldean systems as computable, testable models.
 3. **Investigates celestial-terrestrial correlations** — treating planetary geometry and terrestrial phenomena (earthquakes, gold market) as time-series amenable to statistical and ML analysis.
 
@@ -253,7 +257,7 @@ Research content (manuscripts, datasets) licensed under [CC BY 4.0](https://crea
 
 ## 🙏 Acknowledgments
 
-- **Swiss Ephemeris** (Astro.com) — sub-arcsecond planetary precision
+- **Swiss Ephemeris** (Astro.com) — built-in Moshier analytic ephemeris unless SE data files are installed
 - **NASA JPL Horizons** — authoritative Solar System ephemeris
 - **Quarto** — reproducible scientific publishing
 - The open-source Python scientific ecosystem: NumPy, SciPy, Pandas, pyswisseph, Matplotlib, statsmodels

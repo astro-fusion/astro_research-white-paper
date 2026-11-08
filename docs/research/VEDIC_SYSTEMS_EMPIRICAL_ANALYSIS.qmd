@@ -8,7 +8,7 @@ authors:
     affiliation: Computational Astrology Research Initiative
     corresponding: true
 abstract: |
-  This comprehensive research report presents a rigorous, multi-track investigation into the empirical validity of Vedic predictive systems—specifically Vedic Astrology (Jyotish) and Vedic Numerology (Anka Jyotish). Utilizing high-precision astronomical calculations from the Swiss Ephemeris (DE440), we conduct three parallel investigations: (1) the temporal correlation between discrete numerological cycles and continuous planetary dignities; (2) the potential of astrological configurations to predict seismic activity in the India-Nepal tectonic zone; and (3) the relationship between planetary positions and gold market (XAU/USD) price movements. Employing advanced econometric techniques including Granger causality tests, Lomb-Scargle spectral analysis, Monte Carlo permutation tests, and Negative Binomial regression, we subject each hypothesis to "Severe Testing" criteria. Our findings reveal that despite shared mythological foundations, these systems exhibit fundamental mathematical independence, with apparent correlations failing to exceed statistical significance thresholds when controlled for multiple hypothesis testing. This work provides a reproducible computational framework for the scientific evaluation of traditional knowledge systems.
+  This comprehensive research report presents a rigorous, multi-track investigation into the empirical validity of Vedic predictive systems—specifically Vedic Astrology (Jyotish) and Vedic Numerology (Anka Jyotish). Using the Swiss Ephemeris library with the built-in Moshier analytic ephemeris unless SE data files are installed, we conduct three parallel investigations: (1) the temporal correlation between discrete numerological cycles and continuous planetary dignities; (2) the potential of astrological configurations to predict seismic activity in the India-Nepal tectonic zone; and (3) the relationship between planetary positions and gold market (XAU/USD) price movements. Employing advanced econometric techniques including Granger causality tests, Lomb-Scargle spectral analysis, Monte Carlo permutation tests, and Negative Binomial regression, we subject each hypothesis to "Severe Testing" criteria. Our findings reveal that despite shared mythological foundations, these systems exhibit fundamental mathematical independence, with apparent correlations failing to exceed statistical significance thresholds when controlled for multiple hypothesis testing. This work provides a reproducible computational framework for the scientific evaluation of traditional knowledge systems.
 keywords:
   - Vedic Astrology
   - Vedic Numerology
@@ -111,11 +111,7 @@ This study addresses these gaps by utilizing high-precision Swiss Ephemeris [@sw
 
 ### Swiss Ephemeris Implementation
 
-All planetary positions are calculated using the **Swiss Ephemeris (version 2.10)** with the DE440 JPL ephemeris, providing:
-
-- Positional accuracy: < 0.001 arcseconds (1 milliarcsecond)
-- Temporal range: 13201 BCE to 17191 CE
-- Proper sidereal conversion via Lahiri Ayanamsa
+All planetary positions are calculated using the **Swiss Ephemeris library with the built-in Moshier analytic ephemeris unless SE data files are installed**. The earlier claims of DE440 precision and of sidereal (Lahiri) conversion were withdrawn on 2026-11-08: no SE data files were installed and the sidereal flag was not passed, so positions so far were tropical (see CORRECTIONS.md).
 
 The sidereal longitude $\lambda_{sid}$ is calculated as:
 
@@ -226,7 +222,7 @@ To establish empirical null distributions, we perform 1,000 Monte Carlo shuffles
 
 The following figure illustrates the normalized cyclic variations of key planets over the study period. Note the distinct frequencies of Mars vs. Saturn, highlighting the temporal complexity.
 
-![Planetary Cycles](../../research/reports/artifacts/fig_multi_planet_cycles.pdf){#fig-cycles width=100%}
+*Figure withdrawn 2026-11-08: it was generated from simulated data. See CORRECTIONS.md.*
 
 ## Analysis: Temporal Mechanics Comparison
 
@@ -294,7 +290,7 @@ We defined an "Astro-Fusion Stress Index" based on:
 2. **Graha Yuddha**: Planetary wars (conjunctions within 1°)
 3. **Malefic Aspects**: Saturn-Mars squares and oppositions
 
-![Mars Retrograde Cycles and Daily Motion](../../research/reports/artifacts/fig_mars_variation.pdf){#fig-mars width=100%}
+*Figure withdrawn 2026-11-08: it was generated from simulated data. See CORRECTIONS.md.*
 
 ### Statistical Framework
 
@@ -332,7 +328,7 @@ The Monte Carlo "Look-Elsewhere" analysis (N=1,000) revealed:
 2. **Mars Near-Threshold**: $p = 0.10$ suggests weak but inconclusive signal
 3. **Monte Carlo Confirmation**: Results indistinguishable from chance
 
-![Monte Carlo Permutation Distribution](../../research/reports/artifacts/fig_permutation_dist.pdf){#fig-monte-carlo width=80%}
+*Figure withdrawn 2026-11-08: it was generated from simulated data. See CORRECTIONS.md.*
 
 # Track 3: Gold Market Correlation
 
@@ -373,7 +369,7 @@ Lomb-Scargle periodograms [@lomb_scargle] were computed to detect cyclic signals
 - Venus: ~584 days
 - Mars: ~780 days
 
-![Lomb-Scargle Periodogram of Gold log-returns. No significant peaks observed at planetary frequencies.](../../research/reports/artifacts/fig_periodogram.pdf){#fig-periodogram width=100%}
+*Figure withdrawn 2026-11-08: it was generated from simulated data. See CORRECTIONS.md.*
 
 ## Results
 
@@ -409,7 +405,7 @@ Testing Mars speed variations as a binary predictor for extreme volatility event
 - **Result**: Trajectory hugs the diagonal (random guessing line)
 - **Conclusion**: No information gain over chance
 
-![Molchan Diagram for Mars Speed vs Extreme Volatility](../../research/reports/artifacts/fig_molchan.pdf){#fig-molchan width=80%}
+*Figure withdrawn 2026-11-08: it was generated from simulated data. See CORRECTIONS.md.*
 
 ## Track 3 Findings
 

@@ -5,8 +5,9 @@ Outputs:
 - figures/mars_saturn_strength.png
 - figures/mars_ketu_separation.png
 - figures/malefic_cluster_vs_earthquakes.png
-- figures/predicted_vs_actual.png (Simulated Model)
-- figures/monte_carlo_distribution.png (Simulated MC)
+
+The former "predicted vs actual" and "Monte Carlo" figures were drawn from
+random numbers and have been withdrawn (see CORRECTIONS.md, 2026-11-08).
 """
 
 import importlib
@@ -15,7 +16,6 @@ import sys
 from datetime import datetime
 
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 
 # Ensure src is in path to import vedic_astrology_core
@@ -232,46 +232,6 @@ def plot_malefic_cluster(df, eq_df):
         print("Skipping Malefic Cluster plot (no EQ data)")
 
 
-def plot_simulated_model_outs():
-    """Plot simulated model outputs."""
-    print("Generating Figure 4 & 5: Simulation Plots...")
-
-    # Predicted vs Actual (Simulated for visualization)
-    dates = pd.date_range(START_DATE, END_DATE, freq="ME")
-    actual = np.random.poisson(15, len(dates))  # Mean 15 quakes/month
-    predicted = (
-        actual * 0.8
-        + np.random.normal(0, 2, len(dates))
-        + 3
-        + (np.sin(np.arange(len(dates)) / 5) * 2)
-    )
-
-    plt.figure(figsize=(10, 5))
-    plt.plot(dates, actual, label="Actual Rate", color="grey", alpha=0.6)
-    plt.plot(
-        dates, predicted, label="Model Prediction (NB GLM)", color="red", linestyle="--"
-    )
-    plt.title("Model Fit: Predicted vs Actual Seismic Rate")
-    plt.ylabel("Monthly Count (M5+)")
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-    plt.savefig(os.path.join(OUTPUT_DIR, "predicted_vs_actual.png"))
-    plt.close()
-
-    # Monte Carlo Distribution
-    deltas = np.random.normal(0, 5, 1000)
-    real_delta = 7.5  # Slightly significant
-
-    plt.figure(figsize=(8, 5))
-    plt.hist(deltas, bins=30, color="grey", alpha=0.7, label="Random Shuffles (Noise)")
-    plt.axvline(real_delta, color="red", linewidth=2, label="Real Data (Delta-AIC)")
-    plt.title('"Look-Elsewhere" Monte Carlo Test (N=1000)')
-    plt.xlabel("Improvement in Model Fit (Delta-AIC)")
-    plt.legend()
-    plt.savefig(os.path.join(OUTPUT_DIR, "monte_carlo_distribution.png"))
-    plt.close()
-
-
 def main():
     """Generate all paper figures."""
     ensure_dir(OUTPUT_DIR)
@@ -284,7 +244,6 @@ def main():
     plot_mars_saturn_strength(df_astro, eq_df)
     plot_mars_ketu_separation(df_astro)
     plot_malefic_cluster(df_astro, eq_df)
-    plot_simulated_model_outs()
 
     print("All figures generated successfully.")
 

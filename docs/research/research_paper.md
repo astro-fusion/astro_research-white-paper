@@ -62,7 +62,7 @@ We performed Schuster's Test for periodicity on the 9-day numerology wheel to se
 ## 4.2. Predictive Modeling (Monte Carlo)
 We fitted a Negative Binomial regression model to test if the "Variation Curves" of planet strength offer information gain over a random baseline. To validate this, we ran 1,000 Monte Carlo shuffles.
 
-![Monte Carlo Distribution of Model Fit (AIC Improvements). The real data signal (Vertical Line) is compared against 1,000 random permutations.](figures/monte_carlo_distribution.png){#fig-mc}
+*Figure withdrawn 2026-11-08: it was generated from simulated data. See CORRECTIONS.md.*
 
 - **95th Percentile Noise Floor:** 27.95
 - **Real Signal Delta AIC:** 22.13

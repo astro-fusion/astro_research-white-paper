@@ -122,7 +122,7 @@ print(f"Symbol used for this run: {symbol_used}")
 
 | Parameter | Specification |
 |-----------|---------------|
-| Source | Swiss Ephemeris (DE440) |
+| Source | Swiss Ephemeris (Moshier analytic ephemeris unless SE data files are installed) |
 | Planets | Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn |
 | Reference Frame | Geocentric, Sidereal (Lahiri) |
 | Precision | < 0.001 arcseconds |

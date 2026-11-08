@@ -39,7 +39,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Paths
-PROCESSED_DATA_PATH = os.path.join(
+PROCESSED_DATA_PATH = os.environ.get("ASTRO_PROCESSED_DATA_PATH") or os.path.join(
     os.path.dirname(os.path.dirname(__file__)),
     "data",
     "processed",
@@ -241,44 +241,21 @@ def main():
     """Main execution flow."""  # noqa: D401
     logger.info("Loading processed data...")
     if not os.path.exists(PROCESSED_DATA_PATH):
-        logger.warning(
-            f"Data file not found: {PROCESSED_DATA_PATH}. Generating MOCK data for smoke testing."  # noqa: E501
+        # Never fall back to synthetic data: a placeholder series written to the
+        # real data path was previously mistaken for market data (see
+        # CORRECTIONS.md, 2026-11-08).
+        logger.error(
+            f"Processed data file not found: {PROCESSED_DATA_PATH}. "
+            "Provide verified aligned market and ephemeris data, or set "
+            "ASTRO_PROCESSED_DATA_PATH to its location."
         )
-
-        # Ensure directory exists
-        os.makedirs(os.path.dirname(PROCESSED_DATA_PATH), exist_ok=True)
-
-        # Generate Mock Data
-        dates = pd.date_range(start="2020-01-01", periods=1000, freq="D")
-        mock_df = pd.DataFrame({"Date": dates})
-
-        # Mock Gold Price (Random Walk)
-        np.random.seed(42)
-        returns = np.random.normal(0, 0.01, len(dates))
-        price = 1000 * np.exp(np.cumsum(returns))
-        mock_df["Close"] = price
-
-        # Mock Planetary Data (Sine waves + Noise to avoid singular matrix)
-        t = np.arange(len(dates))
-        for planet, period in [("Mars", 687), ("Saturn", 10759), ("Jupiter", 4333)]:
-            noise = np.random.normal(0, 0.001, len(dates))
-            # Speed roughly sin wave
-            mock_df[f"{planet}_Speed"] = np.sin(2 * np.pi * t / period) + noise
-            # Cycles
-            mock_df[f"{planet}_Sin"] = np.sin(2 * np.pi * t / period) + noise
-            mock_df[f"{planet}_Cos"] = np.cos(2 * np.pi * t / period) + noise
-
-        mock_df.to_csv(PROCESSED_DATA_PATH, index=False)
-        logger.info(f"Saved mock data to {PROCESSED_DATA_PATH}")
+        sys.exit(1)
 
     df = pd.read_csv(PROCESSED_DATA_PATH)
     df["Date"] = pd.to_datetime(df["Date"])
 
     # Generate all artifacts
     generate_stationarity_table(df)
-    generate_periodogram_plot(df)
-    generate_granger_stats(df)
-    generate_molchan_plot(df)
     generate_periodogram_plot(df)
     generate_granger_stats(df)
     generate_molchan_plot(df)

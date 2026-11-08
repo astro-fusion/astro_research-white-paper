@@ -50,7 +50,7 @@ We utilize the **Astro-Fusion Stress Index**, calculated by analyzing:
 ## 2.2. Mapping Patterns (The Repeater)
 We map this "Stress Index" (Purple Line) against the actual Earthquake events (Red Markers) to visualize potential synchronization.
 
-![Phase 2: Pattern Mapping. The Purple Line represents the modeled Astrological Stress. The Red Dashed Lines are major earthquakes (Mag > 5.5). We look for alignment between the Purple Peaks and Red Lines.](figures/phase2_astro_pattern_map.png){#fig-pattern width=90%}
+*Figure withdrawn 2026-11-08: it was generated from simulated data. See CORRECTIONS.md.*
 
 **Observation:**
 The goal is to see if the "Pattern of the Sky" (Purple) repeats in sync with the "Pattern of the Earth" (Red).
@@ -64,7 +64,7 @@ To move beyond visual anecdotal evidence, we perform a statistical **Correlation
 *   **Hypothesis:** If Astrology predicts earthquakes, large magnitudes (Y-High) should cluster at High Stress (X-High). We expect a **Linear Trend** (diagonal).
 *   **Results:**
 
-![Phase 3: Validation Scatter Plot. The distribution is uniform/random. There is no clear diagonal clustering. High magnitude events occur at both High and Low Astrological Stress levels.](figures/phase3_validation_scatter.png){#fig-scatter width=80%}
+*Figure withdrawn 2026-11-08: it was generated from simulated data. See CORRECTIONS.md.*
 
 ## 3.3. Conclusion
 Comparing the "Pattern of the Sky" with the "Pattern of the Earth" reveals:

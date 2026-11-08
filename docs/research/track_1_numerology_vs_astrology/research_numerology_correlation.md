@@ -61,7 +61,7 @@ Vedic Astrology defines "Strength" (Bala) as a composite of six distinct astrono
 ## 3.2. Variation Analysis (One Month Data)
 We calculated the aggregate **Shadbala** for Mars over the same period (Jan 2024).
 
-![Phase 2: Variation of Astrological Strength for Mars (Jan 2024). Note the "Continuous Curve". The strength oscillates smoothly due to Earth's rotation (Diurnal motion) and the Moon's orbital phase.](figures/phase2_astrology_curve.png){#fig-astro width=90%}
+*Figure withdrawn 2026-11-08: it was generated from simulated data. See CORRECTIONS.md.*
 
 **Observation:**
 The variation is **Continuous**. The signal never "holds" a value; it is always in flux.
@@ -73,7 +73,7 @@ The variation is **Continuous**. The signal never "holds" a value; it is always 
 ## 4.1. The Superimposed Graph
 To deduce the relationship logic, we overlay the two signals.
 
-![Phase 3: Superimposition of Numerology (Orange Steps) and Astrology (Blue Curve).](figures/phase3_comparison_overlay.png){#fig-compare width=90%}
+*Figure withdrawn 2026-11-08: it was generated from simulated data. See CORRECTIONS.md.*
 
 ## 4.2. Logic of Contrast
 Comparing the two graphs reveals the deduction:

@@ -1,5 +1,7 @@
 # Real-Time Planetary Strength & Numerology Visualization
 
+> **Corrections notice (2026-11-08):** the planetary strength values in `planetary_strength_timeline.html` and `numerology_vs_astrology_comparison.html` were uniform random numbers, not computed strengths. Both charts are withdrawn; the script now draws them only with `--simulation`, as watermarked `SIMULATED_` files. See [CORRECTIONS.md](../../CORRECTIONS.md).
+
 ## Overview
 
 This project has been enhanced with real-time variant graphs showing how planetary strengths and numerology values change over time, based on Vedic Astrology and traditional numerology principles. These visualizations provide insights into:

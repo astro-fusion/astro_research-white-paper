@@ -6,6 +6,8 @@ toc: false
 css: styles/landing.css
 ---
 
+**Corrections notice (2026-11-08):** published results are withdrawn pending re-analysis. Several figures and statistics were generated from simulated data, and planetary positions were tropical rather than sidereal. See [CORRECTIONS.md](https://github.com/astro-fusion/astro_research-white-paper/blob/main/CORRECTIONS.md).
+
 ::: {.hero-section}
 # Bridging Ancient Wisdom & Modern Science
 ### A Computational Approach to Vedic Astrology & Numerology

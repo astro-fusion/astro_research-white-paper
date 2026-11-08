@@ -36,7 +36,7 @@ The heart of the platform. Wraps the **Swiss Ephemeris** (`pyswisseph`) for astr
 ### Key Concepts
 
 - **Ayanamsa**: Uses **Lahiri (Chitra Paksha)** — the official ayanamsa of the Government of India
-- **Precision**: Swiss Ephemeris provides sub-arcsecond accuracy for dates from 2000 BCE to 3000 CE
+- **Precision**: Swiss Ephemeris library with the built-in Moshier analytic ephemeris unless SE data files are installed
 - **Coordinate system**: All positions in sidereal (not tropical) longitude
 
 ### Quick Usage

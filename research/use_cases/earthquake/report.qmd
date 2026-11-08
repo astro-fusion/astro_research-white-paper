@@ -7,7 +7,7 @@ authors:
   - name: Astro-Fusion Research Team
     affiliation: Independent Computational Astrology Research Initiative
 abstract: |
-  This study conducts a rigorous statistical audit of the "Astro-Fusion" hypothesis, which posits that discrete geocentric planetary configurations (specifically Vedic *Yogas* like Mangal-Ketu) and numerological time cycles act as exogenous triggers for global seismicity. We utilize a Negative Binomial Generalized Linear Model (GLM) to analyze the USGS Comprehensive Earthquake Catalog (M5.0+, 1900–2025) after Gardner-Knopoff declustering. By treating traditional astrological claims as testable signal processing hypotheses, we evaluate information gain over a Poisson baseline (Trend + Seasonality). Our analysis integrates high-precision Swiss Ephemeris data (DE440) and employs "Look-Elsewhere" Monte Carlo randomization to control for false discoveries. The results demonstrate that while specific combinations like the Mars-Ketu conjunction (Mangal-Ketu Yoga) show intermittent correlation with high-magnitude events, the global aggregate signal remains statistically indistinguishable from random noise ($p = 0.17$), requiring a shift toward regionalized "Koorma Chakra" frameworks for future falsification attempts.
+  This study conducts a rigorous statistical audit of the "Astro-Fusion" hypothesis, which posits that discrete geocentric planetary configurations (specifically Vedic *Yogas* like Mangal-Ketu) and numerological time cycles act as exogenous triggers for global seismicity. We utilize a Negative Binomial Generalized Linear Model (GLM) to analyze the USGS Comprehensive Earthquake Catalog (M5.0+, 1900–2025) after Gardner-Knopoff declustering. By treating traditional astrological claims as testable signal processing hypotheses, we evaluate information gain over a Poisson baseline (Trend + Seasonality). Planetary positions come from the Swiss Ephemeris library with the built-in Moshier analytic ephemeris unless SE data files are installed, and the design employs "Look-Elsewhere" Monte Carlo randomization to control for false discoveries. The results demonstrate that while specific combinations like the Mars-Ketu conjunction (Mangal-Ketu Yoga) show intermittent correlation with high-magnitude events, the global aggregate signal remains statistically indistinguishable from random noise (figures and p-value withdrawn pending re-analysis), requiring a shift toward regionalized "Koorma Chakra" frameworks for future falsification attempts.
 keywords:
   - Seismology
   - Vedic Astrology (Jyotish)
@@ -33,6 +33,8 @@ format:
 bibliography: references.bib
 ---
 
+> **Corrections notice (2026-11-08):** the results in this report are withdrawn pending re-analysis. Two figures were generated from simulated data and planetary positions were tropical rather than sidereal. See [CORRECTIONS.md](../../../CORRECTIONS.md).
+
 # Introduction & Motivation
 
 The prediction of earthquakes remains one of the most persistent "Grand Challenges" in geophysical science. Despite advancements in plate tectonics and satellite geodesy, the "Prediction Gap"—the inability to deterministically forecast the time, location, and magnitude of a rupture—stems from the non-linear, chaotic nature of crustal stress accumulation and release. In this context, the exploratory search for exogenous triggers (e.g., tidal stress, solar activity, or astronomical cycles) is not merely a fringe pursuit but a necessary exercise in signal processing demarcation.
@@ -40,7 +42,7 @@ The prediction of earthquakes remains one of the most persistent "Grand Challeng
 This paper investigates a novel set of candidate features derived from "Astro-Fusion" variables, specifically:
 1.  **Classical Planetary Yogas:** Specifically the *Mangal-Ketu* (Mars-Ketu) and *Mangal-Shani* (Mars-Saturn) conjunctions cited in the *Brihat Samhita* as seismic precursors.
 2.  **Universal Day Numbers (UDN):** A cyclic base-9 numerological time series derived from Western numerology (Cheiro).
-3.  **Planetary Force Vectors:** Quantified "Shadbala" strength scores for major planets derived from the Swiss Ephemeris (DE440).
+3.  **Planetary Force Vectors:** Quantified "Shadbala" strength scores for major planets derived from the Swiss Ephemeris library (Moshier analytic ephemeris unless SE data files are installed).
 
 We treat these variables not as "mystical" entities but as potential geophysical regressors. Each claim is subjected to "Severe Testing" criteria: establishing a null hypothesis of zero effect and only rejecting it in the face of overwhelming statistical evidence.
 
@@ -87,7 +89,7 @@ For this study, we utilize the classical tolerance $\theta_{tol} = 13^\circ$ (ba
 
 ## Astronomical Data
 
-Planetary positions were calculated using the **Swiss Ephemeris (DE440)**, a high-precision numerical integration of the solar system developed by AstroDienst. Longitudes are geocentric, ecliptic, and adjusted for light-time and aberration.
+Planetary positions were calculated using the **Swiss Ephemeris** library developed by Astrodienst, with the built-in Moshier analytic ephemeris unless SE data files are installed. Longitudes are geocentric, ecliptic, and adjusted for light-time and aberration.
 
 ## Event Data
 
@@ -145,9 +147,9 @@ The results of the Negative Binomial GLM (Table @tbl-regression) show that the c
 
 ## Temporal Prediction
 
-The model's ability to track the seismic rate is shown in Figure @fig-prediction. While the trend is captured, the discrete predictive power for specific events remains low.
+The figure that showed the model's predicted versus actual seismic rate has been withdrawn.
 
-![Time series of Predicted Rate vs. Actual Rate (Monthly Aggregated). The red dashed line represents the model fit.](figures/predicted_vs_actual.png){#fig-prediction width=100%}
+*Figure withdrawn 2026-11-08: it was generated from simulated data. See CORRECTIONS.md.*
 
 ## Classification Metrics & False Positives
 
@@ -167,9 +169,9 @@ The high **False Positive Rate (0.69)** indicates that most conjunction windows 
 
 ## Monte Carlo "Look-Elsewhere" Analysis
 
-To ensure the detected correlations were not artifacts of p-hacking, we performed 1,000 random shuffles of the event data (Figure @fig-mc).
+To ensure the detected correlations were not artifacts of p-hacking, a Monte Carlo shuffle test was planned; the figure previously shown here has been withdrawn.
 
-![Monte Carlo Null Distribution (N=1,000). The grey histogram shows the distribution of AIC improvements by random chance. The red line marks the Real Data performance (p = 0.17).](figures/monte_carlo_distribution.png){#fig-mc width=80%}
+*Figure withdrawn 2026-11-08: it was generated from simulated data. See CORRECTIONS.md.*
 
 # Discussion
 

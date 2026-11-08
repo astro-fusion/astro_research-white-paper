@@ -1,10 +1,14 @@
 """
 Real-time planetary strength and numerology visualization script.
 
-This script generates time-series graphs showing how planetary strengths and
-numerology values change over time, based on Vedic astrology calculations.
+The daily Mulanka chart is computed from real numerology rules. No planetary
+strength is computed here: the "planetary strength" series are uniform random
+numbers, so the timeline and comparison charts are SIMULATED illustrations.
+They are drawn only with ``--simulation``, carry a ``SIMULATED_`` filename
+prefix and a "SIMULATED, NOT DATA" watermark (see CORRECTIONS.md, 2026-11-08).
 """
 
+import argparse
 import json
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -32,6 +36,39 @@ NUMEROLOGY_PLANET_MAP = {
     8: "SATURN",
     9: "MARS",
 }
+
+
+SIMULATION_WATERMARK = "SIMULATED, NOT DATA"
+
+
+def _watermark_plotly(fig):
+    """Add a SIMULATED watermark annotation to a Plotly figure."""
+    fig.add_annotation(
+        text=SIMULATION_WATERMARK,
+        xref="paper",
+        yref="paper",
+        x=0.5,
+        y=0.5,
+        showarrow=False,
+        textangle=-30,
+        opacity=0.25,
+        font=dict(size=60, color="red"),
+    )
+
+
+def _watermark_matplotlib(fig):
+    """Draw a SIMULATED watermark across a Matplotlib figure."""
+    fig.text(
+        0.5,
+        0.5,
+        SIMULATION_WATERMARK,
+        fontsize=40,
+        color="red",
+        alpha=0.25,
+        ha="center",
+        va="center",
+        rotation=30,
+    )
 
 
 class PlanetaryStrengthVisualizer:
@@ -77,9 +114,9 @@ class PlanetaryStrengthVisualizer:
             },
         }
 
-    def generate_time_series_data(self, days: int = 365) -> pd.DataFrame:
+    def simulate_time_series_data(self, days: int = 365) -> pd.DataFrame:
         """
-        Generate simulated time-series data for planetary strengths over time.
+        Return SIMULATED planetary strengths (uniform random numbers, not data).
 
         Args:
             days: Number of days to generate data for
@@ -118,7 +155,7 @@ class PlanetaryStrengthVisualizer:
 
         return df
 
-    def plot_planetary_strength_timeline(
+    def plot_simulated_planetary_strength_timeline(
         self, use_plotly: bool = True, save_path: str = None
     ) -> None:
         """
@@ -128,7 +165,7 @@ class PlanetaryStrengthVisualizer:
             use_plotly: Whether to use Plotly (interactive) or Matplotlib
             save_path: Optional path to save the figure
         """
-        df = self.generate_time_series_data(365)
+        df = self.simulate_time_series_data(365)
         planets = ["SUN", "MOON", "MARS", "MERCURY", "JUPITER", "VENUS", "SATURN"]
 
         if use_plotly and PLOTLY_AVAILABLE:
@@ -190,8 +227,9 @@ class PlanetaryStrengthVisualizer:
                 layer="below",
             )
 
+            _watermark_plotly(fig)
             fig.update_layout(
-                title="Planetary Strength Timeline (1 Year)",
+                title="SIMULATED illustration: Planetary Strength Timeline (1 Year)",
                 xaxis_title="Date",
                 yaxis_title="Strength Score (0-100)",
                 hovermode="x unified",
@@ -242,7 +280,9 @@ class PlanetaryStrengthVisualizer:
             )
 
             ax.set_title(
-                "Planetary Strength Timeline (1 Year)", fontsize=16, fontweight="bold"
+                "SIMULATED illustration: Planetary Strength Timeline (1 Year)",
+                fontsize=16,
+                fontweight="bold",
             )
             ax.set_xlabel("Date", fontsize=12)
             ax.set_ylabel("Strength Score (0-100)", fontsize=12)
@@ -254,6 +294,7 @@ class PlanetaryStrengthVisualizer:
             ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
             plt.setp(ax.xaxis.get_majorticklabels(), rotation=45)
 
+            _watermark_matplotlib(fig)
             plt.tight_layout()
 
             if save_path:
@@ -262,7 +303,7 @@ class PlanetaryStrengthVisualizer:
             else:
                 plt.show()
 
-    def plot_numerology_vs_astrology_comparison(
+    def plot_simulated_numerology_vs_astrology_comparison(
         self, use_plotly: bool = True, save_path: str = None
     ) -> None:
         """
@@ -272,7 +313,7 @@ class PlanetaryStrengthVisualizer:
             use_plotly: Whether to use Plotly (interactive) or Matplotlib
             save_path: Optional path to save the figure
         """
-        df = self.generate_time_series_data(365)
+        df = self.simulate_time_series_data(365)
 
         # Get numerology planets
         mulanka_planet = NUMEROLOGY_PLANET_MAP.get(
@@ -328,8 +369,9 @@ class PlanetaryStrengthVisualizer:
                 )
             )
 
+            _watermark_plotly(fig)
             fig.update_layout(
-                title="Numerology vs Vedic Astrology: Daily Strength Comparison",
+                title="SIMULATED illustration: Numerology vs Vedic Astrology",
                 xaxis_title="Date",
                 yaxis_title="Strength Score (0-100)",
                 hovermode="x unified",
@@ -378,7 +420,7 @@ class PlanetaryStrengthVisualizer:
             )
 
             ax.set_title(
-                "Numerology vs Vedic Astrology: Daily Strength Comparison",
+                "SIMULATED illustration: Numerology vs Vedic Astrology",
                 fontsize=16,
                 fontweight="bold",
             )
@@ -392,6 +434,7 @@ class PlanetaryStrengthVisualizer:
             ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
             plt.setp(ax.xaxis.get_majorticklabels(), rotation=45)
 
+            _watermark_matplotlib(fig)
             plt.tight_layout()
 
             if save_path:
@@ -513,36 +556,48 @@ class PlanetaryStrengthVisualizer:
 
 def main():
     """Main entry point for the visualization script."""  # noqa: D401
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--simulation",
+        action="store_true",
+        help="Also draw SIMULATED strength charts (watermarked, not data).",
+    )
+    args = parser.parse_args()
+
     print("=" * 60)
     print("Planetary Strength & Numerology Visualization Generator")
     print("=" * 60)
 
     visualizer = PlanetaryStrengthVisualizer()
+    generated = []
 
-    # Generate visualizations
-    print("\n1. Generating Planetary Strength Timeline...")
-    visualizer.plot_planetary_strength_timeline(
-        use_plotly=True, save_path="planetary_strength_timeline.html"
-    )
-
-    print("\n2. Generating Numerology vs Astrology Comparison...")
-    visualizer.plot_numerology_vs_astrology_comparison(
-        use_plotly=True, save_path="numerology_vs_astrology_comparison.html"
-    )
-
-    print("\n3. Generating Daily Numerology Changes...")
+    print("\nGenerating Daily Numerology Changes...")
     visualizer.plot_daily_numerology_changes(
         use_plotly=True, save_path="daily_numerology_changes.html"
     )
+    generated.append("daily_numerology_changes.html")
+
+    if args.simulation:
+        print("\nGenerating SIMULATED Planetary Strength Timeline...")
+        visualizer.plot_simulated_planetary_strength_timeline(
+            use_plotly=True, save_path="SIMULATED_planetary_strength_timeline.html"
+        )
+        print("\nGenerating SIMULATED Numerology vs Astrology Comparison...")
+        visualizer.plot_simulated_numerology_vs_astrology_comparison(
+            use_plotly=True,
+            save_path="SIMULATED_numerology_vs_astrology_comparison.html",
+        )
+        generated += [
+            "SIMULATED_planetary_strength_timeline.html",
+            "SIMULATED_numerology_vs_astrology_comparison.html",
+        ]
 
     print("\n" + "=" * 60)
     print("Visualization generation complete!")
     print("=" * 60)
     print("\nGenerated files:")
-    print("- planetary_strength_timeline.html")
-    print("- numerology_vs_astrology_comparison.html")
-    print("- daily_numerology_changes.html")
-    print("\nOpen these HTML files in a web browser to view interactive charts.")
+    for name in generated:
+        print(f"- {name}")
 
 
 if __name__ == "__main__":

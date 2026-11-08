@@ -14,6 +14,8 @@ Running `python3 src/generate_artifacts.py` produces:
 - **`artifacts/stats_granger.json`**: p-values for causal inference.
 - **`artifacts/fig_permutation_dist.pdf`**: Monte Carlo distribution visualization.
 
+The script exits with an error if `research/data/processed/aligned_planetary_data.csv` (or `ASTRO_PROCESSED_DATA_PATH`) is missing; it never substitutes synthetic data. The previously committed artifacts were derived from a synthetic placeholder series and were withdrawn on 2026-11-08 (see `CORRECTIONS.md`).
+
 ### 2. Dynamic Narrative Rendering
 
 Using Quarto to inject statistics from `artifacts/` into dynamic manuscripts.

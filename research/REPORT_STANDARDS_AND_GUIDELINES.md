@@ -47,7 +47,7 @@ Every final report `.qmd` file MUST contain the following numbered sections in t
     2.2  The Specific Combination(s) Under Study
     2.3  Mathematical Formulation
 5.  3. Data & Methodology
-    3.1  Astronomical Data (Swiss Ephemeris / DE440)
+    3.1  Astronomical Data (Swiss Ephemeris library; Moshier analytic ephemeris unless SE data files are installed)
     3.2  Event Data (USGS, FRED, COMEX, etc.)
     3.3  Alignment Procedure
     3.4  Statistical Framework
@@ -258,7 +258,7 @@ This graph MUST appear in the report. It shows:
 
 **Required figure caption format:**
 
-> _Figure N: Mars-Ketu Angular Separation over the Study Period (2020–2025). The blue line shows the geocentric ecliptic separation between Mars and Ketu calculated using the Swiss Ephemeris (DE440). Red shaded bands indicate periods when separation ≤ 13°, classified as active Mangal-Ketu Yoga windows per classical Vedic criteria (Varahamihira, Brihat Samhita, Ch. 17). The dashed horizontal line marks the 13° classical threshold._
+> _Figure N: Mars-Ketu Angular Separation over the Study Period (2020–2025). The blue line shows the geocentric ecliptic separation between Mars and Ketu calculated using the Swiss Ephemeris library with the built-in Moshier analytic ephemeris unless SE data files are installed. Red shaded bands indicate periods when separation ≤ 13°, classified as active Mangal-Ketu Yoga windows per classical Vedic criteria (Varahamihira, Brihat Samhita, Ch. 17). The dashed horizontal line marks the 13° classical threshold._
 
 #### 4.3 Event Overlay Graph (**MANDATORY GRAPH**)
 
@@ -668,7 +668,7 @@ $$
 ```python
 #| echo: false
 #| label: fig-mars-ketu-separation
-#| fig-cap: "Mars-Ketu Angular Separation (2000-2023). Red shaded bands indicate active conjunction windows (≤13°). Source: Swiss Ephemeris DE440."
+#| fig-cap: "Mars-Ketu Angular Separation (2000-2023). Red shaded bands indicate active conjunction windows (≤13°). Source: Swiss Ephemeris library with the built-in Moshier analytic ephemeris unless SE data files are installed."
 #| fig-width: 10
 #| fig-height: 5
 
