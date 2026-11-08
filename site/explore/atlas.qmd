@@ -1,0 +1,230 @@
+---
+title: "Mundane atlas"
+subtitle: "National charts in use, how firm their times are, and the events on record"
+description: "World map of candidate national charts by confidence, with each country's candidates, event counts and a Vimshottari dasha timeline for every candidate that states a time."
+---
+
+Mundane astrology reads a country's events through a chart cast for its
+founding. Practitioners disagree about which founding moment to use, and most
+stated times are conventions (midnight, noon) rather than records of the day.
+This atlas shows what the project has on file: every candidate chart with its
+source and confidence, the events recorded for each country, and, where a
+candidate states a time, the Vimshottari dasha periods that follow from it.
+
+::: {.af-howto}
+**How to read this.** Countries are shaded by the firmest candidate chart on
+file: darker means a time taken from a record of the day ("documented"),
+lighter means a conventional or disputed time, and the plain surface means no
+candidate yet. Click a country (or pick it from the list) to see its
+candidates, their sources and its event counts. Choose a candidate with a
+stated time to see its dasha timeline; a conventional time gives a
+conventional dasha and is flagged as such. A country without any stated time
+has no lagna and no dasha, and the study tests only sign-level features for
+it until a sourced time exists. Colour by event count instead to see where the
+event file is dense.
+:::
+
+```{ojs}
+{{< include ../components/theme.ojs >}}
+```
+
+```{ojs}
+{{< include ../components/dasha-timeline.ojs >}}
+```
+
+```{ojs}
+{{< include ../components/provenance.ojs >}}
+```
+
+```{ojs}
+mundane = FileAttachment("../data/mundane_countries.json").json()
+dasha = FileAttachment("../data/mundane_dasha.json").json()
+world = d3.json(mundane.atlas_url)
+land = topojson.feature(world, world.objects.countries)
+byAtlas = new Map(mundane.countries.filter((c) => c.atlas_id).map((c) => [c.atlas_id, c]))
+byIso = new Map(mundane.countries.map((c) => [c.iso, c]))
+CONF = ["none", "disputed", "conventional", "documented"]
+```
+
+::: {.af-filters}
+
+```{ojs}
+viewof colourBy = Inputs.radio(["Chart confidence", "Candidate charts", "Recorded events"], { label: "Colour by", value: "Chart confidence" })
+```
+
+```{ojs}
+viewof country = {
+  const options = [...mundane.countries].sort((a, b) => a.name.localeCompare(b.name));
+  return Inputs.select(new Map(options.map((c) => [`${c.name}${c.n_candidates ? ` (${c.n_candidates})` : ""}`, c.iso])), {
+    label: "Country", value: "IN"
+  });
+}
+```
+
+:::
+
+```{ojs}
+fillFor = {
+  const seq = palette.seq;
+  if (colourBy === "Chart confidence") {
+    const ramp = { none: palette.none, disputed: seq[3], conventional: seq[5], documented: seq[8] };
+    return (c) => (c ? ramp[c.best_confidence] : palette.surface);
+  }
+  const value = colourBy === "Candidate charts"
+    ? (c) => c.n_candidates
+    : (c) => d3.sum(Object.values(c.events || {}));
+  const max = d3.max(mundane.countries, value) || 1;
+  const s = d3.scaleQuantize().domain([0, max]).range(seq.slice(2));
+  return (c) => (!c ? palette.surface : value(c) ? s(value(c)) : palette.none);
+}
+mapChart = {
+  const w = Math.max(340, Math.min(width, 1100));
+  const h = Math.round(w * 0.5);
+  const projection = d3.geoEqualEarth().fitSize([w, h], { type: "Sphere" });
+  const path = d3.geoPath(projection);
+  const svg = d3.create("svg").attr("viewBox", [0, 0, w, h]).attr("width", w).attr("height", h)
+    .attr("role", "img").attr("aria-label", `World map coloured by ${colourBy.toLowerCase()}`);
+  svg.append("path").attr("d", path({ type: "Sphere" })).attr("fill", "none").attr("stroke", palette.axis);
+  svg.append("g").selectAll("path").data(land.features).join("path")
+    .attr("d", path)
+    .attr("fill", (f) => fillFor(byAtlas.get(f.id)))
+    .attr("stroke", palette.surface).attr("stroke-width", 0.6)
+    .attr("cursor", (f) => (byAtlas.get(f.id) ? "pointer" : null))
+    .on("click", (event, f) => {
+      const c = byAtlas.get(f.id);
+      if (!c) return;
+      viewof country.value = c.iso;
+      viewof country.dispatchEvent(new Event("input", { bubbles: true }));
+    })
+    .append("title").text((f) => {
+      const c = byAtlas.get(f.id);
+      return c ? `${c.name}: ${c.n_candidates} candidate chart(s), best ${c.best_confidence}; ${d3.sum(Object.values(c.events))} events` : f.properties.name;
+    });
+  // Countries too small for the 1:110m outlines are drawn at their capitals.
+  const small = mundane.countries.filter((c) => !c.atlas_id && c.lat != null);
+  svg.append("g").selectAll("circle").data(small).join("circle")
+    .attr("cx", (c) => projection([c.lon, c.lat])[0]).attr("cy", (c) => projection([c.lon, c.lat])[1])
+    .attr("r", 4).attr("fill", (c) => fillFor(c)).attr("stroke", palette.ink2).attr("cursor", "pointer")
+    .on("click", (event, c) => { viewof country.value = c.iso; viewof country.dispatchEvent(new Event("input", { bubbles: true })); })
+    .append("title").text((c) => `${c.name} (capital)`);
+  const sel = byIso.get(country);
+  if (sel && sel.lat != null) {
+    const [x, y] = projection([sel.lon, sel.lat]);
+    svg.append("circle").attr("cx", x).attr("cy", y).attr("r", 6).attr("fill", "none")
+      .attr("stroke", palette.ink).attr("stroke-width", 2);
+  }
+  return htl.html`<div class="af-chart" id="atlas-map">${svg.node()}</div>`;
+}
+```
+
+```{ojs}
+colourBy === "Chart confidence"
+  ? swatchLegend([
+      { color: palette.seq[8], label: "Documented time" }, { color: palette.seq[5], label: "Conventional time (midnight, noon, untimed)" },
+      { color: palette.seq[3], label: "Disputed time" }, { color: palette.none, label: "No candidate chart yet" }
+    ])
+  : swatchLegend([{ color: palette.seq[2], label: "Fewer" }, { color: palette.seq[8], label: "More" }, { color: palette.none, label: "None" }])
+```
+
+## Country detail
+
+```{ojs}
+selected = byIso.get(country)
+detail = {
+  const c = selected;
+  const ev = Object.entries(c.events || {}).sort((a, b) => b[1] - a[1]);
+  return htl.html`<div class="af-drawer">
+    <h3>${c.name} <small>(${c.iso})</small></h3>
+    <p>Founding date on file: ${c.founding_date}; founding time ${c.time_known ? "sourced" : "not sourced"}.
+      ${c.n_candidates} candidate chart(s), ${c.n_timed} with a stated time.
+      ${d3.sum(ev, (d) => d[1])} recorded events${ev.length ? ": " + ev.map(([t, n]) => `${t} ${n}`).join(", ") : ""}.</p>
+    ${c.candidates.length ? htl.html`<table class="table af-table"><thead><tr>
+        <th>Event</th><th>Date</th><th>Time</th><th>Place</th><th>Confidence</th><th>Used by</th><th>Source</th></tr></thead>
+      <tbody>${c.candidates.map((k) => htl.html`<tr>
+        <td>${k.event}</td><td>${k.date}</td><td>${k.time ? `${k.time} ${k.time_zone || ""}` : "none stated"}</td>
+        <td>${k.place || ""}</td><td>${k.confidence}${k.conventional_time ? " (conventional time)" : ""}</td>
+        <td>${(k.used_by || []).join("; ")}</td>
+        <td>${k.source_url ? htl.html`<a href=${k.source_url}>${k.source_title || "link"}</a>` : ""}${k.source_checked ? "" : " (not yet checked)"}</td>
+      </tr>`)}</tbody></table>` : htl.html`<p class="af-notice">No candidate chart on file yet. A sourced founding
+        time can be proposed through the <a href="../contribute.html">contribution guide</a>.</p>`}
+  </div>`;
+}
+```
+
+```{ojs}
+eventsChart = {
+  const ev = Object.entries(selected.events || {}).map(([type, n]) => ({ type, n }));
+  if (!ev.length) return htl.html`<div class="af-chart" id="atlas-events"><p class="af-notice">No events on file for ${selected.name}.</p></div>`;
+  return htl.html`<div class="af-chart" id="atlas-events">${Plot.plot({
+    width: Math.min(width, 640), height: 40 + 30 * ev.length, marginLeft: 120, style: plotStyle,
+    x: { label: "Recorded events", grid: true }, y: { label: null, domain: ev.sort((a, b) => b.n - a.n).map((d) => d.type) },
+    marks: [
+      Plot.barX(ev, { x: "n", y: "type", fill: palette.series[0], rx: 4, title: (d) => `${d.type}: ${d.n}`, tip: true }),
+      Plot.text(ev, { x: "n", y: "type", text: (d) => d.n, dx: 8, textAnchor: "start", fill: palette.ink }),
+      Plot.ruleX([0], { stroke: palette.axis })
+    ]
+  })}</div>`;
+}
+```
+
+## Dasha timeline
+
+```{ojs}
+timed = selected.candidates.filter((k) => k.has_dasha)
+viewof candidate = timed.length
+  ? Inputs.select(new Map(timed.map((k) => [`${k.event}, ${k.date} ${k.time}`, k.key])), { label: "Candidate chart" })
+  : Inputs.select(["none"], { label: "Candidate chart", disabled: true })
+```
+
+```{ojs}
+dashaView = {
+  if (!timed.length) {
+    return htl.html`<div class="af-chart" id="atlas-dasha"><p class="af-notice"><strong>No lagna, no dasha until a sourced
+      time exists.</strong> ${selected.name} has no candidate chart with a stated time, so neither the ascendant nor the
+      Moon's exact position at the founding moment is known.</p></div>`;
+  }
+  const chart = dasha.charts[candidate];
+  const now = new Date();
+  return htl.html`<div class="af-chart" id="atlas-dasha">
+    ${chart.conventional_time ? htl.html`<p class="af-notice">This candidate's time is a convention, not a record of the
+      day; the dasha below is equally conventional.</p>` : ""}
+    ${dashaTimeline(chart, { palette, width: Math.min(width, 1100),
+      from: new Date(Math.max(+new Date(chart.moment_utc), +now - 60 * 365.25 * 864e5)),
+      to: new Date(Math.max(+now, +new Date(chart.moment_utc)) + 40 * 365.25 * 864e5) })}
+    <p class="af-caption">Moon at ${chart.moon_longitude.toFixed(2)} deg sidereal at ${chart.moment_utc} (UTC); ${dasha.system}.</p>
+  </div>`;
+}
+```
+
+```{ojs}
+planetLegend()
+```
+
+<details><summary>Table view of all countries</summary>
+
+```{ojs}
+Inputs.table(mundane.countries.map((c) => ({ name: c.name, iso: c.iso, founding: c.founding_date,
+  candidates: c.n_candidates, timed: c.n_timed, best: c.best_confidence, events: d3.sum(Object.values(c.events)) })), { rows: 15 })
+```
+
+</details>
+
+## Sign-level features
+
+Without a founding time only sign-level features can be tested: a transiting
+planet against the signs of the natal planets. The table counts the feature
+rows the pipeline has computed so far, by event type and transiting planet.
+
+```{ojs}
+Inputs.table(mundane.sign_features, {
+  header: { event_type: "Event type", transit_planet: "Transiting planet", rows: "Feature rows",
+            conjunct: "Same sign", opposition: "Opposite sign", aspect: "Whole-sign aspect" }, rows: 12
+})
+```
+
+```{ojs}
+provenance([mundane._meta, dasha._meta], {
+  twin: [],
+  note: "the mundane study has no paper yet; its candidate table is studies/mundane/data/countries_candidates_summary.md"
+})
+```
