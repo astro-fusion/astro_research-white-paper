@@ -15,7 +15,13 @@ EXPLORERS = {
     "explore/atlas.qmd": "atlas-map",
     "principles.qmd": "principles-chart",
     "explore/numerology.qmd": "numerology-chart",
+    "explore/workbench.qmd": "wb-overlay",
+    "explore/atlas-combinations.qmd": "atlas-volcano",
 }
+BANNER = (
+    "You are tuning on the exploration period only; confirmation runs once, "
+    "by a maintainer, on data this page does not contain."
+)
 
 
 def quarto():
@@ -161,3 +167,48 @@ def test_status_strip_has_no_verdict_language():
         assert s["link"]
         for word in ("null", "disproved", "debunked", "works", "fails"):
             assert word not in s["headline"].lower()
+
+
+def test_workbench_states_the_explore_only_rule_and_reads_no_confirm_data():
+    """Workbench states the explore-only rule and reads no confirm data."""
+    text = (SITE / "explore" / "workbench.qmd").read_text(encoding="utf-8")
+    assert BANNER in " ".join(text.split())
+    assert "workbench-core.mjs" in text
+    assert (SITE / "components" / "workbench-core.mjs").exists()
+    for name in re.findall(r'FileAttachment\("([^"]+)"\)', text):
+        assert name.endswith(("rules.json",)) or "workbench_" in name, name
+    assert "propose-rule.yml" in text and 'id="wb-submit"' in text
+    assert (REPO / ".github" / "ISSUE_TEMPLATE" / "propose-rule.yml").exists()
+
+
+def test_workbench_issue_fields_exist_in_the_template():
+    """Every field the workbench prefills is an id in the issue template."""
+    form = yaml.safe_load(
+        (REPO / ".github" / "ISSUE_TEMPLATE" / "propose-rule.yml").read_text()
+    )
+    ids = {b.get("id") for b in form["body"]}
+    text = (SITE / "explore" / "workbench.qmd").read_text(encoding="utf-8")
+    block = text.split("const q = {", 1)[1].split("};", 1)[0]
+    keys = set(re.findall(r"^\s*(\w+):", block, re.M)) - {"template", "title"}
+    assert keys and keys <= ids, keys - ids
+
+
+def test_home_has_the_rule_validation_strip():
+    """Home has the confirmed / tuned / unvalidated strip."""
+    text = (SITE / "index.qmd").read_text(encoding="utf-8")
+    assert 'id="rule-status"' in text
+    for word in ("confirmed", "tuned", "unvalidated"):
+        assert f'["{word}"' in text
+
+
+def test_principles_shows_version_validation_tuning_and_reviews():
+    """Principles shows version, validation stamp, tuning log and reviews."""
+    text = (SITE / "principles.qmd").read_text(encoding="utf-8")
+    for needle in ("version", "stamp(", "Tuning log", "Reviews", "viewof validations"):
+        assert needle in text, needle
+
+
+def test_atlas_page_marks_a_fixture():
+    """The atlas page flags fixture data in a banner."""
+    text = (SITE / "explore" / "atlas-combinations.qmd").read_text(encoding="utf-8")
+    assert "atlas.fixture" in text and "Illustrative fixture, not results" in text

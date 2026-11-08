@@ -71,6 +71,19 @@ htl.html`<div class="af-status" id="study-status">${siteResults.status.map((s) =
 
 ```{ojs}
 //| echo: false
+rulesStrip = FileAttachment("data/rules.json").json()
+htl.html`<div class="af-status" id="rule-status">${[
+  ["confirmed", "Rules confirmed", "passed their one confirmation run on held-out data"],
+  ["tuned", "Rules tuned", "tuned on an exploration period; confirmation pending"],
+  ["unvalidated", "Rules unvalidated", "stated and coded, not yet tested on a holdout"]
+].map(([k, title, text]) => htl.html`<div class="af-status-item">
+    <h4><a href=${`principles.html`}>${rulesStrip.validation_counts[k]} ${title.toLowerCase().replace("rules ", "")}</a></h4>
+    <span class="af-status-state">${title}</span><p>${text}${k === "confirmed" && rulesStrip.validation_counts.not_confirmed
+      ? `; ${rulesStrip.validation_counts.not_confirmed} more were tested and not confirmed` : ""}.</p></div>`)}</div>`
+```
+
+```{ojs}
+//| echo: false
 provenance(siteResults._meta, { twin: null, note: "one card per study, from its artifacts/results.json" })
 ```
 

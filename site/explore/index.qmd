@@ -15,6 +15,8 @@ one exists, and ends with a footer giving the data hash, commit and seed.
 | [Indicator effects](effects.qmd) | Every pre-registered test of every study, with intervals and corrected q-values | study, outcome or catalogue, period | forest plot or heatmap |
 | [Markets](markets.qmd) | World Bank monthly gold and silver with indicator activity, and forward-move classes during and outside an indicator | metal, indicator, horizon | bars, violin or heatmap by year |
 | [Mundane atlas](atlas.qmd) | Candidate national charts by confidence, events per country, dasha timelines | colour by, country, candidate chart | map, bar, timeline |
+| [Rule workbench](workbench.qmd) | Tune a rule's orb and window on the exploration period with a live rate ratio, shift null and Molchan point; submit the tuning as an issue | study, events, rule, direction, rule params | overlay, null histogram, Molchan |
+| [Combination atlas](atlas-combinations.qmd) | Every candidate of the combination grammar with its exploration effect, p-value and survivors | planet, structure, status | volcano, p-value histogram, table |
 | [Principles](../principles.qmd) | Every rule file with plain-word conditions, sources and reference cases | domain, tier, status, source kind, search | by domain or by source |
 | [Numerology and the Moon](numerology.qmd) | Day-by-day numerology planet against the Moon's sidereal longitude | year | planet strips or step lines |
 
@@ -35,10 +37,14 @@ files = [
   ["mundane_countries.json", "Countries, candidate charts, event counts by type, sign-level feature summary", "CC BY 4.0 (AstroFusion mundane dataset)"],
   ["mundane_dasha.json", "Vimshottari mahadashas and antardashas for every candidate chart with a stated time", "CC BY 4.0 inputs; computed with the Swiss Ephemeris"],
   ["rules.json", "Every rule file, its plain-word conditions and reference-case outcomes", "Repository licence"],
+  ["workbench_earthquake.json", "Explore-period daily sky (nine sidereal longitudes, retrograde flags, tithi, nakshatra) and event counts, 1976-2010", "Public domain (USGS); sky computed with the Swiss Ephemeris"],
+  ["workbench_gold.json", "Explore-period trading bars: the previous bar's sky and the extreme-move flag (gold, to 2015)", "Derived flags only; Yahoo Finance series not redistributed"],
+  ["workbench_silver.json", "The same for silver", "Derived flags only; Yahoo Finance series not redistributed"],
+  ["atlas.json", "The combination atlas: every candidate, effect, p-value, status", "Repository licence"],
   ["numerology_daily.json", "Daily numerology planet, Moon longitude and nakshatra lord, 2020-2024", "Computed with the Swiss Ephemeris"]
 ].map(([file, contents, licence]) => ({ file, contents, licence }))
 Inputs.table(files, { columns: ["file", "contents", "licence"], format: {
-  file: (f) => htl.html`<a href=${`../data/${f}`}><code>${f}</code></a>` }, rows: 12 })
+  file: (f) => htl.html`<a href=${`../data/${f}`}><code>${f}</code></a>` }, rows: 16 })
 ```
 
 Regenerate them with

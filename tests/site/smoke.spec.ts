@@ -12,6 +12,8 @@ const PAGES: Array<[string, string[]]> = [
   ["site/explore/atlas.html", ["#atlas-map svg path", "#atlas-events svg", "#atlas-dasha svg"]],
   ["site/principles.html", ["#principles-chart svg", "#principles-drawer"]],
   ["site/explore/numerology.html", ["#numerology-chart svg"]],
+  ["site/explore/workbench.html", ["#wb-banner", "#wb-readout", "#wb-overlay svg", "#wb-null svg", "#wb-molchan svg", "#wb-published"]],
+  ["site/explore/atlas-combinations.html", ["#atlas-volcano svg", "#atlas-pvalues svg", "table"]],
 ];
 
 for (const [path, selectors] of PAGES) {
@@ -48,4 +50,26 @@ test("brushing the event panel updates the readout", async ({ page }) => {
   await page.mouse.move(box.x + box.width * 0.6, box.y + box.height * 0.5, { steps: 5 });
   await page.mouse.up();
   await expect(page.locator("p.af-caption", { hasText: "(brushed)" })).toBeVisible();
+});
+
+test("moving a workbench slider changes the rate ratio, without errors", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("console", (msg) => {
+    if (msg.type() === "error") errors.push(msg.text());
+  });
+  page.on("pageerror", (err) => errors.push(`pageerror: ${err.message}`));
+  await page.goto("site/explore/workbench.html", { waitUntil: "networkidle" });
+  const rr = page.locator("#wb-rr");
+  await expect(rr).toBeVisible({ timeout: 30_000 });
+  const before = (await rr.textContent())?.trim();
+  const slider = page.locator("#wb-knobs input[type=range]").first();
+  await expect(slider).toBeVisible();
+  await slider.evaluate((el: HTMLInputElement) => {
+    el.value = String(Number(el.min) + 1);
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  await expect(rr).not.toHaveText(before ?? "", { timeout: 15_000 });
+  await expect(page.locator("#wb-submit")).toHaveAttribute("href", /propose-rule\.yml/);
+  await expect(page.locator(".observablehq--error")).toHaveCount(0);
+  expect(errors, errors.join("\n")).toEqual([]);
 });

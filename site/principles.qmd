@@ -20,7 +20,9 @@ This page is generated from those files; nothing here is written by hand.
 ::: {.af-howto}
 **How to read this.** Filter by domain, tier, status or kind of source, or
 search by name. The chart counts the rules that match, by domain and tier.
-Pick a rule in the table to open its detail: the claim, the conditions
+Filter by validation to see which rules were confirmed on a holdout, which
+were tuned on an exploration period and await their one confirmation run, and
+which are unvalidated. Pick a rule in the table to open its detail: the claim, the conditions
 rendered in plain words (rendered, not evaluated), the source with a link, and
 each reference case with its outcome when the engine ran it. A rule marked
 "needs predicates" is recorded as stated but cannot yet be tested, because the
@@ -64,6 +66,12 @@ viewof sourceTypes = Inputs.checkbox(uniq("source_type"), { label: "Source", val
 ```
 
 ```{ojs}
+VSTATES = ["confirmed", "not_confirmed", "tuned", "unvalidated"]
+viewof validations = Inputs.checkbox(VSTATES, { label: "Validation", value: VSTATES,
+  format: (s) => `${STAMPS[s].glyph} ${s.replace("_", " ")} (${rulesData.validation_counts?.[s] ?? 0})` })
+```
+
+```{ojs}
 viewof query = Inputs.search(allRules, { placeholder: "Search rules", columns: ["id", "name", "claim", "source"] })
 ```
 
@@ -75,7 +83,8 @@ viewof chart = Inputs.radio(["By domain", "By source"], { label: "Chart", value:
 
 ```{ojs}
 shown = query.filter((r) => domains.includes(r.domain) && tiers.includes(r.tier)
-  && statuses.includes(r.status) && sourceTypes.includes(r.source_type))
+  && statuses.includes(r.status) && sourceTypes.includes(r.source_type)
+  && validations.includes(r.validation_state ?? "unvalidated"))
 tierColor = (t) => (t === "classical" ? palette.series[0] : palette.series[1])
 ```
 
@@ -106,9 +115,9 @@ swatchLegend([{ color: palette.series[0], label: "Classical" }, { color: palette
 
 ```{ojs}
 viewof picked = Inputs.table(shown, {
-  columns: ["name", "domain", "tier", "status", "source_type", "source", "reference"],
-  header: { name: "Rule", source_type: "Source kind", reference: "Reference cases" },
-  format: { status: (s) => s.replace("_", " "), source: (s) => (s.length > 60 ? s.slice(0, 57) + "..." : s) },
+  columns: ["name", "version", "validation_state", "domain", "tier", "status", "source_type", "source", "reference"],
+  header: { name: "Rule", version: "v", validation_state: "Validation", source_type: "Source kind", reference: "Reference cases" },
+  format: { status: (s) => s.replace("_", " "), validation_state: (s) => `${STAMPS[s ?? "unvalidated"].glyph} ${(s ?? "unvalidated").replace("_", " ")}`, source: (s) => (s.length > 60 ? s.slice(0, 57) + "..." : s) },
   multiple: false, required: false, rows: 14, value: shown[0]
 })
 ```
@@ -125,9 +134,13 @@ drawer = {
   if (!r) return htl.html`<p class="af-notice">No rule matches these filters.</p>`;
   return htl.html`<div class="af-drawer" id="principles-drawer">
     <h3>${r.name}</h3>
-    <p><code>${r.id}</code> · ${r.domain} · ${r.tier} · ${r.status.replace("_", " ")} ·
+    <p><code>${r.id}</code> · version ${r.version ?? 1} · ${r.domain} · ${r.tier} · ${r.status.replace("_", " ")} ·
       <a href=${REPO + r.path}>YAML file</a></p>
+    <p>${stamp(r.validation_state ?? "unvalidated")}${r.validation?.confirm ? htl.html`<span class="af-gloss"> ·
+      confirm rate ratio ${r.validation.confirm.rate_ratio}, CI ${JSON.stringify(r.validation.confirm.ci)}, p ${r.validation.confirm.p}
+      (${r.validation.study}, ${r.validation.at})</span>` : ""}</p>
     <p>${r.claim}</p>
+    ${r.client_evaluable ? htl.html`<p><a href="explore/workbench.html">Tune it in the rule workbench</a> (exploration period only).</p>` : ""}
     <h4>Source</h4>
     <p>${r.source_url ? htl.html`<a href=${r.source_url}>${r.source}</a>` : r.source}
       ${r.source_note ? htl.html`<br><span class="af-gloss">${r.source_note}</span>` : ""}</p>
@@ -138,6 +151,16 @@ drawer = {
         ${r.missing_predicates.length ? htl.html`<br>Missing: ${r.missing_predicates.join("; ")}.` : ""}</p>`}
     ${r.window ? htl.html`<p>Window: ${r.window.before ?? 0} ${r.window.unit} before to ${r.window.after ?? 0} ${r.window.unit} after${r.window.note ? ` (${r.window.note})` : ""}.</p>` : ""}
     ${r.expected_effect ? htl.html`<p>Expected effect: ${Object.entries(r.expected_effect).map(([k, v]) => `${k} ${String(v).replace(/\.$/, "")}`).join(", ")}.</p>` : ""}
+    <details><summary>Tuning log (${(r.tuning_log || []).length})</summary>
+      ${(r.tuning_log || []).length ? htl.html`<table class="table af-table"><thead><tr><th>When</th><th>By</th><th>Study</th><th>Chosen</th><th>Explore result</th></tr></thead>
+        <tbody>${r.tuning_log.map((t) => htl.html`<tr><td>${t.at}</td><td>${t.by}</td><td>${t.study}</td>
+        <td><code>${JSON.stringify(t.chosen)}</code></td><td><code>${JSON.stringify(t.explore)}</code></td></tr>`)}</tbody></table>`
+        : htl.html`<p class="af-gloss">No tuning published for this version.</p>`}
+    </details>
+    <details><summary>Reviews (${(r.review || []).length})</summary>
+      ${(r.review || []).length ? htl.html`<ul>${r.review.map((v) => htl.html`<li><strong>${v.verdict}</strong> by ${v.by} (${v.at})${v.note ? `: ${v.note}` : ""}</li>`)}</ul>`
+        : htl.html`<p class="af-gloss">No review of the operationalisation yet.</p>`}
+    </details>
     <h4>Reference cases</h4>
     ${r.cases.length ? htl.html`<table class="table af-table"><thead><tr><th>Moment</th><th>Expect</th><th>Outcome</th><th>Note</th></tr></thead>
       <tbody>${r.cases.map((c) => htl.html`<tr><td>${c.moment}</td><td>${c.expect}</td>

@@ -1,0 +1,170 @@
+---
+title: "Combination atlas"
+subtitle: "Every candidate of the declared combination grammar, winners and losers"
+description: "The combination atlas: every planet x structure candidate tested on the exploration period, its effect and p-value, the corrected threshold, and the survivors carried to confirmation."
+---
+
+The combination study enumerates a grammar declared in advance (planet by
+sign, house from the Moon, nakshatra group, conjunction or aspect within an
+orb, dasha lord; up to three terms) and tests every candidate on the
+exploration period. The whole table is published here, not only the
+candidates that look interesting, because the losers are what make the
+winners believable.
+
+::: {.af-howto}
+**How to read this.** Each dot in the volcano plot is one candidate: to the
+right it raised the event rate, to the left it lowered it, and higher means a
+smaller exploration p-value. The dashed line is the corrected threshold for
+the whole family (Benjamini-Yekutieli); only candidates above it (outlined)
+survive to the confirmation period. When none passes, the line marks the bar
+the smallest p-value would have had to clear. Candidates whose condition is
+on too rarely in the exploration period to be tested are listed in the table
+(status "untestable") but have no dot. The histogram shows all exploration p-values: if no
+candidate carried information they would be spread evenly, like the flat
+reference line, and a pile-up near zero is what a real effect, or a leak,
+looks like. Filter by planet, structure and status; the table lists every
+candidate shown.
+:::
+
+```{ojs}
+{{< include ../components/theme.ojs >}}
+```
+
+```{ojs}
+{{< include ../components/provenance.ojs >}}
+```
+
+```{ojs}
+atlas = FileAttachment("../data/atlas.json").json()
+L = atlas.lookups || {}
+cands = columnsToRows(atlas.columns).map((d) => ({
+  ...d,
+  structure: L.structure ? L.structure[d.structure] : d.structure,
+  status: L.status ? L.status[d.status] : d.status,
+  template: L.template ? L.template[d.template] : d.template,
+  survivor: !!d.survivor, confirmed: !!d.confirmed,
+  logp: d.p > 0 ? -Math.log10(d.p) : null
+}))
+allPlanets = [...new Set(cands.flatMap((d) => d.planets))].sort()
+allStructures = [...new Set(cands.map((d) => d.structure).filter(Boolean))].sort()
+allStatuses = [...new Set(cands.map((d) => d.status))].sort()
+```
+
+```{ojs}
+atlas.fixture ? htl.html`<div class="af-banner" id="atlas-fixture">Illustrative fixture, not results: the combination
+  atlas has not been run yet, so this page is drawn from <code>tests/site/fixtures/atlas_fixture.csv</code>.
+  It will show <code>studies/combinations/artifacts/atlas.csv</code> once that file exists.</div>` : htl.html`<span></span>`
+```
+
+```{ojs}
+atlas.summary ? htl.html`<div class="af-status" id="atlas-summary">
+  <div class="af-status-item"><h4>${atlas.summary.candidates.toLocaleString()}</h4><span class="af-status-state">Candidates in the declared grammar</span></div>
+  <div class="af-status-item"><h4>${atlas.summary.testable.toLocaleString()}</h4><span class="af-status-state">Testable on the exploration period</span></div>
+  <div class="af-status-item"><h4>${atlas.summary.explore_nominal_p_lt_alpha} vs ${atlas.summary.expected_nominal_by_chance}</h4>
+    <span class="af-status-state">Nominal p below ${atlas.alpha}, observed vs expected by chance alone</span></div>
+  <div class="af-status-item"><h4>${atlas.summary.survived_by} survive, ${atlas.summary.confirmed} confirmed</h4>
+    <span class="af-status-state">After the family-wide correction; then on the holdout</span></div>
+</div>` : htl.html`<span></span>`
+```
+
+::: {.af-filters}
+
+```{ojs}
+viewof planets = Inputs.checkbox(allPlanets, { label: "Planet", value: allPlanets })
+```
+
+```{ojs}
+viewof structures = Inputs.select(allStructures, { label: "Structure", multiple: true, value: allStructures, size: Math.min(8, allStructures.length),
+  format: (s) => s.replaceAll("_", " ") })
+```
+
+```{ojs}
+viewof statuses = Inputs.checkbox(allStatuses, { label: "Status", value: allStatuses })
+```
+
+```{ojs}
+viewof bins = Inputs.radio(new Map([["10 bins", 10], ["20 bins", 20], ["40 bins", 40]]), { label: "Histogram", value: 20 })
+```
+
+:::
+
+```{ojs}
+shown = cands.filter((d) => d.planets.some((p) => planets.includes(p))
+  && (!d.structure || structures.includes(d.structure)) && statuses.includes(d.status))
+thresholdLine = atlas.threshold_line ?? atlas.threshold
+thresholdLog = thresholdLine > 0 ? -Math.log10(thresholdLine) : null
+```
+
+```{ojs}
+volcano = {
+  const w = Math.max(340, Math.min(width, 1000));
+  const plot = Plot.plot({
+    width: w, height: 360, marginLeft: 56, marginBottom: 42, style: plotStyle,
+    x: { type: "log", label: "Rate ratio, exploration period (log scale)", grid: true, tickFormat: ".2f" },
+    y: { label: "-log10 p (exploration)", grid: true, domain: [0, Math.max(thresholdLog ?? 0, d3.max(shown, (d) => d.logp) ?? 1) * 1.08] },
+    color: { type: "identity" },
+    marks: [
+      Plot.ruleX([1], { stroke: palette.axis }),
+      thresholdLog == null ? null : Plot.ruleY([thresholdLog], { stroke: palette.ink2, strokeDasharray: "5,4" }),
+      thresholdLog == null ? null : Plot.text([thresholdLog], { y: (d) => d, frameAnchor: "right", dy: -6, fill: palette.ink2,
+        text: () => `${atlas.threshold > 0 ? "corrected threshold" : "no candidate passes; bar for the smallest p"}, p = ${thresholdLine.toExponential(1)}` }),
+      Plot.dot(shown.filter((d) => d.effect > 0 && d.logp != null), { x: "effect", y: "logp", r: (d) => (d.survivor ? 6 : 4),
+        fill: (d) => (d.survivor ? palette.active : palette.inactive), fillOpacity: (d) => (d.survivor ? 1 : 0.7),
+        stroke: (d) => (d.survivor ? palette.ink : palette.surface), strokeWidth: (d) => (d.survivor ? 1.5 : 1),
+        title: (d) => `${d.label || d.id}\nrate ratio ${(+d.effect).toFixed(2)}${d.ci_low != null ? ` (${(+d.ci_low).toFixed(2)} to ${(+d.ci_high).toFixed(2)})` : ""}\np ${d.p}${d.p_rw != null ? `, Romano-Wolf p ${d.p_rw}` : ""}, ${d.status}`,
+        tip: true })
+    ].filter(Boolean)
+  });
+  return htl.html`<div class="af-chart" id="atlas-volcano">${plot}</div>`;
+}
+```
+
+```{ojs}
+swatchLegend([{ color: palette.active, label: "Survivor (passes the corrected threshold)" }, { color: palette.inactive, label: "Other candidates" }])
+```
+
+```{ojs}
+pHist = {
+  const w = Math.max(340, Math.min(width, 1000));
+  const ps = shown.map((d) => d.p).filter((p) => p != null && Number.isFinite(+p));
+  const plot = Plot.plot({
+    width: w, height: 230, marginLeft: 56, marginBottom: 42, style: plotStyle,
+    x: { domain: [0, 1], label: "Exploration p-value" }, y: { label: "Candidates", grid: true },
+    marks: [
+      Plot.rectY(ps, Plot.binX({ y: "count" }, { x: (d) => +d, domain: [0, 1], thresholds: d3.range(0, 1 + 1e-9, 1 / bins),
+        fill: palette.inactive, inset: 1, rx: 2, tip: true })),
+      Plot.ruleY([ps.length / bins], { stroke: palette.ink2, strokeDasharray: "5,4" }),
+      Plot.text([ps.length / bins], { y: (d) => d, frameAnchor: "right", dy: -6, fill: palette.ink2, text: () => "uniform (no information)" }),
+      Plot.ruleY([0], { stroke: palette.axis })
+    ]
+  });
+  return htl.html`<div class="af-chart" id="atlas-pvalues">${plot}</div>`;
+}
+```
+
+```{ojs}
+htl.html`<p class="af-caption">${shown.length} of ${cands.length} candidates shown;
+  ${shown.filter((d) => d.logp != null).length} tested on the exploration period (one dot each);
+  ${shown.filter((d) => d.survivor).length} survivors among them.</p>`
+```
+
+```{ojs}
+Inputs.table(shown, {
+  columns: ["label", "planets", "structure", "effect", "ci_low", "ci_high", "p", "q", "p_rw", "confirm_effect", "status"],
+  header: { label: "Candidate", effect: "Rate ratio", ci_low: "CI low", ci_high: "CI high", p: "p (explore)", q: "q (BY)",
+    p_rw: "Romano-Wolf p", confirm_effect: "Rate ratio (confirm)" },
+  format: { planets: (v) => v.join(", "), effect: (v) => (v == null ? "" : (+v).toFixed(3)),
+    ci_low: (v) => (v == null ? "" : (+v).toFixed(3)), ci_high: (v) => (v == null ? "" : (+v).toFixed(3)),
+    p: (v) => (v == null ? "" : +v < 0.001 ? (+v).toExponential(1) : (+v).toFixed(3)), q: (v) => (v == null ? "" : (+v).toFixed(3)),
+    p_rw: (v) => (v == null ? "" : (+v).toFixed(3)), confirm_effect: (v) => (v == null ? "" : (+v).toFixed(3)) },
+  sort: "p", rows: 16
+})
+```
+
+```{ojs}
+provenance(atlas._meta, {
+  twin: [],
+  note: atlas.fixture ? "illustrative fixture until studies/combinations runs; no paper figure yet"
+    : "the combination atlas table (grammar studies/combinations/grammar.yaml); no paper figure yet"
+})
+```

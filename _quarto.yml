@@ -72,6 +72,10 @@ website:
             href: site/explore/markets.qmd
           - text: "Mundane atlas"
             href: site/explore/atlas.qmd
+          - text: "Rule workbench"
+            href: site/explore/workbench.qmd
+          - text: "Combination atlas"
+            href: site/explore/atlas-combinations.qmd
           - text: "Principles browser"
             href: site/principles.qmd
           - text: "Numerology and the Moon"
