@@ -13,6 +13,7 @@ place:
 * :mod:`.granger` tests astro series as exogenous regressors (ADL + HAC).
 * :mod:`.walk_forward` splits by time and runs Hansen's SPA test.
 * :mod:`.spectral` runs Lomb-Scargle at pre-specified periods.
+* :mod:`.equivalence` runs TOST equivalence tests and Cohen's kappa with a CI.
 * :mod:`.manifest` writes the provenance ``manifest.json`` for any artifact.
 * :mod:`.plots` saves figures in the house style with a provenance footer.
 
