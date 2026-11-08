@@ -1,0 +1,95 @@
+---
+title: "Astro-Seismology of the Indian Subcontinent: Statistical Validation of Planetary Triggers for Earthquake Prediction"
+subtitle: "A Rigorous Investigation Using Negative Binomial Regression and Monte Carlo Methods on India-Nepal Seismic Data (2015-2024)"
+date: last-modified
+date-format: "MMMM DD, YYYY"
+authors:
+  - name: Astro-Fusion Research Team
+    affiliation: Computational Astrology Research Initiative
+    corresponding: true
+abstract: |
+  This research track investigates the empirical potential for astrological prediction of seismic activity within the India-Nepal Tectonic Zone, one of Earth's most seismically active regions. Using data from 370 significant earthquakes (Magnitude ≥ 4.5) recorded by the USGS Earthquake Hazards Program between 2015-2024, we develop and test a "Planetary Stress Index" derived from Vedic Astrology principles including Shadbala (six-fold planetary strength), Graha Yuddha (planetary wars), and malefic aspects. Employing Negative Binomial regression to account for overdispersion in earthquake counts, and Monte Carlo permutation testing to establish empirical null distributions, we subject the hypothesis to rigorous "Severe Testing" criteria. Our results indicate that planetary variables fail to achieve statistical significance (Mars p=0.10, Saturn p=0.99) when predicting earthquake occurrence, with Monte Carlo validation confirming that observed signals fall within the random noise distribution. We conclude that planetary configurations, as operationalized through classical Vedic techniques, do not provide reliable predictive power for seismic events in the tested region.
+keywords:
+  - Earthquake Prediction
+  - India-Nepal Seismicity
+  - Vedic Astrology
+  - Negative Binomial Regression
+  - Monte Carlo Validation
+  - Shadbala
+  - USGS Data
+bibliography: ../../../papers/references.bib
+format:
+  pdf:
+    documentclass: article
+    papersize: a4
+    geometry:
+      - top=25mm
+      - left=25mm
+      - right=25mm
+      - bottom=25mm
+    fontsize: 11pt
+    number-sections: true
+    toc: true
+    lof: true
+    lot: true
+    colorlinks: true
+    fig-pos: 'H'
+    include-in-header:
+      text: |
+        \usepackage{float}
+        \usepackage{placeins}
+  html:
+    toc: true
+    number-sections: true
+execute:
+  echo: false
+  warning: false
+jupyter: python3
+---
+
+
+# Master Structure
+
+:::{.callout-note}
+This report is assembled from modular sections for maintainability.
+:::
+
+{{< include sections/00_overview.qmd >}}
+
+{{< include sections/01_sources.qmd >}}
+
+{{< include sections/02a_vedic_principles_coverage.qmd >}}
+
+{{< include sections/02_taxonomy.qmd >}}
+
+{{< include sections/03_malefics_aspects.qmd >}}
+
+{{< include sections/04_conjunctions_graha_yuddha.qmd >}}
+
+{{< include sections/05_shadbala_components.qmd >}}
+
+{{< include sections/06_combustion_retrograde.qmd >}}
+
+{{< include sections/06a_dasha.qmd >}}
+
+{{< include sections/07_eclipses_syzygy.qmd >}}
+
+{{< include sections/08_nakshatra_lords.qmd >}}
+
+{{< include sections/09_houses_signs_bhavas.qmd >}}
+
+{{< include sections/10_yogas_tithi_karana.qmd >}}
+
+{{< include sections/11_combination_catalog.qmd >}}
+
+{{< include sections/12_algorithms_examples.qmd >}}
+
+{{< include sections/13_results_hypothesis_tests.qmd >}}
+
+{{< include sections/14_graphs_alignment_windows.qmd >}}
+
+{{< include sections/15_discussion_limits.qmd >}}
+
+{{< include sections/16_appendix_full_definitions.qmd >}}
+
+{{< include sections/90_legacy_content.qmd >}}

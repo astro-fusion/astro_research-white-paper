@@ -126,3 +126,12 @@ research/reports/tex_artifacts/
 research/use_cases/assets/releases/*.html
 research/reports/visualizations/test-output.html
 **/manuscripts/use_cases/
+# Pre-reorganization folders (ADR-001). Everything tracked in them moved to
+# studies/, papers/, scripts/ and notebooks/; local leftovers stay ignored.
+/research/
+/use_cases/
+/research_papers/
+docs/research/track_*/
+/assets/
+/reports/
+scripts/setup-context7.sh

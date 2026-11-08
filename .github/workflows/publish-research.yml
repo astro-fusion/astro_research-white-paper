@@ -60,9 +60,7 @@ jobs:
 
         # Generate research data and visualizations
         VERSION="$VERSION" python -c "
-        import sys
-        sys.path.insert(0, 'use_cases/numerology/src')
-        from numerology.calculator import calculate_complete_numerology
+        from vedic_numerology.numerology import calculate_complete_numerology
         from vedic_astrology_core import VedicAstrologyChart
         from vedic_numerology.analysis import VedicNumerologyAstrology
         import matplotlib

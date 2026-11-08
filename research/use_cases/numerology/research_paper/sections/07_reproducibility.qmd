@@ -1,3 +1,0 @@
-# Reproducibility
-
-See the reproducibility details and code references in the Methods and Robustness sections.

@@ -1,0 +1,197 @@
+---
+title: "The Computational Unified Theory of Vedic Predictive Frameworks"
+subtitle: "A Comprehensive 10-Year Empirical Investigation into Astrology, Numerology, and Terrestrial Dynamics"
+date: last-modified
+date-format: "MMMM DD, YYYY"
+authors:
+  - name: Astro-Fusion Research Team
+    affiliation: Computational Astrology Research Initiative
+    corresponding: true
+abstract: |
+  abstract: |
+  This thesis presents a unified computational investigation into the predictive validity of ancient Vedic knowledge systems when subjected to rigorous econometric signal processing. We execute three distinct research tracks: (1) quantification of temporal discontinuities between discrete numerological cycles and continuous planetary mechanics; (2) statistical evaluation of planetary configurations as seismic precursors in the India-Nepal tectonic zone; and (3) falsification of financial astrology as an exogenous predictor in global gold markets. By integrating high-precision ephemerides with diverse terrestrial datasets (seismic, financial), we establish a "Severe Testing" framework to distinguish between cultural archetype and physical causation. Our findings reveal a fundamental frequency mismatch (120:1) between numerological and astrological systems, implying their functional independence. Furthermore, rigorous Granger Causality and Monte Carlo permutation tests fail to reject the null hypothesis of zero effect for both seismic and financial predictions, characterizing these systems as symbolic rather than physical frameworks. This work contributes a reproducible, open-source methodology for the empirical demarcation of traditional knowledge systems.
+format:
+  pdf:
+    documentclass: report
+    papersize: a4
+    geometry:
+      - top=25mm
+      - left=25mm
+      - right=25mm
+      - bottom=25mm
+    fontsize: 11pt
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    lof: true
+    lot: true
+    colorlinks: true
+    keep-tex: true
+    include-in-header:
+      text: |
+        \usepackage{placeins}
+        \usepackage{float}
+execute:
+  echo: false
+  warning: false
+jupyter: python3
+---
+
+# Part I: Foundation
+
+{{< include 00_executive_summary.qmd >}}
+
+\newpage
+
+## 1. Introduction
+
+### 1.1 Motivation and Research Gap
+The intersection of traditional knowledge systems and modern data science presents a unique "demarcation problem." While Vedic Astrology and Numerology have guided decision-making for millennia, their predictive validity in the age of big data remains largely untested by rigorous statistical means. This thesis bridges that gap by subjecting these ancient frameworks to modern econometric signal processing.
+
+### 1.2 The Demarcation Problem
+We explicitly differentiate between *cultural archetype* (symbolic utility) and *physical causation* (predictive utility). This research does not evaluate the spiritual validity of these systems but strictly tests their empirical predictive power in measurable domains (seismology, finance).
+
+### 1.3 Unified Research Questions
+1.  **Temporal Consistency**: Do discrete numerological cycles correlate with continuous astronomical positions?
+2.  **Seismic Triggering**: Can specific planetary alignments predict high-magnitude earthquakes better than random chance?
+3.  **Market Efficiency**: Do planetary cycles provide unique information gain for financial forecasting?
+
+---
+
+## 2. Related Work
+
+### 2.1 Historical Context of Vedic Systems
+*Varahamihira* (c. 505–587 CE) in *Brihat Samhita* laid the groundwork for mundane astrology, proposing connections between planetary positions and terrestrial events. *Pingree (1981)* provides critical historical analysis of the transmission of these ideas.
+
+### 2.2 Quantitative Studies
+Prior studies by *Geller et al. (1997)* in seismology and *Fama (1970)* in finance (Efficient Market Hypothesis) establish the null hypotheses for our work: that earthquakes are stochastic and markets are efficient. We test Vedic claims against these established baselines.
+
+---
+
+## 3. System Architecture
+
+To ensure reproducibility and rigor, we developed the **AstroFusion Research Platform**, a modular computational engine. The development timeline (@fig-research-timeline) spanned five years of data collection, algorithm codification, and statistical validation.
+
+
+
+### 3.1 High-Level Platform Overview
+
+
+
+The system integrates high-precision astronomical data (Swiss Ephemeris) with terrestrial datasets (USGS, COMEX), processing them through a unified statistical engine. As illustrated in @fig-system-arch, the architecture is designed for high modularity.
+
+### 3.2 Computational Pipeline
+
+
+
+Our pipeline (see @fig-data-pipeline) adheres to strict "Severe Testing" protocols:
+1.  **Ingestion**: Raw data normalization.
+2.  **Processing**: Log-return transformation and stationarity checks.
+3.  **Analysis**: Blind correlation testing and Monte Carlo permutations.
+4.  **Reporting**: Automated artifact generation to prevent rigorous manual selection bias.
+
+---
+
+# Track 1: Numerology-Astrology Temporal Discontinuity
+
+{{< include ../studies/numerology_vs_astrology/paper/sections/00_hypothesis_framework.qmd >}}
+
+
+
+The fundamental challenge in aligning these systems lies in their temporal resolution mismatch, as visualized in @fig-temporal-mapping.
+{{< include ../studies/numerology_vs_astrology/paper/sections/01_literature_review.qmd >}}
+{{< include ../studies/numerology_vs_astrology/paper/sections/02_questions_hypotheses.qmd >}}
+{{< include ../studies/numerology_vs_astrology/paper/sections/03_methods_data.qmd >}}
+{{< include ../studies/numerology_vs_astrology/paper/sections/04_algorithms_pipeline.qmd >}}
+{{< include ../studies/numerology_vs_astrology/paper/sections/05_results_graphs.qmd >}}
+{{< include ../studies/numerology_vs_astrology/paper/sections/06_robustness_limits_ethics.qmd >}}
+{{< include ../studies/numerology_vs_astrology/paper/sections/07_reproducibility.qmd >}}
+{{< include ../studies/numerology_vs_astrology/paper/sections/08_conclusion.qmd >}}
+{{< include ../studies/numerology_vs_astrology/paper/sections/09_principles_catalog.qmd >}}
+{{< include ../studies/numerology_vs_astrology/paper/sections/09a_vedic_principles.qmd >}}
+{{< include ../studies/numerology_vs_astrology/paper/sections/11_graphs_frequency.qmd >}}
+{{< include ../studies/numerology_vs_astrology/paper/sections/12_graphs_alignment_windows.qmd >}}
+{{< include ../studies/numerology_vs_astrology/paper/sections/13_individual_planet_variations.qmd >}}
+
+\newpage
+
+# Track 2: Earthquake Prediction Analysis
+
+{{< include ../studies/earthquake/paper/sections/00_overview.qmd >}}
+{{< include ../studies/earthquake/paper/sections/01_sources.qmd >}}
+{{< include ../studies/earthquake/paper/sections/02_taxonomy.qmd >}}
+{{< include ../studies/earthquake/paper/sections/02a_vedic_principles_coverage.qmd >}}
+{{< include ../studies/earthquake/paper/sections/03_malefics_aspects.qmd >}}
+{{< include ../studies/earthquake/paper/sections/04_conjunctions_graha_yuddha.qmd >}}
+{{< include ../studies/earthquake/paper/sections/05_shadbala_components.qmd >}}
+{{< include ../studies/earthquake/paper/sections/06_combustion_retrograde.qmd >}}
+{{< include ../studies/earthquake/paper/sections/06a_dasha.qmd >}}
+{{< include ../studies/earthquake/paper/sections/07_eclipses_syzygy.qmd >}}
+{{< include ../studies/earthquake/paper/sections/08_nakshatra_lords.qmd >}}
+{{< include ../studies/earthquake/paper/sections/09_houses_signs_bhavas.qmd >}}
+{{< include ../studies/earthquake/paper/sections/10_yogas_tithi_karana.qmd >}}
+{{< include ../studies/earthquake/paper/sections/11_combination_catalog.qmd >}}
+{{< include ../studies/earthquake/paper/sections/13_results_hypothesis_tests.qmd >}}
+{{< include ../studies/earthquake/paper/sections/14_graphs_alignment_windows.qmd >}}
+{{< include ../studies/earthquake/paper/sections/15_discussion_limits.qmd >}}
+{{< include ../studies/earthquake/paper/sections/16_appendix_full_definitions.qmd >}}
+
+\newpage
+
+# Track 3: Gold Market Correlation
+
+{{< include ../studies/gold_market/paper/sections/00_overview.qmd >}}
+{{< include ../studies/gold_market/paper/sections/01_principles_catalog.qmd >}}
+{{< include ../studies/gold_market/paper/sections/01a_vedic_principles_coverage.qmd >}}
+{{< include ../studies/gold_market/paper/sections/02a_dasha.qmd >}}
+{{< include ../studies/gold_market/paper/sections/03_graphs_frequency.qmd >}}
+{{< include ../studies/gold_market/paper/sections/04_graphs_alignment.qmd >}}
+{{< include ../studies/gold_market/paper/sections/05_conclusion.qmd >}}
+
+\newpage
+
+# Consolidated Discussion and Synthesis
+
+# Consolidated Discussion and Synthesis
+
+## 4.1 Cross-Track Meta-Analysis
+
+This thesis executed three independent "severe tests" on the validity of Vedic predictive systems. The results are remarkably consistent across domains:
+
+| Track | Domain | Hypothesis ($H_1$) | Statistical Result | Conclusion |
+| :--- | :--- | :--- | :--- | :--- |
+| **1. Numerology** | Time (Discrete) | Temporal Sync | $\rho \approx 0.0$ | **Independent Systems** |
+| **2. Earthquakes** | Geophysics | Precursor Signal | $p > 0.05$ (FDR) | **Stochastic Process** |
+| **3. Finance** | Economics | Exogenous Driver | $p > 0.05$ (Granger) | **Efficient Market** |
+
+## 4.2 The Unified Theory of Demarcation
+
+The failure to reject the null hypothesis in physical domains (Earthquakes, Gold) suggests that **Vedic Astrology is not a physical science of causation**. However, the intricate mathematical structure of these systems (Track 1) suggests they are highly developed **symbolic languages**.
+
+We propose a **Dual-Process Theory**:
+1.  **Symbolic Validity**: The systems function effectively as "semantic engines" for human meaning-making (System 1 thinking).
+2.  **Physical Invalidity**: The systems possess no measurable causal power over physical matter or stochastic processes (System 2 empirical reality).
+
+## 4.3 Future Directions (AstroFusion v2.0)
+
+While this study establishes a baseline for demarcation, future work will focus on:
+1.  **AI-Driven Pattern Recognition**: Using Deep Learning (Transformers) to detect non-linear dependencies between planetary vectors and terrestrial data, beyond classical "Rule-Based" astrology.
+2.  **Psychometric Analysis**: investigating the "Barnum Effect" and confirmation bias in astrological consultations using standardized psychological inventories.
+3.  **Cross-Cultural Comparison**: Extending the engine to support Western, Chinese, and Mayan predictive systems.
+
+## 4.4 Final Conclusion
+
+The "Demarcation Problem" for Vedic systems is resolved not by dismissal, but by categorization. They are sophisticated cultural technologies for time-keeping and archetype management, but they are **not predictive algorithms** in the modern scientific sense. Future research should focus on their psychological and anthropological utility rather than their physical efficacy.
+
+
+\newpage
+
+# Appendix: Master Algorithm Catalog
+
+{{< include ../studies/numerology_vs_astrology/paper/sections/10_algorithms_examples.qmd >}}
+{{< include ../studies/earthquake/paper/sections/12_algorithms_examples.qmd >}}
+{{< include ../studies/gold_market/paper/sections/02_algorithms_examples.qmd >}}
+
+# Legacy Content Archive
+
+*(Legacy content sections have been omitted from the consolidated thesis to preserve asset path integrity. Please refer to the individual track reports for historical and legacy data.)*

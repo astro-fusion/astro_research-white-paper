@@ -1,0 +1,77 @@
+---
+title: "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence"
+subtitle: "Demonstrating Fundamental Differences in Temporal Dynamics Between Discrete and Continuous Predictive Systems"
+date: last-modified
+date-format: "MMMM DD, YYYY"
+authors:
+  - name: Astro-Fusion Research Team
+    affiliation: Computational Astrology Research Initiative
+    corresponding: true
+    email: research@astro-fusion.com
+abstract: |
+  This study presents a rigorous quantitative investigation into the temporal relationship between two ancient Vedic predictive systems: Vedic Numerology (Anka Jyotish) and Vedic Astrology (Parashari Jyotish). Despite sharing a common mythological lineage where numbers are mapped to planetary deities, our computational analysis reveals a fundamental temporal discontinuity. Using the Swiss Ephemeris library with the built-in Moshier analytic ephemeris unless SE data files are installed, we demonstrate that Numerology operates on a discrete, low-frequency temporal grid (changing ~73 times annually), while Astrology functions as a high-frequency continuous system (Moon changes Nakshatra ~27 times monthly). Mathematical analysis reveals 99.48% orthogonality between the normalized time series, and Nakshatra-Day mapping shows synchronization rates (11.23%) statistically indistinguishable from random chance (11.11%). These findings establish that despite mythological connections, Vedic Numerology and Vedic Astrology should be treated as distinct, non-interchangeable predictive frameworks providing independent information dimensions.
+keywords:
+  - Vedic Numerology
+  - Vedic Astrology
+  - Temporal Discontinuity
+  - Shadbala
+  - Nakshatra
+  - Cosine Similarity
+  - Swiss Ephemeris
+bibliography: references.bib
+format:
+  pdf:
+    documentclass: article
+    papersize: a4
+    geometry:
+      - top=25mm
+      - left=25mm
+      - right=25mm
+      - bottom=25mm
+    fontsize: 11pt
+    number-sections: true
+    toc: true
+    lof: true
+    lot: true
+    colorlinks: true
+    include-in-header:
+      text: |
+        \usepackage{placeins}
+        \usepackage{float}
+  html:
+    toc: true
+    number-sections: true
+execute:
+  echo: false
+  warning: false
+jupyter: python3
+---
+
+# Master Structure
+
+::: {.callout-note}
+This report is assembled from modular sections to provide detailed analysis and interactive visualizations.
+:::
+
+{{< include sections/00_overview.qmd >}}
+{{< include sections/01_literature_review.qmd >}}
+{{< include sections/02_questions_hypotheses.qmd >}}
+{{< include sections/03_methods_data.qmd >}}
+{{< include sections/04_algorithms_pipeline.qmd >}}
+{{< include sections/05_results_graphs.qmd >}}
+{{< include sections/06_robustness_limits_ethics.qmd >}}
+{{< include sections/07_reproducibility.qmd >}}
+{{< include sections/08_conclusion.qmd >}}
+{{< include sections/09_principles_catalog.qmd >}}
+{{< include sections/09a_vedic_principles.qmd >}}
+{{< include sections/10_algorithms_examples.qmd >}}
+{{< include sections/11_graphs_frequency.qmd >}}
+{{< include sections/12_graphs_alignment_windows.qmd >}}
+{{< include sections/13_planetary_variation_time.qmd >}}
+{{< include sections/14_vedic_interpretation.qmd >}}
+{{< include sections/15_prediction_rules.qmd >}}
+{{< include sections/90_legacy_content.qmd >}}
+
+# Acknowledgments
+
+This research was supported by the open-source community providing high-precision ephemeris data and the various scholars of Vedic Astrology whose translations of classical texts (BPHS, Brihat Samhita) formed the theoretical basis for this computational audit.
