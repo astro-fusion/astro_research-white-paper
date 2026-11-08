@@ -52,9 +52,9 @@ writing code; see [Contribute](contribute.qmd).
 |---|---|---|
 | [Gold market](../studies/gold_market/paper/manuscript.qmd) | 14 pre-registered planetary conditions and COMEX gold futures returns, volatility and extreme moves, 2000-2026 | Null: one explore-period hit, not replicated 2016-2026 |
 | [Silver market](../studies/silver_market/paper/manuscript.qmd) | The same pipeline and 14 conditions for silver (Moon and Venus as karakas) | Null: no test significant |
-| [Earthquake](../studies/earthquake/paper/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.qmd) | Classical seismic combinations and the USGS catalogue, India-Nepal and global | Re-analysis in progress |
+| [Earthquake](../studies/earthquake/paper/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.qmd) | 13 pre-registered planetary conditions and Himalayan-arc mainshocks (USGS, declustered), 1976-2026 | Null: no test passed the correction; the Varuna mandala is a candidate for a new pre-registration |
 | [Numerology and astrology](../studies/numerology_vs_astrology/paper/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.qmd) | Date numerology and the Moon's nakshatra lord | Re-analysis with sidereal positions in progress |
-| [Mundane](mundane.qmd) | National charts and recorded national events | Planned |
+| [Mundane](mundane.qmd) | National charts and recorded national events | Seeded, awaiting sourced founding times |
 
 Earlier results were withdrawn on 2026-11-08 because some figures were
 generated from simulated data and planetary positions were tropical rather than
