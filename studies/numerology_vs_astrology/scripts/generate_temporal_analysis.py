@@ -18,8 +18,9 @@ Output:
 import sys
 import os
 import json
-from datetime import datetime, timedelta, date
-from typing import Dict, List, Any, Optional
+from datetime import date, datetime, time, timedelta
+from typing import Any, Dict, List, Optional
+from zoneinfo import ZoneInfo
 import pandas as pd
 
 sys.path.insert(
@@ -29,6 +30,7 @@ sys.path.insert(
 from studies._paths import study_data_dir  # noqa: E402
 from vedic_numerology.numerology import calculate_mulanka  # noqa: E402
 from vedic_astrology_core.astrology import EphemerisEngine  # noqa: E402
+from vedic_astrology_core.astrology.chart import get_nakshatra  # noqa: E402
 from vedic_astrology_core.config import Planet  # noqa: E402
 from vedic_astrology_core.dignity import DignityScorer  # noqa: E402
 
@@ -37,17 +39,28 @@ class TemporalDataGenerator:
     """Generates temporal data comparing numerology and astrology planetary strengths."""  # noqa: E501
 
     def __init__(
-        self, start_date: date = date(2020, 1, 1), end_date: date = date(2025, 1, 1)
+        self,
+        start_date: date = date(2020, 1, 1),
+        end_date: date = date(2025, 1, 1),
+        sample_time: time = time(12, 0),
+        tz: str = "UTC",
     ):
         """
         Initialize the data generator.
 
         Args:
             start_date: Start date for analysis (default: 2020-01-01)
-            end_date: End date for analysis (default: 2025-01-01)
+            end_date: End date for analysis, exclusive (default: 2025-01-01)
+            sample_time: Local clock time at which each civil day is sampled
+                (default 12:00, as in studies/numerology_vs_astrology/
+                hypothesis.yaml)
+            tz: IANA zone of ``sample_time`` (default "UTC"); the engine needs
+                timezone-aware datetimes
         """
         self.start_date = start_date
         self.end_date = end_date
+        self.tz = ZoneInfo(tz)
+        self.sample_time = sample_time.replace(tzinfo=self.tz)
         self.scorer = DignityScorer()
         self.ephemeris = EphemerisEngine()
 
@@ -84,15 +97,12 @@ class TemporalDataGenerator:
 
         day_count = 0
         while current_date < self.end_date:
-            try:
-                # Calculate numerology data for this date
-                numerology_data = self._calculate_numerology_for_date(current_date)
-
-                # Calculate astrology data for this date
-                astrology_data = self._calculate_astrology_for_date(current_date)
-
-                # Combine data
-                daily_data = {
+            # A failing day raises: silently skipping days would bias the
+            # sample (before 2026-11-08 every day failed on naive datetimes).
+            numerology_data = self._calculate_numerology_for_date(current_date)
+            astrology_data = self._calculate_astrology_for_date(current_date)
+            data.append(
+                {
                     "date": current_date.isoformat(),
                     "day_of_year": current_date.timetuple().tm_yday,
                     "month": current_date.month,
@@ -101,17 +111,10 @@ class TemporalDataGenerator:
                     **numerology_data,
                     **astrology_data,
                 }
-
-                data.append(daily_data)
-
-                day_count += 1
-                if day_count % 365 == 0:  # Progress update every year
-                    progress = (day_count / total_days) * 100
-                    print(f"Progress: {progress:.1f}%")
-
-            except Exception as e:
-                print(f"Error processing date {current_date}: {e}")
-                # Continue with next date
+            )
+            day_count += 1
+            if day_count % 365 == 0:  # Progress update every year
+                print(f"Progress: {day_count / total_days * 100:.1f}%")
 
             current_date += timedelta(days=1)
 
@@ -158,38 +161,32 @@ class TemporalDataGenerator:
         Returns:
             Dictionary with astrology dignity scores
         """
-        # Convert date to datetime (noon for calculations)
-        dt = datetime.combine(target_date, datetime.min.time().replace(hour=12))
+        # The civil day is sampled at sample_time in self.tz (aware datetime).
+        dt = datetime.combine(target_date, self.sample_time)
 
         # Get Julian Day
         julian_day = self.ephemeris.datetime_to_julian_day(dt)
 
         # Calculate dignity scores for all planets
-        astrology_strengths = {}
+        astrology_strengths: Dict[str, Any] = {}
 
         for planet in self.planets:
-            try:
-                # Get planet position
-                planet_data = self.ephemeris.get_planet_position(
-                    julian_day, planet.name.lower()
-                )
-
-                # Calculate full dignity score
-                score = self.scorer.calculate_full_score(
+            planet_data = self.ephemeris.get_planet_position(
+                julian_day, planet.name.lower()
+            )
+            astrology_strengths[f"astrology_{planet.name}"] = (
+                self.scorer.calculate_full_score(
                     planet,
                     planet_data["sign"],
                     planet_data["longitude"],
                     planet_data=planet_data,
                 )
+            )
 
-                astrology_strengths[f"astrology_{planet.name}"] = score
-
-            except Exception as e:
-                print(
-                    f"Warning: Could not calculate score for {planet.name} on {target_date}: {e}"  # noqa: E501
-                )
-                astrology_strengths[f"astrology_{planet.name}"] = 0.0
-
+        moon = self.ephemeris.get_planet_position(julian_day, "moon")
+        nakshatra = get_nakshatra(moon["longitude"])
+        astrology_strengths["astrology_moon_nakshatra"] = nakshatra["name"]
+        astrology_strengths["astrology_moon_nakshatra_lord"] = nakshatra["lord"].name
         return astrology_strengths
 
     def save_data(
@@ -436,12 +433,6 @@ def main():
         print(
             "Astrology system - average changes per planet: "
             f"{avg_ast_changes:.0f} times over 5 years"
-        )
-
-        print("\nThis demonstrates the fundamental difference:")
-        print("- Numerology: Discrete, date-based changes (~73 changes/year)")
-        print(
-            "- Astrology: Continuous, gradual changes (1000+ changes/year per planet)"
         )
 
 

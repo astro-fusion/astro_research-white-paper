@@ -1,81 +1,274 @@
 ---
-title: "Temporal Discontinuity Between Vedic Numerology and Astrology: A Quantitative Analysis of System Independence"
-subtitle: "Demonstrating Fundamental Differences in Temporal Dynamics Between Discrete and Continuous Predictive Systems"
+title: "Date Numerology and the Moon's Nakshatra Lord: an Equivalence Test"
+subtitle: "Why a date-based label and a lunar label cannot be synchronised, and what five years of sidereal positions show"
+author:
+  - name: Astro Research contributors
+    affiliation: astro-fusion/astro_research-white-paper
 date: last-modified
-date-format: "MMMM DD, YYYY"
-authors:
-  - name: Astro-Fusion Research Team
-    affiliation: Computational Astrology Research Initiative
-    corresponding: true
-    email: research@astro-fusion.com
-abstract: |
-  This study presents a rigorous quantitative investigation into the temporal relationship between two ancient Vedic predictive systems: Vedic Numerology (Anka Jyotish) and Vedic Astrology (Parashari Jyotish). Despite sharing a common mythological lineage where numbers are mapped to planetary deities, our computational analysis reveals a fundamental temporal discontinuity. Using the Swiss Ephemeris library with the built-in Moshier analytic ephemeris unless SE data files are installed, we demonstrate that Numerology operates on a discrete, low-frequency temporal grid (changing ~73 times annually), while Astrology functions as a high-frequency continuous system (Moon changes Nakshatra ~27 times monthly). Mathematical analysis reveals 99.48% orthogonality between the normalized time series, and Nakshatra-Day mapping shows synchronization rates (11.23%) statistically indistinguishable from random chance (11.11%). These findings establish that despite mythological connections, Vedic Numerology and Vedic Astrology should be treated as distinct, non-interchangeable predictive frameworks providing independent information dimensions.
-keywords:
-  - Vedic Numerology
-  - Vedic Astrology
-  - Temporal Discontinuity
-  - Shadbala
-  - Nakshatra
-  - Cosine Similarity
-  - Swiss Ephemeris
-bibliography: references.bib
+date-format: long
 format:
-  pdf:
-    documentclass: article
-    papersize: a4
-    geometry:
-      - top=25mm
-      - left=25mm
-      - right=25mm
-      - bottom=25mm
-    fontsize: 11pt
-    number-sections: true
-    toc: true
-    lof: true
-    lot: true
-    colorlinks: true
-    include-in-header:
-      text: |
-        \usepackage{placeins}
-        \usepackage{float}
   html:
     toc: true
     number-sections: true
+  pdf:
+    documentclass: article
+    papersize: a4
+    geometry: [top=25mm, left=25mm, right=25mm, bottom=25mm]
+    fontsize: 11pt
+    number-sections: true
 execute:
-  # Disabled 2026-11-08: the code cells call the engine with naive datetimes,
-  # which it now rejects; re-enable once the sections are re-run with
-  # timezone-aware dates on sidereal positions (CORRECTIONS.md, item c).
-  enabled: false
   echo: false
   warning: false
 jupyter: python3
+abstract: |
+  Date numerology assigns one of nine planets to each civil day from the
+  digit sum of the day of the month. The Moon's nakshatra lord names one of
+  the same nine planets and changes about once a day. We derive analytically
+  why the two labels change at unrelated instants and why their long-run
+  agreement must equal chance, then test two pre-registered equivalence
+  hypotheses on five years of sidereal (Lahiri) positions sampled at a fixed
+  clock time: Cohen's kappa between the two labels, and the correlation of
+  each planet's numerology indicator with its dignity score. The outcome,
+  stated in the Summary, is generated from the pipeline's `results.json`.
+keywords: [numerology, nakshatra, equivalence test, TOST, Cohen's kappa]
 ---
 
-# Master Structure
+```{python}
+import json
+from pathlib import Path
 
-::: {.callout-note}
-This report is assembled from modular sections to provide detailed analysis and interactive visualizations.
-:::
+RES = json.loads(Path("../artifacts/results.json").read_text())
+H = RES["headline"]
+K = RES["H1_kappa"]
+D = RES["description"]
+P = RES["H2_planets"]
+S = RES["sampling"]
 
-{{< include sections/00_overview.qmd >}}
-{{< include sections/01_literature_review.qmd >}}
-{{< include sections/02_questions_hypotheses.qmd >}}
-{{< include sections/03_methods_data.qmd >}}
-{{< include sections/04_algorithms_pipeline.qmd >}}
-{{< include sections/05_results_graphs.qmd >}}
-{{< include sections/06_robustness_limits_ethics.qmd >}}
-{{< include sections/07_reproducibility.qmd >}}
-{{< include sections/08_conclusion.qmd >}}
-{{< include sections/09_principles_catalog.qmd >}}
-{{< include sections/09a_vedic_principles.qmd >}}
-{{< include sections/10_algorithms_examples.qmd >}}
-{{< include sections/11_graphs_frequency.qmd >}}
-{{< include sections/12_graphs_alignment_windows.qmd >}}
-{{< include sections/13_planetary_variation_time.qmd >}}
-{{< include sections/14_vedic_interpretation.qmd >}}
-{{< include sections/15_prediction_rules.qmd >}}
-{{< include sections/90_legacy_content.qmd >}}
 
-# Acknowledgments
+def f(x, nd=3):
+    return f"{x:.{nd}f}"
 
-This research was supported by the open-source community providing high-precision ephemeris data and the various scholars of Vedic Astrology whose translations of classical texts (BPHS, Brihat Samhita) formed the theoretical basis for this computational audit.
+
+def pval(p):
+    return "< 0.001" if p < 0.001 else f"{p:.3f}"
+```
+
+# Summary {.unnumbered}
+
+```{python}
+#| output: asis
+h1 = ("lies inside" if K["equivalent"] else "is not shown to lie inside")
+print(f"""
+Over {D['n_days']:,} days ({S['start']} to {S['end_exclusive']}, exclusive),
+sampled at {S['time']} {S['tz']}, the numerology planet and the Moon's
+nakshatra lord agreed on {100 * K['observed_agreement']:.2f}% of days against
+{100 * K['expected_agreement']:.2f}% expected from their margins. Cohen's kappa
+was {f(K['kappa'], 4)} (90% CI {f(K['ci90_tost'][0], 4)} to
+{f(K['ci90_tost'][1], 4)}), which {h1} the registered margin of
++-{K['margin_kappa']} (TOST p {pval(K['p_tost'])}). For
+{H['h2_n_equivalent']} of {H['h2_n_tested']} planets the correlation between
+the numerology indicator and the planet's dignity score was shown to lie
+within +-{P[0]['margin_r']:.2f}.
+
+This is the outcome the derivation in @sec-derivation predicts: the two
+labels change at unrelated instants, so their agreement cannot differ from
+chance over a long period. The test checks that prediction on corrected
+sidereal positions; it is a statement about these two labels, this
+numerology convention and this scoring model, not about numerology or
+astrology in general.
+""")
+```
+
+## Corrections {.unnumbered}
+
+The earlier version of this paper (withdrawn 2026-11-08, see
+[CORRECTIONS.md](../../../CORRECTIONS.md)) claimed "99.48% orthogonality",
+about 73 numerology changes a year and a synchronisation rate
+"statistically indistinguishable from chance". Those claims did not follow
+from the analysis:
+
+- the hypothesis test set `reject_null = p >= 0.05` under the null "the
+  systems are correlated", so a non-significant correlation was read as
+  proof of independence (review item S1-20);
+- all planets were flattened into one series and correlated as if the
+  pooled values were independent observations;
+- "temporal stationarity" was a paired t-test on a single pair of numbers;
+- positions were tropical, and the scripts built naive datetimes, which the
+  corrected engine rejects, so no day could be computed;
+- the "73 changes a year" was a constant typed into the script; the label
+  changes at almost every midnight (@sec-derivation).
+
+This version replaces the independence claim with TOST equivalence tests
+against margins fixed in `hypothesis.yaml` before the run, and states the
+temporal argument as a derivation.
+
+# The two labels
+
+**Numerology planet.** For a civil date with day of month $d$ the mulanka
+is the digital root $r(d) = 1 + (d - 1) \bmod 9$, mapped to a planet:
+1 Sun, 2 Moon, 3 Jupiter, 4 Rahu, 5 Mercury, 6 Venus, 7 Ketu, 8 Saturn,
+9 Mars. The label depends only on the date, not on the time of day or on
+any position.
+
+**Moon's nakshatra lord.** The sidereal ecliptic is divided into 27
+nakshatras of $13^\circ 20'$; nakshatra $k = \lfloor \lambda_{\text{Moon}} /
+13^\circ 20' \rfloor$ has the Vimshottari lord $L(k \bmod 9)$ in the order
+Ketu, Venus, Sun, Moon, Mars, Rahu, Jupiter, Saturn, Mercury. Each lord rules
+three nakshatras $120^\circ$ apart.
+
+# Why the two labels cannot be synchronised {#sec-derivation}
+
+**Numerology changes at civil midnight, and almost every midnight.**
+Consecutive integers have different digital roots, so $r(d+1) \neq r(d)$
+within a month. Across a month end $r$ returns to $r(1) = 1$ from $r(31) =
+4$, $r(30) = 3$, $r(29) = 2$ or $r(28) = 1$: only 28 February to 1 March in
+a common year leaves the label unchanged. The label therefore changes at
+364 of 365 midnights in a common year and at all 366 in a leap year, always
+exactly at midnight in the chosen zone. Over a year the digital roots 1-4
+occur on 4 days of most months and 5-9 on 3, so the Sun, Moon, Jupiter and
+Rahu are numerology planets slightly more often than the other five.
+
+**The nakshatra lord changes at instants set by the Moon.** The Moon's mean
+sidereal motion is $360^\circ / 27.3217\,\text{d} = 13.18^\circ$ a day, so it
+spends on average $27.3217 / 27 = 1.012$ days in a nakshatra (between about
+0.87 and 1.13 days as its speed varies from about $11.8^\circ$ to
+$15.4^\circ$ a day). The boundary crossings fall at clock times fixed by the
+Moon's longitude, not by the calendar. Because the sidereal month is not a
+rational multiple of the solar day, those crossing times are, in the long
+run, uniformly distributed over the 24 hours. On almost every civil day the
+lord changes at some hour, so a date-based label cannot correspond to a
+single nakshatra lord: which lord a day "has" depends on the hour at which
+it is read.
+
+**Long-run agreement equals chance.** The day of the month cycles with the
+civil calendar (28-31 days) while the nakshatra index cycles with the
+sidereal month (27.32 days). These periods are incommensurate, so by
+equidistribution the long-run joint frequency of (numerology planet $i$,
+lord $j$) factorises into $p_N(i)\,p_M(j)$. Each lord rules 120 degrees of
+longitude, so $p_M(j) \to 1/9$, and the expected agreement is
+$$\sum_i p_N(i)\,p_M(i) = \tfrac{1}{9} \sum_i p_N(i) = \tfrac{1}{9}$$
+whatever the numerology frequencies are. Cohen's kappa
+$\kappa = (p_o - p_e)/(1 - p_e)$ therefore tends to 0. Over a finite period
+the observed agreement fluctuates around $1/9$ with a width set by the
+number of independent lunar cycles in the sample.
+
+```{python}
+#| output: asis
+#| label: tbl-derivation
+#| tbl-cap: "Derived and observed quantities over the sample period."
+yrs = D["n_days"] / 365.25
+rows = [
+    ("Numerology label changes per year", "364-366",
+     f(D["numerology_changes_per_year"], 1)),
+    ("Mean days per nakshatra", "1.012", f(D["mean_nakshatra_days"], 3)),
+    ("Nakshatra-lord changes between daily samples, per year",
+     "about 350: 365 less the intervals inside a nakshatra longer than a day",
+     f(D["nakshatra_lord_changes_per_year"], 1)),
+    ("Share of days per nakshatra lord", "1/9 = 0.111",
+     f"{min(D['nakshatra_lord_share'].values()):.3f} to "
+     f"{max(D['nakshatra_lord_share'].values()):.3f}"),
+    ("Expected agreement from the margins", "1/9 = 0.111",
+     f(D["chance_agreement_from_margins"], 4)),
+]
+print("| Quantity | Derived | Observed |")
+print("| --- | --- | --- |")
+for r in rows:
+    print(f"| {r[0]} | {r[1]} | {r[2]} |")
+```
+
+# Pre-registered tests
+
+The study file `hypothesis.yaml` (registered 2026-11-08, before the first run
+of the corrected pipeline) fixes the period, the sampling moment and two
+hypotheses. A non-significant test cannot show that two series are
+unrelated; equivalence is shown with two one-sided tests (TOST) that the
+estimate lies above the lower margin and below the upper margin, which is
+the same as its 90% confidence interval lying inside the margin.
+
+- **H1.** Cohen's kappa between the numerology planet and the Moon's
+  nakshatra lord lies within $(-0.05, 0.05)$.
+- **H2.** For each of the nine planets, the correlation between the
+  numerology indicator (1 on days the planet rules, 0 otherwise) and that
+  planet's dignity score lies within $(-0.10, 0.10)$, tested on the Fisher
+  $z$ scale. Each planet is its own claim, so no multiplicity correction is
+  applied.
+
+Consecutive days are dependent, so standard errors come from a stationary
+block bootstrap with a mean block of 27 days (about one sidereal month),
+2,000 resamples, seed 42. For kappa the larger of the bootstrap and the
+Fleiss-Cohen-Everitt asymptotic standard error is used. The functions are
+`tost` and `cohen_kappa_ci` in `vedic_astrology_core.stats.equivalence`.
+
+# Results
+
+```{python}
+#| output: asis
+#| label: tbl-kappa
+#| tbl-cap: "H1: agreement between the numerology planet and the Moon's nakshatra lord."
+print("| Quantity | Value |")
+print("| --- | --- |")
+print(f"| Days | {K['n']:,} |")
+print(f"| Observed agreement | {f(K['observed_agreement'], 4)} |")
+print(f"| Expected agreement | {f(K['expected_agreement'], 4)} |")
+print(f"| Cohen's kappa | {f(K['kappa'], 4)} |")
+print(f"| SE (asymptotic / block bootstrap) | {f(K['se_analytic'], 4)} / "
+      f"{f(K['se_bootstrap'], 4)} |")
+print(f"| 90% CI | {f(K['ci90_tost'][0], 4)} to {f(K['ci90_tost'][1], 4)} |")
+print(f"| Margin | +-{K['margin_kappa']} |")
+print(f"| TOST p | {pval(K['p_tost'])} |")
+print(f"| Equivalent | {'yes' if K['equivalent'] else 'not shown'} |")
+```
+
+```{python}
+#| output: asis
+#| label: tbl-planets
+#| tbl-cap: "H2: correlation of each planet's numerology indicator with its dignity score."
+print("| Planet | r | 90% CI | TOST p | Equivalent |")
+print("| --- | --- | --- | --- | --- |")
+for p in P:
+    if "r" not in p:
+        print(f"| {p['planet']} | - | - | - | {p['skipped']} |")
+        continue
+    print(f"| {p['planet']} | {f(p['r'], 4)} | {f(p['r_ci90_low'], 3)} to "
+          f"{f(p['r_ci90_high'], 3)} | {pval(p['p_tost'])} | "
+          f"{'yes' if p['equivalent'] else 'not shown'} |")
+```
+
+# Limitations
+
+```{python}
+#| output: asis
+model = RES["ephemeris"].get("ephemeris_model")
+print(f"""
+- H1 is close to a consistency check: @sec-derivation shows that kappa must
+  tend to zero for any numerology frequencies, so equivalence confirms the
+  derivation and the corrected engine rather than adding new evidence.
+- The margins (0.05 for kappa, 0.10 for r) were chosen by us; a smaller
+  margin needs a longer period.
+- One numerology convention is used (day of the civil month, no sunrise
+  correction) and one sampling moment ({S['time']} {S['tz']}). Another fixed
+  moment shifts which lord is read on each day but not the long-run
+  argument.
+- Dignity scores come from this repository's `DignityScorer`; another
+  scoring model could correlate differently with the numerology indicator.
+- Positions use the Swiss Ephemeris with `ephemeris_model = {model}`; the
+  Moshier analytic theory is far more precise than the one-day resolution
+  needed here.
+""")
+```
+
+# Reproducibility
+
+```bash
+pip install -e ".[dev]"
+python studies/numerology_vs_astrology/scripts/pipeline.py --seed 42
+quarto render studies/numerology_vs_astrology/paper/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.qmd
+```
+
+```{python}
+#| output: asis
+print(f"Data file `{RES['data']['file']}` ({RES['data']['rows']} rows, "
+      f"SHA-256 `{RES['data']['sha256'][:16]}...`), hypothesis "
+      f"`{RES['hypothesis_id']}` (SHA-256 `{RES['hypothesis_sha256'][:16]}...`), "
+      f"commit `{RES['git'].get('commit', '')[:10]}`, seed {RES['seed']}.")
+```

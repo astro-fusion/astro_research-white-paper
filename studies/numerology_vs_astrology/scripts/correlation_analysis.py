@@ -3,9 +3,13 @@
 """
 Correlation Analysis Script.
 
-Performs statistical analysis to demonstrate the lack of correlation between
-numerology and Vedic astrology temporal patterns. This provides quantitative
-evidence for the fundamental differences between these two systems.
+Describes the relation between the daily numerology planet and Vedic
+astrology quantities, and tests the pre-registered equivalence hypotheses of
+``hypothesis.yaml``: a non-significant correlation is not evidence of
+independence, so "no relation" is claimed only through TOST equivalence tests
+(per-planet Fisher-z correlation, and Cohen's kappa between the numerology
+planet and the Moon's nakshatra lord), with stationary block-bootstrap
+standard errors because consecutive days are dependent.
 """
 
 import json
@@ -25,6 +29,8 @@ sys.path.insert(
 from studies._paths import study_data_dir  # noqa: E402
 
 from vedic_astrology_core.config import Planet, PLANET_NAMES
+from vedic_astrology_core.stats.equivalence import cohen_kappa_ci, tost
+from vedic_astrology_core.stats.nulls import stationary_bootstrap_indices
 
 
 class CorrelationAnalyzer:
@@ -193,7 +199,7 @@ class CorrelationAnalyzer:
                     "effect_size": self._calculate_effect_size(
                         pearson_corr, len(self.data)
                     ),
-                    "independence_test": self._test_independence(
+                    "mutual_information": self._test_independence(
                         numerology_scores, astrology_scores
                     ),
                 },
@@ -273,124 +279,103 @@ class CorrelationAnalyzer:
         self.results["temporal_patterns"] = temporal_results
         return temporal_results
 
-    def perform_hypothesis_tests(self) -> Dict[str, Any]:
+    def perform_hypothesis_tests(
+        self,
+        margin_r: float = 0.10,
+        margin_kappa: float = 0.05,
+        alpha: float = 0.05,
+        n_boot: int = 2000,
+        mean_block: float = 27.0,
+        rng: Optional[np.random.Generator] = None,
+    ) -> Dict[str, Any]:
         """
-        Perform statistical hypothesis tests to demonstrate system differences.
+        Run the pre-registered equivalence tests (H1 kappa, H2 per planet).
+
+        Earlier versions set ``reject_null = p >= 0.05`` under the null
+        "the systems are correlated", pooled all planets into one flattened
+        correlation, and ran a paired t-test on a single pair of numbers.
+        None of these can support a claim of independence; equivalence must
+        be shown against a margin fixed in advance (TOST).
 
         Returns:
-            Dictionary with hypothesis test results
+            Dictionary with the H1 kappa test and the H2 per-planet tests.
         """
         if self.data is None:
             self.load_data()
+        if rng is None:
+            rng = np.random.default_rng(42)
 
-        print("Performing hypothesis tests...")
+        print("Performing equivalence tests...")
+        n = len(self.data)
+        boot_idx = [
+            stationary_bootstrap_indices(n, mean_block, rng) for _ in range(n_boot)
+        ]
 
-        # Test 1: Are numerology and astrology systems independent?
-        # H0: Systems are correlated (correlation != 0)
-        # H1: Systems are independent (correlation = 0)
+        planet_tests = []
+        z_margin = float(np.arctanh(margin_r))
+        for planet in self.planets:
+            x = (self.data[f"numerology_{planet.name}"].to_numpy() > 0).astype(float)
+            y = self.data[f"astrology_{planet.name}"].to_numpy(dtype=float)
+            row = {"planet": PLANET_NAMES[planet], "id": planet.name, "n": n}
+            if x.std() == 0 or y.std() == 0:
+                row.update({"skipped": "constant series"})
+                planet_tests.append(row)
+                continue
+            r = float(np.corrcoef(x, y)[0, 1])
+            draws = np.array([_corr(x[i], y[i]) for i in boot_idx])
+            draws = np.arctanh(np.clip(draws[np.isfinite(draws)], -0.999999, 0.999999))
+            se = float(np.std(draws, ddof=1))
+            t = tost(float(np.arctanh(r)), se, -z_margin, z_margin, alpha=alpha)
+            row.update(
+                {
+                    "r": r,
+                    "r_ci90_low": float(np.tanh(t.ci_low)),
+                    "r_ci90_high": float(np.tanh(t.ci_high)),
+                    "se_fisher_z": se,
+                    "p_tost": t.p_value,
+                    "equivalent": t.equivalent,
+                    "margin_r": margin_r,
+                }
+            )
+            planet_tests.append(row)
+
+        kappa_test: Dict[str, Any] = {"skipped": "no Moon nakshatra lord column"}
+        lord_col = "astrology_moon_nakshatra_lord"
+        if lord_col in self.data.columns:
+            labels = [p.name for p in self.planets]
+            a = self.data["numerology_active_planet"].astype(str).to_numpy()
+            b = self.data[lord_col].astype(str).to_numpy()
+            analytic = cohen_kappa_ci(a, b, labels=labels)
+            boot = cohen_kappa_ci(
+                a, b, labels=labels, n_boot=n_boot, mean_block=mean_block, rng=rng
+            )
+            se = max(analytic.se, boot.se)
+            t = tost(boot.kappa, se, -margin_kappa, margin_kappa, alpha=alpha)
+            kappa_test = {
+                "kappa": boot.kappa,
+                "observed_agreement": boot.observed_agreement,
+                "expected_agreement": boot.expected_agreement,
+                "n": boot.n,
+                "se_analytic": analytic.se,
+                "se_bootstrap": boot.se,
+                "se_used": se,
+                "ci95_bootstrap": [boot.ci_low, boot.ci_high],
+                "ci90_tost": [t.ci_low, t.ci_high],
+                "p_tost": t.p_value,
+                "equivalent": t.equivalent,
+                "margin_kappa": margin_kappa,
+                "per_planet_agreement": {
+                    k: int(((a == k) & (b == k)).sum()) for k in labels
+                },
+            }
 
         hypothesis_results = {
-            "null_hypothesis_tests": [],
-            "system_comparison_tests": [],
-            "temporal_independence_tests": [],
+            "H1_kappa": kappa_test,
+            "H2_planets": planet_tests,
+            "alpha": alpha,
+            "n_boot": n_boot,
+            "mean_block": mean_block,
         }
-
-        # Individual planet correlation tests
-        for planet in self.planets:
-            num_col = f"numerology_{planet.name}"
-            ast_col = f"astrology_{planet.name}"
-
-            corr, p_value = stats.pearsonr(self.data[num_col], self.data[ast_col])
-
-            test_result = {
-                "planet": PLANET_NAMES[planet],
-                "test_type": "correlation_independence",
-                "null_hypothesis": "Numerology and astrology are correlated for this planet",
-                "alternative_hypothesis": "Numerology and astrology are independent for this planet",
-                "correlation_coefficient": float(corr),
-                "p_value": float(p_value),
-                "significance_level": 0.05,
-                "reject_null": p_value
-                >= 0.05,  # Fail to reject if p >= 0.05 (correlation not significantly different from 0)
-                "conclusion": (
-                    "Systems appear independent"
-                    if p_value >= 0.05
-                    else "Systems show correlation"
-                ),
-            }
-
-            hypothesis_results["null_hypothesis_tests"].append(test_result)
-
-        # System-wide independence test
-        all_num_scores = self.data[
-            [f"numerology_{p.name}" for p in self.planets]
-        ].values.flatten()
-        all_ast_scores = self.data[
-            [f"astrology_{p.name}" for p in self.planets]
-        ].values.flatten()
-
-        system_corr, system_p = stats.pearsonr(all_num_scores, all_ast_scores)
-
-        hypothesis_results["system_comparison_tests"].append(
-            {
-                "test_type": "system_wide_independence",
-                "null_hypothesis": "Numerology and astrology systems are correlated",
-                "alternative_hypothesis": "Numerology and astrology systems are independent",
-                "correlation_coefficient": float(system_corr),
-                "p_value": float(system_p),
-                "reject_null": system_p >= 0.05,
-                "conclusion": (
-                    "Systems appear independent"
-                    if system_p >= 0.05
-                    else "Systems show correlation"
-                ),
-            }
-        )
-
-        # Test for temporal stationarity (are patterns consistent over time?)
-        half_point = len(self.data) // 2
-        first_half = self.data[:half_point]
-        second_half = self.data[half_point:]
-
-        first_half_corr = np.mean(
-            [
-                stats.pearsonr(
-                    first_half[f"numerology_{p.name}"],
-                    first_half[f"astrology_{p.name}"],
-                )[0]
-                for p in self.planets
-            ]
-        )
-        second_half_corr = np.mean(
-            [
-                stats.pearsonr(
-                    second_half[f"numerology_{p.name}"],
-                    second_half[f"astrology_{p.name}"],
-                )[0]
-                for p in self.planets
-            ]
-        )
-
-        stationarity_test = stats.ttest_rel([first_half_corr], [second_half_corr])
-
-        hypothesis_results["temporal_independence_tests"].append(
-            {
-                "test_type": "temporal_stationarity",
-                "null_hypothesis": "Correlation patterns are stationary over time",
-                "alternative_hypothesis": "Correlation patterns change over time",
-                "first_half_avg_correlation": float(first_half_corr),
-                "second_half_avg_correlation": float(second_half_corr),
-                "t_statistic": float(stationarity_test.statistic),
-                "p_value": float(stationarity_test.pvalue),
-                "reject_null": stationarity_test.pvalue < 0.05,
-                "conclusion": (
-                    "Patterns are stationary"
-                    if stationarity_test.pvalue >= 0.05
-                    else "Patterns change over time"
-                ),
-            }
-        )
-
         self.results["hypothesis_tests"] = hypothesis_results
         return hypothesis_results
 
@@ -440,23 +425,21 @@ class CorrelationAnalyzer:
         )
         report_lines.append("")
 
-        # Hypothesis test summary
-        report_lines.append("HYPOTHESIS TEST RESULTS:")
+        # Equivalence tests (hypothesis.yaml)
+        report_lines.append("EQUIVALENCE TESTS (TOST):")
         hypo_tests = self.results["hypothesis_tests"]
-        independent_tests = sum(
-            1 for test in hypo_tests["null_hypothesis_tests"] if test["reject_null"]
-        )
+        k = hypo_tests["H1_kappa"]
+        if "kappa" in k:
+            report_lines.append(
+                f"  - H1 kappa = {k['kappa']:.4f}, 90% CI "
+                f"{k['ci90_tost'][0]:.4f} to {k['ci90_tost'][1]:.4f}, "
+                f"margin +-{k['margin_kappa']}, p = {k['p_tost']:.4g}, "
+                f"equivalent: {k['equivalent']}"
+            )
+        shown = [t for t in hypo_tests["H2_planets"] if t.get("equivalent")]
         report_lines.append(
-            f"  - Planets showing independence: {independent_tests}/"
-            f"{len(self.planets)} "
-            f"({independent_tests/len(self.planets)*100:.1f}%)"
-        )
-
-        system_test = hypo_tests["system_comparison_tests"][0]
-        report_lines.append(
-            f"  - System-wide independence: "
-            f"{'Yes' if system_test['reject_null'] else 'No'} "
-            f"(p = {system_test['p_value']:.3f})"
+            f"  - H2 planets shown equivalent within +-0.10: "
+            f"{len(shown)}/{len(hypo_tests['H2_planets'])}"
         )
         report_lines.append("")
 
@@ -480,24 +463,6 @@ class CorrelationAnalyzer:
                 f"  Change frequency ratio (Ast/Num): {vol_analysis['change_ratio']:.1f}x"
             )
             report_lines.append("")
-
-        # Conclusion
-        report_lines.append("CONCLUSION:")
-        report_lines.append(
-            "The analysis demonstrates that numerology and Vedic astrology operate on"
-        )
-        report_lines.append("fundamentally different temporal scales and mechanisms:")
-        report_lines.append("")
-        report_lines.append(
-            "• Numerology: Discrete, date-based changes (~70-80 changes/year)"
-        )
-        report_lines.append(
-            "• Astrology: Continuous, position-based changes (1000+ changes/year per planet)"
-        )
-        report_lines.append("")
-        report_lines.append(
-            "This temporal disconnect explains the lack of correlation between the two systems."
-        )
 
         report_lines.append("=" * 80)
 
@@ -572,7 +537,7 @@ class CorrelationAnalyzer:
     def _test_independence(
         self, series1: pd.Series, series2: pd.Series
     ) -> Dict[str, Any]:
-        """Test for independence between two series using mutual information approximation."""
+        """Return the binned mutual information of two series (descriptive only)."""
         # Simple bin-based independence test
         hist_2d, _, _ = np.histogram2d(series1, series2, bins=10)
         hist_2d = hist_2d / hist_2d.sum()
@@ -653,53 +618,22 @@ class CorrelationAnalyzer:
         return seasonal_patterns
 
 
+def _corr(x: np.ndarray, y: np.ndarray) -> float:
+    """Return Pearson's r, or NaN when either resample is constant."""
+    if x.std() == 0 or y.std() == 0:
+        return float("nan")
+    return float(np.corrcoef(x, y)[0, 1])
+
+
 def main():
-    """Main execution function."""
-    print("Numerology-Astrology Correlation Analysis")
-    print("=" * 50)
-
-    # Initialize analyzer
+    """Run the descriptive analysis and the equivalence tests on the data file."""
     analyzer = CorrelationAnalyzer()
-
-    # Perform comprehensive analysis
-    print("1. Loading data...")
     analyzer.load_data()
-
-    print("2. Analyzing correlations...")
-    correlations = analyzer.analyze_correlations()
-
-    analyzer.generate_report()
-
-    # Save results
-    results_file = analyzer.save_results()
-
-    print("\n" + "=" * 50)
-    print("ANALYSIS COMPLETE")
-    print("=" * 50)
-    print(f"Results saved to: {results_file}")
-    print(
-        f"- Overall correlation: {correlations[Planet.SUN.name]['correlation_metrics']['pearson_correlation']:.3f}"
-    )
-
-    # Count planets with essentially no correlation
-    weak_correlations = sum(
-        1
-        for p in analyzer.planets
-        if abs(correlations[p.name]["correlation_metrics"]["pearson_correlation"]) < 0.1
-    )
-
-    print(
-        f"- Planets showing no correlation: {weak_correlations}/{len(analyzer.planets)}"
-    )
-    print("- System operates on different temporal scales:")
-    num_changes = len(analyzer.data) // 365 * 73
-    print(f"  • Numerology: ~{num_changes} changes over 5 years")
-    print("  • Astrology: 1000+ changes per planet over 5 years")
-
-    print("\nCONCLUSION: The analysis confirms that numerology and Vedic astrology")
-    print(
-        "represent fundamentally different approaches to understanding planetary influence."
-    )
+    analyzer.analyze_correlations()
+    analyzer.analyze_temporal_patterns()
+    analyzer.perform_hypothesis_tests()
+    print(analyzer.generate_report())
+    analyzer.save_results()
 
 
 if __name__ == "__main__":

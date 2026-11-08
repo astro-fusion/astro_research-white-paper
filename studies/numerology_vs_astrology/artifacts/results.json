@@ -1,0 +1,208 @@
+{
+ "study": "numerology_vs_astrology",
+ "hypothesis_id": "numerology-moon-lord-v2",
+ "hypothesis_sha256": "53074d0cd4b4b166ea66b70be36f6a24662114333398115797ad15aa73131449",
+ "generated_utc": "2026-11-08T02:41:20+00:00",
+ "seed": 42,
+ "git": {
+  "commit": "2e711def71c854cdee18098297db15d6fd852a77",
+  "dirty": true
+ },
+ "ephemeris": {
+  "swisseph_available": true,
+  "sidereal_mode_set": true,
+  "ayanamsa_system": "lahiri",
+  "node_model": "mean",
+  "ephemeris_model": "moshier",
+  "flags": "FLG_SWIEPH|FLG_SPEED|FLG_SIDEREAL",
+  "version": "2.10.03"
+ },
+ "sampling": {
+  "time": "12:00",
+  "tz": "UTC",
+  "start": "2020-01-01",
+  "end_exclusive": "2025-01-01"
+ },
+ "data": {
+  "file": "temporal_analysis_5years.csv",
+  "sha256": "c4f3ad729461a5932f52d293ac791dca6adcf8b1d41735a5d9ad52b524e3c099",
+  "rows": 1827
+ },
+ "description": {
+  "n_days": 1827,
+  "numerology_share": {
+   "JUPITER": 0.12862616310892172,
+   "KETU": 0.09852216748768473,
+   "MARS": 0.09852216748768473,
+   "MERCURY": 0.09852216748768473,
+   "MOON": 0.1297208538587849,
+   "RAHU": 0.11767925561029009,
+   "SATURN": 0.09852216748768473,
+   "SUN": 0.13136288998357964,
+   "VENUS": 0.09852216748768473
+  },
+  "nakshatra_lord_share": {
+   "JUPITER": 0.10892172961138478,
+   "KETU": 0.11220580186097427,
+   "MARS": 0.11056376573617953,
+   "MERCURY": 0.1111111111111111,
+   "MOON": 0.11056376573617953,
+   "RAHU": 0.11220580186097427,
+   "SATURN": 0.11330049261083744,
+   "SUN": 0.1111111111111111,
+   "VENUS": 0.11001642036124795
+  },
+  "chance_agreement_from_margins": 0.11104909661050308,
+  "numerology_changes_per_year": 364.45032840722496,
+  "nakshatra_lord_changes_per_year": 350.25615763546796,
+  "mean_nakshatra_days": 1.0119133703703704
+ },
+ "H1_kappa": {
+  "kappa": -0.0122446503586648,
+  "observed_agreement": 0.10016420361247949,
+  "expected_agreement": 0.11104909661050309,
+  "n": 1827,
+  "se_analytic": 0.007902031062881986,
+  "se_bootstrap": 0.009474713023111224,
+  "se_used": 0.009474713023111224,
+  "ci95_bootstrap": [
+   -0.030147209081187495,
+   0.0067254852429668695
+  ],
+  "ci90_tost": [
+   -0.027829166439053643,
+   0.0033398657217240425
+  ],
+  "p_tost": 3.3760790691059544e-05,
+  "equivalent": true,
+  "margin_kappa": 0.05,
+  "per_planet_agreement": {
+   "SUN": 21,
+   "MOON": 18,
+   "MARS": 17,
+   "MERCURY": 26,
+   "JUPITER": 31,
+   "VENUS": 18,
+   "SATURN": 16,
+   "RAHU": 16,
+   "KETU": 20
+  }
+ },
+ "H2_planets": [
+  {
+   "planet": "Sun (Surya)",
+   "id": "SUN",
+   "n": 1827,
+   "r": -0.0008289655094527688,
+   "r_ci90_low": -0.013055169977231343,
+   "r_ci90_high": 0.011397486791173927,
+   "se_fisher_z": 0.007433455384778875,
+   "p_tost": 3.636231899908072e-41,
+   "equivalent": true,
+   "margin_r": 0.1
+  },
+  {
+   "planet": "Moon (Chandra)",
+   "id": "MOON",
+   "n": 1827,
+   "r": -0.0014436350688980125,
+   "r_ci90_low": -0.032656692356070556,
+   "r_ci90_high": 0.029772235414874143,
+   "se_fisher_z": 0.01898325311171912,
+   "p_tost": 9.471665146578518e-08,
+   "equivalent": true,
+   "margin_r": 0.1
+  },
+  {
+   "planet": "Mars (Mangal)",
+   "id": "MARS",
+   "n": 1827,
+   "r": -0.002139389383405299,
+   "r_ci90_low": -0.015107843998892694,
+   "r_ci90_high": 0.010829784883809488,
+   "se_fisher_z": 0.007884957503934436,
+   "p_tost": 6.685444443872414e-36,
+   "equivalent": true,
+   "margin_r": 0.1
+  },
+  {
+   "planet": "Mercury (Budha)",
+   "id": "MERCURY",
+   "n": 1827,
+   "r": -0.003208866253053731,
+   "r_ci90_low": -0.019494939922204583,
+   "r_ci90_high": 0.013078909826515927,
+   "se_fisher_z": 0.009902724870595465,
+   "p_tost": 5.1976411644568356e-23,
+   "equivalent": true,
+   "margin_r": 0.1
+  },
+  {
+   "planet": "Jupiter (Guru)",
+   "id": "JUPITER",
+   "n": 1827,
+   "r": -0.0006927661051092627,
+   "r_ci90_low": -0.014439996825442567,
+   "r_ci90_high": 0.013054726467015911,
+   "se_fisher_z": 0.008358333017978538,
+   "p_tost": 4.5808047991823244e-33,
+   "equivalent": true,
+   "margin_r": 0.1
+  },
+  {
+   "planet": "Venus (Shukra)",
+   "id": "VENUS",
+   "n": 1827,
+   "r": 0.001667645922012525,
+   "r_ci90_low": -0.014207308723712857,
+   "r_ci90_high": 0.017541760069047015,
+   "se_fisher_z": 0.009651869291671543,
+   "p_tost": 7.849314078701466e-25,
+   "equivalent": true,
+   "margin_r": 0.1
+  },
+  {
+   "planet": "Saturn (Shani)",
+   "id": "SATURN",
+   "n": 1827,
+   "r": 0.0003558157939627652,
+   "r_ci90_low": -0.012970572346672975,
+   "r_ci90_high": 0.013682077555262224,
+   "se_fisher_z": 0.008102310978936078,
+   "p_tost": 2.770444078447104e-35,
+   "equivalent": true,
+   "margin_r": 0.1
+  },
+  {
+   "planet": "Rahu (North Node)",
+   "id": "RAHU",
+   "n": 1827,
+   "r": -0.0007806823216923268,
+   "r_ci90_low": -0.013527814142342037,
+   "r_ci90_high": 0.011966703209318292,
+   "se_fisher_z": 0.007750207525076647,
+   "p_tost": 4.562807476968878e-38,
+   "equivalent": true,
+   "margin_r": 0.1
+  },
+  {
+   "planet": "Ketu (South Node)",
+   "id": "KETU",
+   "n": 1827,
+   "r": 0.0009804248239306595,
+   "r_ci90_low": -0.00979858171110421,
+   "r_ci90_high": 0.011759203538359247,
+   "se_fisher_z": 0.006553361518065586,
+   "p_tost": 3.2087109568451874e-52,
+   "equivalent": true,
+   "margin_r": 0.1
+  }
+ ],
+ "headline": {
+  "h1_equivalent": true,
+  "kappa": -0.0122446503586648,
+  "h2_n_equivalent": 9,
+  "h2_n_tested": 9,
+  "alpha": 0.05
+ }
+}

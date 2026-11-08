@@ -6,13 +6,26 @@ name the same planet more often than chance, and how do their time series
 compare (correlation, spectrum, alignment windows)? A secondary dataset tests
 name and birth-date numerology on an athlete sample.
 
-**Status.** Figures and statistics are being recomputed after the sidereal
-correction (see [CORRECTIONS.md](../../CORRECTIONS.md), item c).
+**Status.** Re-analysed 2026-11-08 on sidereal positions against the
+pre-registration in `hypothesis.yaml` (seed 42). Both equivalence hypotheses
+were shown: Cohen's kappa between the numerology planet and the Moon's
+nakshatra lord lies within +-0.05 of zero, and for all nine planets the
+numerology indicator's correlation with the dignity score lies within
++-0.10. The paper derives why this is expected (the two labels change at
+unrelated instants) and states the numbers from `artifacts/results.json`.
+The earlier "independence" claims were withdrawn (see
+[CORRECTIONS.md](../../CORRECTIONS.md), item c, and review item S1-20).
 
 ## Contents
 
-- `paper/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.qmd` with `paper/sections/`.
-- `paper/numerology_planet_timeline.qmd`: planetary strength versus numerology over time.
+- `hypothesis.yaml`: the pre-registration (period, UTC-noon sampling, H1, H2, margins).
+- `paper/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.qmd`: the paper, generated
+  from `artifacts/results.json`.
+- `paper/sections/`: the pre-correction sections, no longer included in the
+  paper and not rendered; kept for their text until reviewed.
+- `paper/numerology_planet_timeline.qmd`: planetary strength versus numerology
+  over time. TODO: execution is still disabled; its cells build naive
+  datetimes and need the optional plotly extra.
 - `paper/drafts/`: superseded drafts kept for their unique text; not rendered.
 - `scripts/`: catalogue, daily metrics, name and personal metrics, athlete sample, temporal, correlation and spectral analyses.
 - `figures/`, `tables/research_results.json`.
@@ -22,8 +35,20 @@ Numerology calculations come from the `vedic_numerology` package in `libs/`
 
 ## How to run
 
+The pre-registered analysis is one command; it writes
+`artifacts/results.json` and `artifacts/manifest.json`:
+
 ```bash
 pip install -e ".[dev]"
+python studies/numerology_vs_astrology/scripts/pipeline.py --seed 42
+```
+
+Every day is sampled at the time and zone in `hypothesis.yaml` (12:00 UTC;
+the original study stated none) with a timezone-aware datetime.
+
+The older descriptive scripts (athlete sample, name metrics, spectra) are:
+
+```bash
 python studies/numerology_vs_astrology/scripts/generate_numerology_catalog.py
 python studies/numerology_vs_astrology/scripts/generate_numerology_metrics.py
 python studies/numerology_vs_astrology/scripts/fetch_athletes_sample.py

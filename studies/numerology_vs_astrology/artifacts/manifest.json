@@ -1,0 +1,31 @@
+{
+  "artifacts": [
+    "results.json"
+  ],
+  "ayanamsa": "lahiri",
+  "created_utc": "2026-11-08T02:41:20+00:00",
+  "ephemeris_model": "moshier",
+  "git": {
+    "commit": "2e711def71c854cdee18098297db15d6fd852a77",
+    "dirty": true
+  },
+  "inputs": [
+    {
+      "date_range": [
+        "2020-01-01",
+        "2024-12-31"
+      ],
+      "path": "studies/numerology_vs_astrology/data/temporal_analysis_5years.csv",
+      "row_count": 1827,
+      "sha256": "c4f3ad729461a5932f52d293ac791dca6adcf8b1d41735a5d9ad52b524e3c099"
+    },
+    {
+      "path": "studies/numerology_vs_astrology/hypothesis.yaml",
+      "sha256": "53074d0cd4b4b166ea66b70be36f6a24662114333398115797ad15aa73131449"
+    }
+  ],
+  "node_model": "mean",
+  "python": "3.14.7",
+  "seed": 42,
+  "swisseph_version": "2.10.03"
+}

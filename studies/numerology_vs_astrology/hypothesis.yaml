@@ -1,0 +1,59 @@
+# Pre-registration for the numerology-versus-astrology re-analysis
+# (ADR-001 scientific rigor contract). Written 2026-11-08 before the corrected
+# pipeline was first run on sidereal positions. Any change after the first
+# run is logged in "amendments" with its date and reason.
+study: numerology_vs_astrology
+id: numerology-moon-lord-v2
+title: >-
+  Does the day's numerology planet agree with the Moon's nakshatra lord more
+  or less often than chance?
+registered: "2026-11-08"
+amendments: []
+
+question: >-
+  Date numerology (mulanka, the digit sum of the day of the month) assigns one
+  of nine planets to each civil day. The Moon's nakshatra lord (Vimshottari
+  order) also names one of the same nine planets and changes about once a day.
+  Is their agreement within a pre-set margin of chance agreement, and is each
+  planet's numerology indicator unrelated to that planet's dignity score
+  within a pre-set margin?
+
+period:
+  start: "2020-01-01"
+  end: "2025-01-01"        # exclusive: five full years, 1827 days
+# Each civil day is sampled once. The numerology value depends only on the
+# date; the astrological value is read at this clock time in this zone. No
+# zone was stated by the original study, so UTC noon is used: it keeps the
+# sampled moment inside the same civil date in every zone from UTC-11 to
+# UTC+11, and a different fixed time only shifts the phase of the Moon's
+# nakshatra changes against midnight (see the paper's derivation).
+sample_time: "12:00"
+tz: UTC
+ayanamsa: lahiri
+node_model: mean
+
+hypotheses:
+  - id: H1
+    statement: >-
+      Agreement between the numerology planet and the Moon's nakshatra lord is
+      equivalent to chance: Cohen's kappa lies within (-0.05, 0.05).
+    test: tost
+    statistic: cohen_kappa
+    margin: 0.05
+  - id: H2
+    statement: >-
+      For each of the nine planets, the correlation between the numerology
+      indicator (planet rules the day) and the planet's dignity score lies
+      within (-0.10, 0.10).
+    test: tost
+    statistic: pearson_r (Fisher z)
+    margin: 0.10
+
+alpha: 0.05
+# Equivalence for H2 is claimed per planet (intersection-union: each planet
+# is its own claim), so no multiplicity correction is needed for "all nine".
+uncertainty:
+  method: stationary block bootstrap
+  mean_block_days: 27     # about one sidereal month, the Moon's cycle
+  n_boot: 2000
+seed: 42

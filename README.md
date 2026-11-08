@@ -143,7 +143,7 @@ period; it says nothing beyond those configurations, data and periods.
 | [Gold market](studies/gold_market/) | Run | Null. 1 of 42 exploration tests significant after Benjamini-Yekutieli, 0 confirmed in 2016-2026; Hansen SPA p = 0.53. |
 | [Silver market](studies/silver_market/) | Run | Null. 0 of 42 exploration tests significant, 0 confirmed; Hansen SPA p = 0.90. |
 | [Earthquake (Himalayan arc)](studies/earthquake/) | Run | Null. 0 of 26 exploration tests significant, 0 confirmed; SPA p = 0.08. The Moon in a Varuna-mandala nakshatra had the highest rate ratio in both periods but did not pass the correction; it is a candidate for a new pre-registration on independent data. |
-| [Numerology vs astrology](studies/numerology_vs_astrology/) | Pending | Re-analysis with an equivalence test (TOST) and Cohen's kappa; see the study README. |
+| [Numerology vs astrology](studies/numerology_vs_astrology/) | Run | Equivalent to chance, as derived analytically: kappa between the numerology planet and the Moon's nakshatra lord = -0.012, within the registered +-0.05 (TOST); 9 of 9 planets' numerology-dignity correlations within +-0.10. |
 | [Mundane](studies/mundane/) | Pending | Seeded; awaiting sourced founding times for the national charts. |
 | [Remedy conflict matrix](studies/remedy_conflict_matrix/) | Descriptive | No hypothesis test. |
 
