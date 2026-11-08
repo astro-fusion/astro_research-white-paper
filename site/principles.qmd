@@ -1,14 +1,157 @@
 ---
 title: "Principles"
+subtitle: "Every rule in the registry, its source, and whether it passes its reference cases"
+description: "Browse the astrological rules under rules/: domain, tier, status, source, plain-word conditions and reference cases."
+engine: markdown
+echo: false
+toc: false
+number-sections: false
+page-layout: full
+format-links: false
+code-tools: false
 ---
 
-This page will be generated from the rule files under `rules/`: one row per
-rule with its plain-language condition, its classical source (text, chapter
-and verse), the studies that use it, and whether it has passed its
-reference-chart tests.
+Every principle the studies use is a rule file under `rules/`: one claim, its
+source (a classical text with chapter and verse, a named practitioner's dated
+statement, or a published study), its conditions in a machine-readable form,
+and reference cases that say when it must fire and when it must stay silent.
+This page is generated from those files; nothing here is written by hand.
 
-The rules catalogue is being built. Until it is published, the principles each
-study uses are described in that study's paper (see the Studies menu).
+::: {.af-howto}
+**How to read this.** Filter by domain, tier, status or kind of source, or
+search by name. The chart counts the rules that match, by domain and tier.
+Pick a rule in the table to open its detail: the claim, the conditions
+rendered in plain words (rendered, not evaluated), the source with a link, and
+each reference case with its outcome when the engine ran it. A rule marked
+"needs predicates" is recorded as stated but cannot yet be tested, because the
+vocabulary lacks a condition it needs; "needs verification" means its cases
+have not been checked against an independent program yet. Classical rules
+must cite a text and chapter; rules stated by today's practitioners are
+labelled experimental and sit beside them.
+:::
+
+```{ojs}
+{{< include components/theme.ojs >}}
+```
+
+```{ojs}
+{{< include components/provenance.ojs >}}
+```
+
+```{ojs}
+rulesData = FileAttachment("data/rules.json").json()
+allRules = rulesData.rules
+uniq = (k) => [...new Set(allRules.map((r) => r[k]))].sort()
+```
+
+::: {.af-filters}
+
+```{ojs}
+viewof domains = Inputs.checkbox(uniq("domain"), { label: "Domain", value: uniq("domain") })
+```
+
+```{ojs}
+viewof tiers = Inputs.checkbox(uniq("tier"), { label: "Tier", value: uniq("tier") })
+```
+
+```{ojs}
+viewof statuses = Inputs.checkbox(uniq("status"), { label: "Status", value: uniq("status"),
+  format: (s) => s.replace("_", " ") })
+```
+
+```{ojs}
+viewof sourceTypes = Inputs.checkbox(uniq("source_type"), { label: "Source", value: uniq("source_type") })
+```
+
+```{ojs}
+viewof query = Inputs.search(allRules, { placeholder: "Search rules", columns: ["id", "name", "claim", "source"] })
+```
+
+```{ojs}
+viewof chart = Inputs.radio(["By domain", "By source"], { label: "Chart", value: "By domain" })
+```
+
+:::
+
+```{ojs}
+shown = query.filter((r) => domains.includes(r.domain) && tiers.includes(r.tier)
+  && statuses.includes(r.status) && sourceTypes.includes(r.source_type))
+tierColor = (t) => (t === "classical" ? palette.series[0] : palette.series[1])
+```
+
+```{ojs}
+countChart = {
+  const key = chart === "By domain" ? "domain" : "source_type";
+  const counts = d3.rollups(shown, (v) => v.length, (r) => r[key], (r) => r.tier)
+    .flatMap(([k, v]) => v.map(([tier, n]) => ({ k, tier, n })));
+  const order = d3.groupSort(shown, (v) => -v.length, (r) => r[key]);
+  const plot = Plot.plot({
+    width: Math.max(340, Math.min(width, 900)), height: 50 + 34 * Math.max(1, order.length), marginLeft: 150, style: plotStyle,
+    x: { label: "Rules", grid: true }, y: { domain: order, label: null },
+    color: { type: "identity" },
+    marks: [
+      Plot.barX(counts, Plot.stackX({ x: "n", y: "k", fill: (d) => tierColor(d.tier), order: ["classical", "experimental"],
+        insetRight: 1, insetLeft: 1, title: (d) => `${d.k}, ${d.tier}: ${d.n}`, tip: true })),
+      Plot.text(d3.rollups(shown, (v) => v.length, (r) => r[key]), { x: (d) => d[1], y: (d) => d[0], text: (d) => d[1], dx: 8, textAnchor: "start", fill: palette.ink }),
+      Plot.ruleX([0], { stroke: palette.axis })
+    ]
+  });
+  return htl.html`<div class="af-chart" id="principles-chart">${plot}</div>`;
+}
+```
+
+```{ojs}
+swatchLegend([{ color: palette.series[0], label: "Classical" }, { color: palette.series[1], label: "Experimental" }])
+```
+
+```{ojs}
+viewof picked = Inputs.table(shown, {
+  columns: ["name", "domain", "tier", "status", "source_type", "source", "reference"],
+  header: { name: "Rule", source_type: "Source kind", reference: "Reference cases" },
+  format: { status: (s) => s.replace("_", " "), source: (s) => (s.length > 60 ? s.slice(0, 57) + "..." : s) },
+  multiple: false, required: false, rows: 14, value: shown[0]
+})
+```
+
+```{ojs}
+function renderTree(node) {
+  const kids = node.children && node.children.length
+    ? htl.html`<ul class="af-tree">${node.children.map((c) => renderTree(c))}</ul>` : "";
+  return htl.html`<li>${node.text}${node.gloss ? htl.html`<div class="af-gloss">${node.gloss}</div>` : ""}${kids}</li>`;
+}
+REPO = "https://github.com/astro-fusion/astro_research-white-paper/blob/main/"
+drawer = {
+  const r = picked || shown[0];
+  if (!r) return htl.html`<p class="af-notice">No rule matches these filters.</p>`;
+  return htl.html`<div class="af-drawer" id="principles-drawer">
+    <h3>${r.name}</h3>
+    <p><code>${r.id}</code> · ${r.domain} · ${r.tier} · ${r.status.replace("_", " ")} ·
+      <a href=${REPO + r.path}>YAML file</a></p>
+    <p>${r.claim}</p>
+    <h4>Source</h4>
+    <p>${r.source_url ? htl.html`<a href=${r.source_url}>${r.source}</a>` : r.source}
+      ${r.source_note ? htl.html`<br><span class="af-gloss">${r.source_note}</span>` : ""}</p>
+    <h4>Conditions, in plain words</h4>
+    ${r.conditions ? htl.html`<ul class="af-tree">${renderTree(r.conditions)}</ul>`
+      : htl.html`<p class="af-notice">No machine conditions yet (needs predicates).
+        ${r.original_condition.length ? htl.html`As stated: ${r.original_condition.join("; ")}.` : ""}
+        ${r.missing_predicates.length ? htl.html`<br>Missing: ${r.missing_predicates.join("; ")}.` : ""}</p>`}
+    ${r.window ? htl.html`<p>Window: ${r.window.before ?? 0} ${r.window.unit} before to ${r.window.after ?? 0} ${r.window.unit} after${r.window.note ? ` (${r.window.note})` : ""}.</p>` : ""}
+    ${r.expected_effect ? htl.html`<p>Expected effect: ${Object.entries(r.expected_effect).map(([k, v]) => `${k} ${String(v).replace(/\.$/, "")}`).join(", ")}.</p>` : ""}
+    <h4>Reference cases</h4>
+    ${r.cases.length ? htl.html`<table class="table af-table"><thead><tr><th>Moment</th><th>Expect</th><th>Outcome</th><th>Note</th></tr></thead>
+      <tbody>${r.cases.map((c) => htl.html`<tr><td>${c.moment}</td><td>${c.expect}</td>
+        <td>${c.outcome}</td><td>${c.note}${c.verified_with ? htl.html`<br><span class="af-gloss">${c.verified_with}</span>` : ""}</td></tr>`)}</tbody></table>`
+      : htl.html`<p class="af-notice">No reference cases yet.</p>`}
+  </div>`;
+}
+```
+
+```{ojs}
+htl.html`<p class="af-caption">${shown.length} of ${allRules.length} rules shown.
+  ${allRules.filter((r) => r.reference.endsWith("pass") && !r.reference.startsWith("0/")).length} rules have reference cases that
+  the engine ran; ${allRules.filter((r) => r.status === "needs_predicates").length} need predicates before they can be tested.</p>`
+```
 
 To propose a principle for testing, see [Contribute](contribute.qmd).
 
@@ -22,3 +165,10 @@ tested as openly as its texts, and where practitioners disagree both sides are
 kept. The policy, the list of sources and the claims still waiting for a
 traceable source are in
 [Sources of rule development](https://github.com/astro-fusion/astro_research-white-paper/blob/main/docs/research/SOURCES_OF_RULE_DEVELOPMENT.md).
+
+```{ojs}
+provenance(rulesData._meta, {
+  twin: [],
+  note: "the rules table has no paper figure; the same table prints with astro-rules list and astro-rules test"
+})
+```
