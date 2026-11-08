@@ -113,12 +113,12 @@ def compute_astrology_strength_series(
     is_high_res = step_hours is not None
 
     # Imports inside to avoid circular deps if any
-    from .dignity.global_scorer import GlobalShadbalaScorer
+    from .dignity.global_scorer import GlobalStrengthScorer
 
     # Initialize Engines
     ephemeris = EphemerisEngine()
     # Use Global Shadbala Scorer for research-grade strength (Chesta/Yuddha included)
-    global_scorer = GlobalShadbalaScorer(ephemeris=ephemeris)
+    global_scorer = GlobalStrengthScorer(ephemeris=ephemeris)
 
     rows: List[Dict[str, Any]] = []
 

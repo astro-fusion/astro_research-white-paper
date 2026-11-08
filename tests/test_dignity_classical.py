@@ -20,10 +20,7 @@ from vedic_astrology_core.dignity.exaltation_matrix import (
     is_in_exaltation,
     uccha_bala,
 )
-from vedic_astrology_core.dignity.global_scorer import (
-    GlobalShadbalaScorer,
-    GlobalStrengthScorer,
-)
+from vedic_astrology_core.dignity.global_scorer import GlobalStrengthScorer
 
 FIXTURE = json.loads(
     (Path(__file__).parent / "fixtures" / "golden_charts.json").read_text()
@@ -138,7 +135,9 @@ def _pos(lon, speed=1.0):
 
 def test_strength_index_rules():
     """Nodes fixed at 50; graha yuddha only among Mars to Saturn."""
-    assert GlobalShadbalaScorer is GlobalStrengthScorer
+    import vedic_astrology_core.dignity.global_scorer as gs
+
+    assert not hasattr(gs, "GlobalShadbalaScorer")  # removed alias: not Shadbala
     positions = {
         "SUN": _pos(100.0),
         "MOON": _pos(100.5, 13.0),

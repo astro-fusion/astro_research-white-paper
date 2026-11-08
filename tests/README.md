@@ -11,16 +11,13 @@ This directory contains the complete test suite for the Vedic Astrology Research
 | `test_astrology.py`                    | Unit        | Core astrological calculations (charts, houses, planets) |
 | `test_dignity.py`                      | Unit        | Planetary dignity scoring rules                          |
 | `test_numerology.py`                   | Unit        | Numerology calculators (mulanka, bhagyanka, Lo Shu)      |
-| `test_unit_comprehensive.py`           | Unit        | Broad coverage across all library modules                |
 | `test_integration.py`                  | Integration | Full pipeline: data → analysis → output                  |
-| `test_e2e_complete.py`                 | E2E         | End-to-end research pipeline tests                       |
-| `test_e2e_playwright.py`               | E2E         | Browser-based web interface tests (Playwright)           |
-| `test_multiplatform_validation.py`     | Validation  | Cross-platform result consistency                        |
 | `test_research_pipeline_phase1/2/3.py` | Pipeline    | Research pipeline phase validation                       |
 | `test_vimshottari_dasha.py`            | Unit        | Dasha period calculations                                |
 | `test_reference_charts.py`             | Reference   | Known-good chart validation against classical references |
-| `validate_infrastructure.py`           | Infra       | Environment and dependency validation                    |
-| `run_all_tests.py`                     | Runner      | Comprehensive test runner with reporting                 |
+| `test_golden_*.py`                     | Golden      | Positions, houses, vargas, dasha, combustion vs PyJHora  |
+| `test_horizons_crosscheck.py`          | Astronomy   | Apparent longitudes vs JPL Horizons (DE441), offline     |
+| `test_aspects.py`                      | Unit        | Geometric aspect matrix, out-of-bounds, parallels        |
 
 ---
 
@@ -64,11 +61,17 @@ pytest tests/ -m "slow" -v          # Slow tests only
 pytest tests/ -m "integration" -v   # Integration tests only
 ```
 
-### Custom Runner (with HTML report)
+### Ephemeris cross-check against JPL Horizons
 
 ```bash
-python3 tests/run_all_tests.py
+pytest tests/test_horizons_crosscheck.py -v -s       # offline, stored fixtures
+HORIZONS_LIVE=1 pytest tests/test_horizons_crosscheck.py -s   # fetch fresh values
+python -m tests.horizons                              # rewrite the fixtures
 ```
+
+No `PYTHONPATH` is needed: install the package (`pip install -e ".[dev]"`);
+`tests/conftest.py` adds the repository root for `studies`, `scripts`,
+`application` and `tools`.
 
 ---
 
@@ -88,7 +91,7 @@ Follow the patterns in `test_dignity.py` as a template:
 
 ```python
 import pytest
-from libs.vedic_astrology_core.dignity import calculate_planetary_dignity
+from vedic_astrology_core.dignity import calculate_planetary_dignity
 
 class TestPlanetaryDignity:
     """Unit tests for planetary dignity calculations."""
@@ -126,7 +129,7 @@ class TestPlanetaryDignity:
 | ---------------------------- | --------------- |
 | `libs/vedic_astrology_core/` | > 85%           |
 | `libs/vedic_numerology/`     | > 85%           |
-| `libs/visuals/`              | > 70%           |
+| `tools/visuals/`             | > 70%           |
 | `application/`               | > 70%           |
 
 ---

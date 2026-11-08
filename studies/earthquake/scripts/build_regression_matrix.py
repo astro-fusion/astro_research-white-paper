@@ -25,7 +25,7 @@ from studies._paths import study_data_dir  # noqa: E402
 from earthquake_data_fetcher import EarthquakeDataFetcher  # noqa: E402
 from vedic_astrology_core.astrology.ephemeris import EphemerisEngine  # noqa: E402
 from vedic_astrology_core.dignity.global_scorer import (  # noqa: E402
-    GlobalShadbalaScorer,
+    GlobalStrengthScorer,
 )  # noqa: E402
 from vedic_numerology.engine import NumerologyEngine  # noqa: E402
 
@@ -48,7 +48,7 @@ def build_matrix(
     # Initialize Engines
     num_engine = NumerologyEngine()
     eph_engine = EphemerisEngine()
-    shadbala_scorer = GlobalShadbalaScorer(ephemeris=eph_engine)
+    shadbala_scorer = GlobalStrengthScorer(ephemeris=eph_engine)
     eq_fetcher = EarthquakeDataFetcher(
         use_sample_data=True, verbose=False
     )  # Use mock/sample for demo, real in prod

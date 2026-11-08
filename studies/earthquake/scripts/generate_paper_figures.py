@@ -27,9 +27,9 @@ EphemerisEngine = importlib.import_module(
     "vedic_astrology_core.astrology.ephemeris"
 ).EphemerisEngine
 Planet = importlib.import_module("vedic_astrology_core.config.constants").Planet
-GlobalShadbalaScorer = importlib.import_module(
+GlobalStrengthScorer = importlib.import_module(
     "vedic_astrology_core.dignity.global_scorer"
-).GlobalShadbalaScorer
+).GlobalStrengthScorer
 
 # Configuration
 START_DATE = datetime(2020, 1, 1)
@@ -68,7 +68,7 @@ def generate_planetary_data():
     """Generate daily planetary data for the period."""
     print("Generating planetary data...")
     ee = EphemerisEngine()
-    gs = GlobalShadbalaScorer(ephemeris=ee)
+    gs = GlobalStrengthScorer(ephemeris=ee)
 
     dates = pd.date_range(START_DATE, END_DATE, freq="D")
     rows = []

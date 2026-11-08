@@ -88,8 +88,3 @@ class GlobalStrengthScorer:
                     scores[p2] *= WAR_FACTOR
 
         return scores  # type: ignore[return-value]
-
-
-# Deprecated alias kept so existing research scripts keep importing; the
-# index is not Shadbala. Use GlobalStrengthScorer.
-GlobalShadbalaScorer = GlobalStrengthScorer

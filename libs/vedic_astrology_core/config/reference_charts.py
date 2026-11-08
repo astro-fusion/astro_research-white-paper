@@ -3,22 +3,30 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timezone
-from typing import Dict
+from datetime import date, datetime, timezone
+from typing import Dict, Optional
 from zoneinfo import ZoneInfo
 
 
 @dataclass(frozen=True)
 class ReferenceChart:
-    """Docstring."""
+    """A mundane or baseline chart.
+
+    ``datetime`` is ``None`` when no source gives the time of day
+    (``time_known`` False); ``date`` is always set. ``source`` is a key in
+    ``papers/sources.bib`` when the chart has been checked against one.
+    """
 
     key: str
     name: str
-    datetime: datetime
+    date: date
+    datetime: Optional[datetime]
     latitude: float
     longitude: float
     timezone: str
     description: str
+    time_known: bool = True
+    source: Optional[str] = None
 
 
 def get_reference_charts() -> Dict[str, ReferenceChart]:
@@ -30,6 +38,7 @@ def get_reference_charts() -> Dict[str, ReferenceChart]:
         "india_independence": ReferenceChart(
             key="india_independence",
             name="India Independence Chart",
+            date=date(1947, 8, 15),
             datetime=datetime(1947, 8, 15, 0, 0, 0, tzinfo=india_tz),
             latitude=28.6139,
             longitude=77.1025,
@@ -39,7 +48,13 @@ def get_reference_charts() -> Dict[str, ReferenceChart]:
         "nepal_constitution_2015": ReferenceChart(
             key="nepal_constitution_2015",
             name="Nepal Constitution Chart (2015)",
-            datetime=datetime(2015, 9, 20, 0, 0, 0, tzinfo=ZoneInfo("Asia/Kathmandu")),
+            # The promulgation date is sourced (The Himalayan Times,
+            # 2015-09-21); no source opened gives the hour, so none is set.
+            # The earlier 00:00 was a placeholder, not a recorded time.
+            date=date(2015, 9, 20),
+            datetime=None,
+            time_known=False,
+            source="chart_thehimalayantimes_126755",
             latitude=27.7172,
             longitude=85.3240,
             timezone="Asia/Kathmandu",
@@ -48,6 +63,7 @@ def get_reference_charts() -> Dict[str, ReferenceChart]:
         "global_baseline_2000": ReferenceChart(
             key="global_baseline_2000",
             name="Global Baseline 2000-01-01",
+            date=date(2000, 1, 1),
             datetime=datetime(2000, 1, 1, 0, 0, 0, tzinfo=utc),
             latitude=0.0,
             longitude=0.0,
