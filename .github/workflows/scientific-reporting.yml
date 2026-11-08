@@ -4,14 +4,14 @@ on:
   push:
     branches: [ main, develop, dev ]
     paths:
-      - 'libs/models/**'
+      - 'libs/vedic_astrology_core/stats/**'
       - 'scripts/generate_artifacts.py'
       - 'reports/**'
       - 'studies/**'
   pull_request:
     branches: [ main, develop ]
     paths:
-      - 'libs/models/**'
+      - 'libs/vedic_astrology_core/stats/**'
       - 'scripts/generate_artifacts.py'
       - 'reports/**'
       - 'studies/**'

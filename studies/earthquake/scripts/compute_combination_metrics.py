@@ -2,7 +2,13 @@
 from datetime import datetime, timedelta  # noqa: F401
 
 #!/usr/bin/env python3  # noqa: E265
-"""Compute activation frequency and earthquake overlap for all combinations."""
+"""Compute activation frequency and earthquake overlap for all combinations.
+
+LEGACY: this is the withdrawn combination-catalogue analysis (CORRECTIONS.md,
+review S1-17). Its 2x2 chi-square assumes independent days and its events
+are not declustered. It is kept only to reproduce the withdrawn table; the
+current analysis is ``studies/earthquake/scripts/pipeline.py``.
+"""
 
 import sys
 
@@ -15,7 +21,25 @@ import numpy as np
 root = Path(__file__).resolve().parents[3]  # repo root
 sys.path.insert(0, str(root))
 
-from libs.models.statistics import calculate_chi_square, apply_fdr_correction
+from scipy.stats import chi2_contingency
+
+sys.path.insert(0, str(root / "libs"))
+from vedic_astrology_core.stats.multiplicity import adjust
+
+
+def calculate_chi_square(a, b, c, d):
+    """Return the uncorrected 2x2 chi-square p-value (1.0 if undefined)."""
+    table = np.array([[a, b], [c, d]], dtype=float)
+    if table.sum() == 0 or (table.sum(axis=0) == 0).any() or (
+        table.sum(axis=1) == 0
+    ).any():
+        return 1.0
+    return float(chi2_contingency(table, correction=False)[1])
+
+
+def apply_fdr_correction(p, method="fdr_bh"):
+    """Return Benjamini-Hochberg q-values."""
+    return adjust(np.asarray(p, dtype=float), "bh")
 from studies._paths import study_data_dir
 
 # Paths

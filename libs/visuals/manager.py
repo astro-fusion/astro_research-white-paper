@@ -77,11 +77,12 @@ async def run_visuals_generation(output_dir: str):
             The system is built using Python.
             Modules:
             - src.data: Handlers for Yahoo Finance and Swiss Ephemeris.
-            - src.models: Statistical tests (stationarity, causality).
+            - vedic_astrology_core.stats: Statistical tests (nulls, rates).
             - libs.visuals: Diagram generation system with plugins for
               PaperBanana, Mermaid, LaTeX.
             - research/scripts: CLI entry points.
-            Data flows from libs.models -> libs.visuals -> research/reports/.
+            Data flows from vedic_astrology_core.stats -> libs.visuals ->
+            research/reports/.
             """,
             intent=(
                 "A class diagram or component diagram showing the "
