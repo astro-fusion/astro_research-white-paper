@@ -6,8 +6,12 @@
 project:
   type: website
   output-dir: _site
+  resources:
+    - site/data/**
+    - site/components/**
   render:
     - site/*.qmd
+    - site/explore/*.qmd
     - studies/*/paper/*.qmd
     - studies/*/paper/*.md
     - papers/*.qmd
@@ -50,10 +54,28 @@ website:
             href: studies/numerology_vs_astrology/paper/numerology_planet_timeline.qmd
           - text: "Remedy conflict matrix"
             href: studies/remedy_conflict_matrix/paper/remedy_collision_logic.md
+          - text: "Mundane"
+            href: site/mundane.qmd
+          - text: "Mundane atlas"
+            href: site/explore/atlas.qmd
           - text: "Cross-study papers"
             href: papers/VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.qmd
-      - text: "Mundane"
-        href: site/mundane.qmd
+      - text: "Explore"
+        menu:
+          - text: "All explorers"
+            href: site/explore/index.qmd
+          - text: "Sky and events"
+            href: site/explore/sky-events.qmd
+          - text: "Indicator effects"
+            href: site/explore/effects.qmd
+          - text: "Markets"
+            href: site/explore/markets.qmd
+          - text: "Mundane atlas"
+            href: site/explore/atlas.qmd
+          - text: "Principles browser"
+            href: site/principles.qmd
+          - text: "Numerology and the Moon"
+            href: site/explore/numerology.qmd
       - text: "Contribute"
         href: site/contribute.qmd
       - text: "Corrections"
@@ -67,9 +89,11 @@ website:
 format:
   # Interactive HTML format for web publication
   html:
+    # Dark first: the first variant listed is the default. Token values from
+    # af-design (see the comment at the top of each SCSS file).
     theme:
-      light: cosmo
-      dark: darkly
+      dark: [darkly, site/theme/astrofusion-dark.scss, site/theme/astrofusion.scss]
+      light: [cosmo, site/theme/astrofusion-light.scss, site/theme/astrofusion.scss]
     toc: true
     toc-depth: 3
     toc-title: "Table of Contents"
@@ -98,9 +122,8 @@ format:
     anchor-sections: true
     smooth-scroll: true
     # css: styles/custom.css
-    # Interactive features
-    include-after-body:
-      - site/assets/interactive-components.html
+    # Interactive features live in {ojs} cells (site/components/*.ojs); the
+    # old site/assets/interactive-components.html is no longer included.
 
   # PDF format for print publication
   pdf:

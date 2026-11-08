@@ -1,0 +1,48 @@
+---
+title: "Explore"
+subtitle: "Filter, compare and look closely, in the browser"
+description: "Index of the interactive explorers and the small derived datasets they read."
+---
+
+Each explorer reads the same artifacts as the papers, exported to small files
+under `site/data/` by `scripts/export_site_data.py`, and runs entirely in your
+browser. Every explorer has a static twin figure in the matching paper where
+one exists, and ends with a footer giving the data hash, commit and seed.
+
+| Explorer | What it shows | Filters | Chart types |
+|---|---|---|---|
+| [Sky and events](sky-events.qmd) | Sidereal longitudes of the nine grahas above, earthquakes or market extreme-move days below, linked by brushing | event series, catalogue (raw, GK, NN), indicator, date range, planets | line or zodiac wheel |
+| [Indicator effects](effects.qmd) | Every pre-registered test of every study, with intervals and corrected q-values | study, outcome or catalogue, period | forest plot or heatmap |
+| [Markets](markets.qmd) | World Bank monthly gold and silver with indicator activity, and forward-move classes during and outside an indicator | metal, indicator, horizon | bars, violin or heatmap by year |
+| [Mundane atlas](atlas.qmd) | Candidate national charts by confidence, events per country, dasha timelines | colour by, country, candidate chart | map, bar, timeline |
+| [Principles](../principles.qmd) | Every rule file with plain-word conditions, sources and reference cases | domain, tier, status, source kind, search | by domain or by source |
+| [Numerology and the Moon](numerology.qmd) | Day-by-day numerology planet against the Moon's sidereal longitude | year | planet strips or step lines |
+
+## The data behind the explorers
+
+All files are derived and small. None republishes a market price or return:
+the market files carry only indicator flags, an extreme-move flag, the sign of
+the day's move and forward-move quintile classes.
+
+```{ojs}
+files = [
+  ["results.json", "Effect sizes, intervals, p- and q-values of every study; status strip", "Repository licence (results of this project)"],
+  ["market_gold.json", "Daily indicator flags, extreme-move flag, sign, forward-move quintile classes (gold)", "Derived classes and flags only; Yahoo Finance series not redistributed"],
+  ["market_silver.json", "The same for silver", "Derived classes and flags only; Yahoo Finance series not redistributed"],
+  ["pinksheet_monthly.json", "World Bank monthly gold and silver prices (USD per troy ounce)", "CC BY 4.0, World Bank Commodity Price Data (The Pink Sheet)"],
+  ["earthquake.json", "Declustering flags, time, place and Mw of the analysed USGS events; indicator windows", "Public domain (USGS); windows computed with the Swiss Ephemeris"],
+  ["ephemeris_monthly.json", "Sidereal longitudes of the nine grahas on the 1st of each month, 1976-2026", "Computed with the Swiss Ephemeris"],
+  ["mundane_countries.json", "Countries, candidate charts, event counts by type, sign-level feature summary", "CC BY 4.0 (AstroFusion mundane dataset)"],
+  ["mundane_dasha.json", "Vimshottari mahadashas and antardashas for every candidate chart with a stated time", "CC BY 4.0 inputs; computed with the Swiss Ephemeris"],
+  ["rules.json", "Every rule file, its plain-word conditions and reference-case outcomes", "Repository licence"],
+  ["numerology_daily.json", "Daily numerology planet, Moon longitude and nakshatra lord, 2020-2024", "Computed with the Swiss Ephemeris"]
+].map(([file, contents, licence]) => ({ file, contents, licence }))
+Inputs.table(files, { columns: ["file", "contents", "licence"], format: {
+  file: (f) => htl.html`<a href=${`../data/${f}`}><code>${f}</code></a>` }, rows: 12 })
+```
+
+Regenerate them with
+`PYTHONPATH=libs:src:. python scripts/export_site_data.py --seed 42`.
+The World Bank series is cited as: World Bank, *Commodity Price Data (The
+Pink Sheet)*, monthly, CC BY 4.0,
+<https://www.worldbank.org/en/research/commodity-markets>.

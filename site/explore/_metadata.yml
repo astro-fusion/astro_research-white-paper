@@ -1,0 +1,9 @@
+# Explorer pages: Observable JS only. The cells run in the browser, so these
+# pages need no Python (or any engine) at render time.
+engine: markdown
+echo: false
+toc: false
+number-sections: false
+page-layout: full
+code-tools: false
+format-links: false

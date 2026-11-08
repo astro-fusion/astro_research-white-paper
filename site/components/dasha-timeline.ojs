@@ -1,0 +1,53 @@
+// Dasha timeline: Vimshottari mahadashas (top row) and antardashas (bottom
+// row) for one candidate national chart, coloured by lord with direct labels
+// where they fit, a rule at today's date and a tooltip on every period.
+//
+// dashaTimeline(chart, {palette, width, from, to})
+//   chart: one entry of mundane_dasha.json "charts"
+
+dashaTimeline = (chart, { palette, width = 900, from = null, to = null } = {}) => {
+  const parse = (s) => new Date(s + "T00:00:00Z");
+  const mds = chart.mahadashas.map((d) => ({ ...d, row: "Mahadasha", s: parse(d.start), e: parse(d.end) }));
+  const ads = chart.mahadashas.flatMap((m) =>
+    m.sub.map((a) => ({ ...a, md: m.lord, row: "Antardasha", s: parse(a.start), e: parse(a.end) })));
+  const birth = new Date(chart.moment_utc);
+  const x0 = from || birth;
+  const x1 = to || new Date(Math.min(+mds[mds.length - 1].e, +birth + 120 * 365.25 * 864e5));
+  const inView = (d) => d.e > x0 && d.s < x1;
+  const name = (id) => (palette.planetInfo(id) || { name: id }).name;
+  const abbr = (id) => (palette.planetInfo(id) || { abbr: id }).abbr;
+  const fmt = d3.utcFormat("%Y-%m-%d");
+  const today = new Date();
+  const xScale = d3.scaleUtc().domain([x0, x1]).range([0, width - 110]);
+  const fits = (d, px) => xScale(Math.min(+d.e, +x1)) - xScale(Math.max(+d.s, +x0)) > px;
+  return Plot.plot({
+    width,
+    height: 150,
+    marginLeft: 90,
+    style: { background: "transparent", color: palette.ink, fontFamily: "Inter, -apple-system, sans-serif" },
+    x: { type: "utc", domain: [x0, x1], label: null, grid: false },
+    y: { domain: ["Mahadasha", "Antardasha"], label: null },
+    color: { type: "identity" },
+    marks: [
+      Plot.barX(mds.filter(inView), {
+        x1: (d) => Math.max(+d.s, +x0), x2: "e", y: "row",
+        fill: (d) => palette.planet(d.lord), inset: 1, rx: 2,
+        title: (d) => `${name(d.lord)} mahadasha\n${fmt(d.s)} to ${fmt(d.e)}`
+      }),
+      Plot.barX(ads.filter(inView), {
+        x1: (d) => Math.max(+d.s, +x0), x2: "e", y: "row",
+        fill: (d) => palette.planet(d.lord), fillOpacity: 0.85, inset: 1,
+        title: (d) => `${name(d.md)} / ${name(d.lord)} antardasha\n${fmt(d.s)} to ${fmt(d.e)}`
+      }),
+      Plot.text(mds.filter((d) => inView(d) && fits(d, 26)), {
+        x: (d) => new Date((Math.max(+d.s, +x0) + Math.min(+d.e, +x1)) / 2), y: "row",
+        text: (d) => abbr(d.lord), fontWeight: 600,
+        fill: (d) => (String(d.lord).toUpperCase() === "JUPITER" ? "#0b0b0b" : "#ffffff")
+      }),
+      Plot.ruleX(today > x0 && today < x1 ? [today] : [], { stroke: palette.ink, strokeWidth: 2 }),
+      Plot.text(today > x0 && today < x1 ? [today] : [], {
+        x: (d) => d, frameAnchor: "top", dy: -2, text: () => "today", fill: palette.ink2
+      })
+    ]
+  });
+}

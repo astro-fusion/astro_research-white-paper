@@ -1,0 +1,150 @@
+---
+title: "Numerology and the Moon"
+subtitle: "A step function of the calendar against a smooth motion of the sky"
+description: "Day-by-day numerology planet against the Moon's sidereal longitude and nakshatra lord, 2020-2024."
+---
+
+Date numerology assigns each calendar day a number (the day of the month
+reduced to one digit) and through it a planet; the label jumps at every
+midnight and repeats every month. The Moon's nakshatra lord comes from the
+Moon's sidereal longitude, which moves smoothly through the 27 nakshatras of
+13 degrees 20 minutes each, about one a day. The study asked whether the two
+labels agree more often than chance; its pre-registered answer is in the
+[paper](../../studies/numerology_vs_astrology/paper/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.qmd).
+
+::: {.af-howto}
+**How to read this.** Move the slider to pick a year. The upper panel is the
+Moon's sidereal longitude at noon UTC each day, rising smoothly and wrapping
+at 360 degrees once a sidereal month; the faint lines are nakshatra
+boundaries. The lower panel shows, for each day, the planet that date
+numerology assigns (top strip) and the lord of the Moon's nakshatra (bottom
+strip), coloured by planet; a dark tick marks a day on which they agree. The
+calendar strip repeats its pattern every month while the Moon's drifts
+against it, so agreements fall where the two cycles happen to line up. Switch
+to step lines to see the same two labels as series.
+:::
+
+```{ojs}
+{{< include ../components/theme.ojs >}}
+```
+
+```{ojs}
+{{< include ../components/provenance.ojs >}}
+```
+
+```{ojs}
+num = FileAttachment("../data/numerology_daily.json").json()
+```
+
+::: {.af-filters}
+
+```{ojs}
+viewof year = Inputs.range([2020, 2024], { label: "Year", step: 1, value: 2024 })
+```
+
+```{ojs}
+viewof chart = Inputs.radio(["Planet strips", "Step lines"], { label: "Chart", value: "Planet strips" })
+```
+
+:::
+
+```{ojs}
+dayRows = {
+  const c = num.columns;
+  return c.date.map((t, i) => ({
+    date: new Date(t + "T12:00:00Z"), day0: new Date(t + "T00:00:00Z"), year: +t.slice(0, 4),
+    number: c.number[i], numPlanet: c.num_planet[i], nakLord: c.nak_lord[i],
+    moon: c.moon[i], nakshatra: c.nakshatra[i]
+  })).filter((d) => d.year === year);
+}
+planetOrder = PLANETS.map((d) => d.id)
+agree = dayRows.filter((d) => d.numPlanet === d.nakLord)
+expected = {
+  const n = dayRows.length;
+  const pa = d3.rollup(dayRows, (v) => v.length / n, (d) => d.numPlanet);
+  const pb = d3.rollup(dayRows, (v) => v.length / n, (d) => d.nakLord);
+  return d3.sum(planetOrder, (p) => (pa.get(p) || 0) * (pb.get(p) || 0));
+}
+```
+
+```{ojs}
+numChart = {
+  const w = Math.max(340, Math.min(width, 1200));
+  const margins = { marginLeft: 120, marginRight: 24 };
+  const x = { type: "utc", domain: [new Date(Date.UTC(year, 0, 1)), new Date(Date.UTC(year + 1, 0, 1))], label: null };
+  const moonPlot = Plot.plot({
+    ...margins, width: w, height: 240, marginTop: 24, style: plotStyle, x,
+    y: { domain: [0, 360], ticks: d3.range(0, 361, 60), label: "Moon, sidereal longitude (deg)" },
+    color: { type: "identity" },
+    marks: [
+      Plot.ruleY(d3.range(0, 360, 360 / 27), { stroke: palette.grid }),
+      Plot.line(unwrapRows(dayRows, "moon"), { x: "date", y: "moon", stroke: palette.planet("MOON"), strokeWidth: 2 }),
+      Plot.tip(dayRows, Plot.pointerX({ x: "date", y: "moon",
+        title: (d) => `${d.day0.toISOString().slice(0, 10)}\nMoon ${d.moon.toFixed(1)} deg, ${d.nakshatra}\nnakshatra lord ${d.nakLord}; numerology ${d.number} (${d.numPlanet})` }))
+    ]
+  });
+  const ROWS = ["Numerology planet", "Moon's nakshatra lord"];
+  const strips = dayRows.flatMap((d) => [
+    { ...d, row: ROWS[0], planet: d.numPlanet }, { ...d, row: ROWS[1], planet: d.nakLord }
+  ]);
+  const lower = chart === "Planet strips"
+    ? Plot.plot({
+        ...margins, width: w, height: 150, style: plotStyle, x,
+        y: { domain: [...ROWS, "Agree"], label: null },
+        color: { type: "identity" },
+        marks: [
+          Plot.barX(strips, { x1: "day0", x2: (d) => d3.utcDay.offset(d.day0, 1), y: "row", fill: (d) => palette.planet(d.planet),
+            title: (d) => `${d.day0.toISOString().slice(0, 10)}: ${d.row} ${d.planet}`, tip: true }),
+          Plot.tickX(agree, { x: "date", y: () => "Agree", stroke: palette.ink, strokeWidth: 2,
+            title: (d) => `${d.day0.toISOString().slice(0, 10)}: both ${d.nakLord}` })
+        ]
+      })
+    : Plot.plot({
+        ...margins, width: w, height: 300, style: plotStyle, x,
+        y: { domain: planetOrder, label: null, tickFormat: (p) => palette.planetInfo(p).name, grid: true },
+        color: { type: "identity" },
+        marks: [
+          Plot.line(dayRows, { x: "day0", y: "numPlanet", curve: "step-after", stroke: palette.series[1], strokeWidth: 1.5 }),
+          Plot.line(dayRows, { x: "day0", y: "nakLord", curve: "step-after", stroke: palette.series[0], strokeWidth: 1.5, strokeDasharray: "4 2" }),
+          Plot.tip(dayRows, Plot.pointerX({ x: "day0", y: "nakLord",
+            title: (d) => `${d.day0.toISOString().slice(0, 10)}: numerology ${d.numPlanet}, nakshatra lord ${d.nakLord}` }))
+        ]
+      });
+  return htl.html`<div class="af-chart" id="numerology-chart">${moonPlot}${lower}</div>`;
+}
+```
+
+```{ojs}
+chart === "Planet strips"
+  ? planetLegend(planetOrder)
+  : swatchLegend([
+      { color: palette.series[1], label: "Numerology planet (calendar)" },
+      { color: palette.series[0], label: "Moon's nakshatra lord (sky)", dashed: true }
+    ])
+```
+
+```{ojs}
+htl.html`<p class="af-caption">${year}: the two labels agree on ${agree.length} of
+  ${dayRows.length} days (${(100 * agree.length / dayRows.length).toFixed(1)}%); the agreement
+  expected by chance from how often each label occurs that year is
+  ${(100 * expected).toFixed(1)}%. Over 2020-2024 the study's Cohen's kappa is
+  ${num.kappa.kappa.toFixed(3)} (90% interval ${num.kappa.ci90_tost[0].toFixed(3)} to
+  ${num.kappa.ci90_tost[1].toFixed(3)}), against a pre-registered equivalence margin of
+  plus or minus ${num.kappa.margin_kappa}.</p>`
+```
+
+<details><summary>Table view</summary>
+
+```{ojs}
+Inputs.table(dayRows.map((d) => ({ date: d.day0.toISOString().slice(0, 10), number: d.number,
+  numerology: d.numPlanet, moon: d.moon, nakshatra: d.nakshatra, lord: d.nakLord })), { rows: 12 })
+```
+
+</details>
+
+```{ojs}
+provenance(num._meta, {
+  twin: [],
+  note: "the paper derives the agreement analytically and has no step-versus-smooth figure yet; this explorer is the figure's interactive form"
+})
+```

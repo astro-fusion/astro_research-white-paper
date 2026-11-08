@@ -1,0 +1,92 @@
+// Zodiac wheel: sidereal positions on a twelve-sign wheel with the 27
+// nakshatra divisions. 0 degrees Aries sits at nine o'clock and longitude
+// increases counter-clockwise, as in a drawn chart. Each graha carries a
+// direct label (abbreviation) and a <title> tooltip; Ketu is drawn hollow.
+//
+// zodiacWheel(positions, {palette, size, caption})
+//   positions: [{id: "MARS", lon: 123.4, retro: false}, ...]
+//   palette:   the `palette` cell from theme.ojs
+
+SIGNS = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra",
+         "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"]
+
+SIGN_ABBR = ["Ar", "Ta", "Ge", "Cn", "Le", "Vi", "Li", "Sc", "Sg", "Cp", "Aq", "Pi"]
+
+formatLon = (lon) => {
+  const s = Math.floor(lon / 30);
+  const d = lon - 30 * s;
+  return `${SIGNS[s]} ${Math.floor(d)}°${String(Math.round((d % 1) * 60)).padStart(2, "0")}'`;
+}
+
+zodiacWheel = (positions, { palette, size = 420, caption = "" } = {}) => {
+  const r = size / 2;
+  const outer = r - 8;
+  const signRing = outer - 30;
+  const nakRing = signRing - 12;
+  const svg = d3.create("svg")
+    .attr("viewBox", [-r, -r, size, size])
+    .attr("width", size)
+    .attr("height", size)
+    .attr("role", "img")
+    .attr("aria-label", caption || "Zodiac wheel of sidereal positions")
+    .style("font", "12px Inter, -apple-system, sans-serif");
+  // Longitude to screen angle: 0 Aries at 9 o'clock, counter-clockwise.
+  const ang = (lon) => Math.PI - (lon * Math.PI) / 180;
+  const pt = (lon, rad) => [rad * Math.cos(ang(lon)), -rad * Math.sin(ang(lon))];
+
+  svg.append("circle").attr("r", outer).attr("fill", "none").attr("stroke", palette.axis);
+  svg.append("circle").attr("r", signRing).attr("fill", "none").attr("stroke", palette.axis);
+  svg.append("circle").attr("r", nakRing).attr("fill", "none").attr("stroke", palette.grid);
+
+  // Sign boundaries and labels.
+  for (let i = 0; i < 12; i++) {
+    const [x1, y1] = pt(i * 30, signRing);
+    const [x2, y2] = pt(i * 30, outer);
+    svg.append("line").attr("x1", x1).attr("y1", y1).attr("x2", x2).attr("y2", y2)
+      .attr("stroke", palette.axis);
+    const [lx, ly] = pt(i * 30 + 15, (outer + signRing) / 2);
+    svg.append("text").attr("x", lx).attr("y", ly).attr("dy", "0.35em")
+      .attr("text-anchor", "middle").attr("fill", palette.ink2).text(SIGN_ABBR[i])
+      .append("title").text(SIGNS[i]);
+  }
+  // Nakshatra ticks (13 deg 20 min each).
+  for (let i = 0; i < 27; i++) {
+    const lon = (i * 360) / 27;
+    const [x1, y1] = pt(lon, nakRing);
+    const [x2, y2] = pt(lon, signRing);
+    svg.append("line").attr("x1", x1).attr("y1", y1).attr("x2", x2).attr("y2", y2)
+      .attr("stroke", palette.grid);
+  }
+
+  // Planets: stagger radius when two bodies sit within 6 degrees.
+  const sorted = [...positions].filter((d) => Number.isFinite(d.lon)).sort((a, b) => a.lon - b.lon);
+  let lane = 0;
+  const lanes = sorted.map((d, i) => {
+    lane = i > 0 && Math.abs(d.lon - sorted[i - 1].lon) < 6 ? (lane + 1) % 3 : 0;
+    return { ...d, lane };
+  });
+  const g = svg.append("g");
+  for (const d of lanes) {
+    const info = palette.planetInfo(d.id) || { name: d.id, abbr: d.id.slice(0, 2) };
+    const color = palette.planet(d.id);
+    const rad = nakRing - 22 - d.lane * 26;
+    const [x, y] = pt(d.lon, rad);
+    const [tx, ty] = pt(d.lon, nakRing);
+    g.append("line").attr("x1", x).attr("y1", y).attr("x2", tx).attr("y2", ty)
+      .attr("stroke", color).attr("stroke-width", 1).attr("stroke-opacity", 0.6);
+    const mark = g.append("g").attr("transform", `translate(${x},${y})`);
+    mark.append("circle").attr("r", 9)
+      .attr("fill", info.dashed ? palette.surface : color)
+      .attr("stroke", info.dashed ? color : palette.surface)
+      .attr("stroke-width", 2)
+      .attr("stroke-dasharray", info.dashed ? "3 2" : null);
+    mark.append("text").attr("x", 13).attr("dy", "0.35em").attr("fill", palette.ink)
+      .attr("font-weight", 600).text(info.abbr + (d.retro ? " R" : ""));
+    mark.append("title").text(`${info.name}: ${formatLon(d.lon)}${d.retro ? ", retrograde" : ""}`);
+  }
+  if (caption) {
+    svg.append("text").attr("y", 4).attr("text-anchor", "middle")
+      .attr("fill", palette.ink2).text(caption);
+  }
+  return svg.node();
+}

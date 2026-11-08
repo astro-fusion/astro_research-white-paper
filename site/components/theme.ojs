@@ -1,0 +1,116 @@
+// Shared palette and chart chrome for every explorer.
+//
+// One palette across the site. The hex values mirror site/theme/*.scss
+// ($af-series, $af-seq, chrome roles); tests/test_site_pages.py checks that
+// they stay identical. Both modes are validated with the dataviz skill's
+// validate_palette.js against the chart surfaces below (light #f8f9fa,
+// dark #1a163a): every check passes; three light slots sit below 3:1, so
+// every chart ships direct labels or a table view.
+
+darkMode = Generators.observe((notify) => {
+  const read = () => document.body.classList.contains("quarto-dark");
+  notify(read());
+  const mo = new MutationObserver(() => notify(read()));
+  mo.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+  return () => mo.disconnect();
+})
+
+PALETTES = ({
+  light: {
+    series: ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#6250d6", "#e34948"],
+    seq: ["#cde2fb", "#b7d3f6", "#9ec5f4", "#86b6ef", "#6da7ec", "#5598e7", "#3987e5", "#2a78d6", "#1c5cab"],
+    div: ["#2a78d6", "#f0efec", "#e34948"],
+    surface: "#ffffff", ink: "#0b0b0b", ink2: "#52514e", muted: "#6c6a74",
+    grid: "#e6e6ee", axis: "#c3c2b7", none: "#e6e6ee"
+  },
+  dark: {
+    series: ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300", "#9085e9", "#e66767"],
+    seq: ["#104281", "#184f95", "#1c5cab", "#256abf", "#2a78d6", "#3987e5", "#5598e7", "#6da7ec", "#86b6ef"],
+    div: ["#3987e5", "#383835", "#e66767"],
+    surface: "#1a163a", ink: "#f0efec", ink2: "#c3c2b7", muted: "#9a98a8",
+    grid: "#2c2950", axis: "#433e72", none: "#2c2950"
+  }
+})
+
+// The nine grahas on eight validated hues, in slot order. Rahu and Ketu are
+// always 180 degrees apart and share slot 3; Ketu is drawn dashed or hollow
+// and is always direct-labelled, so identity never rests on colour alone.
+PLANETS = [
+  { id: "MOON", name: "Moon", abbr: "Mo", slot: 0 },
+  { id: "SUN", name: "Sun", abbr: "Su", slot: 1 },
+  { id: "RAHU", name: "Rahu", abbr: "Ra", slot: 2 },
+  { id: "KETU", name: "Ketu", abbr: "Ke", slot: 2, dashed: true },
+  { id: "JUPITER", name: "Jupiter", abbr: "Ju", slot: 3 },
+  { id: "VENUS", name: "Venus", abbr: "Ve", slot: 4 },
+  { id: "MERCURY", name: "Mercury", abbr: "Me", slot: 5 },
+  { id: "SATURN", name: "Saturn", abbr: "Sa", slot: 6 },
+  { id: "MARS", name: "Mars", abbr: "Ma", slot: 7 }
+]
+
+palette = {
+  const p = PALETTES[darkMode ? "dark" : "light"];
+  const byId = new Map(PLANETS.map((d) => [d.id, d]));
+  return {
+    ...p,
+    mode: darkMode ? "dark" : "light",
+    planet: (id) => p.series[(byId.get(String(id).toUpperCase()) || { slot: 0 }).slot],
+    planetInfo: (id) => byId.get(String(id).toUpperCase()),
+    active: p.series[1],
+    inactive: p.series[0],
+    period: { explore: p.series[0], confirm: p.series[1], full: p.series[2] }
+  };
+}
+
+// Plot defaults: transparent background on the chart card, system ink.
+plotStyle = ({
+  background: "transparent",
+  color: palette.ink,
+  fontFamily: "Inter, -apple-system, 'Segoe UI', sans-serif",
+  fontSize: "12px",
+  overflow: "visible"
+})
+
+// A colour legend made of HTML (swatch + label), so text keeps text tokens.
+swatchLegend = (items) => htl.html`<div class="af-legend" role="list">${items.map(
+  (d) => htl.html`<span role="listitem"><span class="af-swatch" style=${{
+    background: d.hollow ? "transparent" : d.color,
+    border: `2px ${d.dashed ? "dashed" : "solid"} ${d.color}`
+  }}></span>${d.label}</span>`
+)}</div>`
+
+planetLegend = (ids) => swatchLegend(
+  PLANETS.filter((d) => !ids || ids.includes(d.id)).map((d) => ({
+    color: palette.series[d.slot], label: `${d.name} (${d.abbr})`, dashed: d.dashed
+  }))
+)
+
+// Wrap-aware rows for longitude lines: insert a gap where a body crosses
+// 360 -> 0 so the line does not draw a vertical stroke across the panel.
+unwrapRows = (rows, key = "lon") => {
+  const out = [];
+  for (let i = 0; i < rows.length; i++) {
+    if (i > 0 && Math.abs(rows[i][key] - rows[i - 1][key]) > 180) {
+      out.push({ ...rows[i], [key]: NaN });
+    }
+    out.push(rows[i]);
+  }
+  return out;
+}
+
+// Turn a 0/1 array aligned with dates into [start, end) runs.
+runsOf = (dates, flags) => {
+  const out = [];
+  let start = null;
+  for (let i = 0; i < flags.length; i++) {
+    if (flags[i] && start === null) start = dates[i];
+    if (!flags[i] && start !== null) { out.push([start, dates[i]]); start = null; }
+  }
+  if (start !== null) out.push([start, dates[dates.length - 1]]);
+  return out;
+}
+
+columnsToRows = (cols) => {
+  const keys = Object.keys(cols);
+  const n = cols[keys[0]].length;
+  return Array.from({ length: n }, (_, i) => Object.fromEntries(keys.map((k) => [k, cols[k][i]])));
+}

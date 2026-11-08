@@ -1,0 +1,211 @@
+---
+title: "Markets"
+subtitle: "Gold and silver against the pre-registered planetary indicators"
+description: "World Bank monthly gold and silver prices with indicator activity by month, and the distribution of forward-move classes during and outside each indicator."
+---
+
+The upper panel is the monthly average price from the World Bank's Commodity
+Price Data (the "Pink Sheet", CC BY 4.0) on a log scale. The orange bands show
+how much of each month the selected indicator was active, computed from the
+daily flags of the study (darker means more of the month). The lower panel
+asks the study's question in a simpler form: after days when the indicator
+was active, did the next weeks' move fall into a different part of the
+distribution than after other days?
+
+::: {.af-howto}
+**How to read this.** Every trading day's forward move (5, 21 or 63 trading
+days ahead) is placed into one of five equal-sized classes, from the lowest
+fifth (1) to the highest fifth (5). If the indicator carried no information,
+days during the indicator would spread evenly, about 20% in each class, just
+like days outside it; the thin rule marks 20%. Bars that rise above the rule
+in class 5 and fall below it in class 1 would point to stronger moves during
+the indicator. The heatmap splits the same comparison by year (red: more
+frequent during the indicator than outside, blue: less), which shows whether
+any difference is steady or confined to a few years. Prices from Yahoo
+Finance used by the study are not republished; only these classes and signs
+are.
+:::
+
+```{ojs}
+{{< include ../components/theme.ojs >}}
+```
+
+```{ojs}
+{{< include ../components/provenance.ojs >}}
+```
+
+```{ojs}
+pink = FileAttachment("../data/pinksheet_monthly.json").json()
+goldDaily = FileAttachment("../data/market_gold.json").json()
+silverDaily = FileAttachment("../data/market_silver.json").json()
+```
+
+::: {.af-filters}
+
+```{ojs}
+viewof metal = Inputs.radio(new Map([["Gold", "gold"], ["Silver", "silver"]]), { label: "Metal", value: "gold" })
+```
+
+```{ojs}
+daily = metal === "gold" ? goldDaily : silverDaily
+viewof indicator = Inputs.select(new Map(daily.indicators.map((d) => [d.label, d.id])), {
+  label: "Indicator", value: metal === "gold" ? "jupiter_retrograde" : "venus_retrograde"
+})
+```
+
+```{ojs}
+viewof horizon = Inputs.radio(new Map([["5 days", 5], ["21 days", 21], ["63 days", 63]]), { label: "Forward horizon", value: 21 })
+```
+
+```{ojs}
+viewof chart = Inputs.radio(["Bars", "Violin", "Heatmap by year"], { label: "Chart", value: "Bars" })
+```
+
+:::
+
+```{ojs}
+spec = daily.indicators.find((d) => d.id === indicator)
+days = {
+  const c = daily.columns, q = c[`fwd${horizon}_q`];
+  return c.date.map((t, i) => ({
+    date: new Date(t + "T00:00:00Z"), month: t.slice(0, 7), year: +t.slice(0, 4),
+    active: c[indicator][i] === 1, cls: q[i], up: c.sign[i] > 0, extreme: c.extreme[i] === 1
+  }));
+}
+monthShare = d3.rollups(days, (v) => d3.mean(v, (d) => d.active), (d) => d.month)
+  .map(([m, share]) => {
+    const a = new Date(m + "-01T00:00:00Z");
+    return { a, b: d3.utcMonth.offset(a, 1), share };
+  })
+firstMonth = days[0].month
+prices = pink.columns.month.map((m, i) => ({ date: new Date(m + "-15T00:00:00Z"), month: m, price: pink.columns[metal][i] }))
+  .filter((d) => d.month >= firstMonth && d.price != null)
+STATES = ["During the indicator", "Outside it"]
+classShares = STATES.flatMap((s, k) => {
+  const v = days.filter((d) => d.cls != null && d.active === (k === 0));
+  return [1, 2, 3, 4, 5].map((cls) => ({ state: s, cls, share: v.length ? v.filter((d) => d.cls === cls).length / v.length : 0, n: v.length }));
+})
+stateColor = (s) => (s === STATES[0] ? palette.active : palette.inactive)
+```
+
+```{ojs}
+priceChart = {
+  const w = Math.max(340, Math.min(width, 1200));
+  const plot = Plot.plot({
+    width: w, height: 280, marginLeft: 60, marginRight: 24, style: plotStyle,
+    x: { type: "utc", label: null },
+    y: { type: "log", label: `${metal === "gold" ? "Gold" : "Silver"}, USD per troy ounce (log)`, grid: true },
+    color: { type: "identity" },
+    marks: [
+      Plot.rect(monthShare.filter((d) => d.share > 0), {
+        x1: "a", x2: "b", fill: palette.active, fillOpacity: (d) => 0.08 + 0.4 * d.share,
+        title: (d) => `${d.a.toISOString().slice(0, 7)}: indicator active on ${(100 * d.share).toFixed(0)}% of trading days`
+      }),
+      Plot.line(prices, { x: "date", y: "price", stroke: palette.ink2, strokeWidth: 2 }),
+      Plot.tip(prices, Plot.pointerX({ x: "date", y: "price", title: (d) => `${d.month}: ${d.price.toFixed(2)} USD/oz (World Bank)` }))
+    ]
+  });
+  return htl.html`<div class="af-chart" id="markets-price">${plot}</div>`;
+}
+```
+
+```{ojs}
+distChart = {
+  const w = Math.max(340, Math.min(width, 1200));
+  let plot;
+  if (chart === "Bars") {
+    plot = Plot.plot({
+      width: w, height: 300, marginLeft: 56, marginBottom: 44, style: plotStyle,
+      fx: { label: "Forward-move class (1 lowest fifth, 5 highest)", domain: [1, 2, 3, 4, 5], labelOffset: 40 },
+      x: { domain: STATES, axis: null, paddingInner: 0.25, paddingOuter: 0.35 }, y: { label: "Share of days", tickFormat: "%", grid: true },
+      color: { type: "identity" },
+      marks: [
+        Plot.barY(classShares, { fx: "cls", x: "state", y: "share", fill: (d) => stateColor(d.state), rx: 4, insetLeft: 1, insetRight: 1,
+          title: (d) => `${d.state}, class ${d.cls}: ${(100 * d.share).toFixed(1)}% of ${d.n} days`, tip: true }),
+        Plot.ruleY([0.2], { stroke: palette.ink2 }),
+        Plot.ruleY([0], { stroke: palette.axis })
+      ]
+    });
+  } else if (chart === "Violin") {
+    plot = Plot.plot({
+      width: w, height: 320, marginLeft: 56, style: plotStyle,
+      fx: { domain: STATES, label: null },
+      x: { label: "Share of days (mirrored)", tickFormat: (v) => `${Math.abs(v * 100).toFixed(0)}%` },
+      y: { domain: [0.6, 5.4], label: "Forward-move class", ticks: [1, 2, 3, 4, 5] },
+      color: { type: "identity" },
+      marks: [
+        Plot.areaX(classShares, { fx: "state", y: "cls", x1: (d) => -d.share / 2, x2: (d) => d.share / 2,
+          fill: (d) => stateColor(d.state), fillOpacity: 0.85, curve: "catmull-rom" }),
+        Plot.ruleX([-0.1, 0.1], { stroke: palette.ink2, strokeOpacity: 0.6 }),
+        Plot.dot(classShares, { fx: "state", y: "cls", x: 0, r: 2, fill: palette.ink,
+          title: (d) => `${d.state}, class ${d.cls}: ${(100 * d.share).toFixed(1)}%`, tip: true })
+      ]
+    });
+  } else {
+    const byYear = d3.groups(days.filter((d) => d.cls != null), (d) => d.year).flatMap(([year, v]) => {
+      const a = v.filter((d) => d.active), o = v.filter((d) => !d.active);
+      return [1, 2, 3, 4, 5].map((cls) => ({
+        year, cls, nA: a.length,
+        diff: a.length >= 10 && o.length >= 10
+          ? a.filter((d) => d.cls === cls).length / a.length - o.filter((d) => d.cls === cls).length / o.length : null
+      }));
+    });
+    const ext = d3.max(byYear, (d) => Math.abs(d.diff ?? 0)) || 0.1;
+    plot = Plot.plot({
+      width: w, height: 260, marginLeft: 56, marginBottom: 40, style: plotStyle,
+      x: { label: null, tickFormat: (y) => (y % 5 === 0 ? String(y) : "") , type: "band" },
+      y: { label: "Forward-move class", domain: [5, 4, 3, 2, 1] },
+      color: { type: "diverging", range: palette.div, domain: [-ext, ext], pivot: 0, legend: true,
+               label: "Share during minus share outside", tickFormat: "+%" },
+      marks: [
+        Plot.cell(byYear, { x: "year", y: "cls", fill: (d) => d.diff ?? NaN, inset: 1, rx: 2,
+          title: (d) => `${d.year}, class ${d.cls}: ${d.diff == null ? "fewer than 10 days on one side" : `${(100 * d.diff).toFixed(1)} points`} (${d.nA} days during)`, tip: true })
+      ]
+    });
+  }
+  return htl.html`<div class="af-chart" id="markets-dist">${plot}</div>`;
+}
+```
+
+```{ojs}
+chart === "Heatmap by year" ? htl.html`` : swatchLegend(STATES.map((s) => ({ color: stateColor(s), label: s })))
+```
+
+```{ojs}
+tiles = {
+  const a = days.filter((d) => d.active), o = days.filter((d) => !d.active);
+  const pct = (v, f) => (v.length ? (100 * v.filter(f).length / v.length).toFixed(1) + "%" : "n/a");
+  return htl.html`<div class="af-status">
+    <div class="af-status-item"><h4>${pct(a, (d) => d.up)} vs ${pct(o, (d) => d.up)}</h4>
+      <span class="af-status-state">Up days during vs outside the indicator</span></div>
+    <div class="af-status-item"><h4>${pct(a, (d) => d.extreme)} vs ${pct(o, (d) => d.extreme)}</h4>
+      <span class="af-status-state">Extreme-move days during vs outside</span></div>
+    <div class="af-status-item"><h4>${a.length.toLocaleString()} of ${days.length.toLocaleString()}</h4>
+      <span class="af-status-state">Trading days with the indicator active</span></div>
+  </div>`;
+}
+```
+
+Indicator definition, as pre-registered:
+
+```{ojs}
+htl.html`<p><strong>${spec.label}</strong>: ${spec.definition}. The registered test for this
+  indicator, with its correction, is in the <a href="effects.html">indicator effects explorer</a>.</p>`
+```
+
+<details><summary>Table view</summary>
+
+```{ojs}
+Inputs.table(classShares.map((d) => ({ ...d, share: +(100 * d.share).toFixed(2) })), {
+  header: { state: "Days", cls: "Class", share: "Share (%)", n: "Days in group" }
+})
+```
+
+</details>
+
+```{ojs}
+provenance([pink._meta, daily._meta], {
+  twin: [`studies/${metal}_market/artifacts/fig_overlay.png`, `studies/${metal}_market/artifacts/fig_event_study.png`],
+  note: "monthly prices: World Bank, Commodity Price Data (The Pink Sheet), CC BY 4.0"
+})
+```

@@ -1,0 +1,309 @@
+---
+title: "Sky and events"
+subtitle: "Smooth planetary motion above, bursty recorded events below"
+description: "Sidereal longitudes of the nine grahas, 1976-2026, linked to the Himalayan-arc earthquake catalogue or to gold and silver extreme-move days."
+---
+
+The upper panel is the sky: the sidereal (Lahiri) longitude of each graha,
+sampled once a month from the project's ephemeris engine. The lower panel is a
+record of events: Himalayan-arc earthquakes above the completeness threshold
+(USGS), or the days on which gold or silver moved more than its own recent
+95th percentile. The shaded bands are the times an indicator from the study's
+pre-registration was active.
+
+::: {.af-howto}
+**How to read this.** Brush (drag across) either panel to select a span of
+time; the other panel follows, and the counts below the chart update. Events
+drawn in orange happened while the selected indicator was active, blue ones
+while it was not. A relationship, if one exists, would show as orange events
+packed more densely inside the bands than blue events outside them; the
+numbers below the chart say how dense, and the gauge shows the registered
+test from the study, which accounts for the length of time each indicator is
+active. The planets move smoothly and predictably; the events do not. Switch
+the sky panel to the zodiac wheel to see the sky at the end of the brushed
+span.
+:::
+
+```{ojs}
+{{< include ../components/theme.ojs >}}
+```
+
+```{ojs}
+{{< include ../components/zodiac-wheel.ojs >}}
+```
+
+```{ojs}
+{{< include ../components/hazard-gauge.ojs >}}
+```
+
+```{ojs}
+{{< include ../components/provenance.ojs >}}
+```
+
+```{ojs}
+eph = FileAttachment("../data/ephemeris_monthly.json").json()
+eq = FileAttachment("../data/earthquake.json").json()
+gold = FileAttachment("../data/market_gold.json").json()
+silver = FileAttachment("../data/market_silver.json").json()
+res = FileAttachment("../data/results.json").json()
+```
+
+::: {.af-filters}
+
+```{ojs}
+viewof series = Inputs.select(new Map([
+  ["Earthquakes, Himalayan arc (USGS)", "earthquake"],
+  ["Gold: extreme-move days", "gold"],
+  ["Silver: extreme-move days", "silver"]
+]), { label: "Event series" })
+```
+
+```{ojs}
+viewof catalogue = Inputs.radio(new Map([["Raw", "raw"], ["GK", "gk"], ["NN", "nn"]]), {
+  label: "Catalogue", value: "gk", disabled: series !== "earthquake"
+})
+```
+
+```{ojs}
+indicatorOptions = series === "earthquake" ? eq.indicators : (series === "gold" ? gold : silver).indicators
+viewof indicator = Inputs.select(new Map(indicatorOptions.map((d) => [d.label, d.id])), { label: "Indicator" })
+```
+
+```{ojs}
+viewof dateFrom = Inputs.date({ label: "From", value: "1976-01-01", min: "1976-01-01", max: "2026-10-31" })
+```
+
+```{ojs}
+viewof dateTo = Inputs.date({ label: "To", value: "2026-10-31", min: "1976-01-01", max: "2026-10-31" })
+```
+
+```{ojs}
+viewof view = Inputs.radio(["Line", "Polar wheel"], { label: "Sky panel", value: "Line" })
+```
+
+:::
+
+```{ojs}
+viewof planets = Inputs.checkbox(new Map(PLANETS.map((d) => [d.name, d.id])), {
+  label: "Planets", value: ["MARS", "SATURN", "KETU"]
+})
+```
+
+```{ojs}
+market = series === "gold" ? gold : series === "silver" ? silver : null
+indicatorSpec = indicatorOptions.find((d) => d.id === indicator) || indicatorOptions[0]
+monthIdx = eph.columns.month.map((m, i) => ({ date: new Date(m + "-01T00:00:00Z"), i }))
+  .filter((r) => r.date >= dateFrom && r.date <= dateTo)
+skyRows = planets.flatMap((id) => unwrapRows(monthIdx.map((r) => ({
+  date: r.date, id, lon: eph.columns[id][r.i], retro: eph.columns[id + "_r"][r.i] === 1
+}))))
+events = {
+  if (series === "earthquake") {
+    const c = eq.events;
+    return c.time.map((t, i) => ({
+      date: new Date(t + ":00Z"), mw: c.mw[i], lat: c.lat[i], lon: c.lon[i],
+      active: c[indicator][i] === 1, keep: catalogue === "raw" || c[catalogue][i] === 1
+    })).filter((d) => d.keep && d.date >= dateFrom && d.date <= dateTo);
+  }
+  const c = market.columns;
+  return c.date.map((t, i) => ({
+    date: new Date(t + "T00:00:00Z"), extreme: c.extreme[i],
+    move: c.sign[i] > 0 ? "up" : "down", active: c[indicator][i] === 1
+  })).filter((d) => d.extreme === 1 && d.date >= dateFrom && d.date <= dateTo);
+}
+windows = {
+  let runs = [];
+  if (series === "earthquake") {
+    runs = (eq.windows[indicator] || []).map(([a, b]) => [new Date(a + ":00Z"), new Date(b + ":00Z")]);
+  } else {
+    const c = market.columns;
+    runs = runsOf(c.date.map((t) => new Date(t + "T00:00:00Z")), c[indicator]);
+  }
+  return runs.filter(([a, b]) => b >= dateFrom && a <= dateTo)
+    .map(([a, b]) => ({ a: a < dateFrom ? dateFrom : a, b: b > dateTo ? dateTo : b }));
+}
+```
+
+```{ojs}
+viewof brushSel = {
+  const w = Math.max(340, Math.min(width, 1200));
+  const margins = { marginLeft: 56, marginRight: 44, marginTop: 12, marginBottom: 32 };
+  const x = { type: "utc", domain: [dateFrom, dateTo], label: null };
+  const band = () => Plot.rect(windows, {
+    x1: "a", x2: "b", fill: palette.active, fillOpacity: 0.22
+  });
+  const info = (id) => palette.planetInfo(id);
+  const panels = [];
+  if (view === "Line") {
+    const last = d3.groups(skyRows.filter((d) => Number.isFinite(d.lon)), (d) => d.id)
+      .map(([, v]) => v[v.length - 1]);
+    panels.push(Plot.plot({
+      ...margins, marginTop: 28, width: w, height: 316, style: plotStyle,
+      x, y: { domain: [0, 360], ticks: d3.range(0, 361, 30), grid: true, label: "Sidereal longitude (deg)" },
+      color: { type: "identity" },
+      marks: [
+        band(),
+        Plot.line(skyRows.filter((d) => !info(d.id).dashed), {
+          x: "date", y: "lon", z: "id", stroke: (d) => palette.planet(d.id), strokeWidth: 1.5
+        }),
+        Plot.line(skyRows.filter((d) => info(d.id).dashed), {
+          x: "date", y: "lon", z: "id", stroke: (d) => palette.planet(d.id), strokeWidth: 1.5,
+          strokeDasharray: "4 3"
+        }),
+        Plot.text(last, {
+          x: "date", y: "lon", text: (d) => info(d.id).abbr, dx: 6, textAnchor: "start",
+          fill: palette.ink, fontWeight: 600
+        }),
+        Plot.tip(skyRows.filter((d) => Number.isFinite(d.lon)), Plot.pointer({
+          x: "date", y: "lon",
+          title: (d) => `${info(d.id).name}: ${d.lon.toFixed(1)} deg${d.retro ? ", retrograde" : ""}\n${d.date.toISOString().slice(0, 7)}`
+        }))
+      ]
+    }));
+  }
+  const quake = series === "earthquake";
+  panels.push(Plot.plot({
+    ...margins, width: w, height: quake ? 220 : 160, style: plotStyle, x,
+    y: quake ? { label: "Magnitude (Mw)", grid: true, nice: true }
+             : { domain: ["up", "down"], label: "Move" },
+    color: { type: "identity" },
+    marks: [
+      band(),
+      quake
+        ? Plot.dot(events, {
+            x: "date", y: "mw", r: 4, fill: (d) => (d.active ? palette.active : palette.inactive),
+            stroke: palette.surface, strokeWidth: 1.5,
+            title: (d) => `${d.date.toISOString().slice(0, 16).replace("T", " ")} UTC\nMw ${d.mw}  (${d.lat}, ${d.lon})\n${indicatorSpec.label}: ${d.active ? "active" : "not active"}`,
+            tip: true
+          })
+        : Plot.tickX(events, {
+            x: "date", y: "move", stroke: (d) => (d.active ? palette.active : palette.inactive), strokeWidth: 2,
+            title: (d) => `${d.date.toISOString().slice(0, 10)}: extreme ${d.move} move\n${indicatorSpec.label}: ${d.active ? "active" : "not active"}`,
+            tip: true
+          })
+    ]
+  }));
+  const root = htl.html`<div class="af-chart" id="sky-events-chart">${panels}</div>`;
+  root.value = null;
+  const scale = panels[0].scale("x");
+  const extent = (svg) => [[margins.marginLeft, margins.marginTop],
+    [w - margins.marginRight, +svg.getAttribute("height") - margins.marginBottom]];
+  const brushes = panels.map((svg) => {
+    const brush = d3.brushX().extent(extent(svg));
+    const g = d3.select(svg).append("g").attr("class", "af-brush");
+    return { svg, brush, g };
+  });
+  const dim = (sel) => {
+    for (const { svg } of brushes) {
+      d3.select(svg).selectAll("g[aria-label=dot] circle, g[aria-label=tickX] line").each(function () {
+        const px = +(this.getAttribute("cx") ?? this.getAttribute("x1"));
+        this.style.opacity = !sel || (px >= sel[0] && px <= sel[1]) ? 1 : 0.18;
+      });
+    }
+  };
+  for (const b of brushes) {
+    b.brush.on("brush end", (event) => {
+      if (!event.sourceEvent) return;
+      const sel = event.selection;
+      for (const o of brushes) if (o !== b) o.g.call(o.brush.move, sel);
+      dim(sel);
+      root.value = sel ? sel.map((px) => scale.invert(px)) : null;
+      root.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    b.g.call(b.brush);
+  }
+  return root;
+}
+```
+
+```{ojs}
+legend = series === "earthquake" || market
+  ? swatchLegend([
+      { color: palette.active, label: `During: ${indicatorSpec.label}` },
+      { color: palette.inactive, label: "Outside the indicator" }
+    ])
+  : ""
+htl.html`<div>${view === "Line" ? planetLegend(planets) : ""}${legend}</div>`
+```
+
+```{ojs}
+span = brushSel || [dateFrom, dateTo]
+inSpan = events.filter((d) => d.date >= span[0] && d.date <= span[1])
+activeTime = windows.reduce((s, { a, b }) => {
+  const lo = Math.max(+a, +span[0]), hi = Math.min(+b, +span[1]);
+  return s + Math.max(0, hi - lo);
+}, 0)
+readout = {
+  const total = +span[1] - +span[0];
+  const nIn = inSpan.filter((d) => d.active).length, nOut = inSpan.length - nIn;
+  const share = total > 0 ? activeTime / total : NaN;
+  const known = windows.length > 0 || series !== "earthquake";
+  const ratio = known && share > 0 && share < 1 && nOut > 0
+    ? (nIn / share) / (nOut / (1 - share)) : NaN;
+  const fmt = d3.utcFormat("%Y-%m-%d");
+  return htl.html`<p class="af-caption">
+    <strong>${fmt(span[0])} to ${fmt(span[1])}</strong>${brushSel ? " (brushed)" : ""}:
+    ${inSpan.length} events, ${nIn} during the indicator and ${nOut} outside.
+    ${known ? `The indicator is active ${(100 * share).toFixed(1)}% of this span, so the descriptive rate ratio is ${Number.isFinite(ratio) ? ratio.toFixed(2) : "n/a"}.`
+            : "Moon-mandala windows change about daily and are not drawn; each event still carries its state."}
+    This is a description of the selection, not the registered test.</p>`;
+}
+```
+
+```{ojs}
+wheel = {
+  if (view !== "Polar wheel") return htl.html``;
+  const at = span[1];
+  const r = [...monthIdx].reverse().find((m) => m.date <= at) || monthIdx[monthIdx.length - 1];
+  if (!r) return htl.html`<p class="af-notice">No month in range.</p>`;
+  const pos = planets.map((id) => ({ id, lon: eph.columns[id][r.i], retro: eph.columns[id + "_r"][r.i] === 1 }));
+  return htl.html`<div class="af-chart" id="sky-wheel">${zodiacWheel(pos, {
+    palette, size: Math.min(460, width), caption: r.date.toISOString().slice(0, 7)
+  })}${planetLegend(planets)}</div>`;
+}
+```
+
+## The registered test for this indicator
+
+```{ojs}
+gauge = {
+  if (series !== "earthquake") {
+    return htl.html`<p class="af-notice">The market studies test a difference in
+      next-day returns, not an event rate; see the
+      <a href="effects.html">indicator effects explorer</a> for those results.</p>`;
+  }
+  const pick = (period) => res.effects.find((d) => d.study === "earthquake"
+    && d.indicator === indicator && d.group === catalogue && d.period === period);
+  const cells = ["explore", "confirm"].map((p) => {
+    const d = pick(p);
+    const label = `${p === "explore" ? "1976-2010" : "2011-2026"}, ${catalogue.toUpperCase()}${d && d.q != null ? `, q = ${d.q.toFixed(2)}` : ""}`;
+    return d ? hazardGauge({ rr: d.effect, lo: d.lo, hi: d.hi, label, palette })
+             : htl.html`<p class="af-notice">No ${p} test for this catalogue.</p>`;
+  });
+  return htl.html`<div class="af-chart" id="sky-gauge" style="display:flex;flex-wrap:wrap;gap:1rem">${cells}</div>`;
+}
+```
+
+<details><summary>Table view of the events in the selection</summary>
+
+```{ojs}
+Inputs.table(inSpan.map((d) => ({ ...d, indicator: d.active ? "active" : "not active" })), {
+  columns: series === "earthquake" ? ["date", "mw", "lat", "lon", "indicator"] : ["date", "move", "indicator"],
+  format: { date: (d) => d.toISOString().slice(0, 16).replace("T", " ") },
+  rows: 12
+})
+```
+
+</details>
+
+Indicator definition, as pre-registered:
+
+```{ojs}
+htl.html`<p><strong>${indicatorSpec.label}</strong>: ${indicatorSpec.definition}.</p>`
+```
+
+```{ojs}
+provenance([eph._meta, series === "earthquake" ? eq._meta : market._meta, res._meta], {
+  twin: ["studies/earthquake/artifacts/fig_declustering.png", "studies/gold_market/artifacts/fig_overlay.png"]
+})
+```

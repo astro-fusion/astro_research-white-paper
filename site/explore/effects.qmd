@@ -1,0 +1,166 @@
+---
+title: "Indicator effects"
+subtitle: "Every pre-registered indicator, every study, every period"
+description: "Effect sizes and intervals for every indicator tested in the gold, silver, earthquake and numerology studies, with multiplicity-corrected q-values."
+---
+
+Each study wrote down its indicators, outcomes, periods and correction before
+it ran. This explorer shows every one of those tests, whether or not it
+reached significance. The market studies report a difference in means
+(indicator active minus inactive, next trading day); the earthquake study
+reports a rate ratio (events per day while the indicator is active, divided by
+events per day while it is not); the numerology study reports correlations and
+an agreement statistic with equivalence margins.
+
+::: {.af-howto}
+**How to read this.** In the forest plot each row is one indicator; the dot is
+the estimate and the line its interval. The thin vertical rule is "no
+difference" (0, or 1 for a rate ratio). Exploration-period results are blue,
+confirmation-period results orange, full-sample (descriptive) results green. A
+filled dot passed the study's multiplicity correction (q below 0.05, or
+equivalence for numerology); a hollow dot did not. An interval that crosses
+the rule is compatible with no effect. In the heatmap the colour is the
+standardised effect (red above zero, blue below), and a ringed cell passed the
+correction. Hover any mark for the pre-registered definition and the numbers.
+:::
+
+```{ojs}
+{{< include ../components/theme.ojs >}}
+```
+
+```{ojs}
+{{< include ../components/provenance.ojs >}}
+```
+
+```{ojs}
+res = FileAttachment("../data/results.json").json()
+STUDIES = new Map([
+  ["Gold market", "gold_market"], ["Silver market", "silver_market"],
+  ["Earthquake (Himalayan arc)", "earthquake"], ["Numerology and astrology", "numerology_vs_astrology"]
+])
+```
+
+::: {.af-filters}
+
+```{ojs}
+viewof study = Inputs.select(STUDIES, { label: "Study" })
+```
+
+```{ojs}
+studyRows = res.effects.filter((d) => d.study === study)
+groupsAvail = [...new Set(studyRows.map((d) => d.group))]
+viewof groups = Inputs.checkbox(new Map(groupsAvail.map((g) => [res.groups[g] || g, g])), {
+  label: study === "earthquake" ? "Catalogue" : study === "numerology_vs_astrology" ? "Hypothesis" : "Outcome",
+  value: study === "earthquake" ? groupsAvail.filter((g) => g !== "raw") : groupsAvail.slice(0, 1)
+})
+```
+
+```{ojs}
+periodsAvail = ["explore", "confirm", "full"].filter((p) => studyRows.some((d) => d.period === p))
+viewof periods = Inputs.checkbox(periodsAvail, {
+  label: "Period", value: periodsAvail.filter((p) => p !== "full").length ? periodsAvail.filter((p) => p !== "full") : periodsAvail
+})
+```
+
+```{ojs}
+viewof chart = Inputs.radio(["Forest plot", "Heatmap"], { label: "Chart", value: "Forest plot" })
+```
+
+:::
+
+```{ojs}
+rows = studyRows.filter((d) => groups.includes(d.group) && periods.includes(d.period))
+nullValue = studyRows.length ? studyRows[0].null : 0
+isRatio = study === "earthquake"
+passed = (d) => d.significant
+fmt = (v) => (v == null || !Number.isFinite(v) ? "n/a" : Math.abs(v) >= 100 ? v.toFixed(0) : v.toPrecision(3))
+tipText = (d) => `${d.label} (${res.groups[d.group] || d.group}, ${d.period})\n${d.definition}\n${d.measure}: ${fmt(d.effect)} ${d.unit}, interval ${fmt(d.lo)} to ${fmt(d.hi)}\np = ${fmt(d.p)}${d.q != null ? `, q = ${fmt(d.q)}` : ""}${d.significant ? "  (passes)" : ""}\nn active = ${d.n_active}`
+labels = [...new Set(rows.map((d) => d.label))]
+```
+
+```{ojs}
+effectsChart = {
+  const w = Math.max(340, Math.min(width, 1200));
+  if (!rows.length) return htl.html`<div class="af-chart" id="effects-chart"><p class="af-notice">Nothing selected.</p></div>`;
+  const offsets = { explore: -5, confirm: 0, full: 5 };
+  let plot;
+  if (chart === "Forest plot") {
+    const lo = d3.min(rows, (d) => d.lo), hi = d3.max(rows, (d) => d.hi);
+    plot = Plot.plot({
+      width: w, height: Math.max(220, labels.length * 26 * Math.max(1, groups.length) + 80),
+      marginLeft: 230, marginRight: 24, style: plotStyle,
+      x: isRatio ? { type: "log", domain: [Math.max(0.05, lo * 0.9), hi * 1.1], label: "Rate ratio (log scale)", grid: true }
+                 : { label: `${rows[0].measure} (${rows[0].unit})`, grid: true },
+      y: { domain: labels, label: null },
+      fy: groups.length > 1 ? { label: null, tickFormat: (g) => res.groups[g] || g } : undefined,
+      color: { type: "identity" },
+      marks: [
+        Plot.ruleX([nullValue], { stroke: palette.ink2 }),
+        ...periods.map((p) => Plot.ruleY(rows.filter((d) => d.period === p), {
+          y: "label", x1: "lo", x2: "hi", fy: groups.length > 1 ? "group" : undefined,
+          stroke: palette.period[p], strokeWidth: 2, dy: offsets[p]
+        })),
+        ...periods.map((p) => Plot.dot(rows.filter((d) => d.period === p), {
+          x: "effect", y: "label", fy: groups.length > 1 ? "group" : undefined, dy: offsets[p], r: 4.5,
+          stroke: palette.period[p], strokeWidth: 2,
+          fill: (d) => (passed(d) ? palette.period[p] : palette.surface),
+          title: tipText, tip: true
+        }))
+      ]
+    });
+  } else {
+    const cols = [...new Set(rows.map((d) => `${d.group} · ${d.period}`))];
+    const ext = d3.max(rows, (d) => Math.abs(d.z ?? 0)) || 1;
+    plot = Plot.plot({
+      width: w, height: Math.max(220, labels.length * 28 + 90),
+      marginLeft: 230, marginBottom: 50, style: plotStyle,
+      x: { domain: cols, label: null, tickFormat: (c) => { const [g, p] = c.split(" · "); return `${res.groups[g] || g}, ${p}`; }, tickRotate: -12 },
+      y: { domain: labels, label: null },
+      color: { type: "diverging", scheme: undefined, range: palette.div, domain: [-ext, ext], pivot: 0,
+               legend: true, label: isRatio ? "log2 rate ratio" : study === "numerology_vs_astrology" ? "r or kappa" : "effect / SE (z)" },
+      marks: [
+        Plot.cell(rows, {
+          x: (d) => `${d.group} · ${d.period}`, y: "label", fill: (d) => d.z ?? 0, inset: 1, rx: 3,
+          stroke: (d) => (passed(d) ? palette.ink : null), strokeWidth: 2, title: tipText, tip: true
+        })
+      ]
+    });
+  }
+  return htl.html`<div class="af-chart" id="effects-chart">${plot}</div>`;
+}
+```
+
+```{ojs}
+chart === "Forest plot"
+  ? swatchLegend([
+      ...periods.map((p) => ({ color: palette.period[p], label: { explore: "Exploration period", confirm: "Confirmation period", full: "Full sample (descriptive)" }[p] })),
+      { color: palette.ink2, label: "Filled: passes the correction; hollow: does not", hollow: true }
+    ])
+  : swatchLegend([{ color: palette.ink, label: "Ringed cell: passes the correction", hollow: true }])
+```
+
+```{ojs}
+htl.html`<p class="af-caption">${rows.length} tests shown; ${rows.filter(passed).length} pass the study's correction.
+  Study-wide alpha ${res.alpha}. The correction is the one pre-registered by each study
+  (Benjamini-Yekutieli for markets and earthquakes; TOST equivalence for numerology).</p>`
+```
+
+<details><summary>Table view</summary>
+
+```{ojs}
+Inputs.table(rows, {
+  columns: ["label", "group", "period", "effect", "lo", "hi", "unit", "p", "q", "significant", "n_active"],
+  header: { label: "Indicator", group: "Outcome or catalogue", lo: "Low", hi: "High", significant: "Passes" },
+  format: { effect: fmt, lo: fmt, hi: fmt, p: fmt, q: fmt },
+  rows: 15
+})
+```
+
+</details>
+
+```{ojs}
+provenance(res._meta, {
+  twin: ["studies/gold_market/artifacts/fig_effects.png", "studies/silver_market/artifacts/fig_effects.png",
+         "studies/earthquake/artifacts/fig_rate_ratios.png"]
+})
+```

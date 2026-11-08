@@ -1,0 +1,33 @@
+// Provenance footer: every explorer ends with the hash, commit and seed of the
+// data it shows, its source and licence, and the paper figure that is its
+// static twin. Nothing on the site exists that the paper cannot cite.
+
+REPO_URL = "https://github.com/astro-fusion/astro_research-white-paper"
+
+short = (s, n = 12) => (s ? String(s).slice(0, n) : "n/a")
+
+provenance = (metas, { twin = [], note = "" } = {}) => {
+  const list = Array.isArray(metas) ? metas : [metas];
+  const twins = twin === null ? null : Array.isArray(twin) ? twin : [twin];
+  return htl.html`<footer class="af-provenance" aria-label="Provenance">
+    ${list.map((m) => htl.html`<div>
+      <strong>${m.file}</strong>: data sha256 <code>${short(m.data_sha256)}</code>,
+      commit <a href=${`${REPO_URL}/commit/${m.commit}`}>${short(m.commit)}</a>,
+      seed ${m.seed}, generated ${m.generated_at}.
+      Source: ${m.source}. Licence: ${m.licence}.
+      ${inputHashes(m.inputs)}
+    </div>`)}
+    ${twins === null ? "" : twins.length && twins[0] ? htl.html`<div>Static twin in the paper:
+      ${twins.map((t, i) => htl.html`${i ? ", " : ""}<a href=${`${REPO_URL}/blob/main/${t}`}><code>${t}</code></a>`)}.
+    </div>` : htl.html`<div>Static twin: none yet in a paper.</div>`}
+    <div>Made by <a href=${`${REPO_URL}/blob/main/scripts/export_site_data.py`}><code>scripts/export_site_data.py</code></a>${note ? `; ${note}` : ""}.</div>
+  </footer>`;
+}
+
+inputHashes = (inputs) => {
+  if (!inputs) return "";
+  const parts = Object.entries(inputs)
+    .filter(([, v]) => v && (v.sha256 || v.underlying_sha256))
+    .map(([k, v]) => `${k} ${short(v.sha256 || v.underlying_sha256)}`);
+  return parts.length ? `Inputs: ${parts.join("; ")}.` : "";
+}
