@@ -1,0 +1,62 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r013_sunspot_volatility_economic_lag_index
+name: Sunspot Volatility & Economic Lag Index
+domain: mundane
+claim: >-
+  Sunspot Volatility & Economic Lag Index - Immediate physical check: If sunspot count >=
+  150, flag geomagnetic storm and radio blackout alerts.
+source:
+  text: Chapter 2 & Chapter 3 (Jevons / B.V. Raman)
+  chapter: Chapter 2 & Chapter 3 (Jevons / B.V. Raman)
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-013
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+window:
+  unit: years
+  after: 3
+  note: 2-3 years forward
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - >-
+      Immediate physical check: If sunspot count >= 150, flag geomagnetic storm and radio
+      blackout alerts.
+    - >-
+      Lagged economic check: Project a 2-3 year forward window for elevated risk of major
+      business depressions.
+  original_thresholds:
+    maximum_sunspot_count: 150
+    lag_start_years: 2
+    lag_end_years: 3
+  mapping_status: partial
+  draft_conditions:
+    any:
+      - sunspot_count_gte:
+          value: 150
+      - years_after_solar_cycle_peak_between:
+          min: 2
+          max: 3
+  event_types:
+    - economy
+  confidence_in_app: partially_validated
+  severity_in_app: high
+  validation:
+    verdict: KEEP_WITH_CHANGES
+    problem: Historical hypothesis presented as direct causality
+    normalization: >-
+      Model as backtesting research module using SILSO/NOAA solar cycle peaks with $2$ to
+      $3$-year forward economic stress markers.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: sunspot_count_gte, years_after_solar_cycle_peak_between.
+  missing_predicates:
+    - sunspot_count_gte
+    - years_after_solar_cycle_peak_between

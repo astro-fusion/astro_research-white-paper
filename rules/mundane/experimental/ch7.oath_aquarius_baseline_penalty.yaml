@@ -1,0 +1,70 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch7.oath_aquarius_baseline_penalty
+name: Aquarius Oath Lagna Baseline Tenurial Friction
+domain: mundane
+claim: >-
+  Aquarius Oath Lagna Baseline Tenurial Friction - Oath Ascendant sign is Aquarius (11).
+source:
+  text: Chapter 7
+  chapter: Chapter 7
+  app_registry: docs/mundane/chapter7-rule-registry.yaml
+  id: ch7_oath_aquarius_baseline_penalty
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: active
+conditions:
+  in_sign:
+    planet: Lagna
+    signs:
+      - Aquarius
+reference_cases:
+  - moment: '2000-01-01T05:20:00Z'
+    place:
+      lat: 28.6139
+      lon: 77.209
+      tz: Asia/Kolkata
+    expect: fires
+    note: the Lagna is in Aquarius 18.3 deg, one of Aquarius
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '2000-01-01T02:20:00Z'
+    place:
+      lat: 28.6139
+      lon: 77.209
+      tz: Asia/Kolkata
+    expect: silent
+    note: the Lagna is in Sagittarius 24.0 deg, not one of Aquarius
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  original_condition:
+    - Oath Ascendant sign is Aquarius (11).
+  original_thresholds:
+    target_lagna: 11
+    stability_penalty: 8
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - rising_sign_is:
+          sign: 11
+          chart: oath
+  event_types:
+    - executive_stability
+  confidence_in_app: traditional_only
+  severity_in_app: mild
+  validation:
+    report_row: Oath-Taking Vulnerability
+    verdict: CONVERT TO RESEARCH INDEX
+    normalization: >-
+      Model continuous `GovernmentFormationStabilityScore` (0–100). Identify coordination
+      stress without claiming exact collapse date or deterministic betrayal.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter7-validation-report.md
+    empirical_backtest_result: null
+  conversion: >-
+    Evaluate at the oath moment and place. Converted by hand from draft_conditions to the
+    astro-rules vocabulary.

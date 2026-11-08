@@ -1,0 +1,65 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch7.legislative_economic_stress
+name: Legislative Stalemate Lords & Saturn-Rahu Capricorn Alignment
+domain: mundane
+claim: >-
+  Legislative Stalemate Lords & Saturn-Rahu Capricorn Alignment - Saturn transits Capricorn
+  conjunct Rahu within orb OR 8th/9th/10th lords conjoin in 4th house.
+source:
+  text: Chapter 7
+  chapter: Chapter 7
+  app_registry: docs/mundane/chapter7-rule-registry.yaml
+  id: ch7_legislative_economic_stress
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - >-
+      Saturn transits Capricorn conjunct Rahu within orb OR 8th/9th/10th lords conjoin in
+      4th house.
+  original_thresholds:
+    capricorn_sign: 10
+    conjunction_orb_deg: 8
+  mapping_status: mapped
+  draft_conditions:
+    any:
+      - all:
+          - planet_in_sign:
+              planet: Saturn
+              sign: 10
+          - conjunction_within_orb:
+              a: Saturn
+              b: Rahu
+              orb: 8
+      - lords_conjoined_in_house:
+          lords:
+            - 8
+            - 9
+            - 10
+          house: 4
+  event_types:
+    - parliament_and_markets
+  confidence_in_app: source_based
+  severity_in_app: elevated
+  validation:
+    report_row: Legislative & Economic Index
+    verdict: NORMALIZE
+    normalization: >-
+      Require explicit chart context (Annual Samvat, Oath, or National chart). Output `legislativeCoordinationStress`
+      and `economicVulnerabilitySignal` with financial disclaimer.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter7-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: conjunction_within_orb, lords_conjoined_in_house,
+    planet_in_sign.
+  missing_predicates:
+    - conjunction_within_orb
+    - lords_conjoined_in_house
+    - planet_in_sign

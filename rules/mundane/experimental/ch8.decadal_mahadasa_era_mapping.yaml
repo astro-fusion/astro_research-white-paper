@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch8.decadal_mahadasa_era_mapping
+name: Capital City Foundational Mahadasa Decadal Era Mapping
+domain: mundane
+claim: Capital City Foundational Mahadasa Decadal Era Mapping
+source:
+  text: Chapter 8
+  chapter: Chapter 8
+  app_registry: docs/mundane/chapter8-rule-registry.yaml
+  id: ch8_decadal_mahadasa_era_mapping
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  mapping_status: partial
+  draft_conditions:
+    all:
+      - dasha_lord_is:
+          system: vimshottari_mahadasa
+          chart: capital_foundation
+          lord: any_of_9
+  event_types:
+    - socioeconomic_history
+  confidence_in_app: empirical_and_traditional
+  severity_in_app: macro_trend
+  validation:
+    report_row: Foundational Mahadasa Decadal Eras
+    verdict: ARCHETYPE MAPPING
+    normalization: >-
+      Implement `evaluateCapitalDecadalEra`. Map active Mahadasa lord to standardized socioeconomic
+      era archetypes (`MARTIAL_MOBILIZATION`, `ECONOMIC_GROWTH`, `INSTITUTIONAL_TRANSITION`,
+      `LABOR_AND_DECENTRALIZATION`).
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter8-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft condition (the dasha lord is any of the nine) is always true; the rule maps
+    eras to dasha lords rather than testing a moment.

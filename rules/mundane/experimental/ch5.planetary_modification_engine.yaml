@@ -1,0 +1,88 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch5.planetary_modification_engine
+name: Planetary Modification of Eclipse Outcomes
+domain: mundane
+claim: >-
+  Planetary Modification of Eclipse Outcomes - If Mars aspects (90, 180, or special 4th/8th)
+  eclipse degree: set Event_Type = WARLIKE (riots, revolts, violent unrest).
+source:
+  text: Chapter 5
+  chapter: Chapter 5
+  app_registry: docs/mundane/chapter5-rule-registry.yaml
+  id: ch5_planetary_modification_engine
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - If Mars aspects (90, 180, or special 4th/8th) eclipse degree: set Event_Type = WARLIKE
+        (riots, revolts, violent unrest).
+    - If Saturn aspects (90, 180, or special 3rd/10th) eclipse degree: set Event_Type = SCARCITY
+        (famine, drought, economic inflation).
+    - If Mercury conjuncts/aspects eclipse: flag price volatility and market speculation.
+    - If Jupiter conjuncts eclipse degree: flag institutional and legal crises in northwestern/Indus
+        regions.
+    - If Venus conjuncts eclipse degree: flag ministerial diplomatic strain.
+  original_thresholds:
+    conjunction_orb_deg: 5
+    aspect_orb_deg: 6
+  mapping_status: mapped
+  draft_conditions:
+    any:
+      - aspect_to_eclipse_degree:
+          planet: Mars
+          aspects:
+            - 90
+            - 180
+            - 4th
+            - 8th
+          orb: 6
+          outcome: WARLIKE
+      - aspect_to_eclipse_degree:
+          planet: Saturn
+          aspects:
+            - 90
+            - 180
+            - 3rd
+            - 10th
+          orb: 6
+          outcome: SCARCITY
+      - conjunction_within_orb:
+          a: Mercury
+          b: eclipse_degree
+          orb: 5
+      - conjunction_within_orb:
+          a: Jupiter
+          b: eclipse_degree
+          orb: 5
+      - conjunction_within_orb:
+          a: Venus
+          b: eclipse_degree
+          orb: 5
+  event_types:
+    - civil_unrest
+    - resource_scarcity
+    - market_inflation
+  confidence_in_app: traditional_only
+  severity_in_app: high
+  validation:
+    verdict: NORMALIZE
+    problem: Ambiguous "Mercury/Venus/Jupiter is eclipsed".
+    normalization: >-
+      Evaluates planets within $5^\circ$ of eclipse axis or casting hard aspects: Mars ($\rightarrow$
+      `WARLIKE / UNREST`), Saturn ($\rightarrow$ `SCARCITY / INFLATION`), Mercury ($\rightarrow$
+      `PRICE_VOLATILITY`).
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter5-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: aspect_to_eclipse_degree,
+    conjunction_within_orb.
+  missing_predicates:
+    - aspect_to_eclipse_degree
+    - conjunction_within_orb

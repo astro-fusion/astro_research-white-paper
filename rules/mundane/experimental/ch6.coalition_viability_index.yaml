@@ -1,0 +1,87 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch6.coalition_viability_index
+name: Coalition Government Longevity & Fragility Index
+domain: mundane
+claim: >-
+  Coalition Government Longevity & Fragility Index - Saturn in Cancer at government formation
+  indicates structural 1-3 year fragility.
+source:
+  text: Chapter 6
+  chapter: Chapter 6
+  app_registry: docs/mundane/chapter6-rule-registry.yaml
+  id: ch6_coalition_viability_index
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: active
+conditions:
+  any:
+    - in_sign:
+        planet: Saturn
+        signs:
+          - Cancer
+    - in_sign:
+        planet: Jupiter
+        signs:
+          - Sagittarius
+    - in_sign:
+        planet: Saturn
+        signs:
+          - Sagittarius
+reference_cases:
+  - moment: '1958-04-06T06:00:00Z'
+    expect: fires
+    note: >-
+      Saturn is in Sagittarius 2.4 deg, not one of Cancer; Jupiter is in Libra 4.9 deg, not
+      one of Sagittarius; Saturn is in Sagittarius 2.4 deg, one of Sagittarius
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '1954-01-20T06:00:00Z'
+    expect: silent
+    note: >-
+      Saturn is in Libra 15.5 deg, not one of Cancer; Jupiter is in Taurus 23.9 deg, not one
+      of Sagittarius; Saturn is in Libra 15.5 deg, not one of Sagittarius
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  original_condition:
+    - >-
+      Saturn in Cancer at government formation indicates structural 1-3 year fragility.
+    - >-
+      Jupiter or Saturn in Sagittarius indicates vulnerable minority or multiparty dependency.
+  original_thresholds:
+    cancer_instability_penalty: 35
+    sagittarius_minority_penalty: 25
+    malefic_affliction_penalty: 20
+  mapping_status: mapped
+  draft_conditions:
+    any:
+      - planet_in_sign:
+          planet: Saturn
+          sign: 4
+          at: government_formation
+      - planet_in_sign:
+          planet_any:
+            - Jupiter
+            - Saturn
+          sign: 9
+          at: government_formation
+  event_types:
+    - governance
+  confidence_in_app: empirical_and_traditional
+  severity_in_app: high
+  validation:
+    report_row: Coalition Government Viability Index
+    verdict: VIABILITY RATING (0–100)
+    normalization: >-
+      Model coalition longevity risk. Calculate structural friction based on formation date
+      Graha positions, house placements, and retrogrades.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter6-validation-report.md
+    empirical_backtest_result: null
+  conversion: >-
+    Evaluate at the moment of government formation. Converted by hand from draft_conditions
+    to the astro-rules vocabulary.

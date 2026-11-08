@@ -1,0 +1,35 @@
+# yaml-language-server: $schema=../schema.json
+id: financial.venus_own_sign
+name: Venus-Own-Sign
+domain: financial
+claim: Venus in its own signs (Taurus, Libra) supports value and luxury assets.
+source:
+  text: Brihat Parashara Hora Shastra
+  note: >-
+    The old catalog cites BPHS without a chapter; BPHS gives the sign rulerships, not the
+    market claim.
+author: astro-research combinations catalog (migrated 2026-11-08)
+tier: experimental
+conditions:
+  dignity_in:
+    planet: Venus
+    dignities:
+      - own
+expected_effect:
+  series: gold_usd
+  description: Venus in its own signs (Taurus, Libra) supports value and luxury assets.
+reference_cases:
+  - moment: '2000-06-02T06:00:00Z'
+    expect: fires
+    note: Venus in Taurus 15.7 deg is own (sign lord Venus of Taurus)
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '2000-03-11T06:00:00Z'
+    expect: silent
+    note: Venus in Aquarius 3.4 deg is friend (sign lord Saturn of Aquarius), not own
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  migrated_from: >-
+    libs/vedic_astrology_core/combinations/catalog/financial_yogas.yaml (Venus-Own-Sign)
+  conversion: INSIGN Venus [Taurus, Libra] became dignity_in own (same signs).

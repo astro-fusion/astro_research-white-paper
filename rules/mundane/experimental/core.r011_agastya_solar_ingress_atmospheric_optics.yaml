@@ -1,0 +1,73 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r011_agastya_solar_ingress_atmospheric_optics
+name: Agastya Solar Ingress & Atmospheric Optics
+domain: mundane
+claim: >-
+  Agastya Solar Ingress & Atmospheric Optics - Check if Sun longitude is within 143.0 +/-
+  1.5 deg (Simha 23 deg).
+source:
+  text: Chapter 1 (Brihat Samhita Agastya Charita)
+  chapter: Chapter 1 (Brihat Samhita Agastya Charita)
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-011
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+window:
+  unit: days
+  before: 15
+  after: 15
+  note: ingress_window_15_days
+status: active
+conditions:
+  longitude_between:
+    planet: Sun
+    start: 141.5
+    end: 144.5
+    note: sidereal 143 +/- 1.5 deg
+reference_cases:
+  - moment: '1950-09-09T06:00:00Z'
+    expect: fires
+    note: Sun is in Leo 22.8 deg (142.82 deg), inside 141.5-144.5 deg
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '1950-05-06T06:00:00Z'
+    expect: silent
+    note: Sun is in Aries 22.0 deg (21.98 deg), outside 141.5-144.5 deg
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  original_condition:
+    - Check if Sun longitude is within 143.0 +/- 1.5 deg (Simha 23 deg).
+    - 'If ray color is Reddish: Flag Famine and War.'
+    - 'If ray color is White/Milky: Flag Peace and Prosperity.'
+  original_thresholds:
+    agastya_ingress_target_deg: 143
+    ingress_orb_deg: 1.5
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - ingress:
+          body: Sun
+          sidereal_longitude: 143
+          orb: 1.5
+  event_types:
+    - weather
+  confidence_in_app: traditional_only
+  severity_in_app: elevated
+  validation:
+    verdict: SPLIT
+    problem: >-
+      Ingress longitude ($143^\circ$) does not account for local observer horizon/twilight
+    normalization: >-
+      Split into traditional sidereal calendar marker ($143^\circ$) and real-sky astronomical
+      visibility engine based on observer latitude.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  conversion: >-
+    Sun at sidereal 143 deg within 1.5 deg. Converted by hand from draft_conditions to the
+    astro-rules vocabulary.

@@ -1,0 +1,76 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch4.superior_inferior_intensity_modifier
+name: Superior vs Inferior Planetary Intensity Modifier
+domain: mundane
+claim: >-
+  Superior vs Inferior Planetary Intensity Modifier - If triggering aspect involves superior
+  planets, set Intensity = SEVERE (multiplier 3.5x).
+source:
+  text: Chapter 4
+  chapter: Chapter 4
+  app_registry: docs/mundane/chapter4-rule-registry.yaml
+  id: ch4_superior_inferior_intensity_modifier
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - >-
+      If triggering aspect involves superior planets, set Intensity = SEVERE (multiplier 3.5x).
+    - >-
+      If triggering aspect involves inferior planets or Moon, set Intensity = MILD (multiplier
+      2.5x).
+  original_thresholds:
+    superior_planets:
+      - Mars
+      - Saturn
+      - Uranus
+      - Neptune
+      - Pluto
+    inferior_planets:
+      - Mercury
+      - Venus
+    luminaries:
+      - Moon
+  mapping_status: mapped
+  draft_conditions:
+    any:
+      - triggering_aspect_involves:
+          planets:
+            - Mars
+            - Saturn
+            - Uranus
+            - Neptune
+            - Pluto
+          intensity: SEVERE
+          multiplier: 3.5
+      - triggering_aspect_involves:
+          planets:
+            - Mercury
+            - Venus
+            - Moon
+          intensity: MILD
+          multiplier: 2.5
+  event_types:
+    - collision_derailment
+    - sabotage_or_sudden_mechanical_failure
+  confidence_in_app: source_based
+  severity_in_app: moderate
+  validation:
+    verdict: KEEP_WITH_CHANGES
+    problem: Incorrectly classifies Moon as an "inferior planet".
+    normalization: >-
+      Classify strictly: Superior/High-intensity = Mars, Saturn, Uranus, Pluto; Moderate =
+      Jupiter; Luminary/Inferior = Moon, Mercury, Venus.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter4-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: triggering_aspect_involves.
+  missing_predicates:
+    - triggering_aspect_involves

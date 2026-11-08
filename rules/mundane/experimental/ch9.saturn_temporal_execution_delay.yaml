@@ -1,0 +1,56 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch9.saturn_temporal_execution_delay
+name: Saturnine Temporal Execution Latency Filter
+domain: mundane
+claim: >-
+  Saturnine Temporal Execution Latency Filter - Saturnine political transformation manifests
+  towards the latter half (approx 2 years) of the transit window rather than on ingress day.
+source:
+  text: Chapter 9
+  chapter: Chapter 9
+  app_registry: docs/mundane/chapter9-rule-registry.yaml
+  id: ch9_saturn_temporal_execution_delay
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+window:
+  unit: years
+  before: 1.5
+  after: 2.5
+  note: execution latency
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - >-
+      Saturnine political transformation manifests towards the latter half (approx 2 years)
+      of the transit window rather than on ingress day.
+  original_thresholds:
+    execution_delay_min_years: 1.5
+    execution_delay_max_years: 2.5
+  mapping_status: partial
+  draft_conditions:
+    all:
+      - latency_filter:
+          planet: Saturn
+          min_years: 1.5
+          max_years: 2.5
+  event_types:
+    - transit_execution
+  confidence_in_app: empirical
+  severity_in_app: informational
+  validation:
+    report_row: Saturnine Temporal Delay
+    verdict: IMPLEMENT LATENCY
+    normalization: >-
+      Apply an empirical `executionDelayYears` ($1.5 - 2.5$y) window to transit alerts, preventing
+      false premature collapse predictions.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter9-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: 'The draft uses conditions the vocabulary cannot express yet: latency_filter.'
+  missing_predicates:
+    - latency_filter

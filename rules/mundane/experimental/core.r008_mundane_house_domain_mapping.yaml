@@ -1,0 +1,128 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r008_mundane_house_domain_mapping
+name: Mundane House Domain Mapping
+domain: mundane
+claim: Mundane House Domain Mapping - Map transits to houses 1 through 12.
+source:
+  text: Chapter 1 & Chapter 2
+  chapter: Chapter 1 & Chapter 2
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-008
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: active
+conditions:
+  any:
+    - transit_in_house_from_natal:
+        planet: Sun
+        from: Lagna
+        houses:
+          - 6
+          - 8
+          - 10
+          - 12
+    - transit_in_house_from_natal:
+        planet: Mars
+        from: Lagna
+        houses:
+          - 6
+          - 8
+          - 10
+          - 12
+    - transit_in_house_from_natal:
+        planet: Saturn
+        from: Lagna
+        houses:
+          - 6
+          - 8
+          - 10
+          - 12
+    - transit_in_house_from_natal:
+        planet: Rahu
+        from: Lagna
+        houses:
+          - 6
+          - 8
+          - 10
+          - 12
+    - transit_in_house_from_natal:
+        planet: Ketu
+        from: Lagna
+        houses:
+          - 6
+          - 8
+          - 10
+          - 12
+reference_cases:
+  - moment: '1950-01-07T06:00:00Z'
+    natal:
+      moment: '1947-08-15T00:00:00+05:30'
+      place:
+        lat: 28.6139
+        lon: 77.209
+        tz: Asia/Kolkata
+      label: India independence chart (Delhi, 00:00 IST), as used by B.V. Raman
+    expect: fires
+    note: >-
+      transiting Sun is in Sagittarius 23.2 deg, the 8th from the natal Lagna in Taurus; transiting
+      Mars is in Virgo 11.2 deg, the 5th from the natal Lagna in Taurus, not 6th, 8th, 10th,
+      12th; transiting Saturn is in Leo 26.2 deg, the 4th from the natal Lagna in Taurus,
+      not 6th, 8th, 10th, 12th; transiting Rahu is in Pisces 18.6 deg, the 11th from the natal
+      Lagna in Taurus, not 6th, 8th, 10th, 12th; transiting Ketu is in Virgo 18.6 deg, the
+      5th from the natal Lagna in Taurus, not 6th, 8th, 10th, 12th
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '1950-01-29T06:00:00Z'
+    natal:
+      moment: '1947-08-15T00:00:00+05:30'
+      place:
+        lat: 28.6139
+        lon: 77.209
+        tz: Asia/Kolkata
+      label: India independence chart (Delhi, 00:00 IST), as used by B.V. Raman
+    expect: silent
+    note: >-
+      transiting Sun is in Capricorn 15.6 deg, the 9th from the natal Lagna in Taurus, not
+      6th, 8th, 10th, 12th; transiting Mars is in Virgo 16.7 deg, the 5th from the natal Lagna
+      in Taurus, not 6th, 8th, 10th, 12th; transiting Saturn is in Leo 25.5 deg, the 4th from
+      the natal Lagna in Taurus, not 6th, 8th, 10th, 12th; transiting Rahu is in Pisces 17.5
+      deg, the 11th from the natal Lagna in Taurus, not 6th, 8th, 10th, 12th; transiting Ketu
+      is in Virgo 17.5 deg, the 5th from the natal Lagna in Taurus, not 6th, 8th, 10th, 12th
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  original_condition:
+    - Map transits to houses 1 through 12.
+    - >-
+      If malefic occupies dusthanas (6, 8, 12) or 10th house, trigger localized domain alert
+      badges.
+  mapping_status: mapped
+  draft_conditions:
+    any:
+      - transit_planet_in_house_from_natal:
+          planet: malefic
+          houses:
+            - 6
+            - 8
+            - 12
+            - 10
+  event_types:
+    - politics
+  confidence_in_app: traditional_only
+  severity_in_app: moderate
+  validation:
+    verdict: KEEP
+    problem: 12 mundane domains are canonical
+    normalization: Augment with house strength, benefic/malefic occupancy, and dignity scoring.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  conversion: >-
+    'Malefic' is read as the natural malefics Sun, Mars, Saturn, Rahu and Ketu. Converted
+    by hand from draft_conditions to the astro-rules vocabulary.
+  natal_chart: >-
+    Reference cases use the India 1947 chart; any national chart can be given with --natal-moment/--natal-lat/--natal-lon.

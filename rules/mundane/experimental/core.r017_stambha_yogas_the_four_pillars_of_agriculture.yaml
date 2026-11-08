@@ -1,0 +1,64 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r017_stambha_yogas_the_four_pillars_of_agriculture
+name: Stambha Yogas (The Four Pillars of Agriculture)
+domain: mundane
+claim: >-
+  Stambha Yogas (The Four Pillars of Agriculture) - Pillar 1 (Rainfall): Chaitra Shukla 1
+  == Revati.
+source:
+  text: Chapter 2 (Agricultural Pillars)
+  chapter: Chapter 2 (Agricultural Pillars)
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-017
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - 'Pillar 1 (Rainfall): Chaitra Shukla 1 == Revati.'
+    - 'Pillar 2 (Fodder): Vaisakha 1 == Bharani.'
+    - 'Pillar 3 (Wind): Jyeshta Shukla 1 == Mrigashirsha.'
+    - 'Pillar 4 (Food Crops): Ashadha Shukla 1 == Punarvasu.'
+    - >-
+      Compute overall viability percentage (0-100%) and flag resource shortages for failed
+      alignments.
+  mapping_status: partial
+  draft_conditions:
+    all:
+      - nakshatra_on_tithi:
+          lunar_month: Chaitra
+          tithi: Shukla 1
+          nakshatra: Revati
+      - nakshatra_on_tithi:
+          lunar_month: Vaisakha
+          tithi: '1'
+          nakshatra: Bharani
+      - nakshatra_on_tithi:
+          lunar_month: Jyeshtha
+          tithi: Shukla 1
+          nakshatra: Mrigashirsha
+      - nakshatra_on_tithi:
+          lunar_month: Ashadha
+          tithi: Shukla 1
+          nakshatra: Punarvasu
+  event_types:
+    - agriculture
+  confidence_in_app: traditional_only
+  severity_in_app: elevated
+  validation:
+    verdict: KEEP_WITH_CHANGES
+    problem: Binary all-or-nothing pass/fail
+    normalization: >-
+      Implement $0-100\%$ agricultural viability score with graduated penalties for mismatched
+      Tithi-Nakshatra pairings.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: 'The draft uses conditions the vocabulary cannot express yet: nakshatra_on_tithi.'
+  missing_predicates:
+    - nakshatra_on_tithi

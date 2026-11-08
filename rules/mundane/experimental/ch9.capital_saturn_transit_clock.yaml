@@ -1,0 +1,101 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch9.capital_saturn_transit_clock
+name: Capital-Relative Saturnine 30-Year Structural Transit Clock
+domain: mundane
+claim: Capital-Relative Saturnine 30-Year Structural Transit Clock
+source:
+  text: Chapter 9
+  chapter: Chapter 9
+  app_registry: docs/mundane/chapter9-rule-registry.yaml
+  id: ch9_capital_saturn_transit_clock
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: active
+conditions:
+  transit_in_house_from_natal:
+    planet: Saturn
+    from: Lagna
+    houses:
+      - 1
+      - 4
+      - 6
+      - 7
+      - 8
+      - 10
+reference_cases:
+  - moment: '1950-05-12T06:00:00Z'
+    natal:
+      moment: '1947-08-15T00:00:00+05:30'
+      place:
+        lat: 28.6139
+        lon: 77.209
+        tz: Asia/Kolkata
+      label: India independence chart (Delhi, 00:00 IST), as used by B.V. Raman
+    expect: fires
+    note: transiting Saturn is in Leo 19.4 deg, the 4th from the natal Lagna in Taurus
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '1951-10-24T06:00:00Z'
+    natal:
+      moment: '1947-08-15T00:00:00+05:30'
+      place:
+        lat: 28.6139
+        lon: 77.209
+        tz: Asia/Kolkata
+      label: India independence chart (Delhi, 00:00 IST), as used by B.V. Raman
+    expect: silent
+    note: >-
+      transiting Saturn is in Virgo 15.3 deg, the 5th from the natal Lagna in Taurus, not
+      1st, 4th, 6th, 7th, 8th, 10th
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  mapping_status: mapped
+  draft_conditions:
+    any:
+      - transit_planet_in_house_from_natal:
+          planet: Saturn
+          house: 1
+          chart: capital
+      - transit_planet_in_house_from_natal:
+          planet: Saturn
+          house: 4
+          chart: capital
+      - transit_planet_in_house_from_natal:
+          planet: Saturn
+          house: 6
+          chart: capital
+      - transit_planet_in_house_from_natal:
+          planet: Saturn
+          house: 7
+          chart: capital
+      - transit_planet_in_house_from_natal:
+          planet: Saturn
+          house: 8
+          chart: capital
+      - transit_planet_in_house_from_natal:
+          planet: Saturn
+          house: 10
+          chart: capital
+  event_types:
+    - national_leadership_and_borders
+  confidence_in_app: source_based
+  severity_in_app: cyclic
+  validation:
+    report_row: Capital Saturnine Transit Clock
+    verdict: SYSTEMATIZE
+    normalization: >-
+      Implement `evaluateCapitalSaturnTransit`. Continuous `saturnStructuralStressScore` ($0
+      - 100$) with house domain tags. Yogakaraka mitigation for Taurus Lagna applied automatically.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter9-validation-report.md
+    empirical_backtest_result: null
+  conversion: >-
+    The capital's chart is supplied at evaluation time (natal). Converted by hand from draft_conditions
+    to the astro-rules vocabulary.
+  natal_chart: >-
+    Reference cases use the India 1947 chart; any national chart can be given with --natal-moment/--natal-lat/--natal-lon.

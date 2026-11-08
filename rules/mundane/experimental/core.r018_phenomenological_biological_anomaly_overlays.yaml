@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r018_phenomenological_biological_anomaly_overlays
+name: Phenomenological & Biological Anomaly Overlays
+domain: mundane
+claim: >-
+  Phenomenological & Biological Anomaly Overlays - Optical check: Bright Sun + large Moon
+  shadow -> Good rain; inverted dimming -> Calamity warning.
+source:
+  text: Chapter 2
+  chapter: Chapter 2
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-018
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - >-
+      Optical check: Bright Sun + large Moon shadow -> Good rain; inverted dimming -> Calamity
+      warning.
+    - Correlate animal/bird behavioral logs with upcoming tight planetary transits.
+  mapping_status: descriptive
+  draft_conditions:
+    all: []
+  event_types:
+    - weather
+  confidence_in_app: speculative
+  severity_in_app: moderate
+  validation:
+    verdict: KEEP_WITH_CHANGES
+    problem: Subjective optical and animal observations
+    normalization: Model as user-submitted/sensor observational signals with confidence ratings.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    Descriptive in the source registry: it states an interpretation or a data layer, not a
+    condition on the sky.

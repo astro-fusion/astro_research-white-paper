@@ -1,0 +1,76 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r022_solar_flare_geo_magnetic_storm_accident_index
+name: Solar Flare & Geo-Magnetic Storm Accident Index
+domain: mundane
+claim: >-
+  Solar Flare & Geo-Magnetic Storm Accident Index - Check for 2+ planets in hard aspect (0,
+  90, 180) to Sun, clustering within 45 deg, or flanking Sun sign.
+source:
+  text: Chapter 3 & Chapter 4
+  chapter: Chapter 3 & Chapter 4
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-022
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - >-
+      Check for 2+ planets in hard aspect (0, 90, 180) to Sun, clustering within 45 deg, or
+      flanking Sun sign.
+    - >-
+      Superior planets (Mars, Jupiter, Saturn, Uranus, Neptune, Pluto) elevate intensity to
+      SEVERE.
+    - >-
+      If active violent solar flare registered, raise accident risk multiplier up to 4.0x
+      baseline.
+    - >-
+      If Jupiter, Pluto, and Uranus form mutual hard aspects, set Earthquake_Disaster_Probability
+      = EXTREME.
+  original_thresholds:
+    hard_aspect_orb_deg: 8
+    clustering_radius_deg: 45
+  mapping_status: partial
+  draft_conditions:
+    any:
+      - planets_in_hard_aspect_to:
+          target: Sun
+          angles:
+            - 0
+            - 90
+            - 180
+          orb: 8
+          count_gte: 2
+      - cluster_within_deg_of:
+          target: Sun
+          radius: 45
+      - mutual_hard_aspect:
+          planets:
+            - Jupiter
+            - Pluto
+            - Uranus
+  event_types:
+    - transport
+  confidence_in_app: partially_validated
+  severity_in_app: severe
+  validation:
+    verdict: SPLIT
+    problem: Neuro-metabolic human error linked to flares
+    normalization: >-
+      Decouple astronomical aspects from actual solar flare events; scale accident multiplier
+      from $1.0\times$ up to $4.0\times$ with explainability text.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: cluster_within_deg_of, mutual_hard_aspect,
+    planets_in_hard_aspect_to.
+  missing_predicates:
+    - cluster_within_deg_of
+    - mutual_hard_aspect
+    - planets_in_hard_aspect_to

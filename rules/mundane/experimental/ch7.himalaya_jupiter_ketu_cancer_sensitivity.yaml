@@ -1,0 +1,86 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch7.himalaya_jupiter_ketu_cancer_sensitivity
+name: Traditional Himalayan Regional Sensitivity Window
+domain: mundane
+claim: >-
+  Traditional Himalayan Regional Sensitivity Window - Both Jupiter and Ketu transit Cancer
+  within conjunction orb.
+source:
+  text: Chapter 7
+  chapter: Chapter 7
+  app_registry: docs/mundane/chapter7-rule-registry.yaml
+  id: ch7_himalaya_jupiter_ketu_cancer_sensitivity
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: active
+conditions:
+  all:
+    - in_sign:
+        planet: Jupiter
+        signs:
+          - Cancer
+    - in_sign:
+        planet: Ketu
+        signs:
+          - Cancer
+    - conjunct_within:
+        planets:
+          - Jupiter
+          - Ketu
+        orb: 10
+reference_cases:
+  - moment: '1990-09-18T06:00:00Z'
+    expect: fires
+    note: >-
+      Jupiter is in Cancer 12.4 deg, one of Cancer; Ketu is in Cancer 10.9 deg, one of Cancer;
+      Jupiter is in Cancer 12.4 deg and Ketu is in Cancer 10.9 deg: 1.5 deg apart, within
+      the 10 deg orb
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '1955-06-24T06:00:00Z'
+    expect: silent
+    note: >-
+      Jupiter is in Cancer 9.0 deg, one of Cancer; Ketu is in Gemini 3.0 deg, not one of Cancer;
+      Jupiter is in Cancer 9.0 deg and Ketu is in Gemini 3.0 deg: 36.1 deg apart, outside
+      the 10 deg orb
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  original_condition:
+    - Both Jupiter and Ketu transit Cancer within conjunction orb.
+  original_thresholds:
+    target_sign: 4
+    conjunction_orb_deg: 10
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - planet_in_sign:
+          planet: Jupiter
+          sign: 4
+      - planet_in_sign:
+          planet: Ketu
+          sign: 4
+      - conjunction_within_orb:
+          a: Jupiter
+          b: Ketu
+          orb: 10
+  event_types:
+    - historical_seismic_correlation_research
+    - regional_diplomatic_sensitivity
+  confidence_in_app: traditional_only
+  severity_in_app: high
+  validation:
+    report_row: Himalayan Sensitivity & Seismics
+    verdict: REJECT AS ALERT; KEEP AS RESEARCH
+    normalization: >-
+      Suppress all seismic push alerts. Decouple into two layers: (1) Traditional Himalayan
+      sensitivity research signal; (2) Scientific seismic awareness layer (USGS/Nepal Seismological
+      Centre).
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter7-validation-report.md
+    empirical_backtest_result: null
+  conversion: Converted by hand from draft_conditions to the astro-rules vocabulary.

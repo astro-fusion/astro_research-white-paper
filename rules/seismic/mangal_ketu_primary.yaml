@@ -1,0 +1,41 @@
+# yaml-language-server: $schema=../schema.json
+id: seismic.mangal_ketu_primary
+name: Mangal-Ketu-Primary
+domain: seismic
+claim: >-
+  A Mars-Ketu conjunction within 13 degrees releases sudden martial energy (earthquakes).
+source:
+  text: Brihat Samhita
+  chapter: '17'
+  note: >-
+    Carried over from the old catalog. Brihat Samhita Ch. 17 is on planetary war (graha yuddha);
+    earthquakes are Ch. 32. The citation does not support the claim, so the rule stays experimental.
+author: astro-research combinations catalog (migrated 2026-11-08)
+tier: experimental
+conditions:
+  conjunct_within:
+    planets:
+      - Mars
+      - Ketu
+    orb: 13
+expected_effect:
+  event: earthquake
+  direction: increase
+reference_cases:
+  - moment: '2001-05-16T06:00:00Z'
+    expect: fires
+    note: >-
+      Mars is in Sagittarius 5.0 deg and Ketu is in Sagittarius 14.7 deg: 9.6 deg apart, within
+      the 13 deg orb
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '2000-08-26T06:00:00Z'
+    expect: silent
+    note: >-
+      Mars is in Cancer 22.3 deg and Ketu is in Sagittarius 28.6 deg: 156.3 deg apart, outside
+      the 13 deg orb
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  migrated_from: >-
+    libs/vedic_astrology_core/combinations/catalog/seismic_yogas.yaml (Mangal-Ketu-Primary)

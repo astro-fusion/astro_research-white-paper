@@ -71,9 +71,7 @@ def _test(args: argparse.Namespace) -> int:
         if not bad:
             print(f"PASS {rule.id} ({len(results)} cases)")
             if rule.status == "needs_verification":
-                print(
-                    "  note: all cases pass now; remove 'status: needs_verification'"
-                )
+                print("  note: all cases pass now; remove 'status: needs_verification'")
             continue
         for res in bad:
             case = rule.reference_cases[res.index]

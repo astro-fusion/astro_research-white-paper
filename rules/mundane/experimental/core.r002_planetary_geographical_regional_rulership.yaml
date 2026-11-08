@@ -1,0 +1,56 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r002_planetary_geographical_regional_rulership
+name: Planetary Geographical Regional Rulership
+domain: mundane
+claim: >-
+  Planetary Geographical Regional Rulership - Evaluate affliction/prominence score for 7 Grahas
+  + Rahu/Ketu.
+source:
+  text: Chapter 1 (Brihat Samhita)
+  chapter: Chapter 1 (Brihat Samhita)
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-002
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - Evaluate affliction/prominence score for 7 Grahas + Rahu/Ketu.
+    - Map afflicted planet to ancient territorial domains.
+    - Project ancient names to modern GeoJSON polygons with confidence weighting.
+  mapping_status: descriptive
+  draft_conditions:
+    all:
+      - planet_afflicted:
+          planets:
+            - Sun
+            - Moon
+            - Mars
+            - Mercury
+            - Jupiter
+            - Venus
+            - Saturn
+            - Rahu
+            - Ketu
+  event_types:
+    - geographic_mapping
+  confidence_in_app: traditional_only
+  severity_in_app: elevated
+  validation:
+    verdict: KEEP_WITH_CHANGES
+    problem: Ancient names (*Mlechchas*, *Yavanas*, *Kamboj*) lack exact modern boundaries
+    normalization: >-
+      Introduce `GeoConfidenceLayer` mapping ancient regions to approximate modern GeoJSON
+      polygons with confidence scores ($0.1$ to $0.8$). Display as heat overlays, not hard
+      borders.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: 'The draft uses conditions the vocabulary cannot express yet: planet_afflicted.'
+  missing_predicates:
+    - planet_afflicted

@@ -1,0 +1,111 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch5.himalaya_geopolitical_module
+name: Himalayan Tract & Nepal Geopolitical Stability Engine
+domain: mundane
+claim: >-
+  Himalayan Tract & Nepal Geopolitical Stability Engine - Nepal baseline: Ruled by Jupiter,
+  Sun, and Revati Nakshatra (Mercury/Jupiter).
+source:
+  text: Chapter 5
+  chapter: Chapter 5
+  app_registry: docs/mundane/chapter5-rule-registry.yaml
+  id: ch5_himalaya_geopolitical_module
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - Nepal baseline: Ruled by Jupiter, Sun, and Revati Nakshatra (Mercury/Jupiter).
+    - Check 1: If Mercury and Jupiter both afflicted, set National_State = UPSET.
+    - Check 2: If Sun afflicted, set Executive_Ruler_Vulnerability = ELEVATED.
+    - Check 3: >-
+        If date in Jan 15-Feb 15 (Sun-Rahu) or Jul 15-Aug 15 (Sun-Ketu), flag Critical Solar
+        Window for leadership.
+    - Check 4: >-
+        If Saturn-Rahu in Capricorn (10) WHILE Jupiter-Ketu in Cancer (4), trigger Anti-Autocratic
+        Democratic Mobilization.
+    - Check 5: >-
+        If Mars joins Saturn-Rahu in Capricorn, escalate Protest_Escalation_Risk to CRITICAL.
+  original_thresholds:
+    conjunction_orb_deg: 5
+    seasonal_sun_rahu_window:
+      - 01-15
+      - 02-15
+    seasonal_sun_ketu_window:
+      - 07-15
+      - 08-15
+  mapping_status: partial
+  draft_conditions:
+    any:
+      - all:
+          - planet_afflicted:
+              planet: Mercury
+          - planet_afflicted:
+              planet: Jupiter
+      - planet_afflicted:
+          planet: Sun
+      - date_within_calendar_window:
+          start: 01-15
+          end: 02-15
+          requires: Sun-Rahu
+      - date_within_calendar_window:
+          start: 07-15
+          end: 08-15
+          requires: Sun-Ketu
+      - all:
+          - conjunction_within_orb:
+              a: Saturn
+              b: Rahu
+              orb: 5
+          - planet_in_sign:
+              planet: Saturn
+              sign: 10
+          - conjunction_within_orb:
+              a: Jupiter
+              b: Ketu
+              orb: 5
+          - planet_in_sign:
+              planet: Jupiter
+              sign: 4
+      - all:
+          - conjunction_within_orb:
+              a: Mars
+              b: Saturn
+              orb: 5
+          - planet_in_sign:
+              planet: Saturn
+              sign: 10
+          - conjunction_within_orb:
+              a: Saturn
+              b: Rahu
+              orb: 5
+  event_types:
+    - political_restructuring
+    - regime_transition
+    - public_demonstration_risk
+  confidence_in_app: source_based
+  severity_in_app: critical
+  validation:
+    verdict: CORE_MODULE
+    problem: >-
+      Nepal rulership by Jupiter/Sun; Revati Nakshatra; Sun-Rahu/Ketu seasonal danger; Saturn-Rahu
+      Capricorn alignment.
+    normalization: >-
+      Dedicated `HimalayaStabilityIndex`: Tracks Executive Stability, State Continuity, Democratic
+      Mobilization, and Civil Unrest Risk without alarmist deterministic text.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter5-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: conjunction_within_orb, date_within_calendar_window,
+    planet_afflicted, planet_in_sign.
+  missing_predicates:
+    - conjunction_within_orb
+    - date_within_calendar_window
+    - planet_afflicted
+    - planet_in_sign

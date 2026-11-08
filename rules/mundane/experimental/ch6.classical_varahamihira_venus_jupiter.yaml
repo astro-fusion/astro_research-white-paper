@@ -1,0 +1,69 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch6.classical_varahamihira_venus_jupiter
+name: Varahamihira / Garga Venus-Jupiter Opposition
+domain: mundane
+claim: >-
+  Varahamihira / Garga Venus-Jupiter Opposition - Venus and Jupiter are in opposition (180°
+  ± 10°).
+source:
+  text: Chapter 6
+  chapter: Chapter 6
+  app_registry: docs/mundane/chapter6-rule-registry.yaml
+  id: ch6_classical_varahamihira_venus_jupiter
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: active
+conditions:
+  separation_within:
+    planets:
+      - Venus
+      - Jupiter
+    angle: 180
+    orb: 10
+reference_cases:
+  - moment: '1950-09-10T06:00:00Z'
+    expect: fires
+    note: >-
+      Venus is in Leo 7.1 deg and Jupiter is in Aquarius 7.4 deg: 179.7 deg apart, 0.3 deg
+      from 180 (within the 10 deg orb)
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '1950-05-03T06:00:00Z'
+    expect: silent
+    note: >-
+      Venus is in Pisces 4.1 deg and Jupiter is in Aquarius 9.8 deg: 24.2 deg apart, 155.8
+      deg from 180 (outside the 10 deg orb)
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  original_condition:
+    - Venus and Jupiter are in opposition (180° ± 10°).
+  original_thresholds:
+    opposition_orb_deg: 10
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - aspect_within_orb:
+          a: Venus
+          b: Jupiter
+          angle: 180
+          orb: 10
+  event_types:
+    - diplomatic_affairs
+  confidence_in_app: traditional_only
+  severity_in_app: moderate
+  validation:
+    report_row: Classical Dual-Sign & Nakshatra Upheaval
+    verdict: ADAPT AS MULTI-FACTOR ENGINE
+    normalization: >-
+      Check exact Nakshatra placements (Krittika = Aries/Taurus, Visakha = Libra/Scorpio).
+      Detect Dual Sign occupancy. Track agricultural vulnerability rather than deterministic
+      "famine".
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter6-validation-report.md
+    empirical_backtest_result: null
+  conversion: Converted by hand from draft_conditions to the astro-rules vocabulary.

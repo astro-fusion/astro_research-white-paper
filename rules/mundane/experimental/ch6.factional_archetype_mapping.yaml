@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch6.factional_archetype_mapping
+name: Factional & Ideological Societal Archetype Dynamics
+domain: mundane
+claim: Factional & Ideological Societal Archetype Dynamics
+source:
+  text: Chapter 6
+  chapter: Chapter 6
+  app_registry: docs/mundane/chapter6-rule-registry.yaml
+  id: ch6_factional_archetype_mapping
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  mapping_status: descriptive
+  draft_conditions:
+    all: []
+  event_types:
+    - society
+  confidence_in_app: model_abstracted
+  severity_in_app: contextual
+  validation:
+    report_row: Factional Archetype Mapping
+    verdict: DE-BIAS & ABSTRACT
+    normalization: >-
+      Convert to sociological/political science archetypes: Establishment vs. Mass Opposition
+      vs. Populist Insurgency vs. Dissident Splinter. Store historical demographic tags behind
+      `researchMode: true`.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter6-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    Descriptive in the source registry: it states an interpretation or a data layer, not a
+    condition on the sky.

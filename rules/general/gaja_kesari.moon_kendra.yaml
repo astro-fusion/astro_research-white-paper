@@ -1,0 +1,51 @@
+# yaml-language-server: $schema=../schema.json
+id: general.gaja_kesari.moon_kendra
+name: Gaja Kesari Yoga (Moon kendra form)
+domain: general
+claim: >-
+  Jupiter in a kendra (1, 4, 7, 10) counted by sign from the Moon gives fame, wealth and lasting
+  reputation.
+source:
+  text: Brihat Parashara Hora Shastra
+  chapter: '36'
+  verse: 3-4
+  edition: R. Santhanam tr., Ranjan Publications
+  note: >-
+    Gaja Kesari is the first yoga of the chapter on various yogas (Nana Yoga). Chapter and
+    verse numbering differ between editions; check against yours.
+author: astro-research (from src/celestial/dignity_scoring.py detect_yogas)
+tier: classical
+conditions:
+  in_kendra_from:
+    planet: Jupiter
+    from: Moon
+reference_cases:
+  - moment: '2000-01-28T06:00:00Z'
+    expect: fires
+    note: >-
+      Jupiter is in Aries 3.6 deg, 7th from Moon in Libra, which is a kendra (1, 4, 7, 10)
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '2000-01-05T06:00:00Z'
+    expect: silent
+    note: >-
+      Jupiter is in Aries 1.6 deg, 5th from Moon in Sagittarius, which is not a kendra (1,
+      4, 7, 10)
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '2014-01-08T00:00:00Z'
+    expect: fires
+    note: >-
+      Review S3-3 regression: Jupiter is in Gemini 21.1 deg, 4th from Moon in Pisces, which
+      is a kendra (1, 4, 7, 10). The degree difference is 89.4, which the old src detector
+      (diff // 30) did not count as a kendra.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  simplified: >-
+    This is the common short form. BPHS also requires a benefic to join or aspect Jupiter
+    and Jupiter to be free of debilitation, combustion and an enemy's sign; see general.gaja_kesari.classical.
+  fixes: >-
+    src/celestial/dignity_scoring.py detect_yogas counted int((Jupiter - Moon) // 30), a degree
+    difference, so Moon Aries 29 with Jupiter Cancer 28 (89 deg) was missed (review S3-3).
+    Counting is by sign here.

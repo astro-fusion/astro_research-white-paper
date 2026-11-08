@@ -1,0 +1,70 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch9.regime_durability_fixed_anchor
+name: Fixed Sign Anchor for Constitutional & Regime Durability
+domain: mundane
+claim: >-
+  Fixed Sign Anchor for Constitutional & Regime Durability - If national Lagna or capital
+  sign is Fixed, constitutional resilience is anchored high (>= 85/100).
+source:
+  text: Chapter 9
+  chapter: Chapter 9
+  app_registry: docs/mundane/chapter9-rule-registry.yaml
+  id: ch9_regime_durability_fixed_anchor
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - >-
+      If national Lagna or capital sign is Fixed, constitutional resilience is anchored high
+      (>= 85/100).
+    - >-
+      If national Lagna is Movable and Fiery (Aries), military coup vulnerability is elevated.
+  original_thresholds:
+    fixed_signs:
+      - 2
+      - 5
+      - 8
+      - 11
+    movable_fiery_signs:
+      - 1
+    fixed_resilience_bonus: 40
+    movable_coup_risk_penalty: 35
+  mapping_status: mapped
+  draft_conditions:
+    any:
+      - rising_or_capital_sign_in:
+          signs:
+            - 2
+            - 5
+            - 8
+            - 11
+          effect: resilience_anchor
+      - rising_sign_is:
+          sign: 1
+          effect: coup_vulnerability_elevated
+  event_types:
+    - governance
+  confidence_in_app: classical_and_empirical
+  severity_in_app: foundational
+  validation:
+    report_row: Regime Durability & Coup Matrix
+    verdict: NORMALIZE
+    normalization: >-
+      Replace absolute zero with continuous `constitutionalResilienceScore` ($0 - 100$) and
+      `militaryInterventionRiskScore` ($0 - 100$). Fixed signs provide high resilience ($85+$)
+      rather than dogmatic immunity.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter9-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: rising_or_capital_sign_in,
+    rising_sign_is.
+  missing_predicates:
+    - rising_or_capital_sign_in
+    - rising_sign_is

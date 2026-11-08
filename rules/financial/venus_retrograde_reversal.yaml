@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=../schema.json
+id: financial.venus_retrograde_reversal
+name: Venus-Retrograde-Reversal
+domain: financial
+claim: Venus retrograde signals a reversal in value expectations (gold).
+source:
+  text: Financial Astrology Tradition
+  note: No classical text or chapter; carried over from the old catalog.
+author: astro-research combinations catalog (migrated 2026-11-08)
+tier: experimental
+conditions:
+  retrograde:
+    planet: Venus
+expected_effect:
+  series: gold_usd
+  description: Venus retrograde signals a reversal in value expectations (gold).
+reference_cases:
+  - moment: '2001-03-30T06:00:00Z'
+    expect: fires
+    note: Venus moves -0.630 deg/day, so it is retrograde
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '2000-08-04T06:00:00Z'
+    expect: silent
+    note: Venus moves +1.230 deg/day, so it is direct
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  migrated_from: >-
+    libs/vedic_astrology_core/combinations/catalog/financial_yogas.yaml (Venus-Retrograde-Reversal)

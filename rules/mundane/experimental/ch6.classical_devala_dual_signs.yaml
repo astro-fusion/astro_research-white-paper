@@ -1,0 +1,93 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch6.classical_devala_dual_signs
+name: Devala Dual-Sign Geopolitical Turbulence
+domain: mundane
+claim: >-
+  Devala Dual-Sign Geopolitical Turbulence - Both Jupiter and Saturn reside simultaneously
+  in dual (common) signs.
+source:
+  text: Chapter 6
+  chapter: Chapter 6
+  app_registry: docs/mundane/chapter6-rule-registry.yaml
+  id: ch6_classical_devala_dual_signs
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: active
+conditions:
+  all:
+    - in_sign:
+        planet: Jupiter
+        signs:
+          - Gemini
+          - Virgo
+          - Sagittarius
+          - Pisces
+    - in_sign:
+        planet: Saturn
+        signs:
+          - Gemini
+          - Virgo
+          - Sagittarius
+          - Pisces
+reference_cases:
+  - moment: '1951-09-27T06:00:00Z'
+    expect: fires
+    note: >-
+      Jupiter is in Pisces 16.8 deg, one of Gemini, Virgo, Sagittarius, Pisces; Saturn is
+      in Virgo 12.0 deg, one of Gemini, Virgo, Sagittarius, Pisces
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '1950-08-12T06:00:00Z'
+    expect: silent
+    note: >-
+      Jupiter is in Aquarius 11.1 deg, not one of Gemini, Virgo, Sagittarius, Pisces; Saturn
+      is in Leo 25.3 deg, not one of Gemini, Virgo, Sagittarius, Pisces
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  original_condition:
+    - Both Jupiter and Saturn reside simultaneously in dual (common) signs.
+  original_thresholds:
+    dual_signs:
+      - 3
+      - 6
+      - 9
+      - 12
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - planet_in_sign_in:
+          planet: Jupiter
+          signs:
+            - 3
+            - 6
+            - 9
+            - 12
+      - planet_in_sign_in:
+          planet: Saturn
+          signs:
+            - 3
+            - 6
+            - 9
+            - 12
+  event_types:
+    - political_weather
+  confidence_in_app: source_based
+  severity_in_app: elevated
+  validation:
+    report_row: Classical Dual-Sign & Nakshatra Upheaval
+    verdict: ADAPT AS MULTI-FACTOR ENGINE
+    normalization: >-
+      Check exact Nakshatra placements (Krittika = Aries/Taurus, Visakha = Libra/Scorpio).
+      Detect Dual Sign occupancy. Track agricultural vulnerability rather than deterministic
+      "famine".
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter6-validation-report.md
+    empirical_backtest_result: null
+  conversion: >-
+    Sign numbers 3, 6, 9, 12 are the dual signs. Converted by hand from draft_conditions to
+    the astro-rules vocabulary.

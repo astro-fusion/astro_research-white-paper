@@ -1,0 +1,53 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r012_extra_saturnine_outer_planet_macro_trends
+name: Extra-Saturnine Outer Planet Macro-Trends
+domain: mundane
+claim: >-
+  Extra-Saturnine Outer Planet Macro-Trends - Evaluate long-term generational transit of Uranus,
+  Neptune, and Pluto through zodiac signs.
+source:
+  text: Chapter 1 & Chapter 3 (B.V. Raman synthesis)
+  chapter: Chapter 1 & Chapter 3 (B.V. Raman synthesis)
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-012
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - >-
+      Evaluate long-term generational transit of Uranus, Neptune, and Pluto through zodiac
+      signs.
+    - >-
+      Generate macro-societal themes: technological upheaval, ideological dissolution, subterranean
+      power reset.
+  mapping_status: descriptive
+  draft_conditions:
+    any:
+      - planet_in_sign:
+          planet: Uranus
+      - planet_in_sign:
+          planet: Neptune
+      - planet_in_sign:
+          planet: Pluto
+  event_types:
+    - politics
+  confidence_in_app: traditional_only
+  severity_in_app: moderate
+  validation:
+    verdict: KEEP
+    problem: Generational background trends
+    normalization: >-
+      Retain as low-weight contextual macro-eras for collective psychology and institutional
+      shifts.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: 'The draft uses conditions the vocabulary cannot express yet: planet_in_sign.'
+  missing_predicates:
+    - planet_in_sign

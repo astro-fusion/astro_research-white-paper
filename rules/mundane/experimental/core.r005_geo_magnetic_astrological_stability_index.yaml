@@ -1,0 +1,156 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r005_geo_magnetic_astrological_stability_index
+name: Geo-Magnetic & Astrological Stability Index
+domain: mundane
+claim: >-
+  Geo-Magnetic & Astrological Stability Index - Calculate angular separations between Saturn-Jupiter,
+  Jupiter-Mars, and Saturn-Mars.
+source:
+  text: Chapter 1 & Chapter 3
+  chapter: Chapter 1 & Chapter 3
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-005
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: active
+conditions:
+  at_least:
+    n: 2
+    of:
+      - any:
+          - conjunct_within:
+              planets:
+                - Saturn
+                - Jupiter
+              orb: 6
+          - separation_within:
+              planets:
+                - Saturn
+                - Jupiter
+              angle: 90
+              orb: 6
+          - separation_within:
+              planets:
+                - Saturn
+                - Jupiter
+              angle: 180
+              orb: 6
+      - any:
+          - conjunct_within:
+              planets:
+                - Jupiter
+                - Mars
+              orb: 6
+          - separation_within:
+              planets:
+                - Jupiter
+                - Mars
+              angle: 90
+              orb: 6
+          - separation_within:
+              planets:
+                - Jupiter
+                - Mars
+              angle: 180
+              orb: 6
+      - any:
+          - conjunct_within:
+              planets:
+                - Saturn
+                - Mars
+              orb: 6
+          - separation_within:
+              planets:
+                - Saturn
+                - Mars
+              angle: 90
+              orb: 6
+          - separation_within:
+              planets:
+                - Saturn
+                - Mars
+              angle: 180
+              orb: 6
+reference_cases:
+  - moment: '1951-12-10T06:00:00Z'
+    expect: fires
+    note: >-
+      Saturn is in Virgo 20.0 deg and Jupiter is in Pisces 11.2 deg: 171.2 deg apart, outside
+      the 6 deg orb; Saturn is in Virgo 20.0 deg and Jupiter is in Pisces 11.2 deg: 171.2
+      deg apart, 81.2 deg from 90 (outside the 6 deg orb); Saturn is in Virgo 20.0 deg and
+      Jupiter is in Pisces 11.2 deg: 171.2 deg apart, 8.8 deg from 180 (outside the 6 deg
+      orb); Jupiter is in Pisces 11.2 deg and Mars is in Virgo 15.8 deg: 175.4 deg apart,
+      outside the 6 deg orb; Jupiter is in Pisces 11.2 deg and Mars is in Virgo 15.8 deg:
+      175.4 deg apart, 85.4 deg from 90 (outside the 6 deg orb); Jupiter is in Pisces 11.2
+      deg and Mars is in Virgo 15.8 deg: 175.4 deg apart, 4.6 deg from 180 (within the 6 deg
+      orb); Saturn is in Virgo 20.0 deg and Mars is in Virgo 15.8 deg: 4.2 deg apart, within
+      the 6 deg orb; Saturn is in Virgo 20.0 deg and Mars is in Virgo 15.8 deg: 4.2 deg apart,
+      85.8 deg from 90 (outside the 6 deg orb); Saturn is in Virgo 20.0 deg and Mars is in
+      Virgo 15.8 deg: 4.2 deg apart, 175.8 deg from 180 (outside the 6 deg orb)
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '1950-12-19T06:00:00Z'
+    expect: silent
+    note: >-
+      Saturn is in Virgo 8.7 deg and Jupiter is in Aquarius 9.3 deg: 150.6 deg apart, outside
+      the 6 deg orb; Saturn is in Virgo 8.7 deg and Jupiter is in Aquarius 9.3 deg: 150.6
+      deg apart, 60.6 deg from 90 (outside the 6 deg orb); Saturn is in Virgo 8.7 deg and
+      Jupiter is in Aquarius 9.3 deg: 150.6 deg apart, 29.4 deg from 180 (outside the 6 deg
+      orb); Jupiter is in Aquarius 9.3 deg and Mars is in Capricorn 9.9 deg: 29.4 deg apart,
+      outside the 6 deg orb; Jupiter is in Aquarius 9.3 deg and Mars is in Capricorn 9.9 deg:
+      29.4 deg apart, 60.6 deg from 90 (outside the 6 deg orb); Jupiter is in Aquarius 9.3
+      deg and Mars is in Capricorn 9.9 deg: 29.4 deg apart, 150.6 deg from 180 (outside the
+      6 deg orb); Saturn is in Virgo 8.7 deg and Mars is in Capricorn 9.9 deg: 121.2 deg apart,
+      outside the 6 deg orb; Saturn is in Virgo 8.7 deg and Mars is in Capricorn 9.9 deg:
+      121.2 deg apart, 31.2 deg from 90 (outside the 6 deg orb); Saturn is in Virgo 8.7 deg
+      and Mars is in Capricorn 9.9 deg: 121.2 deg apart, 58.8 deg from 180 (outside the 6
+      deg orb)
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  original_condition:
+    - >-
+      Calculate angular separations between Saturn-Jupiter, Jupiter-Mars, and Saturn-Mars.
+    - If 2+ pairs in hard aspect (0, 90, 180), set Magnetic_Storm_Index = HIGH.
+    - >-
+      If planets evenly spaced or in soft aspect (60, 120), set Magnetic_Storm_Index = ZERO.
+  original_thresholds:
+    hard_aspect_orb_deg: 6
+    soft_aspect_orb_deg: 6
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - pairs_in_hard_aspect_gte:
+          pairs:
+            - - Saturn
+              - Jupiter
+            - - Jupiter
+              - Mars
+            - - Saturn
+              - Mars
+          angles:
+            - 0
+            - 90
+            - 180
+          orb: 6
+          count: 2
+  event_types:
+    - space_weather
+  confidence_in_app: traditional_only
+  severity_in_app: elevated
+  validation:
+    verdict: SPLIT
+    problem: Blends planetary aspects with physical geomagnetic storms
+    normalization: >-
+      Separate into `TraditionalMagneticAstrologyIndex` (astrological aspects) and `ScientificGeomagneticIndex`
+      (NOAA Kp/Ap space weather).
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  conversion: >-
+    Hard aspects 0, 90, 180 deg within 6 deg; at least two of the three pairs. Converted by
+    hand from draft_conditions to the astro-rules vocabulary.

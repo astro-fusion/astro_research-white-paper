@@ -1,0 +1,48 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r014_samvatsara_king_planet_economic_agricultural_index
+name: Samvatsara & King Planet Economic/Agricultural Index
+domain: mundane
+claim: >-
+  Samvatsara & King Planet Economic/Agricultural Index - Benefic King: Yield High, Rainfall
+  Good (Venus: Sugarcane/Dairy, Moon: Flood Risk, Mercury: Timely rain, Jupiter: Horticulture).
+source:
+  text: Chapter 2 (Varsheshvara Agriculture)
+  chapter: Chapter 2 (Varsheshvara Agriculture)
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-014
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - >-
+      Benefic King: Yield High, Rainfall Good (Venus: Sugarcane/Dairy, Moon: Flood Risk, Mercury:
+      Timely rain, Jupiter: Horticulture).
+    - If Samvatsara is Pingala, Kalayukti, or Raudra, constrain Jupiter to Moderate.
+    - >-
+      Malefic King: Yield Low, Rainfall Poor (Mars: Arson/War, Saturn: Starvation/Depression,
+      Sun: Magha/Phalguna heat waves).
+  mapping_status: descriptive
+  draft_conditions:
+    all: []
+  event_types:
+    - agriculture
+  confidence_in_app: traditional_only
+  severity_in_app: moderate
+  validation:
+    verdict: KEEP_WITH_CHANGES
+    problem: Strict harvest outputs without local climate context
+    normalization: >-
+      Dynamic scoring with benefic/malefic portfolio weights, Samvatsara constraints, and
+      mitigation overrides.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    Descriptive in the source registry: it states an interpretation or a data layer, not a
+    condition on the sky.

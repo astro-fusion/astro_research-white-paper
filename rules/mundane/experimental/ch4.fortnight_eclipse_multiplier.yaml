@@ -1,0 +1,68 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch4.fortnight_eclipse_multiplier
+name: Fortnight Dual-Eclipse Threat Multiplier
+domain: mundane
+claim: >-
+  Fortnight Dual-Eclipse Threat Multiplier - Days between solar and lunar eclipses <= 16 days.
+source:
+  text: Chapter 4
+  chapter: Chapter 4
+  app_registry: docs/mundane/chapter4-rule-registry.yaml
+  id: ch4_fortnight_eclipse_multiplier
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+window:
+  unit: days
+  before: 100
+  after: 100
+  note: peak +/-30d, broad +/-100d
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - Days between solar and lunar eclipses <= 16 days.
+    - If target date within peak window (+/- 30 days), activate PEAK DANGER ZONE.
+    - >-
+      If target date within broad window (+/- 100 days), activate BROAD VULNERABILITY ZONE.
+  original_thresholds:
+    fortnight_days_max: 16
+    broad_window_days: 100
+    peak_window_days: 30
+    critical_multiplier: 2.8
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - eclipse_pair_interval_days_lte:
+          days: 16
+    any:
+      - date_within_window:
+          around: eclipse
+          days: 30
+          label: peak
+      - date_within_window:
+          around: eclipse
+          days: 100
+          label: broad
+  event_types:
+    - collision_derailment
+    - human_error
+  confidence_in_app: source_based
+  severity_in_app: critical
+  validation:
+    verdict: KEEP
+    problem: Eclipse window discrepancies with Chapter 1/3.
+    normalization: >-
+      Unify into hierarchical model: Broad window ($\pm 100$ days), Peak window ($\pm 30$
+      days), and Fortnight Paksha Grahan threshold ($\le 14$ days, inclusive to $16$ days).
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter4-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: date_within_window, eclipse_pair_interval_days_lte.
+  missing_predicates:
+    - date_within_window
+    - eclipse_pair_interval_days_lte

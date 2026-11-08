@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=../schema.json
+id: seismic.mangal_ketu_fire_sign
+name: Mangal-Ketu-Fire-Sign
+domain: seismic
+claim: A Mars-Ketu conjunction is amplified when Mars is in a fire sign.
+source:
+  text: Brihat Samhita
+  chapter: '17'
+  note: >-
+    Old catalog: 'Brihat Samhita + Elemental Amplification'. Not verified against the text;
+    see mangal_ketu_primary.
+author: astro-research combinations catalog (migrated 2026-11-08)
+tier: experimental
+conditions:
+  all:
+    - conjunct_within:
+        planets:
+          - Mars
+          - Ketu
+        orb: 13
+    - in_sign:
+        planet: Mars
+        signs:
+          - Aries
+          - Leo
+          - Sagittarius
+expected_effect:
+  event: earthquake
+  direction: increase
+reference_cases:
+  - moment: '2001-05-16T06:00:00Z'
+    expect: fires
+    note: >-
+      Mars is in Sagittarius 5.0 deg and Ketu is in Sagittarius 14.7 deg: 9.6 deg apart, within
+      the 13 deg orb; Mars is in Sagittarius 5.0 deg, one of Aries, Leo, Sagittarius
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '2000-08-26T06:00:00Z'
+    expect: silent
+    note: >-
+      Mars is in Cancer 22.3 deg and Ketu is in Sagittarius 28.6 deg: 156.3 deg apart, outside
+      the 13 deg orb; Mars is in Cancer 22.3 deg, not one of Aries, Leo, Sagittarius
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  migrated_from: >-
+    libs/vedic_astrology_core/combinations/catalog/seismic_yogas.yaml (Mangal-Ketu-Fire-Sign)

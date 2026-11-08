@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=../schema.json
+id: seismic.shrapit_yoga
+name: Shrapit-Yoga
+domain: seismic
+claim: >-
+  A Saturn-Rahu conjunction (Shrapit yoga) within 12 degrees is associated with earthquakes.
+source:
+  text: Classical Tradition
+  note: Shrapit yoga is a modern name; no classical chapter.
+author: astro-research combinations catalog (migrated 2026-11-08)
+tier: experimental
+conditions:
+  conjunct_within:
+    planets:
+      - Saturn
+      - Rahu
+    orb: 12
+expected_effect:
+  event: earthquake
+  direction: increase
+reference_cases:
+  - moment: '2002-06-05T06:00:00Z'
+    expect: fires
+    note: >-
+      Saturn is in Taurus 24.0 deg and Rahu is in Taurus 24.2 deg: 0.2 deg apart, within the
+      12 deg orb
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '2001-02-11T06:00:00Z'
+    expect: silent
+    note: >-
+      Saturn is in Taurus 0.5 deg and Rahu is in Gemini 19.6 deg: 49.2 deg apart, outside
+      the 12 deg orb
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  migrated_from: libs/vedic_astrology_core/combinations/catalog/seismic_yogas.yaml (Shrapit-Yoga)

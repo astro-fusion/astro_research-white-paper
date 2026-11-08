@@ -1,0 +1,86 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r023_annual_chart_accident_signifiers_hindu_western
+name: Annual Chart Accident Signifiers (Hindu & Western)
+domain: mundane
+claim: >-
+  Annual Chart Accident Signifiers (Hindu & Western) - Hindu Check: Mars in 4th (Capricorn/Aquarius)
+  + Saturn in 8th -> Travel_Accident_Scale = MASSIVE.
+source:
+  text: Chapter 3
+  chapter: Chapter 3
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-023
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - >-
+      Hindu Check: Mars in 4th (Capricorn/Aquarius) + Saturn in 8th -> Travel_Accident_Scale
+      = MASSIVE.
+    - Mitigation: Jupiter or Venus aspect reduces severity to MODERATE_MITIGATED.
+    - >-
+      Western Check: Retrograde Neptune in 1st + Retrograde Uranus in 12th -> Sudden_Death_Scale
+      = MASSIVE.
+    - >-
+      Samvatsara Check: "Rakshasa" Samvatsara + Scorpio/Rahu rising -> Extreme destruction
+      modifier.
+  mapping_status: mapped
+  draft_conditions:
+    any:
+      - all:
+          - planet_in_house_from:
+              planet: Mars
+              house: 4
+              frm: annual_lagna
+              sign_in:
+                - Capricorn
+                - Aquarius
+          - planet_in_house_from:
+              planet: Saturn
+              house: 8
+              frm: annual_lagna
+      - all:
+          - planet_in_house_from:
+              planet: Neptune
+              house: 1
+              frm: annual_lagna
+              retrograde: true
+          - planet_in_house_from:
+              planet: Uranus
+              house: 12
+              frm: annual_lagna
+              retrograde: true
+      - all:
+          - samvatsara_is:
+              name: Rakshasa
+          - any:
+              - rising_sign_is:
+                  sign: Scorpio
+              - rahu_rising: {}
+  event_types:
+    - transport
+  confidence_in_app: traditional_only
+  severity_in_app: critical
+  validation:
+    verdict: KEEP_WITH_CHANGES
+    problem: House system ambiguity (Whole Sign vs Placidus)
+    normalization: >-
+      Default to Vedic Whole Sign houses; verify Mars in 4th (Saturnine sign), Saturn in 8th,
+      and Western Rx Neptune 1st / Rx Uranus 12th with benefic mitigations.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: planet_in_house_from, rahu_rising,
+    rising_sign_is, samvatsara_is.
+  missing_predicates:
+    - planet_in_house_from
+    - rahu_rising
+    - rising_sign_is
+    - samvatsara_is

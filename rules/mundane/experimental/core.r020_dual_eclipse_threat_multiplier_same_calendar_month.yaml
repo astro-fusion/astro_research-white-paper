@@ -1,0 +1,51 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r020_dual_eclipse_threat_multiplier_same_calendar_month
+name: Dual-Eclipse Threat Multiplier (Same Calendar Month)
+domain: mundane
+claim: >-
+  Dual-Eclipse Threat Multiplier (Same Calendar Month) - Check if solar and lunar eclipse
+  share the same calendar month.
+source:
+  text: Chapter 3 & Chapter 4
+  chapter: Chapter 3 & Chapter 4
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-020
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+window:
+  unit: months
+  after: 8
+  note: 6-8 month window
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - Check if solar and lunar eclipse share the same calendar month.
+    - If yes, set Disaster_Intensity = SEVERE_AND_WIDESPREAD.
+    - >-
+      Activate 6 to 8 month vulnerability window for transportation, mass transit, and seismic
+      disruptions.
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - solar_and_lunar_eclipse_same_calendar_month: {}
+  event_types:
+    - disaster
+  confidence_in_app: source_based
+  severity_in_app: critical
+  validation:
+    verdict: KEEP
+    problem: Massive transit risk over $6-8$ month window
+    normalization: >-
+      Model as high-level macro volatility multiplier applied to the target calendar window.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: solar_and_lunar_eclipse_same_calendar_month.
+  missing_predicates:
+    - solar_and_lunar_eclipse_same_calendar_month

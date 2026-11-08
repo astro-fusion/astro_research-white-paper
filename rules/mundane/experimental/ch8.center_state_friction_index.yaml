@@ -1,0 +1,89 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch8.center_state_friction_index
+name: Foundational 7th House Center-State Friction Index
+domain: mundane
+claim: >-
+  Foundational 7th House Center-State Friction Index - Mars and Mercury conjoin in the 7th
+  house of the capital inauguration chart.
+source:
+  text: Chapter 8
+  chapter: Chapter 8
+  app_registry: docs/mundane/chapter8-rule-registry.yaml
+  id: ch8_center_state_friction_index
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: active
+conditions:
+  all:
+    - in_house_from:
+        planet: Mars
+        from: Mercury
+        houses:
+          - 1
+    - in_house:
+        planet: Mars
+        houses:
+          - 7
+reference_cases:
+  - moment: '2000-02-02T14:20:00Z'
+    place:
+      lat: 28.6139
+      lon: 77.209
+      tz: Asia/Kolkata
+    expect: fires
+    note: >-
+      Mars is in Aquarius 28.9 deg, 1st from Mercury in Aquarius, which is one of the 1st;
+      Mars is in Aquarius 28.9 deg, the 7th house from the Lagna in Leo
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '2000-01-17T06:40:00Z'
+    place:
+      lat: 28.6139
+      lon: 77.209
+      tz: Asia/Kolkata
+    expect: silent
+    note: >-
+      Mars is in Aquarius 16.3 deg, 2nd from Mercury in Capricorn, which is not one of the
+      1st; Mars is in Aquarius 16.3 deg, the 11th house from the Lagna in Aries, not one of
+      7th
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  original_condition:
+    - Mars and Mercury conjoin in the 7th house of the capital inauguration chart.
+  original_thresholds:
+    conjunction_friction_weight: 45
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - conjunction_within_orb:
+          a: Mars
+          b: Mercury
+          orb: null
+          chart: capital_inauguration
+      - planet_in_house_from:
+          planet: Mars
+          house: 7
+          frm: capital_lagna
+  event_types:
+    - trade_and_fiscal_disputes
+    - statehood_and_boundary_agitations
+  confidence_in_app: source_based
+  severity_in_app: elevated
+  validation:
+    report_row: Center-State Friction Index
+    verdict: NORMALIZE
+    normalization: >-
+      Implement `evaluateCenterStateFriction`. Model 7th house dynamics as `federalCoordinationStressScore`
+      ($0 - 100$) and flag `REGIONAL_AUTONOMY_PRESSURE` rather than deterministic hostility.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter8-validation-report.md
+    empirical_backtest_result: null
+  conversion: >-
+    The draft gives no orb, so the conjunction is read as the same sign (whole-sign yuti).
+    Evaluate at the capital's inauguration moment and place. Converted by hand from draft_conditions
+    to the astro-rules vocabulary.

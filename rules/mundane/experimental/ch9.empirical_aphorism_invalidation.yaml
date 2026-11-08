@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch9.empirical_aphorism_invalidation
+name: Empirical Backtest & Aphorism Invalidation Engine
+domain: mundane
+claim: >-
+  Empirical Backtest & Aphorism Invalidation Engine - If hit rate < 15% across historical
+  cycles (e.g., Saturn in Leo vs Delhi overthrows: 2/26 = 7.7%), flag as EMPIRICALLY_INVALIDATED
+  and auto-suppress panic alert.
+source:
+  text: Chapter 9
+  chapter: Chapter 9
+  app_registry: docs/mundane/chapter9-rule-registry.yaml
+  id: ch9_empirical_aphorism_invalidation
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - "If hit rate < 15% across historical cycles (e.g., Saturn in Leo vs Delhi overthrows": 2/26
+        = 7.7%), flag as EMPIRICALLY_INVALIDATED and auto-suppress panic alert.
+  original_thresholds:
+    statistically_significant_hit_rate: 0.35
+    negligible_hit_rate_threshold: 0.15
+  mapping_status: partial
+  draft_conditions:
+    all:
+      - historical_hit_rate_lt:
+          value: 0.15
+  event_types:
+    - astrological_methodology
+  confidence_in_app: empirical_scientific
+  severity_in_app: methodological
+  validation:
+    report_row: Empirical Aphorism Invalidation
+    verdict: CORE FILTER ENGINE
+    normalization: >-
+      Implement `evaluateAphorismValidity`. Runs historical backtest and auto-suppresses panic
+      alerts when empirical rate is statistically insignificant.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter9-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: historical_hit_rate_lt.
+  missing_predicates:
+    - historical_hit_rate_lt

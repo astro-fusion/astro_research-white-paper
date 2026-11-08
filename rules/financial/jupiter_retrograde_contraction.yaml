@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=../schema.json
+id: financial.jupiter_retrograde_contraction
+name: Jupiter-Retrograde-Contraction
+domain: financial
+claim: Jupiter retrograde signals contraction or a pause in market expansion.
+source:
+  text: Financial Astrology Tradition
+  note: No classical text or chapter; carried over from the old catalog.
+author: astro-research combinations catalog (migrated 2026-11-08)
+tier: experimental
+conditions:
+  retrograde:
+    planet: Jupiter
+expected_effect:
+  series: gold_usd
+  description: Jupiter retrograde signals contraction or a pause in market expansion.
+reference_cases:
+  - moment: '2000-11-28T06:00:00Z'
+    expect: fires
+    note: Jupiter moves -0.137 deg/day, so it is retrograde
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '2000-05-16T06:00:00Z'
+    expect: silent
+    note: Jupiter moves +0.237 deg/day, so it is direct
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  migrated_from: >-
+    libs/vedic_astrology_core/combinations/catalog/financial_yogas.yaml (Jupiter-Retrograde-Contraction)

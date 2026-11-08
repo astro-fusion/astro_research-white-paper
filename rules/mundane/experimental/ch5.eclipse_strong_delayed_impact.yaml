@@ -1,0 +1,57 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch5.eclipse_strong_delayed_impact
+name: Strong Eclipse Delayed Impact Manifestation
+domain: mundane
+claim: Strong Eclipse Delayed Impact Manifestation - Eclipse strength score >= 75.0.
+source:
+  text: Chapter 5
+  chapter: Chapter 5
+  app_registry: docs/mundane/chapter5-rule-registry.yaml
+  id: ch5_eclipse_strong_delayed_impact
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+window:
+  unit: days
+  after: 210
+  note: impact days +180..+210 after eclipse
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - Eclipse strength score >= 75.0.
+    - Target date between +180 and +210 days after the eclipse event.
+  original_thresholds:
+    strength_score_threshold: 75
+    delayed_start_days: 180
+    delayed_end_days: 210
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - eclipse_strength_score_gte:
+          value: 75
+      - date_within_window:
+          around: eclipse
+          after_min: 180
+          after_max: 210
+  event_types:
+    - delayed_regime_or_seismic_echo
+  confidence_in_app: source_based
+  severity_in_app: high
+  validation:
+    verdict: DEFINE
+    problem: '"Strong eclipse" left undefined in classical draft.'
+    normalization: >-
+      Composite `EclipseStrengthScore`: Total eclipse (high), magnitude $\ge 1.0$ (high),
+      central shadow path (high), malefic aspect present (high).
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter5-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: date_within_window, eclipse_strength_score_gte.
+  missing_predicates:
+    - date_within_window
+    - eclipse_strength_score_gte

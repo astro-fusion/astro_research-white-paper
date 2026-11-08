@@ -1,0 +1,49 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch9.vocabulary_modernization_and_power_shift
+name: Classical Vocabulary Modernization & Empirical Power-Shift Tracking
+domain: mundane
+claim: >-
+  Classical Vocabulary Modernization & Empirical Power-Shift Tracking - Archaic "Destruction
+  of Fortresses" translated strictly into modern Coup/Civil War/Invasion.
+source:
+  text: Chapter 9
+  chapter: Chapter 9
+  app_registry: docs/mundane/chapter9-rule-registry.yaml
+  id: ch9_vocabulary_modernization_and_power_shift
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - >-
+      Archaic "Destruction of Fortresses" translated strictly into modern Coup/Civil War/Invasion.
+    - >-
+      Peaceful democratic elections, succession, and family feuds excluded from catastrophe
+      classifications.
+    - >-
+      Saturn in empirical power-shift sign triggers Democratic Transition Watch rather than
+      doom prophecies.
+  mapping_status: descriptive
+  draft_conditions:
+    all: []
+  event_types:
+    - elections_and_transitions
+  confidence_in_app: empirical_and_modern
+  severity_in_app: moderate
+  validation:
+    report_row: Vocabulary Modernization & Power Shifts
+    verdict: MODERN TRANSLATION
+    normalization: >-
+      Implement `translateClassicalAphorismToModernEvent` and `evaluateEmpiricalPowerShiftWindow`.
+      Protects against miscategorizing peaceful elections as disasters.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter9-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    Descriptive in the source registry: it states an interpretation or a data layer, not a
+    condition on the sky.

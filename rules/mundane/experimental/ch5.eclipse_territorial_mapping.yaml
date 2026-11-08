@@ -1,0 +1,112 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch5.eclipse_territorial_mapping
+name: Eclipse Zodiac Sign & Nakshatra Territorial Mapping
+domain: mundane
+claim: >-
+  Eclipse Zodiac Sign & Nakshatra Territorial Mapping - If Eclipse in Leo (5): Flag executive/leadership
+  centers, mountainous, and forest zones.
+source:
+  text: Chapter 5
+  chapter: Chapter 5
+  app_registry: docs/mundane/chapter5-rule-registry.yaml
+  id: ch5_eclipse_territorial_mapping
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: active
+conditions:
+  any:
+    - eclipse_in_sign:
+        kind: any
+        signs:
+          - Leo
+          - Aquarius
+          - Cancer
+        days_before: 1
+        days_after: 1
+    - eclipse_in_sign:
+        kind: any
+        nakshatras:
+          - Shravana
+        days_before: 1
+        days_after: 1
+reference_cases:
+  - moment: '2017-08-22T00:00:00Z'
+    expect: fires
+    note: >-
+      total solar eclipse 2017-08-21 18:25 UT in Leo 4.8 deg (Magha) (between 1 day before
+      and 1 day after); wanted signs Leo, Aquarius, Cancer; total solar eclipse 2017-08-21
+      18:25 UT in Leo 4.8 deg (Magha) (between 1 day before and 1 day after); wanted nakshatras
+      Shravana
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '2017-08-18T00:00:00Z'
+    expect: silent
+    note: >-
+      no eclipse between 1 day before and 1 day after the moment; no eclipse between 1 day
+      before and 1 day after the moment
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  original_condition:
+    - If Eclipse in Leo (5): Flag executive/leadership centers, mountainous, and forest zones.
+    - If Eclipse in Aquarius (11): Flag western regions and nations.
+    - If Eclipse in Cancer (4): Flag Nepal, Himalayan tract, Punjab, Haryana, Rajasthan.
+    - If Eclipse in Sravana: Flag Kashmir, Nepal, Punjab, Haryana, Pakistan, Gujarat.
+  original_thresholds:
+    monitored_signs:
+      - 4
+      - 5
+      - 11
+    monitored_nakshatras:
+      - Magha
+      - Sravana
+  mapping_status: mapped
+  draft_conditions:
+    any:
+      - all:
+          - eclipse_in_sign:
+              sign: Leo
+          - flag:
+              zones: executive/leadership centers, mountainous, forest
+      - all:
+          - eclipse_in_sign:
+              sign: Aquarius
+          - flag:
+              zones: western regions
+      - all:
+          - eclipse_in_sign:
+              sign: Cancer
+          - flag:
+              zones: Nepal, Himalayan tract, Punjab, Haryana, Rajasthan
+      - all:
+          - eclipse_in_nakshatra:
+              nakshatra: Sravana
+          - flag:
+              zones: Kashmir, Nepal, Punjab, Haryana, Pakistan, Gujarat
+  event_types:
+    - executive_vulnerability
+    - regional_unrest
+  confidence_in_app: traditional_only
+  severity_in_app: elevated
+  validation:
+    verdict: KEEP_WITH_CHANGES
+    problem: Mixed geographic regions and social groups; ancient terms.
+    normalization: >-
+      Geo-tag engine: Leo (Executive/Mountains), Aquarius (Western), Cancer (Nepal/Himalayas/Punjab/Rajasthan),
+      Sravana (Kashmir/Nepal/Gujarat/Indus). Social tags sequestered to research mode.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter5-validation-report.md
+    empirical_backtest_result: null
+  flags:
+    - If Eclipse in Leo (5): Flag executive/leadership centers, mountainous, and forest zones.
+    - If Eclipse in Aquarius (11): Flag western regions and nations.
+    - If Eclipse in Cancer (4): Flag Nepal, Himalayan tract, Punjab, Haryana, Rajasthan.
+    - If Eclipse in Sravana: Flag Kashmir, Nepal, Punjab, Haryana, Pakistan, Gujarat.
+  conversion: >-
+    The territorial flags are annotations, kept in notes.flags; the condition is the eclipse
+    placement within a day of the moment. Converted by hand from draft_conditions to the astro-rules
+    vocabulary.

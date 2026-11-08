@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r019_anthropogenic_nuclear_disruption_modifier
+name: Anthropogenic & Nuclear Disruption Modifier
+domain: mundane
+claim: >-
+  Anthropogenic & Nuclear Disruption Modifier - If nuclear test or extreme pollution detected,
+  apply Severe_Disruption modifier.
+source:
+  text: Chapter 2
+  chapter: Chapter 2
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-019
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - If nuclear test or extreme pollution detected, apply Severe_Disruption modifier.
+    - >-
+      Display DEVIATION WARNING stating human activity overrides natural astrological climate
+      baseline.
+  mapping_status: descriptive
+  draft_conditions:
+    any:
+      - observed_event:
+          kind: nuclear_test_or_extreme_pollution
+  event_types:
+    - disaster
+  confidence_in_app: externally_verified
+  severity_in_app: severe
+  validation:
+    verdict: KEEP_WITH_CHANGES
+    problem: Non-astrological override
+    normalization: >-
+      Treat human activities (nuclear tests, severe pollution) as an external deviation overlay
+      comparable in magnitude to solar storm disruptions.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: 'The draft uses conditions the vocabulary cannot express yet: observed_event.'
+  missing_predicates:
+    - observed_event

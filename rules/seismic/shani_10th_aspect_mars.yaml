@@ -1,0 +1,41 @@
+# yaml-language-server: $schema=../schema.json
+id: seismic.shani_10th_aspect_mars
+name: Shani-10th-Aspect-Mars
+domain: seismic
+claim: Saturn casting its special 10th aspect on Mars triggers seismic stress.
+source:
+  text: Brihat Parashara Hora Shastra
+  note: >-
+    BPHS gives Saturn's 10th aspect, not the seismic claim; no chapter in the old catalog.
+author: astro-research combinations catalog (migrated 2026-11-08)
+tier: experimental
+conditions:
+  graha_drishti:
+    planet: Saturn
+    target: Mars
+    aspects:
+      - 10
+expected_effect:
+  event: earthquake
+  direction: increase
+reference_cases:
+  - moment: '2001-12-21T06:00:00Z'
+    expect: fires
+    note: >-
+      Saturn is in Taurus 16.2 deg; Mars in Aquarius is the 10th sign from it, which is one
+      of its aspects (10th)
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '2000-12-16T06:00:00Z'
+    expect: silent
+    note: >-
+      Saturn is in Taurus 1.6 deg; Mars in Libra is the 6th sign from it, not one of its aspects
+      (10th)
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  migrated_from: >-
+    libs/vedic_astrology_core/combinations/catalog/seismic_yogas.yaml (Shani-10th-Aspect-Mars)
+  conversion: >-
+    Was degree-based (Saturn + 270 deg within 15 deg of Mars). Now whole-sign graha drishti:
+    Mars in the 10th sign from Saturn.

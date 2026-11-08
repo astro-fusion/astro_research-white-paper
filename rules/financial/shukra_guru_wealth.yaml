@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=../schema.json
+id: financial.shukra_guru_wealth
+name: Shukra-Guru-Wealth
+domain: financial
+claim: A Venus-Jupiter conjunction within 8 degrees favours wealth (gold up).
+source:
+  text: Classical Wealth Yoga
+  note: Named only generically in the old catalog; no text, chapter or verse.
+author: astro-research combinations catalog (migrated 2026-11-08)
+tier: experimental
+conditions:
+  conjunct_within:
+    planets:
+      - Venus
+      - Jupiter
+    orb: 8
+expected_effect:
+  series: gold_usd
+  description: A Venus-Jupiter conjunction within 8 degrees favours wealth (gold up).
+reference_cases:
+  - moment: '2000-05-18T06:00:00Z'
+    expect: fires
+    note: >-
+      Venus is in Aries 27.2 deg and Jupiter is in Aries 26.4 deg: 0.8 deg apart, within the
+      8 deg orb
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '2000-03-06T06:00:00Z'
+    expect: silent
+    note: >-
+      Venus is in Capricorn 27.2 deg and Jupiter is in Aries 9.8 deg: 72.6 deg apart, outside
+      the 8 deg orb
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  migrated_from: >-
+    libs/vedic_astrology_core/combinations/catalog/financial_yogas.yaml (Shukra-Guru-Wealth)

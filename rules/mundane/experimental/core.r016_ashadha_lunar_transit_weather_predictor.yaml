@@ -1,0 +1,64 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r016_ashadha_lunar_transit_weather_predictor
+name: Ashadha Lunar Transit Weather Predictor
+domain: mundane
+claim: >-
+  Ashadha Lunar Transit Weather Predictor - If Ashadha Krishna Paksha + Moon in Rohini: Determine
+  quantity and distribution of upcoming rainfall.
+source:
+  text: Chapter 2 (Meghamala / Brihat Samhita)
+  chapter: Chapter 2 (Meghamala / Brihat Samhita)
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-016
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - >-
+      If Ashadha Krishna Paksha + Moon in Rohini: Determine quantity and distribution of upcoming
+      rainfall.
+    - >-
+      If Ashadha Shukla Paksha + Moon in Swati: Triggers immediate rainfall and sets annual
+      crop prospects.
+    - Prevailing wind during Poorvashadha or Poornima locks in monsoon trajectory.
+  mapping_status: partial
+  draft_conditions:
+    any:
+      - all:
+          - month_paksha:
+              month: Ashadha
+              paksha: Krishna
+          - planet_in_nakshatra:
+              planet: Moon
+              nakshatra: Rohini
+      - all:
+          - month_paksha:
+              month: Ashadha
+              paksha: Shukla
+          - planet_in_nakshatra:
+              planet: Moon
+              nakshatra: Swati
+  event_types:
+    - weather
+  confidence_in_app: traditional_only
+  severity_in_app: moderate
+  validation:
+    verdict: KEEP_WITH_CHANGES
+    problem: Point-in-time transit vs diurnal duration
+    normalization: >-
+      Evaluate exact Moon transit through Rohini/Swati during Ashadha pakshas with logged
+      wind direction vectors.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: month_paksha, planet_in_nakshatra.
+  missing_predicates:
+    - month_paksha
+    - planet_in_nakshatra

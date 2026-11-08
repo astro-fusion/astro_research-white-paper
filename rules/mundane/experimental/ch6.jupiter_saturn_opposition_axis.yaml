@@ -1,0 +1,125 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch6.jupiter_saturn_opposition_axis
+name: Jupiter-Saturn Opposition Axis Dynamics
+domain: mundane
+claim: Jupiter-Saturn Opposition Axis Dynamics
+source:
+  text: Chapter 6
+  chapter: Chapter 6
+  app_registry: docs/mundane/chapter6-rule-registry.yaml
+  id: ch6_jupiter_saturn_opposition_axis
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: active
+conditions:
+  all:
+    - separation_within:
+        planets:
+          - Jupiter
+          - Saturn
+        angle: 180
+        orb: 12
+    - any:
+        - all:
+            - in_sign:
+                planet: Jupiter
+                signs:
+                  - Gemini
+                  - Sagittarius
+            - in_sign:
+                planet: Saturn
+                signs:
+                  - Gemini
+                  - Sagittarius
+        - all:
+            - in_sign:
+                planet: Jupiter
+                signs:
+                  - Aries
+                  - Libra
+            - in_sign:
+                planet: Saturn
+                signs:
+                  - Aries
+                  - Libra
+        - all:
+            - in_sign:
+                planet: Jupiter
+                signs:
+                  - Cancer
+                  - Capricorn
+            - in_sign:
+                planet: Saturn
+                signs:
+                  - Cancer
+                  - Capricorn
+reference_cases:
+  - moment: '1970-02-05T06:00:00Z'
+    expect: fires
+    note: >-
+      Jupiter is in Libra 12.2 deg and Saturn is in Aries 9.6 deg: 177.4 deg apart, 2.6 deg
+      from 180 (within the 12 deg orb); Jupiter is in Libra 12.2 deg, not one of Gemini, Sagittarius;
+      Saturn is in Aries 9.6 deg, not one of Gemini, Sagittarius; Jupiter is in Libra 12.2
+      deg, one of Aries, Libra; Saturn is in Aries 9.6 deg, one of Aries, Libra; Jupiter is
+      in Libra 12.2 deg, not one of Cancer, Capricorn; Saturn is in Aries 9.6 deg, not one
+      of Cancer, Capricorn
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '1955-06-24T06:00:00Z'
+    expect: silent
+    note: >-
+      Jupiter is in Cancer 9.0 deg and Saturn is in Libra 21.8 deg: 102.8 deg apart, 77.2
+      deg from 180 (outside the 12 deg orb); Jupiter is in Cancer 9.0 deg, not one of Gemini,
+      Sagittarius; Saturn is in Libra 21.8 deg, not one of Gemini, Sagittarius; Jupiter is
+      in Cancer 9.0 deg, not one of Aries, Libra; Saturn is in Libra 21.8 deg, one of Aries,
+      Libra; Jupiter is in Cancer 9.0 deg, one of Cancer, Capricorn; Saturn is in Libra 21.8
+      deg, not one of Cancer, Capricorn
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  original_thresholds:
+    opposition_orb_deg: 12
+    peak_orb_deg: 5
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - aspect_within_orb:
+          a: Jupiter
+          b: Saturn
+          angle: 180
+          orb: 12
+      - any:
+          - opposition_axis_signs:
+              signs:
+                - 3
+                - 9
+          - opposition_axis_signs:
+              signs:
+                - 1
+                - 7
+          - opposition_axis_signs:
+              signs:
+                - 4
+                - 10
+  event_types:
+    - politics
+  confidence_in_app: source_based
+  severity_in_app: high
+  validation:
+    report_row: Jupiter-Saturn Opposition Axis
+    verdict: NORMALIZE & DYNAMIZE
+    normalization: >-
+      Calculate precise angular separation ($180^\circ \pm \text{orb}$). Support dynamic country
+      Ascendant sign mapping (default Virgo = 6, Cancer = 4, etc.). Generate continuous transformation
+      scores rather than binary "regime fall".
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter6-validation-report.md
+    empirical_backtest_result: null
+  conversion: >-
+    Axis sign pairs [3, 9], [1, 7], [4, 10] are Gemini-Sagittarius, Aries-Libra, Cancer-Capricorn;
+    both planets must be on the axis. Converted by hand from draft_conditions to the astro-rules
+    vocabulary.

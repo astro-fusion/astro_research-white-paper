@@ -1,0 +1,74 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch6.classical_parasara_trigger
+name: Parasara Saturn-Krittika & Jupiter-Visakha Upheaval
+domain: mundane
+claim: >-
+  Parasara Saturn-Krittika & Jupiter-Visakha Upheaval - Saturn is in Krittika Nakshatra AND
+  Jupiter is in Visakha Nakshatra.
+source:
+  text: Chapter 6
+  chapter: Chapter 6
+  app_registry: docs/mundane/chapter6-rule-registry.yaml
+  id: ch6_classical_parasara_trigger
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: active
+conditions:
+  all:
+    - in_nakshatra:
+        planet: Saturn
+        nakshatras:
+          - Krittika
+    - in_nakshatra:
+        planet: Jupiter
+        nakshatras:
+          - Vishakha
+reference_cases:
+  - moment: '1970-10-29T06:00:00Z'
+    expect: fires
+    note: >-
+      Saturn is in Aries 26.8 deg, in Krittika pada 1, one of Krittika; Jupiter is in Libra
+      20.6 deg, in Vishakha pada 1, one of Vishakha
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '1955-06-24T06:00:00Z'
+    expect: silent
+    note: >-
+      Saturn is in Libra 21.8 deg, in Vishakha pada 1, not one of Krittika; Jupiter is in
+      Cancer 9.0 deg, in Pushya pada 2, not one of Vishakha
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  original_condition:
+    - Saturn is in Krittika Nakshatra AND Jupiter is in Visakha Nakshatra.
+  original_thresholds:
+    saturn_target_nakshatra: Krittika
+    jupiter_target_nakshatra: Visakha
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - planet_in_nakshatra:
+          planet: Saturn
+          nakshatra: Krittika
+      - planet_in_nakshatra:
+          planet: Jupiter
+          nakshatra: Visakha
+  event_types:
+    - leadership_crisis
+  confidence_in_app: classical_authority
+  severity_in_app: extreme
+  validation:
+    report_row: Classical Dual-Sign & Nakshatra Upheaval
+    verdict: ADAPT AS MULTI-FACTOR ENGINE
+    normalization: >-
+      Check exact Nakshatra placements (Krittika = Aries/Taurus, Visakha = Libra/Scorpio).
+      Detect Dual Sign occupancy. Track agricultural vulnerability rather than deterministic
+      "famine".
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter6-validation-report.md
+    empirical_backtest_result: null
+  conversion: Converted by hand from draft_conditions to the astro-rules vocabulary.

@@ -1,0 +1,62 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch7.exec_cluster_mars_square_stress
+name: Executive Cluster Mars Hard Square Vulnerability Window
+domain: mundane
+claim: >-
+  Executive Cluster Mars Hard Square Vulnerability Window - Sun, Jupiter, and Ketu conjoined
+  within orb AND Mars squares cluster within orb.
+source:
+  text: Chapter 7
+  chapter: Chapter 7
+  app_registry: docs/mundane/chapter7-rule-registry.yaml
+  id: ch7_exec_cluster_mars_square_stress
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+window:
+  unit: days
+  after: 30
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - Sun, Jupiter, and Ketu conjoined within orb AND Mars squares cluster within orb.
+  original_thresholds:
+    conjunction_cluster_orb_deg: 5
+    mars_square_orb_deg: 4
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - cluster_conjunction:
+          bodies:
+            - Sun
+            - Jupiter
+            - Ketu
+          orb: 5
+      - aspect_within_orb:
+          a: Mars
+          b: cluster
+          angle: 90
+          orb: 4
+  event_types:
+    - cabinet_reshuffle_pressure
+    - confidence_vote_vulnerability
+  confidence_in_app: source_based
+  severity_in_app: critical
+  validation:
+    report_row: Executive Pressure Trigger
+    verdict: NORMALIZE AS RISK WINDOW
+    normalization: >-
+      Track `executivePressureScore` (0–100). Detect Mars square orb ($\le 4^\circ$). Reframe
+      as executive vulnerability window.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter7-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: aspect_within_orb, cluster_conjunction.
+  missing_predicates:
+    - aspect_within_orb
+    - cluster_conjunction

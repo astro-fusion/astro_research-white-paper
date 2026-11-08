@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch8.capital_harmony_matrix
+name: Garga-Mihira Capital City Multi-Layer Harmony Matrix
+domain: mundane
+claim: >-
+  Garga-Mihira Capital City Multi-Layer Harmony Matrix - Intersecting signs are Earthy (2,
+  6, 10) and Watery (4, 8, 12) OR Fiery (1, 5, 9) and Airy (3, 7, 11).
+source:
+  text: Chapter 8
+  chapter: Chapter 8
+  app_registry: docs/mundane/chapter8-rule-registry.yaml
+  id: ch8_capital_harmony_matrix
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - >-
+      Intersecting signs are Earthy (2, 6, 10) and Watery (4, 8, 12) OR Fiery (1, 5, 9) and
+      Airy (3, 7, 11).
+    - Mutual relationships fall in 7th, 9th, or 11th houses from one another.
+  original_thresholds:
+    elemental_compatibility_weight: 40
+    numerical_house_harmony_weight: 60
+    harmonious_aspects:
+      - 7
+      - 9
+      - 11
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - any:
+          - elements_compatible:
+              pairs:
+                - - earth
+                  - water
+                - - fire
+                  - air
+      - mutual_house_distance_in:
+          houses:
+            - 7
+            - 9
+            - 11
+  event_types:
+    - national_stability
+  confidence_in_app: classical_authority
+  severity_in_app: structural
+  validation:
+    report_row: Capital Harmony Matrix (Garga-Mihira Formula)
+    verdict: KEEP & DYNAMIZE
+    normalization: >-
+      Implement `evaluateCapitalHarmonyMatrix`. Compute elemental compatibility (Earth-Water,
+      Fire-Air) and mutual house distances ($7, 9, 11$). Output `capitalSurvivalHarmonyScore`
+      ($0 - 100$) with explainability breakdown across all 4 layers.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter8-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: elements_compatible, mutual_house_distance_in.
+  missing_predicates:
+    - elements_compatible
+    - mutual_house_distance_in

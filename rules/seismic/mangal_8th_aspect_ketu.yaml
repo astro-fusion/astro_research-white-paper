@@ -1,0 +1,41 @@
+# yaml-language-server: $schema=../schema.json
+id: seismic.mangal_8th_aspect_ketu
+name: Mangal-8th-Aspect-Ketu
+domain: seismic
+claim: Mars casting its special 8th aspect on Ketu triggers seismic stress.
+source:
+  text: Brihat Parashara Hora Shastra
+  note: >-
+    BPHS gives Mars's 8th aspect, not the seismic claim; no chapter in the old catalog.
+author: astro-research combinations catalog (migrated 2026-11-08)
+tier: experimental
+conditions:
+  graha_drishti:
+    planet: Mars
+    target: Ketu
+    aspects:
+      - 8
+expected_effect:
+  event: earthquake
+  direction: increase
+reference_cases:
+  - moment: '2000-06-30T06:00:00Z'
+    expect: fires
+    note: >-
+      Mars is in Gemini 15.3 deg; Ketu in Capricorn is the 8th sign from it, which is one
+      of its aspects (8th)
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '2000-03-20T06:00:00Z'
+    expect: silent
+    note: >-
+      Mars is in Aries 4.1 deg; Ketu in Capricorn is the 10th sign from it, not one of its
+      aspects (8th)
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  migrated_from: >-
+    libs/vedic_astrology_core/combinations/catalog/seismic_yogas.yaml (Mangal-8th-Aspect-Ketu)
+  conversion: >-
+    Was degree-based (Mars + 210 deg within 15 deg of Ketu). Now whole-sign graha drishti:
+    Ketu in the 8th sign from Mars.

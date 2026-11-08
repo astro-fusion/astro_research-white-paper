@@ -1,0 +1,100 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch4.sun_lagna_moon_rahu_third_house
+name: 3rd House Moon-Rahu Travel Perception Risk
+domain: mundane
+claim: >-
+  3rd House Moon-Rahu Travel Perception Risk - Construct Sun-Lagna chart (Sun sign = House
+  1).
+source:
+  text: Chapter 4
+  chapter: Chapter 4
+  app_registry: docs/mundane/chapter4-rule-registry.yaml
+  id: ch4_sun_lagna_moon_rahu_third_house
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+window:
+  unit: days
+  after: 2
+  note: time_window 2_days
+status: active
+conditions:
+  all:
+    - in_house_from:
+        planet: Moon
+        from: Sun
+        houses:
+          - 3
+    - in_house_from:
+        planet: Rahu
+        from: Sun
+        houses:
+          - 3
+    - conjunct_within:
+        planets:
+          - Moon
+          - Rahu
+        orb: 8
+reference_cases:
+  - moment: '2000-06-05T18:00:00Z'
+    expect: fires
+    note: >-
+      Moon is in Cancer 6.9 deg, 3rd from Sun in Taurus, which is one of the 3rd; Rahu is
+      in Cancer 2.9 deg, 3rd from Sun in Taurus, which is one of the 3rd; Moon is in Cancer
+      6.9 deg and Rahu is in Cancer 2.9 deg: 4.0 deg apart, within the 8 deg orb
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '2000-03-19T03:00:00Z'
+    expect: silent
+    note: >-
+      Moon is in Leo 21.3 deg, 6th from Sun in Pisces, which is not one of the 3rd; Rahu is
+      in Cancer 7.1 deg, 5th from Sun in Pisces, which is not one of the 3rd; Moon is in Leo
+      21.3 deg and Rahu is in Cancer 7.1 deg: 44.3 deg apart, outside the 8 deg orb
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  original_condition:
+    - Construct Sun-Lagna chart (Sun sign = House 1).
+    - Check if Moon and Rahu occupy House 3 (conjunction).
+    - If House 3 is a Watery sign, escalate to critical_water_driver_error.
+  original_thresholds:
+    conjunction_orb_deg: 8
+    watery_signs:
+      - 4
+      - 8
+      - 12
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - planet_in_house_from:
+          planet: Moon
+          house: 3
+          frm: sun_lagna
+      - planet_in_house_from:
+          planet: Rahu
+          house: 3
+          frm: sun_lagna
+      - conjunction_within_orb:
+          a: Moon
+          b: Rahu
+          orb: 8
+  event_types:
+    - human_error
+    - water_hazard
+  confidence_in_app: traditional_only
+  severity_in_app: elevated
+  validation:
+    verdict: KEEP_WITH_CHANGES
+    problem: Chart frame undefined; alarmist wording ("ghost illusions").
+    normalization: >-
+      Define `SunLagnaChart` (Whole Sign houses, Sun as Lagna). Frame output as `human_error_perception_risk`
+      with low/traditional confidence.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter4-validation-report.md
+    empirical_backtest_result: null
+  conversion: >-
+    Sun-Lagna: houses counted from the Sun's sign. Converted by hand from draft_conditions
+    to the astro-rules vocabulary.

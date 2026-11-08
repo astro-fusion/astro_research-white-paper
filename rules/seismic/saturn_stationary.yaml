@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=../schema.json
+id: seismic.saturn_stationary
+name: Saturn-Stationary
+domain: seismic
+claim: >-
+  Saturn near its station (moving under 0.05 deg/day) is associated with earthquakes.
+source:
+  text: Modern Mundane Astrology
+  note: Modern claim; no classical chapter.
+author: astro-research combinations catalog (migrated 2026-11-08)
+tier: experimental
+conditions:
+  planet_speed_below:
+    planet: Saturn
+    speed: 0.05
+expected_effect:
+  event: earthquake
+  direction: increase
+reference_cases:
+  - moment: '2000-01-20T06:00:00Z'
+    expect: fires
+    note: Saturn moves +0.0151 deg/day; |speed| is below 0.05
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '2000-05-13T06:00:00Z'
+    expect: silent
+    note: Saturn moves +0.1287 deg/day; |speed| is not below 0.05
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  migrated_from: >-
+    libs/vedic_astrology_core/combinations/catalog/seismic_yogas.yaml (Saturn-Stationary)
+  conversion: STATIONARY (|speed| <= 0.05) became planet_speed_below (|speed| < 0.05).

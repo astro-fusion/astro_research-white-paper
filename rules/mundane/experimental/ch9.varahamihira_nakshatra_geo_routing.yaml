@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch9.varahamihira_nakshatra_geo_routing
+name: Varahamihira Granular Nakshatra Threat Geo-Router
+domain: mundane
+claim: Varahamihira Granular Nakshatra Threat Geo-Router
+source:
+  text: Chapter 9
+  chapter: Chapter 9
+  app_registry: docs/mundane/chapter9-rule-registry.yaml
+  id: ch9_varahamihira_nakshatra_geo_routing
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  mapping_status: mapped
+  draft_conditions:
+    any:
+      - kurma_direction:
+          nakshatra: Magha
+      - kurma_direction:
+          nakshatra: PurvaPhalguni
+      - kurma_direction:
+          nakshatra: UttaraPhalguni
+  event_types:
+    - regional_security
+  confidence_in_app: classical_authority
+  severity_in_app: targeted
+  validation:
+    report_row: Nakshatra Threat Routing
+    verdict: GEO-FENCE ROUTER
+    normalization: >-
+      Implement `routeNakshatraTerritorialThreat`. Map Magha, Purva Phalguni, Uttara Phalguni,
+      and other nakshatras to discrete regional polygons.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter9-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: 'The draft uses conditions the vocabulary cannot express yet: kurma_direction.'
+  missing_predicates:
+    - kurma_direction

@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r006_celestial_anomalies_timeline_overlay
+name: Celestial Anomalies Timeline Overlay
+domain: mundane
+claim: >-
+  Celestial Anomalies Timeline Overlay - Scan timeline for recorded comets, major meteor storms,
+  or NEO close approaches.
+source:
+  text: Chapter 1 (Ketu Chara / Omens)
+  chapter: Chapter 1 (Ketu Chara / Omens)
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-006
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - Scan timeline for recorded comets, major meteor storms, or NEO close approaches.
+    - Overlay historical anomaly markers with classical omen interpretations.
+  mapping_status: descriptive
+  draft_conditions:
+    all: []
+  event_types:
+    - comet
+  confidence_in_app: traditional_only
+  severity_in_app: elevated
+  validation:
+    verdict: KEEP_WITH_CHANGES
+    problem: Astrological omens conflated with physical impacts
+    normalization: >-
+      Store historical comets as research correlations; ingest CNEOS/MPC data as separate
+      observational layers.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    Descriptive in the source registry: it states an interpretation or a data layer, not a
+    condition on the sky.

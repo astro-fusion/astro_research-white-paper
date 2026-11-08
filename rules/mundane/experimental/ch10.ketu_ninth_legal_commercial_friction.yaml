@@ -1,0 +1,83 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch10.ketu_ninth_legal_commercial_friction
+name: 9th House Ketu Regulatory Friction & Jupiter Mitigation Engine
+domain: mundane
+claim: >-
+  9th House Ketu Regulatory Friction & Jupiter Mitigation Engine - Ketu transits the 9th house
+  from the national Ascendant.
+source:
+  text: Chapter 10
+  chapter: Chapter 10
+  app_registry: docs/mundane/chapter10-rule-registry.yaml
+  id: ch10_ketu_ninth_legal_commercial_friction
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: active
+conditions:
+  transit_in_house_from_natal:
+    planet: Ketu
+    from: Lagna
+    houses:
+      - 9
+reference_cases:
+  - moment: '1962-08-10T06:00:00Z'
+    natal:
+      moment: '1947-08-15T00:00:00+05:30'
+      place:
+        lat: 28.6139
+        lon: 77.209
+        tz: Asia/Kolkata
+      label: India independence chart (Delhi, 00:00 IST), as used by B.V. Raman
+    expect: fires
+    note: transiting Ketu is in Capricorn 15.0 deg, the 9th from the natal Lagna in Taurus
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '1955-06-24T06:00:00Z'
+    natal:
+      moment: '1947-08-15T00:00:00+05:30'
+      place:
+        lat: 28.6139
+        lon: 77.209
+        tz: Asia/Kolkata
+      label: India independence chart (Delhi, 00:00 IST), as used by B.V. Raman
+    expect: silent
+    note: >-
+      transiting Ketu is in Gemini 3.0 deg, the 2nd from the natal Lagna in Taurus, not 9th
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  original_condition:
+    - Ketu transits the 9th house from the national Ascendant.
+  original_thresholds:
+    base_friction_score: 35
+    jupiter_mitigation_discount: 25
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - transit_planet_in_house_from_natal:
+          planet: Ketu
+          house: 9
+          chart: national_ascendant
+  event_types:
+    - regulatory_and_judicial
+  confidence_in_app: classical_and_empirical
+  severity_in_app: moderate
+  validation:
+    report_row: Legal & Commercial Friction
+    verdict: EXPAND & DYNAMIZE
+    normalization: >-
+      Implement `evaluateLegalCommercialFriction`. 9th house Ketu sets baseline regulatory
+      friction ($35$ pts); Jupiter aspect (trine/conjunction/opposition) applies functional
+      mitigation ($-25$ pts).
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter10-validation-report.md
+    empirical_backtest_result: null
+  conversion: >-
+    The national chart is supplied at evaluation time (natal). Converted by hand from draft_conditions
+    to the astro-rules vocabulary.
+  natal_chart: >-
+    Reference cases use the India 1947 chart; any national chart can be given with --natal-moment/--natal-lat/--natal-lon.

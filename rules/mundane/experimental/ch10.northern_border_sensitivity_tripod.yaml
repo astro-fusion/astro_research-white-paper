@@ -1,0 +1,163 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch10.northern_border_sensitivity_tripod
+name: Northern Border Historical Incident Correlation Tripod
+domain: mundane
+claim: >-
+  Northern Border Historical Incident Correlation Tripod - Saturn, Rahu, or Ketu transits
+  the Revati-Aswini-Bharani triad (or secondary nakshatras) AND Mars transits a catalytic
+  sign.
+source:
+  text: Chapter 10
+  chapter: Chapter 10
+  app_registry: docs/mundane/chapter10-rule-registry.yaml
+  id: ch10_northern_border_sensitivity_tripod
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: active
+conditions:
+  all:
+    - any:
+        - in_nakshatra:
+            planet: Saturn
+            nakshatras:
+              - Revati
+              - Ashwini
+              - Bharani
+              - Ardra
+              - Punarvasu
+              - Pushya
+              - Ashlesha
+        - in_nakshatra:
+            planet: Rahu
+            nakshatras:
+              - Revati
+              - Ashwini
+              - Bharani
+              - Ardra
+              - Punarvasu
+              - Pushya
+              - Ashlesha
+        - in_nakshatra:
+            planet: Ketu
+            nakshatras:
+              - Revati
+              - Ashwini
+              - Bharani
+              - Ardra
+              - Punarvasu
+              - Pushya
+              - Ashlesha
+    - in_sign:
+        planet: Mars
+        signs:
+          - Aries
+          - Leo
+          - Virgo
+          - Sagittarius
+          - Pisces
+reference_cases:
+  - moment: '1950-01-22T06:00:00Z'
+    expect: fires
+    note: >-
+      Saturn is in Leo 25.8 deg, in Purva Phalguni pada 4, not one of Revati, Ashwini, Bharani,
+      Ardra, Punarvasu, Pushya, Ashlesha; Rahu is in Pisces 17.8 deg, in Revati pada 1, one
+      of Revati, Ashwini, Bharani, Ardra, Punarvasu, Pushya, Ashlesha; Ketu is in Virgo 17.8
+      deg, in Hasta pada 3, not one of Revati, Ashwini, Bharani, Ardra, Punarvasu, Pushya,
+      Ashlesha; Mars is in Virgo 15.4 deg, one of Aries, Leo, Virgo, Sagittarius, Pisces
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '1951-06-09T06:00:00Z'
+    expect: silent
+    note: >-
+      Saturn is in Virgo 2.5 deg, in Uttara Phalguni pada 2, not one of Revati, Ashwini, Bharani,
+      Ardra, Punarvasu, Pushya, Ashlesha; Rahu is in Aquarius 21.2 deg, in Purva Bhadrapada
+      pada 1, not one of Revati, Ashwini, Bharani, Ardra, Punarvasu, Pushya, Ashlesha; Ketu
+      is in Leo 21.2 deg, in Purva Phalguni pada 3, not one of Revati, Ashwini, Bharani, Ardra,
+      Punarvasu, Pushya, Ashlesha; Mars is in Taurus 19.9 deg, not one of Aries, Leo, Virgo,
+      Sagittarius, Pisces
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  original_condition:
+    - >-
+      Saturn, Rahu, or Ketu transits the Revati-Aswini-Bharani triad (or secondary nakshatras)
+      AND Mars transits a catalytic sign.
+  original_thresholds:
+    primary_nakshatras:
+      - Revati
+      - Aswini
+      - Bharani
+    secondary_nakshatras:
+      - Ardra
+      - Punarvasu
+      - Pushya
+      - Aslesha
+    catalytic_mars_signs:
+      - 1
+      - 5
+      - 6
+      - 9
+      - 12
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - any:
+          - planet_in_nakshatra_in:
+              planet: Saturn
+              nakshatras:
+                - Revati
+                - Aswini
+                - Bharani
+                - Ardra
+                - Punarvasu
+                - Pushya
+                - Aslesha
+          - planet_in_nakshatra_in:
+              planet: Rahu
+              nakshatras:
+                - Revati
+                - Aswini
+                - Bharani
+                - Ardra
+                - Punarvasu
+                - Pushya
+                - Aslesha
+          - planet_in_nakshatra_in:
+              planet: Ketu
+              nakshatras:
+                - Revati
+                - Aswini
+                - Bharani
+                - Ardra
+                - Punarvasu
+                - Pushya
+                - Aslesha
+      - planet_in_sign_in:
+          planet: Mars
+          signs:
+            - 1
+            - 5
+            - 6
+            - 9
+            - 12
+  event_types:
+    - regional_security
+  confidence_in_app: traditional_only
+  severity_in_app: sensitive_research
+  validation:
+    report_row: Northern Border Threat Tripod
+    verdict: SENSITIVE RESEARCH ONLY
+    normalization: >-
+      Reject militaristic radar/alerts. Implement `evaluateNorthernBorderSensitivity`. Track
+      historical correlation; enforce `pushNotificationAllowed: false`; link official security
+      sources.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter10-validation-report.md
+    empirical_backtest_result: null
+  conversion: >-
+    Sign numbers 1, 5, 6, 9, 12 are Aries, Leo, Virgo, Sagittarius, Pisces. Converted by hand
+    from draft_conditions to the astro-rules vocabulary.

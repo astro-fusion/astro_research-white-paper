@@ -1,0 +1,46 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r001_country_natural_baseline_chart_profile
+name: Country Natural Baseline & Chart Profile
+domain: mundane
+claim: >-
+  Country Natural Baseline & Chart Profile - Resolve user-selected chart profile (Cancer Lagna,
+  Virgo Sign, Capricorn Sign, or National Formation Chart).
+source:
+  text: Chapter 1 & Chapter 2 (B.V. Raman / M.C. Jain)
+  chapter: Chapter 1 & Chapter 2 (B.V. Raman / M.C. Jain)
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-001
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - >-
+      Resolve user-selected chart profile (Cancer Lagna, Virgo Sign, Capricorn Sign, or National
+      Formation Chart).
+    - Default India queries without a specific founding date to Cancer Lagna.
+    - Calculate transit impacts relative to active Lagna.
+  mapping_status: descriptive
+  draft_conditions:
+    all: []
+  event_types:
+    - geographic_mapping
+  confidence_in_app: source_based
+  severity_in_app: moderate
+  validation:
+    verdict: SPLIT / MULTI-PROFILE
+    problem: Cancer vs Virgo vs Capricorn conflict
+    normalization: >-
+      Introduce `CountryChartProfile` supporting user-selectable options: Natural Cancer Lagna,
+      Raman/Jain Virgo Sign, Capricorn Sign, 1947 Independence Chart, or Annual Chaitra Chart.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    Descriptive in the source registry: it states an interpretation or a data layer, not a
+    condition on the sky.

@@ -1,0 +1,38 @@
+# yaml-language-server: $schema=../schema.json
+id: seismic.mangal_shani_malefic
+name: Mangal-Shani-Malefic
+domain: seismic
+claim: A Mars-Saturn conjunction within 15 degrees is associated with earthquakes.
+source:
+  text: Phaladeepika
+  chapter: '3'
+  note: Carried over from the old catalog; not verified against the text.
+author: astro-research combinations catalog (migrated 2026-11-08)
+tier: experimental
+conditions:
+  conjunct_within:
+    planets:
+      - Mars
+      - Saturn
+    orb: 15
+expected_effect:
+  event: earthquake
+  direction: increase
+reference_cases:
+  - moment: '2000-04-17T06:00:00Z'
+    expect: fires
+    note: >-
+      Mars is in Aries 24.4 deg and Saturn is in Aries 23.6 deg: 0.8 deg apart, within the
+      15 deg orb
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '2000-02-11T06:00:00Z'
+    expect: silent
+    note: >-
+      Mars is in Pisces 5.5 deg and Saturn is in Aries 17.3 deg: 41.7 deg apart, outside the
+      15 deg orb
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  migrated_from: >-
+    libs/vedic_astrology_core/combinations/catalog/seismic_yogas.yaml (Mangal-Shani-Malefic)

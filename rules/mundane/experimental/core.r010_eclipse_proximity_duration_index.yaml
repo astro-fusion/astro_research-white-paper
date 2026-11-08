@@ -1,0 +1,66 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r010_eclipse_proximity_duration_index
+name: Eclipse Proximity & Duration Index
+domain: mundane
+claim: >-
+  Eclipse Proximity & Duration Index - Check if target date is in 6-month solar window or
+  3-month lunar window.
+source:
+  text: Chapter 1, Chapter 3 & Chapter 4
+  chapter: Chapter 1, Chapter 3 & Chapter 4
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-010
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+window:
+  unit: days
+  before: 180
+  after: 180
+  note: solar 180d / lunar 90d
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - Check if target date is in 6-month solar window or 3-month lunar window.
+    - Check if interval between solar and lunar eclipses <= 16 days (Paksha Grahan).
+    - If dual eclipse within 16 days, apply CRITICAL_DISASTER multiplier (>= 2.5x).
+    - Highlight nations intersecting totality/annularity shadow paths.
+  original_thresholds:
+    solar_window_days: 180
+    lunar_window_days: 90
+    paksha_fortnight_days: 16
+    peak_danger_days: 30
+  mapping_status: mapped
+  draft_conditions:
+    any:
+      - date_within_days_of_eclipse:
+          kind: solar
+          days: 180
+      - date_within_days_of_eclipse:
+          kind: lunar
+          days: 90
+      - eclipse_pair_interval_days_lte:
+          days: 16
+  event_types:
+    - eclipse
+  confidence_in_app: source_based
+  severity_in_app: critical
+  validation:
+    verdict: KEEP_WITH_CHANGES
+    problem: Inconsistent window definitions ($\pm 6$ mo, $\pm 3$ mo, 14-day fortnight)
+    normalization: >-
+      Unified hierarchical model: Broad window ($\pm 6$ mo), Acute window ($\pm 1$ mo), and
+      Paksha Grahan dual-eclipse multiplier ($\le 14$ days).
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: date_within_days_of_eclipse,
+    eclipse_pair_interval_days_lte.
+  missing_predicates:
+    - date_within_days_of_eclipse
+    - eclipse_pair_interval_days_lte

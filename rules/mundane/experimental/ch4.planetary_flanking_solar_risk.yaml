@@ -1,0 +1,54 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch4.planetary_flanking_solar_risk
+name: Planetary Flanking (Papargala) of the Sun Sign
+domain: mundane
+claim: >-
+  Planetary Flanking (Papargala) of the Sun Sign - At least one planet within 10 deg before
+  the Sun sign boundary.
+source:
+  text: Chapter 4
+  chapter: Chapter 4
+  app_registry: docs/mundane/chapter4-rule-registry.yaml
+  id: ch4_planetary_flanking_solar_risk
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - At least one planet within 10 deg before the Sun sign boundary.
+    - At least one planet within 10 deg after the Sun sign boundary.
+  original_thresholds:
+    boundary_flank_orb_deg: 10
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - planet_within_deg_before_sign_boundary:
+          sign: sun_sign
+          deg: 10
+      - planet_within_deg_after_sign_boundary:
+          sign: sun_sign
+          deg: 10
+  event_types:
+    - collision_derailment
+  confidence_in_app: traditional_only
+  severity_in_app: elevated
+  validation:
+    verdict: KEEP_WITH_CHANGES
+    problem: '"Not very far away" is ambiguous.'
+    normalization: >-
+      Define configurable `FlankingRule`: At least one planet within $10^\circ$ before the
+      Sun sign boundary, and at least one planet within $10^\circ$ after the Sun sign boundary.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter4-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: planet_within_deg_after_sign_boundary,
+    planet_within_deg_before_sign_boundary.
+  missing_predicates:
+    - planet_within_deg_after_sign_boundary
+    - planet_within_deg_before_sign_boundary

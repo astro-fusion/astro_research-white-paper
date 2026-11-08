@@ -1,0 +1,73 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch5.eclipse_lunar_baseline_window
+name: Lunar Eclipse Baseline Impact Window
+domain: mundane
+claim: >-
+  Lunar Eclipse Baseline Impact Window - Target date within -30 days to +30 days of lunar
+  eclipse date.
+source:
+  text: Chapter 5
+  chapter: Chapter 5
+  app_registry: docs/mundane/chapter5-rule-registry.yaml
+  id: ch5_eclipse_lunar_baseline_window
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+window:
+  unit: days
+  before: 30
+  after: 30
+status: active
+conditions:
+  eclipse_in_sign:
+    kind: lunar
+    days_before: 30
+    days_after: 30
+reference_cases:
+  - moment: '1950-04-03T06:00:00Z'
+    expect: fires
+    note: >-
+      total lunar eclipse 1950-04-02 20:44 UT in Virgo 19.3 deg (Hasta) (between 30 days before
+      and 30 days after)
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '1950-02-01T06:00:00Z'
+    expect: silent
+    note: no lunar eclipse between 30 days before and 30 days after the moment
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  original_condition:
+    - Target date within -30 days to +30 days of lunar eclipse date.
+  original_thresholds:
+    pre_window_days: 30
+    post_window_days: 30
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - date_within_window:
+          around: lunar_eclipse
+          before: 30
+          after: 30
+  event_types:
+    - tidal_meteorological_shift
+    - general_volatility
+  confidence_in_app: source_based
+  severity_in_app: moderate
+  validation:
+    verdict: NORMALIZE
+    problem: >-
+      Discrepancies between 1-month lunar baseline, 14-day fortnight, and 6–7 month delayed
+      manifest.
+    normalization: >-
+      Unified Layered Engine: Event Day, Lunar Baseline ($\pm 30$d), Peak Danger ($\pm 30$d),
+      Broad Window ($\pm 100$d), and Delayed Echo ($+180$ to $+210$d) for strong eclipses.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter5-validation-report.md
+    empirical_backtest_result: null
+  conversion: >-
+    Any lunar eclipse within 30 days either side. Converted by hand from draft_conditions
+    to the astro-rules vocabulary.

@@ -1,0 +1,65 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r021_malefic_transit_over_eclipse_degree
+name: Malefic Transit over Eclipse Degree
+domain: mundane
+claim: Malefic Transit over Eclipse Degree - Query stored degrees of recent eclipses.
+source:
+  text: Chapter 3 & Chapter 4
+  chapter: Chapter 3 & Chapter 4
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-021
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - Query stored degrees of recent eclipses.
+    - >-
+      Check if transiting Mars, Saturn, or Uranus conjuncts (0 deg) or opposes (180 deg) within
+      3.0 deg orb.
+    - Fire Severe_Blow alert for transit and transportation catastrophes.
+  original_thresholds:
+    aspect_orb_deg: 3
+  mapping_status: mapped
+  draft_conditions:
+    any:
+      - transit_over_eclipse_degree:
+          planet: Mars
+          aspects:
+            - 0
+            - 180
+          orb: 3
+      - transit_over_eclipse_degree:
+          planet: Saturn
+          aspects:
+            - 0
+            - 180
+          orb: 3
+      - transit_over_eclipse_degree:
+          planet: Uranus
+          aspects:
+            - 0
+            - 180
+          orb: 3
+  event_types:
+    - disaster
+  confidence_in_app: source_based
+  severity_in_app: high
+  validation:
+    verdict: KEEP
+    problem: Delayed disaster trigger
+    normalization: >-
+      Persistent database storing eclipse degrees; fires acute alerts when Mars, Saturn, or
+      Uranus transits/opposes within configurable orb ($3^\circ$).
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: transit_over_eclipse_degree.
+  missing_predicates:
+    - transit_over_eclipse_degree

@@ -1,0 +1,63 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r009_varsheshvara_annual_cabinet_portfolios
+name: Varsheshvara Annual Cabinet Portfolios
+domain: mundane
+claim: >-
+  Varsheshvara Annual Cabinet Portfolios - Determine King (Lunar New Year weekday lord), Prime
+  Minister (Mesha Sankranti weekday lord), Lord of Clouds (Ardra ingress weekday lord), Kharif
+  Lord (Cancer ingress), Rabi Lord (Sagittarius ingress).
+source:
+  text: Chapter 1 & Chapter 2
+  chapter: Chapter 1 & Chapter 2
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-009
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - >-
+      Determine King (Lunar New Year weekday lord), Prime Minister (Mesha Sankranti weekday
+      lord), Lord of Clouds (Ardra ingress weekday lord), Kharif Lord (Cancer ingress), Rabi
+      Lord (Sagittarius ingress).
+    - Evaluate Prosperity Index (High if Sun/Moon King, Low otherwise).
+    - Check Defense vulnerability (if Commander != Mars).
+  mapping_status: partial
+  draft_conditions:
+    all:
+      - ingress:
+          body: Sun
+          target: Mesha
+          role: prime_minister_weekday_lord
+      - ingress:
+          body: Sun
+          target: Cancer
+          role: kharif_lord
+      - ingress:
+          body: Sun
+          target: Sagittarius
+          role: rabi_lord
+      - ingress:
+          body: Sun
+          target: Ardra
+          role: lord_of_clouds
+  event_types:
+    - annual_chart
+  confidence_in_app: traditional_only
+  severity_in_app: elevated
+  validation:
+    verdict: KEEP_WITH_CHANGES
+    problem: Differing calendar traditions (Vikrama vs Shaka; sunrise vs exact ingress)
+    normalization: >-
+      Provide configurable calculation methods: Lunar New Year vs Mesha Sankranti vs Ardra
+      Ingress weekday lords.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: (none machine-readable).

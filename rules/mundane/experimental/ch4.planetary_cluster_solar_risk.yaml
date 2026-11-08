@@ -1,0 +1,76 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch4.planetary_cluster_solar_risk
+name: Planetary Clustering Within 45° of the Sun
+domain: mundane
+claim: >-
+  Planetary Clustering Within 45° of the Sun - All included bodies have angular distance from
+  Sun <= 45.0 deg.
+source:
+  text: Chapter 4
+  chapter: Chapter 4
+  app_registry: docs/mundane/chapter4-rule-registry.yaml
+  id: ch4_planetary_cluster_solar_risk
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - All included bodies have angular distance from Sun <= 45.0 deg.
+  original_thresholds:
+    max_cluster_radius_deg: 45
+    included_bodies:
+      - Mercury
+      - Venus
+      - Mars
+      - Jupiter
+      - Saturn
+      - Uranus
+      - Neptune
+      - Pluto
+    excluded_bodies:
+      - Moon
+      - Rahu
+      - Ketu
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - cluster_within_deg_of:
+          target: Sun
+          radius: 45
+          bodies:
+            - Mercury
+            - Venus
+            - Mars
+            - Jupiter
+            - Saturn
+            - Uranus
+            - Neptune
+            - Pluto
+          exclude:
+            - Moon
+            - Rahu
+            - Ketu
+  event_types:
+    - collision_derailment
+    - human_error
+  confidence_in_app: traditional_only
+  severity_in_app: elevated
+  validation:
+    verdict: KEEP_WITH_CHANGES
+    problem: >-
+      Unclear whether outer planets or Rahu/Ketu are included; orb boundaries undefined.
+    normalization: >-
+      Define `ClusterRule`: Reference Sun geocentric longitude; include Mercury, Venus, Mars,
+      Jupiter, Saturn, Uranus, Neptune, Pluto; exclude Moon and Rahu/Ketu; radius $\le 45^\circ$.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter4-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: cluster_within_deg_of.
+  missing_predicates:
+    - cluster_within_deg_of

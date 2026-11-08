@@ -1,0 +1,78 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch6.malefic_multiplier_axis
+name: Mars, Rahu, Ketu Malefic Multiplier on Political Axis
+domain: mundane
+claim: >-
+  Mars, Rahu, Ketu Malefic Multiplier on Political Axis - Mars in conjunction or mutual aspect
+  with Saturn or Jupiter.
+source:
+  text: Chapter 6
+  chapter: Chapter 6
+  app_registry: docs/mundane/chapter6-rule-registry.yaml
+  id: ch6_malefic_multiplier_axis
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - Mars in conjunction or mutual aspect with Saturn or Jupiter.
+    - Rahu or Ketu conjunct Jupiter or Saturn.
+    - Mars in Aries or Libra squaring Cancer-Capricorn axis.
+  original_thresholds:
+    conjunction_orb_deg: 8
+    mars_aspect_weight: 30
+    mars_square_weight: 25
+    node_conjunction_weight: 20
+  mapping_status: mapped
+  draft_conditions:
+    any:
+      - conjunction_or_mutual_aspect:
+          a: Mars
+          b_any:
+            - Saturn
+            - Jupiter
+          orb: 8
+      - conjunction_within_orb:
+          a_any:
+            - Rahu
+            - Ketu
+          b_any:
+            - Jupiter
+            - Saturn
+          orb: 8
+      - all:
+          - planet_in_sign_in:
+              planet: Mars
+              signs:
+                - 1
+                - 7
+          - squares_axis:
+              axis:
+                - 4
+                - 10
+  event_types:
+    - security_and_defense
+  confidence_in_app: source_based
+  severity_in_app: critical
+  validation:
+    report_row: Malefic Multiplier (Mars, Rahu, Ketu)
+    verdict: CONTINUOUS ESCALATION ENGINE
+    normalization: >-
+      Compute composite malefic pressure score (0–100). Detect mutual aspect between Mars
+      and Saturn (4th, 7th, 8th from Mars; 3rd, 7th, 10th from Saturn).
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter6-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: conjunction_or_mutual_aspect,
+    conjunction_within_orb, planet_in_sign_in, squares_axis.
+  missing_predicates:
+    - conjunction_or_mutual_aspect
+    - conjunction_within_orb
+    - planet_in_sign_in
+    - squares_axis

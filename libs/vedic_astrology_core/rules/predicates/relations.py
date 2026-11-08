@@ -194,7 +194,7 @@ def graha_drishti(ctx: EvalContext, p: Drishti) -> Outcome:
         held,
         f"{ctx.sky.describe(p.planet)}; {point_label(p.target)} in {target_sign} "
         f"is the {ordinal(house)} sign from it, "
-        f"{'which' if held else 'not'} one of its aspects "
+        f"{'which is' if held else 'not'} one of its aspects "
         f"({', '.join(ordinal(a) for a in sorted(allowed))})",
     )
 

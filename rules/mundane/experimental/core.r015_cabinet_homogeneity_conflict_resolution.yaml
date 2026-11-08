@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r015_cabinet_homogeneity_conflict_resolution
+name: Cabinet Homogeneity & Conflict Resolution
+domain: mundane
+claim: >-
+  Cabinet Homogeneity & Conflict Resolution - Check cabinet composition: All benefics/all
+  malefics -> HOMOGENEOUS (1.25x efficacy); else HETEROGENEOUS.
+source:
+  text: Chapter 2
+  chapter: Chapter 2
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-015
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - >-
+      Check cabinet composition: All benefics/all malefics -> HOMOGENEOUS (1.25x efficacy);
+      else HETEROGENEOUS.
+    - >-
+      Apply mitigation: If Malefic rules crops but Benefic rules King or Clouds, dampen agricultural
+      loss.
+    - >-
+      Transit anomaly: Sun conjunct Mars in September overrides rainfall to LOWEST (severe
+      drought anomaly).
+  mapping_status: descriptive
+  draft_conditions:
+    all: []
+  event_types:
+    - agriculture
+  confidence_in_app: traditional_only
+  severity_in_app: moderate
+  validation:
+    verdict: KEEP
+    problem: Conflict resolution between conflicting cabinet lords
+    normalization: >-
+      Retain $1.25\times$ efficacy multiplier for homogeneous cabinets and dampening functions
+      when benefic holds Kingship or Clouds.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    Descriptive in the source registry: it states an interpretation or a data layer, not a
+    condition on the sky.

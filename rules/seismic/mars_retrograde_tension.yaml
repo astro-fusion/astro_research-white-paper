@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=../schema.json
+id: seismic.mars_retrograde_tension
+name: Mars-Retrograde-Tension
+domain: seismic
+claim: Mars retrograde builds internal crustal tension.
+source:
+  text: Modern Mundane Astrology
+  note: Modern claim; no classical chapter.
+author: astro-research combinations catalog (migrated 2026-11-08)
+tier: experimental
+conditions:
+  retrograde:
+    planet: Mars
+expected_effect:
+  event: earthquake
+  direction: increase
+reference_cases:
+  - moment: '2001-06-15T06:00:00Z'
+    expect: fires
+    note: Mars moves -0.326 deg/day, so it is retrograde
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '2000-09-05T06:00:00Z'
+    expect: silent
+    note: Mars moves +0.635 deg/day, so it is direct
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  migrated_from: >-
+    libs/vedic_astrology_core/combinations/catalog/seismic_yogas.yaml (Mars-Retrograde-Tension)

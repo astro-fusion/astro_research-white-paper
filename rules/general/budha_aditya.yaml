@@ -1,0 +1,36 @@
+# yaml-language-server: $schema=../schema.json
+id: general.budha_aditya
+name: Budha-Aditya Yoga
+domain: general
+claim: The Sun and Mercury in the same sign give intelligence and skill.
+source:
+  text: Modern Jyotish usage
+  note: >-
+    The name is common in modern practice; no BPHS chapter defines it as a yoga, so the rule
+    is experimental.
+author: astro-research (from src/celestial/dignity_scoring.py detect_yogas)
+tier: experimental
+conditions:
+  in_house_from:
+    planet: Mercury
+    from: Sun
+    houses:
+      - 1
+reference_cases:
+  - moment: '2000-01-17T06:00:00Z'
+    expect: fires
+    note: >-
+      Mercury is in Capricorn 3.3 deg, 1st from Sun in Capricorn, which is one of the 1st
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '2000-02-08T06:00:00Z'
+    expect: silent
+    note: >-
+      Mercury is in Aquarius 10.9 deg, 2nd from Sun in Capricorn, which is not one of the
+      1st
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  definition: >-
+    Same sign, as in detect_yogas; no orb and no combustion test (Mercury is often combust
+    when it forms this yoga).

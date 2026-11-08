@@ -1,0 +1,81 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r026_3rd_house_travel_illusion_affliction
+name: 3rd House Travel Illusion Affliction
+domain: mundane
+claim: 3rd House Travel Illusion Affliction - Identify 3rd house relative to the Sun.
+source:
+  text: Chapter 4
+  chapter: Chapter 4
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-026
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: active
+conditions:
+  all:
+    - in_house_from:
+        planet: Moon
+        from: Rahu
+        houses:
+          - 1
+    - in_house_from:
+        planet: Moon
+        from: Sun
+        houses:
+          - 3
+reference_cases:
+  - moment: '2000-06-06T09:00:00Z'
+    expect: fires
+    note: >-
+      Moon is in Cancer 16.0 deg, 1st from Rahu in Cancer, which is one of the 1st; Moon is
+      in Cancer 16.0 deg, 3rd from Sun in Taurus, which is one of the 3rd
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '2000-03-19T03:00:00Z'
+    expect: silent
+    note: >-
+      Moon is in Leo 21.3 deg, 2nd from Rahu in Cancer, which is not one of the 1st; Moon
+      is in Leo 21.3 deg, 6th from Sun in Pisces, which is not one of the 3rd
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  original_condition:
+    - Identify 3rd house relative to the Sun.
+    - >-
+      If Moon and Rahu are conjunct in 3rd house: Flag Visual_Illusion_Risk (driver perceptual
+      disorientation).
+    - >-
+      If Moon-Rahu conjunction occurs in a Watery sign (Cancer, Scorpio, Pisces): Elevate
+      to CRITICAL_DRIVER_ERROR (plunging into rivers/canals).
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - conjunction_within_orb:
+          a: Moon
+          b: Rahu
+          orb: null
+      - planet_in_house_from:
+          planet: Moon
+          house: 3
+          frm: sun_lagna
+  event_types:
+    - transport
+  confidence_in_app: traditional_only
+  severity_in_app: high
+  validation:
+    verdict: KEEP_WITH_CHANGES
+    problem: Driver perceptual distortion
+    normalization: >-
+      Moon-Rahu conjunction in 3rd from Sun; escalate to critical driver error when placed
+      in Watery signs.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  conversion: >-
+    The draft gives no orb, so the conjunction is read as the same sign (whole-sign yuti).
+    Sun-Lagna: houses counted from the Sun's sign. Converted by hand from draft_conditions
+    to the astro-rules vocabulary.

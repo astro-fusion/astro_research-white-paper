@@ -1,0 +1,59 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r003_nakshatra_kurma_chakra_zonal_division
+name: Nakshatra Kurma Chakra Zonal Division
+domain: mundane
+claim: >-
+  Nakshatra Kurma Chakra Zonal Division - Compute transit nakshatra for transiting malefics
+  or eclipse axes.
+source:
+  text: Chapter 1 (Kurma Chakra)
+  chapter: Chapter 1 (Kurma Chakra)
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-003
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - Compute transit nakshatra for transiting malefics or eclipse axes.
+    - >-
+      Map nakshatra to one of 9 spatial Kurma Chakra sectors (Central, E, SE, S, SW, W, NW,
+      N, NE).
+    - Project heat gradient over corresponding modern geographical coordinates.
+  mapping_status: partial
+  draft_conditions:
+    all:
+      - kurma_direction:
+          source: transit_nakshatra_of_malefic_or_eclipse_axis
+          sectors:
+            - Central
+            - E
+            - SE
+            - S
+            - SW
+            - W
+            - NW
+            - N
+            - NE
+          nakshatras_per_sector: 3
+  event_types:
+    - geographic_mapping
+  confidence_in_app: traditional_only
+  severity_in_app: high
+  validation:
+    verdict: KEEP_WITH_CHANGES
+    problem: Boundary edge cases and commentary variants
+    normalization: >-
+      Store 9 canonical sectors with Nakshatra boundaries ($13^\circ 20'$); render as spatial
+      heat gradients rather than political borders.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: 'The draft uses conditions the vocabulary cannot express yet: kurma_direction.'
+  missing_predicates:
+    - kurma_direction

@@ -1,0 +1,76 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r025_elemental_classification_of_accident_types
+name: Elemental Classification of Accident Types
+domain: mundane
+claim: >-
+  Elemental Classification of Accident Types - Fiery (Sun, Mars, Jupiter, Uranus / Aries,
+  Leo, Sag): FIRE/EXPLOSION, Sabotage, Collisions, Derailments.
+source:
+  text: Chapter 4
+  chapter: Chapter 4
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-025
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - >-
+      Fiery (Sun, Mars, Jupiter, Uranus / Aries, Leo, Sag): FIRE/EXPLOSION, Sabotage, Collisions,
+      Derailments.
+    - >-
+      Watery (Moon, Venus, Neptune / Cancer, Scorpio, Pisces): WATER_HAZARD, Bridge Collapses,
+      Track Flooding, Rivers.
+    - >-
+      Airy (Gemini, Libra, Aquarius): WIND/GAS/SPACE, Atmospheric shear, gas incidents.
+  mapping_status: mapped
+  draft_conditions:
+    any:
+      - afflicted_element:
+          element: fire
+          planets:
+            - Sun
+            - Mars
+            - Jupiter
+            - Uranus
+          signs:
+            - Aries
+            - Leo
+            - Sagittarius
+      - afflicted_element:
+          element: water
+          planets:
+            - Moon
+            - Venus
+            - Neptune
+          signs:
+            - Cancer
+            - Scorpio
+            - Pisces
+      - afflicted_element:
+          element: air
+          signs:
+            - Gemini
+            - Libra
+            - Aquarius
+  event_types:
+    - transport
+  confidence_in_app: traditional_only
+  severity_in_app: elevated
+  validation:
+    verdict: KEEP
+    problem: Generic accident vs specific mode
+    normalization: >-
+      Categorize incidents dynamically into Fiery (`FIRE/EXPLOSION`), Watery (`WATER_HAZARD`),
+      and Airy (`WIND/GAS/SPACE`).
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: 'The draft uses conditions the vocabulary cannot express yet: afflicted_element.'
+  missing_predicates:
+    - afflicted_element

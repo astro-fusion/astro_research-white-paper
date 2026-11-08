@@ -1,0 +1,60 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch8.kalasarpa_relocation_mitigation
+name: Capital Relocation Kala Sarpa Mitigation Filter
+domain: mundane
+claim: >-
+  Capital Relocation Kala Sarpa Mitigation Filter - Kala Sarpa Yoga present in capital chart
+  BUT nodes are free from aspect or conjunction of Maraka lords (2nd or 7th rulers).
+source:
+  text: Chapter 8
+  chapter: Chapter 8
+  app_registry: docs/mundane/chapter8-rule-registry.yaml
+  id: ch8_kalasarpa_relocation_mitigation
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - >-
+      Kala Sarpa Yoga present in capital chart BUT nodes are free from aspect or conjunction
+      of Maraka lords (2nd or 7th rulers).
+  original_thresholds:
+    threat_neutralization_threshold: true
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - kala_sarpa_yoga_present:
+          chart: capital
+      - not:
+          - node_conjunct_or_aspected_by:
+              nodes:
+                - Rahu
+                - Ketu
+              lords:
+                - lord_of_2
+                - lord_of_7
+  event_types:
+    - sovereignty
+  confidence_in_app: source_based
+  severity_in_app: critical
+  validation:
+    report_row: Kala Sarpa Relocation Mitigation
+    verdict: NORMALIZE FILTER
+    normalization: >-
+      Implement `evaluateKalaSarpaMitigation`. Calculate true/mean nodal axis enclosure, identify
+      Maraka lords (2nd and 7th house rulers), check conjunction/aspect ($< 8^\circ$), and
+      compute `mitigatedRelocationThreatScore`.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter8-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: kala_sarpa_yoga_present,
+    node_conjunct_or_aspected_by.
+  missing_predicates:
+    - kala_sarpa_yoga_present
+    - node_conjunct_or_aspected_by

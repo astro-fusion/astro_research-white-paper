@@ -98,6 +98,14 @@ def transit_conjunct_natal(ctx: EvalContext, p: TransitConjunct) -> Outcome:
     )
 
 
+def _days(n: float) -> str:
+    return f"{n:g} day" if n == 1 else f"{n:g} days"
+
+
+def _window(before: float, after: float) -> str:
+    return f"between {_days(before)} before and {_days(after)} after"
+
+
 def _list(value):
     return value if value is None or isinstance(value, list) else [value]
 
@@ -153,7 +161,7 @@ def eclipse_in_sign(ctx: EvalContext, p: EclipseInSign) -> Outcome:
             f"{fmt_lon(ecl.longitude)} ({nak})"
         )
         matches.append((ok, words))
-    window = f"between {p.days_before:g} days before and {p.days_after:g} after"
+    window = _window(p.days_before, p.days_after)
     if not matches:
         kind = "" if p.kind == "any" else p.kind + " "
         return Outcome(False, f"no {kind}eclipse {window} the moment")
@@ -223,7 +231,7 @@ def ingress(ctx: EvalContext, p: Ingress) -> Outcome:
                     hi = mid
             crossings.append((hi, s2))
         t, s = t2, s2
-    window = f"between {p.days_before:g} days before and {p.days_after:g} after"
+    window = _window(p.days_before, p.days_after)
     if not crossings:
         return Outcome(
             False,

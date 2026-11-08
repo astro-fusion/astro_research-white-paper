@@ -1,0 +1,80 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch4.superior_planet_eclipse_crossing
+name: Superior Planet Exact Eclipse-Crossing Trigger
+domain: mundane
+claim: >-
+  Superior Planet Exact Eclipse-Crossing Trigger - Transiting superior planet conjuncts (0
+  deg) or opposes (180 deg) stored eclipse longitude within 3.0 deg.
+source:
+  text: Chapter 4
+  chapter: Chapter 4
+  app_registry: docs/mundane/chapter4-rule-registry.yaml
+  id: ch4_superior_planet_eclipse_crossing
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - >-
+      Transiting superior planet conjuncts (0 deg) or opposes (180 deg) stored eclipse longitude
+      within 3.0 deg.
+    - >-
+      Distinguish applying (high weight), exact (peak weight), and separating (decaying weight)
+      phases.
+  original_thresholds:
+    trigger_orb_deg: 3
+    monitored_planets:
+      - Mars
+      - Saturn
+      - Uranus
+      - Pluto
+  mapping_status: mapped
+  draft_conditions:
+    any:
+      - transit_over_eclipse_degree:
+          planet: Mars
+          aspects:
+            - 0
+            - 180
+          orb: 3
+      - transit_over_eclipse_degree:
+          planet: Saturn
+          aspects:
+            - 0
+            - 180
+          orb: 3
+      - transit_over_eclipse_degree:
+          planet: Uranus
+          aspects:
+            - 0
+            - 180
+          orb: 3
+      - transit_over_eclipse_degree:
+          planet: Pluto
+          aspects:
+            - 0
+            - 180
+          orb: 3
+  event_types:
+    - collision_derailment
+    - sabotage_or_sudden_mechanical_failure
+  confidence_in_app: source_based
+  severity_in_app: high
+  validation:
+    verdict: KEEP_WITH_CHANGES
+    problem: Sign-only matching is too coarse.
+    normalization: >-
+      Use exact stored eclipse degree $\pm 3^\circ$ orb. Differentiate applying, exact, and
+      separating crossings.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter4-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: transit_over_eclipse_degree.
+  missing_predicates:
+    - transit_over_eclipse_degree

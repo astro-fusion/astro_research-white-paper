@@ -1,0 +1,59 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.core.r004_biological_epidemic_triggers
+name: Biological & Epidemic Triggers
+domain: mundane
+claim: >-
+  Biological & Epidemic Triggers - Check if Mars distance <= 0.40 AU (eruptive illness / fever
+  flag).
+source:
+  text: Chapter 1 (Samhita Epidemic Heuristics)
+  chapter: Chapter 1 (Samhita Epidemic Heuristics)
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-004
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - Check if Mars distance <= 0.40 AU (eruptive illness / fever flag).
+    - >-
+      Check if Jupiter-Sun separation <= 8.0 deg (sunspot maxima / cerebrospinal inflammation
+      flag).
+  original_thresholds:
+    mars_perigee_threshold_au: 0.4
+    mars_critical_perigee_threshold_au: 0.38
+    jupiter_combustion_orb_deg: 8
+    jupiter_cazimi_orb_deg: 0.5
+  mapping_status: mapped
+  draft_conditions:
+    any:
+      - planet_distance_au_lte:
+          planet: Mars
+          au: 0.4
+      - conjunction_within_orb:
+          a: Jupiter
+          b: Sun
+          orb: 8
+  event_types:
+    - health
+  confidence_in_app: traditional_only
+  severity_in_app: high
+  validation:
+    verdict: KEEP_WITH_CHANGES
+    problem: Unvalidated medical predictions (meningitis, smallpox)
+    normalization: >-
+      Label strictly as `traditional_mundane_indicator` with medical disclaimers; enforce
+      configurable astronomical thresholds (Mars $\le 0.40$ AU, Jupiter-Sun $\le 8^\circ$).
+    kind: architectural_review_verdict
+    source_file: docs/mundane/validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: conjunction_within_orb, planet_distance_au_lte.
+  missing_predicates:
+    - conjunction_within_orb
+    - planet_distance_au_lte

@@ -1,0 +1,108 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch4.elemental_hazard_tags
+name: Elemental Classification of Accident Hazards
+domain: mundane
+claim: >-
+  Elemental Classification of Accident Hazards - If fiery planets or fiery signs afflicted:
+  assign fire_explosion (0.8), collision_derailment (0.7).
+source:
+  text: Chapter 4
+  chapter: Chapter 4
+  app_registry: docs/mundane/chapter4-rule-registry.yaml
+  id: ch4_elemental_hazard_tags
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - If fiery planets or fiery signs afflicted: assign fire_explosion (0.8), collision_derailment
+        (0.7).
+    - If watery planets or watery signs afflicted: assign water_hazard (0.8), bridge_river_risk
+        (0.7), track_flooding_risk (0.6).
+    - If airy signs afflicted: assign wind_gas_air (0.7), signal_communication_error (0.6).
+  original_thresholds:
+    fiery_signs:
+      - 1
+      - 5
+      - 9
+    earthy_signs:
+      - 2
+      - 6
+      - 10
+    airy_signs:
+      - 3
+      - 7
+      - 11
+    watery_signs:
+      - 4
+      - 8
+      - 12
+    fiery_planets:
+      - Sun
+      - Mars
+      - Jupiter
+      - Uranus
+    watery_planets:
+      - Moon
+      - Venus
+      - Neptune
+    airy_planets:
+      - Mercury
+      - Saturn
+  mapping_status: mapped
+  draft_conditions:
+    any:
+      - afflicted_element:
+          element: fire
+          planets:
+            - Sun
+            - Mars
+            - Jupiter
+            - Uranus
+          signs:
+            - 1
+            - 5
+            - 9
+      - afflicted_element:
+          element: water
+          planets:
+            - Moon
+            - Venus
+            - Neptune
+          signs:
+            - 4
+            - 8
+            - 12
+      - afflicted_element:
+          element: air
+          planets:
+            - Mercury
+            - Saturn
+          signs:
+            - 3
+            - 7
+            - 11
+  event_types:
+    - fire_explosion
+    - water_hazard
+    - wind_gas_air
+    - collision_derailment
+  confidence_in_app: traditional_only
+  severity_in_app: elevated
+  validation:
+    verdict: CORRECT & NORMALIZE
+    problem: Incorrectly lists Capricorn as a "watery sign"; binary single accident type.
+    normalization: >-
+      Correct Capricorn to Earth; output weighted hazard tags: `fire_explosion`, `water_hazard`,
+      `wind_gas_air`, `collision_derailment`.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter4-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: 'The draft uses conditions the vocabulary cannot express yet: afflicted_element.'
+  missing_predicates:
+    - afflicted_element

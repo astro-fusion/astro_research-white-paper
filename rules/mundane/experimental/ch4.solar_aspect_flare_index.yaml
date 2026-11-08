@@ -1,0 +1,59 @@
+# yaml-language-server: $schema=../../schema.json
+id: mundane.ch4.solar_aspect_flare_index
+name: Solar Affliction & Planetary Aspect Index
+domain: mundane
+claim: >-
+  Solar Affliction & Planetary Aspect Index - Count planets in conjunction (0 deg), square
+  (90 deg), or opposition (180 deg) to Sun.
+source:
+  text: Chapter 4
+  chapter: Chapter 4
+  app_registry: docs/mundane/chapter4-rule-registry.yaml
+  id: ch4_solar_aspect_flare_index
+  note: >-
+    Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
+    to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
+    see the export PROVENANCE.
+author: AstroFusion mundane rule registry (open export 2026-11-08)
+tier: experimental
+status: needs_predicates
+conditions: null
+notes:
+  original_condition:
+    - >-
+      Count planets in conjunction (0 deg), square (90 deg), or opposition (180 deg) to Sun.
+    - If count >= 2, activate Traditional Solar Affliction risk.
+  original_thresholds:
+    hard_aspect_orb_deg: 3
+    minimum_hard_aspects: 2
+  mapping_status: mapped
+  draft_conditions:
+    all:
+      - planets_in_aspect_to:
+          target: Sun
+          angles:
+            - 0
+            - 90
+            - 180
+          orb: 3
+          count_gte: 2
+  event_types:
+    - signal_communication_error
+    - human_error
+  confidence_in_app: traditional_only
+  severity_in_app: high
+  validation:
+    verdict: SPLIT & NORMALIZE
+    problem: >-
+      Equates planetary aspects with physical solar flares; claims 4x accident spike without
+      statistical validation.
+    normalization: >-
+      Split into `TraditionalSolarAfflictionIndex` (aspects) and `ScientificSolarFlareIndex`
+      (NOAA SWPC). Label 4x spike as an unvalidated historical hypothesis in research notes.
+    kind: architectural_review_verdict
+    source_file: docs/mundane/chapter4-validation-report.md
+    empirical_backtest_result: null
+  needs_predicates: >-
+    The draft uses conditions the vocabulary cannot express yet: planets_in_aspect_to.
+  missing_predicates:
+    - planets_in_aspect_to

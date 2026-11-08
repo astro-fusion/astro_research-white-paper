@@ -1,0 +1,96 @@
+# yaml-language-server: $schema=../schema.json
+id: general.gaja_kesari.classical
+name: Gaja Kesari Yoga (BPHS definition)
+domain: general
+claim: >-
+  Jupiter in a kendra from the Lagna or the Moon, joined or aspected by a benefic, and not
+  debilitated, combust or in an enemy's sign, gives a splendid, wealthy and lasting reputation.
+source:
+  text: Brihat Parashara Hora Shastra
+  chapter: '36'
+  verse: 3-4
+  edition: R. Santhanam tr., Ranjan Publications
+  note: >-
+    Gaja Kesari is the first yoga of the chapter on various yogas (Nana Yoga). Chapter and
+    verse numbering differ between editions; check against yours.
+author: astro-research
+tier: classical
+conditions:
+  all:
+    - any:
+        - in_kendra_from:
+            planet: Jupiter
+            from: Moon
+        - in_kendra_from:
+            planet: Jupiter
+            from: Lagna
+    - any:
+        - graha_drishti:
+            planet: Mercury
+            target: Jupiter
+        - graha_drishti:
+            planet: Venus
+            target: Jupiter
+        - in_house_from:
+            planet: Mercury
+            from: Jupiter
+            houses:
+              - 1
+        - in_house_from:
+            planet: Venus
+            from: Jupiter
+            houses:
+              - 1
+    - not:
+        dignity_in:
+          planet: Jupiter
+          dignities:
+            - debilitation
+            - enemy
+    - not:
+        combust:
+          planet: Jupiter
+reference_cases:
+  - moment: '2002-12-26T20:00:00Z'
+    place:
+      lat: 27.7172
+      lon: 85.324
+      tz: Asia/Kathmandu
+    expect: fires
+    note: >-
+      Jupiter is in Cancer 23.4 deg, 11th from Moon in Virgo, which is not a kendra (1, 4,
+      7, 10); Jupiter is in Cancer 23.4 deg, 10th from the Lagna in Libra, which is a kendra
+      (1, 4, 7, 10); Mercury is in Capricorn 0.8 deg; Jupiter in Cancer is the 7th sign from
+      it, which is one of its aspects (7th); Venus is in Libra 25.1 deg; Jupiter in Cancer
+      is the 10th sign from it, not one of its aspects (7th); Mercury is in Capricorn 0.8
+      deg, 7th from Jupiter in Cancer, which is not one of the 1st; Venus is in Libra 25.1
+      deg, 4th from Jupiter in Cancer, which is not one of the 1st; Jupiter in Cancer 23.4
+      deg is exaltation (sign lord Moon of Cancer), not debilitation or enemy; Jupiter is
+      137.6 deg from the Sun; its combustion orb is 11 deg (retrograde)
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+  - moment: '2001-06-29T03:00:00Z'
+    place:
+      lat: 27.7172
+      lon: 85.324
+      tz: Asia/Kathmandu
+    expect: silent
+    note: >-
+      Jupiter is in Gemini 3.0 deg, 10th from Moon in Virgo, which is a kendra (1, 4, 7, 10);
+      Jupiter is in Gemini 3.0 deg, 12th from the Lagna in Cancer, which is not a kendra (1,
+      4, 7, 10); Mercury is in Taurus 27.4 deg; Jupiter in Gemini is the 2nd sign from it,
+      not one of its aspects (7th); Venus is in Aries 29.1 deg; Jupiter in Gemini is the 3rd
+      sign from it, not one of its aspects (7th); Mercury is in Taurus 27.4 deg, 12th from
+      Jupiter in Gemini, which is not one of the 1st; Venus is in Aries 29.1 deg, 11th from
+      Jupiter in Gemini, which is not one of the 1st; Jupiter in Gemini 3.0 deg is enemy (sign
+      lord Mercury of Gemini); Jupiter is 10.6 deg from the Sun; its combustion orb is 11
+      deg
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node); not yet checked in
+      JHora
+notes:
+  benefics: >-
+    Mercury and Venus are taken as the benefics. The Moon (a benefic when waxing) is not included
+    yet; a waxing-Moon condition can be added with moon_phase.
+  enemy: >-
+    'Enemy sign' uses natural friendship (naisargika maitri) to the sign lord: Jupiter's enemies
+    are Mercury and Venus, so Gemini, Virgo, Taurus and Libra.
