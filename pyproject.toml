@@ -58,6 +58,7 @@ dependencies = [
 
 [project.scripts]
 vedic-numerology = "vedic_astrology_core.cli:main"
+astro-rules = "vedic_astrology_core.rules.cli:main"
 
 [project.optional-dependencies]
 # Live market-data download (never needed for CI or `make build`).
