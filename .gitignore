@@ -147,3 +147,6 @@ docs/research/track_*/
 /assets/
 /reports/
 scripts/setup-context7.sh
+
+# Generated planetary dataset (python scripts/generate_planetary_dataset.py)
+/data/datasets/
