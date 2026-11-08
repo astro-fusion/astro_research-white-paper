@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=../../../schema.json
+id: mundane.practitioner.mars_in_rohini_weak_monsoon
+name: 'Mars in Rohini: dryness, below-normal monsoon in the south'
+domain: mundane
+claim: Mars in Rohini causes dryness; used to forecast below-normal monsoon rain for the southern states
+  in 2019.
+source:
+  url: https://astrologicalmusings.com/sapta-nadi-chakra-and-forecasting-summer-season-treads-for-2019/
+  text: astrologicalmusings.com, "Sapta Nadi Chakra and forecasting summer season trends for 2019" (2019)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: active
+window:
+  unit: months
+  before: 0
+  after: 3
+expected_effect:
+  event: monsoon_deficit
+  direction: increase
+conditions:
+  in_nakshatra:
+    planet: Mars
+    nakshatras:
+    - Rohini
+reference_cases:
+- moment: '2019-04-10T00:00:00Z'
+  expect: fires
+  note: 'Spring 2019. Engine: in_nakshatra(planet=Mars, nakshatras=[Rohini]): Mars is in Taurus 12.3 deg,
+    in Rohini pada 1, one of Rohini.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2019-06-15T00:00:00Z'
+  expect: silent
+  note: 'Monsoon onset 2019. Engine: in_nakshatra(planet=Mars, nakshatras=[Rohini]): Mars is in Gemini
+    25.1 deg, in Punarvasu pada 2, not one of Rohini.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: astrologicalmusings.com
+    url: https://astrologicalmusings.com/sapta-nadi-chakra-and-forecasting-summer-season-treads-for-2019/
+    date: '2019'
+    title: Sapta Nadi Chakra and forecasting summer season trends for 2019
+    checked: false
+  root_source:
+    bibkey: brihatsamhita_iyer1884
+    citation: Brihat Samhita (the practitioner cites it for Mars in Rohini; chapter not given)
+  bib:
+  - astrologicalmusings2019saptanadi
+  - brihatsamhita_iyer1884

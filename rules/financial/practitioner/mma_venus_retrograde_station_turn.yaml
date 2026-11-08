@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=../../../schema.json
+id: financial.practitioner.mma_venus_retrograde_station_turn
+name: 'MMA: Venus retrograde stations coincide with primary cycle highs or lows'
+domain: financial
+claim: Within a few trading days of a Venus retrograde station there is an 80% correlation with a primary-or-greater
+  cycle crest or trough; about half of breakouts in that window are false.
+source:
+  url: http://www.lecochonsideral.info/PubliMERRI/Anglais/Annee2026/artweek.html
+  text: Raymond Merriman (MMA weekly, via lecochonsideral), "MMA weekly financial astrology commentary"
+    (2026)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: active
+window:
+  unit: days
+  before: 7
+  after: 7
+expected_effect:
+  series: gold_usd
+  direction: either
+  description: cycle crest or trough
+conditions:
+  planet_speed_below:
+    planet: Venus
+    speed: 0.1
+reference_cases:
+- moment: '2026-10-03T12:00:00Z'
+  expect: fires
+  note: 'Venus retrograde station of October 2026. Engine: planet_speed_below(planet=Venus, speed=0.1):
+    Venus moves -0.0077 deg/day; |speed| is below 0.1.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2026-08-01T00:00:00Z'
+  expect: silent
+  note: 'Venus at normal speed. Engine: planet_speed_below(planet=Venus, speed=0.1): Venus moves +1.0380
+    deg/day; |speed| is not below 0.1.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: Raymond Merriman (MMA weekly, via lecochonsideral)
+    url: http://www.lecochonsideral.info/PubliMERRI/Anglais/Annee2026/artweek.html
+    date: '2026'
+    title: MMA weekly financial astrology commentary
+    checked: false
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - mma2026weekly

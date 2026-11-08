@@ -1,0 +1,76 @@
+# yaml-language-server: $schema=../../../schema.json
+id: financial.practitioner.jupiter_saturn_conjunction_and_waxing_square
+name: Jupiter-Saturn conjunction (reset) and waxing square (stress) for equities and gold
+domain: financial
+claim: 'The 20-year Jupiter-Saturn cycle: the conjunction resets the era (21 December 2020); the first
+  waxing square (three passes, August 2024 to June 2025) marks a major equity cycle crest and a reversal
+  cluster for gold; equity pullbacks follow 7-9 years after the conjunction.'
+source:
+  url: https://www.scribd.com/document/437012421/MMA-Cycle-forecast-Special-Edition-for-World-Stock-Market
+  text: Raymond Merriman (MMA Cycles), "MMA cycle forecast, special edition for the world stock market"
+    (n.d.)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: active
+window:
+  unit: months
+  before: 1
+  after: 1
+expected_effect:
+  series: sp500
+  direction: either
+conditions:
+  any:
+  - separation_within:
+      planets:
+      - Jupiter
+      - Saturn
+      angle: 0
+      orb: 1
+  - separation_within:
+      planets:
+      - Jupiter
+      - Saturn
+      angle: 90
+      orb: 3
+reference_cases:
+- moment: '2020-12-21T18:00:00Z'
+  expect: fires
+  note: 'Exact conjunction. Engine: separation_within(planets=[Jupiter, Saturn], angle=0.0, orb=1.0):
+    Jupiter is in Capricorn 6.3 deg and Saturn is in Capricorn 6.3 deg: 0.0 deg apart, 0.0 deg from 0
+    (within the 1 deg orb); separation_within(planets=[Jupiter, Saturn], angle=90.0, orb=3.0): Jupiter
+    is in Capricorn 6.3 deg and Saturn is in Capricorn 6.3 deg: 0.0 deg apart, 90.0 deg from 90 (outside
+    the 3 deg orb).'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2024-12-24T00:00:00Z'
+  expect: fires
+  note: 'Second pass of the waxing square. Engine: separation_within(planets=[Jupiter, Saturn], angle=0.0,
+    orb=1.0): Jupiter is in Taurus 19.9 deg and Saturn is in Aquarius 19.8 deg: 90.2 deg apart, 90.2 deg
+    from 0 (outside the 1 deg orb); separation_within(planets=[Jupiter, Saturn], angle=90.0, orb=3.0):
+    Jupiter is in Taurus 19.9 deg and Saturn is in Aquarius 19.8 deg: 90.2 deg apart, 0.2 deg from 90
+    (within the 3 deg orb).'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2023-01-01T00:00:00Z'
+  expect: silent
+  note: 'Between the phases. Engine: separation_within(planets=[Jupiter, Saturn], angle=0.0, orb=1.0):
+    Jupiter is in Pisces 7.0 deg and Saturn is in Capricorn 28.2 deg: 38.8 deg apart, 38.8 deg from 0
+    (outside the 1 deg orb); separation_within(planets=[Jupiter, Saturn], angle=90.0, orb=3.0): Jupiter
+    is in Pisces 7.0 deg and Saturn is in Capricorn 28.2 deg: 38.8 deg apart, 51.2 deg from 90 (outside
+    the 3 deg orb).'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: Raymond Merriman (MMA Cycles)
+    url: https://www.scribd.com/document/437012421/MMA-Cycle-forecast-Special-Edition-for-World-Stock-Market
+    date: n.d.
+    title: MMA cycle forecast, special edition for the world stock market
+    checked: false
+  root_source:
+    bibkey: ptolemy_tetrabiblos
+    citation: The conjunction hierarchy is attributed to Ptolemy, Tetrabiblos (practitioner attribution;
+      book and chapter not given)
+  bib:
+  - mma_worldstock
+  - ptolemy_tetrabiblos

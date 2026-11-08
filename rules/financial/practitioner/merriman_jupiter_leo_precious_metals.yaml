@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=../../../schema.json
+id: financial.practitioner.merriman_jupiter_leo_precious_metals
+name: 'Merriman: Jupiter''s ingress into Leo is bullish for precious metals'
+domain: financial
+claim: Precious metals respond bullishly to Jupiter's ingress into Leo, the sign ruled by the Sun, ruler
+  of gold.
+source:
+  url: https://www.mmacycles.com/free-weekly-forecast/mma-free-weekly-column-for-the-week-beginning-august-10-2026/
+  text: Raymond Merriman (MMA Cycles), "MMA free weekly column for the week beginning August 10, 2026"
+    (2026-08-10)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: needs_predicates
+expected_effect:
+  series: gold_usd
+  direction: up
+conditions: null
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: Raymond Merriman (MMA Cycles)
+    url: https://www.mmacycles.com/free-weekly-forecast/mma-free-weekly-column-for-the-week-beginning-august-10-2026/
+    date: '2026-08-10'
+    title: MMA free weekly column for the week beginning August 10, 2026
+    checked: false
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - mma2026aug10
+  needs_predicates: Merriman works in the tropical zodiac; a sidereal Leo test would be a different claim.
+  original_condition:
+  - Jupiter enters tropical Leo
+  missing_predicates:
+  - tropical zodiac (tropical Leo ingress is about 24 degrees earlier in the zodiac than the sidereal
+    one)

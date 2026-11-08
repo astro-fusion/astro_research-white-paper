@@ -1,0 +1,96 @@
+# yaml-language-server: $schema=../../../schema.json
+id: mundane.practitioner.bs32_agni_mandala_earthquake
+name: 'Brihat Samhita 32: an earthquake on a day in the Agni Mandala asterisms is of the fire type'
+domain: mundane
+claim: 'Earthquakes are classed by the asterism of the day: Pushya, Krittika, Vishakha, Bharani, Magha,
+  Purva Bhadrapada and Purva Phalguni make the Agneya (fire) type, with its own region list.'
+source:
+  url: https://drrpsharma.com/blog/earthquakes-in-vedic-astrology.html
+  text: Dr. R.P. Sharma, "Earthquakes in Vedic astrology" (n.d.)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: active
+window:
+  unit: days
+  before: 0
+  after: 0
+expected_effect:
+  event: earthquake_classification_agneya
+  direction: either
+conditions:
+  in_nakshatra:
+    planet: Moon
+    nakshatras:
+    - Pushya
+    - Krittika
+    - Vishakha
+    - Bharani
+    - Magha
+    - Purva Bhadrapada
+    - Purva Phalguni
+reference_cases:
+- moment: '2011-03-11T05:46:24Z'
+  expect: fires
+  note: 'Tohoku earthquake (USGS official20110311054624120_30). Engine: in_nakshatra(planet=Moon, nakshatras=[Pushya,
+    Krittika, Vishakha, Bharani, Magha, Purva Bhadrapada, Purva Phalguni]): Moon is in Taurus 6.1 deg,
+    in Krittika pada 3, one of Pushya, Krittika, Vishakha, Bharani, Magha, Purva Bhadrapada, Purva Phalguni.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2015-04-25T06:11:26Z'
+  expect: silent
+  note: 'Gorkha earthquake (USGS us20002926). Engine: in_nakshatra(planet=Moon, nakshatras=[Pushya, Krittika,
+    Vishakha, Bharani, Magha, Purva Bhadrapada, Purva Phalguni]): Moon is in Cancer 2.3 deg, in Punarvasu
+    pada 4, not one of Pushya, Krittika, Vishakha, Bharani, Magha, Purva Bhadrapada, Purva Phalguni.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2001-01-26T03:16:40Z'
+  expect: silent
+  note: 'Bhuj earthquake (USGS official20010126031640500_30). Engine: in_nakshatra(planet=Moon, nakshatras=[Pushya,
+    Krittika, Vishakha, Bharani, Magha, Purva Bhadrapada, Purva Phalguni]): Moon is in Capricorn 29.5
+    deg, in Dhanishta pada 2, not one of Pushya, Krittika, Vishakha, Bharani, Magha, Purva Bhadrapada,
+    Purva Phalguni.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: Dr. R.P. Sharma
+    url: https://drrpsharma.com/blog/earthquakes-in-vedic-astrology.html
+    date: n.d.
+    title: Earthquakes in Vedic astrology
+    checked: false
+  root_source:
+    bibkey: brihatsamhita_iyer1884
+    citation: Varahamihira, Brihat Samhita, ch. 32 (Bhukampa-lakshana), tr. N. Chidambaram Iyer (1884);
+      translation page https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc229177.html
+    chapter: '32'
+  bib:
+  - drrpsharma_earthquakes
+  - brihatsamhita_iyer1884
+  other_mandalas:
+    vayu:
+    - Uttara Phalguni
+    - Hasta
+    - Chitra
+    - Swati
+    - Punarvasu
+    - Mrigashira
+    - Ashwini
+    indra:
+    - Abhijit
+    - Shravana
+    - Dhanishta
+    - Rohini
+    - Jyeshtha
+    - Uttara Ashadha
+    - Anuradha
+    varuna:
+    - Revati
+    - Purva Ashadha
+    - Ardra
+    - Ashlesha
+    - Mula
+    - Uttara Ashadha
+    - Shatabhisha
+  transcription_flag: Uttara Ashadha appears in both the Indra and Varuna lists as transcribed; check
+    against the verse before encoding those two.
+  practitioner_position: Dr. Sharma presents BS 32 as an omen classification, not as a dated forecasting
+    tool.

@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=../../../schema.json
+id: mundane.practitioner.eclipses_virgo_pisces_us_venezuela
+name: 'Eclipses in Virgo and Pisces (from 2025): US-Venezuela conflict escalates'
+domain: mundane
+claim: While the series of eclipses in Virgo and Pisces continues, US military aggression against Venezuela
+  escalates, mid-February to March 2026.
+source:
+  url: https://theaanderson.substack.com/p/my-astro-predictions-for-2026
+  text: Thea Anderson (Substack), "My astro predictions for 2026" (2026)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: needs_predicates
+expected_effect:
+  event: us_venezuela_conflict
+  direction: increase
+conditions: null
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: Thea Anderson (Substack)
+    url: https://theaanderson.substack.com/p/my-astro-predictions-for-2026
+    date: '2026'
+    title: My astro predictions for 2026
+    checked: false
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - anderson2026predictions
+  needs_predicates: Western practitioner using the tropical zodiac; encoding it with sidereal signs would
+    test a different claim.
+  original_condition:
+  - eclipse in tropical Virgo or Pisces
+  missing_predicates:
+  - tropical zodiac (the engine is sidereal; the March 2026 lunar eclipse is in tropical Virgo but sidereal
+    Leo)

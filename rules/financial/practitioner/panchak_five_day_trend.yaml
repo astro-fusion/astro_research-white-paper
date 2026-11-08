@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=../../../schema.json
+id: financial.practitioner.panchak_five_day_trend
+name: 'Panchak rules: the five Panchak sessions set the next month''s trend'
+domain: financial
+claim: If all five Panchak trading days (Moon from Dhanishta to Revati) close up, the next month is bullish,
+  and the reverse; onset time in ghadis after sunrise, the weekday of onset and the Aindra, Vaidhriti
+  or Vyatipata yoga modify the call.
+source:
+  url: https://www.scribd.com/presentation/817587621/Panchak-Rules-day-10
+  text: unnamed author (Scribd presentation), "Panchak rules, day 10" (n.d.)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: needs_predicates
+expected_effect:
+  series: nifty50
+  direction: either
+conditions: null
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: unnamed author (Scribd presentation)
+    url: https://www.scribd.com/presentation/817587621/Panchak-Rules-day-10
+    date: n.d.
+    title: Panchak rules, day 10
+    checked: false
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - scribd_panchak
+  needs_predicates: Mixes sky conditions with observed closes, and needs panchanga-yoga and ghadi-time
+    predicates.
+  original_condition:
+  - Moon in Dhanishta (second half) to Revati
+  - direction of the five daily closes
+  - onset and end in ghadis after sunrise
+  - weekday of onset
+  - panchanga yoga on those days
+  missing_predicates:
+  - panchanga_yoga
+  - ghadi time of a nakshatra boundary
+  - market-close conditions (belong to the statistics layer)

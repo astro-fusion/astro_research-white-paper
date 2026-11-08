@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=../../../schema.json
+id: mundane.practitioner.kapoor_graha_yuddha_koorma_northwest
+name: 'Prashant Kapoor: planetary war with Uttarashadha-Shravana-Dhanishta implicated, north-west quake'
+domain: mundane
+claim: A planetary war (graha yuddha) implicating Uttarashadha, Shravana and Dhanishta points, through
+  the Koorma Chakra, to the north-west (India, Pakistan, Afghanistan); presented as the call for the February
+  2021 Himalayan event.
+source:
+  url: https://astrokapoor.com/accurate-earthquake-prediction-astrologer-prashant-kapoor/
+  text: 'Prashant Kapoor (AstroKapoor), "Accurate earthquake prediction: astrologer Prashant Kapoor" (n.d.)'
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: needs_predicates
+expected_effect:
+  event: earthquake_northwest
+  direction: increase
+conditions: null
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: Prashant Kapoor (AstroKapoor)
+    url: https://astrokapoor.com/accurate-earthquake-prediction-astrologer-prashant-kapoor/
+    date: n.d.
+    title: 'Accurate earthquake prediction: astrologer Prashant Kapoor'
+    checked: false
+  root_source:
+    bibkey: brihatsamhita_iyer1884
+    citation: Brihat Samhita ch. 14 (Koorma Chakra) and the graha yuddha rules of ch. 17
+    chapter: '14'
+  bib:
+  - astrokapoor_earthquake
+  - brihatsamhita_iyer1884
+  needs_predicates: No graha_yuddha predicate; conjunct_within with orb 1 approximates it but loses the
+    winner/loser rule. The event date and magnitude in the source summary do not match the record (see
+    prediction_cases.csv).
+  original_condition:
+  - two planets within one degree (graha yuddha)
+  - in Uttarashadha, Shravana or Dhanishta
+  - region from the Koorma Chakra
+  missing_predicates:
+  - graha_yuddha (two true planets within 1 degree, with the winner rule)

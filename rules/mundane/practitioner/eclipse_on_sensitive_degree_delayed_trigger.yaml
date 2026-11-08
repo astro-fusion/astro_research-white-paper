@@ -1,0 +1,40 @@
+# yaml-language-server: $schema=../../../schema.json
+id: mundane.practitioner.eclipse_on_sensitive_degree_delayed_trigger
+name: Eclipse on a sensitive degree of a national chart, triggered later by a transit over the eclipse
+  degree
+domain: mundane
+claim: An eclipse on the Ascendant, a luminary or the lord of an angular house of a national chart warns
+  of strain in that area; the event often comes weeks or months later, when a faster planet transits the
+  eclipse degree.
+source:
+  url: https://paramarsh.app/patrika/mundane-astrology/national-charts-mundane-astrology
+  text: Paramarsh, "National charts in mundane astrology" (n.d.)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: needs_predicates
+expected_effect:
+  event: national_strain
+  direction: increase
+conditions: null
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: Paramarsh
+    url: https://paramarsh.app/patrika/mundane-astrology/national-charts-mundane-astrology
+    date: n.d.
+    title: National charts in mundane astrology
+    checked: false
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - paramarsh_nationalcharts
+  needs_predicates: eclipse_in_sign checks the sign only; the rule needs the eclipse degree and a later
+    transit over it.
+  original_condition:
+  - eclipse within a few degrees of natal Ascendant, Sun, Moon or an angular lord
+  - 'later: a fast planet transits the eclipse degree'
+  missing_predicates:
+  - eclipse_conjunct_natal (eclipse degree within orb of a natal point)
+  - transit_over_eclipse_degree

@@ -1,0 +1,71 @@
+# yaml-language-server: $schema=../../../schema.json
+id: financial.practitioner.vyapar_ratna_inverse_dignity_gold
+name: 'Vyapar Ratna inverse law: gold falls when the Sun or Jupiter is exalted, in own or friendly sign'
+domain: financial
+claim: When a commodity's significator (Sun or Jupiter for gold) transits its exaltation, own or a friendly
+  sign, supply is abundant and the price falls (mandi); in debilitation, an enemy sign or combust, scarcity
+  drives the price up (teji).
+source:
+  url: https://www.astrocapitalx.com/commodity-astrology
+  text: 'AstroCapitalX, "Commodity astrology: gold, silver and crude oil in the Vedic tradition" (n.d.)'
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: active
+window:
+  unit: months
+  before: 0
+  after: 1
+  note: for the length of the sign transit
+expected_effect:
+  series: gold_usd
+  direction: down
+conditions:
+  any:
+  - dignity_in:
+      planet: Sun
+      dignities:
+      - exaltation
+      - own
+      - moolatrikona
+      - friend
+  - dignity_in:
+      planet: Jupiter
+      dignities:
+      - exaltation
+      - own
+      - moolatrikona
+      - friend
+reference_cases:
+- moment: '2026-07-15T00:00:00Z'
+  expect: fires
+  note: 'Jupiter exalted in Cancer. Engine: dignity_in(planet=Sun, dignities=[exaltation, own, moolatrikona,
+    friend]): Sun in Gemini 28.3 deg is neutral (sign lord Mercury of Gemini), not exaltation or own or
+    moolatrikona or friend; dignity_in(planet=Jupiter, dignities=[exaltation, own, moolatrikona, friend]):
+    Jupiter in Cancer 9.0 deg is exaltation (sign lord Moon of Cancer).'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2021-02-25T00:00:00Z'
+  expect: silent
+  note: 'Jupiter in Capricorn, Sun in Aquarius. Engine: dignity_in(planet=Sun, dignities=[exaltation,
+    own, moolatrikona, friend]): Sun in Aquarius 12.5 deg is enemy (sign lord Saturn of Aquarius), not
+    exaltation or own or moolatrikona or friend; dignity_in(planet=Jupiter, dignities=[exaltation, own,
+    moolatrikona, friend]): Jupiter in Capricorn 21.5 deg is debilitation (sign lord Saturn of Capricorn),
+    not exaltation or own or moolatrikona or friend.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: AstroCapitalX
+    url: https://www.astrocapitalx.com/commodity-astrology
+    date: n.d.
+    title: 'Commodity astrology: gold, silver and crude oil in the Vedic tradition'
+    checked: false
+  root_source:
+    bibkey: trivedi_ojha_vyaparratna
+    citation: Hardev Sharma Trivedi and Gopesh Kumar Ojha, Vyapar Ratna (Hindi; edition not identified;
+      sold as 'Share Stock Market Sona Chandi Teji Mandi Jyotish Guide')
+  bib:
+  - astrocapitalx_commodity
+  - trivedi_ojha_vyaparratna
+  dispute: Opposite in sign to the direct-strength rules (Tempora, the Krishnan rules as reported); see
+    DISPUTES.md.

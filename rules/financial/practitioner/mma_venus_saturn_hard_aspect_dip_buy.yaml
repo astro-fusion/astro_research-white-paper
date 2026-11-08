@@ -1,0 +1,77 @@
+# yaml-language-server: $schema=../../../schema.json
+id: financial.practitioner.mma_venus_saturn_hard_aspect_dip_buy
+name: 'MMA: buy assets that decline into a Venus-Saturn hard aspect'
+domain: financial
+claim: Buy any asset (gold, crude oil, equities) that is declining into a hard aspect (0, 90, 180 degrees)
+  between Venus and Saturn.
+source:
+  url: https://www.mmacycles.com/free-weekly-forecast/mma-free-weekly-column-for-the-week-beginning-august-17-2026/
+  text: Raymond Merriman (MMA Cycles), "MMA free weekly column for the week beginning August 17, 2026"
+    (2026-08-17)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: active
+window:
+  unit: days
+  before: 5
+  after: 10
+expected_effect:
+  series: gold_usd
+  direction: up
+  description: only after a decline into the aspect
+conditions:
+  any:
+  - separation_within:
+      planets:
+      - Venus
+      - Saturn
+      angle: 0
+      orb: 1
+  - separation_within:
+      planets:
+      - Venus
+      - Saturn
+      angle: 90
+      orb: 1
+  - separation_within:
+      planets:
+      - Venus
+      - Saturn
+      angle: 180
+      orb: 1
+reference_cases:
+- moment: '2025-01-19T00:00:00Z'
+  expect: fires
+  note: 'Venus-Saturn meeting of January 2025. Engine: separation_within(planets=[Venus, Saturn], angle=0.0,
+    orb=1.0): Venus is in Aquarius 21.8 deg and Saturn is in Aquarius 21.9 deg: 0.1 deg apart, 0.1 deg
+    from 0 (within the 1 deg orb); separation_within(planets=[Venus, Saturn], angle=90.0, orb=1.0): Venus
+    is in Aquarius 21.8 deg and Saturn is in Aquarius 21.9 deg: 0.1 deg apart, 89.9 deg from 90 (outside
+    the 1 deg orb); separation_within(planets=[Venus, Saturn], angle=180.0, orb=1.0): Venus is in Aquarius
+    21.8 deg and Saturn is in Aquarius 21.9 deg: 0.1 deg apart, 179.9 deg from 180 (outside the 1 deg
+    orb).'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2025-03-01T00:00:00Z'
+  expect: silent
+  note: 'Six weeks later. Engine: separation_within(planets=[Venus, Saturn], angle=0.0, orb=1.0): Venus
+    is in Pisces 16.6 deg and Saturn is in Aquarius 26.5 deg: 20.1 deg apart, 20.1 deg from 0 (outside
+    the 1 deg orb); separation_within(planets=[Venus, Saturn], angle=90.0, orb=1.0): Venus is in Pisces
+    16.6 deg and Saturn is in Aquarius 26.5 deg: 20.1 deg apart, 69.9 deg from 90 (outside the 1 deg orb);
+    separation_within(planets=[Venus, Saturn], angle=180.0, orb=1.0): Venus is in Pisces 16.6 deg and
+    Saturn is in Aquarius 26.5 deg: 20.1 deg apart, 159.9 deg from 180 (outside the 1 deg orb).'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: Raymond Merriman (MMA Cycles)
+    url: https://www.mmacycles.com/free-weekly-forecast/mma-free-weekly-column-for-the-week-beginning-august-17-2026/
+    date: '2026-08-17'
+    title: MMA free weekly column for the week beginning August 17, 2026
+    checked: false
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - mma2026aug17
+  price_filter: The rule applies only when price falls into the aspect; that filter belongs to the statistics
+    layer, not to the sky condition.

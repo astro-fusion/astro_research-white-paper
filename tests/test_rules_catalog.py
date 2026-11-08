@@ -21,12 +21,12 @@ def test_rules_directory_validates():
 
 
 def test_rule_counts():
-    """Migrated catalog (12), general yogas (3), mundane drafts (67)."""
+    """Catalog (12), general yogas (3), mundane drafts (67), practitioner rules (39)."""
     registry = RuleRegistry(LOADED)
-    assert len(registry.by_domain["financial"]) == 4
+    assert len(registry.by_domain["financial"]) == 25  # 4 migrated + 21 practitioner
     assert len(registry.by_domain["seismic"]) == 8
     assert len(registry.by_domain["general"]) == 3
-    assert len(registry.by_domain["mundane"]) == 67
+    assert len(registry.by_domain["mundane"]) == 85  # 67 drafts + 18 practitioner
 
 
 def test_mundane_rules_are_experimental_and_keep_their_original_text():
@@ -45,10 +45,10 @@ def test_mundane_rules_are_experimental_and_keep_their_original_text():
 
 
 def test_status_counts():
-    """18 mundane rules are machine-testable now; 49 wait for predicates."""
+    """27 mundane rules are testable now (9 practitioner); 58 wait for predicates."""
     counts = Counter((r.domain, r.status) for r in RULES)
-    assert counts[("mundane", "active")] == 18
-    assert counts[("mundane", "needs_predicates")] == 49
+    assert counts[("mundane", "active")] == 27
+    assert counts[("mundane", "needs_predicates")] == 58
 
 
 @pytest.mark.parametrize(

@@ -1,0 +1,64 @@
+# yaml-language-server: $schema=../../../schema.json
+id: financial.practitioner.mars_jupiter_ketu_leo_bullion_volatility
+name: 'Mars, Jupiter and Ketu together in Leo (November 2026): food inflation, bullion and oil volatility'
+domain: financial
+claim: Mars joining Jupiter and Ketu in Leo in November 2026 brings retail food inflation in a slowing
+  economy and volatility in bullion and crude oil.
+source:
+  url: https://astrologicalmusings.com/kartik-amavasya-kundali-what-it-foretells-for-economy-and-bullion-market/
+  text: 'astrologicalmusings.com, "Kartik Amavasya kundali: what it foretells for the economy and the
+    bullion market" (2026)'
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: active
+window:
+  unit: weeks
+  before: 0
+  after: 4
+expected_effect:
+  series: gold_usd
+  direction: either
+  description: higher volatility
+conditions:
+  all:
+  - in_sign:
+      planet: Mars
+      signs:
+      - Leo
+  - in_sign:
+      planet: Jupiter
+      signs:
+      - Leo
+  - in_sign:
+      planet: Ketu
+      signs:
+      - Leo
+reference_cases:
+- moment: '2026-11-25T00:00:00Z'
+  expect: fires
+  note: 'Inside the named window. Engine: in_sign(planet=Mars, signs=[Leo]): Mars is in Leo 5.4 deg, one
+    of Leo; in_sign(planet=Jupiter, signs=[Leo]): Jupiter is in Leo 2.3 deg, one of Leo; in_sign(planet=Ketu,
+    signs=[Leo]): Ketu is in Leo 0.6 deg, one of Leo.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2026-06-01T00:00:00Z'
+  expect: silent
+  note: 'Before the window. Engine: in_sign(planet=Mars, signs=[Leo]): Mars is in Aries 15.5 deg, not
+    one of Leo; in_sign(planet=Jupiter, signs=[Leo]): Jupiter is in Gemini 29.8 deg, not one of Leo; in_sign(planet=Ketu,
+    signs=[Leo]): Ketu is in Leo 9.9 deg, one of Leo.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: astrologicalmusings.com
+    url: https://astrologicalmusings.com/kartik-amavasya-kundali-what-it-foretells-for-economy-and-bullion-market/
+    date: '2026'
+    title: 'Kartik Amavasya kundali: what it foretells for the economy and the bullion market'
+    checked: false
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - astrologicalmusings2026kartik
+  note: A Western reading of the same alignment is attributed to Merriman for 14-25 November 2026; that
+    attribution was not traced to a page.

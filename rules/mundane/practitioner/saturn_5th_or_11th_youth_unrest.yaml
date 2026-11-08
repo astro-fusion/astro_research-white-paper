@@ -1,0 +1,59 @@
+# yaml-language-server: $schema=../../../schema.json
+id: mundane.practitioner.saturn_5th_or_11th_youth_unrest
+name: Saturn transits the 5th or 11th from a national lagna, youth unrest
+domain: mundane
+claim: When Saturn transits the 5th house (students) or the 11th house (public hopes) of a national chart,
+  young people feel blocked and mobilize.
+source:
+  url: https://astrologertripathi.com/2026/10/13/gen-z-protests-youth-unrest-astrology/
+  text: 'astrologertripathi.com, "Gen Z protests and youth unrest: astrology" (2026-10-13)'
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: active
+window:
+  unit: months
+  before: 0
+  after: 0
+  note: for the whole transit
+expected_effect:
+  event: youth_protest
+  direction: increase
+natal:
+  label: India independence 1947-08-15 00:00 IST, New Delhi
+  moment: '1947-08-15T00:00:00+05:30'
+  place:
+    lat: 28.6139
+    lon: 77.209
+    tz: Asia/Kolkata
+conditions:
+  transit_in_house_from_natal:
+    planet: Saturn
+    houses:
+    - 5
+    - 11
+reference_cases:
+- moment: '2026-01-01T00:00:00Z'
+  expect: fires
+  note: 'Saturn in Pisces, 11th from India''s Taurus lagna. Engine: transit_in_house_from_natal(planet=Saturn,
+    houses=[5, 11]): transiting Saturn is in Pisces 1.9 deg, the 11th from the natal Lagna in Taurus.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2020-06-01T00:00:00Z'
+  expect: silent
+  note: 'Saturn in Capricorn, 9th from Taurus. Engine: transit_in_house_from_natal(planet=Saturn, houses=[5,
+    11]): transiting Saturn is in Capricorn 7.5 deg, the 9th from the natal Lagna in Taurus, not 5th,
+    11th.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: astrologertripathi.com
+    url: https://astrologertripathi.com/2026/10/13/gen-z-protests-youth-unrest-astrology/
+    date: '2026-10-13'
+    title: 'Gen Z protests and youth unrest: astrology'
+    checked: false
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - tripathi2026genz

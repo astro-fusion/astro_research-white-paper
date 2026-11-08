@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=../../../schema.json
+id: mundane.practitioner.ketu_4th_lord_12th_territory_loss
+name: Ketu in the 4th and the 4th lord in the 12th of a national chart, territory loss
+domain: mundane
+claim: Ketu in the 4th house with the 4th lord in the 12th house of a national chart indicates loss of
+  territory.
+source:
+  url: https://anvayajyotish.com/blog/mundane-astrology-national-charts-geopolitical-predictions
+  text: 'Anvaya Jyotish, "Mundane astrology: national charts and geopolitical predictions" (n.d.)'
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: needs_predicates
+expected_effect:
+  event: territory_loss
+  direction: increase
+conditions: null
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: Anvaya Jyotish
+    url: https://anvayajyotish.com/blog/mundane-astrology-national-charts-geopolitical-predictions
+    date: n.d.
+    title: 'Mundane astrology: national charts and geopolitical predictions'
+    checked: false
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - anvaya_nationalcharts
+  needs_predicates: Needs a 'lord of house N is in house M' predicate; Ketu in the 4th alone is expressible
+    with in_house.
+  original_condition:
+  - Ketu in the 4th house of the national chart
+  - lord of the 4th house placed in the 12th house
+  missing_predicates:
+  - house_lord_in_house

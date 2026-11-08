@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=../../../schema.json
+id: financial.practitioner.rahu_ketu_sign_shift_nifty_risk
+name: 'Rahu-Ketu sign change (December 2026): high-risk window for the Nifty'
+domain: financial
+claim: The Rahu-Ketu axis shift of 5-15 December 2026 is a high-risk structural realignment window for
+  the Nifty 50.
+source:
+  url: https://www.scribd.com/document/1030567281/Correction-Time-Window-for-Nifty-as-Per-Financial-Astrology-for-2026
+  text: unnamed author (Scribd upload), naming Ashish Mehta and Prashant Kapoor, "Correction time window
+    for Nifty as per financial astrology for 2026" (2026)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: active
+window:
+  unit: days
+  before: 15
+  after: 15
+expected_effect:
+  series: nifty50
+  direction: either
+conditions:
+  ingress:
+    planet: Rahu
+    days_before: 15
+    days_after: 15
+reference_cases:
+- moment: '2026-12-10T00:00:00Z'
+  expect: fires
+  note: 'The named window. Engine: ingress(planet=Rahu, days_before=15.0, days_after=15.0): Rahu enters
+    Capricorn at 2026-12-05 17:02 UT (between 15 days before and 15 days after).'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2026-06-01T00:00:00Z'
+  expect: silent
+  note: 'Mid-transit. Engine: ingress(planet=Rahu, days_before=15.0, days_after=15.0): Rahu stays in Aquarius
+    between 15 days before and 15 days after the moment (no ingress).'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: unnamed author (Scribd upload), naming Ashish Mehta and Prashant Kapoor
+    url: https://www.scribd.com/document/1030567281/Correction-Time-Window-for-Nifty-as-Per-Financial-Astrology-for-2026
+    date: '2026'
+    title: Correction time window for Nifty as per financial astrology for 2026
+    checked: false
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - scribd2026niftywindow

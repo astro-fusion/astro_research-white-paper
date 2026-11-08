@@ -1,0 +1,58 @@
+# yaml-language-server: $schema=../../../schema.json
+id: mundane.practitioner.solar_eclipse_purva_phalguni_southeast
+name: 'Solar eclipse in Purva Phalguni: Koorma south-east sector, earthquake or tsunami risk'
+domain: mundane
+claim: The annular solar eclipse of 1 September 2016, with Sun, Moon and Rahu in Purva Phalguni (south-east
+  sector of the Koorma Chakra), raised the risk of a strong earthquake and tsunami in countries such as
+  the Philippines and Indonesia.
+source:
+  url: https://astrologicalmusings.com/solar-eclipse-earthquake-and-koorma-chakra/
+  text: astrologicalmusings.com, "Solar eclipse, earthquake and Koorma Chakra" (2016)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: active
+window:
+  unit: months
+  before: 0
+  after: 6
+expected_effect:
+  event: earthquake_or_tsunami_southeast
+  direction: increase
+conditions:
+  eclipse_in_sign:
+    kind: solar
+    nakshatras:
+    - Purva Phalguni
+    days_before: 1
+    days_after: 1
+reference_cases:
+- moment: '2016-09-01T09:00:00Z'
+  expect: fires
+  note: 'The eclipse the practitioner named. Engine: eclipse_in_sign(kind=solar, nakshatras=[Purva Phalguni],
+    days_before=1.0, days_after=1.0): annular solar eclipse 2016-09-01 09:06 UT in Leo 15.3 deg (Purva
+    Phalguni) (between 1 day before and 1 day after); wanted nakshatras Purva Phalguni.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2017-08-21T18:00:00Z'
+  expect: silent
+  note: 'Solar eclipse of August 2017, for contrast. Engine: eclipse_in_sign(kind=solar, nakshatras=[Purva
+    Phalguni], days_before=1.0, days_after=1.0): total solar eclipse 2017-08-21 18:25 UT in Leo 4.8 deg
+    (Magha) (between 1 day before and 1 day after); wanted nakshatras Purva Phalguni.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: astrologicalmusings.com
+    url: https://astrologicalmusings.com/solar-eclipse-earthquake-and-koorma-chakra/
+    date: '2016'
+    title: Solar eclipse, earthquake and Koorma Chakra
+    checked: false
+  root_source:
+    bibkey: brihatsamhita_iyer1884
+    citation: Brihat Samhita ch. 14 (Kurma-vibhaga), as the practitioner cites it
+    chapter: '14'
+  bib:
+  - astrologicalmusings2016koorma
+  - brihatsamhita_iyer1884
+  dispute: In Brihat Samhita 14 (Iyer 1884) the sector assignments start from Krittika in the centre,
+    so Purva Phalguni's sector differs from the practitioner table; see DISPUTES.md.

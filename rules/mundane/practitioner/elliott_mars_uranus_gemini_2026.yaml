@@ -1,0 +1,38 @@
+# yaml-language-server: $schema=../../../schema.json
+id: mundane.practitioner.elliott_mars_uranus_gemini_2026
+name: 'Todd Elliott: Mars-Uranus conjunction in Gemini on the US president''s natal Sun and Uranus'
+domain: mundane
+claim: A Mars-Uranus conjunction in Gemini aligned with the natal Sun and Uranus of the US president around
+  4 July 2026 puts his health or office in peril.
+source:
+  url: https://thecunningfarmer.substack.com/p/the-curse-of-interesting-times-the
+  text: Todd Elliott, The Cunning Farmer (Substack), "The curse of interesting times" (2026)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: needs_predicates
+expected_effect:
+  event: head_of_state_crisis
+  direction: increase
+conditions: null
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: Todd Elliott, The Cunning Farmer (Substack)
+    url: https://thecunningfarmer.substack.com/p/the-curse-of-interesting-times-the
+    date: '2026'
+    title: The curse of interesting times
+    checked: false
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - elliott_cunningfarmer
+  needs_predicates: Uses Uranus, the tropical zodiac and Regiomontanus houses; none is in the engine.
+  original_condition:
+  - Mars conjunct Uranus in tropical Gemini
+  - on a person's natal Sun and Uranus
+  missing_predicates:
+  - Uranus (outer planets are not in the vocabulary)
+  - tropical zodiac
+  - Regiomontanus houses

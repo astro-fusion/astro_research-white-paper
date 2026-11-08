@@ -1,0 +1,85 @@
+# yaml-language-server: $schema=../../../schema.json
+id: mundane.practitioner.kurma_north_sector_malefics
+name: 'Koorma Chakra: malefics in Ashwini, Bharani or Krittika afflict the northern (Himalayan) sector'
+domain: mundane
+claim: When Saturn, Mars, Rahu or Ketu occupies Ashwini, Bharani or Krittika, the northern division of
+  the Koorma Chakra (North India, the Himalaya) is vulnerable.
+source:
+  url: https://astroridhis.com/astrology/kurma-chakra/
+  text: AstroRidhis, "Kurma Chakra" (n.d.)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: active
+window:
+  unit: months
+  before: 0
+  after: 0
+  note: while the planet stays in the asterism
+expected_effect:
+  event: regional_disaster_north
+  direction: increase
+conditions:
+  any:
+  - in_nakshatra:
+      planet: Saturn
+      nakshatras:
+      - Ashwini
+      - Bharani
+      - Krittika
+  - in_nakshatra:
+      planet: Mars
+      nakshatras:
+      - Ashwini
+      - Bharani
+      - Krittika
+  - in_nakshatra:
+      planet: Rahu
+      nakshatras:
+      - Ashwini
+      - Bharani
+      - Krittika
+  - in_nakshatra:
+      planet: Ketu
+      nakshatras:
+      - Ashwini
+      - Bharani
+      - Krittika
+reference_cases:
+- moment: '2022-06-01T00:00:00Z'
+  expect: fires
+  note: 'Rahu in Ashwini/Bharani in mid-2022. Engine: in_nakshatra(planet=Saturn, nakshatras=[Ashwini,
+    Bharani, Krittika]): Saturn is in Aquarius 1.1 deg, in Dhanishta pada 3, not one of Ashwini, Bharani,
+    Krittika; in_nakshatra(planet=Mars, nakshatras=[Ashwini, Bharani, Krittika]): Mars is in Pisces 11.1
+    deg, in Uttara Bhadrapada pada 3, not one of Ashwini, Bharani, Krittika; in_nakshatra(planet=Rahu,
+    nakshatras=[Ashwini, Bharani, Krittika]): Rahu is in Aries 27.4 deg, in Krittika pada 1, one of Ashwini,
+    Bharani, Krittika.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2025-01-01T00:00:00Z'
+  expect: silent
+  note: 'No malefic in the three asterisms. Engine: in_nakshatra(planet=Saturn, nakshatras=[Ashwini, Bharani,
+    Krittika]): Saturn is in Aquarius 20.3 deg, in Purva Bhadrapada pada 1, not one of Ashwini, Bharani,
+    Krittika; in_nakshatra(planet=Mars, nakshatras=[Ashwini, Bharani, Krittika]): Mars is in Cancer 7.7
+    deg, in Pushya pada 2, not one of Ashwini, Bharani, Krittika; in_nakshatra(planet=Rahu, nakshatras=[Ashwini,
+    Bharani, Krittika]): Rahu is in Pisces 7.3 deg, in Uttara Bhadrapada pada 2, not one of Ashwini, Bharani,
+    Krittika.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: AstroRidhis
+    url: https://astroridhis.com/astrology/kurma-chakra/
+    date: n.d.
+    title: Kurma Chakra
+    checked: false
+  root_source:
+    bibkey: brihatsamhita_iyer1884
+    citation: Varahamihira, Brihat Samhita, ch. 14 (Kurma-vibhaga), tr. N. Chidambaram Iyer (1884)
+    chapter: '14'
+    verse: 1-2
+  bib:
+  - astroridhis_kurma
+  - brihatsamhita_iyer1884
+  dispute: Brihat Samhita 14.2 (Iyer 1884) puts Krittika, Rohini and Mrigashira in the CENTRAL division
+    (Madhyadesha) and Ardra, Punarvasu, Pushya in the east; the practitioner table starts the wheel with
+    Ashwini in the north. See DISPUTES.md.

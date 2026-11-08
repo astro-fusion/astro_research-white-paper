@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=../../../schema.json
+id: financial.practitioner.merriman_solar_lunar_reversals
+name: 'Merriman: Sun-sign and Moon-sign combinations with high reversal scores'
+domain: financial
+claim: Each 1-3 day combination of Sun sign and Moon sign has a historical reversal frequency for gold
+  and silver; scores above 120, 150 and 160 mark likely swing reversals.
+source:
+  url: https://www.astrodata.com/_productdetail/weeklygold_sample.pdf
+  text: Raymond Merriman (MMA Weekly Gold sample), "Weekly Gold and Silver Report for the week of August
+    19, 2024" (2024-08-19)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: needs_predicates
+expected_effect:
+  series: silver_usd
+  direction: either
+conditions: null
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: Raymond Merriman (MMA Weekly Gold sample)
+    url: https://www.astrodata.com/_productdetail/weeklygold_sample.pdf
+    date: '2024-08-19'
+    title: Weekly Gold and Silver Report for the week of August 19, 2024
+    checked: false
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - mma2024weeklygold
+  needs_predicates: The weights are proprietary; without them the rule cannot be encoded.
+  original_condition:
+  - Sun sign and Moon sign pair with a weighted score above 120
+  missing_predicates:
+  - the proprietary score table (not public)
+  - tropical zodiac

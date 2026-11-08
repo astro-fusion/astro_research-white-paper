@@ -1,0 +1,65 @@
+# yaml-language-server: $schema=../../../schema.json
+id: mundane.practitioner.india_lunar_eclipse_10th_pm_resignation
+name: Total lunar eclipse in the 10th of India's 1947 chart, head of government under pressure
+domain: mundane
+claim: A total lunar eclipse in the 10th house of India's foundation chart (Aquarius, from the Taurus
+  lagna) puts the Prime Minister's office under pressure; the practitioner wrote that the PM may have
+  to resign within 6 months of the 7-8 September 2025 eclipse.
+source:
+  url: https://astrologicalmusings.com/mars-maha-dasha-in-the-foundation-chart-of-india-9-september-2025-to-9-september-2032-what-it-foretells/
+  text: 'astrologicalmusings.com (author not named on the extract), "Mars Maha Dasha in the foundation
+    chart of India, 9 September 2025 to 9 September 2032: what it foretells" (2025)'
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: active
+window:
+  unit: months
+  before: 0
+  after: 6
+expected_effect:
+  event: head_of_government_change
+  direction: increase
+natal:
+  label: India independence 1947-08-15 00:00 IST, New Delhi
+  moment: '1947-08-15T00:00:00+05:30'
+  place:
+    lat: 28.6139
+    lon: 77.209
+    tz: Asia/Kolkata
+conditions:
+  eclipse_in_sign:
+    kind: lunar
+    signs:
+    - Aquarius
+    days_before: 1
+    days_after: 1
+reference_cases:
+- moment: '2025-09-07T18:00:00Z'
+  expect: fires
+  note: 'The eclipse the practitioner named. Engine: eclipse_in_sign(kind=lunar, signs=[Aquarius], days_before=1.0,
+    days_after=1.0): total lunar eclipse 2025-09-07 18:11 UT in Aquarius 21.2 deg (Purva Bhadrapada) (between
+    1 day before and 1 day after); wanted signs Aquarius.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2025-03-14T06:00:00Z'
+  expect: silent
+  note: 'Total lunar eclipse of March 2025, for contrast. Engine: eclipse_in_sign(kind=lunar, signs=[Aquarius],
+    days_before=1.0, days_after=1.0): total lunar eclipse 2025-03-14 06:58 UT in Leo 29.8 deg (Uttara
+    Phalguni) (between 1 day before and 1 day after); wanted signs Aquarius.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: astrologicalmusings.com (author not named on the extract)
+    url: https://astrologicalmusings.com/mars-maha-dasha-in-the-foundation-chart-of-india-9-september-2025-to-9-september-2032-what-it-foretells/
+    date: '2025'
+    title: 'Mars Maha Dasha in the foundation chart of India, 9 September 2025 to 9 September 2032: what
+      it foretells'
+    checked: false
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - astrologicalmusings2025marsdasha
+  fixed_chart_note: Aquarius is the 10th sign from India's Taurus lagna (whole sign); the vocabulary has
+    no 'eclipse in house from natal' predicate, so the sign is fixed for this one chart.

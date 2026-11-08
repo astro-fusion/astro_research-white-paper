@@ -1,0 +1,38 @@
+# yaml-language-server: $schema=../../../schema.json
+id: mundane.practitioner.sun_afflicted_10th_lord_dusthana_regime_change
+name: Sun afflicted by Saturn or Rahu and the 10th lord in a dusthana, regime change
+domain: mundane
+claim: Affliction of the Sun (head of state) by Saturn or Rahu, together with the 10th lord in a dusthana
+  (6, 8, 12), indicates regime change.
+source:
+  url: https://anvayajyotish.com/blog/mundane-astrology-national-charts-geopolitical-predictions
+  text: 'Anvaya Jyotish, "Mundane astrology: national charts and geopolitical predictions" (n.d.)'
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: needs_predicates
+expected_effect:
+  event: regime_change
+  direction: increase
+conditions: null
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: Anvaya Jyotish
+    url: https://anvayajyotish.com/blog/mundane-astrology-national-charts-geopolitical-predictions
+    date: n.d.
+    title: 'Mundane astrology: national charts and geopolitical predictions'
+    checked: false
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - anvaya_nationalcharts
+  needs_predicates: '''Affliction'' is not defined by the source and the vocabulary has no house-lord
+    predicate.'
+  original_condition:
+  - Sun conjunct or aspected by Saturn or Rahu
+  - 10th lord in the 6th, 8th or 12th house
+  missing_predicates:
+  - house_lord_in_house
+  - afflicted_by (a defined affliction test)

@@ -1,0 +1,69 @@
+# yaml-language-server: $schema=../../../schema.json
+id: financial.practitioner.nyse_dasha_turning_points
+name: Vimshottari dasha on the NYSE 1792 chart times market regimes (Rosen)
+domain: financial
+claim: Dasha periods of the NYSE Buttonwood chart (17 May 1792) map market regimes; the 4 December 1987
+  secondary low coincided with the Jupiter / Mercury / Venus / Rahu / Saturn sequence.
+source:
+  url: https://sacredtraders.com/indian-time-cycles-and-market-forecasting-by-barry-william-rosen/
+  text: Barry William Rosen, "Indian time cycles and market forecasting" (n.d.)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: needs_predicates
+window:
+  unit: days
+  before: 7
+  after: 7
+expected_effect:
+  series: sp500
+  direction: either
+  description: turning point
+natal:
+  label: NYSE Buttonwood 1792-05-17 10:30 LMT (standard variant)
+  moment: '1792-05-17T10:30:00-04:56'
+  place:
+    lat: 40.7069
+    lon: -74.0113
+    tz: UTC
+conditions: null
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: Barry William Rosen
+    url: https://sacredtraders.com/indian-time-cycles-and-market-forecasting-by-barry-william-rosen/
+    date: n.d.
+    title: Indian time cycles and market forecasting
+    checked: false
+  root_source:
+    bibkey: bphs_santhanam
+    citation: Vimshottari dasha as in Brihat Parashara Hora Shastra (R. Santhanam translation); the practitioner
+      cites no chapter or verse
+  bib:
+  - rosen_sacredtraders
+  - bphs_santhanam
+  chart_dispute: The NYSE time is disputed (see CHARTS.md); the dasha lords at a date depend on it. Rosen's
+    chart time is not stated in the extract.
+  draft_conditions:
+    all:
+    - dasha_lord_is:
+        level: 1
+        lords:
+        - Jupiter
+    - dasha_lord_is:
+        level: 2
+        lords:
+        - Mercury
+    - dasha_lord_is:
+        level: 3
+        lords:
+        - Venus
+  needs_predicates: 1987 is 195 years after 1792; the engine stops at the end of the first 120-year cycle,
+    and levels 4-5 are not in the vocabulary.
+  original_condition:
+  - NYSE 1792-05-17 chart, Vimshottari maha Jupiter, antar Mercury, pratyantar Venus (then Rahu, Saturn
+    at levels 4-5) on 1987-12-04
+  missing_predicates:
+  - 'Vimshottari beyond the first 120-year cycle (astro-rules explain 2026-11-08: ''the moment is outside
+    the 120-year Vimshottari cycle of the natal chart'')'
+  - dasha levels 4 and 5 (sookshma, prana)

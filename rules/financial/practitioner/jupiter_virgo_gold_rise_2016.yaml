@@ -1,0 +1,49 @@
+# yaml-language-server: $schema=../../../schema.json
+id: financial.practitioner.jupiter_virgo_gold_rise_2016
+name: Jupiter entering Virgo (August 2016) raises gold
+domain: financial
+claim: When Jupiter enters Virgo (late August 2016), gold prices increase.
+source:
+  url: https://astrologicalmusings.com/hindu-new-year-chart-2016-and-forecast-for-india/
+  text: astrologicalmusings.com, "Hindu New Year chart 2016 and forecast for India" (2016)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: active
+window:
+  unit: months
+  before: 0
+  after: 6
+expected_effect:
+  series: gold_usd
+  direction: up
+conditions:
+  in_sign:
+    planet: Jupiter
+    signs:
+    - Virgo
+reference_cases:
+- moment: '2016-09-15T00:00:00Z'
+  expect: fires
+  note: 'After the ingress the practitioner named. Engine: in_sign(planet=Jupiter, signs=[Virgo]): Jupiter
+    is in Virgo 7.1 deg, one of Virgo.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2016-06-01T00:00:00Z'
+  expect: silent
+  note: 'Jupiter in Leo. Engine: in_sign(planet=Jupiter, signs=[Virgo]): Jupiter is in Leo 19.9 deg, not
+    one of Virgo.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: astrologicalmusings.com
+    url: https://astrologicalmusings.com/hindu-new-year-chart-2016-and-forecast-for-india/
+    date: '2016'
+    title: Hindu New Year chart 2016 and forecast for India
+    checked: false
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - astrologicalmusings2016newyear
+  dispute: Tempora names Virgo among the signs of the deepest gold drawdowns; see DISPUTES.md.

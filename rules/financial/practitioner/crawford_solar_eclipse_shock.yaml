@@ -1,0 +1,69 @@
+# yaml-language-server: $schema=../../../schema.json
+id: financial.practitioner.crawford_solar_eclipse_shock
+name: 'Crawford: total solar eclipses trigger geopolitical hostility and market shocks'
+domain: financial
+claim: Solar eclipses trigger immediate hostile geopolitical reactions and market reversals; the 1 August
+  2008 eclipse was followed six days later by the Russo-Georgian war and by the autumn 2008 crash.
+source:
+  url: https://www.bermanscall.com/behavioural-finance/can-solar-eclipse-affect-markets-look-financial-astrology/
+  text: Larry Berman reporting Arch Crawford, "Can the solar eclipse affect markets? A look at financial
+    astrology" (2017-08)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: active
+window:
+  unit: days
+  before: 0
+  after: 30
+expected_effect:
+  series: sp500
+  direction: down
+conditions:
+  eclipse_in_sign:
+    kind: solar
+    signs:
+    - Aries
+    - Taurus
+    - Gemini
+    - Cancer
+    - Leo
+    - Virgo
+    - Libra
+    - Scorpio
+    - Sagittarius
+    - Capricorn
+    - Aquarius
+    - Pisces
+    days_before: 30
+    days_after: 0
+reference_cases:
+- moment: '2008-08-07T00:00:00Z'
+  expect: fires
+  note: 'Six days after the 1 August 2008 eclipse. Engine: eclipse_in_sign(kind=solar, signs=[Aries, Taurus,
+    Gemini, Cancer, Leo, Virgo, Libra, Scorpio, Sagittarius, Capricorn, Aquarius, Pisces], days_before=30.0,
+    days_after=0.0): total solar eclipse 2008-08-01 10:21 UT in Cancer 15.6 deg (Pushya) (between 30 days
+    before and 0 days after); wanted signs Aries, Taurus, Gemini, Cancer, Leo, Virgo, Libra, Scorpio,
+    Sagittarius, Capricorn, Aquarius, Pisces.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2008-10-10T00:00:00Z'
+  expect: silent
+  note: '70 days after the eclipse, inside the crash. Engine: eclipse_in_sign(kind=solar, signs=[Aries,
+    Taurus, Gemini, Cancer, Leo, Virgo, Libra, Scorpio, Sagittarius, Capricorn, Aquarius, Pisces], days_before=30.0,
+    days_after=0.0): no solar eclipse between 30 days before and 0 days after the moment.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: Larry Berman reporting Arch Crawford
+    url: https://www.bermanscall.com/behavioural-finance/can-solar-eclipse-affect-markets-look-financial-astrology/
+    date: 2017-08
+    title: Can the solar eclipse affect markets? A look at financial astrology
+    checked: false
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - berman2017eclipse
+  audit: Berman examined 13 US solar eclipses and found no relation between eclipses and turning points
+    (reported in the same article).

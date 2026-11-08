@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=../../../schema.json
+id: financial.practitioner.gidel_mercury_three_pass_degree
+name: 'Gidel: price meets resistance at the Mercury station degree on each of its three passes'
+domain: financial
+claim: A market meets resistance at the zodiac degree where Mercury stations retrograde, retraces during
+  the loop, and retests the level on Mercury's third (direct) pass; gold futures in February-March 2020
+  are the example.
+source:
+  url: https://www.moneyshow.com/articles/tebiwkly08-53660/
+  text: Susan Abbott Gidel (MoneyShow), "Super birthday for S&P 500 on Super Tuesday?" (2020)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: needs_predicates
+expected_effect:
+  series: gold_usd
+  direction: either
+conditions: null
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: Susan Abbott Gidel (MoneyShow)
+    url: https://www.moneyshow.com/articles/tebiwkly08-53660/
+    date: '2020'
+    title: Super birthday for S&P 500 on Super Tuesday?
+    checked: false
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - gidel2020superbirthday
+  needs_predicates: Needs a station-degree predicate; Gidel works in the tropical zodiac.
+  original_condition:
+  - Mercury at the degree of its retrograde station, on each of three passes
+  missing_predicates:
+  - degree_revisit (a planet returns to the degree of its last station)
+  - tropical zodiac

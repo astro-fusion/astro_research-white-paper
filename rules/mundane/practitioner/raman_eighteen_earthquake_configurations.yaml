@@ -1,0 +1,38 @@
+# yaml-language-server: $schema=../../../schema.json
+id: mundane.practitioner.raman_eighteen_earthquake_configurations
+name: B.V. Raman's earthquake configurations (as implemented by VedAstro)
+domain: mundane
+claim: Eighteen planetary configurations identified by B.V. Raman correlate with major earthquakes, among
+  them aspects between major planets in earth and air signs and a Jupiter-Saturn opposition triggered
+  by Mars.
+source:
+  url: https://vedastro.org/EarthquakePredictor.html
+  text: VedAstro, "Earthquake Predictor" (n.d.)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: needs_predicates
+expected_effect:
+  event: earthquake
+  direction: increase
+conditions: null
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: VedAstro
+    url: https://vedastro.org/EarthquakePredictor.html
+    date: n.d.
+    title: Earthquake Predictor
+    checked: false
+  root_source:
+    bibkey: raman_weather_earthquakes
+    citation: Raman, B.V., Astrology in Forecasting Weather and Earthquakes (book; scan on archive.org)
+  bib:
+  - vedastro_earthquake
+  - raman_weather_earthquakes
+  needs_predicates: The 18 configurations must be read from Raman's book before they can be encoded one
+    rule each.
+  original_condition:
+  - 18 configurations listed in Raman's book (not enumerated in the extract)
+  missing_predicates:
+  - the configuration list itself (each needs encoding from Raman's book, chapter and page)

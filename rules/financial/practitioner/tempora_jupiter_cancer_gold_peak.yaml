@@ -1,0 +1,58 @@
+# yaml-language-server: $schema=../../../schema.json
+id: financial.practitioner.tempora_jupiter_cancer_gold_peak
+name: 'Tempora: Jupiter exalted in Cancer, gold peak window'
+domain: financial
+claim: Jupiter in Cancer (exaltation) marks the gold exaltation window; the forward call was a gold peak
+  20-45% above the 1 June 2025 LBMA baseline between 1 June 2025 and 30 September 2026.
+source:
+  url: https://www.tempora.ltd/findings/gold-jupiter
+  text: 'Tempora Research, "Gold Price Cycles and the Jupiter Transit: A 53-Year Study" (2026-05-05)'
+  note: Practitioner statement; page opened by a maintainer on 2026-11-08.
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: active
+window:
+  unit: months
+  before: 0
+  after: 12
+expected_effect:
+  series: gold_usd
+  direction: up
+conditions:
+  in_sign:
+    planet: Jupiter
+    signs:
+    - Cancer
+reference_cases:
+- moment: '2026-07-15T00:00:00Z'
+  expect: fires
+  note: 'Mid-2026, inside the practitioner''s window. Engine: in_sign(planet=Jupiter, signs=[Cancer]):
+    Jupiter is in Cancer 9.0 deg, one of Cancer.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2025-09-01T00:00:00Z'
+  expect: silent
+  note: 'Inside the practitioner''s June 2025 to June 2026 window. Engine: in_sign(planet=Jupiter, signs=[Cancer]):
+    Jupiter is in Gemini 23.7 deg, not one of Cancer. DISAGREES with the claim: the practitioner''s statement
+    implies ''fires'' here, the engine says ''silent'' (sidereal Lahiri, mean nodes).'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2025-11-15T00:00:00Z'
+  expect: fires
+  note: 'Sidereal Jupiter''s first, brief entry into Cancer (late October to December 2025). Engine: in_sign(planet=Jupiter,
+    signs=[Cancer]): Jupiter is in Cancer 0.9 deg, one of Cancer.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: Tempora Research
+    url: https://www.tempora.ltd/findings/gold-jupiter
+    date: '2026-05-05'
+    title: 'Gold Price Cycles and the Jupiter Transit: A 53-Year Study'
+    checked: true
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - tempora2026goldjupiter
+  practitioner_outcome: Tempora recorded its own call as 'failed-overshoot' (gold peaked 29 January 2026
+    above the 45% ceiling) and wrote that its Cancer entry date was off by about four months.
+  ayanamsa: Lahiri in section 1; PVRN Rao True Pushya Paksha from 5 May 2026

@@ -1,0 +1,55 @@
+# yaml-language-server: $schema=../../../schema.json
+id: financial.practitioner.tempora_jupiter_own_sign_gold_bull_peak
+name: 'Tempora: gold bull markets peak 8-14 months after Jupiter enters Sagittarius or Pisces'
+domain: financial
+claim: Gold bull markets peak within 8-14 months of Jupiter entering its own signs, Sagittarius or Pisces;
+  the deepest drawdowns come with Jupiter in Gemini and Virgo.
+source:
+  url: https://www.tempora.ltd/findings/gold-jupiter
+  text: 'Tempora Research, "Gold Price Cycles and the Jupiter Transit: A 53-Year Study" (2026)'
+  note: Practitioner statement; page opened by a maintainer on 2026-11-08.
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: active
+window:
+  unit: months
+  before: 0
+  after: 14
+  note: peak expected 8-14 months after the ingress
+expected_effect:
+  series: gold_usd
+  direction: up
+conditions:
+  in_sign:
+    planet: Jupiter
+    signs:
+    - Sagittarius
+    - Pisces
+reference_cases:
+- moment: '2019-06-01T00:00:00Z'
+  expect: silent
+  note: 'Tempora''s table lists Jan-Dec 2019 as Jupiter in Sagittarius. Engine: in_sign(planet=Jupiter,
+    signs=[Sagittarius, Pisces]): Jupiter is in Scorpio 26.6 deg, not one of Sagittarius, Pisces. DISAGREES
+    with the claim: the practitioner''s statement implies ''fires'' here, the engine says ''silent'' (sidereal
+    Lahiri, mean nodes).'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2020-03-01T00:00:00Z'
+  expect: fires
+  note: 'Early 2020. Engine: in_sign(planet=Jupiter, signs=[Sagittarius, Pisces]): Jupiter is in Sagittarius
+    25.4 deg, one of Sagittarius, Pisces.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: Tempora Research
+    url: https://www.tempora.ltd/findings/gold-jupiter
+    date: '2026'
+    title: 'Gold Price Cycles and the Jupiter Transit: A 53-Year Study'
+    checked: true
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - tempora2026goldjupiter
+  internal_inconsistency: The same page names the adverse signs as Gemini and Virgo in one place and Gemini
+    and Capricorn in another.

@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=../../../schema.json
+id: mundane.practitioner.sapta_nadi_saturn_jala_cyclone
+name: 'Sapta Nadi Chakra: Saturn in the Jala Nadi, windstorms and cyclones'
+domain: mundane
+claim: Saturn placed in the Jala (water) Nadi causes strong windstorms and cyclones; the Nadis group the
+  28 asterisms into seven weather channels.
+source:
+  url: https://www.dkscore.com/jyotishmedium/winter-weather-forecast-2024-astroimpact-of-el-nio-on-global-climate-365
+  text: 'DKScore Jyotish Medium, "Winter weather forecast 2024: astro-impact of El Nino on global climate"
+    (2024)'
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: needs_predicates
+expected_effect:
+  event: cyclone
+  direction: increase
+conditions: null
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: DKScore Jyotish Medium
+    url: https://www.dkscore.com/jyotishmedium/winter-weather-forecast-2024-astroimpact-of-el-nio-on-global-climate-365
+    date: '2024'
+    title: 'Winter weather forecast 2024: astro-impact of El Nino on global climate'
+    checked: false
+  root_source:
+    bibkey: rath_predicting_rain
+    citation: Sapta Nadi Chakra as presented by Sanjay Rath, https://srath.com/jyoti%E1%B9%A3a/mundane/predicting-rain/
+      (classical source of the chakra not named)
+  bib:
+  - dkscore2024weather
+  - rath_predicting_rain
+  needs_predicates: The Nadi membership is not stated in the source extract; encode it from the root text
+    first.
+  original_condition:
+  - Saturn in an asterism of the Jala Nadi
+  missing_predicates:
+  - sapta_nadi (asterism-to-nadi table including Abhijit; the extract does not list the Jala Nadi asterisms)

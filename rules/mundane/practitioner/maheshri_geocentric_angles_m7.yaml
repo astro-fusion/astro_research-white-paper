@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=../../../schema.json
+id: mundane.practitioner.maheshri_geocentric_angles_m7
+name: 'Jagdish Maheshri: four or more outer planets and Rahu forming geocentric angles, M7+ earthquakes'
+domain: mundane
+claim: The probability of an earthquake rises with the number of geocentric angles (0, 90, 180, 150 degrees
+  and others) between planets; a necessary condition for M7+ is that at least four outer planets and the
+  lunar north node form these angles.
+source:
+  url: https://saptarishisshop.com/earthquake-prediction-model-by-jagdish-maheshri/
+  text: Jagdish Maheshri (via Saptarishis), "Earthquake prediction model by Jagdish Maheshri" (n.d.)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: needs_predicates
+expected_effect:
+  event: earthquake_m7
+  direction: increase
+conditions: null
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: Jagdish Maheshri (via Saptarishis)
+    url: https://saptarishisshop.com/earthquake-prediction-model-by-jagdish-maheshri/
+    date: n.d.
+    title: Earthquake prediction model by Jagdish Maheshri
+    checked: false
+  root_source:
+    bibkey: maheshri_eqmodel
+    citation: Maheshri, J., Earthquake Prediction Model (conference paper; scan at https://www.scribd.com/document/200843894/Earthquake-Prediction-Model)
+  bib:
+  - maheshri_saptarishis
+  - maheshri_eqmodel
+  needs_predicates: 'separation_within tests one pair at a time; the rule counts pairs. Reported back-test
+    2006-2007: 5 of 11 M7+ events on the day.'
+  original_condition:
+  - count of exact geocentric aspects among planet pairs
+  - at least four outer planets and Rahu involved
+  missing_predicates:
+  - aspect_count (number of planet pairs within orb of a set of angles)

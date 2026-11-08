@@ -1,0 +1,48 @@
+# yaml-language-server: $schema=../../../schema.json
+id: financial.practitioner.jupiter_combust_nifty_cooling
+name: 'Jupiter combust (July-August 2026): Nifty mid-year cooling'
+domain: financial
+claim: Jupiter's combustion (14 July to 12 August 2026), right after its exalted ingress into Cancer,
+  brings lost optimism and a moderate correction risk for the Nifty 50.
+source:
+  url: https://www.scribd.com/document/1030567281/Correction-Time-Window-for-Nifty-as-Per-Financial-Astrology-for-2026
+  text: unnamed author (Scribd upload), "Correction time window for Nifty as per financial astrology for
+    2026" (2026)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: active
+window:
+  unit: days
+  before: 0
+  after: 30
+expected_effect:
+  series: nifty50
+  direction: down
+conditions:
+  combust:
+    planet: Jupiter
+reference_cases:
+- moment: '2026-07-28T00:00:00Z'
+  expect: fires
+  note: 'Middle of the named combustion. Engine: combust(planet=Jupiter): Jupiter is 1.1 deg from the
+    Sun; its combustion orb is 11 deg.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2026-10-01T00:00:00Z'
+  expect: silent
+  note: 'After it. Engine: combust(planet=Jupiter): Jupiter is 48.2 deg from the Sun; its combustion orb
+    is 11 deg.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: unnamed author (Scribd upload)
+    url: https://www.scribd.com/document/1030567281/Correction-Time-Window-for-Nifty-as-Per-Financial-Astrology-for-2026
+    date: '2026'
+    title: Correction time window for Nifty as per financial astrology for 2026
+    checked: false
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - scribd2026niftywindow

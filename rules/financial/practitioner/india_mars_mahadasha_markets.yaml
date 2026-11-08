@@ -1,0 +1,61 @@
+# yaml-language-server: $schema=../../../schema.json
+id: financial.practitioner.india_mars_mahadasha_markets
+name: 'India 1947 chart in Mars mahadasha (2025-2032): volatility and a defence-sector boom'
+domain: financial
+claim: During the Mars mahadasha of India's 1947 chart (9 September 2025 to 9 September 2032), defence
+  start-ups rise and markets turn volatile.
+source:
+  url: https://www.instagram.com/reel/DJOrT47ilxW/
+  text: Prashant Kapoor (Instagram), "Reel on India's Mars Maha Dasha" (2025)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: active
+window:
+  unit: years
+  before: 0
+  after: 0
+  note: for the whole mahadasha
+expected_effect:
+  series: nifty50
+  direction: either
+  description: higher volatility; defence sector up
+natal:
+  label: India independence 1947-08-15 00:00 IST, New Delhi
+  moment: '1947-08-15T00:00:00+05:30'
+  place:
+    lat: 28.6139
+    lon: 77.209
+    tz: Asia/Kolkata
+conditions:
+  dasha_lord_is:
+    level: 1
+    lords:
+    - Mars
+reference_cases:
+- moment: '2026-01-01T00:00:00Z'
+  expect: fires
+  note: 'Inside the named Mars mahadasha. Engine: dasha_lord_is(lords=[Mars], level=1): the running Vimshottari
+    period is Mars; its mahadasha lord is Mars.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2024-01-01T00:00:00Z'
+  expect: silent
+  note: 'Moon mahadasha (2015-2025). Engine: dasha_lord_is(lords=[Mars], level=1): the running Vimshottari
+    period is Moon; its mahadasha lord is Moon, not Mars.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: Prashant Kapoor (Instagram)
+    url: https://www.instagram.com/reel/DJOrT47ilxW/
+    date: '2025'
+    title: Reel on India's Mars Maha Dasha
+    checked: false
+  root_source:
+    bibkey: bphs_santhanam
+    citation: Vimshottari dasha as in Brihat Parashara Hora Shastra (R. Santhanam translation); the practitioner
+      cites no chapter or verse
+  bib:
+  - kapoor2025reel
+  - astrologicalmusings2025marsdasha
+  - bphs_santhanam

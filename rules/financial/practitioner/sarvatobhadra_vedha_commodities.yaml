@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=../../../schema.json
+id: financial.practitioner.sarvatobhadra_vedha_commodities
+name: 'Sarvatobhadra Chakra: malefic vedha on a commodity''s asterism or letter'
+domain: financial
+claim: When malefic planets cast vedha on the asterism, sign or initial letter of a commodity or index
+  in the 9x9 Sarvatobhadra Chakra, commodities spike (teji) and equities fall; benefic vedha brings gains.
+source:
+  url: https://www.youtube.com/watch?v=aKSgcEpAp2g
+  text: 'YouTube video (channel not named in the extract), "Sarvatobhadra Chakra in financial astrology:
+    forecast gold, silver" (n.d.)'
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: needs_predicates
+expected_effect:
+  series: gold_usd
+  direction: either
+conditions: null
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: YouTube video (channel not named in the extract)
+    url: https://www.youtube.com/watch?v=aKSgcEpAp2g
+    date: n.d.
+    title: 'Sarvatobhadra Chakra in financial astrology: forecast gold, silver'
+    checked: false
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - youtube_sbc
+  needs_predicates: The grid and the letter assignments are not in the vocabulary.
+  original_condition:
+  - planet in a perimeter asterism
+  - vedha lines (front, left and right diagonals) to the commodity's asterism, sign or letter
+  missing_predicates:
+  - sarvatobhadra_vedha (grid geometry and letter table)

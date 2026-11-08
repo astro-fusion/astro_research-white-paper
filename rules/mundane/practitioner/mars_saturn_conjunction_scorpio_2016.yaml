@@ -1,0 +1,71 @@
+# yaml-language-server: $schema=../../../schema.json
+id: mundane.practitioner.mars_saturn_conjunction_scorpio_2016
+name: 'Mars-Saturn conjunction in Scorpio (2016): war and a political scandal in India'
+domain: mundane
+claim: The 2016 Mars-Saturn conjunction in Scorpio was read as a 'deadly combination of a big war at many
+  places around the world'; with Scorpio the 7th house of India's chart, the same author expected a political
+  sex scandal between April and June 2016.
+source:
+  url: https://astrologicalmusings.com/hindu-new-year-chart-2016-and-forecast-for-india/
+  text: astrologicalmusings.com, "Hindu New Year chart 2016 and forecast for India" (2016)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: active
+window:
+  unit: months
+  before: 0
+  after: 3
+expected_effect:
+  event: armed_conflict_or_political_scandal
+  direction: increase
+conditions:
+  all:
+  - conjunct_within:
+      planets:
+      - Mars
+      - Saturn
+      orb: 10
+  - in_sign:
+      planet: Saturn
+      signs:
+      - Scorpio
+  - in_sign:
+      planet: Mars
+      signs:
+      - Scorpio
+reference_cases:
+- moment: '2016-04-15T00:00:00Z'
+  expect: fires
+  note: 'Inside the April-June 2016 window. Engine: conjunct_within(planets=[Mars, Saturn], orb=10.0):
+    Mars is in Scorpio 14.8 deg and Saturn is in Scorpio 22.0 deg: 7.2 deg apart, within the 10 deg orb;
+    in_sign(planet=Saturn, signs=[Scorpio]): Saturn is in Scorpio 22.0 deg, one of Scorpio; in_sign(planet=Mars,
+    signs=[Scorpio]): Mars is in Scorpio 14.8 deg, one of Scorpio.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2016-08-24T12:00:00Z'
+  expect: fires
+  note: 'Second meeting of Mars and Saturn in 2016. Engine: conjunct_within(planets=[Mars, Saturn], orb=10.0):
+    Mars is in Scorpio 15.8 deg and Saturn is in Scorpio 15.8 deg: 0.0 deg apart, within the 10 deg orb;
+    in_sign(planet=Saturn, signs=[Scorpio]): Saturn is in Scorpio 15.8 deg, one of Scorpio; in_sign(planet=Mars,
+    signs=[Scorpio]): Mars is in Scorpio 15.8 deg, one of Scorpio.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2016-01-15T00:00:00Z'
+  expect: silent
+  note: 'Before Mars reached Scorpio. Engine: conjunct_within(planets=[Mars, Saturn], orb=10.0): Mars
+    is in Libra 12.1 deg and Saturn is in Scorpio 18.5 deg: 36.4 deg apart, outside the 10 deg orb; in_sign(planet=Saturn,
+    signs=[Scorpio]): Saturn is in Scorpio 18.5 deg, one of Scorpio; in_sign(planet=Mars, signs=[Scorpio]):
+    Mars is in Libra 12.1 deg, not one of Scorpio.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: astrologicalmusings.com
+    url: https://astrologicalmusings.com/hindu-new-year-chart-2016-and-forecast-for-india/
+    date: '2016'
+    title: Hindu New Year chart 2016 and forecast for India
+    checked: false
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - astrologicalmusings2016newyear

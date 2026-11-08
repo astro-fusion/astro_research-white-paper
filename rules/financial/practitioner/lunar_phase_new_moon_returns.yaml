@@ -1,0 +1,73 @@
+# yaml-language-server: $schema=../../../schema.json
+id: financial.practitioner.lunar_phase_new_moon_returns
+name: Stock returns are higher around new moons than full moons
+domain: financial
+claim: Equity returns in the window around new moons exceed those around full moons (about 3-5% per year
+  in 48 countries; about double in the 15 days around new moons).
+source:
+  url: https://doi.org/10.1016/j.jempfin.2005.06.001
+  text: Yuan, Zheng and Zhu (2006), Journal of Empirical Finance, "Are investors moonstruck? Lunar phases
+    and stock returns" (2006)
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: active
+window:
+  unit: days
+  before: 0
+  after: 0
+  note: the condition itself is the ~15-day half-cycle centred on the new moon (tithis 23-30 and 1-7)
+expected_effect:
+  series: equity_index
+  direction: up
+conditions:
+  moon_phase:
+    tithis:
+    - 23
+    - 24
+    - 25
+    - 26
+    - 27
+    - 28
+    - 29
+    - 30
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+reference_cases:
+- moment: '2024-01-11T12:00:00Z'
+  expect: fires
+  note: 'New moon of 11 January 2024. Engine: moon_phase(tithis=[23, 24, 25, 26, 27, 28, 29, 30, 1, 2,
+    3, 4, 5, 6, 7]): the Moon is 0.0 deg ahead of the Sun: tithi 1 (Shukla 1), waxing.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2024-01-15T12:00:00Z'
+  expect: fires
+  note: 'Four days after that new moon. Engine: moon_phase(tithis=[23, 24, 25, 26, 27, 28, 29, 30, 1,
+    2, 3, 4, 5, 6, 7]): the Moon is 55.1 deg ahead of the Sun: tithi 5 (Shukla 5), waxing.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2024-01-25T18:00:00Z'
+  expect: silent
+  note: 'Full moon of 25 January 2024. Engine: moon_phase(tithis=[23, 24, 25, 26, 27, 28, 29, 30, 1, 2,
+    3, 4, 5, 6, 7]): the Moon is 180.0 deg ahead of the Sun: tithi 16 (Krishna 1), waning.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: Yuan, Zheng and Zhu (2006), Journal of Empirical Finance
+    url: https://doi.org/10.1016/j.jempfin.2005.06.001
+    date: '2006'
+    title: Are investors moonstruck? Lunar phases and stock returns
+    checked: false
+  root_source:
+    bibkey: yuan2006moonstruck
+    citation: Yuan, K., Zheng, L., Zhu, Q. (2006), Journal of Empirical Finance 13(1):1-23; and Dichev,
+      I.D., Janes, T.D. (2003), Lunar cycle effects in stock returns, Journal of Private Equity 6(4):8-29
+  bib:
+  - yuan2006moonstruck
+  - dichev2003lunar
+  behavioural_reading: 'The authors read the effect as mood, not a physical cause; Window choice matters:
+    the result should be re-tested on fixed, pre-registered windows.'

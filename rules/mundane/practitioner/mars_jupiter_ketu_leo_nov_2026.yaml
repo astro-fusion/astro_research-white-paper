@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=../../../schema.json
+id: mundane.practitioner.mars_jupiter_ketu_leo_nov_2026
+name: Mars joins Jupiter and Ketu in Leo (November-December 2026), youth-authority friction
+domain: mundane
+claim: Flare-ups between youth and authority are expected in November-December 2026, when Mars joins Jupiter
+  and Ketu in Leo, aspecting Rahu in Aquarius and Saturn in Pisces.
+source:
+  url: https://astrologertripathi.com/2026/10/13/gen-z-protests-youth-unrest-astrology/
+  text: 'astrologertripathi.com, "Gen Z protests and youth unrest: astrology" (2026-10-13)'
+  note: 'Practitioner statement; the page has not yet been opened by a maintainer (checked: false).'
+author: astro-research practitioner extraction (2026-11-08)
+tier: experimental
+status: active
+window:
+  unit: weeks
+  before: 0
+  after: 4
+expected_effect:
+  event: youth_protest
+  direction: increase
+conditions:
+  all:
+  - in_sign:
+      planet: Mars
+      signs:
+      - Leo
+  - in_sign:
+      planet: Jupiter
+      signs:
+      - Leo
+  - in_sign:
+      planet: Ketu
+      signs:
+      - Leo
+reference_cases:
+- moment: '2026-11-25T00:00:00Z'
+  expect: fires
+  note: 'Inside the named window. Engine: in_sign(planet=Mars, signs=[Leo]): Mars is in Leo 5.4 deg, one
+    of Leo; in_sign(planet=Jupiter, signs=[Leo]): Jupiter is in Leo 2.3 deg, one of Leo; in_sign(planet=Ketu,
+    signs=[Leo]): Ketu is in Leo 0.6 deg, one of Leo.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2026-12-20T00:00:00Z'
+  expect: silent
+  note: 'Inside the named window. Engine: in_sign(planet=Mars, signs=[Leo]): Mars is in Leo 13.5 deg,
+    one of Leo; in_sign(planet=Jupiter, signs=[Leo]): Jupiter is in Leo 2.7 deg, one of Leo; in_sign(planet=Ketu,
+    signs=[Leo]): Ketu is in Cancer 29.2 deg, not one of Leo. DISAGREES with the claim: the practitioner''s
+    statement implies ''fires'' here, the engine says ''silent'' (sidereal Lahiri, mean nodes).'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2026-06-01T00:00:00Z'
+  expect: silent
+  note: 'Before the window. Engine: in_sign(planet=Mars, signs=[Leo]): Mars is in Aries 15.5 deg, not
+    one of Leo; in_sign(planet=Jupiter, signs=[Leo]): Jupiter is in Gemini 29.8 deg, not one of Leo; in_sign(planet=Ketu,
+    signs=[Leo]): Ketu is in Leo 9.9 deg, one of Leo.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+notes:
+  mapping_status: practitioner_extracted
+  practitioner:
+    name: astrologertripathi.com
+    url: https://astrologertripathi.com/2026/10/13/gen-z-protests-youth-unrest-astrology/
+    date: '2026-10-13'
+    title: 'Gen Z protests and youth unrest: astrology'
+    checked: false
+  root_source:
+    bibkey: null
+    citation: none cited by the practitioner
+  bib:
+  - tripathi2026genz
