@@ -35,10 +35,10 @@ def create_birth_chart_command(args: argparse.Namespace) -> None:
 
         # Display planetary positions
         print("PLANETARY POSITIONS:")
-        for planet_name, planet_data in chart.chart.planets.items():
-            dignity_score = chart.score_dignity(planet_name)
+        for planet, planet_data in chart.chart.planets.items():
+            dignity_score = chart.score_dignity(planet)
             print(
-                f"  {planet_name}: {planet_data['sign_name']} "
+                f"  {planet.name}: {planet_data['sign_name']} "
                 f"{planet_data['degrees_in_sign']:.1f}°"
             )
             print(f"    Dignity Score: {dignity_score['score']:.1f}/100")

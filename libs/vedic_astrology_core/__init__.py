@@ -17,6 +17,7 @@ This package provides:
 import warnings
 from datetime import date, datetime, time
 from typing import Any, Dict, Optional, Tuple, Union
+from zoneinfo import ZoneInfo
 
 from .astrology import AyanamsaSystem, BirthChart, calculate_chart
 from .config import PLANET_NAMES, Planet
@@ -48,7 +49,7 @@ class VedicAstrologyChart:
         longitude: float = 77.1025,
         timezone: str = "Asia/Kolkata",
         ayanamsa_system: str = "LAHIRI",
-        house_system: str = "P",
+        house_system: str = "whole_sign",
         node_type: str = "mean",
     ):
         """
@@ -84,14 +85,11 @@ class VedicAstrologyChart:
                 )
                 raise ValueError(msg)
 
-        # Create datetime object for birth
-        if self.birth_time:
-            self.birth_datetime = datetime.combine(self.birth_date, self.birth_time)
-        else:
-            # Use noon if no time specified (common default)
-            self.birth_datetime = datetime.combine(
-                self.birth_date, datetime.strptime("12:00:00", "%H:%M:%S").time()
-            )
+        # Birth instant in the given timezone (noon local time if no time).
+        local_time = self.birth_time or time(12, 0, 0)
+        self.birth_datetime = datetime.combine(
+            self.birth_date, local_time, tzinfo=ZoneInfo(self.timezone)
+        )
 
         # Initialize components
         self._chart: Optional[BirthChart] = None
@@ -208,9 +206,9 @@ class VedicAstrologyChart:
         # Set defaults
         current_year = date.today().year
         if start_date is None:
-            start_date = datetime(current_year, 1, 1)
+            start_date = datetime(current_year, 1, 1, tzinfo=ZoneInfo(self.timezone))
         if end_date is None:
-            end_date = datetime(current_year, 12, 31)
+            end_date = datetime(current_year, 12, 31, tzinfo=ZoneInfo(self.timezone))
 
         # Get planet to analyze
         if isinstance(planet, str):
@@ -293,9 +291,9 @@ class VedicAstrologyChart:
 
         # Planetary positions
         report_lines.append("PLANETARY POSITIONS:")
-        for planet_name, planet_data in chart.planets.items():
-            dignity_score = self.score_dignity(planet_name)
-            report_lines.append(f"  {planet_name}:")
+        for planet, planet_data in chart.planets.items():
+            dignity_score = self.score_dignity(planet)
+            report_lines.append(f"  {planet.name}:")
             report_lines.append(f"    Sign: {planet_data['sign_name']}")
             report_lines.append(f"    Degrees: {planet_data['degrees_in_sign']:.2f}°")
             report_lines.append(f"    Longitude: {planet_data['longitude']:.2f}°")

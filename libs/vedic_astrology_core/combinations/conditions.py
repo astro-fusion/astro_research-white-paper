@@ -6,7 +6,9 @@ Sign Placement) and returns a binary activation state along with an optional
 continuous strength score (0.0 to 1.0).
 """
 
-from typing import Dict, List, Any, Union
+from typing import Any, Dict, List, Union
+
+from ..config.constants import PlanetDict, to_planet
 
 
 class AstroCondition:
@@ -32,18 +34,22 @@ class AstroCondition:
         diff = abs(lon1 - lon2)
         return min(diff, 360.0 - diff)
 
-    def get_planet_data(self, positions: Dict[str, Dict], planet: str) -> Dict:
-        """Extract planet data, raising a clear error if missing."""
-        planet = planet.capitalize()
-        # Handle nodes gracefully since they might be keyed as 'True Node'/'Rahu' etc.
-        if planet not in positions:
-            if planet == "Rahu" and "True Node" in positions:
-                return positions["True Node"]
-            elif planet == "Ketu" and "South Node" in positions:
-                return positions["South Node"]
-            else:
-                raise KeyError(f"Planet '{planet}' not found in position data.")
-        return positions[planet]
+    def get_planet_data(self, positions: Dict[Any, Dict], planet: str) -> Dict:
+        """Return a planet's position record, keyed canonically by Planet.
+
+        ``positions`` is the :class:`PlanetDict` from
+        ``EphemerisEngine.get_all_planet_positions``; any mapping keyed by
+        Planet or by planet name is accepted.
+
+        Raises:
+            KeyError: If the planet is unknown or missing from ``positions``.
+        """
+        key = to_planet(planet)
+        if not isinstance(positions, PlanetDict):
+            positions = PlanetDict(positions)
+        if key not in positions:
+            raise KeyError(f"Planet '{key.name}' not found in position data.")
+        return positions[key]
 
 
 class ConjunctionCondition(AstroCondition):
