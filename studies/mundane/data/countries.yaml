@@ -1,0 +1,1587 @@
+# Founding dates and capitals for 113 countries (AstroFusion mundane dataset, export 2026-11-08, CC BY 4.0).
+# EVERY founding time is null and time_known is false: the source held only 00:00 or 12:00 placeholders,
+# never a sourced time. Without a sourced time there is no lagna and no houses; only sign-level features are testable.
+# See README.md in this folder for the field meanings.
+countries:
+  - iso: "US"
+    slug: "united-states"
+    name: "United States"
+    capital_lat: 38.8951
+    capital_lon: -77.0369
+    timezone: "America/New_York"
+    founding:
+      date: "1776-07-04"
+      time: null
+      time_known: false
+      rationale: "Founded on July 4, 1776, with the Declaration of Independence"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "IN"
+    slug: "india"
+    name: "India"
+    capital_lat: 28.6139
+    capital_lon: 77.209
+    timezone: "Asia/Kolkata"
+    founding:
+      date: "1947-08-15"
+      time: null
+      time_known: false
+      rationale: "Independence from British rule on August 15, 1947"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "GB"
+    slug: "united-kingdom"
+    name: "United Kingdom"
+    capital_lat: 51.5074
+    capital_lon: -0.1278
+    timezone: "Europe/London"
+    founding:
+      date: "1801-01-01"
+      time: null
+      time_known: false
+      rationale: "Union of Great Britain and Ireland"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "CA"
+    slug: "canada"
+    name: "Canada"
+    capital_lat: 45.4215
+    capital_lon: -75.6972
+    timezone: "America/Toronto"
+    founding:
+      date: "1867-07-01"
+      time: null
+      time_known: false
+      rationale: "Confederation established on July 1, 1867"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "MX"
+    slug: "mexico"
+    name: "Mexico"
+    capital_lat: 19.4326
+    capital_lon: -99.1332
+    timezone: "America/Mexico_City"
+    founding:
+      date: "1821-09-27"
+      time: null
+      time_known: false
+      rationale: "Independence from Spain declared on September 27, 1821"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "BR"
+    slug: "brazil"
+    name: "Brazil"
+    capital_lat: -15.8267
+    capital_lon: -47.9218
+    timezone: "America/Sao_Paulo"
+    founding:
+      date: "1822-09-07"
+      time: null
+      time_known: false
+      rationale: "Independence from Portugal on September 7, 1822"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "AR"
+    slug: "argentina"
+    name: "Argentina"
+    capital_lat: -34.6118
+    capital_lon: -58.3965
+    timezone: "America/Argentina/Buenos_Aires"
+    founding:
+      date: "1816-07-09"
+      time: null
+      time_known: false
+      rationale: "Independence from Spain on July 9, 1816"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "CO"
+    slug: "colombia"
+    name: "Colombia"
+    capital_lat: 4.711
+    capital_lon: -74.0721
+    timezone: "America/Bogota"
+    founding:
+      date: "1810-07-20"
+      time: null
+      time_known: false
+      rationale: "Independence from Spain on July 20, 1810"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "PE"
+    slug: "peru"
+    name: "Peru"
+    capital_lat: -12.0464
+    capital_lon: -77.0428
+    timezone: "America/Lima"
+    founding:
+      date: "1821-07-28"
+      time: null
+      time_known: false
+      rationale: "Independence from Spain on July 28, 1821"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "VE"
+    slug: "venezuela"
+    name: "Venezuela"
+    capital_lat: 10.5061
+    capital_lon: -66.9146
+    timezone: "America/Caracas"
+    founding:
+      date: "1811-07-05"
+      time: null
+      time_known: false
+      rationale: "Independence from Spain on July 5, 1811"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "CL"
+    slug: "chile"
+    name: "Chile"
+    capital_lat: -33.4489
+    capital_lon: -70.6693
+    timezone: "America/Santiago"
+    founding:
+      date: "1810-09-18"
+      time: null
+      time_known: false
+      rationale: "Independence from Spain on September 18, 1810"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "EC"
+    slug: "ecuador"
+    name: "Ecuador"
+    capital_lat: -0.2299
+    capital_lon: -78.5249
+    timezone: "America/Guayaquil"
+    founding:
+      date: "1809-08-10"
+      time: null
+      time_known: false
+      rationale: "Independence from Spain on August 10, 1809"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "FR"
+    slug: "france"
+    name: "France"
+    capital_lat: 48.8566
+    capital_lon: 2.3522
+    timezone: "Europe/Paris"
+    founding:
+      date: "1789-07-14"
+      time: null
+      time_known: false
+      rationale: "French Revolution and establishment of the First Republic on July 14, 1789"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "DE"
+    slug: "germany"
+    name: "Germany"
+    capital_lat: 52.52
+    capital_lon: 13.405
+    timezone: "Europe/Berlin"
+    founding:
+      date: "1871-01-18"
+      time: null
+      time_known: false
+      rationale: "Unification of Germany on January 18, 1871"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "IT"
+    slug: "italy"
+    name: "Italy"
+    capital_lat: 41.9028
+    capital_lon: 12.4964
+    timezone: "Europe/Rome"
+    founding:
+      date: "1861-03-17"
+      time: null
+      time_known: false
+      rationale: "Unification of Italy completed on March 17, 1861"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "ES"
+    slug: "spain"
+    name: "Spain"
+    capital_lat: 40.4168
+    capital_lon: -3.7038
+    timezone: "Europe/Madrid"
+    founding:
+      date: "1492-01-01"
+      time: null
+      time_known: false
+      rationale: "Completion of the Reconquista and discovery of America in 1492"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "RU"
+    slug: "russia"
+    name: "Russia"
+    capital_lat: 55.7558
+    capital_lon: 37.6173
+    timezone: "Europe/Moscow"
+    founding:
+      date: "1991-12-25"
+      time: null
+      time_known: false
+      rationale: "Dissolution of the Soviet Union on December 25, 1991"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "NL"
+    slug: "netherlands"
+    name: "Netherlands"
+    capital_lat: 52.3676
+    capital_lon: 4.9041
+    timezone: "Europe/Amsterdam"
+    founding:
+      date: "1579-01-23"
+      time: null
+      time_known: false
+      rationale: "Union of Utrecht forming the Dutch Republic on January 23, 1579"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "BE"
+    slug: "belgium"
+    name: "Belgium"
+    capital_lat: 50.8503
+    capital_lon: 4.3517
+    timezone: "Europe/Brussels"
+    founding:
+      date: "1830-07-21"
+      time: null
+      time_known: false
+      rationale: "Independence from the Netherlands on July 21, 1830"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "CH"
+    slug: "switzerland"
+    name: "Switzerland"
+    capital_lat: 46.9481
+    capital_lon: 7.4474
+    timezone: "Europe/Zurich"
+    founding:
+      date: "1291-08-01"
+      time: null
+      time_known: false
+      rationale: "Founding of the Swiss Confederation on August 1, 1291"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "AT"
+    slug: "austria"
+    name: "Austria"
+    capital_lat: 48.2082
+    capital_lon: 16.3738
+    timezone: "Europe/Vienna"
+    founding:
+      date: "1955-05-15"
+      time: null
+      time_known: false
+      rationale: "State Treaty and independence on May 15, 1955"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "CN"
+    slug: "china"
+    name: "China"
+    capital_lat: 39.9042
+    capital_lon: 116.4074
+    timezone: "Asia/Shanghai"
+    founding:
+      date: "1949-10-01"
+      time: null
+      time_known: false
+      rationale: "Founding of the People's Republic of China on October 1, 1949"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "JP"
+    slug: "japan"
+    name: "Japan"
+    capital_lat: 35.6762
+    capital_lon: 139.6503
+    timezone: "Asia/Tokyo"
+    founding:
+      date: "1868-01-03"
+      time: null
+      time_known: false
+      rationale: "Meiji Restoration beginning modernization on January 3, 1868"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "KR"
+    slug: "south-korea"
+    name: "South Korea"
+    capital_lat: 37.5665
+    capital_lon: 126.978
+    timezone: "Asia/Seoul"
+    founding:
+      date: "1948-08-15"
+      time: null
+      time_known: false
+      rationale: "Establishment of the Republic of Korea on August 15, 1948"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "ID"
+    slug: "indonesia"
+    name: "Indonesia"
+    capital_lat: -6.2088
+    capital_lon: 106.8456
+    timezone: "Asia/Jakarta"
+    founding:
+      date: "1945-08-17"
+      time: null
+      time_known: false
+      rationale: "Independence from the Netherlands on August 17, 1945"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "PK"
+    slug: "pakistan"
+    name: "Pakistan"
+    capital_lat: 33.6844
+    capital_lon: 73.0479
+    timezone: "Asia/Karachi"
+    founding:
+      date: "1947-08-14"
+      time: null
+      time_known: false
+      rationale: "Independence from British rule on August 14, 1947"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "BD"
+    slug: "bangladesh"
+    name: "Bangladesh"
+    capital_lat: 23.8103
+    capital_lon: 90.4125
+    timezone: "Asia/Dhaka"
+    founding:
+      date: "1971-12-16"
+      time: null
+      time_known: false
+      rationale: "Independence from Pakistan on December 16, 1971"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "TH"
+    slug: "thailand"
+    name: "Thailand"
+    capital_lat: 13.7563
+    capital_lon: 100.5018
+    timezone: "Asia/Bangkok"
+    founding:
+      date: "1238-01-01"
+      time: null
+      time_known: false
+      rationale: "Founding of the Sukhothai Kingdom around 1238 AD"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "VN"
+    slug: "vietnam"
+    name: "Vietnam"
+    capital_lat: 21.0285
+    capital_lon: 105.8542
+    timezone: "Asia/Ho_Chi_Minh"
+    founding:
+      date: "1945-09-02"
+      time: null
+      time_known: false
+      rationale: "Independence from Japan and France on September 2, 1945"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "PH"
+    slug: "philippines"
+    name: "Philippines"
+    capital_lat: 14.5995
+    capital_lon: 120.9842
+    timezone: "Asia/Manila"
+    founding:
+      date: "1898-06-12"
+      time: null
+      time_known: false
+      rationale: "Independence from Spain on June 12, 1898"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "SA"
+    slug: "saudi-arabia"
+    name: "Saudi Arabia"
+    capital_lat: 24.7136
+    capital_lon: 46.6753
+    timezone: "Asia/Riyadh"
+    founding:
+      date: "1932-09-23"
+      time: null
+      time_known: false
+      rationale: "Unification of Saudi Arabia on September 23, 1932"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "AE"
+    slug: "united-arab-emirates"
+    name: "United Arab Emirates"
+    capital_lat: 24.4539
+    capital_lon: 54.3773
+    timezone: "Asia/Dubai"
+    founding:
+      date: "1971-12-02"
+      time: null
+      time_known: false
+      rationale: "Formation of the United Arab Emirates on December 2, 1971"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "IL"
+    slug: "israel"
+    name: "Israel"
+    capital_lat: 31.7683
+    capital_lon: 35.2137
+    timezone: "Asia/Jerusalem"
+    founding:
+      date: "1948-05-14"
+      time: null
+      time_known: false
+      rationale: "Establishment of the State of Israel on May 14, 1948"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "TR"
+    slug: "turkey"
+    name: "Turkey"
+    capital_lat: 39.9334
+    capital_lon: 32.8597
+    timezone: "Europe/Istanbul"
+    founding:
+      date: "1923-10-29"
+      time: null
+      time_known: false
+      rationale: "Founding of the Republic of Turkey on October 29, 1923"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "IR"
+    slug: "iran"
+    name: "Iran"
+    capital_lat: 35.6892
+    capital_lon: 51.389
+    timezone: "Asia/Tehran"
+    founding:
+      date: "1979-02-11"
+      time: null
+      time_known: false
+      rationale: "Islamic Revolution and establishment of the Islamic Republic on February 11, 1979"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "EG"
+    slug: "egypt"
+    name: "Egypt"
+    capital_lat: 30.0444
+    capital_lon: 31.2357
+    timezone: "Africa/Cairo"
+    founding:
+      date: "1953-06-18"
+      time: null
+      time_known: false
+      rationale: "Republic of Egypt established on June 18, 1953"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "ZA"
+    slug: "south-africa"
+    name: "South Africa"
+    capital_lat: -25.7479
+    capital_lon: 28.2293
+    timezone: "Africa/Johannesburg"
+    founding:
+      date: "1961-05-31"
+      time: null
+      time_known: false
+      rationale: "Republic of South Africa established on May 31, 1961"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "NG"
+    slug: "nigeria"
+    name: "Nigeria"
+    capital_lat: 9.0765
+    capital_lon: 7.3986
+    timezone: "Africa/Lagos"
+    founding:
+      date: "1960-10-01"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on October 1, 1960"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "KE"
+    slug: "kenya"
+    name: "Kenya"
+    capital_lat: -1.2864
+    capital_lon: 36.8172
+    timezone: "Africa/Nairobi"
+    founding:
+      date: "1963-12-12"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on December 12, 1963"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "MA"
+    slug: "morocco"
+    name: "Morocco"
+    capital_lat: 33.9716
+    capital_lon: -6.8498
+    timezone: "Africa/Casablanca"
+    founding:
+      date: "1956-03-02"
+      time: null
+      time_known: false
+      rationale: "Independence from France and Spain in 1956"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "AU"
+    slug: "australia"
+    name: "Australia"
+    capital_lat: -35.2809
+    capital_lon: 149.13
+    timezone: "Australia/Sydney"
+    founding:
+      date: "1901-01-01"
+      time: null
+      time_known: false
+      rationale: "Federation of Australia on January 1, 1901"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "NZ"
+    slug: "new-zealand"
+    name: "New Zealand"
+    capital_lat: -41.2865
+    capital_lon: 174.7762
+    timezone: "Pacific/Auckland"
+    founding:
+      date: "1841-02-06"
+      time: null
+      time_known: false
+      rationale: "Treaty of Waitangi establishing British sovereignty on February 6, 1841"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "PL"
+    slug: "poland"
+    name: "Poland"
+    capital_lat: 52.2297
+    capital_lon: 21.0122
+    timezone: "Europe/Warsaw"
+    founding:
+      date: "1918-11-11"
+      time: null
+      time_known: false
+      rationale: "Restoration of Polish independence on November 11, 1918"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "SE"
+    slug: "sweden"
+    name: "Sweden"
+    capital_lat: 59.3293
+    capital_lon: 18.0686
+    timezone: "Europe/Stockholm"
+    founding:
+      date: "1523-06-06"
+      time: null
+      time_known: false
+      rationale: "Unification of Sweden on June 6, 1523"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "NO"
+    slug: "norway"
+    name: "Norway"
+    capital_lat: 59.9139
+    capital_lon: 10.7522
+    timezone: "Europe/Oslo"
+    founding:
+      date: "1905-06-07"
+      time: null
+      time_known: false
+      rationale: "Dissolution of the union with Sweden on June 7, 1905"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "DK"
+    slug: "denmark"
+    name: "Denmark"
+    capital_lat: 55.6761
+    capital_lon: 12.5683
+    timezone: "Europe/Copenhagen"
+    founding:
+      date: "1849-06-05"
+      time: null
+      time_known: false
+      rationale: "June Constitution establishing constitutional monarchy on June 5, 1849"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "FI"
+    slug: "finland"
+    name: "Finland"
+    capital_lat: 60.1699
+    capital_lon: 24.9384
+    timezone: "Europe/Helsinki"
+    founding:
+      date: "1917-12-06"
+      time: null
+      time_known: false
+      rationale: "Independence from Russia on December 6, 1917"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "GR"
+    slug: "greece"
+    name: "Greece"
+    capital_lat: 37.9838
+    capital_lon: 23.7275
+    timezone: "Europe/Athens"
+    founding:
+      date: "1829-02-03"
+      time: null
+      time_known: false
+      rationale: "Independence from the Ottoman Empire on February 3, 1829"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "PT"
+    slug: "portugal"
+    name: "Portugal"
+    capital_lat: 38.7223
+    capital_lon: -9.1393
+    timezone: "Europe/Lisbon"
+    founding:
+      date: "1143-10-05"
+      time: null
+      time_known: false
+      rationale: "Independence from León on October 5, 1143"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "IE"
+    slug: "ireland"
+    name: "Ireland"
+    capital_lat: 53.3498
+    capital_lon: -6.2603
+    timezone: "Europe/Dublin"
+    founding:
+      date: "1922-12-06"
+      time: null
+      time_known: false
+      rationale: "Irish Free State established on December 6, 1922"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "UA"
+    slug: "ukraine"
+    name: "Ukraine"
+    capital_lat: 50.4501
+    capital_lon: 30.5234
+    timezone: "Europe/Kiev"
+    founding:
+      date: "1991-08-24"
+      time: null
+      time_known: false
+      rationale: "Independence from the Soviet Union on August 24, 1991"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "CZ"
+    slug: "czech-republic"
+    name: "Czech Republic"
+    capital_lat: 50.0755
+    capital_lon: 14.4378
+    timezone: "Europe/Prague"
+    founding:
+      date: "1993-01-01"
+      time: null
+      time_known: false
+      rationale: "Dissolution of Czechoslovakia on January 1, 1993"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "HU"
+    slug: "hungary"
+    name: "Hungary"
+    capital_lat: 47.4979
+    capital_lon: 19.0402
+    timezone: "Europe/Budapest"
+    founding:
+      date: "1000-01-01"
+      time: null
+      time_known: false
+      rationale: "Founding of the Kingdom of Hungary around 1000 AD"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "RO"
+    slug: "romania"
+    name: "Romania"
+    capital_lat: 44.4268
+    capital_lon: 26.1025
+    timezone: "Europe/Bucharest"
+    founding:
+      date: "1878-05-09"
+      time: null
+      time_known: false
+      rationale: "Independence from the Ottoman Empire on May 9, 1878"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "BG"
+    slug: "bulgaria"
+    name: "Bulgaria"
+    capital_lat: 42.6977
+    capital_lon: 23.3219
+    timezone: "Europe/Sofia"
+    founding:
+      date: "1878-07-13"
+      time: null
+      time_known: false
+      rationale: "Independence from the Ottoman Empire on July 13, 1878"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "HR"
+    slug: "croatia"
+    name: "Croatia"
+    capital_lat: 45.815
+    capital_lon: 15.9819
+    timezone: "Europe/Zagreb"
+    founding:
+      date: "1991-06-25"
+      time: null
+      time_known: false
+      rationale: "Independence from Yugoslavia on June 25, 1991"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "RS"
+    slug: "serbia"
+    name: "Serbia"
+    capital_lat: 44.7866
+    capital_lon: 20.4489
+    timezone: "Europe/Belgrade"
+    founding:
+      date: "2006-06-05"
+      time: null
+      time_known: false
+      rationale: "Independence from Serbia and Montenegro on June 5, 2006"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "MY"
+    slug: "malaysia"
+    name: "Malaysia"
+    capital_lat: 3.139
+    capital_lon: 101.6869
+    timezone: "Asia/Kuala_Lumpur"
+    founding:
+      date: "1957-08-31"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on August 31, 1957"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "SG"
+    slug: "singapore"
+    name: "Singapore"
+    capital_lat: 1.3521
+    capital_lon: 103.8198
+    timezone: "Asia/Singapore"
+    founding:
+      date: "1965-08-09"
+      time: null
+      time_known: false
+      rationale: "Independence from Malaysia on August 9, 1965"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "MM"
+    slug: "myanmar"
+    name: "Myanmar"
+    capital_lat: 19.7633
+    capital_lon: 96.0785
+    timezone: "Asia/Yangon"
+    founding:
+      date: "1948-01-04"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on January 4, 1948"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "LK"
+    slug: "sri-lanka"
+    name: "Sri Lanka"
+    capital_lat: 6.9271
+    capital_lon: 79.8612
+    timezone: "Asia/Colombo"
+    founding:
+      date: "1948-02-04"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on February 4, 1948"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "NP"
+    slug: "nepal"
+    name: "Nepal"
+    capital_lat: 27.7172
+    capital_lon: 85.324
+    timezone: "Asia/Kathmandu"
+    founding:
+      date: "1769-01-01"
+      time: null
+      time_known: false
+      rationale: "Unification of Nepal under Prithvi Narayan Shah around 1769"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "KZ"
+    slug: "kazakhstan"
+    name: "Kazakhstan"
+    capital_lat: 51.1605
+    capital_lon: 71.4704
+    timezone: "Asia/Almaty"
+    founding:
+      date: "1991-12-16"
+      time: null
+      time_known: false
+      rationale: "Independence from the Soviet Union on December 16, 1991"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "UZ"
+    slug: "uzbekistan"
+    name: "Uzbekistan"
+    capital_lat: 41.2995
+    capital_lon: 69.2401
+    timezone: "Asia/Tashkent"
+    founding:
+      date: "1991-08-31"
+      time: null
+      time_known: false
+      rationale: "Independence from the Soviet Union on August 31, 1991"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "AZ"
+    slug: "azerbaijan"
+    name: "Azerbaijan"
+    capital_lat: 40.4093
+    capital_lon: 49.8671
+    timezone: "Asia/Baku"
+    founding:
+      date: "1991-08-30"
+      time: null
+      time_known: false
+      rationale: "Independence from the Soviet Union on August 30, 1991"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "GE"
+    slug: "georgia"
+    name: "Georgia"
+    capital_lat: 41.7167
+    capital_lon: 44.7833
+    timezone: "Asia/Tbilisi"
+    founding:
+      date: "1991-04-09"
+      time: null
+      time_known: false
+      rationale: "Independence from the Soviet Union on April 9, 1991"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "AM"
+    slug: "armenia"
+    name: "Armenia"
+    capital_lat: 40.0691
+    capital_lon: 45.0382
+    timezone: "Asia/Yerevan"
+    founding:
+      date: "1991-09-21"
+      time: null
+      time_known: false
+      rationale: "Independence from the Soviet Union on September 21, 1991"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "DZ"
+    slug: "algeria"
+    name: "Algeria"
+    capital_lat: 36.7538
+    capital_lon: 3.0588
+    timezone: "Africa/Algiers"
+    founding:
+      date: "1962-07-05"
+      time: null
+      time_known: false
+      rationale: "Independence from France on July 5, 1962"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "TN"
+    slug: "tunisia"
+    name: "Tunisia"
+    capital_lat: 36.8065
+    capital_lon: 10.1815
+    timezone: "Africa/Tunis"
+    founding:
+      date: "1956-03-20"
+      time: null
+      time_known: false
+      rationale: "Independence from France on March 20, 1956"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "LY"
+    slug: "libya"
+    name: "Libya"
+    capital_lat: 32.8872
+    capital_lon: 13.1913
+    timezone: "Africa/Tripoli"
+    founding:
+      date: "1951-12-24"
+      time: null
+      time_known: false
+      rationale: "Independence from Italy on December 24, 1951"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "GH"
+    slug: "ghana"
+    name: "Ghana"
+    capital_lat: 5.6037
+    capital_lon: -0.187
+    timezone: "Africa/Accra"
+    founding:
+      date: "1957-03-06"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on March 6, 1957"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "ET"
+    slug: "ethiopia"
+    name: "Ethiopia"
+    capital_lat: 9.145
+    capital_lon: 38.7423
+    timezone: "Africa/Addis_Ababa"
+    founding:
+      date: "1896-03-01"
+      time: null
+      time_known: false
+      rationale: "Victory at Adwa establishing independence from Italy in 1896"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "ZW"
+    slug: "zimbabwe"
+    name: "Zimbabwe"
+    capital_lat: -17.8252
+    capital_lon: 31.0335
+    timezone: "Africa/Harare"
+    founding:
+      date: "1980-04-18"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on April 18, 1980"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "CU"
+    slug: "cuba"
+    name: "Cuba"
+    capital_lat: 23.1136
+    capital_lon: -82.3666
+    timezone: "America/Havana"
+    founding:
+      date: "1959-01-01"
+      time: null
+      time_known: false
+      rationale: "Cuban Revolution establishing the Republic on January 1, 1959"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "CR"
+    slug: "costa-rica"
+    name: "Costa Rica"
+    capital_lat: 9.9281
+    capital_lon: -84.0907
+    timezone: "America/Costa_Rica"
+    founding:
+      date: "1821-09-15"
+      time: null
+      time_known: false
+      rationale: "Independence from Spain on September 15, 1821"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "PA"
+    slug: "panama"
+    name: "Panama"
+    capital_lat: 8.9824
+    capital_lon: -79.5199
+    timezone: "America/Panama"
+    founding:
+      date: "1903-11-03"
+      time: null
+      time_known: false
+      rationale: "Independence from Colombia on November 3, 1903"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "UY"
+    slug: "uruguay"
+    name: "Uruguay"
+    capital_lat: -34.9011
+    capital_lon: -56.1645
+    timezone: "America/Montevideo"
+    founding:
+      date: "1825-08-25"
+      time: null
+      time_known: false
+      rationale: "Independence from Brazil on August 25, 1825"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "PY"
+    slug: "paraguay"
+    name: "Paraguay"
+    capital_lat: -25.2637
+    capital_lon: -57.5759
+    timezone: "America/Asuncion"
+    founding:
+      date: "1811-05-14"
+      time: null
+      time_known: false
+      rationale: "Independence from Spain on May 14, 1811"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "BO"
+    slug: "bolivia"
+    name: "Bolivia"
+    capital_lat: -16.5
+    capital_lon: -68.15
+    timezone: "America/La_Paz"
+    founding:
+      date: "1825-08-06"
+      time: null
+      time_known: false
+      rationale: "Independence from Spain on August 6, 1825"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "GT"
+    slug: "guatemala"
+    name: "Guatemala"
+    capital_lat: 14.6349
+    capital_lon: -90.5069
+    timezone: "America/Guatemala"
+    founding:
+      date: "1821-09-15"
+      time: null
+      time_known: false
+      rationale: "Independence from Spain on September 15, 1821"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "HN"
+    slug: "honduras"
+    name: "Honduras"
+    capital_lat: 14.0723
+    capital_lon: -87.1921
+    timezone: "America/Tegucigalpa"
+    founding:
+      date: "1821-09-15"
+      time: null
+      time_known: false
+      rationale: "Independence from Spain on September 15, 1821"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "SV"
+    slug: "el-salvador"
+    name: "El Salvador"
+    capital_lat: 13.6929
+    capital_lon: -89.2182
+    timezone: "America/El_Salvador"
+    founding:
+      date: "1821-09-15"
+      time: null
+      time_known: false
+      rationale: "Independence from Spain on September 15, 1821"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "NI"
+    slug: "nicaragua"
+    name: "Nicaragua"
+    capital_lat: 12.1149
+    capital_lon: -86.2362
+    timezone: "America/Managua"
+    founding:
+      date: "1821-09-15"
+      time: null
+      time_known: false
+      rationale: "Independence from Spain on September 15, 1821"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "BZ"
+    slug: "belize"
+    name: "Belize"
+    capital_lat: 17.251
+    capital_lon: -88.759
+    timezone: "America/Belize"
+    founding:
+      date: "1981-09-21"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on September 21, 1981"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "JM"
+    slug: "jamaica"
+    name: "Jamaica"
+    capital_lat: 17.9714
+    capital_lon: -76.792
+    timezone: "America/Jamaica"
+    founding:
+      date: "1962-08-06"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on August 6, 1962"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "TT"
+    slug: "trinidad-and-tobago"
+    name: "Trinidad and Tobago"
+    capital_lat: 10.6549
+    capital_lon: -61.5019
+    timezone: "America/Port_of_Spain"
+    founding:
+      date: "1962-08-31"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on August 31, 1962"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "BB"
+    slug: "barbados"
+    name: "Barbados"
+    capital_lat: 13.1939
+    capital_lon: -59.5432
+    timezone: "America/Barbados"
+    founding:
+      date: "1966-11-30"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on November 30, 1966"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "BS"
+    slug: "bahamas"
+    name: "Bahamas"
+    capital_lat: 25.0343
+    capital_lon: -77.3963
+    timezone: "America/Nassau"
+    founding:
+      date: "1973-07-10"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on July 10, 1973"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "GY"
+    slug: "guyana"
+    name: "Guyana"
+    capital_lat: 6.8013
+    capital_lon: -58.1551
+    timezone: "America/Guyana"
+    founding:
+      date: "1966-05-26"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on May 26, 1966"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "SR"
+    slug: "suriname"
+    name: "Suriname"
+    capital_lat: 5.852
+    capital_lon: -55.2038
+    timezone: "America/Paramaribo"
+    founding:
+      date: "1975-11-25"
+      time: null
+      time_known: false
+      rationale: "Independence from the Netherlands on November 25, 1975"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "BH"
+    slug: "bahrain"
+    name: "Bahrain"
+    capital_lat: 26.2285
+    capital_lon: 50.586
+    timezone: "Asia/Bahrain"
+    founding:
+      date: "1971-08-15"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on August 15, 1971"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "BT"
+    slug: "bhutan"
+    name: "Bhutan"
+    capital_lat: 27.4712
+    capital_lon: 89.6339
+    timezone: "Asia/Thimphu"
+    founding:
+      date: "1907-01-01"
+      time: null
+      time_known: false
+      rationale: "Established as a unified kingdom around 1907"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "BN"
+    slug: "brunei"
+    name: "Brunei"
+    capital_lat: 4.5353
+    capital_lon: 114.7277
+    timezone: "Asia/Brunei"
+    founding:
+      date: "1984-01-01"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on January 1, 1984"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "KH"
+    slug: "cambodia"
+    name: "Cambodia"
+    capital_lat: 11.5625
+    capital_lon: 104.916
+    timezone: "Asia/Phnom_Penh"
+    founding:
+      date: "1953-11-09"
+      time: null
+      time_known: false
+      rationale: "Independence from France on November 9, 1953"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "CY"
+    slug: "cyprus"
+    name: "Cyprus"
+    capital_lat: 35.1264
+    capital_lon: 33.4299
+    timezone: "Asia/Nicosia"
+    founding:
+      date: "1960-08-16"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on August 16, 1960"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "TL"
+    slug: "east-timor"
+    name: "East Timor"
+    capital_lat: -8.8742
+    capital_lon: 125.7275
+    timezone: "Asia/Dili"
+    founding:
+      date: "2002-05-20"
+      time: null
+      time_known: false
+      rationale: "Independence from Indonesia on May 20, 2002"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "IQ"
+    slug: "iraq"
+    name: "Iraq"
+    capital_lat: 33.3152
+    capital_lon: 44.3661
+    timezone: "Asia/Baghdad"
+    founding:
+      date: "1932-10-03"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on October 3, 1932"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "JO"
+    slug: "jordan"
+    name: "Jordan"
+    capital_lat: 31.9632
+    capital_lon: 35.9304
+    timezone: "Asia/Amman"
+    founding:
+      date: "1946-05-25"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on May 25, 1946"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "KW"
+    slug: "kuwait"
+    name: "Kuwait"
+    capital_lat: 29.3117
+    capital_lon: 47.4818
+    timezone: "Asia/Kuwait"
+    founding:
+      date: "1961-06-19"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on June 19, 1961"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "KG"
+    slug: "kyrgyzstan"
+    name: "Kyrgyzstan"
+    capital_lat: 42.8746
+    capital_lon: 74.5698
+    timezone: "Asia/Bishkek"
+    founding:
+      date: "1991-08-31"
+      time: null
+      time_known: false
+      rationale: "Independence from the Soviet Union on August 31, 1991"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "LA"
+    slug: "laos"
+    name: "Laos"
+    capital_lat: 17.9757
+    capital_lon: 102.6331
+    timezone: "Asia/Vientiane"
+    founding:
+      date: "1954-07-19"
+      time: null
+      time_known: false
+      rationale: "Independence from France on July 19, 1954"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "LB"
+    slug: "lebanon"
+    name: "Lebanon"
+    capital_lat: 33.8938
+    capital_lon: 35.5018
+    timezone: "Asia/Beirut"
+    founding:
+      date: "1943-11-22"
+      time: null
+      time_known: false
+      rationale: "Independence from France on November 22, 1943"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "MV"
+    slug: "maldives"
+    name: "Maldives"
+    capital_lat: 3.2028
+    capital_lon: 73.2207
+    timezone: "Indian/Maldives"
+    founding:
+      date: "1965-07-26"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on July 26, 1965"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "MN"
+    slug: "mongolia"
+    name: "Mongolia"
+    capital_lat: 47.8864
+    capital_lon: 106.9057
+    timezone: "Asia/Ulaanbaatar"
+    founding:
+      date: "1921-03-13"
+      time: null
+      time_known: false
+      rationale: "Independence from China on March 13, 1921"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "KP"
+    slug: "north-korea"
+    name: "North Korea"
+    capital_lat: 39.0392
+    capital_lon: 125.7625
+    timezone: "Asia/Pyongyang"
+    founding:
+      date: "1948-09-09"
+      time: null
+      time_known: false
+      rationale: "Establishment of the Democratic People's Republic of Korea on September 9, 1948"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "OM"
+    slug: "oman"
+    name: "Oman"
+    capital_lat: 23.588
+    capital_lon: 58.3829
+    timezone: "Asia/Muscat"
+    founding:
+      date: "1970-11-18"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on November 18, 1970"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "PS"
+    slug: "palestine"
+    name: "Palestine"
+    capital_lat: 31.7683
+    capital_lon: 35.2137
+    timezone: "Asia/Gaza"
+    founding:
+      date: "1988-11-15"
+      time: null
+      time_known: false
+      rationale: "Declaration of independence on November 15, 1988"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "QA"
+    slug: "qatar"
+    name: "Qatar"
+    capital_lat: 25.2854
+    capital_lon: 51.531
+    timezone: "Asia/Qatar"
+    founding:
+      date: "1971-09-03"
+      time: null
+      time_known: false
+      rationale: "Independence from Britain on September 3, 1971"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "SY"
+    slug: "syria"
+    name: "Syria"
+    capital_lat: 33.5138
+    capital_lon: 36.2765
+    timezone: "Asia/Damascus"
+    founding:
+      date: "1946-04-17"
+      time: null
+      time_known: false
+      rationale: "Independence from France on April 17, 1946"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "TJ"
+    slug: "tajikistan"
+    name: "Tajikistan"
+    capital_lat: 38.5598
+    capital_lon: 68.787
+    timezone: "Asia/Dushanbe"
+    founding:
+      date: "1991-09-09"
+      time: null
+      time_known: false
+      rationale: "Independence from the Soviet Union on September 9, 1991"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "TW"
+    slug: "taiwan"
+    name: "Taiwan"
+    capital_lat: 25.033
+    capital_lon: 121.5654
+    timezone: "Asia/Taipei"
+    founding:
+      date: "1949-10-01"
+      time: null
+      time_known: false
+      rationale: "Government of the Republic of China relocated to Taiwan on October 1, 1949"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "TM"
+    slug: "turkmenistan"
+    name: "Turkmenistan"
+    capital_lat: 37.9601
+    capital_lon: 58.3261
+    timezone: "Asia/Ashgabat"
+    founding:
+      date: "1991-10-27"
+      time: null
+      time_known: false
+      rationale: "Independence from the Soviet Union on October 27, 1991"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
+  - iso: "YE"
+    slug: "yemen"
+    name: "Yemen"
+    capital_lat: 15.3694
+    capital_lon: 44.201
+    timezone: "Asia/Aden"
+    founding:
+      date: "1990-05-22"
+      time: null
+      time_known: false
+      rationale: "Unification of North and South Yemen on May 22, 1990"
+    # Competing founding charts go here, each with date, time, place, a citation and a confidence label.
+    # Example: {label: "Midnight Independence", date: "1947-08-15", time: "00:00:00", source: "<citation>", confidence: "disputed"}
+    candidate_charts: []
