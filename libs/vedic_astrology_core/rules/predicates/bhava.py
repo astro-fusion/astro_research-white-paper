@@ -222,7 +222,7 @@ def lord_of_house_in(ctx: EvalContext, p: LordOfHouseIn) -> Outcome:
     (default) or another point, in the chart now or the natal chart; sign
     lords are the Parashari rulers (no node lordship).
     """
-    sky = p.sky(ctx)
+    sky = p.sky(ctx)  # type: ignore[misc]
     lord = lord_of(sky, p.from_, p.house)
     where = house_from(sky.sign(p.from_), sky.sign(lord))
     held = where in p.houses
@@ -260,7 +260,7 @@ def malefic_in_house(ctx: EvalContext, p: MaleficInHouse) -> Outcome:
     Saturn, Rahu and Ketu (the waning Moon and an afflicted Mercury are
     left out; list them in ``malefics`` to include them).
     """
-    sky = p.sky(ctx)
+    sky = p.sky(ctx)  # type: ignore[misc]
     origin = sky.sign(p.from_)
     inside = [m for m in p.malefics if house_from(origin, sky.sign(m)) in p.houses]
     held = len(inside) >= p.count_gte
@@ -307,7 +307,7 @@ def lords_conjoined(ctx: EvalContext, p: LordsConjoined) -> Outcome:
     Aries and Scorpio) the lord is conjoined with itself. ``in_houses``
     also asks that sign to be one of those houses.
     """
-    sky = p.sky(ctx)
+    sky = p.sky(ctx)  # type: ignore[misc]
     origin = sky.sign(p.from_)
     lords = [lord_of(sky, p.from_, h) for h in p.houses]
     signs = {sky.sign(lord) for lord in lords}

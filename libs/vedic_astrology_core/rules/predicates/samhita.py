@@ -64,7 +64,7 @@ def planets_in_one_sign_gte(ctx: EvalContext, p: SignCluster) -> Outcome:
     ``bodies`` defaults to the seven visible grahas; ``signs`` restricts
     the sign that holds the cluster.
     """
-    by_sign = {}
+    by_sign: dict = {}
     for body in p.bodies:
         by_sign.setdefault(ctx.sky.sign(body), []).append(body)
     sign, members = max(by_sign.items(), key=lambda kv: len(kv[1]))
@@ -206,7 +206,7 @@ def eclipse_degree_transited_by(ctx: EvalContext, p: EclipseDegree) -> Outcome:
     if not found:
         return Outcome(False, f"no eclipse in the {p.lookback_days:g} days before")
     hits = []
-    near = None
+    near: Optional[tuple] = None
     for ecl in found:
         for planet in p.planets:
             sep = angular_separation(ctx.sky.lon(planet), ecl.longitude)
@@ -222,6 +222,7 @@ def eclipse_degree_transited_by(ctx: EvalContext, p: EclipseDegree) -> Outcome:
                     )
     if hits:
         return Outcome(True, "; ".join(hits))
+    assert near is not None
     off, planet, angle, ecl = near
     return Outcome(
         False,

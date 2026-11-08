@@ -70,7 +70,9 @@ def power_at_rate_ratio(
     _check_rng(rng)
     d = float(duty_cycle)
     sims = _simulate(n_events, d, n_sim, rng)
-    return _power(np.log(rate_ratio), d, *sims, alpha, two_sided)
+    return _power(
+        np.log(rate_ratio), d, sims[0], sims[1], sims[2], sims[3], alpha, two_sided
+    )
 
 
 def minimum_detectable_rate_ratio(
@@ -100,11 +102,14 @@ def minimum_detectable_rate_ratio(
     d = float(duty_cycle)
     sims = _simulate(n_events, d, n_sim, rng)
     lo, hi = 0.0, np.log(max_rr)
-    if _power(hi, d, *sims, alpha, two_sided) < power:
+    if _power(hi, d, sims[0], sims[1], sims[2], sims[3], alpha, two_sided) < power:
         return float("inf")
     for _ in range(40):
         mid = 0.5 * (lo + hi)
-        if _power(mid, d, *sims, alpha, two_sided) >= power:
+        if (
+            _power(mid, d, sims[0], sims[1], sims[2], sims[3], alpha, two_sided)
+            >= power
+        ):
             hi = mid
         else:
             lo = mid

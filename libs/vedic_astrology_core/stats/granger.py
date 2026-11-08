@@ -51,7 +51,7 @@ def garch_standardised_abs(returns: pd.Series) -> pd.Series:
     r = pd.Series(returns).dropna().astype(float)
     res = arch_model(100.0 * r, mean="Constant", vol="GARCH", p=1, q=1).fit(disp="off")
     z = res.resid / res.conditional_volatility
-    return z.abs().dropna()
+    return np.abs(z).dropna()
 
 
 def newey_west_lags(n: int) -> int:

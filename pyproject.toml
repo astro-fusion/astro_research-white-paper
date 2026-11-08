@@ -200,6 +200,7 @@ disable_error_code = ["attr-defined", "arg-type"]
 [[tool.mypy.overrides]]
 module = [
     "swisseph.*",
+    "sklearn.*",
     "flatlib.*",
     "matplotlib.*",
     "numpy",

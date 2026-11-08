@@ -19,7 +19,7 @@ the outcome (0 for the observed data). It returns a dict with at least
 
 import itertools
 from dataclasses import dataclass
-from typing import Callable, Dict, List
+from typing import Any, Callable, Dict, List
 
 import numpy as np
 import pandas as pd
@@ -103,7 +103,7 @@ def specification_curve(
     obs_med = _median(frame["estimate"], log_scale)
     obs_share = float(frame["excludes_null"].mean())
 
-    offsets = circular_shift_offsets(n, min_shift, n_draws, rng) if n_draws else []
+    offsets: Any = circular_shift_offsets(n, min_shift, n_draws, rng) if n_draws else []
     null_med = np.empty(len(offsets))
     null_share = np.empty(len(offsets))
     for i, k in enumerate(offsets):
