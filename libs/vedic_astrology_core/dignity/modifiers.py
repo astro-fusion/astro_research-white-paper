@@ -227,8 +227,8 @@ def apply_all_modifiers(
     )
     # Calculate angular separation from Sun for graduated penalty
     combust_degree = None
-    if "sun_longitude" in planet_data:
-        sun_long = planet_data["sun_longitude"]
+    sun_long = planet_data.get("sun_longitude")
+    if sun_long is not None and "longitude" in planet_data:
         planet_long = planet_data["longitude"]
         combust_degree = abs(planet_long - sun_long)
         combust_degree = min(combust_degree, 360 - combust_degree)  # Handle wraparound

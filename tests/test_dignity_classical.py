@@ -113,9 +113,10 @@ def test_friendship_description_matches_score():
         planets = {}
 
     assert scorer._calculate_friendship_score(Planet.SUN, 3, EmptyChart()) == 50
-    assert scorer.friendship_with_sign_lord(
-        Planet.SUN, Planet.MOON, EmptyChart()
-    ).value == "Natural Friend"
+    assert (
+        scorer.friendship_with_sign_lord(Planet.SUN, Planet.MOON, EmptyChart()).value
+        == "Natural Friend"
+    )
 
 
 class _StubEphemeris:
@@ -146,9 +147,7 @@ def test_strength_index_rules():
         "RAHU": _pos(40.0, -0.05),
         "KETU": _pos(220.0, -0.05),
     }
-    scores = GlobalStrengthScorer(_StubEphemeris(positions)).calculate_global_power(
-        0.0
-    )
+    scores = GlobalStrengthScorer(_StubEphemeris(positions)).calculate_global_power(0.0)
     assert scores[Planet.RAHU] == 50.0 and scores[Planet.KETU] == 50.0
     base = DignityScorer()
     sun_base = base.calculate_base_score(Planet.SUN, 3, 100.0)
@@ -165,3 +164,20 @@ def test_golden_combustion_differs_from_pyjhora_where_pyjhora_is_wrong():
         if sorted(c["combust"]["expected"]) != sorted(c["combust"]["pyjhora"])
     ]
     assert diffs, "PyJHora 5.0 indexes its orb list with p-2 (Moon gets 15)"
+
+
+def test_scoring_nodes_and_combust_planets_in_a_real_chart():
+    """Nodes carry sun_longitude=None; scoring them must not crash."""
+    from datetime import datetime, timezone
+
+    from vedic_astrology_core.astrology.chart import calculate_chart
+
+    chart = calculate_chart(datetime(2000, 1, 1, 12, tzinfo=timezone.utc), 51.4769, 0.0)
+    scorer = DignityScorer()
+    for planet in Planet:
+        result = scorer.score_planet_in_chart(planet, chart)
+        assert 0.0 <= result["score"] <= 100.0
+    # J2000: Mercury is combust (golden fixture) and loses points.
+    mercury = scorer.score_planet_in_chart(Planet.MERCURY, chart)
+    assert chart.planets[Planet.MERCURY]["combust"] is True
+    assert "Combustion" in mercury["modifiers"]
