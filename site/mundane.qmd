@@ -65,3 +65,41 @@ for c in sorted(rows, key=lambda r: r["name"]):
 ```
 
 Data: AstroFusion mundane dataset, CC BY 4.0 (dates, coordinates and titles).
+
+## Sources
+
+Every founding chart that practitioners use is a candidate, listed with the
+page it comes from, who uses it and how firm its time is: `documented` (from a
+record of the day), `conventional` (midnight, noon or untimed) or `disputed`
+(rectified, contradictory or of unstated origin). Countries with more than one
+candidate have an open question that the data can help settle: each
+candidate is tested on its own. The full list is in
+[countries.yaml](https://github.com/astro-fusion/astro_research-white-paper/blob/main/studies/mundane/data/countries.yaml),
+the rules that practitioners state are under
+[rules/mundane/practitioner](https://github.com/astro-fusion/astro_research-white-paper/tree/main/rules/mundane/practitioner),
+and their points of disagreement are in
+[DISPUTES.md](https://github.com/astro-fusion/astro_research-white-paper/blob/main/rules/mundane/practitioner/DISPUTES.md).
+How the sources were gathered is described in
+[Sources of rule development](https://github.com/astro-fusion/astro_research-white-paper/blob/main/docs/research/SOURCES_OF_RULE_DEVELOPMENT.md).
+
+```{python}
+#| echo: false
+#| output: asis
+from pathlib import Path
+import yaml
+
+path = Path("..") / "studies" / "mundane" / "data" / "countries.yaml"
+rows = yaml.safe_load(path.read_text(encoding="utf-8"))["countries"]
+rank = {"documented": 0, "conventional": 1, "disputed": 2}
+with_cands = [c for c in rows if c["candidate_charts"]]
+total = sum(len(c["candidate_charts"]) for c in with_cands)
+print(f"{total} candidate charts for {len(with_cands)} countries.\n")
+print("| Country | Candidates | Best confidence | Used by |")
+print("|---|---|---|---|")
+for c in sorted(with_cands, key=lambda r: r["name"]):
+    cands = c["candidate_charts"]
+    best = min((x["confidence"] for x in cands), key=rank.get)
+    users = sorted({u for x in cands for u in x["used_by"]})
+    shown = ", ".join(users[:3]) + (" and others" if len(users) > 3 else "")
+    print(f"| {c['name']} | {len(cands)} | {best} | {shown} |")
+```

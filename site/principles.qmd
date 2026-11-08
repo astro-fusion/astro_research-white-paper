@@ -11,3 +11,14 @@ The rules catalogue is being built. Until it is published, the principles each
 study uses are described in that study's paper (see the Studies menu).
 
 To propose a principle for testing, see [Contribute](contribute.qmd).
+
+## Where the rules come from
+
+Each rule names its root: a classical text with chapter and verse and the
+translation used, a named practitioner's dated post, video or article, or a
+published study. Rules stated by today's practitioners sit beside the
+classical ones, labelled experimental, so the field's living practice can be
+tested as openly as its texts, and where practitioners disagree both sides are
+kept. The policy, the list of sources and the claims still waiting for a
+traceable source are in
+[Sources of rule development](https://github.com/astro-fusion/astro_research-white-paper/blob/main/docs/research/SOURCES_OF_RULE_DEVELOPMENT.md).
