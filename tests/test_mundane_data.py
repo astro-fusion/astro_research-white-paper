@@ -8,7 +8,7 @@ import pytest
 import yaml
 
 from studies.mundane.scripts import validate_data as vd
-from studies.mundane.scripts.paths import COUNTRIES_FILE, EVENTS_FILE
+from studies.mundane.scripts.validate_data import COUNTRIES_FILE, EVENTS_FILE
 
 
 def test_tracked_data_is_valid():
@@ -25,7 +25,8 @@ def test_countries_are_unplaceholdered_and_unique():
     assert len({c["iso"] for c in rows}) == 113
     assert all(c["founding"]["time"] is None for c in rows)
     assert not any(c["founding"]["time_known"] for c in rows)
-    assert all(c["candidate_charts"] == [] for c in rows)
+    assert all(isinstance(c["candidate_charts"], list) for c in rows)
+    # Candidates never change the founding block; see test_countries_candidates.py.
 
 
 def test_events_have_no_description_and_are_unreviewed():

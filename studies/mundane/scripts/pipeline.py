@@ -26,8 +26,9 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
 from studies.mundane.scripts import features, validate_data  # noqa: E402
-from studies.mundane.scripts.paths import (  # noqa: E402
-    ARTIFACTS_DIR, COUNTRIES_FILE, EVENTS_FILE, ensure_import_paths,
+from studies._paths import REPO_ROOT, artifacts_dir  # noqa: E402
+from studies.mundane.scripts.validate_data import (  # noqa: E402
+    COUNTRIES_FILE, EVENTS_FILE,
 )
 
 log = logging.getLogger("mundane.pipeline")
@@ -113,10 +114,12 @@ def run(seed: int = 42, limit: Optional[int] = None, window_days: int = 30,
         out_dir: Optional[Path] = None, events_path: Path = EVENTS_FILE,
         countries_path: Path = COUNTRIES_FILE) -> Dict[str, Any]:
     """Run the pipeline and return the summary dictionary."""
-    ensure_import_paths()
+    libs = str(REPO_ROOT / "libs")
+    if libs not in sys.path:
+        sys.path.insert(0, libs)
     random.seed(seed)
     np.random.seed(seed)
-    out_dir = Path(out_dir or ARTIFACTS_DIR)
+    out_dir = Path(out_dir or artifacts_dir("mundane"))
     out_dir.mkdir(parents=True, exist_ok=True)
 
     problems = (validate_data.validate_countries(countries_path)

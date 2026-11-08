@@ -31,7 +31,9 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
-from studies.mundane.scripts.paths import EVENTS_FILE, SNAPSHOT_DIR  # noqa: E402
+from studies.mundane.scripts.validate_data import (  # noqa: E402
+    EVENTS_FILE, SNAPSHOT_DIR,
+)
 
 USGS_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query"
 USGS_PARAMS = {

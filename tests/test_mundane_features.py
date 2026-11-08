@@ -6,7 +6,7 @@ import pytest
 import yaml
 
 from studies.mundane.scripts import features as F
-from studies.mundane.scripts.paths import COUNTRIES_FILE
+from studies.mundane.scripts.validate_data import COUNTRIES_FILE
 from vedic_astrology_core.config.constants import Planet
 
 

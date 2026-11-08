@@ -15,7 +15,12 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))  # repo root
-from studies.mundane.scripts.paths import COUNTRIES_FILE, EVENTS_FILE  # noqa: E402
+from studies._paths import study_data_dir  # noqa: E402
+
+DATA_DIR: Path = study_data_dir("mundane")
+COUNTRIES_FILE: Path = DATA_DIR / "countries.yaml"
+EVENTS_FILE: Path = DATA_DIR / "events.jsonl"
+SNAPSHOT_DIR: Path = DATA_DIR / "snapshots"
 
 # ISO 3166-1 alpha-2 codes.
 ISO_CODES = frozenset(

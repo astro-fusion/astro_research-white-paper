@@ -29,6 +29,7 @@ STUDIES = (
     "earthquake",
     "numerology_vs_astrology",
     "remedy_conflict_matrix",
+    "mundane",
 )
 
 
