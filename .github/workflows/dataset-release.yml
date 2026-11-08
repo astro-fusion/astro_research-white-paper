@@ -1,0 +1,66 @@
+name: Dataset release
+
+# Tag dataset-vN to publish the planetary dataset 1600-2100 as release assets.
+# Runs offline from pip only: no ephemeris files are downloaded.
+on:
+  push:
+    tags:
+      - "dataset-v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: pip install ".[dev,data]"
+
+      - name: Test the generator
+        run: python -m pytest tests/test_datasets_planetary.py tests/test_datasets_cli.py -q --no-cov
+
+      - name: Generate 1600-2100 (Parquet)
+        run: |
+          python scripts/generate_planetary_dataset.py \
+            --years 1600-2100 --out data/datasets/planetary --fmt parquet
+          python scripts/generate_planetary_dataset.py \
+            --check --out data/datasets/planetary
+
+      - name: Package
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          src=data/datasets/planetary
+          for start in 1600 1700 1800 1900 2000 2100; do
+            end=$((start + 99))
+            [ "$start" = 2100 ] && end=2100
+            files=()
+            for y in $(seq "$start" "$end"); do
+              [ "$y" -le 2100 ] && files+=("$y.parquet" "$y.manifest.json")
+            done
+            name="planetary_${start}-${end}.zip"
+            [ "$start" = 2100 ] && name="planetary_2100.zip"
+            (cd "$src" && zip -q -9 "../../../dist/$name" "${files[@]}")
+          done
+          (cd "$src" && zip -q -9 ../../../dist/manifests.zip ./*.manifest.json)
+          sed -e "s/@TAG@/${GITHUB_REF_NAME}/g" -e "s/@COMMIT@/${GITHUB_SHA}/g" \
+            libs/vedic_astrology_core/datasets/DATASET_README.md > dist/DATASET_README.md
+          (cd dist && sha256sum ./*.zip DATASET_README.md > SHA256SUMS)
+          ls -l dist
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --title "Planetary dataset 1600-2100 ($GITHUB_REF_NAME)" \
+            --notes-file dist/DATASET_README.md
