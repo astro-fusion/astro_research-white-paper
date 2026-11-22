@@ -624,3 +624,14 @@ Until all hold, every number on real data is provisional and labelled so.
 | OSF registration or a signed git tag as the gate | OSF is manual and slow per batch; a tag lives in a repository the owner can rewrite. OSF stays as the readable deposit. |
 | SESOI by blind practitioner elicitation | Nobody on the project is blind to the published results any more. |
 | Whole-period support on "unseen" datasets (S-14) | Cannot be shown to an outsider for files already on disk. |
+
+
+---
+
+## Amendment A1 (2026-11-22): equal-size blocks
+
+**Finding (WP-85 calibration, 20,000 replications):** with skewed outcomes, a block whose control side has fewer bars than its active side inflates the one-sided false-alarm rate: balance 0.5 gives 7.3% (lognormal) and 6.0% (exponential); balance 0.8 gives 5.7% and 5.5%; balance 1.0 gives 4.9% to 5.2%. B2 at full size fails on the 5/5 calendar.
+
+**Decision:** the balance floor of section 1.1 is raised from 0.5 to **1.0**. Every block is equal-size: the active side and the control side have the same number of bars. The longer side is trimmed, dropping the bars farthest from the active/control boundary. A block that cannot reach equal size within its gap-midpoint limits and guard bars is dropped and counted with the reason `unbalanced`. Season-matched windows (WP-87) obey the same rule.
+
+**Consequence:** fewer usable blocks for short gaps, so some principles move to Untestable. This is the honest price of a test that holds its size on skewed data. B2 must pass at full size before any certificate is issued.
