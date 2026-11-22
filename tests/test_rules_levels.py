@@ -10,6 +10,7 @@ from vedic_astrology_core.rules import default_rules_dir, load_rules
 from vedic_astrology_core.rules.levels import (
     FAMILY_MIN_LEVEL,
     Evidence,
+    ReviewProof,
     fixture_evidence,
     level,
 )
@@ -66,7 +67,22 @@ def base(**over):
     return Rule.model_validate(raw(**over))
 
 
-GOOD = Evidence(cases_pass=True, n_cases=2, jhora_cases=3, horizons_ok=True)
+CLOSE = datetime(2026, 12, 1, tzinfo=timezone.utc)
+PROOF = ReviewProof(
+    by="@reviewer",
+    reviewer_identity="rev@example.org",
+    author_identity="auth@example.org",
+    committed_at=datetime(2026, 11, 20, tzinfo=timezone.utc),
+)
+GOOD3 = Evidence(cases_pass=True, n_cases=2, jhora_cases=3, horizons_ok=True)
+GOOD = Evidence(
+    cases_pass=True,
+    n_cases=2,
+    jhora_cases=3,
+    horizons_ok=True,
+    review_proofs=(PROOF,),
+    batch_close=CLOSE,
+)
 REVIEW = {
     "by": "@reviewer",
     "at": datetime(2026, 11, 22, tzinfo=timezone.utc),
@@ -130,11 +146,11 @@ def test_l2_without_evidence_stops_there():
 def test_l3_needs_cases_jhora_and_horizons():
     """Each piece of L3 evidence is required."""
     rule = base()
-    assert level(rule, GOOD).level == 3
+    assert level(rule, GOOD3).level == 3
     assert level(rule, Evidence(True, 2, 2, True)).level == 2
     assert level(rule, Evidence(True, 2, 3, False)).level == 2
     assert level(rule, Evidence(False, 2, 3, True)).level == 2
-    assert FAMILY_MIN_LEVEL == 3
+    assert FAMILY_MIN_LEVEL == 2
 
 
 def test_l3_refuses_rules_that_wait():
@@ -143,16 +159,48 @@ def test_l3_refuses_rules_that_wait():
     assert level(rule, GOOD).level == 2
 
 
-def test_l4_needs_a_blind_reviewer_who_is_not_the_author():
-    """Author reviews and unblind reviews do not count."""
+def test_l4_needs_a_second_identity_before_the_batch_close():
+    """A typed blind flag is not enough; the proof is checked (G-09, A-10)."""
+    ok = base(review=[REVIEW])
+    report = level(ok, GOOD)
+    assert report.level == 4
+    assert "attested before the result" in report.attestation
+    # the typed flag alone, with no proof, does not give L4
+    assert level(ok, GOOD3).level == 3
     own = base(review=[{**REVIEW, "by": "@Author"}])
     assert level(own, GOOD).level == 3
-    unblind = base(review=[{**REVIEW, "blind_attestation": None}])
-    assert level(unblind, GOOD).level == 3
     bad = base(review=[{**REVIEW, "verdict": "not_faithful"}])
     assert level(bad, GOOD).level == 3
-    ok = base(review=[REVIEW])
-    assert level(ok, GOOD).level == 4
+    # same git identity as the author is rejected
+    same = Evidence(
+        True, 2, 3, True,
+        review_proofs=(ReviewProof("@reviewer", "AUTH@example.org", "auth@example.org", PROOF.committed_at),),
+        batch_close=CLOSE,
+    )
+    assert level(ok, same).level == 3
+
+
+def test_late_review_is_shown_with_its_date_and_is_not_l4():
+    """A review after the batch close is not attested before the result."""
+    late = ReviewProof("@reviewer", "rev@example.org", "auth@example.org",
+                       datetime(2026, 12, 5, tzinfo=timezone.utc))
+    ev = Evidence(True, 2, 3, True, review_proofs=(late,), batch_close=CLOSE)
+    report = level(base(review=[REVIEW]), ev)
+    assert report.level == 3
+    assert "2026-12-05" in report.attestation
+    assert "not attested before the result" in report.attestation
+    # no batch close known: cannot show the review predates anything
+    ev2 = Evidence(True, 2, 3, True, review_proofs=(PROOF,), batch_close=None)
+    assert level(base(review=[REVIEW]), ev2).level == 3
+
+
+def test_outside_reference_gives_l4_without_a_date():
+    """A review with an outside reference counts even after the close."""
+    ref = ReviewProof("@reviewer", "rev@example.org", "auth@example.org",
+                      datetime(2026, 12, 5, tzinfo=timezone.utc), "J. Doe, letter 2026-12-05")
+    ev = Evidence(True, 2, 3, True, review_proofs=(ref,), batch_close=CLOSE)
+    report = level(base(review=[REVIEW]), ev)
+    assert report.level == 4 and "outside reference" in report.attestation
 
 
 def test_l5_and_l6_are_cumulative():
@@ -164,9 +212,10 @@ def test_l5_and_l6_are_cumulative():
     assert report.level == 6 and report.next_missing == []
     assert report.name == "Confirmed or refuted"
     assert report.render().splitlines()[0].endswith("L6 Confirmed or refuted")
+    assert "Confirmed or refuted" in report.render().splitlines()[0]
     # a confirm without review stays at L3 (the report still lists L4 as missing)
     skipped = base(tuning_log=[TUNING], validation=STAMP)
-    got = level(skipped, GOOD)
+    got = level(skipped, GOOD3)
     assert got.level == 3 and 4 in got.missing
 
 
@@ -196,26 +245,46 @@ def test_url_source_levels():
     assert level(base(source={"url": "https://example.org/a"}, tier="experimental")).level == 0
 
 
-def test_fixture_evidence_counts_only_manual_agreeing_readings(tmp_path):
-    """pyjhora and disagreeing files do not count toward L3."""
+def _jh(rule_id, **over):
+    doc = {"rule_id": rule_id, "source": "jhora_manual", "reader": "A", "agrees": True,
+           "computed_deg": 10.0, "reference_deg": 10.0 + 0.5 / 60}
+    doc.update(over)
+    return doc
+
+
+def test_fixture_evidence_checks_numbers_and_tolerances(tmp_path):
+    """agrees must be true and the numbers must be inside the tolerance."""
     rule = base()
     (tmp_path / "jhora").mkdir()
     (tmp_path / "horizons").mkdir()
     docs = [
-        {"rule_id": rule.id, "source": "jhora_manual", "reader": "A", "agrees": True},
-        {"rule_id": rule.id, "source": "jhora_manual", "reader": "B"},
-        {"rule_id": rule.id, "source": "pyjhora", "reader": "C"},
-        {"rule_id": rule.id, "source": "jhora_manual", "reader": "", "agrees": True},
-        {"rule_id": rule.id, "source": "jhora_manual", "reader": "D", "agrees": False},
-        {"rule_id": "other.rule", "source": "jhora_manual", "reader": "E"},
+        _jh(rule.id),
+        _jh(rule.id, reader="B", computed_deg=359.99, reference_deg=0.0 + 0.0001),  # wraps
+        _jh(rule.id, reader="B2", agrees=None),
+        {k: v for k, v in _jh(rule.id, reader="B3").items() if k != "agrees"},
+        _jh(rule.id, source="pyjhora", reader="C"),
+        _jh(rule.id, reader=""),
+        _jh(rule.id, reader="D", agrees=False),
+        _jh(rule.id, reader="F", reference_deg=10.1),  # 6 arcmin out
+        _jh(rule.id, reader="G", tolerance_arcmin=5, reference_deg=10.05),  # loosened
+        {k: v for k, v in _jh(rule.id, reader="H").items() if k != "computed_deg"},
+        _jh("other.rule", reader="E"),
     ]
     for i, doc in enumerate(docs):
         (tmp_path / "jhora" / f"{i}.json").write_text(json.dumps(doc))
-    (tmp_path / "horizons" / "a.json").write_text(
-        json.dumps({"rule_id": rule.id, "agrees": True})
-    )
+    hz = {"rule_id": rule.id, "agrees": True, "computed_deg": 100.0, "reference_deg": 100.0 + 3 / 3600}
+    (tmp_path / "horizons" / "a.json").write_text(json.dumps(hz))
     ev = fixture_evidence(rule, True, tmp_path)
     assert ev.jhora_cases == 2 and ev.horizons_ok is True
+    # an out-of-tolerance Horizons file fails the check
+    (tmp_path / "horizons" / "b.json").write_text(json.dumps({**hz, "reference_deg": 100.01}))
+    assert fixture_evidence(rule, True, tmp_path).horizons_ok is False
+    (tmp_path / "horizons" / "b.json").unlink()
+    # a Horizons fixture without agrees is not counted as agreement
+    (tmp_path / "horizons" / "a.json").write_text(
+        json.dumps({k: v for k, v in hz.items() if k != "agrees"})
+    )
+    assert fixture_evidence(rule, True, tmp_path).horizons_ok is False
     empty = fixture_evidence(rule, True, tmp_path / "none")
     assert empty.jhora_cases == 0 and empty.horizons_ok is False
 
