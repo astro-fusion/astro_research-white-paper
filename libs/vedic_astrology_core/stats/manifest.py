@@ -8,6 +8,14 @@ working tree was dirty), the seed, and the ephemeris configuration
 ``provisional`` is True unless the run came from a clean git checkout and
 was not flagged provisional (ADR-004 D-2); with ``require_clean=True`` a
 non-provisional manifest from a dirty tree raises (see :mod:`.seal`).
+
+Seal stamp (ADR-008 9.2): every manifest also carries ``environment``
+(interpreter, lock hash, versions that differ from the lock) and
+``ephemeris`` (model and the SHA-256 of every ephemeris file). With
+``require_clean=True`` a non-provisional manifest also refuses an
+environment that differs from ``ops/requirements.lock.txt``. Pass the stamp
+of a :class:`.seal.SealedRun` as ``run_stamp`` to record the files the run
+read and wrote.
 """
 
 import hashlib
@@ -18,7 +26,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Union
 
-from .seal import require_clean_tree, tree_state
+from .seal import (
+    SEAL_STAMP_KEYS,
+    environment_stamp,
+    ephemeris_stamp,
+    require_clean_tree,
+    require_locked_environment,
+    tree_state,
+)
 
 PathLike = Union[str, Path]
 
@@ -113,6 +128,8 @@ def build_manifest(
     extra: Optional[Dict[str, Any]] = None,
     provisional: bool = False,
     require_clean: bool = False,
+    run_stamp: Optional[Dict[str, Any]] = None,
+    lock_path: Optional[PathLike] = None,
 ) -> Dict[str, Any]:
     """Assemble a manifest dictionary.
 
@@ -128,11 +145,17 @@ def build_manifest(
         extra: Any further study-specific fields. An ``extra`` value can
             set ``provisional`` to True but never to False.
         provisional: Flag the run as provisional.
-        require_clean: Call :func:`.seal.require_clean_tree` first, so a
-            non-provisional run from a dirty tree raises.
+        require_clean: Call :func:`.seal.require_clean_tree` and
+            :func:`.seal.require_locked_environment` first, so a
+            non-provisional run from a dirty tree or from an environment
+            that differs from the lock raises.
+        run_stamp: The stamp returned by :meth:`.seal.SealedRun.finish`;
+            its files read and written, thread count and problems are copied.
+        lock_path: Dependency lock (default ``ops/requirements.lock.txt``).
     """
     if require_clean:
         require_clean_tree(repo_root, provisional=provisional)
+        require_locked_environment(lock_path, repo_root, provisional=provisional)
     records = []
     for item in inputs:
         rec = dict(item)
@@ -156,12 +179,20 @@ def build_manifest(
         "python": platform.python_version(),
     }
     manifest.update(engine_info(engine))
+    manifest["environment"] = (
+        (run_stamp or {}).get("environment") or environment_stamp(lock_path, repo_root)
+    )
+    manifest["ephemeris"] = (run_stamp or {}).get("ephemeris") or ephemeris_stamp(engine)
+    for key in SEAL_STAMP_KEYS:
+        if run_stamp and key in run_stamp and key not in ("environment", "ephemeris"):
+            manifest[key] = run_stamp[key]
     if extra:
         manifest.update(extra)
     manifest["provisional"] = bool(
         provisional
         or tree_state(repo_root)["dirty"] is not False  # untracked files count
         or (extra or {}).get("provisional", False)
+        or bool((run_stamp or {}).get("provisional", False))
     )
     return manifest
 

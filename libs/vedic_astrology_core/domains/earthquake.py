@@ -20,7 +20,6 @@ snapshot; the dataset is graded B and says so.
 
 from __future__ import annotations
 
-import sys
 from datetime import date
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
@@ -28,6 +27,7 @@ from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 import numpy as np
 import pandas as pd
 
+from ..stats.seal import load_study_modules
 from .base import DatasetSpec, DomainAdapter, Periods
 
 REPO = Path(__file__).resolve().parents[3]
@@ -46,17 +46,22 @@ class PinError(RuntimeError):
 
 
 def _study_modules():
-    """Import the unchanged study scripts (they expect their folder on sys.path)."""
-    for p in (str(SCRIPTS), str(REPO), str(REPO / "libs")):
-        if p not in sys.path:
-            sys.path.insert(0, p)
-    import decluster  # noqa: PLC0415
-    import fetch_catalogue  # noqa: PLC0415
-    import indicators  # noqa: PLC0415
-    import pipeline  # noqa: PLC0415
-    import robustness  # noqa: PLC0415
+    """Import the unchanged study scripts by file path under unique names (G-03).
 
-    return decluster, fetch_catalogue, indicators, pipeline, robustness
+    Six study folders have a `pipeline.py`; a bare `import pipeline` through
+    `sys.path` lets whichever folder came first win in one process. The
+    scripts are loaded as `_study_earthquake__<name>`, dependencies first, so
+    their own sibling imports resolve to this folder.
+    """
+    mods = load_study_modules(
+        SCRIPTS,
+        ("count_models", "indicators", "robustness", "fetch_catalogue", "decluster", "pipeline"),
+        namespace="earthquake",
+    )
+    return (
+        mods["decluster"], mods["fetch_catalogue"], mods["indicators"], mods["pipeline"],
+        mods["robustness"],
+    )
 
 
 def _d(s: str) -> date:

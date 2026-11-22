@@ -39,18 +39,39 @@ The confirm window comes from the plan (``periods.confirm_start`` /
 ``split.confirm: [start, end]``; end else ``data.end``), never from the clock.
 The entry is written before the confirm computes anything, so a confirm that
 crashes still counts as spent.
+
+Seal stamp (ADR-008 9.2): :class:`SealedRun` adds the interpreter, the hash
+of ``ops/requirements.lock.txt`` (refusing installed versions that differ),
+the ephemeris model with the hash of every ephemeris file, and the path and
+hash of every file the run opened (an audit hook on ``open``). A sealed run
+fails if it read a file git does not track, other than snapshots listed in
+``data/snapshot_index.json``, or if it started a thread (G-13).
+:func:`load_study_modules` imports study scripts by file path under unique
+module names (G-03).
 """
 
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
+import os
+import platform
+import re
+import site
 import subprocess
+import sys
+import types
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple, Union
 
 import yaml
+
+try:
+    from importlib import metadata as importlib_metadata
+except ImportError:  # pragma: no cover
+    import importlib_metadata  # type: ignore
 
 PathLike = Union[str, Path]
 
@@ -159,6 +180,12 @@ def require_clean_tree(
     return stamp
 
 
+SEAL_STAMP_KEYS = (
+    "environment", "ephemeris", "files_read", "files_written", "reads_summary",
+    "threads_started", "problems",
+)
+
+
 def stamp_results(results: Dict[str, Any], seal: Mapping[str, Any]) -> Dict[str, Any]:
     """Write the seal into a results dict (in place) and return it.
 
@@ -169,6 +196,9 @@ def stamp_results(results: Dict[str, Any], seal: Mapping[str, Any]) -> Dict[str,
     git = dict(results.get("git") or {})
     git.update({"commit": seal.get("commit"), "dirty": seal.get("dirty")})
     results["git"] = git
+    extra = {k: seal[k] for k in SEAL_STAMP_KEYS if k in seal}
+    if extra:  # a SealedRun stamp (ADR-008 9.2): environment, ephemeris, files read
+        results["seal"] = extra
     return results
 
 
@@ -484,3 +514,597 @@ def begin_confirm(
     with open(ledger, "a", encoding="utf-8") as fh:
         fh.write(json.dumps(entry, sort_keys=True) + "\n")
     return entry
+
+
+# ============================================================ seal stamp
+# ADR-008 section 9.2 (strategy audit G-02, G-03, G-13). The stamp adds the
+# interpreter, the hash of the dependency lock (and a refusal when installed
+# versions differ from it), the ephemeris model and the hash of every
+# ephemeris file, and the path and hash of every file the run opened, which an
+# audit hook on ``open`` records. A sealed run fails if it read a file git
+# does not track, other than snapshots listed in data/snapshot_index.json.
+# Nothing here starts a thread: the hook records into plain lists and every
+# check runs after recording has stopped (processes, no threads; G-13).
+
+CODE_REPO = Path(__file__).resolve().parents[3]
+LOCK_REL = "ops/requirements.lock.txt"
+SNAPSHOT_INDEX_REL = "data/snapshot_index.json"
+THREAD_EVENTS = ("_thread.start_new_thread", "_thread.start_joinable_thread")
+
+
+class EnvironmentMismatchError(SealError):
+    """Installed package versions differ from the lock (or there is no lock)."""
+
+
+class UntrackedReadError(SealError):
+    """A sealed run read a file that git does not track."""
+
+
+class ThreadStartedError(SealError):
+    """A sealed run started a thread (the ayanamsa mode is process-global)."""
+
+
+def _file_sha256(path: PathLike, chunk: int = 1 << 20) -> str:
+    h = hashlib.sha256()
+    with open(path, "rb") as fh:
+        for block in iter(lambda: fh.read(chunk), b""):
+            h.update(block)
+    return h.hexdigest()
+
+
+def _norm_dist(name: str) -> str:
+    return re.sub(r"[-_.]+", "-", name).lower()
+
+
+# ------------------------------------------------------------ environment
+
+
+def read_lock(path: PathLike) -> Dict[str, str]:
+    """``{normalised name: version}`` from a pip/uv lock (``name==version`` lines)."""
+    pins: Dict[str, str] = {}
+    for line in Path(path).read_text(encoding="utf-8").splitlines():
+        m = re.match(r"^\s*([A-Za-z0-9][A-Za-z0-9_.\-]*)(?:\[[^\]]*\])?==([^\s;\\]+)", line)
+        if m:
+            pins[_norm_dist(m.group(1))] = m.group(2)
+    return pins
+
+
+def installed_versions() -> Dict[str, str]:
+    """``{normalised name: version}`` of every distribution this interpreter sees."""
+    found: Dict[str, str] = {}
+    for dist in importlib_metadata.distributions():
+        name = dist.metadata["Name"] if dist.metadata else None
+        if name:
+            found.setdefault(_norm_dist(name), dist.version)
+    return found
+
+
+def default_lock_path(repo_root: Optional[PathLike] = None) -> Path:
+    """The lock of ``repo_root``'s checkout, else the lock of the code's own repository."""
+    top = _repo_toplevel(repo_root)
+    if top is not None and (top / LOCK_REL).is_file():
+        return top / LOCK_REL
+    return CODE_REPO / LOCK_REL
+
+
+def environment_stamp(
+    lock_path: Optional[PathLike] = None, repo_root: Optional[PathLike] = None
+) -> Dict[str, Any]:
+    """Interpreter, lock hash and every difference between the lock and this environment.
+
+    ``lock_mismatches`` lists packages whose installed version differs from
+    the lock (these refuse a sealed run). ``lock_missing`` (locked, not
+    installed: an extra such as docs) and ``unlocked`` (installed, not in the
+    lock: the project itself, type stubs) are recorded only; a missing
+    package cannot feed a run, it fails the import.
+    """
+    lock = Path(lock_path) if lock_path is not None else default_lock_path(repo_root)
+    stamp: Dict[str, Any] = {
+        "python": platform.python_version(),
+        "python_implementation": platform.python_implementation(),
+        "platform": platform.platform(),
+        "machine": platform.machine(),
+        "lock_path": None,
+        "lock_sha256": None,
+        "matches_lock": False,
+        "lock_mismatches": [],
+        "lock_missing": [],
+        "unlocked": [],
+    }
+    if not lock.is_file():
+        return stamp
+    top = _repo_toplevel(lock.parent)
+    try:
+        stamp["lock_path"] = lock.resolve().relative_to(top.resolve()).as_posix() if top else str(lock)
+    except ValueError:
+        stamp["lock_path"] = str(lock)
+    stamp["lock_sha256"] = _file_sha256(lock)
+    pins = read_lock(lock)
+    have = installed_versions()
+    stamp["lock_mismatches"] = [
+        {"name": n, "locked": v, "installed": have[n]}
+        for n, v in sorted(pins.items())
+        if n in have and have[n] != v
+    ]
+    stamp["lock_missing"] = sorted(n for n in pins if n not in have)
+    stamp["unlocked"] = sorted(f"{n}=={v}" for n, v in have.items() if n not in pins)
+    stamp["matches_lock"] = not stamp["lock_mismatches"]
+    return stamp
+
+
+def require_locked_environment(
+    lock_path: Optional[PathLike] = None,
+    repo_root: Optional[PathLike] = None,
+    *,
+    provisional: bool = False,
+) -> Dict[str, Any]:
+    """Return :func:`environment_stamp`; raise for a non-provisional run that differs from the lock."""
+    stamp = environment_stamp(lock_path, repo_root)
+    if provisional:
+        return stamp
+    if stamp["lock_sha256"] is None:
+        raise EnvironmentMismatchError(f"no dependency lock ({LOCK_REL}); a sealed run needs one")
+    if stamp["lock_mismatches"]:
+        shown = ", ".join(
+            f"{m['name']} {m['installed']} (lock {m['locked']})" for m in stamp["lock_mismatches"][:8]
+        )
+        more = len(stamp["lock_mismatches"]) - 8
+        raise EnvironmentMismatchError(
+            f"installed versions differ from {stamp['lock_path']}: {shown}"
+            + (f" (+{more} more)" if more > 0 else "")
+            + "; sync the environment to the lock or flag the run provisional"
+        )
+    return stamp
+
+
+# -------------------------------------------------------------- ephemeris
+
+
+def _engine_field(engine: Any, *names: str) -> Any:
+    for name in names:
+        if isinstance(engine, Mapping) and engine.get(name) is not None:
+            return engine[name]
+        if not isinstance(engine, Mapping) and getattr(engine, name, None) is not None:
+            return getattr(engine, name)
+    return None
+
+
+def ephemeris_stamp(engine: Any = None, ephe_path: Optional[PathLike] = None) -> Dict[str, Any]:
+    """Ephemeris model and the SHA-256 of every ephemeris file the engine can read.
+
+    The model comes from the engine (``EphemerisEngine`` or its info dict);
+    without one, Swiss Ephemeris is probed once with a tropical Sun (this
+    neither sets nor reads the global ayanamsa mode). Files are every regular
+    file in the ephemeris path (``ephe_path``, the engine's, else
+    ``SE_EPHE_PATH``). Swiss Ephemeris reads them with C ``fopen``, which
+    the open audit hook cannot see, so they are hashed here instead.
+    ``problems`` is non-empty when "swieph" is in use and no file is hashed.
+    """
+    import swisseph as swe  # noqa: PLC0415
+
+    info = engine.get_ephemeris_info() if hasattr(engine, "get_ephemeris_info") else engine
+    model = _engine_field(info, "ephemeris_model") if info is not None else None
+    source = "engine"
+    if model is None:
+        from ..astrology.ephemeris import ephemeris_model_from_retflag  # noqa: PLC0415
+
+        _, retflag = swe.calc_ut(2451545.0, swe.SUN, swe.FLG_SWIEPH)
+        model = ephemeris_model_from_retflag(retflag)
+        source = "probe"
+    path = ephe_path
+    if path is None and engine is not None:
+        path = _engine_field(engine, "ephe_path")
+    if path is None:
+        path = os.environ.get("SE_EPHE_PATH") or None
+    files: List[Dict[str, Any]] = []
+    for part in (str(path).split(os.pathsep) if path else []):
+        d = Path(part)
+        if not d.is_dir():
+            continue
+        for f in sorted(d.iterdir()):
+            if f.is_file() and not f.name.startswith("."):
+                files.append({"path": str(f), "sha256": _file_sha256(f)})
+    problems = []
+    if model == "swieph" and not files:
+        problems.append("Swiss Ephemeris files are in use but none was found to hash")
+    return {
+        "model": model,
+        "model_source": source,
+        "ayanamsa": _engine_field(info, "ayanamsa_system", "ayanamsa") if info is not None else None,
+        "node_model": _engine_field(info, "node_model") if info is not None else None,
+        "swisseph_version": getattr(swe, "version", None),
+        "ephe_path": str(path) if path else None,
+        "files": files,
+        "problems": problems,
+    }
+
+
+# ------------------------------------------------------------- files read
+
+_HOOK_INSTALLED = False
+_ACTIVE: List["ReadLog"] = []
+
+
+def _audit_hook(event: str, args: Tuple[Any, ...]) -> None:
+    """Process-wide audit hook; records only while a :class:`ReadLog` is active."""
+    if not _ACTIVE:
+        return
+    try:
+        if event == "open":
+            raw = args[0]
+            if raw is None or isinstance(raw, int):
+                return
+            path = os.path.abspath(os.fsdecode(os.fspath(raw)))
+            mode = args[1] if len(args) > 1 else None
+            flags = args[2] if len(args) > 2 else None
+            for log in _ACTIVE:
+                log.events.append((path, mode, flags))
+        elif event in THREAD_EVENTS:
+            for log in _ACTIVE:
+                log.threads.append(event)
+    except Exception:  # noqa: BLE001 - an audit hook must never break the open it watches
+        return
+
+
+def _install_hook() -> None:
+    global _HOOK_INSTALLED
+    if not _HOOK_INSTALLED:
+        sys.addaudithook(_audit_hook)  # permanent by design; inert when no log is active
+        _HOOK_INSTALLED = True
+
+
+def _is_write(mode: Any, flags: Any) -> bool:
+    if isinstance(flags, int) and flags >= 0:
+        acc = flags & (os.O_RDONLY | os.O_WRONLY | os.O_RDWR)
+        return acc in (os.O_WRONLY, os.O_RDWR) or bool(flags & (os.O_CREAT | os.O_TRUNC | os.O_APPEND))
+    return isinstance(mode, str) and any(c in mode for c in "wax+")
+
+
+def _is_read(mode: Any, flags: Any) -> bool:
+    if isinstance(flags, int) and flags >= 0:
+        return flags & (os.O_RDONLY | os.O_WRONLY | os.O_RDWR) in (os.O_RDONLY, os.O_RDWR)
+    return not isinstance(mode, str) or "r" in mode or "+" in mode
+
+
+class ReadLog:
+    """Paths opened (with mode and flags) and threads started while active."""
+
+    def __init__(self) -> None:
+        self.events: List[Tuple[str, Any, Any]] = []
+        self.threads: List[str] = []
+
+    def start(self) -> "ReadLog":
+        _install_hook()
+        if self not in _ACTIVE:
+            _ACTIVE.append(self)
+        return self
+
+    def stop(self) -> "ReadLog":
+        while self in _ACTIVE:
+            _ACTIVE.remove(self)
+        return self
+
+    def __enter__(self) -> "ReadLog":
+        return self.start()
+
+    def __exit__(self, *exc: Any) -> None:
+        self.stop()
+
+
+def _under(path: Path, roots: Sequence[Path]) -> bool:
+    for root in roots:
+        try:
+            path.relative_to(root)
+            return True
+        except ValueError:
+            continue
+    return False
+
+
+def _environment_roots() -> List[Path]:
+    roots = {sys.prefix, sys.base_prefix, sys.exec_prefix, sys.base_exec_prefix}
+    try:
+        roots.update(site.getsitepackages())
+        roots.add(site.getusersitepackages())
+    except Exception:  # noqa: BLE001 - site may be stubbed (virtualenv, embedded)
+        pass
+    return [Path(r).resolve() for r in roots if r]
+
+
+def _system_roots() -> List[Path]:
+    roots = ["/dev", "/proc", "/sys", "/etc", "/private/etc", "/private/var/db/timezone", "/usr/share", "/usr/lib",
+             "/System", "/Library"]
+    try:
+        import zoneinfo  # noqa: PLC0415
+
+        roots += list(zoneinfo.TZPATH)
+    except Exception:  # noqa: BLE001
+        pass
+    return [Path(r).resolve() for r in roots if Path(r).exists()]
+
+
+def _cache_roots() -> List[Path]:
+    home = Path.home()
+    roots = [home / ".matplotlib", home / ".cache", home / ".config", home / "Library" / "Caches"]
+    for var in ("MPLCONFIGDIR", "XDG_CACHE_HOME", "XDG_CONFIG_HOME"):
+        if os.environ.get(var):
+            roots.append(Path(os.environ[var]))
+    return [r.resolve() for r in roots]
+
+
+def _snapshot_hashes(top: Optional[Path], snapshot_index: Optional[PathLike]) -> Dict[str, str]:
+    """``{sha256: file name}`` of every snapshot listed in the index."""
+    path = Path(snapshot_index) if snapshot_index is not None else (
+        top / SNAPSHOT_INDEX_REL if top is not None else None)
+    if path is None or not path.is_file():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    entries = data.get("snapshots", []) if isinstance(data, Mapping) else data
+    return {
+        str(e["sha256"]): Path(str(e.get("file", ""))).name
+        for e in entries
+        if isinstance(e, Mapping) and e.get("sha256")
+    }
+
+
+def files_read_stamp(
+    log: ReadLog,
+    repo_root: Optional[PathLike] = None,
+    *,
+    snapshot_index: Optional[PathLike] = None,
+) -> Dict[str, Any]:
+    """Classify, hash and check what a :class:`ReadLog` saw (call after it stopped).
+
+    Every file read inside the repository, or outside it but not part of
+    the interpreter, the operating system or a tool cache, is listed with its
+    path, SHA-256 and status: ``tracked``, ``snapshot`` (hash listed in the
+    snapshot index), ``run_output`` (written earlier by this run),
+    ``untracked``, ``ignored``, ``outside_repo`` or ``gone`` (inside the repository,
+    no longer there). The last four are ``problems``. An open of a path outside
+    the repository that does not exist is a probe that read nothing (counted
+    as ``absent``). Python bytecode, interpreter and system files are counted
+    in ``summary``; the environment is pinned by the lock hash instead.
+    """
+    top = _repo_toplevel(repo_root)
+    topr = top.resolve() if top is not None else None
+    tracked: set = set()
+    if top is not None:
+        listed = _git(["ls-files", "-z"], top)
+        if listed.returncode == 0:
+            tracked = {p for p in listed.stdout.split("\0") if p}
+    snapshots = _snapshot_hashes(top, snapshot_index)
+    env_roots, sys_roots, cache_roots = _environment_roots(), _system_roots(), _cache_roots()
+    summary = {"environment": 0, "bytecode": 0, "system": 0, "cache": 0, "absent": 0}
+    written: Dict[str, None] = {}
+    reads: Dict[str, Dict[str, Any]] = {}
+    for raw, mode, flags in log.events:
+        p = Path(raw)
+        try:
+            p = p.resolve()
+        except OSError:
+            pass
+        key = str(p)
+        if _is_write(mode, flags):
+            written.setdefault(key, None)
+        if not _is_read(mode, flags) or key in reads:
+            continue
+        if p.is_dir():
+            continue
+        if topr is not None and _under(p, [topr]) and not _under(p, env_roots):
+            rel = p.relative_to(topr).as_posix()
+            if p.suffix == ".pyc" or "__pycache__" in p.parts:
+                summary["bytecode"] += 1
+                continue
+            rec: Dict[str, Any] = {"path": rel}
+        elif _under(p, env_roots):
+            summary["bytecode" if p.suffix == ".pyc" else "environment"] += 1
+            continue
+        elif _under(p, sys_roots):
+            summary["system"] += 1
+            continue
+        elif _under(p, cache_roots):
+            summary["cache"] += 1
+            continue
+        else:
+            rel = None
+            rec = {"path": key}
+        if not p.is_file() and rel is None and key not in written:
+            summary["absent"] += 1  # a probe that found nothing outside the repo read nothing
+            continue
+        if not p.is_file():
+            rec.update(sha256=None, status="run_output" if key in written else "gone")
+            reads[key] = rec
+            continue
+        sha = _file_sha256(p)
+        rec["sha256"] = sha
+        if key in written:
+            status = "run_output"
+        elif rel is not None and rel in tracked:
+            status = "tracked"
+        elif snapshots.get(sha) == p.name:
+            status = "snapshot"
+        elif rel is None:
+            status = "outside_repo"
+        else:
+            ign = _git(["check-ignore", "-q", "--", rel], top)
+            status = "ignored" if ign.returncode == 0 else "untracked"
+        rec["status"] = status
+        reads[key] = rec
+    files = sorted(reads.values(), key=lambda r: r["path"])
+    problems = [
+        f"{r['path']} ({r['status']})" for r in files
+        if r["status"] in ("untracked", "ignored", "outside_repo", "gone")
+    ]
+    out_written = []
+    for key in written:
+        p = Path(key)
+        if topr is not None and _under(p, [topr]):
+            out_written.append(p.relative_to(topr).as_posix())
+        elif not _under(p, env_roots + sys_roots + cache_roots):
+            out_written.append(key)
+    return {
+        "files_read": files,
+        "files_written": sorted(set(out_written)),
+        "reads_summary": summary,
+        "threads_started": len(log.threads),
+        "problems": problems,
+    }
+
+
+# -------------------------------------------------------------- sealed run
+
+
+class SealedRun:
+    """A run whose stamp names everything that produced its numbers.
+
+    Usage::
+
+        with SealedRun(repo_root, provisional=False) as run:
+            numbers = compute()
+            stamp = run.finish(engine=engine)   # before writing results
+        stamp_results(results, stamp)
+
+    On entry: :func:`require_clean_tree` and :func:`require_locked_environment`
+    (both refuse a non-provisional run), then the open audit hook records.
+    :meth:`finish` stops recording and adds the environment, ephemeris and
+    files-read stamp. A non-provisional run raises :class:`UntrackedReadError`
+    if it read a file git does not track (snapshots listed in the index
+    excepted), :class:`ThreadStartedError` if it started a thread, and
+    :class:`EnvironmentMismatchError` if the ephemeris files cannot be hashed.
+    A provisional run records the same problems in the stamp and is not
+    refused. Leaving the block without :meth:`finish` calls it.
+    """
+
+    def __init__(
+        self,
+        repo_root: Optional[PathLike] = None,
+        *,
+        provisional: bool = False,
+        lock_path: Optional[PathLike] = None,
+        snapshot_index: Optional[PathLike] = None,
+        ephe_path: Optional[PathLike] = None,
+    ) -> None:
+        if not isinstance(provisional, bool):
+            raise TypeError("provisional must be a bool")
+        self.repo_root = repo_root
+        self.provisional = provisional
+        self.lock_path = lock_path
+        self.snapshot_index = snapshot_index
+        self.ephe_path = ephe_path
+        self.log = ReadLog()
+        self.stamp: Optional[Dict[str, Any]] = None
+        self._tree: Optional[Dict[str, Any]] = None
+        self._env: Optional[Dict[str, Any]] = None
+
+    def __enter__(self) -> "SealedRun":
+        self._tree = require_clean_tree(self.repo_root, provisional=self.provisional)
+        self._env = require_locked_environment(
+            self.lock_path, self.repo_root, provisional=self.provisional
+        )
+        self.log.start()
+        return self
+
+    def finish(self, engine: Any = None) -> Dict[str, Any]:
+        """Stop recording, check and return the full stamp (idempotent)."""
+        if self.stamp is not None:
+            return self.stamp
+        self.log.stop()
+        if self._tree is None:
+            raise SealError("SealedRun.finish() called outside its with-block")
+        reads = files_read_stamp(self.log, self.repo_root, snapshot_index=self.snapshot_index)
+        eph = ephemeris_stamp(engine, self.ephe_path)
+        stamp = dict(self._tree)
+        stamp.update(
+            environment=self._env,
+            ephemeris=eph,
+            files_read=reads["files_read"],
+            files_written=reads["files_written"],
+            reads_summary=reads["reads_summary"],
+            threads_started=reads["threads_started"],
+            problems=reads["problems"] + eph["problems"],
+        )
+        self.stamp = stamp
+        if not self.provisional:
+            if reads["problems"]:
+                shown = "; ".join(reads["problems"][:10])
+                raise UntrackedReadError(
+                    f"the run read files git does not track: {shown}; commit them, list the "
+                    "snapshot in the index or flag the run provisional"
+                )
+            if reads["threads_started"]:
+                raise ThreadStartedError(
+                    f"the run started {reads['threads_started']} thread(s); the ayanamsa "
+                    "mode is process-global, so sealed runs use processes, not threads (G-13)"
+                )
+            if eph["problems"]:
+                raise EnvironmentMismatchError("; ".join(eph["problems"]))
+        return stamp
+
+    def __exit__(self, exc_type: Any, exc: Any, tb: Any) -> bool:
+        if exc_type is not None:
+            self.log.stop()
+            return False
+        self.finish()
+        return False
+
+
+# ---------------------------------------------------- study script imports
+
+
+def load_study_modules(
+    scripts_dir: PathLike, names: Sequence[str], *, namespace: str
+) -> Dict[str, types.ModuleType]:
+    """Import study scripts by file path under unique module names (G-03).
+
+    Each ``<scripts_dir>/<name>.py`` becomes ``_study_<namespace>__<name>`` in
+    ``sys.modules``. Six study folders have a ``pipeline.py``; importing them by
+    bare name through ``sys.path`` lets the first import win. ``names`` are
+    loaded in order (dependencies first); while they load, each bare name is
+    aliased to its unique module so the scripts' own sibling imports
+    (``import decluster``) resolve to this folder. Afterwards the bare names
+    in ``sys.modules`` are put back as they were, and the script folder is
+    taken off ``sys.path`` if a script put it there.
+    """
+    folder = Path(scripts_dir).resolve()
+    safe_ns = re.sub(r"\W", "_", namespace)
+    saved = {n: sys.modules.get(n) for n in names}
+    saved_path = list(sys.path)
+    loaded: Dict[str, types.ModuleType] = {}
+    try:
+        for name in names:
+            src = folder / f"{name}.py"
+            unique = f"_study_{safe_ns}__{name}"
+            mod = sys.modules.get(unique)
+            if mod is None or Path(getattr(mod, "__file__", "") or "").resolve() != src:
+                spec = importlib.util.spec_from_file_location(unique, src)
+                if spec is None or spec.loader is None:
+                    raise ImportError(f"cannot load study script {src}")
+                mod = importlib.util.module_from_spec(spec)
+                sys.modules[unique] = mod
+                sys.modules[name] = mod
+                try:
+                    spec.loader.exec_module(mod)
+                except BaseException:
+                    sys.modules.pop(unique, None)
+                    raise
+            sys.modules[name] = mod
+            loaded[name] = mod
+    finally:
+        for name, old in saved.items():
+            if old is None:
+                sys.modules.pop(name, None)
+            else:
+                sys.modules[name] = old
+        added = [p for p in sys.path if p not in saved_path]
+        for p in added:
+            try:
+                same = Path(p).resolve() == folder
+            except OSError:
+                same = False
+            if same:
+                while p in sys.path:
+                    sys.path.remove(p)
+    return loaded
