@@ -67,3 +67,56 @@ The following resolved correctly: Cochran 2004; Ide 2016; Hough 2018; Tanaka 201
    - the row records `verified_by`, `verified_at` and the exact page or archive snapshot (web.archive.org URL) used.
 2. An ex-ante forecast counts only when its **publication date is proven independently of the author's own site**: an archive.org snapshot dated before the event, a print issue, or a dated social post. Book forecasts need the edition and page.
 3. Rules from `rules_gold/` and `rules/` enter `rules/<domain>/` only through `astro-rules validate` and with `tier: experimental` until the verse is checked (ADR-004 level L1 → L2).
+
+---
+
+## Round 2: Gemini's verification pass, spot-checked 2026-11-22
+
+Gemini wrote `verified/` folders under each topic (63 files). I checked them independently.
+
+**Much better than round 1.** Of the 127 new URLs, 95 load. The other 32:
+- 10 are FRED CSV endpoints that time out from this machine and are probably fine;
+- 15 return 404 or 403: the Bundesbank and WGC terms pages, Nasdaq CHRIS (locked, as Gemini says), the IITM, IMD and DFO download links, the Myanmar news article, and the archive.org book scans;
+- the rest are archive.org snapshot URLs with a placeholder timestamp ("20260301000000"), so they are not real captures.
+
+### Corrected DOIs (checked on Crossref or doi.org)
+- **Confirmed:**
+  - Baur & McDermott 2010: 10.1016/j.jbankfin.2009.12.008
+  - Plakandaras et al. 2020 "Gold Against the Machine": 10.1007/s10614-020-10019-z
+  - Saji et al. 1999: 10.1038/43854
+  - Kennedy, Vidale & Parker 2004, *SRL*: 10.1785/gssrl.75.5.607
+  - Simpson 1967: 10.1016/0012-821x(67)90071-4
+  - Zechar et al. 2010, *BSSA*: 10.1785/0120090192
+  - Zechar et al. 2010, *CPE*: 10.1002/cpe.1519
+  - Hughes 1977, *Nature*: 10.1038/265013a0
+  - Schorlemmer et al. 2018: 10.1785/0220180053
+- **Resolve on doi.org (not checked further):** Harvey, Liu & Zhu (10.1093/rfs/hhv059); Bailey & López de Prado (10.3905/jpm.2014.40.5.094); Reboredo (10.1016/j.jbankfin.2013.03.020); the DFO Zenodo record (10.5281/zenodo.19288170).
+- **Still wrong:**
+  - 10.1016/j.jcomm.2021.100142 returns 404. Drop the "Wang, Liu & Wu 2020" paper; Gemini itself calls it invented.
+  - 10.1007/s12040-009-0020-y is **Pai & Nair 2009** ("Summer monsoon onset over Kerala: new definition and prediction"), not "Pai & Rajeevan". The paper is right; fix the authors.
+- **Withdrawn by Gemini as invented:** Chen 2010 (regime-switching GARCH) and Wang, Liu & Wu 2020.
+
+### Ex-ante forecasts: quotes re-found in the archive.org snapshots
+| Claim | Snapshot | Quote on the page |
+|---|---|---|
+| Malhotra, gold up after Jupiter enters Virgo, Aug 2016 | 2016-03-29 | **yes** |
+| Malhotra, monsoon 2023 "around 95% of the LPA" | 2023-05-31 | **yes** |
+| Malhotra, monsoon 2022 "higher than the normal" | 2022-05-21 | **yes** |
+| Malhotra, monsoon 2021 "90% to 95% of the LPA" | 2021-05-23 | **yes** |
+| Malhotra, monsoon 2019 | 2019-04-23 | not found by 5-word match; needs a manual read |
+| Malhotra, monsoon 2016 | 2016-03-29 | not found by 5-word match; needs a manual read |
+
+The earthquake set has **0 of 36** Himalaya–Tibet–Myanmar M≥7 events with a proven ex-ante prediction.
+- The Myanmar TikTok "false alarm" source URL and its archive both return 404, so it is unproven.
+- Hoogerbeets (SSGEOS, 2023-02-03) is planetary-geometry forecasting, not Jyotish. His alarm was open-ended, with no end date or polygon, so it cannot be scored as a forecast.
+
+### LBMA gold from 1968: still unsolved
+Gemini's Bundesbank codes (BBDK01.WT5512 / WT5511, BBEX3.D.XAU.EUR.EA.AC.C04) and the obvious variants all return "no results" from the Bundesbank SDMX API (api.statistiken.bundesbank.de). Either the codes are wrong or the series is no longer published. **Do not rely on this route until a working download has been shown.** The fallbacks are World Bank Pink Sheet monthly gold (already snapshotted) and Stooq GC.F (from 1974-12-31; licence unread).
+
+### What is now usable
+- **Earthquake literature:** all 18 rows have resolving DOIs. Cochran, Ide, Hough and Kennedy now carry quoted effect sizes; spot-check the quotes before citing.
+- **Brihat Samhita ch. 32: the mandala direction is settled.** The mandala is read from the Moon's nakshatra at the time of an earthquake that has already happened, to forecast its consequences over about six months (v. 23). Gemini gives verse citations; an astrologer should confirm the reading. The earthquake paper must say that the study tests a forward-trigger reading the text does not make. That reading is still a legitimate test of practitioners who use it that way, as Raman's list does.
+- **Brihat Samhita gold rules:** 7 of 21 are tied to Bhat (1981) pages (ch. 8 v. 5; ch. 41 vv. 2, 7, 11, 12; ch. 42 vv. 6, 14). Check the pages against the scan before promoting them to rules/ at level L2. The other 14 are `verified: false`.
+- **Flood:** the computable versus observation-only split of the 12 rules, and the recommendation to start the first Registered Report with Megheshvara plus Mars in Rohini. The verified ENSO/IOD figures are Kumar 1999 (r −0.60 → −0.32) and Ashok 2001 (R 0.59). The "63.2% IMD hit rate" is confirmed as invented.
+- **Gold episodes:** two dates corrected (2015-12-17 low; 2024-10-30 PM-fix peak).
+- **Gold news 2024–2026:** now cites Kitco articles that load. The 2025–2026 levels (e.g. "$4,690 in May 2026") must be checked against the price series before any use.
