@@ -49,6 +49,53 @@ class NullValueError(ValueError):
     """The key exists but holds null or NaN, which a paper must not print."""
 
 
+class UnboundedLimitError(NullValueError):
+    """The key names the number of a limit recorded as ``unbounded: true``.
+
+    An unbounded X has no number (ADR-008 2.2, G-11). Read it with
+    :meth:`Results.limit`, which prints the agreed word instead.
+    """
+
+
+#: Text printed for a limit recorded as ``unbounded: true``.
+UNBOUNDED_TEXT = "unbounded"
+
+
+def limit_problems(record: Any) -> List[str]:
+    """Contract breaches of one limit record (ADR-008 2.2, G-11).
+
+    A limit record is a mapping with a bool ``unbounded``. When it is true
+    the record carries no number: ``value`` is absent or null. When it is
+    false ``value`` is a finite number. Nobody may substitute a number for
+    an unbounded limit, and ``inf`` is never a value.
+    """
+    if not isinstance(record, Mapping):
+        return [f"a limit record must be a mapping, got {type(record).__name__}"]
+    unbounded = record.get("unbounded")
+    if not isinstance(unbounded, bool):
+        return [f"unbounded must be a bool, got {unbounded!r}"]
+    value = record.get("value")
+    if unbounded:
+        if value is not None:
+            return [f"an unbounded limit carries a number: {value!r}"]
+        return []
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return [f"a bounded limit needs a numeric value, got {value!r}"]
+    if not math.isfinite(value):
+        return [f"a bounded limit needs a finite value, got {value!r}"]
+    return []
+
+
+def format_limit(record: Any, digits: int = 2, unbounded_text: str = UNBOUNDED_TEXT) -> str:
+    """A limit record as text: its number, or ``unbounded_text`` when unbounded."""
+    problems = limit_problems(record)
+    if problems:
+        raise ValueError("; ".join(problems))
+    if record["unbounded"]:
+        return unbounded_text
+    return format_number(record["value"], digits)
+
+
 def format_number(value: Any, digits: int = 2) -> str:
     """Format a number consistently: integers plain, floats to ``digits`` places.
 
@@ -166,12 +213,57 @@ class Results:
         """The provenance block under the one contract (see :func:`provenance`)."""
         return provenance(self.data)
 
+    def _unbounded_parent(self, key: str) -> bool:
+        parent = key.rpartition(".")[0]
+        if not parent:
+            return False
+        try:
+            node = self._walk(parent)
+        except MissingKeyError:
+            return False
+        return isinstance(node, Mapping) and node.get("unbounded") is True
+
     def get(self, key: str) -> Any:
-        """Return the value at ``key``; raise if missing, null or NaN."""
-        value = self._walk(key)
+        """Return the value at ``key``; raise if missing, null or NaN.
+
+        The number of a limit recorded as ``unbounded: true`` raises
+        :class:`UnboundedLimitError`; use :meth:`limit`.
+        """
+        try:
+            value = self._walk(key)
+        except MissingKeyError:
+            if self._unbounded_parent(key):
+                raise UnboundedLimitError(
+                    f"key {key!r}: the limit is unbounded in {self.path}; use Results.limit"
+                ) from None
+            raise
         if value is None or (isinstance(value, float) and math.isnan(value)):
+            if self._unbounded_parent(key):
+                raise UnboundedLimitError(
+                    f"key {key!r}: the limit is unbounded in {self.path}; use Results.limit"
+                )
             raise NullValueError(f"key {key!r} is null in {self.path}")
         return value
+
+    def is_unbounded(self, key: str) -> bool:
+        """True if the limit record at ``key`` is ``unbounded: true`` (contract checked)."""
+        record = self._walk(key)
+        problems = limit_problems(record)
+        if problems:
+            raise ValueError(f"key {key!r} in {self.path}: " + "; ".join(problems))
+        return record["unbounded"]
+
+    def limit(self, key: str, digits: int = 2, unbounded_text: str = UNBOUNDED_TEXT) -> str:
+        """The limit record at ``key`` (for example ``tests.0.x95``) as text.
+
+        A bounded limit prints its number; an unbounded one prints
+        ``unbounded_text``, never a number (ADR-008 2.2, G-11).
+        """
+        record = self._walk(key)
+        try:
+            return format_limit(record, digits, unbounded_text)
+        except ValueError as exc:
+            raise ValueError(f"key {key!r} in {self.path}: {exc}") from None
 
     def num(self, key: str, digits: int = 2) -> str:
         """The number at ``key`` as text with ``digits`` decimals."""

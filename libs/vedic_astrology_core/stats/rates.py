@@ -6,8 +6,10 @@ is ``(n_in / t_in) / (n_out / t_out)``.
 * :func:`rate_ratio` gives the exact conditional (binomial) confidence
   interval and p-value: given ``n = n_in + n_out`` events, ``n_in`` is
   binomial with ``p = RR t_in / (RR t_in + t_out)`` (Clopper-Pearson).
-  It assumes a Poisson process, so it is anti-conservative for clustered
-  events; use it for the interval, not for the test.
+  It assumes independent events; it is too narrow for clustered events and
+  is not used for any verdict, interval on a card or exclusion statement
+  (ADR-008 section 2.2, finding S-07). Limits and two-sided intervals come
+  from :mod:`.exclusion` (effect removal on balanced blocks).
 * :func:`rate_ratio_shift_test` tests the same ratio against a
   circular-shift null of the indicator, which keeps event clustering and the
   indicator's run structure.
@@ -58,6 +60,9 @@ def rate_ratio(
     n_in: int, t_in: float, n_out: int, t_out: float, ci_level: float = 0.95
 ) -> RateRatio:
     """Return the rate ratio with exact conditional binomial CI and p-values.
+
+    Assumes independent events; too narrow for clustered events; not used for
+    any verdict (ADR-008 S-07). Kept for descriptive tables only.
 
     Raises:
         ValueError: If an exposure is not positive.
