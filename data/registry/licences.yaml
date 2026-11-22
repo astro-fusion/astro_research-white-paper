@@ -99,3 +99,50 @@ sources:
     decision: commit
     verified: false
     date_read: null
+  bundesbank_gold:
+    name: Deutsche Bundesbank Frankfurt gold fixing, BBEX3 D.XAU.DEM.EA.AC.C01 (daily, DEM per kg, 1968-1998)
+    licence: Bundesbank copyright; reuse permitted with the source named
+    terms_url: https://www.bundesbank.de/en/service/terms-of-use
+    decision: commit
+    verified: false
+    date_read: null
+    note: Name Deutsche Bundesbank as the source. Quoted from the incoming audit; to be read by the owner (H4).
+  iitm_rainfall:
+    name: IITM Pune homogeneous rainfall archives (all-India, subdivisions, longest instrumental series)
+    licence: Unclear (the quoted open-data directive was not found on the cited page)
+    terms_url: https://www.tropmet.res.in/data/data-archival/rain/
+    decision: hash_only
+    verified: false
+    date_read: null
+    note: Hash plus fetch script only until the owner reads the terms (H4).
+  noaa_enso:
+    name: NOAA ONI and Nino 3.4 SST index (CPC and PSL)
+    licence: Public domain (US Government)
+    terms_url: https://psl.noaa.gov/
+    decision: commit
+    verified: false
+    date_read: null
+  noaa_dmi:
+    name: Indian Ocean Dipole Mode Index, HadISST1 (NOAA PSL, Saji et al. 1999)
+    licence: Free for scientific research with citation
+    terms_url: https://psl.noaa.gov/gcos_wgsp/timeseries/DMI
+    decision: hash_only
+    verified: false
+    date_read: null
+    note: Cite Saji et al. (1999), Nature 401, 360-363.
+  dfo_floods:
+    name: Dartmouth Flood Observatory Global Active Archive of Large Flood Events (Zenodo 19288171)
+    licence: CC0 1.0
+    terms_url: https://zenodo.org/records/19288171
+    decision: commit
+    verified: false
+    date_read: null
+    note: Cite the DFO archive and the Zenodo record.
+  isc_bulletin:
+    name: ISC Reviewed Bulletin event extract (FDSN text)
+    licence: ISC terms, not yet read
+    terms_url: https://www.isc.ac.uk/terms/
+    decision: hash_only
+    verified: false
+    date_read: null
+    note: Hash plus fetch script only until the owner reads the terms (H4).
