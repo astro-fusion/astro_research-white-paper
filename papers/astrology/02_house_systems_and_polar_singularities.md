@@ -1,3 +1,8 @@
+::: {.callout-note}
+## Internal technical note
+Internal technical note, not peer-reviewed.
+:::
+
 # 🌐 White Paper 02: Astrological House Systems and Polar Singularity Handling
 
 ## Topological Failure Modes and Algorithmic Fallback Architecture

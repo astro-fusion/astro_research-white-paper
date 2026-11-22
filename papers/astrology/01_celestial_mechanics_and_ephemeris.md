@@ -1,3 +1,8 @@
+::: {.callout-note}
+## Internal technical note
+Internal technical note, not peer-reviewed.
+:::
+
 # 🌌 White Paper 01: Celestial Mechanics and High-Precision Ephemeris Integration
 
 ## Foundational Coordinate Transforms for Computational Astrology

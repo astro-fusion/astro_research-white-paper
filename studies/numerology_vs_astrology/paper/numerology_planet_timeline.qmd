@@ -12,6 +12,11 @@ execute:
   enabled: false
 ---
 
+::: {.callout-warning}
+## Withdrawn 2026-11-08
+Withdrawn 2026-11-08: contains results retracted in CORRECTIONS.md. Kept for the record; not rendered on the website.
+:::
+
 ## Overview
 
 This notebook generates **three graphs** over a **custom date range**:

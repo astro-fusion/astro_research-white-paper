@@ -1,3 +1,8 @@
+::: {.callout-note}
+## Internal technical note
+Internal technical note, not peer-reviewed.
+:::
+
 # 🌐 White Paper 05: Declination Analysis and Out-of-Bounds Logic
 
 ## Multi-Dimensional Celestial Geometry Beyond Ecliptic Longitude

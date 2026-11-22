@@ -6,6 +6,11 @@ date: "2026-01-26"
 keywords: [Vedic Astrology, Vedic Numerology, Earthquake Prediction, Schuster's Test, Monte Carlo Simulation, Shadbala, Geometric Probability]
 ---
 
+::: {.callout-warning}
+## Withdrawn 2026-11-08
+Withdrawn 2026-11-08: contains results retracted in CORRECTIONS.md. Kept for the record; not rendered on the website.
+:::
+
 # Abstract
 
 This study conducts a rigorous statistical investigation into the correlation between two ancient deterministic systems—Vedic Astrology (Parashari Jyotish) and Vedic Numerology (Sankhya Sastra)—specifically focused on their potential as predictors for earthquake occurrences. Utilizing a high-resolution data pipeline (Swiss Ephemeris for astrology and Pythagorean reduction for numerology), we analyzed a dataset of 552 significant seismic events (Magnitude > 6.0) from the USGS catalog (2020-2023). Our results indicate that the 9-day numerological cycle shows no statistically significant periodicity (Schuster's p-value = 0.067). Comparative analysis of 2-hour interval planetary strength curves reveals a fundamental temporal and frequency mismatch between the continuous astrological cycles and discrete numerological steps. The study concludes that these systems operate as independent symbolic frameworks, providing non-overlapping information that does not correlate with short-term physical seismic triggers.

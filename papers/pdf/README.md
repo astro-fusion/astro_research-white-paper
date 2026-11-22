@@ -1,5 +1,7 @@
 # Released PDFs
 
+> **Withdrawn or superseded.** Every PDF in this folder predates the corrections of 2026-11-08 and is withdrawn or superseded. None of them may be cited.
+
 Every PDF in this folder was built before the corrections of 2026-11-08
 ([CORRECTIONS.md](../../CORRECTIONS.md)). They are kept for the record and are
 not deleted, but none of them reflects the corrected engine (sidereal

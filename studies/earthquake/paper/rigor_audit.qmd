@@ -33,6 +33,11 @@ format:
 bibliography: references.bib
 ---
 
+::: {.callout-warning}
+## Withdrawn 2026-11-08
+Withdrawn 2026-11-08: contains results retracted in CORRECTIONS.md. Kept for the record; not rendered on the website.
+:::
+
 > **Corrections notice (2026-11-08):** the results in this report are withdrawn pending re-analysis. Two figures were generated from simulated data and planetary positions were tropical rather than sidereal. See [CORRECTIONS.md](../../../CORRECTIONS.md).
 
 # Introduction & Motivation

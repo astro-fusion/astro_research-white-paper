@@ -56,21 +56,21 @@ jobs:
         python -m pip install --upgrade pip
         pip install -e ".[dev,docs]"
 
-    - name: Run Artifact Generation Pipeline
-      run: |
-        # Generate the data artifacts (MODEL -> CONTROLLER)
-        python3 scripts/generate_artifacts.py || echo "Artifact generation skipped"
+    # Disabled 2026-11-22 (review C3/C5, CORRECTIONS.md): scripts/generate_artifacts.py
+    # is the old pipeline and writes tropical-era artifacts into
+    # studies/gold_market/artifacts. Current artifacts come from the
+    # pre-registered study pipelines, not from CI.
+    # - name: Run Artifact Generation Pipeline
+    #   run: |
+    #     python3 scripts/generate_artifacts.py || echo "Artifact generation skipped"
 
     - name: Run Smoke Tests
       run: |
         # Validate artifacts and rendering logic
         python3 -m pytest tests/test_scientific_report_smoke.py -v || echo "Smoke tests skipped"
 
-    - name: Render Master Consolidated Research Paper
-      run: |
-        echo "Rendering Master Research Paper..."
-        quarto render papers/VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.qmd --to pdf \
-          -o VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.pdf || echo "Master paper render skipped"
+    # Removed 2026-11-22: papers/VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.qmd is withdrawn
+    # (CORRECTIONS.md); CI must not render or publish it.
 
     - name: Render Track 1 - Numerology-Astrology Analysis
       run: |
@@ -105,7 +105,6 @@ jobs:
         find . -name "*.pdf" -path "*/studies/*/paper/*" -exec cp {} _site/research/ \; || true
         cp manuscript_nature.pdf _site/ 2>/dev/null || true
         cp manuscript_ieee.pdf _site/ 2>/dev/null || true
-        cp VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.pdf _site/ 2>/dev/null || true
         cp NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.pdf _site/ 2>/dev/null || true
         cp EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf _site/ 2>/dev/null || true
         cp GOLD_MARKET_MANUSCRIPT.pdf SILVER_MARKET_MANUSCRIPT.pdf _site/ 2>/dev/null || true
@@ -120,7 +119,6 @@ jobs:
           _site/research/*.pdf
           manuscript_nature.pdf
           manuscript_ieee.pdf
-          VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.pdf
           NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.pdf
           EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.pdf
           GOLD_MARKET_MANUSCRIPT.pdf

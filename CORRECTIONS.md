@@ -1,5 +1,11 @@
 # Corrections
 
+## 2026-11-22: withdrawn documents no longer rendered; CI no longer runs generate_artifacts.py
+
+**What was wrong.** The website still rendered documents that print results retracted on 2026-11-08 (research review C3, C5): `papers/00_executive_summary.qmd`, `papers/COMPREHENSIVE_RESEARCH_THESIS.qmd`, `papers/VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.qmd`, `papers/research_paper.md`, `studies/earthquake/paper/rigor_audit.qmd`, `studies/numerology_vs_astrology/paper/numerology_planet_timeline.qmd` and the notes in `studies/remedy_conflict_matrix/paper/`. Their headline claims (a 120:1 frequency mismatch, "over 2,500 combinations", XAU/USD spot, "no predictive power") contradict the current artifacts. The scientific-reporting workflow also ran `scripts/generate_artifacts.py`, the old pipeline that writes tropical-era artifacts into `studies/gold_market/artifacts`.
+
+**What changed.** The withdrawn documents are removed from the render list and navbar in `_quarto.yml` and carry a withdrawal notice at the top. No source file or PDF was deleted. Every PDF in `papers/pdf/` and `application/web/static/releases/` is marked withdrawn or superseded in a README. `papers/astrology/` stays rendered with an "Internal technical note, not peer-reviewed" notice. CI no longer runs `generate_artifacts.py` (the step is commented out in `.github/workflows/scientific-reporting.yml`). `scripts/generate_pdfs.sh` and the Makefile still call it and are unchanged.
+
 ## 2026-11-09: moolatrikona degree ranges corrected to BPHS 3.51-54
 
 **What was wrong.** `MOOLATRIKONA_TABLE` in

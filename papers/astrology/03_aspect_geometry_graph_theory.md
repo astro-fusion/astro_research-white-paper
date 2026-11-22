@@ -1,3 +1,8 @@
+::: {.callout-note}
+## Internal technical note
+Internal technical note, not peer-reviewed.
+:::
+
 # 📐 White Paper 03: Aspect Geometry via Graph Theory and Adjacency Matrix Formulation
 
 ## High-Velocity Computation of Planetary Angular Relationships

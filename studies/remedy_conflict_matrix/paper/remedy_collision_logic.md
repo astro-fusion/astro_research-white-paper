@@ -1,3 +1,8 @@
+::: {.callout-warning}
+## Withdrawn 2026-11-08
+Withdrawn 2026-11-08: contains results retracted in CORRECTIONS.md. Kept for the record; not rendered on the website.
+:::
+
 # Remedy Collision and Conflict Resolution
 
 ## The Remediation Paradox

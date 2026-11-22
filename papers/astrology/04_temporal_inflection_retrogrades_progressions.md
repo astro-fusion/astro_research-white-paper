@@ -1,3 +1,8 @@
+::: {.callout-note}
+## Internal technical note
+Internal technical note, not peer-reviewed.
+:::
+
 # ⏱️ White Paper 04: Temporal Inflection Points — Retrogradation and Progressions
 
 ## Derivative Calculus for Non-Linear Temporal Astrological Dynamics

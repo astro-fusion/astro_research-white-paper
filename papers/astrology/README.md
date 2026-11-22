@@ -1,3 +1,8 @@
+::: {.callout-note}
+## Internal technical note
+Internal technical note, not peer-reviewed.
+:::
+
 # 🌌 papers/astrology/ — Computational Astrology White Papers
 
 Mathematical and algorithmic frameworks for exhaustive astrological analysis.

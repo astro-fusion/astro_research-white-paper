@@ -1,3 +1,8 @@
+::: {.callout-note}
+## Internal technical note
+Internal technical note, not peer-reviewed.
+:::
+
 # ⚖️ White Paper 06: Essential Dignity Scoring Arrays
 
 ## Quantised Qualitative Astrological Weights as O(1) Hash Maps

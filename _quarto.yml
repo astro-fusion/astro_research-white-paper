@@ -14,8 +14,6 @@ project:
     - site/explore/*.qmd
     - studies/*/paper/*.qmd
     - studies/*/paper/*.md
-    - papers/*.qmd
-    - papers/*.md
     - papers/astrology/*.md
     - "!templates/"
     - "!tests/"
@@ -23,6 +21,12 @@ project:
     - "!notebooks/"
     - "!studies/*/paper/drafts/"
     - "!studies/*/paper/sections/"
+    # Withdrawn 2026-11-08 (CORRECTIONS.md): kept in the repo, never rendered.
+    - "!papers/*.qmd"
+    - "!papers/*.md"
+    - "!studies/earthquake/paper/rigor_audit.qmd"
+    - "!studies/numerology_vs_astrology/paper/numerology_planet_timeline.qmd"
+    - "!studies/remedy_conflict_matrix/paper/"
 
 website:
   title: "Astro Research"
@@ -46,20 +50,12 @@ website:
             href: studies/silver_market/paper/manuscript.qmd
           - text: "Earthquake: India-Nepal combinations"
             href: studies/earthquake/paper/EARTHQUAKE_PREDICTION_INDIA_NEPAL_ANALYSIS.qmd
-          - text: "Earthquake: GLM audit"
-            href: studies/earthquake/paper/rigor_audit.qmd
           - text: "Numerology and astrology"
             href: studies/numerology_vs_astrology/paper/NUMEROLOGY_ASTROLOGY_TEMPORAL_DISCONTINUITY.qmd
-          - text: "Numerology timeline"
-            href: studies/numerology_vs_astrology/paper/numerology_planet_timeline.qmd
-          - text: "Remedy conflict matrix"
-            href: studies/remedy_conflict_matrix/paper/remedy_collision_logic.md
           - text: "Mundane"
             href: site/mundane.qmd
           - text: "Mundane atlas"
             href: site/explore/atlas.qmd
-          - text: "Cross-study papers"
-            href: papers/VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.qmd
       - text: "Explore"
         menu:
           - text: "All explorers"

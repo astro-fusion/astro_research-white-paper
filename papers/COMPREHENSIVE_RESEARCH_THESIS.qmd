@@ -41,6 +41,11 @@ execute:
 jupyter: python3
 ---
 
+::: {.callout-warning}
+## Withdrawn 2026-11-08
+Withdrawn 2026-11-08: contains results retracted in CORRECTIONS.md. Kept for the record; not rendered on the website.
+:::
+
 # Part I: Foundation
 
 {{< include 00_executive_summary.qmd >}}
