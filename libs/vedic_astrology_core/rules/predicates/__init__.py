@@ -8,7 +8,10 @@ silent default. Rule authors only ever name predicates; developers add new
 ones here, with a docstring giving the classical definition and tests.
 """
 
+import importlib
+import pkgutil
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import (
     Annotated,
     Any,
@@ -143,7 +146,11 @@ def predicate(
 
     def register(func: Callable) -> Callable:
         if name in PREDICATES:
-            raise ValueError(f"predicate {name!r} registered twice")
+            first = PREDICATES[name].func.__module__
+            raise ValueError(
+                f"predicate {name!r} registered twice (first in {first}, "
+                f"again in {func.__module__}); predicate names must be unique"
+            )
         PREDICATES[name] = PredicateSpec(
             name, params, func, frozenset(needs), shorthand, category, example
         )
@@ -168,18 +175,45 @@ def point_label(point: str) -> str:
     return "the Lagna" if point == LAGNA else point
 
 
-# Register the vocabulary (imports are for their side effect). The order is
-# the registration order, which fixes rules/schema.json: do not sort.
-from . import placement, relations, timing, mundane  # noqa: E402,F401  # isort: skip
-from . import samhita  # noqa: E402,F401  # isort: skip
-from . import bhava  # noqa: E402,F401  # isort: skip
+#: Modules imported first, in this order. The order is the registration
+#: order, which fixes rules/schema.json: do not sort. Any other module in this
+#: folder is discovered and imported after them, in name order (WP-65).
+CORE_MODULES = ("placement", "relations", "timing", "mundane", "samhita", "bhava")
+
+
+def load_modules(
+    path: Path, package: str, first: Tuple[str, ...] = ()
+) -> List[str]:
+    """Import every module in the folder ``path`` (package ``package``).
+
+    The modules named in ``first`` are imported first, in that order; the
+    rest follow in name order. Names starting with ``_`` are skipped.
+    Importing a module registers its predicates; a name registered twice
+    raises ValueError. Returns the module names in import order.
+    """
+    found = sorted(
+        info.name
+        for info in pkgutil.iter_modules([str(path)])
+        if not info.name.startswith("_") and not info.ispkg
+    )
+    names = [n for n in first if n in found] + [n for n in found if n not in first]
+    for name in names:
+        importlib.import_module(f"{package}.{name}")
+    return names
+
+
+# Register the vocabulary (imports are for their side effect).
+MODULES: List[str] = load_modules(Path(__file__).parent, __name__, CORE_MODULES)
 
 __all__ = [
     "PREDICATES",
     "Outcome",
     "Params",
     "PredicateSpec",
+    "CORE_MODULES",
+    "MODULES",
     "check",
     "house_from",
+    "load_modules",
     "predicate",
 ]

@@ -66,6 +66,24 @@ def test_reference_cases_pass(rule):
         assert result.passed, f"case {result.index}: {detail}"
 
 
+def test_use_references_resolve_without_cycles():
+    """Every `use` leaf in rules/ resolves; the reference graph has no cycle."""
+    from vedic_astrology_core.rules.predicates import compose
+
+    raw = compose.raw_rules([default_rules_dir()])
+    assert not compose.find_cycles(raw)
+    for rule in RULES:
+        fingerprint = rule.use_fingerprint()
+        assert all(u["id"] in raw for u in fingerprint["uses"]), rule.id
+
+
+def test_rules_with_tests_say_how_they_are_read():
+    """A rule entering a validity report has reading and operationalisation."""
+    for rule in RULES:
+        if rule.tests:
+            assert rule.reading is not None and rule.operationalisation, rule.id
+
+
 def test_gaja_kesari_counts_kendras_by_sign():
     """The S3-3 regression case is present and fires."""
     rule = RuleRegistry(LOADED).get("general.gaja_kesari.moon_kendra")

@@ -41,6 +41,7 @@ from pydantic import (
 )
 
 from .predicates import PREDICATES, Params
+from .predicates import compose
 from .tuning import (
     PARAM_NAME,
     Param as _BaseParam,
@@ -50,9 +51,12 @@ from .tuning import (
     Validation,
     allow_param_refs,
     bind_template,
+    out_of_range,
 )
 
 CONNECTIVES = ("all", "any", "not", "at_least")
+#: Leaves that name another rule instead of a predicate (schema v3).
+REFERENCES = ("use",)
 ID_PATTERN = r"^[a-z0-9_]+(\.[a-z0-9_]+)+$"
 
 
@@ -109,10 +113,10 @@ def normalize_condition(value: Any) -> Any:
             f"at_least); got {', '.join(map(str, value))}"
         )
     key = next(iter(value))
-    if key not in CONNECTIVES and key not in PREDICATES:
+    if key not in CONNECTIVES and key not in REFERENCES and key not in PREDICATES:
         raise ValueError(
             f"unknown predicate '{key}'."
-            + suggest(key, list(PREDICATES) + list(CONNECTIVES))
+            + suggest(key, list(PREDICATES) + list(CONNECTIVES) + list(REFERENCES))
             + " Run 'astro-rules list --predicates' for the vocabulary."
         )
     return value
@@ -183,6 +187,83 @@ class AtLeast(Strict):
     at_least: AtLeastBody
 
 
+class UseTarget(Strict):
+    """The rule a ``use`` leaf points at, optionally pinned to a version."""
+
+    id: str = Field(pattern=ID_PATTERN)
+    version: Optional[int] = Field(
+        default=None,
+        ge=1,
+        description="refuse the parent at any other version",
+    )
+
+
+def _hide_expansion(schema: Dict[str, Any]) -> None:
+    """The expanded parent conditions are not written by authors."""
+    props = schema.get("properties", {})
+    props.pop("all", None)
+    if "use" in props:
+        props["use"] = {
+            "anyOf": [{"type": "string", "pattern": ID_PATTERN}, props["use"]],
+            "description": "a rule id, or {id, version} to pin the version",
+        }
+    if "all" in schema.get("required", []):
+        schema["required"] = [k for k in schema["required"] if k != "all"]
+
+
+class _Expanded(dict):
+    """Marks the data of a ``use`` leaf after its parent was expanded."""
+
+
+class UseOf(AllOf):
+    """The frozen primary conditions of another rule (schema v3).
+
+    Written ``use: <rule id>`` or ``use: {id: <rule id>, version: <n>}``.
+    On validation the parent's conditions, with its parameters bound, are
+    expanded into ``all`` (one child), so the engine evaluates the leaf as
+    an ordinary "all of" node. A missing id, a parent without conditions, a
+    version that differs from the pin and a reference cycle are errors.
+    """
+
+    model_config = ConfigDict(json_schema_extra=_hide_expansion)
+
+    tag: ClassVar[str] = "use"
+    use: UseTarget
+    all: List["Condition"] = Field(  # type: ignore[assignment]
+        min_length=1, max_length=1, exclude=True
+    )
+
+    _resolved: Optional[compose.ResolvedUse] = PrivateAttr(default=None)
+
+    @field_validator("use", mode="before")
+    @classmethod
+    def _shorthand(cls, value):
+        return {"id": value} if isinstance(value, str) else value
+
+    @model_validator(mode="wrap")
+    @classmethod
+    def _expand(cls, data, handler):
+        if isinstance(data, (BaseModel, _Expanded)) or not isinstance(data, dict):
+            return handler(data)  # pydantic may re-enter with the expansion
+        if "all" in data:
+            raise ValueError("'use' takes no other keys; write it as its own leaf")
+        if "use" not in data:
+            return handler(data)
+        target = UseTarget.model_validate(cls._shorthand(data["use"]))
+        resolved = compose.resolve(target.id, target.version)
+        with compose.entering(target.id):
+            node = handler(
+                _Expanded(use=data["use"], all=[copy.deepcopy(resolved.conditions)])
+            )
+        node._resolved = resolved
+        return node
+
+    @property
+    def resolved(self) -> Optional[compose.ResolvedUse]:
+        """The parent as resolved: id, version, bound conditions and hashes."""
+        return self._resolved
+
+
 def _leaf_model(name: str, params: type) -> type:
     model = create_model(  # type: ignore[call-overload]
         f"Leaf_{name}",
@@ -202,6 +283,7 @@ _MEMBERS = [
     Annotated[AnyOf, Tag("any")],
     Annotated[NotOf, Tag("not")],
     Annotated[AtLeast, Tag("at_least")],
+    Annotated[UseOf, Tag("use")],
 ] + [Annotated[model, Tag(name)] for name, model in LEAF_MODELS.items()]
 
 _TaggedUnion = Annotated[  # type: ignore[valid-type]
@@ -212,7 +294,7 @@ Condition = Annotated[
     _TaggedUnion, BeforeValidator(normalize_condition)  # type: ignore[valid-type]
 ]
 
-for _model in (AllOf, AnyOf, NotOf, AtLeastBody, AtLeast):
+for _model in (AllOf, AnyOf, NotOf, AtLeastBody, AtLeast, UseOf):
     _model.model_rebuild()
 
 
@@ -353,6 +435,93 @@ class ReferenceCase(Strict):
     verified_with: Optional[str] = None
 
 
+# ------------------------------------------------------- schema v3 blocks
+READING_KINDS = ("forward_trigger", "concurrent", "post_event_classification")
+SLUG = r"^[a-z][a-z0-9_]*$"
+
+
+class Reading(Strict):
+    """Which reading of the source is tested (ADR-007 section 3.2).
+
+    ``kind`` is how the project tests it; ``text_says`` is how the source
+    uses it, when that differs or is known. The limitations section of the
+    report is built from both.
+    """
+
+    kind: Literal[READING_KINDS]  # type: ignore[valid-type]
+    text_says: Optional[Literal[READING_KINDS]] = None  # type: ignore[valid-type]
+    note: Optional[str] = Field(default=None, min_length=1)
+
+    @model_validator(mode="after")
+    def _explain_gap(self):
+        if self.text_says and self.text_says != self.kind and not self.note:
+            raise ValueError(
+                f"the source reads it as {self.text_says} but it is tested as "
+                f"{self.kind}; say why in note"
+            )
+        return self
+
+
+class OperationalChoice(Strict):
+    """One choice the source does not fix, and who fixed it."""
+
+    choice: str = Field(min_length=1)
+    value: Union[bool, int, float, str, List[Union[bool, int, float, str]]]
+    fixed_by: Literal["text", "practitioner", "project"]
+    note: Optional[str] = Field(default=None, min_length=1)
+
+
+class TestSpec(Strict):
+    """Where the principle is tested: one domain outcome, one slot."""
+
+    __test__: ClassVar[bool] = False  # not a pytest class
+
+    domain: str = Field(pattern=SLUG, description="validity domain, e.g. gold")
+    outcome: str = Field(pattern=SLUG, description="outcome id in the domain plan")
+    direction: Literal["increase", "decrease", "either"]
+    note: Optional[str] = Field(default=None, min_length=1)
+
+
+class Conventions(Strict):
+    """Calculation conventions a variant may change (no condition changes)."""
+
+    node_model: Optional[Literal["mean", "true"]] = None
+    zodiac: Optional[Literal["sidereal", "tropical"]] = None
+    ayanamsa: Optional[str] = Field(default=None, min_length=1)
+
+
+class Variant(Strict):
+    """A declared permutation of the principle; never searched.
+
+    ``candidate``: one slot per outcome and its own verdict; needs a
+    ``reason``. ``sensitivity``: no slot and no verdict; shown on the
+    curve. A variant changes declared ``params`` (within their ranges)
+    and/or ``conventions``, nothing else.
+    """
+
+    id: str = Field(pattern=SLUG)
+    role: Literal["candidate", "sensitivity"]
+    params: Dict[Annotated[str, Field(pattern=PARAM_NAME)], float] = Field(
+        default_factory=dict
+    )
+    conventions: Optional[Conventions] = None
+    reason: Optional[str] = Field(default=None, min_length=1)
+    source: Optional[Source] = None
+
+    @model_validator(mode="after")
+    def _changes_something(self):
+        if self.id == "primary":
+            raise ValueError("variant id 'primary' is reserved for the rule itself")
+        conv = self.conventions.model_dump(exclude_none=True) if self.conventions else {}
+        if not self.params and not conv:
+            raise ValueError(
+                f"variant '{self.id}' changes nothing; give params or conventions"
+            )
+        if self.role == "candidate" and not self.reason:
+            raise ValueError(f"candidate variant '{self.id}' needs a reason")
+        return self
+
+
 class Rule(Strict):
     """One astrological rule.
 
@@ -394,6 +563,13 @@ class Rule(Strict):
         description="stamps of earlier versions, moved here when a new version starts",
     )
     review: List[ReviewEntry] = Field(default_factory=list)
+    reading: Optional[Reading] = None
+    operationalisation: List[OperationalChoice] = Field(default_factory=list)
+    tests: List[TestSpec] = Field(
+        default_factory=list,
+        description="where this principle is tested; one slot each (ADR-007)",
+    )
+    variants: List[Variant] = Field(default_factory=list)
     notes: Optional[Dict[str, Any]] = None
 
     _template: Dict[str, Any] = PrivateAttr(default_factory=dict)
@@ -414,7 +590,8 @@ class Rule(Strict):
                 "parameter(s) declared but never referenced as $name: "
                 + ", ".join(unused)
             )
-        rule = handler(bound)
+        with compose.entering(data.get("id")):
+            rule = handler(bound)
         rule._template = copy.deepcopy(data)
         return rule
 
@@ -440,6 +617,53 @@ class Rule(Strict):
     def param_values(self) -> Dict[str, float]:
         """``{name: current value}``."""
         return {name: p.value for name, p in self.params.items()}
+
+    @property
+    def uses(self) -> List[compose.ResolvedUse]:
+        """The rules this rule's conditions point at with ``use``."""
+        return compose.parents(self)
+
+    def use_fingerprint(self) -> Dict[str, Any]:
+        """Ids, versions and condition hashes of every ``use`` ancestor."""
+        return compose.fingerprint(self)
+
+    def variant(self, variant_id: str) -> Variant:
+        """Return the declared variant ``variant_id``; KeyError otherwise."""
+        for item in self.variants:
+            if item.id == variant_id:
+                return item
+        raise KeyError(
+            f"{self.id} has no variant '{variant_id}'."
+            + suggest(variant_id, [v.id for v in self.variants])
+        )
+
+    @model_validator(mode="after")
+    def _v3_blocks(self):
+        if self.tests and (self.reading is None or not self.operationalisation):
+            raise ValueError(
+                "a rule with tests needs reading and operationalisation "
+                "(ADR-007 F-9): say which reading is tested and every choice "
+                "the source does not fix"
+            )
+        seen_tests = set()
+        for test in self.tests:
+            key = (test.domain, test.outcome)
+            if key in seen_tests:
+                raise ValueError(f"test {test.domain}.{test.outcome} is listed twice")
+            seen_tests.add(key)
+        choices = [c.choice for c in self.operationalisation]
+        dup = sorted({c for c in choices if choices.count(c) > 1})
+        if dup:
+            raise ValueError(f"operationalisation lists {', '.join(dup)} twice")
+        ids = [v.id for v in self.variants]
+        dup = sorted({v for v in ids if ids.count(v) > 1})
+        if dup:
+            raise ValueError(f"variant id(s) used twice: {', '.join(dup)}")
+        for item in self.variants:
+            problems = out_of_range(self.params, item.params)
+            if problems:
+                raise ValueError(f"variant '{item.id}': " + "; ".join(problems))
+        return self
 
     @model_validator(mode="after")
     def _consistent(self):
@@ -486,15 +710,22 @@ __all__ = [
     "AtLeast",
     "ChartSpec",
     "Condition",
+    "Conventions",
     "ExpectedEffect",
     "Leaf",
     "NotOf",
+    "OperationalChoice",
     "Param",
     "Place",
+    "Reading",
     "ReferenceCase",
     "ReviewEntry",
     "Rule",
     "Source",
+    "TestSpec",
+    "UseOf",
+    "UseTarget",
+    "Variant",
     "Window",
     "json_schema",
     "write_json_schema",

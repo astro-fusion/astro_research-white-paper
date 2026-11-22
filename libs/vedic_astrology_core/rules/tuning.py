@@ -66,6 +66,31 @@ class Param(Strict):
         return [v for v in values if v <= self.max + 1e-9]
 
 
+def out_of_range(params: Dict[str, "Param"], values: Dict[str, float]) -> List[str]:
+    """Problems with ``values`` for declared ``params`` (unknown name, range).
+
+    Used for declared variants (schema v3): a variant may only set a declared
+    parameter to a value inside its range, so it is a point of the grid that
+    ``fit`` could also reach.
+    """
+    problems = []
+    for name, value in values.items():
+        if name not in params:
+            declared = ", ".join(sorted(params)) or "none"
+            problems.append(
+                f"parameter '{name}' is not declared under params (declared: "
+                f"{declared})"
+            )
+            continue
+        spec = params[name]
+        if not spec.min <= value <= spec.max:
+            problems.append(
+                f"{name} = {value:g} lies outside its range "
+                f"[{spec.min:g}, {spec.max:g}]"
+            )
+    return problems
+
+
 def find_refs(value: Any) -> Set[str]:
     """Every ``$name`` referenced anywhere inside ``value``."""
     found: Set[str] = set()
@@ -373,6 +398,7 @@ __all__ = [
     "allow_param_refs",
     "bind_template",
     "find_refs",
+    "out_of_range",
     "param_values",
     "substitute",
 ]

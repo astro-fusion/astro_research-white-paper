@@ -91,6 +91,9 @@
                 "$ref": "#/$defs/AtLeast"
               },
               {
+                "$ref": "#/$defs/UseOf"
+              },
+              {
                 "$ref": "#/$defs/Leaf_in_sign"
               },
               {
@@ -250,6 +253,9 @@
               },
               {
                 "$ref": "#/$defs/AtLeast"
+              },
+              {
+                "$ref": "#/$defs/UseOf"
               },
               {
                 "$ref": "#/$defs/Leaf_in_sign"
@@ -529,6 +535,9 @@
               },
               {
                 "$ref": "#/$defs/AtLeast"
+              },
+              {
+                "$ref": "#/$defs/UseOf"
               },
               {
                 "$ref": "#/$defs/Leaf_in_sign"
@@ -1003,6 +1012,59 @@
         "others"
       ],
       "title": "ConjOrAspect",
+      "type": "object"
+    },
+    "Conventions": {
+      "additionalProperties": false,
+      "description": "Calculation conventions a variant may change (no condition changes).",
+      "properties": {
+        "ayanamsa": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ayanamsa"
+        },
+        "node_model": {
+          "anyOf": [
+            {
+              "enum": [
+                "mean",
+                "true"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Node Model"
+        },
+        "zodiac": {
+          "anyOf": [
+            {
+              "enum": [
+                "sidereal",
+                "tropical"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Zodiac"
+        }
+      },
+      "title": "Conventions",
       "type": "object"
     },
     "CycleResonance": {
@@ -4475,6 +4537,9 @@
               "$ref": "#/$defs/AtLeast"
             },
             {
+              "$ref": "#/$defs/UseOf"
+            },
+            {
               "$ref": "#/$defs/Leaf_in_sign"
             },
             {
@@ -4611,6 +4676,114 @@
         "not"
       ],
       "title": "NotOf",
+      "type": "object"
+    },
+    "OperationalChoice": {
+      "additionalProperties": false,
+      "description": "One choice the source does not fix, and who fixed it.",
+      "properties": {
+        "choice": {
+          "minLength": 1,
+          "title": "Choice",
+          "type": "string"
+        },
+        "fixed_by": {
+          "enum": [
+            "text",
+            "practitioner",
+            "project"
+          ],
+          "title": "Fixed By",
+          "type": "string"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "string"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": "array"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "choice",
+        "value",
+        "fixed_by"
+      ],
+      "title": "OperationalChoice",
       "type": "object"
     },
     "OrbCloseness": {
@@ -4908,6 +5081,56 @@
         "orb"
       ],
       "title": "PlanetPair",
+      "type": "object"
+    },
+    "Reading": {
+      "additionalProperties": false,
+      "description": "Which reading of the source is tested (ADR-007 section 3.2).\n\n``kind`` is how the project tests it; ``text_says`` is how the source\nuses it, when that differs or is known. The limitations section of the\nreport is built from both.",
+      "properties": {
+        "kind": {
+          "enum": [
+            "forward_trigger",
+            "concurrent",
+            "post_event_classification"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "text_says": {
+          "anyOf": [
+            {
+              "enum": [
+                "forward_trigger",
+                "concurrent",
+                "post_event_classification"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text Says"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "Reading",
       "type": "object"
     },
     "ReferenceCase": {
@@ -5548,6 +5771,53 @@
       "title": "Strength",
       "type": "object"
     },
+    "TestSpec": {
+      "additionalProperties": false,
+      "description": "Where the principle is tested: one domain outcome, one slot.",
+      "properties": {
+        "direction": {
+          "enum": [
+            "increase",
+            "decrease",
+            "either"
+          ],
+          "title": "Direction",
+          "type": "string"
+        },
+        "domain": {
+          "description": "validity domain, e.g. gold",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "title": "Domain",
+          "type": "string"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "outcome": {
+          "description": "outcome id in the domain plan",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "title": "Outcome",
+          "type": "string"
+        }
+      },
+      "required": [
+        "domain",
+        "outcome",
+        "direction"
+      ],
+      "title": "TestSpec",
+      "type": "object"
+    },
     "TransitAspect": {
       "additionalProperties": false,
       "description": "Parameters of ``transit_aspects_natal``.",
@@ -5950,6 +6220,67 @@
       "title": "TuningEntry",
       "type": "object"
     },
+    "UseOf": {
+      "additionalProperties": false,
+      "description": "The frozen primary conditions of another rule (schema v3).\n\nWritten ``use: <rule id>`` or ``use: {id: <rule id>, version: <n>}``.\nOn validation the parent's conditions, with its parameters bound, are\nexpanded into ``all`` (one child), so the engine evaluates the leaf as\nan ordinary \"all of\" node. A missing id, a parent without conditions, a\nversion that differs from the pin and a reference cycle are errors.",
+      "properties": {
+        "use": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)+$",
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/UseTarget"
+            }
+          ],
+          "description": "a rule id, or {id, version} to pin the version"
+        }
+      },
+      "required": [
+        "use"
+      ],
+      "title": "UseOf",
+      "type": "object"
+    },
+    "UseTarget": {
+      "additionalProperties": false,
+      "description": "The rule a ``use`` leaf points at, optionally pinned to a version.",
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)+$",
+          "title": "Id",
+          "type": "string"
+        },
+        "version": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "refuse the parent at any other version",
+          "title": "Version"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "UseTarget",
+      "type": "object"
+    },
     "Validation": {
       "additionalProperties": false,
       "description": "Written once per rule version by ``astro-rules confirm``.",
@@ -6134,6 +6465,83 @@
       "title": "VargaSign",
       "type": "object"
     },
+    "Variant": {
+      "additionalProperties": false,
+      "description": "A declared permutation of the principle; never searched.\n\n``candidate``: one slot per outcome and its own verdict; needs a\n``reason``. ``sensitivity``: no slot and no verdict; shown on the\ncurve. A variant changes declared ``params`` (within their ranges)\nand/or ``conventions``, nothing else.",
+      "properties": {
+        "conventions": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Conventions"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "title": "Id",
+          "type": "string"
+        },
+        "params": {
+          "patternProperties": {
+            "^[a-z][a-z0-9_]*$": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "title": "Params",
+          "type": "object"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "role": {
+          "enum": [
+            "candidate",
+            "sensitivity"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Source"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "role"
+      ],
+      "title": "Variant",
+      "type": "object"
+    },
     "WeekdayLordIs": {
       "additionalProperties": false,
       "description": "Parameters of ``weekday_lord_is``.",
@@ -6299,6 +6707,9 @@
             },
             {
               "$ref": "#/$defs/AtLeast"
+            },
+            {
+              "$ref": "#/$defs/UseOf"
             },
             {
               "$ref": "#/$defs/Leaf_in_sign"
@@ -6503,6 +6914,13 @@
       "default": null,
       "title": "Notes"
     },
+    "operationalisation": {
+      "items": {
+        "$ref": "#/$defs/OperationalChoice"
+      },
+      "title": "Operationalisation",
+      "type": "array"
+    },
     "params": {
       "patternProperties": {
         "^[a-z][a-z0-9_]*$": {
@@ -6511,6 +6929,17 @@
       },
       "title": "Params",
       "type": "object"
+    },
+    "reading": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Reading"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
     },
     "reference_cases": {
       "items": {
@@ -6550,6 +6979,14 @@
       ],
       "default": null
     },
+    "tests": {
+      "description": "where this principle is tested; one slot each (ADR-007)",
+      "items": {
+        "$ref": "#/$defs/TestSpec"
+      },
+      "title": "Tests",
+      "type": "array"
+    },
     "tier": {
       "enum": [
         "classical",
@@ -6574,6 +7011,13 @@
         "$ref": "#/$defs/Validation"
       },
       "title": "Validation History",
+      "type": "array"
+    },
+    "variants": {
+      "items": {
+        "$ref": "#/$defs/Variant"
+      },
+      "title": "Variants",
       "type": "array"
     },
     "version": {
