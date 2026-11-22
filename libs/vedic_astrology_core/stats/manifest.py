@@ -4,6 +4,10 @@
 row count and date range of every input, the git commit (and whether the
 working tree was dirty), the seed, and the ephemeris configuration
 (``ephemeris_model`` "swieph" or "moshier", ayanamsa, node model).
+
+``provisional`` is True unless the run came from a clean git checkout and
+was not flagged provisional (ADR-004 D-2); with ``require_clean=True`` a
+non-provisional manifest from a dirty tree raises (see :mod:`.seal`).
 """
 
 import hashlib
@@ -13,6 +17,8 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional, Union
+
+from .seal import require_clean_tree, tree_state
 
 PathLike = Union[str, Path]
 
@@ -69,6 +75,8 @@ def build_manifest(
     engine: Any = None,
     repo_root: Optional[PathLike] = None,
     extra: Optional[Dict[str, Any]] = None,
+    provisional: bool = False,
+    require_clean: bool = False,
 ) -> Dict[str, Any]:
     """Assemble a manifest dictionary.
 
@@ -79,8 +87,14 @@ def build_manifest(
         seed: The seed passed to ``np.random.default_rng``.
         engine: An ``EphemerisEngine`` or its ``get_ephemeris_info()`` dict.
         repo_root: Repository for the git commit (default: current dir).
-        extra: Any further study-specific fields.
+        extra: Any further study-specific fields. An ``extra`` value can
+            set ``provisional`` to True but never to False.
+        provisional: Flag the run as provisional.
+        require_clean: Call :func:`.seal.require_clean_tree` first, so a
+            non-provisional run from a dirty tree raises.
     """
+    if require_clean:
+        require_clean_tree(repo_root, provisional=provisional)
     records = []
     for item in inputs:
         rec = dict(item)
@@ -104,6 +118,11 @@ def build_manifest(
     manifest.update(engine_info(engine))
     if extra:
         manifest.update(extra)
+    manifest["provisional"] = bool(
+        provisional
+        or tree_state(repo_root)["dirty"] is not False  # untracked files count
+        or (extra or {}).get("provisional", False)
+    )
     return manifest
 
 

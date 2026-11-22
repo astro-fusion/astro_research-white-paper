@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "snapshots": [
+    {
+      "file": "data/snapshots/gold_market_3085b0d501ec.csv",
+      "sha256": "3085b0d501ecd3f123b6ca48ef4b13705e2d22d1a9465a0e9f463aa81032365a",
+      "rows": 6150,
+      "date_min": "2000-09-05",
+      "date_max": "2026-10-30",
+      "source_id": "yahoo_finance",
+      "source_url": "https://finance.yahoo.com/quote/GC=F",
+      "licence": "Yahoo terms of use; no redistribution",
+      "committable": false,
+      "committed": false,
+      "fetched_at": "2026-11-08T02:18:00+00:00"
+    },
+    {
+      "file": "data/snapshots/offline_ad41c168bef0.csv",
+      "sha256": "ad41c168bef046b721ac40eb974c2d21fad5bec0cefe988de37dc1b49edb1c04",
+      "rows": 222,
+      "date_min": "2015-01-31",
+      "date_max": "2023-12-31",
+      "source_id": "tracked_offline_fallback",
+      "source_url": "studies/earthquake/data/india_nepal_data.json",
+      "licence": "Public domain (US Government)",
+      "committable": true,
+      "committed": false,
+      "fetched_at": "2026-11-08T03:07:27+00:00"
+    },
+    {
+      "file": "data/snapshots/silver_market_bb3e274e4079.csv",
+      "sha256": "bb3e274e4079c6423bbefc316acd519d0534dcd564773709d2c65f4de3c8817d",
+      "rows": 5824,
+      "date_min": "2000-08-30",
+      "date_max": "2026-10-30",
+      "source_id": "yahoo_finance",
+      "source_url": "https://finance.yahoo.com/quote/SI=F",
+      "licence": "Yahoo terms of use; no redistribution",
+      "committable": false,
+      "committed": false,
+      "fetched_at": "2026-11-08T02:18:37+00:00"
+    },
+    {
+      "file": "data/snapshots/usgs_d3d3d6ec8405.csv",
+      "sha256": "d3d3d6ec840599341782147b35579b69dae3919dd2668d762659270baef19972",
+      "rows": 1645,
+      "date_min": "1976-01-07",
+      "date_max": "2026-10-25",
+      "source_id": "usgs_comcat",
+      "source_url": "https://earthquake.usgs.gov/fdsnws/event/1/query",
+      "licence": "Public domain (US Government)",
+      "committable": true,
+      "committed": false,
+      "fetched_at": "2026-11-08T02:07:08+00:00"
+    },
+    {
+      "file": "data/snapshots/world_atlas_110m_2516c915867c.json",
+      "sha256": "2516c915867c7baf18ddec727aec46c315541a07cfb3d79a6559b05d5e94eee8",
+      "rows": null,
+      "date_min": null,
+      "date_max": null,
+      "source_id": "world_atlas",
+      "source_url": "https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json",
+      "licence": "Public domain (Natural Earth)",
+      "committable": true,
+      "committed": false,
+      "fetched_at": "2026-11-08T03:07:12+00:00"
+    },
+    {
+      "file": "data/snapshots/worldbank_pinksheet_3c8d9d8dbb48.xlsx",
+      "sha256": "3c8d9d8dbb48342fdbf24777c39a8ce8964cc2fd0958f72f6779e6e4ad99cde2",
+      "rows": null,
+      "date_min": null,
+      "date_max": null,
+      "source_id": "worldbank_pinksheet",
+      "source_url": "https://thedocs.worldbank.org/en/doc/74e8be41ceb20fa0da750cda2f6b9e4e-0050012026/related/CMO-Historical-Data-Monthly.xlsx",
+      "licence": "CC BY 4.0",
+      "committable": true,
+      "committed": false,
+      "fetched_at": "2026-11-08T03:07:11+00:00"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+astrologer,published_date,url,quote,target_start,target_end,predicted_direction,predicted_level,method_cited
+A One,2010-07-05,https://example.org/a,late,2010-06-01,2010-12-31,up,1400,transit
+B Two,2012-05-01,,no ref,2012-06-01,2012-12-31,down,1500,dasha
+C Three,not-a-date,https://example.org/c,bad date,2012-06-01,2012-12-31,down,1500,dasha
+D Four,2012-05-01,https://example.org/d,reversed,2012-12-31,2012-06-01,down,1500,dasha

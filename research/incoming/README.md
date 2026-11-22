@@ -22,3 +22,10 @@ Everything an external research agent (Gemini in Antigravity) produced for this 
 
 ## Licences
 These files are metadata, short quotations and citations. They contain no raw price, rainfall or catalogue data. Raw data are fetched by scripts and recorded by hash in `data/snapshots/`.
+
+## Validator (ADR-004 WP-10)
+- `python -m tools.ingest misplaced` lists files an outside agent left at the repo root or in `studies/*/rules/`; `python -m tools.ingest relocate <path> --topic <topic>` moves one here.
+- `python -m tools.ingest validate research/incoming/<topic> [--no-urls]` checks each file against the contracts in PAPER_ROADMAP section 4.3, applies the machine-checkable rejections of section 4.4, runs `astro-rules validate` on rule YAML and writes `VERIFICATION.json`. A column mismatch is reported with a suggested mapping and never renamed.
+- A person records `verdict` (accepted, rejected, unverified), `checked_by` and `checked_on` per row in `VERIFICATION.json`. `--promote` copies only rows with `verdict: accepted`, a `checked_by` name and no machine rejection into `data/registry/<topic>/`. Promoted rows keep the `row_id`, `url_status`, `archive_url`, `checked_by`, `checked_on`, `verdict` and `reject_reason` columns.
+- URL checks send the generic client name `link-checker/1.0` and nothing about the project.
+- Everything in `research/incoming/` stays committed for full transparency (owner decision, 2026-11-22). The validator controls promotion, not visibility.

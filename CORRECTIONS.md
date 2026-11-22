@@ -1,5 +1,11 @@
 # Corrections
 
+## 2026-11-22: release manuscript, gold verdict and "pre-registered" wording
+
+**What was wrong.** (a) `application/web/static/releases/vedic-numerology-research-manuscript.{docx,html,pdf}` predates the 2026-11-08 corrections, contains a placeholder figure and an unsupported "more frequently than chance" claim, and was not listed here (research review, Section on releases). Treat it as withdrawn. (b) The gold study reported one exploration discovery (Jupiter exalted, p = 0.0001). That p-value is not attainable: the circular-shift test drew 10,000 shifts with replacement from 2,663 distinct ones (research review C1). The exact p is 1/2,664 and the BY q is about 0.068, so the gold verdict is null with zero discoveries. The stored `results.json` has not yet been re-run with the exact test; the README states the corrected reading. (c) The README said each study's plan was written "before any data are analysed" and that one command reproduces results. Neither held: the plans were committed within minutes of the first run on a dirty tree, the same series had been analysed in the withdrawn papers, and no external timestamp exists (review C2).
+
+**What changed.** The README now calls the plans "fixed analysis plans committed with the first run" and reserves "pre-registration" for a deposit made before the data exist. The gold verdict wording is corrected. No file is deleted by this entry; removal of old PDFs and release files awaits owner approval (ADR-004 H6).
+
 ## 2026-11-22: withdrawn documents no longer rendered; CI no longer runs generate_artifacts.py
 
 **What was wrong.** The website still rendered documents that print results retracted on 2026-11-08 (research review C3, C5): `papers/00_executive_summary.qmd`, `papers/COMPREHENSIVE_RESEARCH_THESIS.qmd`, `papers/VEDIC_SYSTEMS_EMPIRICAL_ANALYSIS.qmd`, `papers/research_paper.md`, `studies/earthquake/paper/rigor_audit.qmd`, `studies/numerology_vs_astrology/paper/numerology_planet_timeline.qmd` and the notes in `studies/remedy_conflict_matrix/paper/`. Their headline claims (a 120:1 frequency mismatch, "over 2,500 combinations", XAU/USD spot, "no predictive power") contradict the current artifacts. The scientific-reporting workflow also ran `scripts/generate_artifacts.py`, the old pipeline that writes tropical-era artifacts into `studies/gold_market/artifacts`.

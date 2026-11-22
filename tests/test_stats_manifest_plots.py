@@ -69,6 +69,12 @@ def test_git_commit_outside_repo(tmp_path):
     assert git_commit(tmp_path)["commit"] is None
 
 
+def test_manifest_outside_repo_is_provisional(tmp_path):
+    """No git checkout means no seal: the manifest says provisional."""
+    m = json.loads(write_manifest(tmp_path / "t.csv", repo_root=tmp_path).read_text())
+    assert m["provisional"] is True
+
+
 def test_save_figure_adds_footer(tmp_path):
     """The footer carries hash, commit and seed; missing keys raise."""
     fig, ax = plt.subplots()

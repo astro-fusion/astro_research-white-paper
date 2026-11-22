@@ -1,0 +1,101 @@
+# Licence register (ADR-004 WP-11; PAPER_ROADMAP section 4.5).
+#
+# decision: commit    -> the snapshot file may be committed, with attribution
+# decision: hash_only -> publish the SHA-256 and the fetch script, never the file
+#
+# These decisions come from PAPER_ROADMAP 4.5 and the terms pages named below.
+# They have NOT yet been read and confirmed by a person (task H4). Until
+# `verified` is true and `date_read` is set, treat a "commit" decision as
+# provisional and prefer hash_only when in doubt.
+sources:
+  yahoo_finance:
+    name: Yahoo Finance (via yfinance), COMEX gold and silver front-month futures
+    licence: Yahoo terms of use; no redistribution
+    terms_url: https://policies.yahoo.com/us/en/yahoo/terms/index.htm
+    decision: hash_only
+    verified: false
+    date_read: null
+    note: GC=F and SI=F are futures, not spot. Returns derived from them reproduce the series and are not committed.
+  lbma:
+    name: LBMA gold and silver prices (any route, including the former FRED copies)
+    licence: ICE Benchmark Administration terms; no redistribution
+    terms_url: https://www.lbma.org.uk/prices-and-data/precious-metal-prices
+    decision: hash_only
+    verified: false
+    date_read: null
+    note: FRED withdrew the LBMA series in 2022.
+  worldbank_pinksheet:
+    name: World Bank Commodity Price Data (The Pink Sheet), monthly
+    licence: CC BY 4.0
+    terms_url: https://www.worldbank.org/en/about/legal/terms-of-use-for-datasets
+    decision: commit
+    verified: false
+    date_read: null
+    note: Attribute the World Bank.
+  usgs_comcat:
+    name: USGS ComCat earthquake catalogue
+    licence: Public domain (US Government)
+    terms_url: https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits
+    decision: commit
+    verified: false
+    date_read: null
+  cftc_cot:
+    name: CFTC Commitments of Traders (disaggregated, futures only)
+    licence: Public domain (US Government)
+    terms_url: https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm
+    decision: commit
+    verified: false
+    date_read: null
+  fred_us_gov:
+    name: FRED series produced by US government bodies (TIPS yield DFII10, Fed dollar index DTWEXBGS)
+    licence: Public domain (US Government)
+    terms_url: https://fred.stlouisfed.org/legal/
+    decision: commit
+    verified: false
+    date_read: null
+    note: Check each series' own copyright notice on its FRED page before adding a series here.
+  fred_cboe:
+    name: CBOE volatility indices on FRED (VIX, GVZ)
+    licence: CBOE terms; restricted
+    terms_url: https://fred.stlouisfed.org/legal/
+    decision: hash_only
+    verified: false
+    date_read: null
+  gfz_kp:
+    name: GFZ Potsdam Kp, ap and Ap indices
+    licence: CC BY 4.0
+    terms_url: https://kp.gfz-potsdam.de/en/data
+    decision: commit
+    verified: false
+    date_read: null
+    note: Cite Matzka et al. (2021), Space Weather 19, e2020SW002641.
+  silso_sunspots:
+    name: SILSO sunspot number
+    licence: CC BY-NC 4.0
+    terms_url: https://www.sidc.be/SILSO/datafiles
+    decision: hash_only
+    verified: false
+    date_read: null
+    note: Non-commercial term; not committed until the terms are read.
+  isc_gem:
+    name: ISC-GEM global instrumental earthquake catalogue
+    licence: CC BY-SA 3.0
+    terms_url: https://www.isc.ac.uk/iscgem/
+    decision: commit
+    verified: false
+    date_read: null
+    note: Share-alike applies to that file; keep it in its own folder with the licence file.
+  world_atlas:
+    name: world-atlas 110m country outlines (Natural Earth, via npm)
+    licence: Public domain (Natural Earth)
+    terms_url: https://www.naturalearthdata.com/about/terms-of-use/
+    decision: commit
+    verified: false
+    date_read: null
+  tracked_offline_fallback:
+    name: Tracked offline earthquake fallback (studies/earthquake/data/india_nepal_data.json), derived from USGS ComCat
+    licence: Public domain (US Government)
+    terms_url: https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits
+    decision: commit
+    verified: false
+    date_read: null

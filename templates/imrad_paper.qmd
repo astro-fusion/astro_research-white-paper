@@ -1,35 +1,58 @@
 ---
-title: "Project Analysis Report: Vedic Astrology Empirical Study"
-author: "Research Pipeline"
+title: "Paper title"
+author: "Author names"
 date: last-modified
+# Journal format belongs here, per paper (ADR-004 D-7); do not set it in _quarto.yml.
 format:
   elsevier-pdf:
     keep-tex: true
     journal:
-      name: "Journal of Computational Science"
+      name: "Journal name"
       formatting: preprint
 ---
 
+<!--
+Numbers are never typed. Read each one from results.json through the paper kit:
+  R.get("a.b.c")  R.num("a.b", 2)  R.count("a.b")  R.pct("a.b")  R.p("a.b")  R.text("a.b")
+A missing key raises and stops the build. Check with:
+  python tools/check_paper_keys.py <this file> --results path/to/results.json
+Years and section numbers go in numbers_allowlist.txt beside the paper.
+-->
+
+```{python}
+#| include: false
+import sys
+from pathlib import Path
+
+REPO = Path.cwd().resolve().parents[2]  # adjust to where this paper lives
+sys.path.insert(0, str(REPO / "libs"))
+from vedic_astrology_core.paperkit import Results  # noqa: E402
+
+R = Results.load("../artifacts/results.json")
+```
+
 # Abstract
-This paper presents the automated analysis of celestial, numerological and terrestrial data correlations. Using a standardized IMRaD structure, we evaluate the statistical significance of multi-domain correlations.
 
-# 1. Introduction
-The objective of this research is to bridge the epistemological gap between traditional Vedic astrological claims and high-precision celestial mechanics through reproducible statistical testing.
+State the question, the fixed analysis plan, the data, the result and its limits in plain words. Every figure comes from `R.num(...)`.
 
-# 2. Methods
-All data was generated using the `src/` modular engine library.
-- **Ephemeris**: Computed via Swiss Ephemeris (`pyswieph`) with `r"Lahiri"` ayanamsa.
-- **Statistics**: P-values and Cohen's $d$ effect sizes were calculated using the `vedic_astrology_core.stats` package (`libs/vedic_astrology_core/stats/`).
+# Introduction
 
-# 3. Results
-Results are inserted here by the analysis pipeline (see `research/scripts/`).
+Background, the claim under test, and why it matters. Use "fixed analysis plan" for a plan committed with the first run; "pre-registered" only for a plan deposited on OSF before the data existed.
 
-# 4. Discussion
-The observed correlations were evaluated against a control group...
+# Methods
 
-# 5. Conclusion
-Phase 2 implementation demonstrates the feasibility of automated academic-grade reporting.
+Data and snapshot hashes, the plan and its amendments, indicators and their episode counts, the test, the baselines, the multiplicity correction, the smallest effect size of interest.
+
+# Results
+
+We tested `{python} R.count('headline.n_tests_explore')` hypotheses; `{python} R.count('headline.n_significant_explore')` passed the correction.
+
+# Discussion
+
+Interpretation, effect found, effect excluded or inconclusive (never "null" alone), limitations and deviations from the plan.
+
+# Conclusion
+
+What the evidence supports and what it does not.
 
 # References
-1. IAU 2006 Theory of Precession.
-2. Bṛhat Parāśara Horāśāstra.

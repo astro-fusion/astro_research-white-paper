@@ -1,0 +1,2 @@
+dataset,provider,series_id,frequency,start,end,units,tz_sampling_time,licence,redistributable,url
+LBMA,LBMA,AM,daily,2000-01-01,2020-01-01,USD,London,unclear,unclear,https://example.org/s

@@ -1,0 +1,10 @@
+id: flood.test.good
+name: Good
+tier: experimental
+source: {text: T, edition: E, chapter: "1", verse: "2"}
+params:
+  x: {value: 1, min: 0, max: 2, step: 1, unit: deg}
+expected_effect: {direction: increase}
+reference_cases:
+  - {moment: "2000-01-01T00:00:00Z", expect: fires}
+  - {moment: "2000-02-01T00:00:00Z", expect: silent}

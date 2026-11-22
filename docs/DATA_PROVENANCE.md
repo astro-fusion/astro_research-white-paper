@@ -1,118 +1,61 @@
-# 📦 Data Provenance & Reproducibility Governance
+# Data Provenance and Reproducibility Governance
 
-> This document governs how all empirical data and
-> astrological ephemeris files are sourced, versioned, validated, and
-> re-used across this repository. External researchers must be able to
-> reproduce every published result using this document as their sole guide.
+This document governs how empirical data and ephemeris files are sourced,
+versioned, hashed and licensed. It describes only files and scripts that exist
+in the repository.
 
----
+## 1. Governing principles
 
-## 1. Governing Principles
+1. **Source traceability.** Every dataset names its source URL and licence in
+   `data/snapshot_index.json` and `data/registry/licences.yaml`.
+2. **Immutability.** A snapshot is named by the first 12 hex digits of its
+   SHA-256 (`<name>_<sha12>.<ext>`); new data make a new file, never an overwrite.
+3. **Checksum verification.** `python scripts/check_data.py` (`make check-data`)
+   recomputes the hash of every indexed file that is present and fails on a
+   mismatch or on a file in `data/snapshots/` that the index does not list.
+4. **Hash plus fetch script when unsure.** A file whose licence does not allow
+   redistribution stays out of git; its hash and fetch script are published.
 
-1. **Source Traceability** — Every dataset must cite its originating instrument,
-   API, or simulation configuration.
-2. **Immutability** — Raw datasets are never overwritten; new versions are stored
-   with incremented version tags.
-3. **Checksum Verification** — All data files > 1 MB are accompanied by a
-   `SHA-256` checksum in `data/<subdirectory>/CHECKSUMS.sha256`.
-4. **Seed Locking** — All stochastic results list their RNG seed in
-   `docs/VALIDATION_AND_EPISTEMOLOGY.md`.
-5. **Format Standardization** — Scientific datasets use HDF5 or Parquet; never raw CSV for
-   multi-dimensional arrays.
+## 2. Snapshot index and licence register
 
----
+- `data/snapshot_index.json`: file, SHA-256, rows, date range, source id,
+  source URL, licence, `committable`, `committed`, `fetched_at`.
+- `data/registry/licences.yaml`: per source, the terms URL, licence, decision
+  (`commit` or `hash_only`), `verified` and `date_read`. The decisions follow
+  PAPER_ROADMAP section 4.5 and have not yet been read and confirmed by a person.
+- Code: `libs/vedic_astrology_core/datasets/snapshots.py`.
 
-## 2. Dataset Registry
+## 3. Datasets in the index
 
-### 2.1 Ephemeris Data (`data/ephemeris/`)
+| Source id | Content | Fetched by | Decision |
+|---|---|---|---|
+| `yahoo_finance` | Gold `GC=F` and silver `SI=F`, COMEX front-month continuous futures, daily | `libs/vedic_astrology_core/markets/fetch.py` | hash only |
+| `worldbank_pinksheet` | World Bank Pink Sheet, monthly | `scripts/fetch/worldbank_pinksheet.py` | commit |
+| `usgs_comcat` | USGS ComCat earthquakes | `studies/earthquake/scripts/fetch_catalogue.py` | commit |
+| `tracked_offline_fallback` | Tracked earthquake fallback, 2015-2023 | `studies/earthquake/data/india_nepal_data.json` | commit |
+| `world_atlas` | Country outlines for site maps | `scripts/export_site_data.py` | commit |
+| `cftc_cot`, `gfz_kp`, `fred_us_gov`, `fred_cboe` | Fetch scripts exist; no snapshot indexed yet | `scripts/fetch/` | see register |
 
-| Dataset ID                       | Source                    | Format              | Coverage          | Notes                                                  |
-| -------------------------------- | ------------------------- | ------------------- | ----------------- | ------------------------------------------------------ |
-| `swiss_ephemeris_full`           | Astro.com Swiss Ephemeris | Binary `.se1` files | −2000 to +3000 CE | Licensed; not redistributed — download script provided |
-| `jpl_horizons_planets_2000_2100` | NASA JPL Horizons API     | Parquet             | 2000–2100 CE      | 1-day cadence; 10 bodies                               |
-| `lunar_nodes_historical`         | Swiss Ephemeris           | Parquet             | 1900–2100 CE      | True node and mean node                                |
+**The gold source.** The gold and silver series now in the index are Yahoo
+Finance continuous front-month COMEX futures (`GC=F`, `SI=F`). They are futures,
+not spot, and they are not LBMA prices. FRED withdrew the LBMA series in 2022,
+so `fred.py` refuses them. A verified LBMA route is planned (ADR-004 WP-12).
+Yahoo data are not redistributed; the index holds their hashes.
 
-**Ephemeris Download Script**:
+## 4. Ephemeris
 
-```bash
-# data/ephemeris/download_swiss_ephemeris.sh
-# Requires: pyswisseph already installed (pip installs the ephemeris files)
-python -c "import swisseph; print(swisseph.get_library_path())"
-# Files installed to: ~/.swisseph / or configured via SE_EPHE_PATH env variable
-export SE_EPHE_PATH="$(pwd)/data/ephemeris/swiss_ephe_files"
-pip install pyswisseph  # downloads binary ephemeris files to SE_EPHE_PATH
-```
+Planetary positions are computed with `pyswisseph` (Swiss Ephemeris, AGPL or
+Swiss Ephemeris licence). The Moshier analytic ephemeris is used unless Swiss
+Ephemeris `.se1` files are installed; each result records the
+`ephemeris_model` actually used. Ephemeris files are not redistributed.
 
----
+## 5. Reproduce a result
 
-## 3. Reproduction Instructions Per Research Track
-
-### 3.1 Astrological Chart Pipeline
-
-```bash
-python scripts/generate_planetary_dataset.py \
-    --years 2000-2100 \
-    --step 1D \
-    --fmt parquet \
-    --out data/datasets/planetary
-```
-
----
-
-## 4. Software Dependency Manifest
-
-All versions below are pinned in `pyproject.toml` and replicated in
-`ops/environment.yml` (Conda) and `ops/Dockerfile`.
-
-| Package      | Version      | Purpose                                   |
-| ------------ | ------------ | ----------------------------------------- |
-| `pyswisseph` | `≥ 2.10.3.2` | Swiss Ephemeris wrapper                   |
-| `numpy`      | `≥ 1.26.0`   | Numerical arrays, RNG                     |
-| `scipy`      | `≥ 1.12.0`   | Statistics                                |
-| `pandas`     | `≥ 2.1.0`    | DataFrame operations                      |
-| `h5py`       | `≥ 3.10.0`   | HDF5 I/O                                  |
-| `pyarrow`    | `≥ 14.0.0`   | Parquet I/O                               |
-| `astropy`    | `≥ 6.0.0`    | FITS, coordinate transforms, JD utilities |
-| `matplotlib` | `≥ 3.8.0`    | Visualisation                             |
-| `pytest`     | `≥ 8.0.0`    | Testing framework                         |
-
-**Floating-point precision configuration**:
-
-```python
-# Confirmed at import in all library entry-points
-import numpy as np
-assert np.float64 == np.double   # 64-bit IEEE 754 enforced
-# Never use np.float32 for any ephemeris computation
-```
-
----
-
-## 5. Checksum Verification Workflow
-
-```bash
-# After downloading/generating any dataset, run:
-sha256sum data/ephemeris/*.parquet > data/ephemeris/CHECKSUMS.sha256
-
-# Before using data, verify:
-sha256sum -c data/ephemeris/CHECKSUMS.sha256
-```
-
----
-
-## 6. Data Licensing
-
-| Data Category                | License                 | Redistribution                     |
-| ---------------------------- | ----------------------- | ---------------------------------- |
-| Swiss Ephemeris binary files | Swiss Ephemeris License | Only download script redistributed |
-| JPL Horizons exports         | Public Domain (NASA)    | Freely redistributable             |
-| Derived analysis outputs     | MIT                     | Freely redistributable             |
-
----
-
-_Every submitted PR that introduces new data must follow Section 2 (Dataset Registry)
-and update the appropriate `CHECKSUMS.sha256` file._
-
----
+1. Install the package: `pip install -e .` (add the `fetch` extra for Yahoo).
+2. Fetch the sources a study names, with the scripts above.
+3. Run `python scripts/check_data.py --snapshots-only`; compare your hashes with
+   the index. A hash-only source gives your copy a different hash if the vendor
+   has revised its history; record the new hash instead of editing the index.
 
 ## 7. Planetary dataset 1600-2100 (2026-11-08)
 

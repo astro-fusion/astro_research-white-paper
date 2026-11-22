@@ -110,9 +110,12 @@ astro-rules test rules/seismic/my_rule.yaml
 astro-rules explain <rule-id> 2014-07-20T11:45:00+05:45
 ```
 
-**Scientists: read a pre-registration and re-run a study.** Each study states
-its hypotheses, data, tests and correction in `studies/<name>/hypothesis.yaml`
-before any data are analysed, and one command reproduces its `results.json`:
+**Scientists: read a fixed analysis plan and re-run a study.** Each study states
+its hypotheses, data, tests and correction in `studies/<name>/hypothesis.yaml`,
+a fixed analysis plan committed with the first run (not an external
+pre-registration; see [CORRECTIONS.md](CORRECTIONS.md)). One command re-runs the
+pipeline and rewrites its `results.json`; results from a dirty git tree are
+provisional, and the numbers can differ in the last digits between machines:
 
 ```bash
 pip install -e ".[stats]"
@@ -133,16 +136,16 @@ flake8 libs/ tools/ scripts/ studies/ tests/ application/
 
 ## 🔬 Studies and current results
 
-Outcomes of the pre-registered runs (seed 42), read from each study's
+Outcomes of the runs under the fixed analysis plans (seed 42), read from each study's
 `artifacts/results.json`. A null result means no tested configuration passed
 the registered multiple-testing correction and replicated in the held-out
 period; it says nothing beyond those configurations, data and periods.
 
 | Study | Status | Outcome |
 | --- | --- | --- |
-| [Gold market](studies/gold_market/) | Run | Null. 1 of 42 exploration tests significant after Benjamini-Yekutieli, 0 confirmed in 2016-2026; Hansen SPA p = 0.53. |
+| [Gold market](studies/gold_market/) | Run | Null. The one exploration test reported as significant (Jupiter exalted) rested on a Monte Carlo p-value below the smallest attainable one; with the exact shift p-value its BY q is about 0.068, above 0.05, so there are no discoveries (research review C1; the stored results.json is still to be re-run). 0 confirmed in 2016-2026; Hansen SPA p = 0.53. |
 | [Silver market](studies/silver_market/) | Run | Null. 0 of 42 exploration tests significant, 0 confirmed; Hansen SPA p = 0.90. |
-| [Earthquake (Himalayan arc)](studies/earthquake/) | Run | Null. 0 of 26 exploration tests significant, 0 confirmed; SPA p = 0.08. The Moon in a Varuna-mandala nakshatra had the highest rate ratio in both periods but did not pass the correction; it is a candidate for a new pre-registration on independent data. |
+| [Earthquake (Himalayan arc)](studies/earthquake/) | Run | Null. 0 of 26 exploration tests significant, 0 confirmed; SPA p = 0.08. The Moon in a Varuna-mandala nakshatra had the highest rate ratio in both periods but did not pass the correction; it is a candidate for a new pre-registration (deposited before the data are fetched) on independent data. |
 | [Numerology vs astrology](studies/numerology_vs_astrology/) | Run | Equivalent to chance, as derived analytically: kappa between the numerology planet and the Moon's nakshatra lord = -0.012, within the registered +-0.05 (TOST); 9 of 9 planets' numerology-dignity correlations within +-0.10. |
 | [Mundane](studies/mundane/) | Pending | Seeded; awaiting sourced founding times for the national charts. |
 | [Remedy conflict matrix](studies/remedy_conflict_matrix/) | Descriptive | No hypothesis test. |
