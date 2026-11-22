@@ -23,7 +23,7 @@ from scipy import optimize
 from scipy.special import expit
 from scipy.stats import rankdata
 
-from .nulls import _check_rng, circular_shift_offsets
+from .nulls import _check_rng, circular_shift_offsets, shift_null_info
 
 
 def auc(y_true, score) -> float:
@@ -131,6 +131,8 @@ class ClassifierTest:
     n_draws: int
     n_folds: int
     l2: float
+    p_min: float = float("nan")
+    exact_enumeration: bool = False
 
 
 def shifted_sky_auc_test(
@@ -159,6 +161,7 @@ def shifted_sky_auc_test(
     ok = null[np.isfinite(null)]
     q = np.quantile(ok, [0.05, 0.5, 0.95]) if len(ok) else [np.nan] * 3
     p = float((1 + np.sum(ok >= obs)) / (len(ok) + 1))
+    info = shift_null_info(len(x), min_shift, n_draws)
     return ClassifierTest(
         float(obs),
         null,
@@ -166,7 +169,9 @@ def shifted_sky_auc_test(
         float(q[1]),
         float(q[2]),
         p,
-        int(n_draws),
+        int(len(offsets)),
         int(n_folds),
         float(l2),
+        p_min=1.0 / (len(ok) + 1),
+        exact_enumeration=info["exact_enumeration"],
     )

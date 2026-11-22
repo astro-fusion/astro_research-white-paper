@@ -182,6 +182,9 @@ def run_tests(hyp, grid, frame, bins_by_cat, seed, n_draws) -> pd.DataFrame:
                         "ci_low": ex.ci_low,
                         "ci_high": ex.ci_high,
                         "p_value": res.p_value,
+                        "p_min": res.p_min,
+                        "n_shifts": res.n_draws,
+                        "exact_enumeration": res.exact_enumeration,
                         "p_poisson": (
                             ex.p_greater if alt == "greater" else (ex.p_two_sided)
                         ),

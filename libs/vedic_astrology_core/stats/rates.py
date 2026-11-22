@@ -18,7 +18,7 @@ from dataclasses import dataclass
 import numpy as np
 from scipy import stats as sps
 
-from .nulls import circular_shift_offsets
+from .nulls import circular_shift_offsets, n_admissible_shifts
 from .permutation import empirical_p_value
 
 
@@ -49,6 +49,9 @@ class ShiftTest:
     n_draws: int
     min_shift: int
     alternative: str
+    p_min: float = float("nan")
+    exact_enumeration: bool = False
+    n_admissible: int = 0
 
 
 def rate_ratio(
@@ -113,7 +116,11 @@ def rate_ratio_shift_test(
     Exposure is invariant under rotation, so the null distribution of the
     rate ratio is that of the in-indicator event count. Each draw rotates the
     indicator by an offset in ``[min_shift, n - min_shift]``, exactly as
-    :func:`.nulls.circular_shift_null` does.
+    :func:`.nulls.circular_shift_null` does. When there are no more admissible
+    offsets than ``n_draws``, all of them are used once (exact test) and
+    ``n_draws`` in the result is their number; otherwise distinct offsets are
+    drawn without replacement. ``p_min = 1 / (n_draws + 1)`` is the smallest
+    attainable p-value.
     """
     ind = np.asarray(indicator).astype(bool)
     ev = np.asarray(event_bins, dtype=np.int64)
@@ -131,13 +138,17 @@ def rate_ratio_shift_test(
         null_rr = (counts / t_in) / ((n_ev - counts) / t_out)
     p = empirical_p_value(exact.n_in, counts, alternative)
     q = np.nanpercentile(null_rr[np.isfinite(null_rr)], [2.5, 50, 97.5])
+    m = n_admissible_shifts(n, min_shift)
     return ShiftTest(
         exact,
         p,
         float(q[1]),
         float(q[0]),
         float(q[2]),
-        int(n_draws),
+        int(len(offsets)),
         int(min_shift),
         alternative,
+        p_min=1.0 / (len(offsets) + 1),
+        exact_enumeration=bool(len(offsets) == m),
+        n_admissible=int(m),
     )

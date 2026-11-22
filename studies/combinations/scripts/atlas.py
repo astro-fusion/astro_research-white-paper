@@ -14,7 +14,10 @@ from typing import Dict, List, Optional
 import numpy as np
 import pandas as pd
 
-from vedic_astrology_core.stats.nulls import circular_shift_offsets
+from vedic_astrology_core.stats.nulls import (
+    circular_shift_offsets,
+    n_admissible_shifts,
+)
 from vedic_astrology_core.stats.permutation import empirical_p_value
 from vedic_astrology_core.stats.rates import indicator_rate_ratio
 
@@ -159,12 +162,15 @@ def shift_family(
             inside and outside under the null.
 
     Returns:
-        One row per candidate with exposure, RR, CI, p and ``p_rw`` (the
-        single-step Romano-Wolf adjusted p, NaN when untestable).
+        One row per candidate with exposure, RR, CI, p, ``p_min`` (the
+        smallest attainable p), ``n_shifts``, ``exact_enumeration`` and
+        ``p_rw`` (the single-step Romano-Wolf adjusted p, NaN when untestable).
     """
     ev = np.asarray(events, dtype=np.int64)
     n_ev = len(ev)
     offsets = circular_shift_offsets(n, min_shift, n_draws, rng)
+    exact = len(offsets) == n_admissible_shifts(n, min_shift)
+    p_min = 1.0 / (len(offsets) + 1)
     idx = (ev[None, :] - offsets[:, None]) % n
     max_abs_z = np.zeros(len(offsets))
     rows: List[Dict] = []
@@ -199,6 +205,9 @@ def shift_family(
                 "ci_low": rr.ci_low,
                 "ci_high": rr.ci_high,
                 "p_value": empirical_p_value(rr.n_in, counts, "two-sided"),
+                "p_min": p_min,
+                "n_shifts": int(len(offsets)),
+                "exact_enumeration": bool(exact),
             }
         )
         rows.append(row)

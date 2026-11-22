@@ -714,6 +714,18 @@
           "default": null,
           "title": "Direction"
         },
+        "exact_enumeration": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Exact Enumeration"
+        },
         "family": {
           "anyOf": [
             {
@@ -785,6 +797,26 @@
           ],
           "default": null,
           "title": "P"
+        },
+        "p_min": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "P Min"
         },
         "period": {
           "items": {
@@ -1990,6 +2022,26 @@
           ],
           "default": null,
           "title": "P"
+        },
+        "p_min": {
+          "anyOf": [
+            {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "P Min"
         },
         "period": {
           "items": {

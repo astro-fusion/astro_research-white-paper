@@ -154,6 +154,8 @@ def fit(
                 ci_low=res.exact.ci_low,
                 ci_high=res.exact.ci_high,
                 p=res.p_value,
+                p_min=res.p_min,
+                exact_enumeration=res.exact_enumeration,
                 skipped="",
             )
         rows.append(row)
@@ -225,6 +227,7 @@ def fit(
             "ci": [_num(chosen_row.get("ci_low")), _num(chosen_row.get("ci_high"))],
             "p": _num(chosen_row.get("p")),
             "q_within_grid": _num(chosen_row.get("q_within_grid")),
+            "p_min": _num(chosen_row.get("p_min")),
             "n_cells": len(cells),
             "n_events": int(len(events)),
             "period": period,
@@ -372,6 +375,8 @@ def confirm(rule: Rule, adapter: Optional[StudyAdapter]) -> Dict[str, Any]:
             rate_ratio=_num(res.exact.rate_ratio),
             ci=[_num(res.exact.ci_low), _num(res.exact.ci_high)],
             p=_num(p),
+            p_min=_num(res.p_min),
+            exact_enumeration=bool(res.exact_enumeration),
             q_family=_num(q),
             family=family,
             family_size=size,
@@ -419,6 +424,7 @@ class DoseReport:
     shift_p: float
     n_fired: int
     n_perm: int
+    shift_p_min: float = float("nan")
 
 
 def dose(rule: Rule, adapter: StudyAdapter, n_perm: int = 999) -> DoseReport:
@@ -509,7 +515,8 @@ def dose(rule: Rule, adapter: StudyAdapter, n_perm: int = 999) -> DoseReport:
         float(tau.pvalue),
         perm.p_value,
         int(fired.sum()),
-        n_perm,
+        perm.n_perm,
+        perm.p_min,
     )
 
 

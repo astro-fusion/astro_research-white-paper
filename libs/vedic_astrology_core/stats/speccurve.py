@@ -24,7 +24,7 @@ from typing import Any, Callable, Dict, List
 import numpy as np
 import pandas as pd
 
-from .nulls import _check_rng, circular_shift_offsets
+from .nulls import _check_rng, circular_shift_offsets, shift_null_info
 
 
 @dataclass
@@ -40,6 +40,8 @@ class SpecCurve:
     p_share: float
     n_draws: int
     null_value: float
+    p_min: float = float("nan")
+    exact_enumeration: bool = False
 
 
 def _cells(grid: Dict[str, List]) -> List[Dict]:
@@ -136,4 +138,8 @@ def specification_curve(
         p_share=p_share,
         n_draws=int(len(offsets)),
         null_value=float(null_value),
+        p_min=1.0 / (len(offsets) + 1),
+        exact_enumeration=bool(
+            n_draws and shift_null_info(n, min_shift, n_draws)["exact_enumeration"]
+        ),
     )

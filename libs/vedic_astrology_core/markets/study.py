@@ -214,6 +214,9 @@ def indicator_tests(
                         "ci_high": res.ci_high * s,
                         "effect_z": res.effect_z,
                         "p_value": res.p_value,
+                        "p_min": res.p_min,
+                        "n_shifts": res.n_perm,
+                        "exact_enumeration": res.exact_enumeration,
                         "unit": TARGET_UNITS[target],
                     }
                 )

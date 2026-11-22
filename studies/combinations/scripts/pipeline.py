@@ -49,6 +49,7 @@ from vedic_astrology_core.stats.manifest import (  # noqa: E402
     write_manifest,
 )
 from vedic_astrology_core.stats.multiplicity import adjust  # noqa: E402
+from vedic_astrology_core.stats.nulls import shift_null_info  # noqa: E402
 from vedic_astrology_core.stats.walk_forward import spa_test  # noqa: E402
 
 ARTIFACTS = STUDY / "artifacts"
@@ -288,6 +289,14 @@ def run(seed: int, study_id: str = "earthquake") -> Dict:
             "p_value": float(best["explore_p_value"]),
             "q_value": float(best["explore_q_value"]),
             "p_romano_wolf": float(best["explore_p_rw"]),
+            "p_min": float(best["explore_p_min"]),
+            "exact_enumeration": bool(best["explore_exact_enumeration"]),
+        },
+        "null": {
+            "explore": shift_null_info(n_ex, min_shift, int(t["n_draws"])),
+            "confirm": shift_null_info(
+                co.stop - co.start, min_shift, int(t["n_draws"])
+            ),
         },
         "spa": spa,
     }

@@ -4,6 +4,7 @@ import importlib.util
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from studies._paths import STUDIES_ROOT
 
@@ -143,7 +144,11 @@ def test_shift_family_finds_a_planted_candidate_and_controls_fwer():
     )
     top = out[out["testable"]].sort_values("p_value").iloc[0]
     assert top["id"] == "c0" and top["rate_ratio"] > 3
-    assert top["p_rw"] <= 0.01
+    # c0 repeats every 1000 steps, so shifts near multiples of 1000 realign
+    # it: enumerating all 36,001 admissible shifts gives p_rw = 0.019.
+    assert top["p_rw"] < 0.05
+    assert top["n_shifts"] == 499 and not top["exact_enumeration"]
+    assert top["p_min"] == pytest.approx(1 / 500)
     assert not out.set_index("id").loc["sparse", "testable"]
     assert np.isnan(out.set_index("id").loc["sparse", "p_rw"])
     others = out[out["testable"] & (out["id"] != "c0")]

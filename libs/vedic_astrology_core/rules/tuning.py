@@ -261,6 +261,7 @@ class ExploreResult(Strict):
     ci: List[Optional[float]] = Field(default_factory=list)
     p: Optional[float] = None
     q_within_grid: Optional[float] = None
+    p_min: Optional[float] = None
     n_cells: int = Field(ge=1)
     n_events: Optional[int] = None
     period: List[str] = Field(default_factory=list)
@@ -286,6 +287,8 @@ class ConfirmResult(Strict):
     rate_ratio: Optional[float] = None
     ci: List[Optional[float]] = Field(default_factory=list)
     p: Optional[float] = None
+    p_min: Optional[float] = None
+    exact_enumeration: Optional[bool] = None
     q_family: Optional[float] = None
     family: Optional[str] = None
     family_size: Optional[int] = None

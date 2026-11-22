@@ -152,6 +152,8 @@ def rate_during_vs_outside(
         out.update(
             {
                 "p_shift": shift.p_value,
+                "p_shift_min": shift.p_min,
+                "shift_exact_enumeration": shift.exact_enumeration,
                 "null_q025": shift.null_q025,
                 "null_q975": shift.null_q975,
             }
