@@ -13,9 +13,12 @@ Rules enforced here:
 * The outcome passes :func:`.stationarity.stationarity_gate` first; if it is
   still non-stationary after one transform the test is refused.
 * ``target="garch_abs"`` replaces the returns by the absolute GARCH(1,1)
-  standardised residuals when the optional ``arch`` package is installed
-  (``pip install arch``); without it a ``RuntimeError`` says so and the
-  caller must report the omission instead of silently switching target.
+  standardised returns computed past-only (:func:`.volatility.past_only_volatility`:
+  parameters fitted on data to ``t - 1``, refitted on a fixed schedule,
+  burn-in bars dropped), never by a full-sample fit. It needs the optional
+  ``arch`` package (``pip install arch``); without it a ``RuntimeError``
+  says so and the caller must report the omission instead of silently
+  switching target.
 * One multiplicity family across all planets and targets is the caller's job
   (:func:`.multiplicity.family`).
 """
@@ -25,6 +28,7 @@ from typing import Dict, Optional, Sequence
 import numpy as np
 import pandas as pd
 
+from . import volatility
 from .stationarity import stationarity_gate
 
 TARGETS = ("returns", "garch_abs")
@@ -32,26 +36,26 @@ TARGETS = ("returns", "garch_abs")
 
 def garch_available() -> bool:
     """Return True if the optional ``arch`` package can be imported."""
-    try:
-        import arch  # noqa: F401
-    except ImportError:
-        return False
-    return True
+    return volatility.garch_available()
 
 
-def garch_standardised_abs(returns: pd.Series) -> pd.Series:
-    """Return ``|z_t|`` from a constant-mean GARCH(1,1) fit (percent scale)."""
+def garch_standardised_abs(
+    returns: pd.Series, min_train: int = 500, refit_every: int = 21
+) -> pd.Series:
+    """Return past-only ``|z_t|`` from a constant-mean GARCH(1,1).
+
+    The value at bar ``t`` uses parameters fitted on bars before ``t``
+    (see :func:`.volatility.past_only_volatility`); the first ``min_train``
+    bars are dropped. Raises ``RuntimeError`` without ``arch``.
+    """
     if not garch_available():
         raise RuntimeError(
             "target='garch_abs' needs the optional 'arch' package; "
             "install it or report that the volatility target was omitted"
         )
-    from arch import arch_model
-
-    r = pd.Series(returns).dropna().astype(float)
-    res = arch_model(100.0 * r, mean="Constant", vol="GARCH", p=1, q=1).fit(disp="off")
-    z = res.resid / res.conditional_volatility
-    return np.abs(z).dropna()
+    return volatility.standardised_abs(
+        returns, method="garch", min_train=min_train, refit_every=refit_every
+    )
 
 
 def newey_west_lags(n: int) -> int:
@@ -67,6 +71,8 @@ def exog_granger(
     target: str = "returns",
     hac_maxlags: Optional[int] = None,
     alpha: float = 0.05,
+    garch_min_train: int = 500,
+    garch_refit_every: int = 21,
 ) -> Dict:
     """Run the exogenous-regressor ADL Wald test with HAC errors.
 
@@ -78,6 +84,9 @@ def exog_granger(
         target: "returns" (the gated series) or "garch_abs".
         hac_maxlags: Newey-West truncation (default :func:`newey_west_lags`).
         alpha: Level for the stationarity gate.
+        garch_min_train: Burn-in bars of the past-only GARCH standardisation
+            (target "garch_abs" only); these bars are dropped.
+        garch_refit_every: Refit schedule of that standardisation, in bars.
 
     Returns:
         Dict with the gate verdict and transform, the Wald statistic, degrees
@@ -107,7 +116,9 @@ def exog_granger(
         return out
     series = gate.series
     if target == "garch_abs":
-        series = garch_standardised_abs(series)
+        series = garch_standardised_abs(
+            series, min_train=garch_min_train, refit_every=garch_refit_every
+        )
 
     x = pd.DataFrame(x)
     cols = {"y": series}
