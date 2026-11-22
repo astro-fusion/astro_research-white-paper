@@ -1,0 +1,22 @@
+RULES (read first)
+You are collecting DATA SOURCES for an open, reproducible scientific project that tests Vedic (sidereal, Lahiri) astrology claims. Our earlier rounds failed for one reason: links, quotes and series IDs that looked right but did not work. So this round is about PROOF, not lists.
+1. You have a terminal. For every data source, actually download it (curl/python) into /tmp, then report: the exact URL or API call, HTTP status, file size, SHA-256, row count, first date, last date, and the first 3 and last 3 rows pasted verbatim. A source you did not download is "UNTESTED" and goes in a separate list.
+2. Licence: quote the exact licence/terms sentence and its URL. Answer "redistributable in a public GitHub repo: yes / no / unclear". Do NOT commit raw data that is not redistributable; deliver the fetch script instead.
+3. Deliver a fetch script per source (Python, stdlib + pandas/requests only) that re-downloads the file and prints its SHA-256. Scripts must not need a paid key; if a free key is needed, say so and read it from an environment variable.
+4. Never invent a series ID, DOI, URL or number. If something does not work, report the error message. A documented failure is valuable.
+5. Save everything under research/incoming/<folder>/round4/ : probe_report.md, sources.csv, fetch_*.py, and small samples (<=100 rows) only when the licence allows.
+6. End with "Gaps and doubts": what you could not get and why.
+
+TASK D3 — Monsoon, rainfall, floods and climate controls for India and Nepal, 1871 to today.
+Folder: research/incoming/flood/round4/
+
+Why: our next study (a Registered Report) tests classical rain rules against Indian summer monsoon rainfall. It needs a long homogeneous rainfall series and the climate drivers as controls. Nothing has been downloaded yet.
+
+A. All-India summer monsoon rainfall (June–September), annual and monthly, 1871 to the latest year: IITM homogeneous Indian monthly rainfall data set (tropmet.res.in; find the current file link), plus the 30 meteorological subdivisions series. Also IMD gridded 0.25 deg rainfall (imdpune.gov.in; the Python package imdlib can download it: test it). Report the exact file, rows, first/last year.
+B. IMD's official seasonal forecasts and "long period average" (LPA) percentages per year (1988 onward): the press-release URL per year, the forecast issued in April/May/June, and the realised % of LPA. This is the official baseline any astrologer must beat.
+C. Climate controls, monthly, as long as possible: ENSO (NOAA ONI, Nino3.4 from HadISST/ERSSTv5), Indian Ocean Dipole (DMI from NOAA PSL or JAMSTEC), plus sunspot number (SILSO). Test each URL.
+D. Nepal: DHM Nepal monsoon onset/withdrawal and rainfall data; any open long series.
+E. Floods: Dartmouth Flood Observatory archive (download link, licence), Global Flood Database, EM-DAT (licence terms: can a derived count table be published?), DesInventar India/Nepal, India CWC flood reports.
+F. Monsoon onset dates over Kerala, per year since 1901 (IMD), with source.
+
+Deliver: sources.csv (source_id, dataset, provider, url_or_api_call, http_status, sha256, rows, first_year, last_year, frequency, units, licence_quote, licence_url, redistributable, needs_key, fetch_script, notes), imd_forecasts.csv (year, forecast_issue_date, forecast_pct_lpa, forecast_error_band, realised_pct_lpa, press_release_url, archive_url), kerala_onset.csv (year, onset_date, source_url), probe_report.md.

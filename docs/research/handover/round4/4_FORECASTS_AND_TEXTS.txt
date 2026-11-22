@@ -1,0 +1,27 @@
+RULES (read first)
+You are collecting DATA SOURCES for an open, reproducible scientific project that tests Vedic (sidereal, Lahiri) astrology claims. Our earlier rounds failed for one reason: links, quotes and series IDs that looked right but did not work. So this round is about PROOF, not lists.
+1. You have a terminal. For every data source, actually download it (curl/python) into /tmp, then report: the exact URL or API call, HTTP status, file size, SHA-256, row count, first date, last date, and the first 3 and last 3 rows pasted verbatim. A source you did not download is "UNTESTED" and goes in a separate list.
+2. Licence: quote the exact licence/terms sentence and its URL. Answer "redistributable in a public GitHub repo: yes / no / unclear". Do NOT commit raw data that is not redistributable; deliver the fetch script instead.
+3. Deliver a fetch script per source (Python, stdlib + pandas/requests only) that re-downloads the file and prints its SHA-256. Scripts must not need a paid key; if a free key is needed, say so and read it from an environment variable.
+4. Never invent a series ID, DOI, URL or number. If something does not work, report the error message. A documented failure is valuable.
+5. Save everything under research/incoming/<folder>/round4/ : probe_report.md, sources.csv, fetch_*.py, and small samples (<=100 rows) only when the licence allows.
+6. End with "Gaps and doubts": what you could not get and why.
+
+TASK D4 — Ex-ante astrologer forecasts with PROVEN dates (Wayback), and classical-text page scans.
+Folder: research/incoming/forecasts/round4/
+
+Why: we have only 4 astrologer forecasts whose publication date is proven before the event. We need at least 30 per topic to score anything. Forecasts must be checkable: specific event, place, time window, published before it.
+
+A. Forecast harvest. Use the Wayback Machine CDX API (http://web.archive.org/cdx/search/cdx?url=<site>/*&output=json&from=YYYY&to=YYYY) on these kinds of pages, and open the archived snapshot itself, not the live page:
+   - annual "yearly predictions" / "Nav Varsh" / "Samvat" / "Mesha Sankranti" forecast articles by Indian and Nepali astrologers and newspapers (e.g. Times of India astrology, Hindustan Times, Nepali papers Kantipur/Gorkhapatra, Express Star Teller, astrology magazines, well-known astrologer blogs), 2005–2026;
+   - monsoon forecasts (rain %, drought, floods) published before 1 June each year;
+   - gold price forecasts with a direction and a date window;
+   - earthquake forecasts naming a region and a window.
+   For each forecast: open the earliest snapshot that contains the text, and record the snapshot URL with its 14-digit timestamp and the verbatim sentence.
+B. Do NOT include "I predicted it" posts written after the event, except in a separate file post_hoc.csv.
+C. Classical text scans: for Brihat Samhita (tr. M. Ramakrishna Bhat, 1981) chapters 8, 21–28 (rain), 32 (earthquake), 41–42 (prices), and BPHS (tr. R. Santhanam) chapters on vargas and Vimshottari dasha: find archive.org items (give the item identifier) and the exact page links (archive.org/details/<id>/page/<n>) where each verse sits. Paste the verse text as printed (English and Sanskrit if shown).
+
+Deliver: forecasts.csv with columns
+forecast_id, topic (monsoon|gold|earthquake|politics|other), astrologer_or_outlet, original_url, snapshot_url, snapshot_timestamp, language, verbatim_quote, english_translation, predicted_event, region, window_start, window_end, magnitude_or_size, direction, astrological_basis_stated, specificity (high|medium|low), notes
+post_hoc.csv (same columns), text_pages.csv (text, translator, archive_item_id, chapter, verse, page_number, page_url, printed_text), probe_report.md with counts per topic and per year.
+Target: at least 30 dated forecasts each for monsoon and gold, and as many earthquake ones as truly exist.

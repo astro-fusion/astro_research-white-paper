@@ -1,0 +1,24 @@
+RULES (read first)
+You are collecting DATA SOURCES for an open, reproducible scientific project that tests Vedic (sidereal, Lahiri) astrology claims. Our earlier rounds failed for one reason: links, quotes and series IDs that looked right but did not work. So this round is about PROOF, not lists.
+1. You have a terminal. For every data source, actually download it (curl/python) into /tmp, then report: the exact URL or API call, HTTP status, file size, SHA-256, row count, first date, last date, and the first 3 and last 3 rows pasted verbatim. A source you did not download is "UNTESTED" and goes in a separate list.
+2. Licence: quote the exact licence/terms sentence and its URL. Answer "redistributable in a public GitHub repo: yes / no / unclear". Do NOT commit raw data that is not redistributable; deliver the fetch script instead.
+3. Deliver a fetch script per source (Python, stdlib + pandas/requests only) that re-downloads the file and prints its SHA-256. Scripts must not need a paid key; if a free key is needed, say so and read it from an environment variable.
+4. Never invent a series ID, DOI, URL or number. If something does not work, report the error message. A documented failure is valuable.
+5. Save everything under research/incoming/<folder>/round4/ : probe_report.md, sources.csv, fetch_*.py, and small samples (<=100 rows) only when the licence allows.
+6. End with "Gaps and doubts": what you could not get and why.
+
+TASK D2 — Earthquakes: a second catalogue, uniform magnitudes, and ETAS inputs for the Himalaya.
+Folder: research/incoming/earthquake/round4/
+
+Why: our study uses only the USGS ComCat (1976–2026, 297 events of Mw >= 5.2 in a Himalayan polygon). Most magnitudes are mb converted to Mw. Gardner-Knopoff declustering left the 2015-05-12 Mw 7.3 Kodari event as a mainshock. Reviewers will ask for ISC-GEM and ETAS.
+
+Polygon (lon, lat), closed: use 72E–98E, 25N–37N as the bounding box and report what you get inside it.
+
+A. ISC-GEM Global Instrumental Earthquake Catalogue: the current version number, the exact download URL (isc.ac.uk/iscgem/download.php or the CSV file link), licence, and a filtered extract for the box above (1900–present): row count, magnitude type (Mw proxy), first/last event. Compare it against USGS ComCat for the same box and Mw >= 5.5 since 1976: list events present in one but not the other.
+B. ISC Bulletin / ISC-EHB for the same box (API URL, licence).
+C. USGS ComCat FDSN query for the same box (give the exact URL) for cross-check.
+D. Nepal National Seismological Centre (seismonepal.gov.np) catalogue and India NCS (seismo.gov.in) catalogue: is there a downloadable list? Licence? Test.
+E. ETAS for the Himalaya: find published ETAS parameter estimates (mu, K, alpha, c, p, d, q, gamma) for the Himalaya or Nepal/Tibet region, with the paper DOI (open the DOI and confirm it resolves to that paper), the table number and the values. Also find the best open-source ETAS fitting code (e.g. "etas" R package, SEISMOLOGY python packages, the "bayesianETAS" or "ETAS.inlabru" packages): repository URL, licence, last release.
+F. Published lists of Himalayan aftershock sequences of the 2015 Gorkha earthquake (to check declustering), with DOIs.
+
+Deliver: sources.csv (same columns as other round-4 tasks: source_id, dataset, provider, url_or_api_call, http_status, sha256, rows, first_date, last_date, magnitude_types, licence_quote, licence_url, redistributable, needs_key, fetch_script, notes), catalogue_diff.csv (event_id_usgs, event_id_isc, time, lat, lon, mag_usgs, mag_isc, present_in), etas_parameters.csv (paper, doi, doi_resolves_yes_no, region, table, mu, K, alpha, c, p, d, q, gamma, magnitude_threshold, notes), probe_report.md.
