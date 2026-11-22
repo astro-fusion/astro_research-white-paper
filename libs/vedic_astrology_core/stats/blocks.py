@@ -28,6 +28,20 @@ an outcome, so the gate can run it before any outcome exists:
    Blocks with no control bar, or with control bars on one side only when
    the other side exists, are dropped too. Drops are counted by reason; the
    gate and the test read the same counts (S-15).
+4a. Amendment A2 (one-sided equal-size blocks), on when the plan seed is
+   passed as ``side_seed``. A block may take its equal-size control from
+   ONE side (a) when the other side is unavailable (it does not exist, or
+   after the half-gap limit, guard bars and the ``available`` mask it has
+   no bar), or (b) when the active run is a single bar. In case (a) the
+   side is forced by the calendar; in case (b), when both sides have a bar,
+   sides alternate in calendar order over those blocks, the first side
+   fixed by ``side_seed`` (:func:`start_side`). The one side gives the
+   ``n_active`` bars nearest the episode, still within its own half of the
+   gap and outside guard bars (the ``ceil(n_active / 2)`` cap is lifted to
+   ``n_active`` for that side only); too few drops the block as
+   ``unbalanced``. No outcome is read. One-sided controls are sensitive to
+   trend: the outcome must be detrended or a leave-year-out anomaly first
+   (A2). With ``side_seed=None`` the A1 rule above applies unchanged.
 5. Season-linked calendars use same-season windows from other years instead
    of neighbours. ``core/stats/season.py`` (WP-87) finds those windows; it
    hands them to :func:`design_from_windows`, which applies the same
@@ -108,6 +122,13 @@ DROP_REASONS = (DROP_NO_ACTIVE, DROP_NO_CONTROL, DROP_ONE_SIDED, DROP_UNBALANCED
 
 _CHUNK = 1 << 16
 
+#: Values of :attr:`Block.one_sided` (Amendment A2).
+SIDE_LEFT = "left"
+SIDE_RIGHT = "right"
+#: How a one-sided block got its side (Amendment A2).
+SIDE_FORCED = "forced"  # the other side is unavailable
+SIDE_ALTERNATED = "alternated"  # single active bar, both sides had a bar
+
 
 # --------------------------------------------------------------------------
 # Side
@@ -161,6 +182,11 @@ class Block:
     right_exists: bool
     used: bool
     reason: Optional[str]
+    #: Amendment A2: "left" or "right" when a used block takes its controls
+    #: from one side only; None for a two-sided (or dropped) block.
+    one_sided: Optional[str] = None
+    #: Amendment A2: SIDE_FORCED or SIDE_ALTERNATED for a one-sided block.
+    side_rule: Optional[str] = None
 
     @property
     def control(self) -> np.ndarray:
@@ -191,6 +217,8 @@ class Block:
             "balance": self.balance,
             "used": self.used,
             "reason": self.reason,
+            "one_sided": self.one_sided,
+            "side_rule": self.side_rule,
         }
 
 
@@ -205,6 +233,9 @@ class BlockDesign:
     kind: str  # "neighbours" or "windows"
     calendar_sha256: str
     available_sha256: Optional[str]
+    #: Amendment A2: the plan seed that fixed the first alternated side;
+    #: None means one-sided blocks are off (A1 rule).
+    side_seed: Optional[Union[int, str]] = None
 
     @property
     def used_blocks(self) -> Tuple[Block, ...]:
@@ -229,6 +260,11 @@ class BlockDesign:
             if not b.used:
                 out[b.reason] += 1
         return out
+
+    @property
+    def n_one_sided(self) -> int:
+        """Used blocks whose controls come from one side only (Amendment A2)."""
+        return sum(1 for b in self.used_blocks if b.one_sided is not None)
 
     @property
     def weights(self) -> np.ndarray:
@@ -256,6 +292,9 @@ class BlockDesign:
             "available": self.available_sha256,
             "min_balance": MIN_BALANCE,
         }
+        if self.side_seed is not None:  # A2; absent keeps A1 ids unchanged
+            head["side_seed"] = str(self.side_seed)
+            head["start_side"] = start_side(self.side_seed)
         h.update(json.dumps(head, sort_keys=True).encode("utf-8"))
         for b in self.blocks:
             h.update(f"|{b.number}:{int(b.used)}:{b.reason}|".encode("utf-8"))
@@ -271,7 +310,8 @@ class BlockDesign:
     def table(self) -> pd.DataFrame:
         """One row per block, used or dropped, for the gate report."""
         cols = ["block", "start", "end", "n_active", "n_control_left",
-                "n_control_right", "n_control", "balance", "used", "reason"]
+                "n_control_right", "n_control", "balance", "used", "reason",
+                "one_sided", "side_rule"]
         return pd.DataFrame([b.to_dict() for b in self.blocks], columns=cols)
 
     def gate_summary(self, alternative: str, n_draws: int = DEFAULT_DRAWS) -> Dict:
@@ -314,29 +354,76 @@ def _nearest_first(side: np.ndarray, dist: np.ndarray) -> np.ndarray:
     return side[np.lexsort((side, dist))]  # by distance, ties by bar index
 
 
-def _equalise(ep: Episode, n_active: int, left, right, left_exists: bool, right_exists: bool):
-    """Section 1.1 item 4 as amended by A1: equal-size blocks.
+def start_side(side_seed) -> str:
+    """First side of the alternation of Amendment A2, fixed by the plan seed alone.
 
-    Returns ``(left, right, reason)`` with both sides nearest first. For a
-    used block (``reason is None``) the two sides hold exactly ``n_active``
-    bars together. A longer control side is trimmed one bar at a time, always
-    the bar farthest from the episode (bars from its first bar on the left,
-    from its last bar on the right; a tie trims the right side); a side is
-    never cut to its last bar while the other side has more than one. A
-    dropped block keeps the bars it was offered.
+    A hash of the seed, never of the calendar or an outcome: ``"left"`` or
+    ``"right"``.
+    """
+    if side_seed is None or isinstance(side_seed, bool) or not isinstance(
+        side_seed, (int, np.integer, str)
+    ):
+        raise ValueError("side_seed must be the plan seed (an int or a string)")
+    digest = hashlib.sha256(f"{side_seed}|block_side".encode("utf-8")).digest()
+    return SIDE_LEFT if digest[0] & 1 == 0 else SIDE_RIGHT
+
+
+def _other(side: str) -> str:
+    return SIDE_RIGHT if side == SIDE_LEFT else SIDE_LEFT
+
+
+def _equalise(ep: Episode, n_active: int, left, right, left_exists: bool, right_exists: bool,
+              *, cap: Optional[int] = None, turn: Optional[str] = None):
+    """Section 1.1 item 4 as amended by A1 (equal-size blocks) and A2 (one side).
+
+    Returns ``(left, right, reason, one_sided, side_rule)`` with both sides
+    nearest first. For a used block (``reason is None``) the two sides hold
+    exactly ``n_active`` bars together.
+
+    ``turn`` is None for the A1 rule. Otherwise (A2) it is the side the next
+    single-bar block with a bar on both sides takes; a side with no bar
+    forces the other side whatever the run length. A one-sided block takes
+    the ``n_active`` nearest bars of its side (no ``cap`` on that side); too
+    few is ``unbalanced``.
+
+    Two-sided blocks (A1): each side is first cut to ``cap`` bars (the
+    ``ceil(n_active / 2)`` rule of item 2; None for season windows). A longer
+    control side is trimmed one bar at a time, always the bar farthest from
+    the episode (bars from its first bar on the left, from its last bar on
+    the right; a tie trims the right side); a side is never cut to its last
+    bar while the other side has more than one. A dropped block keeps the
+    bars it was offered.
     """
     left = np.asarray(left, dtype=np.int64).ravel()
     right = np.asarray(right, dtype=np.int64).ravel()
     left = _nearest_first(left, np.abs(ep.start - left))
     right = _nearest_first(right, np.abs(right - ep.end))
     if n_active == 0:
-        return left, right, DROP_NO_ACTIVE
+        return left, right, DROP_NO_ACTIVE, None, None
     if len(left) + len(right) == 0:
-        return left, right, DROP_NO_CONTROL
+        return left, right, DROP_NO_CONTROL, None, None
+    if turn is not None:
+        side, rule = None, None
+        if len(left) == 0:
+            side, rule = SIDE_RIGHT, SIDE_FORCED
+        elif len(right) == 0:
+            side, rule = SIDE_LEFT, SIDE_FORCED
+        elif n_active == 1:
+            side, rule = turn, SIDE_ALTERNATED
+        if side is not None:
+            bars = left if side == SIDE_LEFT else right
+            bars = bars[:n_active]
+            empty = bars[:0]
+            out = (bars, empty) if side == SIDE_LEFT else (empty, bars)
+            if len(bars) < n_active:
+                return out[0], out[1], DROP_UNBALANCED, None, None
+            return out[0], out[1], None, side, rule
+    if cap is not None:
+        left, right = left[:cap], right[:cap]
     if (left_exists and len(left) == 0) or (right_exists and len(right) == 0):
-        return left, right, DROP_ONE_SIDED
+        return left, right, DROP_ONE_SIDED, None, None
     if len(left) + len(right) < MIN_BALANCE * n_active:
-        return left, right, DROP_UNBALANCED
+        return left, right, DROP_UNBALANCED, None, None
     nl, nr = len(left), len(right)
     while nl + nr > n_active:
         can_l = nl > 1 or (nl == 1 and nr <= 1)
@@ -348,9 +435,9 @@ def _equalise(ep: Episode, n_active: int, left, right, left_exists: bool, right_
         else:
             nl -= 1
     if (left_exists and nl == 0) or (right_exists and nr == 0):
-        # Equal size only by emptying an existing side (one active bar).
-        return left, right, DROP_UNBALANCED
-    return left[:nl], right[:nr], None
+        # Equal size only by emptying an existing side (one active bar, A1).
+        return left, right, DROP_UNBALANCED, None, None
+    return left[:nl], right[:nr], None, None, None
 
 
 def build_blocks(
@@ -359,8 +446,9 @@ def build_blocks(
     merge_gap: Union[int, str, pd.Timedelta],
     guard_bars: int = 0,
     available=None,
+    side_seed: Optional[Union[int, str]] = None,
 ) -> BlockDesign:
-    """Build the equal-size disjoint blocks of a calendar (section 1.1 items 1 to 4, 6; A1).
+    """Build the equal-size disjoint blocks of a calendar (section 1.1 items 1 to 4, 6; A1, A2).
 
     Reads the calendar only. No outcome is an argument, so the gate can call
     this before any outcome is loaded.
@@ -375,6 +463,11 @@ def build_blocks(
             (known from the grid, not from outcome values). Unavailable
             active bars are not counted; unavailable control bars are passed
             over and the next nearest bar of the episode's own half is taken.
+        side_seed: The plan seed. Given, Amendment A2 applies: single-bar
+            blocks and blocks with one unavailable side take all their
+            control bars from one side (alternating in calendar order from
+            :func:`start_side`, or forced). None keeps the A1 rule (such
+            blocks are dropped).
 
     Returns:
         A :class:`BlockDesign` with every episode's block, used or dropped.
@@ -386,6 +479,7 @@ def build_blocks(
         raise ValueError("guard_bars must be a non-negative integer")
     guard = int(guard_bars)
     eps = episodes(calendar, merge_gap)
+    turn = None if side_seed is None else start_side(side_seed)
 
     def take(region: np.ndarray, cap: int) -> np.ndarray:
         cand = region[guard:]
@@ -411,8 +505,14 @@ def build_blocks(
             right_region = np.arange(ep.end + 1, ep.end + 1 + half)
         left_exists = ep.start > 0
         right_exists = ep.end < n - 1
-        left, right = take(left_region, cap), take(right_region, cap)
-        left, right, reason = _equalise(ep, len(on), left, right, left_exists, right_exists)
+        # Up to n_active bars a side: a one-sided block (A2) may need them all;
+        # _equalise cuts a two-sided block back to the cap.
+        left, right = take(left_region, len(on)), take(right_region, len(on))
+        left, right, reason, one_sided, rule = _equalise(
+            ep, len(on), left, right, left_exists, right_exists, cap=cap, turn=turn
+        )
+        if rule == SIDE_ALTERNATED:
+            turn = _other(turn)
         blocks.append(
             Block(
                 number=k,
@@ -424,6 +524,8 @@ def build_blocks(
                 right_exists=bool(right_exists),
                 used=reason is None,
                 reason=reason,
+                one_sided=one_sided,
+                side_rule=rule,
             )
         )
     design = BlockDesign(
@@ -434,6 +536,7 @@ def build_blocks(
         kind="neighbours",
         calendar_sha256=_sha(active),
         available_sha256=None if available is None else _sha(avail),
+        side_seed=side_seed,
     )
     _check_disjoint(design, active)
     return design
@@ -445,6 +548,7 @@ def design_from_windows(
     *,
     merge_gap: Union[int, str, pd.Timedelta],
     available=None,
+    side_seed: Optional[Union[int, str]] = None,
 ) -> BlockDesign:
     """Blocks with control windows chosen elsewhere (season-linked calendars, item 5).
 
@@ -456,13 +560,16 @@ def design_from_windows(
     ``ceil(n_active / 2)`` cap does not apply (a same-season span has the
     episode's own length); the equal-size rule of Amendment A1 does: a
     longer control side is trimmed farthest bar first, a shorter one drops
-    the block as ``unbalanced``. Raises if a control bar is
+    the block as ``unbalanced``. With ``side_seed`` (Amendment A2) an empty
+    side, or a single active bar, gives a one-sided block exactly as in
+    :func:`build_blocks`. Raises if a control bar is
     active, inside an episode span, unavailable, or shared by two blocks.
     """
     active = _as_mask(calendar, "calendar")
     n = len(active)
     avail = np.ones(n, dtype=bool) if available is None else _as_mask(available, "available", n)
     eps = episodes(calendar, merge_gap)
+    turn = None if side_seed is None else start_side(side_seed)
     if len(windows) != len(eps):
         raise ValueError(f"need one window entry per episode ({len(eps)}), got {len(windows)}")
     blocks: List[Block] = []
@@ -490,12 +597,14 @@ def design_from_windows(
             Block(k, ep, on.astype(np.int64), left, right, bool(left_exists),
                   bool(right_exists), False, None)
         )
-        left, right, reason = _equalise(
-            ep, len(on), left, right, bool(left_exists), bool(right_exists)
+        left, right, reason, one_sided, rule = _equalise(
+            ep, len(on), left, right, bool(left_exists), bool(right_exists), turn=turn
         )
+        if rule == SIDE_ALTERNATED:
+            turn = _other(turn)
         blocks.append(
             Block(k, ep, on.astype(np.int64), left, right, bool(left_exists),
-                  bool(right_exists), reason is None, reason)
+                  bool(right_exists), reason is None, reason, one_sided, rule)
         )
     design = BlockDesign(
         n_bars=n,
@@ -505,6 +614,7 @@ def design_from_windows(
         kind="windows",
         calendar_sha256=_sha(active),
         available_sha256=None if available is None else _sha(avail),
+        side_seed=side_seed,
     )
     # The windows as offered must already be disjoint: trimming to equal size
     # (A1) must never hide a shared or active control bar.

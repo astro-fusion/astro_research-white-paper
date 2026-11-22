@@ -1,11 +1,15 @@
 """Balanced disjoint blocks and the primary block sign-flip test (ADR-008 WP-85).
 
 Covers section 1.1 items 1 to 10 and the fast subset of the proof cases of
-section 1.3 (B1 to B6). The full-size cases (10,000 replications per cell)
-run in the certificate suite (WP-98) through the ``run_b*`` functions below;
-set ``ASTRO_CALIBRATE_FULL=1`` to run them here.
+section 1.3 (B1 to B6), with Amendment A1 (equal-size blocks) and Amendment
+A2 (one-sided equal-size blocks for single-bar and edge episodes, side fixed
+by the plan seed in calendar order). The full-size cases (10,000
+replications per cell) run in the certificate suite (WP-98) through the
+``run_b*`` and ``run_a2`` functions below; set ``ASTRO_CALIBRATE_FULL=1`` to
+run them here.
 """
 
+import functools
 import inspect
 import itertools
 import math
@@ -436,16 +440,198 @@ def test_spy_blocks_are_built_without_reading_an_outcome(monkeypatch):
     assert d.design_id == before  # the test does not rebuild or alter the design
 
 
+# ---------------------------------------------------------------- Amendment A2
+PLAN_SEED = BASE_SEED
+
+
+def test_a2_off_without_seed_keeps_a1_design():
+    c = _cal("0011000111000010")
+    a1 = B.build_blocks(c, merge_gap=0)
+    again = B.build_blocks(c, merge_gap=0, side_seed=None)
+    assert a1.design_id == again.design_id and a1.side_seed is None
+    assert a1.n_one_sided == 0
+    a2 = B.build_blocks(c, merge_gap=0, side_seed=PLAN_SEED)
+    assert a2.design_id != a1.design_id
+    # The single bar at 14 is testable under A2, from one side only.
+    b2 = a2.blocks[2]
+    assert b2.used and b2.n_control == 1 and b2.side_rule == B.SIDE_ALTERNATED
+    # Two-bar blocks with room on both sides are unchanged.
+    for k in (0, 1):
+        assert a2.blocks[k].control.tolist() == a1.blocks[k].control.tolist()
+        assert a2.blocks[k].one_sided is None
+
+
+def test_a2_start_side_is_fixed_by_the_seed_alone():
+    sides = {B.start_side(s) for s in range(64)}
+    assert sides == {B.SIDE_LEFT, B.SIDE_RIGHT}
+    assert B.start_side(PLAN_SEED) == B.start_side(PLAN_SEED)
+    assert B.start_side("plan-7") == B.start_side("plan-7")
+    for bad in (None, True, 1.5):
+        with pytest.raises(ValueError):
+            B.start_side(bad)
+    with pytest.raises(ValueError):
+        B.build_blocks(_cal("0010100"), merge_gap=0, side_seed=2.0)
+
+
+def _seed_starting(side):
+    return next(s for s in range(100) if B.start_side(s) == side)
+
+
+@pytest.mark.parametrize("first", [B.SIDE_LEFT, B.SIDE_RIGHT])
+def test_a2_single_bars_alternate_in_calendar_order(first):
+    c = sim.periodic_calendar(1, 4, 9)  # lead 2, single bars, half-gap 2
+    d = B.build_blocks(c, merge_gap=0, side_seed=_seed_starting(first))
+    assert d.n_used == 9 and d.n_one_sided == 9
+    want = [first if k % 2 == 0 else B._other(first) for k in range(9)]
+    assert [b.one_sided for b in d.blocks] == want
+    for b in d.blocks:
+        assert b.side_rule == B.SIDE_ALTERNATED and b.n_control == b.n_active == 1
+        a = int(b.active[0])
+        # The nearest bar of the chosen side, never a bar past the half-gap.
+        assert b.control.tolist() == ([a - 1] if b.one_sided == B.SIDE_LEFT else [a + 1])
+    assert d.table()["one_sided"].tolist() == want
+
+
+def test_a2_forced_side_when_the_other_is_unavailable():
+    # Gap of 1 bar between episodes: odd middle dropped, that side is empty.
+    c = _cal("0011010000")
+    d = B.build_blocks(c, merge_gap=0, side_seed=_seed_starting(B.SIDE_RIGHT))
+    b0, b1 = d.blocks
+    assert b0.used and b0.one_sided == B.SIDE_LEFT and b0.side_rule == B.SIDE_FORCED
+    assert b0.control_left.tolist() == [1, 0] and len(b0.control_right) == 0
+    # Forced blocks do not use up the alternation; b1 is forced anyway.
+    assert b1.used and b1.one_sided == B.SIDE_RIGHT and b1.control_right.tolist() == [6]
+    # Edge episode: no left side; the right side gives all n_active bars.
+    (b,) = B.build_blocks(_cal("1100000"), merge_gap=0, side_seed=1).blocks
+    assert b.used and b.one_sided == B.SIDE_RIGHT and b.control_right.tolist() == [2, 3]
+    (b,) = B.build_blocks(_cal("0000111"), merge_gap=0, side_seed=1).blocks
+    assert b.used and b.one_sided == B.SIDE_LEFT and b.control_left.tolist() == [3, 2, 1]
+    # Too few bars on the one side: unbalanced, not a smaller block.
+    (b,) = B.build_blocks(_cal("11110"), merge_gap=0, side_seed=1).blocks
+    assert b.reason == B.DROP_UNBALANCED
+    # Guard bars and unavailable bars make a side unavailable too.
+    c = _cal("0000011" "0" "11" "000000")
+    d = B.build_blocks(c, merge_gap=0, guard_bars=1, side_seed=1)
+    assert d.blocks[0].control_left.tolist() == [3, 2]
+    assert d.blocks[1].control_right.tolist() == [11, 12]
+    avail = np.ones(12, dtype=bool)
+    avail[[4, 3, 2, 1, 0]] = False
+    (b,) = B.build_blocks(_cal("000001100000"), merge_gap=0, available=avail,
+                          side_seed=1).blocks
+    assert b.one_sided == B.SIDE_RIGHT and b.control_right.tolist() == [7, 8]
+
+
+def test_a2_forced_blocks_do_not_shift_the_alternation():
+    # single, forced-right (no room on its left), single, single
+    c = _cal("00100" "1" "0" "1" "000" "1" "000" "1" "00")
+    d = B.build_blocks(c, merge_gap=0, side_seed=_seed_starting(B.SIDE_LEFT))
+    rules = [(b.one_sided, b.side_rule) for b in d.blocks]
+    assert rules[0] == (B.SIDE_LEFT, B.SIDE_ALTERNATED)
+    assert rules[1][1] == B.SIDE_FORCED and rules[2][1] == B.SIDE_FORCED
+    assert rules[3] == (B.SIDE_RIGHT, B.SIDE_ALTERNATED)
+    assert rules[4] == (B.SIDE_LEFT, B.SIDE_ALTERNATED)
+
+
+def test_a2_longer_runs_with_both_sides_stay_two_sided():
+    # 5 active bars, half-gaps of 2 on both sides: A1 drops it, A2 does too
+    # (one side is taken only for a single bar or an unavailable side).
+    c = sim.periodic_calendar(5, 5, 12)
+    d = B.build_blocks(c, merge_gap=0, side_seed=PLAN_SEED)
+    assert d.n_used == 0 and d.drop_counts[B.DROP_UNBALANCED] == 12
+    c = sim.periodic_calendar(6, 8, 6)
+    a1, a2 = (B.build_blocks(c, merge_gap=0, side_seed=s) for s in (None, PLAN_SEED))
+    assert [b.control.tolist() for b in a1.blocks] == [b.control.tolist() for b in a2.blocks]
+    assert a2.n_one_sided == 0
+
+
+def test_a2_windows_design_takes_one_side_too():
+    c = _cal("000010000000100000")
+    wins = [([3], [5]), ([11], [13])]
+    assert B.design_from_windows(c, wins, merge_gap=0).n_used == 0  # A1
+    d = B.design_from_windows(c, wins, merge_gap=0, side_seed=_seed_starting(B.SIDE_RIGHT))
+    assert [b.control.tolist() for b in d.blocks] == [[5], [11]]
+    assert [b.one_sided for b in d.blocks] == [B.SIDE_RIGHT, B.SIDE_LEFT]
+    d = B.design_from_windows(c, [([3], []), ([], [13])], merge_gap=0, side_seed=1)
+    assert [b.side_rule for b in d.blocks] == [B.SIDE_FORCED, B.SIDE_FORCED]
+    with pytest.raises(ValueError, match="disjoint"):
+        B.design_from_windows(c, [([3], [5]), ([5], [13])], merge_gap=0, side_seed=1)
+
+
+def test_a2_b4_no_bar_in_two_blocks_property():
+    rng = np.random.default_rng(cal.case_seed(BASE_SEED, "B4", "A2"))
+    for _ in range(400):
+        n = int(rng.integers(5, 400))
+        c = _random_calendar(rng, n)
+        if not c.any():
+            continue
+        avail = rng.random(n) > 0.05 if rng.random() < 0.5 else None
+        mg = int(rng.integers(0, 4))
+        guard = int(rng.integers(0, 3))
+        d = B.build_blocks(c, merge_gap=mg, guard_bars=guard, available=avail,
+                           side_seed=int(rng.integers(0, 1000)))
+        eps = episodes(c, mg)
+        in_span = np.zeros(n, dtype=bool)
+        for e in eps:
+            in_span[e.start : e.end + 1] = True
+        seen = np.zeros(n, dtype=np.int64)
+        for k, b in enumerate(d.blocks):
+            ctrl = b.control
+            seen[b.active] += 1
+            seen[ctrl] += 1
+            assert not c[ctrl].any() and not in_span[ctrl].any()
+            if guard and len(ctrl):
+                assert np.abs(ctrl[:, None] - np.array([eps[k].start, eps[k].end])).min() > guard
+            ep = eps[k]
+            if k > 0 and len(b.control_left):
+                assert b.control_left.min() > (eps[k - 1].end + ep.start) / 2
+            if k < len(eps) - 1 and len(b.control_right):
+                assert b.control_right.max() < (ep.end + eps[k + 1].start) / 2
+            if b.used:
+                assert b.n_control == b.n_active
+                if b.one_sided is None:
+                    cap = math.ceil(b.n_active / 2)
+                    assert len(b.control_left) <= cap and len(b.control_right) <= cap
+                else:
+                    assert (len(b.control_left) == 0) != (len(b.control_right) == 0)
+                    if b.side_rule == B.SIDE_ALTERNATED:
+                        assert b.n_active == 1
+            # A2 never drops a block as one_sided.
+            assert b.reason != B.DROP_ONE_SIDED
+        assert seen.max() <= 1
+        assert sum(b.n_control for b in d.blocks) <= int((~c).sum())
+    cal.property_result("B4", "A2 random calendars", True)
+
+
+def test_a2_b6_and_spy_side_is_chosen_without_an_outcome(monkeypatch):
+    reads = []
+    real = B._outcome_values
+    monkeypatch.setattr(B, "_outcome_values", lambda *a, **k: (reads.append(1), real(*a, **k))[1])
+    c = _cal("0010001000100" "0111100000" "100")
+    d = B.build_blocks(c, merge_gap=0, side_seed=PLAN_SEED)
+    gate = d.gate_summary("less")
+    assert reads == [] and d.n_one_sided >= 4
+    y = np.random.default_rng(1).normal(size=len(c))
+    r = B.primary_test(d, y, alternative="less", outcome_type="continuous")
+    assert r.gate_summary() == gate and reads == [1]
+
+
 # ---------------------------------------------------------------- B1 to B3, B5 runners
-def _rejections(calendar, draw, reps, seed, alternative="greater", n_draws=999):
-    """Rejections at one-sided 5% of the primary test, no effect planted."""
+def _rejections(calendar, draw, reps, seed, alternative="greater", n_draws=999,
+                side_seed=None, transform=None):
+    """Rejections at one-sided 5% of the primary test, no effect planted.
+
+    ``side_seed`` switches on Amendment A2; ``transform`` is applied to each
+    simulated outcome before the test (the detrending baseline of A2).
+    """
     rng = np.random.default_rng(seed)
-    d = B.build_blocks(calendar, merge_gap=0)
+    d = B.build_blocks(calendar, merge_gap=0, side_seed=side_seed)
     if d.n_used == 0:
         return 0, d  # Untestable: never rejects
     hits = 0
     for _ in range(int(reps)):
         y = draw(len(calendar), rng)
+        if transform is not None:
+            y = transform(y)
         r = B.primary_test(d, y, alternative=alternative, outcome_type="continuous",
                            rng=rng, n_draws=n_draws)
         hits += r.p_value <= ALPHA
@@ -519,6 +705,114 @@ def run_b5(reps, shapes=((5, 5), (20, 5)), k=12):
     return out
 
 
+# ---------------------------------------------------------------- A2 runners
+#: Daily-event calendars of A2: tithi numbers at noon UTC (30 = new moon).
+A2_TITHIS = {"new_moon": 30, "tithi_11": 11, "full_moon": 15}
+A2_REAL = ("new_moon", "tithi_11", "full_moon", "tithi_group", "eclipse_window")
+#: Drift (A2): slope per bar and random-walk step, in noise standard deviations.
+DRIFT_SLOPE = 0.02
+DRIFT_STEP = 0.05
+DETREND_WINDOW = 31
+
+
+@functools.lru_cache(maxsize=1)
+def _tithi_frame():
+    from vedic_astrology_core.markets.align import sample_instants
+    from vedic_astrology_core.markets.features import indicator_frame
+
+    dates = pd.date_range(*sim.DAILY_GRID, freq="D")
+    f = indicator_frame(sample_instants(dates, "12:00", "UTC"), ["SUN", "MOON"])
+    return dates, f["tithi"].to_numpy()
+
+
+def a2_daily_calendar(name):
+    """Daily-event calendar on the 1968-1998 noon grid (committed ephemeris only)."""
+    if name in A2_TITHIS:
+        _, tithi = _tithi_frame()
+        return tithi == A2_TITHIS[name]
+    return sim.daily_calendars()[name].to_numpy()
+
+
+def a2_synthetic_calendars(counts=sim.PERIODIC_EPISODES):
+    """Single-bar and edge shapes that A1 drops and A2 keeps."""
+    out = {}
+    for k in counts:
+        out[f"1/4 K={k}"] = sim.periodic_calendar(1, 4, k)  # alternated single bars
+        out[f"1/29 K={k}"] = sim.periodic_calendar(1, 29, k)  # new-moon-like
+        # 3-bar runs with alternating gaps of 1 and 8: every block forced one-sided.
+        body = []
+        for i in range(k):
+            body += [True] * 3 + [False] * (1 if i % 2 == 0 else 8)
+        out[f"forced 3/1,8 K={k}"] = np.asarray([False] * 4 + body[:-1] + [False] * 4)
+        # Edge episodes on the grid's edges: one-sided at both ends.
+        out[f"edge 5/10 K={k}"] = sim.periodic_calendar(5, 10, k, lead=0, trail=0)
+    return out
+
+
+def _drift(n, rng):
+    t = np.arange(n, dtype=float)
+    return rng.standard_normal(n) + DRIFT_SLOPE * t + np.cumsum(rng.normal(0, DRIFT_STEP, n))
+
+
+def detrend(y, window=DETREND_WINDOW):
+    """Detrending baseline of the A2 drift case: minus a centred running mean."""
+    s = pd.Series(np.asarray(y, dtype=float))
+    return (s - s.rolling(int(window), center=True, min_periods=1).mean()).to_numpy()
+
+
+def a2_generators():
+    """(case, generator name) -> (draw, transform) for B1, B2, B3 and drift."""
+    gens = {("B1", "normal"): (_bars("normal"), None)}
+    for kind in sim.SKEWED_KINDS:
+        gens[("B2", kind)] = (_bars(kind), None)
+    for name, g in _b3_generators().items():
+        gens[("B3", name)] = (g, None)
+    # Drift case of A2 (D1 in the amendment; filed under B3 because the
+    # certificate's D1 id is the monthly-average guard case of section 8).
+    gens[("B3", "drift_detrended")] = (_drift, detrend)
+    return gens
+
+
+def a2_cells(real=A2_REAL, synthetic=True, counts=sim.PERIODIC_EPISODES):
+    """Every (case, generator, calendar) cell of the A2 full-size run."""
+    cals = [(name, functools.partial(a2_daily_calendar, name)) for name in real]
+    if synthetic:
+        cals += [(name, (lambda c: (lambda: c))(c))
+                 for name, c in a2_synthetic_calendars(counts).items()]
+    return [(case, gname, cname, make) for (case, gname), (cname, make)
+            in itertools.product(a2_generators(), cals)]
+
+
+def run_a2_cell(case, gname, cname, make, reps, fast=False, side_seed=PLAN_SEED):
+    draw, transform = a2_generators()[(case, gname)]
+    cell = f"A2 {gname} {cname}"
+    hits, d = _rejections(make(), draw, reps, cal.case_seed(BASE_SEED, case, cell),
+                          side_seed=side_seed, transform=transform)
+    return cal.evaluate(case, cell, hits, reps, fast=fast), d
+
+
+def run_a2(reps, fast=False, **kw):
+    return [run_a2_cell(*cell, reps, fast=fast)[0] for cell in a2_cells(**kw)]
+
+
+def test_a2_daily_event_calendars_are_testable():
+    for name in A2_REAL:
+        c = a2_daily_calendar(name)
+        a1 = B.build_blocks(c, merge_gap=0)
+        a2 = B.build_blocks(c, merge_gap=0, side_seed=PLAN_SEED)
+        assert a2.n_used >= a1.n_used and a2.k_eff >= B.MIN_K_EFF, name
+        if name in A2_TITHIS:  # single-day runs: A1 drops most, A2 keeps them
+            assert a2.n_used > a1.n_used and a2.n_one_sided > 0, name
+
+
+def test_a2_fast():
+    keep = {("B1", "normal"), ("B2", "lognormal"), ("B3", "garch"), ("B3", "drift_detrended")}
+    cells = [cell for cell in a2_cells(real=("new_moon",), counts=(12,))
+             if cell[:2] in keep and (cell[2] == "new_moon" or cell[2].startswith(("1/4", "forced")))]
+    assert len(cells) == 12
+    _assert_all([run_a2_cell(*cell, FAST_REPS, fast=True)[0] for cell in cells])
+
+
 def _assert_all(results):
     failed = [(r.cell, r.count, r.replications) for r in results if not r.passed]
     assert not failed, failed
@@ -554,6 +848,13 @@ def test_20_over_5_is_untestable_not_rejected():
 def test_full_b2_equal_size():
     # Amendment A1: B2 must pass at full size before any certificate is issued.
     _assert_all(run_b2(10_000))
+
+
+@pytest.mark.skipif(not FULL, reason="full calibration runs in the certificate suite")
+def test_full_a2_daily_events():
+    # Amendment A2: B1, B2, B3 and the drift case at full size for daily-event
+    # calendars and the single-bar and edge shapes, one-sided blocks on.
+    _assert_all(run_a2(10_000))
 
 
 @pytest.mark.skipif(not FULL, reason="full calibration runs in the certificate suite")
