@@ -17,14 +17,21 @@ an outcome, so the gate can run it before any outcome exists:
 3. ``guard_bars`` (plan, per dataset: 1 for monthly averages, else 0) bars
    next to the episode are skipped on each side before control bars are
    taken.
-4. ``balance = n_control / n_active``. A block with balance below
-   :data:`MIN_BALANCE` (0.5), with no control bar, or with control bars on
-   one side only when the other side exists, is **dropped**. Drops are
-   counted by reason; the gate and the test read the same counts (S-15).
+4. ``balance = n_control / n_active``. Amendment A1 raised the floor
+   :data:`MIN_BALANCE` from 0.5 to 1.0: every used block is **equal-size**
+   (as many control bars as active bars). A longer control side is trimmed,
+   dropping the control bars farthest from the episode (never the last bar
+   of a side while the other side has more than one). A block whose control
+   side is shorter than its active side, or that reaches equal size only by
+   leaving an existing side empty (one active bar with a neighbour on each
+   side), is dropped as ``unbalanced``. Active bars are never trimmed.
+   Blocks with no control bar, or with control bars on one side only when
+   the other side exists, are dropped too. Drops are counted by reason; the
+   gate and the test read the same counts (S-15).
 5. Season-linked calendars use same-season windows from other years instead
    of neighbours. ``core/stats/season.py`` (WP-87) finds those windows; it
    hands them to :func:`design_from_windows`, which applies the same
-   disjointness and balance rules.
+   disjointness and equal-size rules.
 6. The year unit (monsoon) is the same rule on a yearly grid: pass a
    calendar with one bar per year; each inactive year is used once.
 
@@ -60,7 +67,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Dict, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
@@ -68,8 +75,9 @@ import pandas as pd
 
 from .episodes import Episode, episodes
 
-#: Block balance floor (section 1.1 item 4). Changed only by amending ADR-008.
-MIN_BALANCE = 0.5
+#: Block balance floor (section 1.1 item 4), raised from 0.5 to 1.0 by
+#: Amendment A1 (equal-size blocks). Changed only by amending ADR-008.
+MIN_BALANCE = 1.0
 #: Gate G4 (section 1.1 item 9).
 MIN_K_EFF = 8.0
 #: Largest number of used blocks enumerated exactly (2**20 patterns).
@@ -93,8 +101,10 @@ _DIRECTION_TO_SIDE = {
 DROP_NO_ACTIVE = "no_active"
 DROP_NO_CONTROL = "no_control"
 DROP_ONE_SIDED = "one_sided"
-DROP_LOW_BALANCE = "low_balance"
-DROP_REASONS = (DROP_NO_ACTIVE, DROP_NO_CONTROL, DROP_ONE_SIDED, DROP_LOW_BALANCE)
+DROP_UNBALANCED = "unbalanced"
+#: Old name of DROP_UNBALANCED (before Amendment A1); same value.
+DROP_LOW_BALANCE = DROP_UNBALANCED
+DROP_REASONS = (DROP_NO_ACTIVE, DROP_NO_CONTROL, DROP_ONE_SIDED, DROP_UNBALANCED)
 
 _CHUNK = 1 << 16
 
@@ -300,16 +310,47 @@ def _sha(mask: np.ndarray) -> str:
     ).hexdigest()
 
 
-def _classify(n_active, left, right, left_exists, right_exists) -> Optional[str]:
+def _nearest_first(side: np.ndarray, dist: np.ndarray) -> np.ndarray:
+    return side[np.lexsort((side, dist))]  # by distance, ties by bar index
+
+
+def _equalise(ep: Episode, n_active: int, left, right, left_exists: bool, right_exists: bool):
+    """Section 1.1 item 4 as amended by A1: equal-size blocks.
+
+    Returns ``(left, right, reason)`` with both sides nearest first. For a
+    used block (``reason is None``) the two sides hold exactly ``n_active``
+    bars together. A longer control side is trimmed one bar at a time, always
+    the bar farthest from the episode (bars from its first bar on the left,
+    from its last bar on the right; a tie trims the right side); a side is
+    never cut to its last bar while the other side has more than one. A
+    dropped block keeps the bars it was offered.
+    """
+    left = np.asarray(left, dtype=np.int64).ravel()
+    right = np.asarray(right, dtype=np.int64).ravel()
+    left = _nearest_first(left, np.abs(ep.start - left))
+    right = _nearest_first(right, np.abs(right - ep.end))
     if n_active == 0:
-        return DROP_NO_ACTIVE
+        return left, right, DROP_NO_ACTIVE
     if len(left) + len(right) == 0:
-        return DROP_NO_CONTROL
+        return left, right, DROP_NO_CONTROL
     if (left_exists and len(left) == 0) or (right_exists and len(right) == 0):
-        return DROP_ONE_SIDED
-    if (len(left) + len(right)) / n_active < MIN_BALANCE:
-        return DROP_LOW_BALANCE
-    return None
+        return left, right, DROP_ONE_SIDED
+    if len(left) + len(right) < MIN_BALANCE * n_active:
+        return left, right, DROP_UNBALANCED
+    nl, nr = len(left), len(right)
+    while nl + nr > n_active:
+        can_l = nl > 1 or (nl == 1 and nr <= 1)
+        can_r = nr > 1 or (nr == 1 and nl <= 1)
+        dl = abs(ep.start - int(left[nl - 1])) if can_l else -1
+        dr = abs(int(right[nr - 1]) - ep.end) if can_r else -1
+        if dr >= dl:
+            nr -= 1
+        else:
+            nl -= 1
+    if (left_exists and nl == 0) or (right_exists and nr == 0):
+        # Equal size only by emptying an existing side (one active bar).
+        return left, right, DROP_UNBALANCED
+    return left[:nl], right[:nr], None
 
 
 def build_blocks(
@@ -319,7 +360,7 @@ def build_blocks(
     guard_bars: int = 0,
     available=None,
 ) -> BlockDesign:
-    """Build the balanced disjoint blocks of a calendar (section 1.1 items 1 to 4, 6).
+    """Build the equal-size disjoint blocks of a calendar (section 1.1 items 1 to 4, 6; A1).
 
     Reads the calendar only. No outcome is an argument, so the gate can call
     this before any outcome is loaded.
@@ -371,7 +412,7 @@ def build_blocks(
         left_exists = ep.start > 0
         right_exists = ep.end < n - 1
         left, right = take(left_region, cap), take(right_region, cap)
-        reason = _classify(len(on), left, right, left_exists, right_exists)
+        left, right, reason = _equalise(ep, len(on), left, right, left_exists, right_exists)
         blocks.append(
             Block(
                 number=k,
@@ -413,7 +454,9 @@ def design_from_windows(
     supplies same-season spans from other years; an empty side whose
     ``*_exists`` is True drops the block, as in :func:`build_blocks`. The
     ``ceil(n_active / 2)`` cap does not apply (a same-season span has the
-    episode's own length); the balance floor does. Raises if a control bar is
+    episode's own length); the equal-size rule of Amendment A1 does: a
+    longer control side is trimmed farthest bar first, a shorter one drops
+    the block as ``unbalanced``. Raises if a control bar is
     active, inside an episode span, unavailable, or shared by two blocks.
     """
     active = _as_mask(calendar, "calendar")
@@ -423,6 +466,7 @@ def design_from_windows(
     if len(windows) != len(eps):
         raise ValueError(f"need one window entry per episode ({len(eps)}), got {len(windows)}")
     blocks: List[Block] = []
+    offered: List[Block] = []
     for k, (ep, win) in enumerate(zip(eps, windows)):
         if len(win) == 2:
             left, right = win
@@ -442,7 +486,13 @@ def design_from_windows(
                 raise ValueError(f"block {k}: control bar without an outcome")
         span = np.arange(ep.start, ep.end + 1)
         on = span[active[span] & avail[span]]
-        reason = _classify(len(on), left, right, bool(left_exists), bool(right_exists))
+        offered.append(
+            Block(k, ep, on.astype(np.int64), left, right, bool(left_exists),
+                  bool(right_exists), False, None)
+        )
+        left, right, reason = _equalise(
+            ep, len(on), left, right, bool(left_exists), bool(right_exists)
+        )
         blocks.append(
             Block(k, ep, on.astype(np.int64), left, right, bool(left_exists),
                   bool(right_exists), reason is None, reason)
@@ -456,6 +506,9 @@ def design_from_windows(
         calendar_sha256=_sha(active),
         available_sha256=None if available is None else _sha(avail),
     )
+    # The windows as offered must already be disjoint: trimming to equal size
+    # (A1) must never hide a shared or active control bar.
+    _check_disjoint(replace(design, blocks=tuple(offered)), active)
     _check_disjoint(design, active)
     return design
 

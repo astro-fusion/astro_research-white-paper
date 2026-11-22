@@ -43,6 +43,10 @@ def test_gap_cut_at_midpoint_odd_middle_dropped():
     assert b1.control_right.tolist() == [10, 11]  # gap 10..13: left half 10, 11
     assert b2.control_left.tolist() == [13]  # right half 12, 13; cap 1 -> nearest
     assert b2.control_right.tolist() == [15]
+    # A1: one active bar with a neighbour on each side cannot be equal-size
+    # without leaving a side empty.
+    assert [b.reason for b in d.blocks] == [None, None, B.DROP_UNBALANCED]
+    assert b0.n_control == b0.n_active and b1.n_control == b1.n_active
     used = set(itertools.chain.from_iterable(
         b.active.tolist() + b.control.tolist() for b in d.blocks))
     assert 5 not in used and 12 not in used
@@ -90,11 +94,12 @@ def test_guard_bars_stay_inside_own_half():
 
 
 # ---------------------------------------------------------------- item 4
-def test_low_balance_is_dropped_and_counted():
+def test_unbalanced_is_dropped_and_counted():
     c = sim.periodic_calendar(20, 5, 12)  # 2 control bars a side vs 20 active
     d = B.build_blocks(c, merge_gap=0)
     assert d.n_used == 0 and d.n_dropped == 12
-    assert d.drop_counts[B.DROP_LOW_BALANCE] == 12
+    assert d.drop_counts[B.DROP_UNBALANCED] == 12
+    assert B.DROP_LOW_BALANCE == B.DROP_UNBALANCED == "unbalanced"
     r = B.primary_test(d, np.zeros(len(c)), alternative="greater", outcome_type="continuous")
     assert r.n_used == 0 and r.p_value == 1.0 and math.isnan(r.estimate)
 
@@ -105,16 +110,50 @@ def test_one_sided_block_dropped_only_when_other_side_exists():
     d = B.build_blocks(c, merge_gap=0)
     assert [b.reason for b in d.blocks] == [B.DROP_ONE_SIDED, B.DROP_ONE_SIDED]
     # Episode at bar 0: no left side exists, so the right side alone is fine.
-    c2 = _cal("1100000")
+    c2 = _cal("1000000")
     (b,) = B.build_blocks(c2, merge_gap=0).blocks
-    assert b.used and not b.left_exists and b.control_right.tolist() == [2]
+    assert b.used and not b.left_exists and b.control_right.tolist() == [1]
+    # ... but the ceil(n_active / 2) cap leaves it short of equal size (A1).
+    (b,) = B.build_blocks(_cal("1100000"), merge_gap=0).blocks
+    assert b.reason == B.DROP_UNBALANCED and b.control_right.tolist() == [2]
 
 
-def test_balance_floor_is_inclusive():
-    c = sim.balance_calendar(0.5, 10, n_active=8)
-    d = B.build_blocks(c, merge_gap=0)
+def test_equal_size_floor_amendment_a1():
+    assert B.MIN_BALANCE == 1.0
+    d = B.build_blocks(sim.balance_calendar(1.0, 10, n_active=8), merge_gap=0)
     assert d.n_used == 10
-    assert all(b.balance == 0.5 for b in d.blocks)
+    assert all(b.balance == 1.0 for b in d.blocks)
+    for balance in (0.5, 0.75):
+        d = B.build_blocks(sim.balance_calendar(balance, 10, n_active=8), merge_gap=0)
+        assert d.n_used == 0 and d.drop_counts[B.DROP_UNBALANCED] == 10
+
+
+def test_odd_active_trims_farthest_control_bar():
+    c = np.zeros(40, dtype=bool)
+    c[10:15] = True  # 5 active -> cap 3 a side, 6 offered, trimmed to 5
+    (b,) = B.build_blocks(c, merge_gap=0).blocks
+    assert b.used and b.n_active == b.n_control == 5
+    assert b.control_left.tolist() == [9, 8, 7]  # tie in distance: right is trimmed
+    assert b.control_right.tolist() == [15, 16]
+    assert b.active.tolist() == list(range(10, 15))  # active bars never trimmed
+    # A gap on the left makes its third bar farther than the right's third bar.
+    avail = np.ones(40, dtype=bool)
+    avail[8] = False
+    (b,) = B.build_blocks(c, merge_gap=0, available=avail).blocks
+    assert b.control_left.tolist() == [9, 7]
+    assert b.control_right.tolist() == [15, 16, 17]
+
+
+def test_periodic_shapes_testable_only_with_room_for_equal_size():
+    used = {}
+    for (a, g), k in itertools.product(sim.PERIODIC_SHAPES, sim.PERIODIC_EPISODES):
+        d = B.build_blocks(sim.periodic_calendar(a, g, k), merge_gap=0)
+        used[(a, g, k)] = d.n_used
+        assert d.n_used in (0, k)
+        assert all(b.n_control == b.n_active for b in d.used_blocks)
+    # Half-gap 2 vs 5 active, 2 vs 20, 5 vs 60: Untestable (A1 consequence).
+    assert {key for key, n in used.items() if n == 0} == {
+        (5, 5, 12), (5, 5, 18), (20, 5, 12), (20, 5, 18), (60, 10, 12), (60, 10, 18)}
 
 
 def test_available_mask_skips_bars_and_counts_alike():
@@ -125,7 +164,9 @@ def test_available_mask_skips_bars_and_counts_alike():
     avail[12] = False
     (b,) = B.build_blocks(c, merge_gap=0, available=avail).blocks
     assert b.active.tolist() == [10, 11, 13]
-    assert b.control_left.tolist() == [8, 7]
+    # Offered [8, 7] and [14, 15]; equal size trims bar 7 (3 bars away, 15 is 2).
+    assert b.control_left.tolist() == [8]
+    assert b.control_right.tolist() == [14, 15]
     y = np.arange(30, dtype=float)
     y[[9, 12]] = np.nan
     d = B.build_blocks(c, merge_gap=0, available=avail)
@@ -177,7 +218,7 @@ def test_b4_no_bar_in_two_blocks_property():
             if k < len(eps) - 1 and len(b.control_right):
                 assert b.control_right.max() < (ep.end + eps[k + 1].start) / 2
             if b.used:
-                assert b.balance >= B.MIN_BALANCE
+                assert b.n_control == b.n_active  # A1: equal size
         assert seen.max() <= 1
         n_inactive = int((~c).sum())
         assert sum(b.n_control for b in d.blocks) <= n_inactive
@@ -188,6 +229,14 @@ def test_windows_design_refuses_shared_or_active_controls():
     eps = episodes(c, 0)
     ok = B.design_from_windows(c, [([2, 3], [6, 7]), ([10, 11], [14, 15])], merge_gap=0)
     assert ok.n_used == 2 and ok.kind == "windows"
+    # A1: 4 offered bars against 2 active, trimmed farthest first to 1 + 1.
+    assert [(b.control_left.tolist(), b.control_right.tolist()) for b in ok.blocks] == [
+        ([3], [6]), ([11], [14])]
+    short = B.design_from_windows(c, [([3], []), ([10, 11], [14, 15])], merge_gap=0)
+    assert short.blocks[0].reason == B.DROP_ONE_SIDED
+    short = B.design_from_windows(c, [([3], [], True, False), ([10, 11], [14, 15])],
+                                  merge_gap=0)
+    assert short.blocks[0].reason == B.DROP_UNBALANCED  # 1 control bar vs 2 active
     with pytest.raises(ValueError, match="disjoint"):
         B.design_from_windows(c, [([2, 3], [6, 7]), ([7, 8], [14, 15])], merge_gap=0)
     with pytest.raises(ValueError, match="active"):
@@ -233,12 +282,13 @@ def test_k_eff_one_long_episode_cannot_hide_short_ones():
     k_eff = w.sum() ** 2 / np.sum(w * w)
     assert k_eff < 1.1
     c = np.zeros(2000, dtype=bool)
-    c[300:500] = True  # 200 active bars, balanced: 100 control left, 99 right
-    for s in range(700, 2000, 150):
-        c[s] = True
+    c[300:500] = True  # 200 active bars, equal size: 100 control bars a side
+    for s in range(701, 2000, 150):
+        c[s : s + 2] = True  # nine 2-bar episodes, 1 control bar a side
     d = B.build_blocks(c, merge_gap=0)
     assert d.blocks[0].used and d.n_used == 10
-    assert d.k_eff < 1.1 < B.MIN_K_EFF
+    assert d.blocks[0].n_control == 200
+    assert d.k_eff < 1.2 < B.MIN_K_EFF
 
 
 @pytest.mark.parametrize("otype", ["events", "flags"])
@@ -475,17 +525,17 @@ def _assert_all(results):
 
 
 def test_b1_fast():
-    _assert_all(run_b1(FAST_REPS, fast=True, shapes=((5, 5), (20, 20), (20, 5)), counts=(12,)))
+    _assert_all(run_b1(FAST_REPS, fast=True, shapes=((5, 50), (20, 20), (20, 5)), counts=(12,)))
 
 
 def test_b2_fast():
-    _assert_all(run_b2(FAST_REPS, fast=True, shapes=((5, 5), (5, 50)), counts=(12,),
+    _assert_all(run_b2(FAST_REPS, fast=True, shapes=((20, 20), (5, 50)), counts=(12,),
                        kinds=("lognormal", "zero_inflated")))
 
 
 def test_b3_fast():
     gens = _b3_generators()
-    _assert_all(run_b3(FAST_REPS, fast=True, shapes=((5, 5),), counts=(12,),
+    _assert_all(run_b3(FAST_REPS, fast=True, shapes=((20, 20),), counts=(12,),
                        real=("mercury_retrograde",),
                        generators={"garch": gens["garch"], "ar1_0.3": gens["ar1_0.3"]}))
 
@@ -498,6 +548,12 @@ def test_b5_old_design_still_fails():
 def test_20_over_5_is_untestable_not_rejected():
     hits, d = _rejections(sim.periodic_calendar(20, 5, 12), _bars("normal"), 10, 1)
     assert hits == 0 and d.n_used == 0
+
+
+@pytest.mark.skipif(not FULL, reason="full calibration runs in the certificate suite")
+def test_full_b2_equal_size():
+    # Amendment A1: B2 must pass at full size before any certificate is issued.
+    _assert_all(run_b2(10_000))
 
 
 @pytest.mark.skipif(not FULL, reason="full calibration runs in the certificate suite")
