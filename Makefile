@@ -3,7 +3,7 @@
 # 🪐 Vedic Astrology Research - Toolkit
 # ==========================================
 
-.PHONY: help install check-data artifacts pdfs build clean test quality-gate validity
+.PHONY: help install check-data artifacts pdfs build clean test quality-gate validity calibrate
 
 # Default target
 help:
@@ -16,6 +16,7 @@ help:
 	@echo "  make build        - Run check-data + pdfs (pdfs regenerates artifacts)"
 	@echo "  make clean        - Remove build artifacts and temporary files"
 	@echo "  make validity     - Run changed validity domains, append changelog, rebuild reports"
+	@echo "  make calibrate    - Whole-pipeline calibration; writes the calibration certificate"
 	@echo "  make test         - Run test suite"
 	@echo "  make quality-gate - Run linting, type checking, and tests"
 
@@ -55,6 +56,16 @@ clean:
 # gains the astro-validity entry point (WP-18) this is `astro-validity all`.
 validity:
 	@. .venv/bin/activate && python -m vedic_astrology_core.validity.cli all
+
+# Whole-pipeline calibration (ADR-008 WP-98, section 4.4): every case through
+# core/validity/pipeline.py in worker processes (no threads), resumable, then
+# studies/validity/calibration/certificate.json tied to the code hashes.
+# CALIBRATE_FULL=0 runs the 400-replication fast subset; CALIBRATE_ARGS adds
+# options such as "--workers 8" or "--full-cells X3.,F8." (see --help).
+CALIBRATE_FULL ?= 1
+CALIBRATE_ARGS ?=
+calibrate:
+	@. .venv/bin/activate && ASTRO_CALIBRATE_FULL=$(CALIBRATE_FULL) python -m tests.test_validity_calibration run --write $(CALIBRATE_ARGS)
 
 test:
 	@. .venv/bin/activate && pytest tests/ -v
