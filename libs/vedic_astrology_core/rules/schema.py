@@ -43,8 +43,8 @@ from pydantic import (
 from .predicates import PREDICATES, Params
 from .tuning import (
     PARAM_NAME,
-    Param,
-    ReviewEntry,
+    Param as _BaseParam,
+    ReviewEntry as _BaseReviewEntry,
     Strength,
     TuningEntry,
     Validation,
@@ -245,6 +245,27 @@ class ChartSpec(Strict):
     label: Optional[str] = None
 
 
+class Param(_BaseParam):
+    """A tunable parameter plus the citation for its range (schema v2.1).
+
+    ``range_source`` names where the range comes from: a verse, a named
+    commentary, or "author's choice" stated as such. Optional so that older
+    files load; level L2 requires it.
+    """
+
+    range_source: Optional[str] = Field(default=None, min_length=1)
+
+
+class ReviewEntry(_BaseReviewEntry):
+    """A review sign-off, plus the reviewer's blindness attestation (v2.1).
+
+    ``blind_attestation`` is true when the reviewer states that they saw no
+    test result for the rule. Level L4 requires it.
+    """
+
+    blind_attestation: Optional[bool] = None
+
+
 class Source(Strict):
     """Where the rule comes from.
 
@@ -257,12 +278,21 @@ class Source(Strict):
     chapter: Optional[str] = None
     verse: Optional[str] = None
     edition: Optional[str] = None
+    translator: Optional[str] = None
+    page: Optional[str] = None
+    quote: Optional[str] = Field(default=None, min_length=1)
+    archive_url: Optional[str] = None
+    published: Optional[str] = None
+    checked_by: Optional[str] = None
+    checked_on: Optional[str] = None
     app_registry: Optional[str] = None
     id: Optional[str] = None
     url: Optional[str] = None
     note: Optional[str] = None
 
-    @field_validator("chapter", "verse", "id", mode="before")
+    @field_validator(
+        "chapter", "verse", "id", "page", "published", "checked_on", mode="before"
+    )
     @classmethod
     def _stringify(cls, value):
         return value if value is None else str(value)
@@ -346,6 +376,8 @@ class Rule(Strict):
     tier: Literal["classical", "experimental"]
     status: Literal["active", "needs_predicates", "needs_verification"] = "active"
     node_model: Literal["mean", "true"] = "mean"
+    zodiac: Optional[Literal["sidereal", "tropical"]] = None
+    ayanamsa: Optional[str] = Field(default=None, min_length=1)
     natal: Optional[ChartSpec] = None
     conditions: Optional[Condition]  # type: ignore[valid-type]
     window: Optional[Window] = None
@@ -457,8 +489,10 @@ __all__ = [
     "ExpectedEffect",
     "Leaf",
     "NotOf",
+    "Param",
     "Place",
     "ReferenceCase",
+    "ReviewEntry",
     "Rule",
     "Source",
     "Window",

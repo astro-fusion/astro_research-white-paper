@@ -234,3 +234,35 @@ def test_deepcopy_keeps_the_template():
     """A copied rule can still be rebound."""
     rule = copy.deepcopy(Rule.model_validate(v2()))
     assert rule.bind({"orb": 5}).conditions.params.orb == 5
+
+
+def test_evidence_fields_are_optional_and_stringified():
+    """v2.1: source and param evidence fields load; YAML dates become strings."""
+    import datetime
+
+    data = v2(
+        source={
+            "text": "BS",
+            "translator": "Bhat",
+            "page": 12,
+            "quote": "q",
+            "archive_url": "https://web.archive.org/x",
+            "published": datetime.date(2019, 5, 1),
+            "checked_on": datetime.date(2026, 11, 22),
+            "checked_by": "@m",
+        },
+        zodiac="sidereal",
+        ayanamsa="lahiri",
+    )
+    data["params"]["orb"]["range_source"] = "BS 17.3"
+    rule = Rule.model_validate(data)
+    assert rule.source.published == "2019-05-01" and rule.source.page == "12"
+    assert rule.params["orb"].range_source == "BS 17.3"
+    assert rule.zodiac == "sidereal"
+    assert "node_model" not in Rule.model_validate(v2()).model_fields_set
+    with pytest.raises(ValidationError):
+        Rule.model_validate(v2(zodiac="vedic"))
+    bad = v2()
+    bad["params"]["orb"]["range_source"] = ""
+    with pytest.raises(ValidationError):
+        Rule.model_validate(bad)

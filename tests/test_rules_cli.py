@@ -157,3 +157,27 @@ def test_no_command_shows_help(capsys):
     with pytest.raises(SystemExit) as exc:
         main([])
     assert exc.value.code == 2
+
+
+def test_level_command_reports_missing_evidence(capsys):
+    """astro-rules level prints the level and what the next one lacks."""
+    code, out, _ = run(capsys, "level", "--no-cases", VALID)
+    assert code == 0
+    assert "L0 Recorded" in out and "missing for L1 Sourced" in out
+    code, out, _ = run(capsys, "level", "--no-cases", "--json", VALID)
+    assert code == 0 and json.loads(out)[0]["level"] == 0
+
+
+def test_level_command_unknown_rule(capsys):
+    """An unknown rule id is a usage error."""
+    code, _, err = run(capsys, "level", "no.such_rule", "--rules-dir", VALID)
+    assert code == 2 and "level" in err
+
+
+def test_validate_min_level(capsys):
+    """--min-level 0 passes; --min-level 1 fails the thinly sourced fixtures."""
+    code, out, _ = run(capsys, "validate", "--min-level", "0", VALID)
+    assert code == 0
+    code, out, _ = run(capsys, "validate", "--min-level", "1", VALID)
+    assert code == 1
+    assert "below L1" in out and "are below L1" in out

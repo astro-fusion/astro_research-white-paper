@@ -4691,7 +4691,7 @@
     },
     "Param": {
       "additionalProperties": false,
-      "description": "One tunable parameter: its current value and the range ``fit`` may try.",
+      "description": "A tunable parameter plus the citation for its range (schema v2.1).\n\n``range_source`` names where the range comes from: a verse, a named\ncommentary, or \"author's choice\" stated as such. Optional so that older\nfiles load; level L2 requires it.",
       "properties": {
         "max": {
           "title": "Max",
@@ -4712,6 +4712,19 @@
           ],
           "default": null,
           "title": "Note"
+        },
+        "range_source": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Range Source"
         },
         "step": {
           "exclusiveMinimum": 0,
@@ -4964,12 +4977,24 @@
     },
     "ReviewEntry": {
       "additionalProperties": false,
-      "description": "An astrologer's sign-off that the encoding is faithful to the source.",
+      "description": "A review sign-off, plus the reviewer's blindness attestation (v2.1).\n\n``blind_attestation`` is true when the reviewer states that they saw no\ntest result for the rule. Level L4 requires it.",
       "properties": {
         "at": {
           "format": "date-time",
           "title": "At",
           "type": "string"
+        },
+        "blind_attestation": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Blind Attestation"
         },
         "by": {
           "minLength": 1,
@@ -5244,6 +5269,18 @@
           "default": null,
           "title": "App Registry"
         },
+        "archive_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Archive Url"
+        },
         "chapter": {
           "anyOf": [
             {
@@ -5255,6 +5292,30 @@
           ],
           "default": null,
           "title": "Chapter"
+        },
+        "checked_by": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Checked By"
+        },
+        "checked_on": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Checked On"
         },
         "edition": {
           "anyOf": [
@@ -5292,6 +5353,43 @@
           "default": null,
           "title": "Note"
         },
+        "page": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Page"
+        },
+        "published": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Published"
+        },
+        "quote": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Quote"
+        },
         "text": {
           "anyOf": [
             {
@@ -5303,6 +5401,18 @@
           ],
           "default": null,
           "title": "Text"
+        },
+        "translator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Translator"
         },
         "url": {
           "anyOf": [
@@ -6156,6 +6266,19 @@
       "title": "Author",
       "type": "string"
     },
+    "ayanamsa": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Ayanamsa"
+    },
     "claim": {
       "minLength": 1,
       "title": "Claim",
@@ -6478,6 +6601,22 @@
         }
       ],
       "default": null
+    },
+    "zodiac": {
+      "anyOf": [
+        {
+          "enum": [
+            "sidereal",
+            "tropical"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Zodiac"
     }
   },
   "required": [

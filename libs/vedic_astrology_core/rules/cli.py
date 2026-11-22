@@ -3,6 +3,8 @@
 Examples::
 
     astro-rules validate                    # every rules/**/*.yaml
+    astro-rules level rules/seismic/shrapit_yoga.yaml   # level and what is missing
+    astro-rules validate --min-level 1 rules/general
     astro-rules test rules/general          # run the reference cases
     astro-rules explain general.gaja_kesari.moon_kendra 2024-05-03T06:00:00Z
     astro-rules explain mundane.ch7.oath_aquarius_baseline_penalty
@@ -45,6 +47,23 @@ def _paths(args: argparse.Namespace) -> List[str]:
     return paths or [str(default_rules_dir())]
 
 
+def _below_level(loaded, minimum: int) -> List[str]:
+    """Lines for every rule under the minimum (L3+ runs the reference cases)."""
+    from .levels import evidence_for, level
+
+    lines = []
+    for item in sorted(loaded, key=lambda x: x.rule.id):
+        rule = item.rule
+        evidence = evidence_for(rule) if minimum >= 3 else None
+        report = level(rule, evidence)
+        if report.level < minimum:
+            lines.append(
+                f"{item.path}: {rule.id} is {report.label}, below L{minimum}; "
+                f"missing for L{report.level + 1}: " + "; ".join(report.next_missing)
+            )
+    return lines
+
+
 def _validate(args: argparse.Namespace) -> int:
     loaded, problems = load_rules(_paths(args))
     for problem in problems:
@@ -54,6 +73,41 @@ def _validate(args: argparse.Namespace) -> int:
         print(f"\n{len(problems)} problems in {files} files; {len(loaded)} rules valid")
         return 1
     print(f"{len(loaded)} rules valid")
+    minimum = getattr(args, "min_level", None)
+    if minimum:
+        short = _below_level(loaded, minimum)
+        for line in short:
+            print(line)
+        if short:
+            print(f"\n{len(short)} of {len(loaded)} rules are below L{minimum}")
+            return 1
+        print(f"all rules are at L{minimum} or above")
+    return 0
+
+
+def _level(args: argparse.Namespace) -> int:
+    from .levels import evidence_for, level
+
+    try:
+        if Path(args.target).exists():
+            loaded, problems = load_rules([args.target])
+            for problem in problems:
+                print(problem)
+            if problems:
+                return 1
+            rules = [item.rule for item in loaded]
+        else:
+            rules = [RuleRegistry.load(_paths(args)).get(args.target)]
+    except (KeyError, ValueError) as exc:
+        return _fail("level", exc)
+    reports = [
+        level(rule, None if args.no_cases else evidence_for(rule))
+        for rule in sorted(rules, key=lambda r: r.id)
+    ]
+    if args.json:
+        print(json.dumps([r.to_dict() for r in reports], indent=2))
+    else:
+        print("\n\n".join(r.render() for r in reports))
     return 0
 
 
@@ -436,7 +490,23 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument(
         "paths", nargs="*", help="rule files or directories (default rules/)"
     )
+    p.add_argument(
+        "--min-level",
+        type=int,
+        choices=range(0, 7),
+        metavar="N",
+        help="also fail when a rule's computed validation level is below N (0-6)",
+    )
     p.set_defaults(func=_validate)
+
+    p = sub.add_parser(
+        "level", help="compute a rule's validation level (L0-L6) and what is missing"
+    )
+    p.add_argument("target", help="a rule file, a directory, or a rule id")
+    p.add_argument("--no-cases", action="store_true", help="skip running reference cases")
+    p.add_argument("--json", action="store_true")
+    p.add_argument("--rules-dir")
+    p.set_defaults(func=_level)
 
     p = sub.add_parser("test", help="run every reference case through the engine")
     p.add_argument(
