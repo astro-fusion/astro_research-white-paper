@@ -16,7 +16,7 @@ import platform
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Iterable, Optional, Union
+from typing import Any, Dict, Iterable, List, Optional, Union
 
 from .seal import require_clean_tree, tree_state
 
@@ -33,26 +33,62 @@ def file_sha256(path: PathLike, chunk: int = 1 << 20) -> str:
 
 
 def git_commit(repo_root: Optional[PathLike] = None) -> Dict[str, Any]:
-    """Return ``{"commit": sha, "dirty": bool}`` or ``commit=None`` outside git."""
-    cwd = str(repo_root) if repo_root else None
+    """Return ``{"commit": sha, "dirty": bool}`` or ``commit=None`` outside git.
+
+    Dirty has one definition, :func:`.seal.tree_state`: untracked files that
+    git does not ignore count (code audit m5).
+    """
+    state = tree_state(repo_root)
+    return {"commit": state["commit"], "dirty": state["dirty"]}
+
+
+def _git_lines(args, cwd: Path) -> Optional[List[str]]:
     try:
-        sha = subprocess.run(
-            ["git", "rev-parse", "HEAD"],
-            cwd=cwd,
-            capture_output=True,
-            text=True,
-            check=True,
-        ).stdout.strip()
-        status = subprocess.run(
-            ["git", "status", "--porcelain", "--untracked-files=no"],
-            cwd=cwd,
-            capture_output=True,
-            text=True,
-            check=True,
-        ).stdout.strip()
-    except (OSError, subprocess.CalledProcessError):
-        return {"commit": None, "dirty": None}
-    return {"commit": sha, "dirty": bool(status)}
+        out = subprocess.run(["git", *args], cwd=str(cwd), capture_output=True, text=True)
+    except OSError:
+        return None
+    return out.stdout.splitlines() if out.returncode == 0 else None
+
+
+def input_git_status(path: PathLike, repo_root: Optional[PathLike] = None) -> str:
+    """``tracked``, ``untracked``, ``ignored`` or ``outside_repo`` for one input file."""
+    p = Path(path).resolve()
+    top_lines = _git_lines(["rev-parse", "--show-toplevel"], Path(repo_root or p.parent))
+    if not top_lines:
+        return "outside_repo"
+    top = Path(top_lines[0]).resolve()
+    try:
+        rel = p.relative_to(top).as_posix()
+    except ValueError:
+        return "outside_repo"
+    if _git_lines(["ls-files", "--error-unmatch", "--", rel], top) is not None:
+        return "tracked"
+    ignored = _git_lines(["check-ignore", "-q", "--", rel], top)
+    return "ignored" if ignored is not None else "untracked"
+
+
+def untracked_files(repo_root: Optional[PathLike] = None, limit: int = 500) -> List[Dict[str, Any]]:
+    """Path and SHA-256 of every untracked, non-ignored file (they can feed a run).
+
+    Such files make the tree dirty (the run is provisional), and their hashes
+    let a reader see what the provisional run could have imported or read.
+    """
+    state = tree_state(repo_root)
+    top_lines = _git_lines(["rev-parse", "--show-toplevel"], Path(repo_root or "."))
+    if not top_lines:
+        return []
+    top = Path(top_lines[0])
+    out = []
+    for line in state["changes"]:
+        if not line.startswith("??"):
+            continue
+        rel = line[3:].strip().strip('"')
+        f = top / rel
+        if f.is_file():
+            out.append({"path": rel, "sha256": file_sha256(f)})
+        if len(out) >= limit:
+            break
+    return out
 
 
 def engine_info(engine: Any) -> Dict[str, Any]:
@@ -83,7 +119,9 @@ def build_manifest(
     Args:
         inputs: One dict per input with ``path`` and optionally
             ``row_count`` and ``date_range`` (``[first, last]``); the
-            SHA-256 is computed here.
+            SHA-256 and the input's ``git_status`` (tracked, untracked,
+            ignored, outside_repo) are computed here, so an ignored snapshot
+            or an untracked file that feeds the run is pinned by its hash.
         seed: The seed passed to ``np.random.default_rng``.
         engine: An ``EphemerisEngine`` or its ``get_ephemeris_info()`` dict.
         repo_root: Repository for the git commit (default: current dir).
@@ -100,6 +138,7 @@ def build_manifest(
         rec = dict(item)
         rec["path"] = str(rec["path"])
         rec["sha256"] = file_sha256(rec["path"])
+        rec["git_status"] = input_git_status(rec["path"], repo_root)
         if repo_root is not None:
             try:
                 rec["path"] = str(
@@ -113,6 +152,7 @@ def build_manifest(
         "git": git_commit(repo_root),
         "seed": seed,
         "inputs": records,
+        "untracked_files": untracked_files(repo_root),
         "python": platform.python_version(),
     }
     manifest.update(engine_info(engine))

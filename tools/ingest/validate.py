@@ -121,9 +121,28 @@ def _ex_ante_start(contract: Contract, row: Dict[str, str]) -> Optional[date]:
 
 # ------------------------------------------------------------ row checks
 
+def episode_starts(paths: Sequence[Path]) -> Dict[str, date]:
+    """``episode_id -> start_date`` from episode files (first row of an id wins)."""
+    out: Dict[str, date] = {}
+    for p in paths:
+        _, rows = read_csv(Path(p))
+        for r in rows:
+            key, start = r.get("episode_id", "").strip(), parse_date(r.get("start_date", ""))
+            if key and start is not None and key not in out:
+                out[key] = start
+    return out
+
+
 def check_rows(contract: Contract, rows: List[Dict[str, str]], *, check_urls: bool,
-               opener: Any = None) -> List[Dict[str, Any]]:
-    """Apply the machine rejection rules of section 4.4 to each row."""
+               opener: Any = None,
+               episodes: Optional[Dict[str, date]] = None) -> List[Dict[str, Any]]:
+    """Apply the machine rejection rules of section 4.4 to each row.
+
+    ``episodes`` maps episode ids to start dates. A row flagged ex-ante in a
+    file whose target is an episode (``episode_astrology_claims``) is checked
+    against its episode's start; a flagged row whose episode start cannot be
+    found is rejected (code audit M6: no look-ahead claim passes unchecked).
+    """
     out: List[Dict[str, Any]] = []
     seen_ids: Dict[str, int] = {}
     seen_rows: Dict[Tuple[str, ...], int] = {}
@@ -181,12 +200,19 @@ def check_rows(contract: Contract, rows: List[Dict[str, str]], *, check_urls: bo
         if is_ex_ante:
             pub = parse_date(row.get("published_date", ""))
             start = _ex_ante_start(contract, row)
+            missing_episode = False
+            if start is None and contract.ex_ante_flag is not None and "episode_id" in row:
+                start = (episodes or {}).get(row.get("episode_id", "").strip())
+                missing_episode = start is None
             if pub is None:
                 reasons.append("ex-ante row without a parsable publication date")
             elif start is not None and not pub < start:
                 reasons.append("marked ex-ante but published on or after the target window starts")
             elif start is None and contract.ex_ante_flag is None:
                 reasons.append("ex-ante row without a parsable target start")
+            elif missing_episode:
+                reasons.append("marked ex-ante but the episode start cannot be found "
+                               "(episode_id not in an episodes file)")
             proof = row.get("archive_url", "").strip()
             proof = "" if _is_gap(proof) else proof
             if not proof and not archive_url and check_urls:
@@ -288,8 +314,12 @@ def _spot_required(name: str, n: int) -> int:
 def validate_dir(topic_dir: Path, *, check_urls: bool = True, opener: Any = None,
                  rules_runner: RulesRunner = default_rules_runner,
                  known_ids: Optional[set] = None, today: Optional[date] = None,
-                 write_report: bool = True) -> Dict[str, Any]:
+                 write_report: bool = True,
+                 episode_files: Sequence[Path] = ()) -> Dict[str, Any]:
     topic_dir = Path(topic_dir)
+    found_episodes = [p for p in sorted(topic_dir.rglob("*.csv"))
+                      if getattr(contract_for(p.name), "name", None) == "gold_episodes"]
+    episodes = episode_starts([*episode_files, *found_episodes])
     report_path = topic_dir / "VERIFICATION.json"
     previous: Dict[str, Any] = {}
     if report_path.exists():
@@ -346,7 +376,8 @@ def validate_dir(topic_dir: Path, *, check_urls: bool = True, opener: Any = None
                 "note": "suggestion only; columns are never renamed automatically"})
             entry["status"] = "needs_mapping"
             continue
-        checked = check_rows(contract, rows, check_urls=check_urls, opener=opener)
+        checked = check_rows(contract, rows, check_urls=check_urls, opener=opener,
+                             episodes=episodes)
         for item in checked:
             item["row_id"] = item["row_id"].format(stem=path.stem)
             old = prev_rows.get(item["row_id"], {})

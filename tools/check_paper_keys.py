@@ -15,9 +15,15 @@ R.get("headline.n_significant_explore") or R.num("spa.p", 3). With more than
 one results file, give each a label (--results gold=a.json --results
 silver=b.json) and write the key as "gold:headline.verdict".
 
-Plan hash: sha256 of the bytes of hypothesis.yaml, stored in results.json as
-plan.sha256 (or plan_sha256). Data hash: data.sha256, which must appear as a
-"sha256" value in data/snapshot_index.json.
+Provenance follows the one contract in core/paperkit/results.py
+(PROVENANCE_KEYS): top-level provisional and git {commit, dirty}; plan hash
+(sha256 of the bytes of hypothesis.yaml) as plan.sha256 or plan_sha256; data
+hash as data.sha256 or dataset.sha256 (the ADR-007 domain record), which must
+appear as a "sha256" value in data/snapshot_index.json.
+
+Numbers: a negative sign, a leading-dot decimal and a currency sign are part
+of the number ("-0.42", ".03", "$1,850" are bare numbers). A hyphen or dot
+glued to a word ("ADR-004", "v1.2") is not a sign.
 
 Allow-list: one token per line (a year, a section number), "#" starts a
 comment. Default <paper dir>/numbers_allowlist.txt.
@@ -36,12 +42,17 @@ from typing import Dict, Iterable, List, Optional, Tuple
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO / "libs"))
 
-from vedic_astrology_core.paperkit import Results  # noqa: E402
+from vedic_astrology_core.paperkit import Results, provenance  # noqa: E402
 
 KEY_CALL = re.compile(
     r"""\b[A-Za-z_]\w*\.(?:get|num|count|pct|p|text)\(\s*(["'])([^"']+)\1"""
 )
-NUMBER = re.compile(r"(?<![\w.\-/@#$])\d+(?:[.,]\d+)*(?![\w])")
+_DIGITS = r"(?:\d+(?:[.,]\d+)*|\.\d+)"
+NUMBER = re.compile(
+    r"(?:(?<![\w/@#.])(?:[-−+]\$?|\$[-−]?)" + _DIGITS  # -0.42, +3, $5, -$5
+    + r"|(?<![\w/@#.\-−$])" + _DIGITS + r")"  # 12.5, .03 (not ADR-004, v1.2)
+    + r"(?![\w])"
+)
 
 
 def _blank(match: "re.Match[str]") -> str:
@@ -116,12 +127,13 @@ def check_numbers(text: str, allow: set) -> List[str]:
 
 def check_dirty(label: str, res: Results) -> List[str]:
     failures = []
-    d = res.data
-    if d.get("provisional") is not False:
+    prov = provenance(res.data)
+    if prov["provisional"] is not False:
         failures.append(f"DIRTY {label}: results are provisional or lack provisional=false")
-    git = d.get("git")
-    if not isinstance(git, dict) or git.get("dirty") is not False or not git.get("commit"):
-        failures.append(f"DIRTY {label}: not written from a clean git tree (git={git!r})")
+    if prov["dirty"] is not False or not prov["commit"]:
+        failures.append(
+            f"DIRTY {label}: not written from a clean git tree (git={res.data.get('git')!r})"
+        )
     return failures
 
 
@@ -141,13 +153,11 @@ def check_stale(
     label: str, res: Results, plan: Optional[Path], index: Optional[Path]
 ) -> List[str]:
     failures = []
+    prov = provenance(res.data)
+    failures += [f"STALE {label}: {p}" for p in prov["problems"]]
     if plan is not None:
         want = hashlib.sha256(plan.read_bytes()).hexdigest()
-        have = None
-        for key in ("plan.sha256", "plan_sha256"):
-            if res.has(key):
-                have = res._walk(key)
-                break
+        have = prov["plan_sha256"]
         if have is None:
             failures.append(f"STALE {label}: no plan hash in results to compare with {plan.name}")
         elif have != want:
@@ -160,9 +170,9 @@ def check_stale(
                 known = set(_sha256_values(json.loads(index.read_text())))
             except json.JSONDecodeError as exc:
                 return failures + [f"STALE {label}: snapshot index is not JSON: {exc}"]
-            if not res.has("data.sha256"):
-                failures.append(f"STALE {label}: no data.sha256 in results")
-            elif res._walk("data.sha256") not in known:
+            if prov["data_sha256"] is None:
+                failures.append(f"STALE {label}: no data.sha256 (or dataset.sha256) in results")
+            elif prov["data_sha256"] not in known:
                 failures.append(f"STALE {label}: data hash not in {index.name}")
     return failures
 

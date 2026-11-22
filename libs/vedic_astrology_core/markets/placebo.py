@@ -9,23 +9,36 @@ no astrology but share the same indicator machinery. Three placebo kinds:
   is broken. Note that a shift that is close to a planet's period (for
   example about 29.5 years for Saturn) re-creates part of the real sky; the
   400 day floor is the ADR minimum, not a guarantee against that.
-* ``tropical`` -- the same planets read in the tropical zodiac (sign,
-  nakshatra and house recomputed from longitude plus the true Lahiri
-  ayanamsa). Retrograde, combustion and tithi do not depend on the zodiac and
-  are unchanged.
+* ``tropical`` -- the same planets read in the tropical zodiac (sign and
+  nakshatra recomputed from longitude plus the true Lahiri ayanamsa; houses
+  only when the lagna's longitude is given, see :func:`rezodiac`).
+  Retrograde, combustion and tithi do not depend on the zodiac and are
+  unchanged. The tropical zodiac is a rival system, so this one deterministic
+  draw is better read as a sensitivity variant than as a placebo.
 * ``scramble`` -- sign (and whole-sign house) labels permuted at random, one
   permutation per placebo; nakshatra columns are left alone.
 
 :func:`placebo_skies` returns, per kind, the rank of the real sky's largest
-statistic among the placebos; the p-value is ``rank / (n + 1)``, so it can
-never be zero. The statistic is supplied by the caller (a function from the
-boolean indicator frame to ``{indicator_id: non-negative statistic}``), so
-the whole selection step is repeated on every placebo as ADR-005 requires.
+statistic among the placebos, and per indicator the rank of that
+indicator's own statistic (strategy audit A-01: R2 is per test). The
+p-value is ``rank / (n + 1)``, so it can never be zero. Ties are mid-ranked
+(a placebo equal to the real sky counts one half), and a placebo that leaves
+an indicator unchanged is dropped for that indicator: a placebo kind that
+changes nothing is "not applicable", never "failed". So nakshatra, tithi,
+retrograde and combustion indicators, which scrambling sign labels or the
+tropical zodiac do not touch, are judged by the placebos that do move them.
+The statistic is supplied by the caller (a function from the boolean
+indicator frame to ``{indicator_id: non-negative statistic}``), so the whole
+selection step is repeated on every placebo as ADR-005 requires.
 
 :func:`ayanamsa_sensitivity` rebuilds indicators under other ayanamsas and
 counts the bars that change. Positions are shifted by the difference of the
-mean ayanamsas (the nutation term is common and cancels), so only one
-ephemeris pass is needed. ``rule:`` columns come from the combination
+mean ayanamsas, so only one ephemeris pass is needed. Exception:
+``true_chitrapaksha`` (``SIDM_TRUE_CITRA``) is a true ayanamsa and already
+contains nutation, so its delta against the mean base carries up to about
+17 arcseconds of nutation (code audit m7). That is far below a sign or
+nakshatra boundary width and changes at most a bar that sits within 17
+arcseconds of a boundary. ``rule:`` columns come from the combination
 registry and are not rebuilt; this is reported.
 """
 
@@ -55,7 +68,11 @@ Statistic = Callable[[pd.DataFrame], Mapping[str, float]]
 
 
 def _mean_ayanamsa(jd: float, system: str) -> float:
-    """Mean ayanamsa in degrees; ``true_chitrapaksha`` is SIDM_TRUE_CITRA."""
+    """Mean ayanamsa in degrees; ``true_chitrapaksha`` is SIDM_TRUE_CITRA.
+
+    SIDM_TRUE_CITRA is a true ayanamsa: it includes nutation (up to about 17
+    arcseconds), unlike the other three. See the module docstring.
+    """
     if system == "true_chitrapaksha":
         swe.set_sid_mode(swe.SIDM_TRUE_CITRA, 0.0, 0.0)
         return float(swe.get_ayanamsa_ut(jd))
@@ -67,16 +84,29 @@ def _bodies_in(frame: pd.DataFrame) -> List[str]:
 
 
 def rezodiac(
-    frame: pd.DataFrame, delta_deg, lagna_sign: Optional[int] = None
+    frame: pd.DataFrame,
+    delta_deg,
+    lagna_sign: Optional[int] = None,
+    lagna_lon: Optional[float] = None,
 ) -> pd.DataFrame:
     """Return a copy of ``frame`` with longitudes moved by ``delta_deg``.
 
     ``delta_deg`` is a scalar or one value per row (new = old + delta, mod
-    360). ``_lon``, ``_sign``, ``_nakshatra``, ``_nak_lord`` and, when
-    ``lagna_sign`` is given, ``_house`` are recomputed. Everything else is kept.
+    360). ``_lon``, ``_sign``, ``_nakshatra`` and ``_nak_lord`` are recomputed.
+
+    Houses (code audit m6): the lagna moves with the same delta. With
+    ``lagna_lon`` (the lagna's longitude in the frame's zodiac) ``_house`` is
+    recomputed from the moved lagna. With only ``lagna_sign`` the lagna's
+    degree is unknown, so its new sign is unknown too; ``_house`` is then
+    kept, because planets and lagna rotate together and whole-sign houses
+    do not change except near a boundary. Never are planets of one zodiac
+    counted from the lagna of another. Everything else is kept.
     """
     out = frame.copy()
     delta = np.broadcast_to(np.asarray(delta_deg, dtype=float), (len(frame),))
+    new_lagna = None
+    if lagna_lon is not None:
+        new_lagna = (((float(lagna_lon) + delta) % 360.0) // 30.0).astype(int)
     for key in _bodies_in(frame):
         lon = (frame[f"{key}_lon"].to_numpy(dtype=float) + delta) % 360.0
         signs = (lon // 30.0).astype(int)
@@ -85,8 +115,8 @@ def rezodiac(
         out[f"{key}_sign"] = [SIGN_NAMES_LIST[s] for s in signs]
         out[f"{key}_nakshatra"] = [n["name"] for n in naks]
         out[f"{key}_nak_lord"] = [to_planet(n["lord"]).name for n in naks]
-        if lagna_sign is not None and f"{key}_house" in frame.columns:
-            out[f"{key}_house"] = (signs - int(lagna_sign)) % 12 + 1
+        if new_lagna is not None and f"{key}_house" in frame.columns:
+            out[f"{key}_house"] = (signs - new_lagna) % 12 + 1
     return out
 
 
@@ -144,21 +174,52 @@ def shifted_sky_frame(
     return frame
 
 
-def rank_of_real(real_max: float, placebo_max: Sequence[float]) -> Dict[str, float]:
-    """Rank of the real maximum among placebo maxima (1 = larger than all).
+def rank_of_real(
+    real_max: float,
+    placebo_max: Sequence[float],
+    ties: str = "mid",
+    rng: Optional[np.random.Generator] = None,
+    tol: float = 1e-12,
+) -> Dict[str, float]:
+    """Rank of the real statistic among placebo statistics (1 = larger than all).
 
-    ``rank = 1 + #(placebo >= real)``; ``p = rank / (n + 1)``.
+    ``rank = 1 + #(placebo > real) + tie share``; ``p = rank / (n + 1)``.
+    Ties (within ``tol``, relative) do not all count against the real sky
+    (strategy audit A-01): ``ties="mid"`` counts each tie one half (mid-rank),
+    ``ties="random"`` breaks them at random with ``rng``, ``ties="against"``
+    is the old rule (every tie counts against the real sky).
     """
     arr = np.asarray(list(placebo_max), dtype=float)
     if arr.size == 0:
         raise ValueError("no placebo statistics")
-    rank = 1 + int((arr >= real_max).sum())
+    real = float(real_max)
+    eps = tol * max(1.0, abs(real))
+    n_greater = int((arr > real + eps).sum())
+    n_tied = int((np.abs(arr - real) <= eps).sum())
+    if ties == "mid":
+        rank = 1 + n_greater + n_tied / 2.0
+    elif ties == "random":
+        if rng is None:
+            raise ValueError("ties='random' needs an rng")
+        rank = 1 + n_greater + int(rng.integers(0, n_tied + 1))
+    elif ties == "against":
+        rank = 1 + n_greater + n_tied
+    else:
+        raise ValueError(f"unknown ties rule {ties!r}")
     return {
-        "real_max": float(real_max),
+        "real_max": real,
         "n_placebo": int(arr.size),
+        "n_greater": n_greater,
+        "n_tied": n_tied,
+        "ties": ties,
         "rank": rank,
         "p_value": rank / (arr.size + 1),
     }
+
+
+def _not_applicable(n_drawn: int, why: str) -> Dict:
+    return {"applicable": False, "rank": None, "p_value": None, "n_placebo": n_drawn,
+            "n_used": 0, "reason": why}
 
 
 def _max_stat(statistic: Statistic, indicators: pd.DataFrame) -> float:
@@ -182,6 +243,8 @@ def placebo_skies(
     max_offset_days: int = 3650,
     frame_builder: Optional[Callable[[pd.DatetimeIndex], pd.DataFrame]] = None,
     base_frame: Optional[pd.DataFrame] = None,
+    ties: str = "mid",
+    lagna_lon: Optional[float] = None,
 ) -> Dict:
     """Rank the real sky's largest statistic among placebo skies.
 
@@ -198,10 +261,18 @@ def placebo_skies(
         seed: seeds offsets and permutations.
         frame_builder / base_frame: injection points (tests, caching); by
             default the engine builds frames with ``features.indicator_frame``.
+        ties: tie rule of :func:`rank_of_real` (default mid-rank).
+        lagna_lon: the lagna's longitude, so the tropical placebo can move
+            the lagna too; without it house columns are kept (see
+            :func:`rezodiac`).
 
     Returns:
         ``{"real": {id: stat}, "real_max": float, "kinds": {kind: {...rank,
-        p_value, placebo_max, ...}}}``; shift also lists ``offsets_days``.
+        p_value, applicable, n_used, placebo_max, per_indicator: {id:
+        {rank, p_value, applicable, ...}}}}}``; shift also lists
+        ``offsets_days``. A placebo identical to the real sky for an
+        indicator is dropped for it; with none left the entry is
+        ``applicable: False`` with rank and p None.
     """
     bad = [k for k in kinds if k not in PLACEBO_KINDS]
     if bad:
@@ -218,10 +289,12 @@ def placebo_skies(
             )
 
     real_frame = base_frame if base_frame is not None else frame_builder(index)
-    real = dict(statistic(features.build_indicators(real_frame, specs)))
+    real_ind = features.build_indicators(real_frame, specs)
+    real = dict(statistic(real_ind))
     real_max = float(max(real.values()))
+    ids = [spec["id"] for spec in specs]
 
-    def lenient_max(frame: pd.DataFrame) -> float:
+    def lenient(frame: pd.DataFrame) -> pd.DataFrame:
         cols = {}
         for spec in specs:
             try:
@@ -230,33 +303,58 @@ def placebo_skies(
                 if "never active" not in str(exc):
                     raise
                 cols[spec["id"]] = pd.Series(False, index=frame.index)
-        return _max_stat(statistic, pd.DataFrame(cols, index=frame.index))
+        return pd.DataFrame(cols, index=frame.index)
 
-    result: Dict = {"real": real, "real_max": real_max, "kinds": {}}
+    def one(frame: pd.DataFrame):
+        ind = lenient(frame)
+        stats = statistic(ind)
+        if not stats:
+            raise ValueError("statistic returned no values")
+        changed = {
+            i: not np.array_equal(ind[i].to_numpy(bool), real_ind[i].to_numpy(bool))
+            for i in ids
+        }
+        return dict(stats), changed
+
+    result: Dict = {"real": real, "real_max": real_max, "kinds": {},
+                    "ties": ties, "houses": "recomputed" if lagna_lon is not None else "kept"}
     for kind in kinds:
         extra: Dict = {}
         if kind == "shift":
             offsets = shift_offsets(n_placebo, rng, min_offset_days, max_offset_days)
-            maxima = [
-                lenient_max(shifted_sky_frame(index, int(o), frame_builder))
-                for o in offsets
-            ]
+            draws = [one(shifted_sky_frame(index, int(o), frame_builder)) for o in offsets]
             extra["offsets_days"] = [int(o) for o in offsets]
         elif kind == "tropical":
             jds = [engine.datetime_to_julian_day(t.to_pydatetime()) for t in index]
             delta = [ayanamsa_true(jd, AyanamsaSystem.LAHIRI) for jd in jds]
-            trop = rezodiac(real_frame, delta, lagna_sign)
-            # One deterministic placebo: the replicate count is 1, so the
-            # rank is reported against that single draw and flagged.
-            maxima = [lenient_max(trop)]
+            # One deterministic draw: a rival zodiac, reported as a variant.
+            draws = [one(rezodiac(real_frame, delta, lagna_sign, lagna_lon))]
             extra["deterministic"] = True
+            extra["role"] = "variant"
         else:
-            maxima = [
-                lenient_max(scramble_signs(real_frame, rng, lagna_sign))
-                for _ in range(n_placebo)
-            ]
-        entry = rank_of_real(real_max, maxima)
-        entry["placebo_max"] = [float(m) for m in maxima]
+            draws = [one(scramble_signs(real_frame, rng, lagna_sign)) for _ in range(n_placebo)]
+        # Max over indicators, among the placebos that change at least one.
+        moved = [s for s, ch in draws if any(ch.values())]
+        if moved:
+            entry = rank_of_real(real_max, [max(s.values()) for s in moved], ties, rng)
+            entry["applicable"] = True
+            entry["n_used"] = len(moved)
+        else:
+            entry = _not_applicable(len(draws), "no placebo of this kind changes any indicator")
+        entry["n_placebo"] = len(draws)
+        entry["n_identical_dropped"] = len(draws) - len(moved)
+        entry["placebo_max"] = [float(max(s.values())) for s, _ in draws]
+        # Per indicator: that indicator's statistic, placebos that move it.
+        per: Dict[str, Dict] = {}
+        for i in ids:
+            vals = [float(s.get(i, 0.0)) for s, ch in draws if ch[i]]
+            if not vals:
+                per[i] = _not_applicable(len(draws), f"{kind} does not change this indicator")
+                continue
+            r = rank_of_real(float(real.get(i, 0.0)), vals, ties, rng)
+            r.update(applicable=True, n_used=len(vals), n_placebo=len(draws))
+            per[i] = r
+        entry["per_indicator"] = per
         entry.update(extra)
         result["kinds"][kind] = entry
     return result
@@ -270,6 +368,7 @@ def ayanamsa_sensitivity(
     instants: Optional[pd.DatetimeIndex] = None,
     engine: Optional[EphemerisEngine] = None,
     lagna_sign: Optional[int] = None,
+    lagna_lon: Optional[float] = None,
 ) -> Dict:
     """Count the bars whose indicators change under other ayanamsas.
 
@@ -303,7 +402,7 @@ def ayanamsa_sensitivity(
     }
     for name in variants:
         delta = [_mean_ayanamsa(jd, base) - _mean_ayanamsa(jd, name) for jd in jds]
-        ind = build(rezodiac(frame, delta, lagna_sign))
+        ind = build(rezodiac(frame, delta, lagna_sign, lagna_lon))
         changed = base_ind.to_numpy() != ind.to_numpy()
         out["variants"][name] = {
             "bars_changed": {

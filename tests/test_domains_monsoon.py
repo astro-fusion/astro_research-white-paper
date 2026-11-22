@@ -1,13 +1,15 @@
 """WP-79: monsoon adapter and monsoon principles (simulated rainfall first)."""
 
 import json
+import tempfile
+from pathlib import Path
 
 import numpy as np
 import pytest
 import yaml
 
 from studies._paths import REPO_ROOT
-from vedic_astrology_core.domains.base import GateHashError
+from vedic_astrology_core.domains.base import GateHashError, write_gate
 from vedic_astrology_core.domains.monsoon import (
     FirewallError,
     MonsoonDomain,
@@ -29,7 +31,7 @@ from vedic_astrology_core.rules import run_reference_cases
 from vedic_astrology_core.rules.levels import level
 from vedic_astrology_core.stats.episodes import by_rank1_threshold
 
-GATE = "ab" * 32
+GATE = write_gate(Path(tempfile.mkdtemp()) / "gate.json", {"test": "monsoon"})
 PLAN = REPO_ROOT / "studies" / "monsoon" / "plan.yaml"
 RULES = REPO_ROOT / "rules" / "monsoon"
 MEGH = "monsoon.meghesha_malefic_deficit"

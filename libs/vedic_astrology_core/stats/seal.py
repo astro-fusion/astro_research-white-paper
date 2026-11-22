@@ -8,15 +8,36 @@ ADR-004 D-2 (review flaw C2). Two guards:
   through and is stamped ``provisional: true``. There is deliberately no
   environment variable or other side door: provisional is an argument.
 * :func:`begin_confirm` appends one entry to the append-only ledger
-  ``studies/<study>/confirm_ledger.jsonl`` (plan hash, data hash, commit,
-  UTC time, period) and raises if the ledger already holds a confirm. The
-  ledger file is the plan lineage: editing the plan, bumping its version or
-  renaming the study does not open a second confirm. Deleting or truncating
-  a ledger that was ever committed is detected from git history.
+  ``<study_dir>/confirm_ledger.jsonl`` (ADR-007: ``studies/validity/``) with
+  plan hash, data hash, commit, UTC time, period, lineage, principle id, the
+  hash of the previous line (hash chain) and an ``external_timestamp``
+  placeholder. It raises if a confirm of the same key is recorded in ANY
+  ledger of the repository, in the working tree or in git history on any
+  ref (code audit M4, strategy audit S-05).
 
-The confirm window comes from the plan (``periods.confirm_start`` to
-``periods.confirm_end``, else ``data.end``), never from the clock. The
-entry is written before the confirm computes anything, so a confirm that
+Confirm key: (principle id, plan lineage). Principle id None is a confirm of
+the whole plan and collides with every principle of the lineage. The lineage
+is matched by identity tokens, any one of which collides: the plan's
+``lineage`` field (declare it: it moves with a copied study), its ``study``
+and ``id`` fields, its repository path and the SHA-256 of its bytes. So
+editing the plan or bumping its version (same path), renaming the study
+(same path or same lineage) or copying the folder (same bytes, same study,
+same lineage) does not open a second confirm. Deleting or truncating a ledger
+that was ever committed is detected from git history.
+
+Confirm ledgers are not run inputs: :func:`tree_state` ignores an added or
+modified ``confirm_ledger.jsonl`` (not a deleted one), so writing the entry
+does not make the confirm run itself provisional (code audit M1).
+
+External timestamp: the entry carries ``external_timestamp: null``. The
+owner can stamp the entry outside the repository (OpenTimestamps, Zenodo,
+OSF) and record the receipt with :func:`record_external_timestamp`, which
+appends a separate line (ledger lines are never edited).
+
+The confirm window comes from the plan (``periods.confirm_start`` /
+``periods.confirm_end``, ``periods.confirm: {start, end}`` or
+``split.confirm: [start, end]``; end else ``data.end``), never from the clock.
+The entry is written before the confirm computes anything, so a confirm that
 crashes still counts as spent.
 """
 
@@ -72,11 +93,26 @@ def _repo_toplevel(repo_root: Optional[PathLike]) -> Optional[Path]:
     return Path(out.stdout.strip())
 
 
+def _porcelain_path(line: str) -> str:
+    path = line[3:]
+    if " -> " in path:
+        path = path.split(" -> ", 1)[1]
+    return path.strip().strip('"')
+
+
+def _is_ledger_append(line: str) -> bool:
+    """An added or modified confirm ledger; a deletion still counts as dirty."""
+    return Path(_porcelain_path(line)).name == LEDGER_NAME and "D" not in line[:2]
+
+
 def tree_state(repo_root: Optional[PathLike] = None) -> Dict[str, Any]:
     """Return ``{"commit", "dirty", "changes"}`` counting untracked files.
 
     Outside git (or with no commit yet) ``commit`` and ``dirty`` are None.
-    ``changes`` lists the porcelain lines that make the tree dirty.
+    ``changes`` lists the porcelain lines that make the tree dirty. An added
+    or modified ``confirm_ledger.jsonl`` is not a change: the ledger is a log
+    of runs, never an input of one (a deleted ledger still counts).
+    This is the one definition of dirty (manifest, seal, mundane writer).
     """
     top = _repo_toplevel(repo_root)
     if top is None:
@@ -87,7 +123,8 @@ def tree_state(repo_root: Optional[PathLike] = None) -> Dict[str, Any]:
     status = _git(["status", "--porcelain", "--untracked-files=all"], top)
     if status.returncode != 0:
         return {"commit": head.stdout.strip(), "dirty": None, "changes": []}
-    changes = [ln for ln in status.stdout.splitlines() if ln.strip()]
+    changes = [ln for ln in status.stdout.splitlines()
+               if ln.strip() and not _is_ledger_append(ln)]
     return {"commit": head.stdout.strip(), "dirty": bool(changes), "changes": changes}
 
 
@@ -156,19 +193,41 @@ def _as_date(value: Any, what: str) -> date:
     raise SealError(f"plan field {what} is not an ISO date: {value!r}")
 
 
+def _window_fields(plan: Mapping[str, Any]) -> Tuple[Any, str, Any, str]:
+    """(start, its name, end or None, its name) from any accepted plan schema."""
+    periods = plan.get("periods") or {}
+    split = plan.get("split") or {}
+    if "confirm_start" in periods:
+        return (periods["confirm_start"], "periods.confirm_start",
+                periods.get("confirm_end"), "periods.confirm_end")
+    block = periods.get("confirm")
+    if isinstance(block, Mapping) and "start" in block:
+        return block["start"], "periods.confirm.start", block.get("end"), "periods.confirm.end"
+    block = split.get("confirm") if isinstance(split, Mapping) else None
+    if isinstance(block, Mapping) and "start" in block:
+        return block["start"], "split.confirm.start", block.get("end"), "split.confirm.end"
+    if isinstance(block, (list, tuple)) and len(block) in (1, 2):
+        end = block[1] if len(block) == 2 else None
+        return block[0], "split.confirm[0]", end, "split.confirm[1]"
+    raise SealError(
+        "plan has no confirm start (periods.confirm_start, periods.confirm.start "
+        "or split.confirm)"
+    )
+
+
 def confirm_window(plan: Mapping[str, Any]) -> Tuple[str, str]:
     """Return the plan's confirm window as ISO dates ``(start, end)``.
 
-    Start is ``periods.confirm_start``. End is ``periods.confirm_end``, or
-    else ``data.end``. Neither is ever taken from the current date; a plan
-    with no end raises.
+    Accepted schemas (code audit M3): ``periods.confirm_start`` /
+    ``periods.confirm_end`` (gold, silver), ``periods.confirm: {start, end}``
+    (mundane) and ``split.confirm: [start, end]`` (earthquake). A missing end
+    falls back to ``data.end``. Neither is ever taken from the current date;
+    a plan with no end raises.
     """
-    periods = plan.get("periods") or {}
-    if "confirm_start" not in periods:
-        raise SealError("plan has no periods.confirm_start")
-    start = _as_date(periods["confirm_start"], "periods.confirm_start")
-    if periods.get("confirm_end") is not None:
-        end = _as_date(periods["confirm_end"], "periods.confirm_end")
+    raw_start, start_name, raw_end, end_name = _window_fields(plan)
+    start = _as_date(raw_start, start_name)
+    if raw_end is not None:
+        end = _as_date(raw_end, end_name)
     elif (plan.get("data") or {}).get("end") is not None:
         end = _as_date(plan["data"]["end"], "data.end")
     else:
@@ -243,21 +302,135 @@ def verify_ledger(path: PathLike, repo_root: Optional[PathLike] = None) -> List[
     return read_ledger(p)
 
 
+def entry_sha256(entry: Mapping[str, Any]) -> str:
+    """SHA-256 of a ledger entry as it is written (one JSON line, sorted keys)."""
+    return hashlib.sha256(json.dumps(entry, sort_keys=True).encode("utf-8")).hexdigest()
+
+
+def _line_sha256(line: str) -> str:
+    return hashlib.sha256(line.encode("utf-8")).hexdigest()
+
+
+def plan_identity(plan: Mapping[str, Any], plan_rel: str, plan_hash: str) -> List[str]:
+    """Identity tokens of a plan lineage; any shared token is the same lineage."""
+    tokens = []
+    for key in ("lineage", "study", "id"):
+        value = plan.get(key)
+        if value not in (None, ""):
+            tokens.append(f"{key}:{value}")
+    tokens += [f"path:{plan_rel}", f"sha256:{plan_hash}"]
+    return tokens
+
+
+def _entry_identity(entry: Mapping[str, Any]) -> set:
+    if isinstance(entry.get("identity"), list):
+        return set(entry["identity"])
+    tokens = set()  # entries written before the identity field existed
+    if entry.get("study"):
+        tokens.add(f"study:{entry['study']}")
+    if entry.get("plan_path"):
+        tokens.add(f"path:{entry['plan_path']}")
+    if entry.get("plan_sha256"):
+        tokens.add(f"sha256:{entry['plan_sha256']}")
+    return tokens
+
+
+def _is_confirm(entry: Any) -> bool:
+    return isinstance(entry, dict) and entry.get("kind", "confirm") == "confirm"
+
+
+def _same_key(entry: Mapping[str, Any], principle_id: Optional[str], identity: set) -> bool:
+    other = entry.get("principle_id")
+    if principle_id is not None and other is not None and other != principle_id:
+        return False
+    return bool(_entry_identity(entry) & identity)
+
+
+def _repo_ledger_entries(top: Path) -> List[Tuple[str, Dict[str, Any]]]:
+    """Every confirm entry of every ledger: working tree and git history, any ref."""
+    found: List[Tuple[str, Dict[str, Any]]] = []
+    seen = set()
+
+    def add(where: str, text: str) -> None:
+        for ln in text.splitlines():
+            if not ln.strip() or ln in seen:
+                continue
+            seen.add(ln)
+            try:
+                entry = json.loads(ln)
+            except json.JSONDecodeError:
+                continue  # verify_ledger reports bad lines of the target ledger
+            if _is_confirm(entry):
+                found.append((where, entry))
+
+    listed = _git(["ls-files", "-co", "--exclude-standard", "-z"], top)
+    for rel in listed.stdout.split("\0") if listed.returncode == 0 else []:
+        if rel and Path(rel).name == LEDGER_NAME and (top / rel).exists():
+            add(rel, (top / rel).read_text(encoding="utf-8"))
+    log = _git(["log", "--all", "--format=commit %H", "--name-only", "--", f"*{LEDGER_NAME}"], top)
+    sha = None
+    for ln in log.stdout.splitlines() if log.returncode == 0 else []:
+        if ln.startswith("commit "):
+            sha = ln.split()[1]
+        elif ln.strip() and sha and Path(ln.strip()).name == LEDGER_NAME:
+            show = _git(["show", f"{sha}:{ln.strip()}"], top)
+            if show.returncode == 0:
+                add(f"{ln.strip()}@{sha[:12]}", show.stdout)
+    return found
+
+
+def record_external_timestamp(
+    ledger_path: PathLike,
+    entry_hash: str,
+    service: str,
+    receipt: str,
+    *,
+    now: Optional[datetime] = None,
+) -> Dict[str, Any]:
+    """Append the receipt of an external timestamp of one confirm entry.
+
+    The owner stamps ``entry_sha256(entry)`` outside the repository
+    (OpenTimestamps, Zenodo, OSF) and records the receipt here. Ledger lines
+    are never edited, so the stamp is a line of its own that names the entry.
+    """
+    p = Path(ledger_path)
+    entries = read_ledger(p)
+    if not any(_is_confirm(e) and entry_sha256(e) == entry_hash for e in entries):
+        raise SealError(f"{p} has no confirm entry with hash {entry_hash}")
+    if not service or not receipt:
+        raise SealError("an external timestamp needs a service and a receipt")
+    lines = [ln for ln in p.read_text(encoding="utf-8").splitlines() if ln.strip()]
+    when = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
+    stamp = {
+        "kind": "external_timestamp",
+        "entry_sha256": entry_hash,
+        "service": service,
+        "receipt": receipt,
+        "utc": when.isoformat(timespec="seconds"),
+        "prev_sha256": _line_sha256(lines[-1]) if lines else None,
+    }
+    with open(p, "a", encoding="utf-8") as fh:
+        fh.write(json.dumps(stamp, sort_keys=True) + "\n")
+    return stamp
+
+
 def begin_confirm(
     study_dir: PathLike,
     plan_path: PathLike,
     data_sha256: str,
     *,
+    principle_id: Optional[str] = None,
     repo_root: Optional[PathLike] = None,
     now: Optional[datetime] = None,
 ) -> Dict[str, Any]:
-    """Log the single confirm of a plan lineage and return its entry.
+    """Log the single confirm of (principle, plan lineage) and return its entry.
 
     Requires a clean tree (a confirm is never provisional), a plan file that
     git tracks, a data hash and a confirm window from the plan. Raises
-    :class:`ConfirmAlreadyRunError` if the lineage's ledger holds any entry,
-    whatever plan hash or period it was for. ``now`` only sets the logged
-    time; it does not affect the window.
+    :class:`ConfirmAlreadyRunError` if any ledger of the repository (working
+    tree or history) records a confirm of the same key, whatever plan hash
+    or period it was for; see the module docstring for the key. ``now`` only
+    sets the logged time; it does not affect the window.
     """
     if not isinstance(data_sha256, str) or not data_sha256.strip():
         raise SealError("a confirm needs the SHA-256 of its data")
@@ -271,24 +444,43 @@ def begin_confirm(
     plan = yaml.safe_load(plan_p.read_text(encoding="utf-8")) or {}
     start, end = confirm_window(plan)
 
+    if principle_id is not None and (not isinstance(principle_id, str) or not principle_id.strip()):
+        raise SealError("principle_id must be a non-empty string or None (whole plan)")
+    plan_rel = plan_p.resolve().relative_to(top.resolve()).as_posix()
+    p_hash = plan_sha256(plan_p)
+    identity = plan_identity(plan, plan_rel, p_hash)
+
     ledger = confirm_ledger_path(study_dir)
     entries = verify_ledger(ledger, top)
-    if entries:
-        first = entries[0]
-        raise ConfirmAlreadyRunError(
-            f"{ledger} already records a confirm (commit {first.get('commit')}, "
-            f"{first.get('utc')}); one confirm per plan lineage"
-        )
+    local = [("" + str(ledger), e) for e in entries if _is_confirm(e)]
+    for where, prior in local + _repo_ledger_entries(top):
+        if _same_key(prior, principle_id, set(identity)):
+            raise ConfirmAlreadyRunError(
+                f"{where} already records a confirm of this lineage "
+                f"(principle {prior.get('principle_id')!r}, commit {prior.get('commit')}, "
+                f"{prior.get('utc')}); one confirm per principle and plan lineage"
+            )
+    lines = []
+    if ledger.exists():
+        lines = [ln for ln in ledger.read_text(encoding="utf-8").splitlines() if ln.strip()]
     when = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     entry = {
+        "kind": "confirm",
         "study": plan.get("study"),
-        "plan_path": plan_p.resolve().relative_to(top.resolve()).as_posix(),
-        "plan_sha256": plan_sha256(plan_p),
+        "lineage": plan.get("lineage") or plan.get("study") or plan.get("id") or plan_rel,
+        "principle_id": principle_id,
+        "identity": identity,
+        "plan_path": plan_rel,
+        "plan_sha256": p_hash,
         "data_sha256": data_sha256.strip(),
         "commit": stamp["commit"],
         "utc": when.isoformat(timespec="seconds"),
         "period": {"start": start, "end": end},
+        "prev_sha256": _line_sha256(lines[-1]) if lines else None,
+        # Placeholder: filled by an external stamp (record_external_timestamp).
+        "external_timestamp": None,
     }
+    ledger.parent.mkdir(parents=True, exist_ok=True)
     with open(ledger, "a", encoding="utf-8") as fh:
         fh.write(json.dumps(entry, sort_keys=True) + "\n")
     return entry

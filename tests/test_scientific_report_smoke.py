@@ -117,5 +117,6 @@ def test_quarto_render_smoke(tmp_path):
         # Execute with the interpreter running the tests (the project venv),
         # not whatever python3 quarto finds first on PATH.
         env=dict(os.environ, QUARTO_PYTHON=sys.executable),
+        cwd=str(paper_dir),  # keep the -o output out of the repository
     )
     assert result.returncode == 0, f"Quarto render failed: {result.stderr}"

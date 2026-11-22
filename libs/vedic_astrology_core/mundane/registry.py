@@ -341,25 +341,44 @@ def half_window_minutes(chart: Chart) -> Optional[float]:
 
 
 # ------------------------------------------------------------ time zones
+def _localise(chart: Chart, naive: datetime, what: str) -> datetime:
+    """Attach the chart's zone to a wall-clock time; refuse a DST gap or overlap.
+
+    ``replace(tzinfo=ZoneInfo)`` silently picks ``fold=0``: a time in a
+    spring-forward gap does not exist and a time in a fall-back overlap
+    exists twice. Either way the instant is ambiguous by the DST step, which
+    the founding-time window does not absorb (code audit m10), so it raises.
+    """
+    if chart.time_zone == "LMT":
+        return naive.replace(tzinfo=timezone(timedelta(hours=chart.lon / 15.0)))
+    tz = ZoneInfo(chart.time_zone)
+    a = naive.replace(tzinfo=tz, fold=0)
+    b = naive.replace(tzinfo=tz, fold=1)
+    if a.utcoffset() != b.utcoffset():
+        # A gap time does not survive a round trip through UTC; an overlap does.
+        back = a.astimezone(timezone.utc).astimezone(tz).replace(tzinfo=None)
+        kind = "does not exist (DST gap)" if back != naive else "is ambiguous (DST overlap)"
+        raise RegistryError(
+            f"{chart.chart_id}: {what} {naive.isoformat()} in {chart.time_zone} {kind}; "
+            "state the UTC offset in the record or widen half_window_minutes by the DST step"
+        )
+    return a
+
+
 def founding_instant_utc(chart: Chart) -> Optional[datetime]:
-    """Return the founding moment in UTC; `LMT` uses local mean time from longitude."""
+    """Return the founding moment in UTC; `LMT` uses local mean time from longitude.
+
+    A local time in a DST gap or overlap raises :class:`RegistryError`.
+    """
     if chart.time is None:
         return None
     naive = datetime.combine(chart.date, chart.time)
-    if chart.time_zone == "LMT":
-        tz = timezone(timedelta(hours=chart.lon / 15.0))
-    else:
-        tz = ZoneInfo(chart.time_zone)
-    return naive.replace(tzinfo=tz).astimezone(timezone.utc)
+    return _localise(chart, naive, "founding time").astimezone(timezone.utc)
 
 
 def _valid_from_instant(chart: Chart) -> datetime:
     start = datetime.combine(chart.valid_from, time(0, 0))
-    if chart.time_zone == "LMT":
-        tz = timezone(timedelta(hours=chart.lon / 15.0))
-    else:
-        tz = ZoneInfo(chart.time_zone)
-    return start.replace(tzinfo=tz).astimezone(timezone.utc)
+    return _localise(chart, start, "valid_from midnight").astimezone(timezone.utc)
 
 
 def chart_applies(chart: Chart, event_time: datetime) -> bool:

@@ -287,3 +287,26 @@ def test_countries_yaml_still_stamped():
     """The seed copies from countries.yaml; it must remain 113 untouched rows."""
     rows = yaml.safe_load(COUNTRIES.read_text())["countries"]
     assert len(rows) == 113
+
+
+@pytest.mark.parametrize("day, clock, kind", [
+    ("2021-03-14", "02:30:00", "DST gap"),      # spring forward: 02:30 does not exist
+    ("2021-11-07", "01:30:00", "DST overlap"),  # fall back: 01:30 happens twice
+])
+def test_founding_time_in_dst_gap_or_overlap_is_refused(day, clock, kind):
+    """m10: a wall-clock time the zone skips or repeats is not resolved silently."""
+    c = _chart(date=day, time=clock, time_zone="America/New_York", lat=40.7, lon=-74.0,
+               valid_from=day)
+    with pytest.raises(reg.RegistryError, match=kind):
+        reg.founding_instant_utc(c)
+
+
+def test_founding_time_outside_dst_change_converts():
+    c = _chart(date="2021-03-14", time="03:30:00", time_zone="America/New_York",
+               lat=40.7, lon=-74.0, valid_from="2021-03-14")
+    assert reg.founding_instant_utc(c) == datetime(2021, 3, 14, 7, 30, tzinfo=timezone.utc)
+
+
+def test_committed_charts_have_unambiguous_times():
+    for c in reg.load_charts():
+        reg.founding_instant_utc(c)

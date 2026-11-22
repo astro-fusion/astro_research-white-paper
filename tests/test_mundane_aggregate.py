@@ -215,6 +215,19 @@ def test_placebo_rank(open_plan):
     assert row["placebo_rank"] <= 3
 
 
+def test_placebo_rank_mid_ranks_ties(open_plan):
+    """A-01: placebos identical to the real chart count one half, not fully against it."""
+    data = ag.simulate_test_data(open_plan, np.random.default_rng(5), n_events=80,
+                                 planted=("dasha.dignity.pratyantar.d1", None, 4.0))
+    tid = "dasha.dignity.pratyantar.d1"
+    td = data[tid]
+    same = [(list(td.event_labels), [list(c) for c in td.control_labels])] * 19
+    r = ag.build_report(open_plan, {**data, tid: replace(td, placebo_labels=same)},
+                        n_perm=199, n_shift=199, second_table=False)
+    row = next(t for t in r["main"]["tests"] if t["test_id"] == tid)
+    assert row["placebo_rank"] == pytest.approx(1 + 19 / 2)
+
+
 def test_write_report(open_plan, sim, tmp_path):
     r = ag.build_report(open_plan, sim, n_perm=199, n_shift=199)
     rp, fp = ag.write_report(r, tmp_path / "results.json", tmp_path / "factor_table.csv")
@@ -279,3 +292,76 @@ def test_real_chart_descriptive_slice(plan):
     nonhand = replace(sel[0], exhaustive=False)
     with pytest.raises(ag.AggregateError, match="exhaustive"):
         ag.collect_test_data(plan, india, [nonhand], draw, grid=False)
+
+
+# ------------------------------------------------------ code audit fixes
+def _gate_module():
+    import importlib.util
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    spec = importlib.util.spec_from_file_location("check_paper_keys_m", root / "tools" / "check_paper_keys.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod, root
+
+
+def test_mundane_results_pass_the_paper_key_gate(open_plan, sim, tmp_path):
+    """M2: the writer's provenance is the one the gate reads (end to end)."""
+    gate, root = _gate_module()
+    data_sha = "d3" * 32
+    index = tmp_path / "index.json"
+    index.write_text(json.dumps({"snapshots": [{"sha256": data_sha}]}))
+    plan_file = root / "studies" / "mundane" / "hypothesis.yaml"
+    r = ag.build_report(open_plan, sim, n_perm=99, n_shift=99, second_table=False,
+                        provisional=False, git={"commit": "c0ffee", "dirty": False},
+                        data_sha256=data_sha)
+    rp, _ = ag.write_report(r, tmp_path / "results.json", tmp_path / "factor_table.csv")
+    res = gate.Results.load(rp)
+    assert r["provisional"] is False
+    assert gate.check_dirty("m", res) == []
+    assert gate.check_stale("m", res, plan_file, index) == []
+    dirty = ag.build_report(open_plan, sim, n_perm=99, n_shift=99, second_table=False,
+                            provisional=False, git={"commit": "c0ffee", "dirty": True},
+                            data_sha256=data_sha)
+    assert dirty["provisional"] is True
+    assert gate.check_dirty("m", gate.Results(dirty)) != []
+
+
+def test_event_before_the_grid_is_refused(open_plan, sim):
+    """m1: an event before grid_start must not wrap to the grid's end."""
+    from datetime import timedelta
+
+    tid = "transit.saturn.from_moon.d1"
+    td = sim[tid]
+    cut = 800
+    late = replace(td, grid_start=td.grid_start + timedelta(days=cut),
+                   grid_labels=list(td.grid_labels)[cut:])
+    first = min(t.date() for t in td.event_times)
+    assert first < late.grid_start
+    with pytest.raises(ag.LeakageError, match="outside the calendar grid"):
+        ag.build_report(open_plan, {**sim, tid: late}, n_perm=99, n_shift=99, second_table=False)
+
+
+def test_missing_control_is_dropped_across_the_cluster():
+    """m2: cluster members keep the same control positions."""
+    a = np.arange(20) % 3
+    b = a.copy()
+    b[7] = -1  # member B's control 7 cannot be evaluated
+    solo = np.array([0, -1, 1])
+    out = ag._aligned_controls([a, b, solo], np.array([0, 1, 2]), ["c1", "c1", "c2"])
+    assert len(out[0]) == len(out[1]) == 19
+    assert np.array_equal(out[0], np.delete(a, 7)) and np.array_equal(out[1], np.delete(b, 7))
+    assert np.array_equal(out[2], [0, 1])
+
+
+def test_short_grid_keeps_p_matched(open_plan, sim):
+    """m3: with no admissible circular shift, p_matched stays and p_shift is null."""
+    data = copy.deepcopy(open_plan.data)
+    data["controls"]["C2_shifted_sky"]["min_shift_days"] = 10 ** 6
+    short = bd.plan_from_dict(data, open_plan.sha256)
+    r = ag.build_report(short, sim, n_perm=99, n_shift=99, second_table=False)
+    tested = [t for t in r["main"]["tests"] if t["p_matched"] is not None]
+    assert tested, "every test became untestable"
+    assert all(t["p_shift"] is None for t in tested)
+    assert all(t["verdict"] != "untestable" for t in tested)

@@ -3,15 +3,17 @@
 import numpy as np
 import pytest
 
-from vedic_astrology_core.domains.base import GateHashError
+from vedic_astrology_core.domains.base import GateHashError, write_gate
 from vedic_astrology_core.domains.earthquake import EarthquakeDomain
 from studies._paths import REPO_ROOT
 
 import json
+import tempfile
+from pathlib import Path
 
 import yaml
 
-GATE = "cd" * 32
+GATE = write_gate(Path(tempfile.mkdtemp()) / "gate.json", {"test": "earthquake"})
 
 
 @pytest.fixture(scope="module")
@@ -60,10 +62,23 @@ def test_dataset_grade_b_with_isc_open_item(adapter):
 def test_mainshock_counts_match_ledger(outcomes):
     c = outcomes["mainshock_counts"]
     assert c["gk"]["all"] == 186 and c["gk"]["explore"] == 128 and c["gk"]["confirm"] == 58
-    assert c["nn"]["all"] == 214 and c["nn"]["explore"] == 144 and c["nn"]["confirm"] == 70
+    # nn threshold fitted on the explore period only (code audit m8); the
+    # whole-catalogue fit of the ledger gave 214 / 144 / 70.
+    assert c["nn"]["all"] == 203 and c["nn"]["explore"] == 141 and c["nn"]["confirm"] == 62
     assert c["raw"]["all"] == 297
     assert len(outcomes["event_bins"]) == 186
     assert outcomes["declustering"] == "gk"
+
+
+def test_nn_threshold_fitted_on_explore_only(adapter):
+    """m8: the explore nn flags are those of the explore catalogue alone, so
+    confirm-period events cannot change which explore events are mainshocks."""
+    cat, _ = adapter.catalogue()
+    explore = (cat["time"] < "2011-01-01").to_numpy()
+    full = adapter.mainshock_flags(cat)["nn"]
+    assert adapter.nn_fit["fitted_on"] == "explore"
+    alone = adapter.mainshock_flags(cat[explore])["nn"]
+    assert full[explore].equals(alone)
 
 
 def test_declustering_method_is_a_declared_cell(adapter):

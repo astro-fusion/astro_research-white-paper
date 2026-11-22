@@ -21,13 +21,21 @@ def frame():
     return features.indicator_frame(INDEX, ["Sun", "Moon", "Mars", "Saturn"], ENGINE, 0)
 
 
-def test_rank_of_real_counts_ties_against_the_real_sky():
-    """Rank is 1 + number of placebos at least as large; p never zero."""
+def test_rank_of_real_mid_ranks_ties():
+    """A-01: rank is 1 + larger placebos + half the ties; p never zero."""
     out = placebo.rank_of_real(5.0, [1, 2, 5, 7])
-    assert out["rank"] == 3 and out["p_value"] == pytest.approx(3 / 5)
+    assert out["rank"] == 2.5 and out["p_value"] == pytest.approx(2.5 / 5)
+    assert out["n_greater"] == 1 and out["n_tied"] == 1
+    assert placebo.rank_of_real(5.0, [1, 2, 5, 7], ties="against")["rank"] == 3
     assert placebo.rank_of_real(9.0, [1, 2])["rank"] == 1
+    # all placebos equal to the real sky: not p = 1 any more
+    assert placebo.rank_of_real(3.0, [3.0] * 19)["p_value"] == pytest.approx(10.5 / 20)
+    r = placebo.rank_of_real(3.0, [3.0] * 19, ties="random", rng=np.random.default_rng(0))
+    assert 1 <= r["rank"] <= 20
     with pytest.raises(ValueError):
         placebo.rank_of_real(1.0, [])
+    with pytest.raises(ValueError):
+        placebo.rank_of_real(1.0, [1.0], ties="random")
 
 
 def test_offsets_respect_the_400_day_floor_and_are_distinct():
@@ -137,3 +145,51 @@ def test_ayanamsa_sensitivity_flags_rules_and_tolerates_vanishing_indicator(fram
     out = placebo.ayanamsa_sensitivity(f, specs, engine=ENGINE)
     assert out["rules_not_rebuilt"] == ["x"]
     assert out["variants"]["raman"]["any_changed"] == 0
+
+
+def test_discrete_principles_can_pass_the_placebo_check():
+    """A-01: retrograde and tithi indicators with a real effect rank first
+    among the shifted skies; the scramble and tropical placebos, which do not
+    move them, are "not applicable" instead of failing them with p = 1."""
+    bodies = ["Sun", "Moon", "Mercury"]
+    idx = pd.date_range("2001-01-01 12:00", periods=160, freq="5D", tz="UTC")
+    base = features.indicator_frame(idx, bodies, ENGINE, 0)
+    specs = [
+        {"id": "merc_retro", "kind": "retrograde", "body": "Mercury"},
+        {"id": "waxing", "kind": "tithi", "tithis": list(range(1, 16))},
+    ]
+    real = features.build_indicators(base, specs)
+    rng = np.random.default_rng(4)
+    # Outcome with a true effect of both indicators plus noise.
+    outcome = 1.5 * real["merc_retro"].to_numpy(float) + 1.0 * real["waxing"].to_numpy(float)
+    outcome = outcome + rng.normal(0, 0.5, len(idx))
+
+    def stat(ind):
+        return {c: abs(float(np.corrcoef(ind[c].to_numpy(float), outcome)[0, 1]))
+                if ind[c].any() and not ind[c].all() else 0.0 for c in ind.columns}
+
+    res = placebo.placebo_skies(idx, bodies, specs, stat, n_placebo=39, seed=1, engine=ENGINE,
+                                lagna_sign=0, base_frame=base, max_offset_days=4000)
+    shift = res["kinds"]["shift"]["per_indicator"]
+    assert shift["merc_retro"]["applicable"] and shift["merc_retro"]["rank"] == 1
+    assert shift["merc_retro"]["p_value"] <= 0.05
+    # A shift close to a whole number of synodic months re-creates the tithi
+    # sky (module docstring), so a few shifted skies match the real one.
+    assert shift["waxing"]["applicable"] and shift["waxing"]["p_value"] < 0.1
+    for kind in ("scramble", "tropical"):
+        per = res["kinds"][kind]["per_indicator"]
+        for i in ("merc_retro", "waxing"):
+            assert per[i]["applicable"] is False and per[i]["p_value"] is None
+        assert res["kinds"][kind]["applicable"] is False
+
+
+def test_rezodiac_moves_the_lagna_with_the_planets():
+    """m6: houses never count tropical planets from a sidereal lagna."""
+    frame = pd.DataFrame({"SUN_lon": [355.0], "SUN_sign": ["Pisces"], "SUN_house": [1]},
+                         index=pd.DatetimeIndex(["2000-01-01"], tz="UTC"))
+    trop = placebo.rezodiac(frame, 24.0, lagna_sign=11)  # degree of the lagna unknown
+    assert trop["SUN_sign"].iloc[0] == "Aries" and trop["SUN_house"].iloc[0] == 1
+    moved = placebo.rezodiac(frame, 24.0, lagna_sign=11, lagna_lon=345.0)
+    assert moved["SUN_house"].iloc[0] == 1  # lagna 345 + 24 = 9 deg Aries
+    late = placebo.rezodiac(frame, 24.0, lagna_sign=11, lagna_lon=330.5)
+    assert late["SUN_house"].iloc[0] == 2  # lagna 354.5 deg stays in Pisces

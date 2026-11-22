@@ -74,8 +74,18 @@ def test_aggregate_count_blocked_outside_polygon(gorkha):
         es.count_event_sky_factor([replace(gorkha, lat=None, lon=None)], lambda s: True, d2_confirmed=False)
 
 
-def test_aggregate_count_default_guard_is_closed():
-    assert es.d2_confirm_recorded() is False or es.D2_CONFIRM_RECORD.exists()
+def test_aggregate_count_default_guard_is_closed(gorkha, tmp_path, monkeypatch):
+    """With no record on disk the default guard is closed (m11: this test can fail)."""
+    absent = tmp_path / "no_record.json"
+    assert es.d2_confirm_recorded(absent) is False
+    # The default path is the committed record location, read at call time.
+    import inspect
+
+    assert inspect.signature(es.d2_confirm_recorded).parameters["path"].default == es.D2_CONFIRM_RECORD
+    monkeypatch.setattr(es.d2_confirm_recorded, "__defaults__", (absent,))
+    outside = replace(gorkha, event_id="usgs:outside", lat=35.0, lon=139.0)
+    with pytest.raises(es.EventSkyGuardError):
+        es.count_event_sky_factor([gorkha, outside], lambda s: True)  # d2_confirmed left to the default
 
 
 def test_aggregate_count_inside_polygon_and_after_confirm(gorkha):

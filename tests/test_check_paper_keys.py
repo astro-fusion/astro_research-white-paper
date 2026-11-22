@@ -145,3 +145,47 @@ def test_fixture_paper_missing_key_exits_nonzero_via_cli(paper_dir):
         capture_output=True, text=True,
     )
     assert proc.returncode == 1 and "KEY" in proc.stderr
+
+
+@pytest.mark.parametrize("text, token", [
+    ("The effect was -0.42 in the sample.", "-0.42"),
+    ("It was significant at p = .03 only.", ".03"),
+    ("Gold cost $5 more.", "$5"),
+    ("A price of $1,850 was reached.", "$1,850"),
+    ("A drop of −1.5 percent.", "−1.5"),
+])
+def test_signed_dot_and_currency_numbers_are_bare(text, token):
+    """M5: negative, leading-dot and currency numbers are caught."""
+    fails = gate.check_numbers(text, set())
+    assert any(repr(token) in f for f in fails), fails
+    assert gate.check_numbers(text, {token}) == []
+
+
+def test_hyphen_and_dot_glued_to_words_are_not_signs():
+    text = "See ADR-004, WP-16, S-05, v1.2 and the 2020-05-01 snapshot."
+    assert [f.split("'")[1] for f in gate.check_numbers(text, set())] == ["2020"]
+
+
+def test_dataset_sha256_is_accepted(paper_dir):
+    """The ADR-007 domain record spells the data hash dataset.sha256."""
+    r = make_results()
+    del r["data"]
+    r["dataset"] = {"id": "x", "grade": "A", "sha256": DATA_SHA}
+    assert run(paper_dir, GOOD, r) == 0
+
+
+def test_two_spellings_must_agree(paper_dir, capsys):
+    r = make_results(dataset={"sha256": "ff" * 32})
+    assert run(paper_dir, GOOD, r) == 1
+    assert "disagree" in capsys.readouterr().err
+    r = make_results(plan_sha256="00" * 32)
+    assert run(paper_dir, GOOD, r) == 1
+
+
+def test_commit_only_inside_another_block_is_not_provenance(paper_dir, capsys):
+    """The gate reads the top-level git block only (one contract)."""
+    r = make_results()
+    del r["git"]
+    r["slice"] = {"commit": "c0ffee", "tree_dirty": False}
+    assert run(paper_dir, GOOD, r) == 1
+    assert "DIRTY" in capsys.readouterr().err

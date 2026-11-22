@@ -381,6 +381,33 @@ def _check_period(td: TestData, bounds: Tuple[date, date]) -> None:
                                "the report period")
 
 
+def _aligned_controls(ctrl: Sequence[np.ndarray], idx: np.ndarray,
+                      clusters: Sequence[str]) -> List[np.ndarray]:
+    """Controls of the included events without missing labels, kept aligned.
+
+    Members of one cluster share one column of permutation uniforms, so
+    position j must mean the same calendar shift for each of them. A control
+    that cannot be evaluated for one member (label < 0) is dropped at the same
+    position for every member of the cluster (code audit m2). Members with
+    control lists of different lengths are not aligned anyway and are
+    compacted one by one.
+    """
+    groups: Dict[str, List[int]] = {}
+    for pos, c in enumerate(clusters):
+        groups.setdefault(c, []).append(pos)
+    out: List[Optional[np.ndarray]] = [None] * len(idx)
+    for members in groups.values():
+        rows = [np.asarray(ctrl[int(idx[p])]) for p in members]
+        if len(members) > 1 and len({len(r) for r in rows}) == 1:
+            keep = np.all(np.stack(rows) >= 0, axis=0)
+            for p, r in zip(members, rows):
+                out[p] = r[keep]
+        else:
+            for p, r in zip(members, rows):
+                out[p] = r[r >= 0]
+    return out  # type: ignore[return-value]
+
+
 def _blank_row(spec: TestSpec, kind: str, cell: Any = None) -> Dict[str, Any]:
     row = {"factor_id": spec.id if kind == "omnibus" else spec.factor_id(cell),
            "test_id": spec.id, "family": spec.family, "kind": kind,
@@ -415,7 +442,7 @@ def _analyse(spec: TestSpec, td: Optional[TestData], s: _Settings, *, stable_onl
     include = (ev >= 0) & (stable if stable_only else np.ones(len(ev), dtype=bool))
     idx = np.flatnonzero(include)
     ev_in = ev[idx]
-    ctrl_in = [ctrl[i][ctrl[i] >= 0] for i in idx]
+    ctrl_in = _aligned_controls(ctrl, idx, [td.cluster(i) for i in idx])
     n = int(len(idx))
     n_ctrl = int(sum(len(c) for c in ctrl_in))
     n_active = np.bincount(ev_in, minlength=k) if n else np.zeros(k, dtype=np.int64)
@@ -423,6 +450,15 @@ def _analyse(spec: TestSpec, td: Optional[TestData], s: _Settings, *, stable_onl
                 if n_ctrl else np.zeros(k, dtype=np.int64))
 
     grid = _encode(spec, td.grid_labels) if td.grid_labels is not None else None
+    grid_idx = None
+    if grid is not None:
+        grid_idx = np.array([(t.astimezone(UTC).date() - td.grid_start).days
+                             for t in td.event_times], dtype=np.int64)
+        outside = (grid_idx < 0) | (grid_idx >= len(grid))
+        if outside.any():  # a negative index would silently read the grid's end (m1)
+            first = td.event_ids[int(np.argmax(outside))]
+            raise LeakageError(f"{td.test_id}: event {first} lies outside the calendar grid "
+                               f"({td.grid_start} plus {len(grid)} days)")
     eps = episodes(grid, k) if grid is not None else None
     if grid is not None and len(grid) and np.all(grid == grid[0]):
         from .burden import NatalFactorError
@@ -491,17 +527,17 @@ def _analyse(spec: TestSpec, td: Optional[TestData], s: _Settings, *, stable_onl
     mt = matched_permutation(ev_in, ctrl_in, k, u_all[:, cols])
     sh = None
     if grid is not None:
-        ev_idx = np.array([(td.event_times[i].astimezone(UTC).date() - td.grid_start).days
-                           for i in idx], dtype=np.int64)
-        sh = shift_test(grid, ev_idx, k, offsets[len(grid)])
-    if mt is None or sh is None:
+        sh = shift_test(grid, grid_idx[idx], k, offsets[len(grid)])
+    if mt is None:
         for r in [omni] + cells:
             r["verdict"] = "untestable"
-            r["reason"] = "no control dates" if mt is None else "circular shift not possible"
+            r["reason"] = "no control dates"
         omni["testable"] = False
         return res
+    # p_matched is the hierarchy p; a missing circular shift (grid shorter than
+    # twice min_shift_days) leaves p_shift null instead of voiding the test.
     omni["p_matched"] = mt.p
-    omni["p_shift"] = sh.p
+    omni["p_shift"] = sh.p if sh is not None else None
     res["p"] = mt.p
     if td.placebo_labels:
         stats = []
@@ -518,11 +554,15 @@ def _analyse(spec: TestSpec, td: Optional[TestData], s: _Settings, *, stable_onl
             stats.append(float(_chi2_matched(np.bincount(pev, minlength=k).astype(float), tot,
                                               len(pev), len(members))))
         if stats:
-            omni["placebo_rank"] = 1 + int(sum(1 for x in stats if x >= mt.stat - 1e-12))
+            # Mid-rank: a placebo equal to the real chart counts one half (A-01).
+            eps = 1e-12 * max(1.0, abs(mt.stat))
+            greater = sum(1 for x in stats if x > mt.stat + eps)
+            tied = sum(1 for x in stats if abs(x - mt.stat) <= eps)
+            omni["placebo_rank"] = 1 + greater + tied / 2.0
     for c, r in enumerate(cells):
         if r["testable"]:
             r["p_matched"] = float(mt.cell_p[c])
-            r["p_shift"] = float(sh.cell_p[c])
+            r["p_shift"] = float(sh.cell_p[c]) if sh is not None else None
             res["cell_p"][c] = float(mt.cell_p[c])
     tested = [c for c in range(k) if cells[c]["testable"]]
     res["z_null"] = mt.z_null[:, tested]
@@ -531,6 +571,8 @@ def _analyse(spec: TestSpec, td: Optional[TestData], s: _Settings, *, stable_onl
     for r in [omni] + cells:
         r["verdict"] = "inconclusive"
         r["reason"] = "explore period: a result can only be confirmed in the confirm run (WP-63)"
+        if sh is None:
+            r["reason"] += "; circular shift not possible (grid too short), p_shift not reported"
     for r in cells:
         if not r["testable"]:
             r["verdict"] = "untestable"
@@ -605,8 +647,17 @@ def _table(plan: Plan, specs: List[TestSpec], data: Mapping[str, TestData], s: _
 def build_report(plan: Plan, data: Mapping[str, TestData], *, period: str = "explore",
                  n_perm: Optional[int] = None, n_shift: Optional[int] = None,
                  provisional: bool = True, chart_id: Optional[str] = None,
-                 second_table: bool = True) -> Dict[str, Any]:
-    """The aggregate pattern report for one chart, explore period only."""
+                 second_table: bool = True, git: Optional[Mapping[str, Any]] = None,
+                 data_sha256: Optional[str] = None) -> Dict[str, Any]:
+    """The aggregate pattern report for one chart, explore period only.
+
+    Provenance follows the one contract of ``paperkit.results.PROVENANCE_KEYS``
+    (code audit M2): top-level ``git`` (``{"commit", "dirty"}``, from
+    ``seal.tree_state``), ``plan.sha256`` (also kept as ``plan_sha256``) and
+    ``data.sha256`` (the hash of the snapshot the events come from). The
+    report is provisional unless ``provisional`` is False and ``git`` shows a
+    clean tree.
+    """
     bounds = period_bounds(plan, period)  # confirm raises "not available until WP-63"
     specs = plan_tests(plan)
     declared_ids = [sp.id for sp in specs]
@@ -635,6 +686,7 @@ def build_report(plan: Plan, data: Mapping[str, TestData], *, period: str = "exp
     main = _table(plan, specs, data, s, stable_only=True, u_all=u_all, set_index=set_index,
                   offsets=offsets)
     n_total = len(all_ids)
+    git_block = {"commit": (git or {}).get("commit"), "dirty": (git or {}).get("dirty")}
     report: Dict[str, Any] = {
         "schema": "mundane-report/1",
         "plan_id": plan["id"],
@@ -643,7 +695,10 @@ def build_report(plan: Plan, data: Mapping[str, TestData], *, period: str = "exp
         "period": period,
         "period_bounds": [bounds[0].isoformat(), bounds[1].isoformat()],
         "label": plan["periods"].get("label"),
-        "provisional": bool(provisional),
+        "provisional": bool(provisional or git_block["dirty"] is not False
+                            or not git_block["commit"]),
+        "git": git_block,
+        "plan": {"sha256": plan.sha256},
         "n_events_total": n_total,
         "event_floor": s.floor,
         "descriptive_only": all(r["verdict"] == "descriptive only" for r in main["tests"]),
@@ -666,6 +721,8 @@ def build_report(plan: Plan, data: Mapping[str, TestData], *, period: str = "exp
                 dis.append({"test_id": a["test_id"], "main": [a["verdict"], a["flagged"]],
                             "second": [b["verdict"], b["flagged"]], "wins": "main"})
         report["disagreements"] = dis
+    if data_sha256 is not None:
+        report["data"] = {"sha256": data_sha256}
     report["headline"] = summary_lines(report)
     return _jsonable(report)
 

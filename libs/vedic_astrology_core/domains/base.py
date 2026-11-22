@@ -6,8 +6,12 @@ confirm periods. Two entry points are kept apart on purpose:
 
 - :meth:`DomainAdapter.calendar_context` and :meth:`DomainAdapter.grid` read
   no outcome. The gate step may call only these.
-- :meth:`DomainAdapter.outcomes` raises unless a gate hash is passed. The
-  pipeline writes `gate.json` and its hash first, then passes the hash here.
+- :meth:`DomainAdapter.outcomes` raises unless it is given a written gate
+  record: the pipeline writes `gate.json` first (:func:`write_gate`) and
+  passes the returned :class:`GateRecord` (or the hash and `gate_path`).
+  The file must exist, be a JSON object, and its SHA-256 must equal the
+  hash, so a made-up 64-hex string no longer opens the outcomes (code audit
+  m9, strategy audit S-05 d).
 
 Grades (ADR-007 4.1) are computed from the snapshot index and the licence
 register plus the open items a plan declares. They are never written by hand:
@@ -23,11 +27,14 @@ register plus the open items a plan declares. They are never written by hand:
 
 from __future__ import annotations
 
+import hashlib
+import json
 import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import date
-from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
+from pathlib import Path
+from typing import Any, Dict, Mapping, Optional, Sequence, Tuple, Union
 
 GRADES = ("A", "B", "C")
 _HEX64 = re.compile(r"^[0-9a-f]{64}$")
@@ -38,7 +45,65 @@ class DatasetGradeError(RuntimeError):
 
 
 class GateHashError(RuntimeError):
-    """`outcomes()` was called without a valid gate hash."""
+    """`outcomes()` was called without a valid, written gate record."""
+
+
+@dataclass(frozen=True)
+class GateRecord:
+    """A gate file on disk and the SHA-256 of its bytes."""
+
+    path: Path
+    sha256: str
+
+
+def write_gate(path: Union[str, Path], record: Mapping[str, Any]) -> GateRecord:
+    """Write `gate.json` (sorted keys) and return its record. Outcome-free."""
+    if not isinstance(record, Mapping):
+        raise TypeError("a gate record is a mapping")
+    p = Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    data = (json.dumps(dict(record), indent=2, sort_keys=True, default=str) + "\n").encode()
+    p.write_bytes(data)
+    return GateRecord(p, hashlib.sha256(data).hexdigest())
+
+
+def verify_gate(gate: Any, gate_path: Optional[Union[str, Path]] = None) -> GateRecord:
+    """Check a gate against the written file; return the verified record.
+
+    `gate` is a :class:`GateRecord`, or a SHA-256 hex string with
+    `gate_path`. Raises :class:`GateHashError` when the hash is malformed,
+    the file is missing or not a JSON object, or its bytes hash differently.
+    """
+    if isinstance(gate, GateRecord):
+        if gate_path is not None and Path(gate_path) != gate.path:
+            raise GateHashError("gate_path differs from the gate record's path")
+        sha, path = gate.sha256, gate.path
+    else:
+        sha, path = gate, gate_path
+    if not isinstance(sha, str) or not _HEX64.match(sha):
+        raise GateHashError(
+            "outcomes and controls need the SHA-256 of gate.json; "
+            "the gate must be written before outcomes are read"
+        )
+    if path is None:
+        raise GateHashError(
+            "a gate hash alone cannot be verified; pass the GateRecord from "
+            "write_gate() or the gate_path of the written gate.json"
+        )
+    p = Path(path)
+    try:
+        data = p.read_bytes()
+    except OSError as exc:
+        raise GateHashError(f"gate file {p} cannot be read: {exc}") from exc
+    if hashlib.sha256(data).hexdigest() != sha:
+        raise GateHashError(f"gate hash does not match the bytes of {p}")
+    try:
+        parsed = json.loads(data)
+    except ValueError as exc:
+        raise GateHashError(f"gate file {p} is not JSON") from exc
+    if not isinstance(parsed, dict):
+        raise GateHashError(f"gate file {p} is not a JSON object")
+    return GateRecord(p, sha)
 
 
 @dataclass(frozen=True)
@@ -191,14 +256,16 @@ class DomainAdapter(ABC):
     def _controls(self) -> Mapping[str, Any]:
         """Return controls. Called only through :meth:`controls`."""
 
-    def outcomes(self, gate_hash: Optional[str] = None) -> Mapping[str, Any]:
-        """Outcomes; raises unless a gate hash (SHA-256 hex) is passed."""
-        self._require_gate_hash(gate_hash)
+    def outcomes(self, gate: Any = None, *, gate_path: Optional[Union[str, Path]] = None
+                 ) -> Mapping[str, Any]:
+        """Outcomes; raises unless a written gate record verifies (:func:`verify_gate`)."""
+        self._require_gate_hash(gate, gate_path)
         return self._outcomes()
 
-    def controls(self, gate_hash: Optional[str] = None) -> Mapping[str, Any]:
+    def controls(self, gate: Any = None, *, gate_path: Optional[Union[str, Path]] = None
+                 ) -> Mapping[str, Any]:
         """Controls may include outcome-derived series, so they are gated too."""
-        self._require_gate_hash(gate_hash)
+        self._require_gate_hash(gate, gate_path)
         return self._controls()
 
     def require_verdict_grade(self) -> DomainDataset:
@@ -212,9 +279,5 @@ class DomainAdapter(ABC):
         return ds
 
     @staticmethod
-    def _require_gate_hash(gate_hash: Optional[str]) -> None:
-        if not isinstance(gate_hash, str) or not _HEX64.match(gate_hash):
-            raise GateHashError(
-                "outcomes and controls need the SHA-256 of gate.json; "
-                "the gate must be written before outcomes are read"
-            )
+    def _require_gate_hash(gate: Any, gate_path: Optional[Union[str, Path]] = None) -> GateRecord:
+        return verify_gate(gate, gate_path)

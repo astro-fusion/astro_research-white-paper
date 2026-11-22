@@ -18,12 +18,12 @@ from __future__ import annotations
 import argparse
 import copy
 import json
-import subprocess
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
 
 from ..stats.manifest import file_sha256
+from ..stats.seal import tree_state
 from . import aggregate as agg
 from . import burden as bur
 from . import casefile as cf
@@ -46,18 +46,18 @@ class CliError(ValueError):
 
 # ------------------------------------------------------------------ helpers
 def git_state(root: Path = ROOT) -> Dict[str, Any]:
-    """Commit and whether the working tree has uncommitted changes."""
-    def run(*args: str) -> Optional[str]:
-        try:
-            out = subprocess.run(["git", *args], cwd=root, capture_output=True, text=True, timeout=60)
-        except (OSError, subprocess.SubprocessError):
-            return None
-        return out.stdout if out.returncode == 0 else None
+    """Commit and whether the working tree is dirty, by the one definition of
+    dirty (``stats.seal.tree_state``). Outside git, dirty is True."""
+    state = tree_state(root)
+    return {"commit": state["commit"], "dirty": True if state["dirty"] is None else state["dirty"]}
 
-    commit = run("rev-parse", "HEAD")
-    status = run("status", "--porcelain")
-    return {"commit": commit.strip() if commit else None,
-            "dirty": True if status is None else bool(status.strip())}
+
+def data_sha256(plan: bur.Plan) -> Optional[str]:
+    """The data hash of a mundane result: the earthquake catalogue snapshot the
+    event registry is built from (a ``sha256`` of data/snapshot_index.json)."""
+    entry = plan["inputs"].get("earthquake_catalogue") or {}
+    path = entry.get("path")
+    return file_sha256(ROOT / path) if path and (ROOT / path).exists() else entry.get("sha256")
 
 
 def plan_input_status(plan: bur.Plan, catalogue=None) -> List[Dict[str, Any]]:
@@ -336,9 +336,11 @@ def cmd_controls(args: argparse.Namespace) -> int:
 
 
 def compute_report(plan: bur.Plan, chart: reg.Chart, events, draw, cat, *, period: str,
-                   grid: bool, placebos=(), provisional: bool) -> Dict[str, Any]:
+                   grid: bool, placebos=(), provisional: bool,
+                   git: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     data = agg.collect_test_data(plan, chart, events, draw, catalogue=cat, grid=grid, placebos=placebos)
-    return agg.build_report(plan, data, period=period, provisional=provisional, chart_id=chart.chart_id)
+    return agg.build_report(plan, data, period=period, provisional=provisional, chart_id=chart.chart_id,
+                            git=git, data_sha256=data_sha256(plan))
 
 
 def cmd_report(args: argparse.Namespace) -> int:
@@ -353,7 +355,7 @@ def cmd_report(args: argparse.Namespace) -> int:
     git = git_state()
     floor = int(plan["budgets"]["min_events_for_test"])
     rep = compute_report(plan, chart, sel, draw, cat, period=args.period,
-                         grid=len(sel) >= floor, provisional=git["dirty"])
+                         grid=len(sel) >= floor, provisional=git["dirty"], git=git)
     out = _out_dir(args)
     rp, fp = agg.write_report(rep, out / "results.json", out / "factor_table.csv")
     for line in rep["headline"]:
@@ -398,10 +400,11 @@ def run_slice(plan_path: Path = bur.PLAN_FILE, out: Path = ARTIFACTS, *, formats
     floor = int(plan["budgets"]["min_events_for_test"])
     grid = len(sel) >= floor
     rep = compute_report(plan, primary, sel, draw, cat, period="explore", grid=grid,
-                         provisional=git["dirty"])
+                         provisional=git["dirty"], git=git)
     secondary_out = {}
     for ch in secondary:
-        sr = compute_report(plan, ch, sel, draw, cat, period="explore", grid=grid, provisional=git["dirty"])
+        sr = compute_report(plan, ch, sel, draw, cat, period="explore", grid=grid,
+                            provisional=git["dirty"], git=git)
         rp, fp = agg.write_report(sr, out / "secondary" / f"{ch.chart_id}_results.json",
                                   out / "secondary" / f"{ch.chart_id}_factor_table.csv")
         secondary_out[ch.chart_id] = {"grade": reg.chart_grade(ch), "descriptive_only": sr["descriptive_only"],
@@ -423,7 +426,7 @@ def run_slice(plan_path: Path = bur.PLAN_FILE, out: Path = ARTIFACTS, *, formats
         "tree_dirty": git["dirty"],
     }
     rep["slice"] = summary
-    rep["provisional"] = bool(git["dirty"])
+    rep["provisional"] = bool(rep["provisional"] or git["dirty"])
     rp, fp = agg.write_report(rep, out / "results.json", out / "factor_table.csv")
     summary["outputs"] = {"results": str(rp), "factor_table": str(fp),
                           "burden": str(out / "burden.json"), "controls": str(ctl.controls_path(plan, out)),

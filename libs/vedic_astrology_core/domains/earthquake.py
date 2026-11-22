@@ -166,11 +166,24 @@ class EarthquakeDomain(DomainAdapter):
         return pipeline.load_catalogue(self.snapshot_path())
 
     def mainshock_flags(self, cat: Optional[pd.DataFrame] = None) -> Dict[str, pd.Series]:
-        """Boolean mainshock flags per declustering method."""
+        """Boolean mainshock flags per declustering method.
+
+        The nearest-neighbour threshold is fitted on explore-period events
+        only and then applied to both periods (code audit m8): confirm-period
+        events must not decide which explore events are mainshocks. Each
+        event's proximity uses earlier events only, so it is past-only.
+        """
         decluster, *_ = _study_modules()
         if cat is None:
             cat, _ = self.catalogue()
-        nn, _fit = decluster.nearest_neighbour(cat)
+        log_eta = decluster.nearest_neighbour_eta(cat)
+        per = self.periods()
+        d = cat["time"].dt.tz_convert("UTC").dt.date
+        explore = ((d >= per.explore[0]) & (d <= per.explore[1])).to_numpy()
+        fit = decluster.gmm_threshold(log_eta[explore])
+        fit["fitted_on"] = "explore"
+        self.nn_fit = {k: v for k, v in fit.items() if k != "log10_eta"}
+        nn = pd.Series(~(log_eta < fit["threshold"]), index=cat.index, name="mainshock_nn")
         return {
             "gk": decluster.gardner_knopoff(cat),
             "nn": nn,

@@ -138,7 +138,7 @@ def specification_curve(
         p_share=p_share,
         n_draws=int(len(offsets)),
         null_value=float(null_value),
-        p_min=1.0 / (len(offsets) + 1),
+        p_min=1.0 / (int(ok.sum()) + 1),  # finite null medians only, as p_median
         exact_enumeration=bool(
             n_draws and shift_null_info(n, min_shift, n_draws)["exact_enumeration"]
         ),

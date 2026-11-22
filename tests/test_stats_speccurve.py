@@ -108,3 +108,20 @@ def test_plot_helper_draws_both_panels(tmp_path):
         fig, tmp_path / "sc.png", {"data_sha256": "x", "commit": "y", "seed": 5}
     )
     assert out.exists()
+
+
+def test_p_min_counts_only_finite_null_medians():
+    """m4: p_min uses the same denominator as p_median (finite nulls only)."""
+    n = 1000
+
+    def est(spec, shift):
+        if shift % 2:  # half of the shifted skies give no estimate
+            return {"estimate": float("nan"), "ci_low": float("nan"), "ci_high": float("nan")}
+        return {"estimate": 1.0 + spec["a"], "ci_low": 0.5, "ci_high": 3.0}
+
+    res = specification_curve(est, {"a": [0.1, 0.2]}, np.random.default_rng(2), n=n,
+                              min_shift=10, n_draws=99, log_scale=False)
+    n_ok = int(np.isfinite(res.null_medians).sum())
+    assert 0 < n_ok < res.n_draws
+    assert res.p_min == pytest.approx(1.0 / (n_ok + 1))
+    assert res.p_median >= res.p_min

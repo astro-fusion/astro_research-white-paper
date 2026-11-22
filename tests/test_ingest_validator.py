@@ -197,3 +197,43 @@ def test_misplaced_and_relocate(tmp_path):
     (repo / "flood_data.csv").write_text("again")
     with pytest.raises(FileExistsError):
         validate.relocate(repo / "flood_data.csv", "flood", repo)
+
+
+CLAIMS_HEADER = "episode_id,astrologer,published_date,ex_ante,configuration_cited,quote,url\n"
+
+
+def _claims(tmp_path, rows):
+    d = tmp_path / "incoming" / "gold"
+    d.mkdir(parents=True)
+    (d / "episode_astrology_claims.csv").write_text(CLAIMS_HEADER + "".join(rows))
+    return d
+
+
+def _claim_reasons(d, **kw):
+    rep = validate.validate_dir(d, check_urls=False, rules_runner=runner_ok, known_ids=set(),
+                                today=TODAY, write_report=False, **kw)
+    return [r["reasons"] for r in rep["files"]["episode_astrology_claims.csv"]["rows"]]
+
+
+def test_ex_ante_claim_published_after_episode_start_is_rejected(tmp_path):
+    """M6: a flagged ex-ante claim is checked against its episode's start."""
+    d = _claims(tmp_path, [
+        "E1,A,2021-05-01,yes,Saturn,q,https://example.org/a\n",   # after the 2020 start
+        "E1,B,2019-05-01,yes,Saturn,q,https://example.org/b\n",   # before it
+        "E9,C,2019-05-01,yes,Saturn,q,https://example.org/c\n",   # unknown episode
+        "E9,D,2021-05-01,no,Saturn,q,https://example.org/d\n",    # not ex-ante
+    ])
+    shutil.copy(FIX / "episodes" / "gold_episodes.csv", d / "gold_episodes.csv")
+    late, early, unknown, post = _claim_reasons(d)
+    assert any("on or after" in r for r in late)
+    assert not any("ex-ante" in r and "archive" not in r for r in early)
+    assert any("episode start cannot be found" in r for r in unknown)
+    assert not any("ex-ante" in r for r in post)
+
+
+def test_ex_ante_claim_without_episodes_file_is_rejected(tmp_path):
+    d = _claims(tmp_path, ["E1,A,2019-05-01,yes,Saturn,q,https://example.org/a\n"])
+    (only,) = _claim_reasons(d)
+    assert any("episode start cannot be found" in r for r in only)
+    (ok,) = _claim_reasons(d, episode_files=[FIX / "episodes" / "gold_episodes.csv"])
+    assert not any("episode start" in r for r in ok)

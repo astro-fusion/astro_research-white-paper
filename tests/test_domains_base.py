@@ -9,13 +9,14 @@ from vedic_astrology_core.domains.base import (
     DatasetSpec,
     DomainAdapter,
     GateHashError,
+    GateRecord,
     Periods,
     compute_grade,
     verdicts_allowed,
+    write_gate,
 )
 from vedic_astrology_core.domains.simulated import SimulatedDomain, simulated_registers
 
-GATE = "ab" * 32
 
 
 def test_protocol_methods_exist_and_abstract():
@@ -25,7 +26,12 @@ def test_protocol_methods_exist_and_abstract():
         assert callable(getattr(SimulatedDomain(), name))
 
 
-def test_outcomes_need_gate_hash():
+@pytest.fixture
+def GATE(tmp_path):
+    return write_gate(tmp_path / "gate.json", {"principles": ["x"], "passed": True})
+
+
+def test_outcomes_need_gate_hash(GATE):
     d = SimulatedDomain()
     for bad in (None, "", "abc", "Z" * 64):
         with pytest.raises(GateHashError):
@@ -35,6 +41,30 @@ def test_outcomes_need_gate_hash():
     assert d.outcome_reads == 0
     assert len(d.outcomes(GATE)["value"]) == d.n_years
     assert d.outcome_reads == 1
+
+
+def test_gate_hash_alone_or_forged_is_refused(tmp_path, GATE):
+    """m9: the hash is checked against the written gate file, not its format."""
+    d = SimulatedDomain()
+    with pytest.raises(GateHashError, match="alone"):
+        d.outcomes("0" * 64)
+    with pytest.raises(GateHashError, match="alone"):
+        d.outcomes(GATE.sha256)  # right hash, but no file named
+    with pytest.raises(GateHashError, match="does not match"):
+        d.outcomes("0" * 64, gate_path=GATE.path)
+    with pytest.raises(GateHashError, match="cannot be read"):
+        d.outcomes(GateRecord(tmp_path / "missing.json", GATE.sha256))
+    assert d.outcome_reads == 0
+    assert d.outcomes(GATE.sha256, gate_path=GATE.path) is not None
+    GATE.path.write_text('{"passed": false}\n')  # gate edited after the hash was taken
+    with pytest.raises(GateHashError, match="does not match"):
+        d.outcomes(GATE)
+    arr = tmp_path / "list.json"
+    import hashlib
+
+    arr.write_text("[1]")
+    with pytest.raises(GateHashError, match="JSON object"):
+        d.controls(hashlib.sha256(b"[1]").hexdigest(), gate_path=arr)
 
 
 def test_outcome_free_entry_points_do_not_read_outcomes():

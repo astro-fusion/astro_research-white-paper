@@ -12,9 +12,30 @@ from __future__ import annotations
 import json
 import math
 from pathlib import Path
-from typing import Any, Dict, Union
+from typing import Any, Dict, List, Mapping, Optional, Union
 
 PathLike = Union[str, Path]
+
+#: The one provenance contract of every ``results.json`` (code audit M2).
+#: Paper kit, ``tools/check_paper_keys.py``, the mundane writer and the
+#: domain records all read and write these keys and no others:
+#:
+#: - ``provisional``: top-level bool; only ``false`` may be published.
+#: - ``git``: top-level ``{"commit": sha, "dirty": bool}`` from
+#:   :func:`vedic_astrology_core.stats.seal.tree_state` (one definition of
+#:   dirty: untracked files count, confirm ledgers do not).
+#: - plan hash: ``plan.sha256`` or the flat ``plan_sha256``.
+#: - data hash: ``data.sha256`` or ``dataset.sha256`` (the ADR-007 domain
+#:   record). It must be a ``sha256`` value of ``data/snapshot_index.json``.
+#:
+#: When both spellings of a hash are present they must agree. Copies kept
+#: elsewhere (for example ``slice.commit``) are informative and never read.
+PROVENANCE_KEYS = {
+    "provisional": ("provisional",),
+    "git": ("git.commit", "git.dirty"),
+    "plan_sha256": ("plan.sha256", "plan_sha256"),
+    "data_sha256": ("data.sha256", "dataset.sha256"),
+}
 
 
 class MissingKeyError(KeyError):
@@ -52,6 +73,51 @@ def format_p(value: Any, digits: int = 3) -> str:
     if value < floor:
         return f"p < {floor:.{digits}f}"
     return f"p = {value:.{digits}f}"
+
+
+def _lookup(data: Mapping[str, Any], dotted: str) -> Any:
+    node: Any = data
+    for part in dotted.split("."):
+        if not isinstance(node, Mapping) or part not in node:
+            return None
+        node = node[part]
+    return node
+
+
+def _one_of(data: Mapping[str, Any], keys, what: str, problems: List[str]) -> Optional[str]:
+    found = {k: _lookup(data, k) for k in keys}
+    values = {v for v in found.values() if v is not None}
+    if len(values) > 1:
+        problems.append(f"{what}: {' and '.join(keys)} disagree")
+        return None
+    return next(iter(values)) if values else None
+
+
+def provenance(data: Mapping[str, Any]) -> Dict[str, Any]:
+    """Read the provenance of a results dict under :data:`PROVENANCE_KEYS`.
+
+    Returns ``{"provisional", "commit", "dirty", "plan_sha256", "data_sha256",
+    "problems"}``. A missing item is None; ``problems`` lists contract
+    breaches (two spellings that disagree, a flag that is not a bool).
+    """
+    problems: List[str] = []
+    provisional = data.get("provisional")
+    if provisional is not None and not isinstance(provisional, bool):
+        problems.append(f"provisional is not a bool: {provisional!r}")
+        provisional = None
+    git = data.get("git") if isinstance(data.get("git"), Mapping) else {}
+    dirty = git.get("dirty")
+    if dirty is not None and not isinstance(dirty, bool):
+        problems.append(f"git.dirty is not a bool: {dirty!r}")
+        dirty = None
+    return {
+        "provisional": provisional,
+        "commit": git.get("commit") or None,
+        "dirty": dirty,
+        "plan_sha256": _one_of(data, PROVENANCE_KEYS["plan_sha256"], "plan hash", problems),
+        "data_sha256": _one_of(data, PROVENANCE_KEYS["data_sha256"], "data hash", problems),
+        "problems": problems,
+    }
 
 
 class Results:
@@ -95,6 +161,10 @@ class Results:
             else:
                 raise MissingKeyError(f"key {key!r}: no {part!r} in {self.path}")
         return node
+
+    def provenance(self) -> Dict[str, Any]:
+        """The provenance block under the one contract (see :func:`provenance`)."""
+        return provenance(self.data)
 
     def get(self, key: str) -> Any:
         """Return the value at ``key``; raise if missing, null or NaN."""

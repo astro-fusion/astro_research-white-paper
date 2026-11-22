@@ -47,7 +47,7 @@ def test_missing_key_is_keyerror_with_readable_message(res):
 
 @pytest.mark.parametrize("key", ["missing_value", "nan_value"])
 def test_null_and_nan_raise(res, key):
-    assert res.has(key) or key == "nan_value"
+    assert res.has(key)  # both keys exist; only their values are null or NaN
     with pytest.raises(NullValueError):
         res.get(key)
 
@@ -92,3 +92,20 @@ def test_load_roundtrip(tmp_path):
     p.write_text("[1, 2]")
     with pytest.raises(ValueError):
         Results.load(p)
+
+
+def test_provenance_contract():
+    """One provenance shape: top-level git, plan and data or dataset hashes."""
+    from vedic_astrology_core.paperkit import provenance
+
+    full = {"provisional": False, "git": {"commit": "c0", "dirty": False},
+            "plan_sha256": "p" * 64, "dataset": {"sha256": "d" * 64}}
+    got = Results(full).provenance()
+    assert got == {"provisional": False, "commit": "c0", "dirty": False,
+                   "plan_sha256": "p" * 64, "data_sha256": "d" * 64, "problems": []}
+    assert provenance({"data": {"sha256": "x"}})["data_sha256"] == "x"
+    clash = provenance({"data": {"sha256": "x"}, "dataset": {"sha256": "y"}})
+    assert clash["data_sha256"] is None and clash["problems"]
+    assert provenance({"provisional": "no"})["problems"]
+    empty = provenance({})
+    assert empty["commit"] is None and empty["provisional"] is None

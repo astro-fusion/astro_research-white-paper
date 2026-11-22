@@ -162,7 +162,8 @@ def test_l5_and_l6_are_cumulative():
     confirmed = base(review=[REVIEW], tuning_log=[TUNING], validation=STAMP)
     report = level(confirmed, GOOD)
     assert report.level == 6 and report.next_missing == []
-    assert "L6 Confirmed" in report.render() or report.name == "Confirmed or refuted"
+    assert report.name == "Confirmed or refuted"
+    assert report.render().splitlines()[0].endswith("L6 Confirmed or refuted")
     # a confirm without review stays at L3 (the report still lists L4 as missing)
     skipped = base(tuning_log=[TUNING], validation=STAMP)
     got = level(skipped, GOOD)
