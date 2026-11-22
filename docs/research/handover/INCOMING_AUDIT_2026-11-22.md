@@ -159,3 +159,35 @@ This is the first round with no fabricated source. The data score for earthquake
 
 ### Status
 Usable now (after WP-11 fetch): IITM series, ONI/Niño 3.4/DMI/SILSO, DFO floods, USGS and ISC catalogue extracts, Kerala onset 2014–2025. Needs fixing: IMD forecasts table. Needs owner action: ISC-GEM download, licence reading (H4).
+
+
+## Round 4 audit (2026-11-22): D1 gold and D4 forecasts and texts
+
+### D1 gold prices: mostly real, one major win
+| Source | Our re-download | Verdict |
+|---|---|---|
+| **Bundesbank BBEX3 D.XAU.DEM.EA.AC.C01** (Frankfurt gold fixing, DEM per kg, daily) | 200, SHA-256 matches (87c15f38…); 1968-06-18 to 1998-12-30, **7,622 values** (Gemini's 11,154 counts empty days) | **Real.** First open daily pre-2000 gold series found. sources.csv has a wrong URL (extra "BBEX3." prefix); fetch_bundesbank_gold.py has the right one. In DEM: needs a DEM/USD series to convert. Licence: reuse permitted with source named (to be read by owner, H4). |
+| World Bank Pink Sheet monthly (1960-2024) | 200, hash matches | Real. CC BY 4.0. |
+| datahub core/gold-prices monthly (1833-2026) | 200, hash matches | Real. Upstream provenance of pre-1968 values to be checked. |
+| FRED controls, GPR, EPU, GLD, CFTC | not re-downloaded (FRED blocks scripted clients) | Plausible; WP-11 fetch scripts will confirm. |
+| LBMA daily | only a rolling 22-day public window; IBA licence | Confirms there is no open LBMA history. |
+
+**Indian festivals (indian_festivals_1990_2027.csv): rejected as an authority.** The claim that it "strictly matches DoPT gazettes" is false. Spot checks: Diwali 2020 is listed as 2020-10-16 (actual 2020-11-14); Dhanteras 2020 2020-10-14 (actual 2020-11-13); Akshaya Tritiya 2021 2021-04-15 (actual 2021-05-14). Errors cluster in adhika-masa (leap-month) years. 2019, 2022, 2023, 2024 checked correct. Recompute in-house with the repo's panchang code and a leap-month rule, then check against published holiday lists.
+
+### D4 forecasts and text pages: largely fabricated quotes on real pages
+Method: for each row, the cited Wayback snapshot (raw, `id_`) or archive.org item (full OCR text) was fetched, and the verbatim quote was searched for (6-word probes, then 4-word shingle overlap).
+
+| Set | Rows | Quote found on the cited page | Page fetched but quote absent (<10% word overlap) | Snapshot 404 |
+|---|---|---|---|---|
+| forecasts.csv (claimed "100% proven ex-ante") | 72 | **1** (FC-GOL-033, Malhotra gold 2016, already known); FC-EAR-068 partial | 49 of 54 fetched | 18 (all AAU "monsoon20XX.pdf" with round 12:00:00 timestamps) |
+| post_hoc.csv | 5 | 0 | 2 | 3 |
+| text_pages.csv | 26 | 3 BPHS rows ≥50% (ch. 6 vv. 2-6, ch. 46 vv. 12-14); 1 more partial | 19 (all Brihat Samhita rows among them) | 0 |
+
+Findings:
+1. The Wayback snapshots for Astrological Musings articles are **real pages**, but the quoted sentences are **not on them**. The quotes are invented.
+2. **B.V. Raman "forecasts" (FC-MON-013..018, FC-GOL-046..051, FC-EAR-070..072): rejected.** The cited Astrological Magazine volumes exist on archive.org with full OCR text (1.7–3.7 million characters each), and none contains the quoted sentences. The "snapshot timestamps" (e.g. 19851215120000) are invented, not Wayback captures. The claimed hits (1988 Bihar-Nepal, 1990 Manjil) must not be cited anywhere.
+3. 29 timestamps end in round values (…120000, …121500), a fabrication signature.
+4. Brihat Samhita translations in text_pages.csv do not match the Bhat scan's OCR. Page numbers and archive item IDs may still be useful leads; text must be read from the scan by a person.
+5. The archive.org item IDs themselves are real and are a useful finding (Bhat part 1, Santhanam BPHS, Astrological Magazine volumes).
+
+**Net:** ex-ante forecast count stays at 4 confirmed (plus FC-GOL-033 is the same Malhotra 2016 row). Classical text: BPHS ch. 6 and ch. 46 page links verified; Brihat Samhita still needs a manual page check (H11).
