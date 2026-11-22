@@ -89,21 +89,33 @@ def test_quarto_render_smoke(tmp_path):
     Rendering a copy keeps quarto's intermediates (``.tex``, ``*_files``)
     out of the repository.
     """
-    paper_dir = tmp_path / "paper"
+    # Mirror the repo layout the manuscript expects: it sets REPO to the
+    # paper's cwd parents[2] and reads ../artifacts and the study plan.
+    study = tmp_path / "studies" / "gold_market"
+    paper_dir = study / "paper"
     shutil.copytree(os.path.dirname(MANUSCRIPT_QMD), paper_dir)
+    shutil.copytree(ARTIFACTS_DIR, study / "artifacts")
+    shutil.copy(study_dir("gold_market") / "hypothesis.yaml", study / "hypothesis.yaml")
+    (tmp_path / "libs").symlink_to(REPO_ROOT / "libs", target_is_directory=True)
     manuscript = paper_dir / os.path.basename(MANUSCRIPT_QMD)
+    # PDF needs a TeX engine; without one, still execute every cell via HTML.
+    has_tex = any(shutil.which(t) for t in ("xelatex", "pdflatex", "lualatex", "tectonic"))
+    fmt = "pdf" if has_tex else "html"
     result = subprocess.run(
         [
             "quarto",
             "render",
             str(manuscript),
             "--to",
-            "pdf",
+            fmt,
             "-o",
-            "smoke_test_render.pdf",
+            f"smoke_test_render.{fmt}",
             "--execute",
         ],
         capture_output=True,
         text=True,
+        # Execute with the interpreter running the tests (the project venv),
+        # not whatever python3 quarto finds first on PATH.
+        env=dict(os.environ, QUARTO_PYTHON=sys.executable),
     )
     assert result.returncode == 0, f"Quarto render failed: {result.stderr}"

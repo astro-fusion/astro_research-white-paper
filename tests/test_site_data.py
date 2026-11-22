@@ -115,7 +115,7 @@ def test_pink_sheet_is_world_bank_with_licence_and_hash():
 def test_rules_export_covers_every_rule_file():
     """Rules export covers every rule file."""
     doc = load("rules.json")
-    files = list((REPO / "rules").rglob("*.yaml"))
+    files = [p for p in (REPO / "rules").rglob("*.yaml") if not p.name.startswith("_")]  # loader skips _-files (method catalogue, drafts)
     assert len(doc["rules"]) == len(files)
     assert not doc["problems"]
     for rule in doc["rules"]:
