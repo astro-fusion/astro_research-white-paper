@@ -3,7 +3,7 @@
 # 🪐 Vedic Astrology Research - Toolkit
 # ==========================================
 
-.PHONY: help install check-data artifacts pdfs build clean test quality-gate
+.PHONY: help install check-data artifacts pdfs build clean test quality-gate validity
 
 # Default target
 help:
@@ -15,6 +15,7 @@ help:
 	@echo "  make pdfs         - Generate research paper PDFs (Quarto)"
 	@echo "  make build        - Run check-data + pdfs (pdfs regenerates artifacts)"
 	@echo "  make clean        - Remove build artifacts and temporary files"
+	@echo "  make validity     - Run changed validity domains, append changelog, rebuild reports"
 	@echo "  make test         - Run test suite"
 	@echo "  make quality-gate - Run linting, type checking, and tests"
 
@@ -49,6 +50,11 @@ clean:
 	rm -rf .quarto/
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 	@echo "✨ Workspace cleaned."
+
+# Principle validity reports (ADR-007 WP-74). Registers nothing. Once pyproject.toml
+# gains the astro-validity entry point (WP-18) this is `astro-validity all`.
+validity:
+	@. .venv/bin/activate && python -m vedic_astrology_core.validity.cli all
 
 test:
 	@. .venv/bin/activate && pytest tests/ -v
