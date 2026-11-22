@@ -1,0 +1,399 @@
+{
+  "budget": {
+    "caps": {
+      "max_omnibus_tests_first_slice": 24,
+      "max_omnibus_tests_per_country_event_type": 60,
+      "max_omnibus_tests_programme_per_data_vintage": 200
+    },
+    "omnibus_tests": 18,
+    "within_budget": true
+  },
+  "event_floor": 30,
+  "mde": {
+    "check": {
+      "computed": 1.63,
+      "duty": 0.25,
+      "events": 128,
+      "one_test": 1.63
+    },
+    "columns": [
+      "events",
+      "one_test",
+      "family_24",
+      "family_60",
+      "all_32000"
+    ],
+    "max_relative_difference_from_plan": 0.0344,
+    "power": 0.8,
+    "rows": {
+      "duty_0.10": [
+        [
+          10,
+          8.43,
+          18.54,
+          18.54,
+          48.09
+        ],
+        [
+          20,
+          4.11,
+          7.96,
+          9.71,
+          14.44
+        ],
+        [
+          30,
+          3.62,
+          5.81,
+          6.69,
+          10.02
+        ],
+        [
+          50,
+          2.86,
+          4.36,
+          4.78,
+          6.22
+        ],
+        [
+          100,
+          2.09,
+          3.03,
+          3.2,
+          3.93
+        ],
+        [
+          200,
+          1.71,
+          2.27,
+          2.42,
+          2.81
+        ],
+        [
+          500,
+          1.42,
+          1.73,
+          1.78,
+          2.02
+        ],
+        [
+          1000,
+          1.29,
+          1.49,
+          1.53,
+          1.68
+        ]
+      ],
+      "duty_0.25": [
+        [
+          10,
+          6.18,
+          16.03,
+          33.03,
+          132.95
+        ],
+        [
+          20,
+          3.24,
+          7.32,
+          9.22,
+          15.94
+        ],
+        [
+          30,
+          2.92,
+          4.98,
+          5.72,
+          8.96
+        ],
+        [
+          50,
+          2.25,
+          3.37,
+          3.65,
+          5.05
+        ],
+        [
+          100,
+          1.73,
+          2.42,
+          2.52,
+          3.09
+        ],
+        [
+          200,
+          1.48,
+          1.89,
+          1.97,
+          2.28
+        ],
+        [
+          500,
+          1.29,
+          1.5,
+          1.54,
+          1.71
+        ],
+        [
+          1000,
+          1.2,
+          1.33,
+          1.37,
+          1.46
+        ]
+      ]
+    },
+    "test": "one_sided_exact_binomial",
+    "thresholds": {
+      "all_32000": 1.6e-06,
+      "family_24": 0.00055,
+      "family_60": 0.00018,
+      "one_test": 0.05
+    }
+  },
+  "mde_alpha_per_test": 0.0005517363369137752,
+  "plan_counts": {
+    "by_family": {
+      "F1_dasha_lord_identity": 2,
+      "F2_dasha_lord_natal_house": 4,
+      "F3_dasha_lord_dignity": 4,
+      "F4_transit_house_d1": 8
+    },
+    "cells_total": 182,
+    "families": 4,
+    "omnibus_tests": 18
+  },
+  "plan_id": "mundane-india-himalaya-eq-v1",
+  "plan_sha256": "93c84847520fc6412f01a7e56718d5534a6ef94930c068124f29c1213eb276bf",
+  "schema": "mundane-burden/1",
+  "search_space_full_d1_d9": {
+    "always_true_BCFG": 216,
+    "blocks": {
+      "A_dasha_lord_identity": 27,
+      "B_dasha_lord_house_from_lagna": 324,
+      "C_dasha_lord_house_from_moon": 324,
+      "D_dasha_lord_rules_house": 324,
+      "E_dasha_lord_dignity": 135,
+      "F_transit_house_from_lagna": 972,
+      "G_transit_house_from_moon": 972,
+      "H_transit_conjunct_or_aspect_natal": 1458,
+      "I_transit_read_in_own_varga": 27216,
+      "J_event_sky": 470
+    },
+    "chance_significant_at_0_05": 1611,
+    "dasha_factors": 1134,
+    "multiplier": 84,
+    "pairs_dasha_by_transit": 34720812,
+    "setting": {
+      "dignity_states": 5,
+      "grahas": 9,
+      "houses": 12,
+      "levels": 3,
+      "vargas": 9
+    },
+    "single_factors": 32222,
+    "transit_factors": 30618,
+    "true_at_any_moment": {
+      "by_block": {
+        "A": 3.0,
+        "B": 27.0,
+        "C": 27.0,
+        "D": 36.0,
+        "E": 27.0,
+        "F": 81.0,
+        "G": 81.0,
+        "H": 162.00000000000003,
+        "I": 2592.0
+      },
+      "total_excluding_J": 3036.0
+    }
+  },
+  "tests": [
+    {
+      "cells": 9,
+      "family": "F1_dasha_lord_identity",
+      "id": "dasha.identity.antar",
+      "methods": [
+        "dasha.vimshottari"
+      ],
+      "predicate": "dasha_lord_is"
+    },
+    {
+      "cells": 9,
+      "family": "F1_dasha_lord_identity",
+      "id": "dasha.identity.pratyantar",
+      "methods": [
+        "dasha.vimshottari"
+      ],
+      "predicate": "dasha_lord_is"
+    },
+    {
+      "cells": 12,
+      "family": "F2_dasha_lord_natal_house",
+      "id": "dasha.house.antar.d1",
+      "methods": [
+        "dasha.vimshottari",
+        "dasha.lord_state",
+        "varga.d1"
+      ],
+      "predicate": "dasha_lord_in_house"
+    },
+    {
+      "cells": 12,
+      "family": "F2_dasha_lord_natal_house",
+      "id": "dasha.house.antar.d9",
+      "methods": [
+        "dasha.vimshottari",
+        "dasha.lord_state",
+        "varga.d9"
+      ],
+      "predicate": "dasha_lord_in_house"
+    },
+    {
+      "cells": 12,
+      "family": "F2_dasha_lord_natal_house",
+      "id": "dasha.house.pratyantar.d1",
+      "methods": [
+        "dasha.vimshottari",
+        "dasha.lord_state",
+        "varga.d1"
+      ],
+      "predicate": "dasha_lord_in_house"
+    },
+    {
+      "cells": 12,
+      "family": "F2_dasha_lord_natal_house",
+      "id": "dasha.house.pratyantar.d9",
+      "methods": [
+        "dasha.vimshottari",
+        "dasha.lord_state",
+        "varga.d9"
+      ],
+      "predicate": "dasha_lord_in_house"
+    },
+    {
+      "cells": 5,
+      "family": "F3_dasha_lord_dignity",
+      "id": "dasha.dignity.antar.d1",
+      "methods": [
+        "dasha.vimshottari",
+        "dasha.lord_state",
+        "varga.d1"
+      ],
+      "predicate": "dasha_lord_dignity"
+    },
+    {
+      "cells": 5,
+      "family": "F3_dasha_lord_dignity",
+      "id": "dasha.dignity.antar.d9",
+      "methods": [
+        "dasha.vimshottari",
+        "dasha.lord_state",
+        "varga.d9"
+      ],
+      "predicate": "dasha_lord_dignity"
+    },
+    {
+      "cells": 5,
+      "family": "F3_dasha_lord_dignity",
+      "id": "dasha.dignity.pratyantar.d1",
+      "methods": [
+        "dasha.vimshottari",
+        "dasha.lord_state",
+        "varga.d1"
+      ],
+      "predicate": "dasha_lord_dignity"
+    },
+    {
+      "cells": 5,
+      "family": "F3_dasha_lord_dignity",
+      "id": "dasha.dignity.pratyantar.d9",
+      "methods": [
+        "dasha.vimshottari",
+        "dasha.lord_state",
+        "varga.d9"
+      ],
+      "predicate": "dasha_lord_dignity"
+    },
+    {
+      "cells": 12,
+      "family": "F4_transit_house_d1",
+      "id": "transit.mars.from_lagna.d1",
+      "methods": [
+        "transit.from_lagna",
+        "varga.d1"
+      ],
+      "predicate": "transit_in_house_from_natal"
+    },
+    {
+      "cells": 12,
+      "family": "F4_transit_house_d1",
+      "id": "transit.jupiter.from_lagna.d1",
+      "methods": [
+        "transit.from_lagna",
+        "varga.d1"
+      ],
+      "predicate": "transit_in_house_from_natal"
+    },
+    {
+      "cells": 12,
+      "family": "F4_transit_house_d1",
+      "id": "transit.saturn.from_lagna.d1",
+      "methods": [
+        "transit.from_lagna",
+        "varga.d1"
+      ],
+      "predicate": "transit_in_house_from_natal"
+    },
+    {
+      "cells": 12,
+      "family": "F4_transit_house_d1",
+      "id": "transit.rahu.from_lagna.d1",
+      "methods": [
+        "transit.from_lagna",
+        "varga.d1"
+      ],
+      "predicate": "transit_in_house_from_natal"
+    },
+    {
+      "cells": 12,
+      "family": "F4_transit_house_d1",
+      "id": "transit.mars.from_moon.d1",
+      "methods": [
+        "transit.gochara_moon",
+        "varga.d1"
+      ],
+      "predicate": "transit_in_house_from_natal"
+    },
+    {
+      "cells": 12,
+      "family": "F4_transit_house_d1",
+      "id": "transit.jupiter.from_moon.d1",
+      "methods": [
+        "transit.gochara_moon",
+        "varga.d1"
+      ],
+      "predicate": "transit_in_house_from_natal"
+    },
+    {
+      "cells": 12,
+      "family": "F4_transit_house_d1",
+      "id": "transit.saturn.from_moon.d1",
+      "methods": [
+        "transit.gochara_moon",
+        "varga.d1"
+      ],
+      "predicate": "transit_in_house_from_natal"
+    },
+    {
+      "cells": 12,
+      "family": "F4_transit_house_d1",
+      "id": "transit.rahu.from_moon.d1",
+      "methods": [
+        "transit.gochara_moon",
+        "varga.d1"
+      ],
+      "predicate": "transit_in_house_from_natal"
+    }
+  ]
+}

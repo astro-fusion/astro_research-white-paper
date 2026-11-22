@@ -1,0 +1,27 @@
+{
+  "countries": 113,
+  "events_by_type": {
+    "Independence": 3,
+    "Political": 33,
+    "Treaty": 3,
+    "War": 11
+  },
+  "events_featured": 40,
+  "events_selected": 50,
+  "events_skipped": {
+    "no_country_in_countries_yaml": 10
+  },
+  "feature_rows": 3445,
+  "limit": 50,
+  "rows_by_family": {
+    "eclipse": 40,
+    "ingress": 80,
+    "station": 85,
+    "transit_natal": 3240
+  },
+  "rows_time_known_false": 3445,
+  "seed": 42,
+  "stats": "available_not_wired",
+  "table_format": "csv",
+  "window_days": 30
+}

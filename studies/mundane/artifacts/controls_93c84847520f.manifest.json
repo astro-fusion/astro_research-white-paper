@@ -1,0 +1,24 @@
+{
+  "available": {
+    "usgs:usp0001aw2": 1036,
+    "usgs:usp0004y1r": 1039,
+    "usgs:usp00095cb": 1054
+  },
+  "csv_sha256": "9255cfb52cea05b5d3a0d6b6a0dd16e3092221b87d5cf066c0a9bcfd60a7e66b",
+  "n_controls": 60,
+  "n_events": 3,
+  "period": [
+    "1976-01-01",
+    "2010-12-31"
+  ],
+  "plan_id": "mundane-india-himalaya-eq-v1",
+  "plan_sha256": "93c84847520fc6412f01a7e56718d5534a6ef94930c068124f29c1213eb276bf",
+  "schema": "mundane-controls/1",
+  "seed": 20261122,
+  "shortfall": {},
+  "spec": {
+    "day_of_year_tolerance_days": 15,
+    "min_gap_days": 30.0,
+    "per_event": 20
+  }
+}

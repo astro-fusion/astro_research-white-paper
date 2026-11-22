@@ -28,7 +28,36 @@ the `time_known` flag. See [data/README.md](data/README.md).
 - `sources/README.md`: open research questions for practitioners' methods and the folder convention for results.
 - `artifacts/` (gitignored): `features.csv` or `features.parquet`, `summary.json`.
 
-## How to run
+## First slice (ADR-006): India, Himalayan earthquakes, Mw 6 and above
+
+**Descriptive only.** The slice has 3 declustered (Gardner-Knopoff) Himalayan
+mainshocks in India in the explore period (1976 to 2010); two more (2011,
+2021) lie in the closed confirm period and get case files only. The floor for
+any p-value is 30 events, so the report prints no test statistic. Chart grades
+used: primary `in-1947-midnight` is grade C (half-window 60 minutes); the
+secondary India charts `in-1947-kn-rao`, `in-1947-noon`, `in-1950-republic`
+are also grade C; the case-file-only Nepal chart `np-2008-republic` (Gorkha
+2015) is grade D. At grade C the lagna-based and pratyantar factors are
+unstable and are reported as such.
+
+```bash
+python -m vedic_astrology_core.mundane.cli validate
+python -m vedic_astrology_core.mundane.cli burden
+python -m vedic_astrology_core.mundane.cli casefile usgs:usp0004y1r --chart all --format json,html
+python studies/mundane/scripts/run_slice.py     # about 10 minutes; writes studies/mundane/artifacts/
+```
+
+The console command `astro-mundane` is the same CLI; ADR-004 WP-18 adds the
+entry point to `pyproject.toml`. `report --period confirm` exits with "not
+available until WP-63".
+
+Outputs of the slice (under `artifacts/`, which is gitignored except
+`results.json`, `manifest.json`, `tbl_*.csv` and `fig_*.png`): `results.json`
+(provisional while the tree is dirty), `factor_table.csv`, `burden.json`,
+`controls_<plan_sha12>.csv` with manifest, `cases/<event>__<chart>.json|html`,
+`secondary/<chart>_results.json`.
+
+## How to run (seeded data pipeline)
 
 ```bash
 pip install -e ".[dev]"   # once; no PYTHONPATH needed

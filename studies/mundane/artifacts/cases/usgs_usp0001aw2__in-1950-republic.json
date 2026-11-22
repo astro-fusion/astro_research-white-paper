@@ -1,0 +1,3782 @@
+{
+  "schema": "casefile/1",
+  "event": {
+    "event_id": "usgs:usp0001aw2",
+    "title": "Earthquake Mw 6.16 (usgs:usp0001aw2)",
+    "event_type": "earthquake",
+    "subtype": null,
+    "country_iso": "IN",
+    "time_utc": "1980-11-19T19:00:46.900000+00:00",
+    "time_precision": "minute",
+    "lat": 27.394,
+    "lon": 88.752,
+    "location_precision_km": null,
+    "severity": {
+      "native_magnitude": 6.1,
+      "native_type": "ms",
+      "scale": "Mw",
+      "value": 6.16
+    },
+    "cluster_id": null,
+    "catalogue": {
+      "name": "USGS ComCat (Himalayan arc snapshot)",
+      "snapshot_sha256": "d3d3d6ec840599341782147b35579b69dae3919dd2668d762659270baef19972"
+    },
+    "exhaustive": true,
+    "source_url": "https://earthquake.usgs.gov/earthquakes/eventpage/usp0001aw2",
+    "archive_url": null,
+    "reviewed_by": null,
+    "reviewed_at": null
+  },
+  "chart": {
+    "chart_id": "in-1950-republic",
+    "country_iso": "IN",
+    "event": "Republic Day (constitution in force)",
+    "grade": "C",
+    "half_window_minutes": 60.0,
+    "founding_date": "1950-01-26",
+    "founding_time": "10:18:00",
+    "time_zone": "Asia/Kolkata",
+    "place": "New Delhi",
+    "lat": 28.6139,
+    "lon": 77.209,
+    "time_evidence_kind": "convention",
+    "stated_precision_minutes": 60,
+    "source_title": "Mundane astrology (AskAstrologer)",
+    "source_url": "https://askastrologer.com/articles/mundane-astrology/",
+    "source_archive_url": null,
+    "checked_by": null,
+    "rectified": false,
+    "valid_from": "1950-01-26",
+    "claimed_confidence": "disputed"
+  },
+  "settings": {
+    "ayanamsa": "lahiri",
+    "node": "mean",
+    "houses": "whole_sign",
+    "dasha_year": "julian"
+  },
+  "natal": {
+    "computable": true,
+    "reason": null,
+    "moment_utc": "1950-01-26T04:48:00+00:00",
+    "time_known": true,
+    "has_lagna": true,
+    "note": null,
+    "vargas": [
+      "D1",
+      "D9"
+    ],
+    "window": {
+      "half_window_minutes": 60.0,
+      "grid_minutes": 1.0
+    },
+    "combust_convention": "orbs from memory of the BPHS tradition (unverified, no page cited)",
+    "points": [
+      {
+        "point": "Lagna",
+        "longitude": 342.7215,
+        "degree_in_sign": 12.7215,
+        "nakshatra": "Uttara Bhadrapada",
+        "pada": 3,
+        "retrograde": null,
+        "combust": null,
+        "point_stable": false,
+        "point_alternatives": [
+          {
+            "field": "nakshatra",
+            "value": "Purva Bhadrapada 1",
+            "share": 0.0469
+          },
+          {
+            "field": "nakshatra",
+            "value": "Purva Bhadrapada 2",
+            "share": 0.0786
+          },
+          {
+            "field": "nakshatra",
+            "value": "Purva Bhadrapada 3",
+            "share": 0.078
+          },
+          {
+            "field": "nakshatra",
+            "value": "Purva Bhadrapada 4",
+            "share": 0.0779
+          },
+          {
+            "field": "nakshatra",
+            "value": "Uttara Bhadrapada 1",
+            "share": 0.0776
+          },
+          {
+            "field": "nakshatra",
+            "value": "Uttara Bhadrapada 2",
+            "share": 0.0776
+          },
+          {
+            "field": "nakshatra",
+            "value": "Uttara Bhadrapada 3",
+            "share": 0.0777
+          },
+          {
+            "field": "nakshatra",
+            "value": "Uttara Bhadrapada 4",
+            "share": 0.0781
+          },
+          {
+            "field": "nakshatra",
+            "value": "Revati 1",
+            "share": 0.0784
+          },
+          {
+            "field": "nakshatra",
+            "value": "Revati 2",
+            "share": 0.0792
+          },
+          {
+            "field": "nakshatra",
+            "value": "Revati 3",
+            "share": 0.0798
+          },
+          {
+            "field": "nakshatra",
+            "value": "Revati 4",
+            "share": 0.0806
+          },
+          {
+            "field": "nakshatra",
+            "value": "Ashwini 1",
+            "share": 0.0818
+          },
+          {
+            "field": "nakshatra",
+            "value": "Ashwini 2",
+            "share": 0.0078
+          }
+        ],
+        "vargas": {
+          "D1": {
+            "sign": "Pisces",
+            "house": 1,
+            "dignity": null,
+            "hora_lord": null,
+            "stable": false,
+            "alternatives": [
+              {
+                "field": "sign",
+                "value": "Aquarius",
+                "share": 0.2035
+              },
+              {
+                "field": "sign",
+                "value": "Pisces",
+                "share": 0.7069
+              },
+              {
+                "field": "sign",
+                "value": "Aries",
+                "share": 0.0896
+              }
+            ]
+          },
+          "D9": {
+            "sign": "Libra",
+            "house": 1,
+            "dignity": null,
+            "hora_lord": null,
+            "stable": false,
+            "alternatives": [
+              {
+                "field": "sign",
+                "value": "Aries",
+                "share": 0.1286
+              },
+              {
+                "field": "sign",
+                "value": "Taurus",
+                "share": 0.0865
+              },
+              {
+                "field": "sign",
+                "value": "Gemini",
+                "share": 0.078
+              },
+              {
+                "field": "sign",
+                "value": "Cancer",
+                "share": 0.0779
+              },
+              {
+                "field": "sign",
+                "value": "Leo",
+                "share": 0.0776
+              },
+              {
+                "field": "sign",
+                "value": "Virgo",
+                "share": 0.0776
+              },
+              {
+                "field": "sign",
+                "value": "Libra",
+                "share": 0.0777
+              },
+              {
+                "field": "sign",
+                "value": "Scorpio",
+                "share": 0.0781
+              },
+              {
+                "field": "sign",
+                "value": "Sagittarius",
+                "share": 0.0784
+              },
+              {
+                "field": "sign",
+                "value": "Capricorn",
+                "share": 0.0792
+              },
+              {
+                "field": "sign",
+                "value": "Aquarius",
+                "share": 0.0798
+              },
+              {
+                "field": "sign",
+                "value": "Pisces",
+                "share": 0.0806
+              }
+            ]
+          }
+        }
+      },
+      {
+        "point": "Sun",
+        "longitude": 282.5129,
+        "degree_in_sign": 12.5129,
+        "nakshatra": "Shravana",
+        "pada": 1,
+        "retrograde": false,
+        "combust": null,
+        "point_stable": true,
+        "point_alternatives": [],
+        "vargas": {
+          "D1": {
+            "sign": "Capricorn",
+            "house": 11,
+            "dignity": [
+              "enemy"
+            ],
+            "hora_lord": null,
+            "stable": false,
+            "alternatives": [
+              {
+                "field": "house",
+                "value": 12,
+                "share": 0.2035
+              },
+              {
+                "field": "house",
+                "value": 11,
+                "share": 0.7069
+              },
+              {
+                "field": "house",
+                "value": 10,
+                "share": 0.0896
+              }
+            ]
+          },
+          "D9": {
+            "sign": "Aries",
+            "house": 7,
+            "dignity": [
+              "exaltation"
+            ],
+            "hora_lord": null,
+            "stable": false,
+            "alternatives": [
+              {
+                "field": "house",
+                "value": 1,
+                "share": 0.1286
+              },
+              {
+                "field": "house",
+                "value": 12,
+                "share": 0.0865
+              },
+              {
+                "field": "house",
+                "value": 11,
+                "share": 0.078
+              },
+              {
+                "field": "house",
+                "value": 10,
+                "share": 0.0779
+              },
+              {
+                "field": "house",
+                "value": 9,
+                "share": 0.0776
+              },
+              {
+                "field": "house",
+                "value": 8,
+                "share": 0.0776
+              },
+              {
+                "field": "house",
+                "value": 7,
+                "share": 0.0777
+              },
+              {
+                "field": "house",
+                "value": 6,
+                "share": 0.0781
+              },
+              {
+                "field": "house",
+                "value": 5,
+                "share": 0.0784
+              },
+              {
+                "field": "house",
+                "value": 4,
+                "share": 0.0792
+              },
+              {
+                "field": "house",
+                "value": 3,
+                "share": 0.0798
+              },
+              {
+                "field": "house",
+                "value": 2,
+                "share": 0.0806
+              }
+            ]
+          }
+        }
+      },
+      {
+        "point": "Moon",
+        "longitude": 12.5767,
+        "degree_in_sign": 12.5767,
+        "nakshatra": "Ashwini",
+        "pada": 4,
+        "retrograde": false,
+        "combust": false,
+        "point_stable": true,
+        "point_alternatives": [],
+        "vargas": {
+          "D1": {
+            "sign": "Aries",
+            "house": 2,
+            "dignity": [
+              "neutral"
+            ],
+            "hora_lord": null,
+            "stable": false,
+            "alternatives": [
+              {
+                "field": "house",
+                "value": 3,
+                "share": 0.2035
+              },
+              {
+                "field": "house",
+                "value": 2,
+                "share": 0.7069
+              },
+              {
+                "field": "house",
+                "value": 1,
+                "share": 0.0896
+              }
+            ]
+          },
+          "D9": {
+            "sign": "Cancer",
+            "house": 10,
+            "dignity": [
+              "own"
+            ],
+            "hora_lord": null,
+            "stable": false,
+            "alternatives": [
+              {
+                "field": "house",
+                "value": 4,
+                "share": 0.1286
+              },
+              {
+                "field": "house",
+                "value": 3,
+                "share": 0.0865
+              },
+              {
+                "field": "house",
+                "value": 2,
+                "share": 0.078
+              },
+              {
+                "field": "house",
+                "value": 1,
+                "share": 0.0779
+              },
+              {
+                "field": "house",
+                "value": 12,
+                "share": 0.0776
+              },
+              {
+                "field": "house",
+                "value": 11,
+                "share": 0.0776
+              },
+              {
+                "field": "house",
+                "value": 10,
+                "share": 0.0777
+              },
+              {
+                "field": "house",
+                "value": 9,
+                "share": 0.0781
+              },
+              {
+                "field": "house",
+                "value": 8,
+                "share": 0.0784
+              },
+              {
+                "field": "house",
+                "value": 7,
+                "share": 0.0792
+              },
+              {
+                "field": "house",
+                "value": 6,
+                "share": 0.0798
+              },
+              {
+                "field": "house",
+                "value": 5,
+                "share": 0.0806
+              }
+            ]
+          }
+        }
+      },
+      {
+        "point": "Mars",
+        "longitude": 166.2283,
+        "degree_in_sign": 16.2283,
+        "nakshatra": "Hasta",
+        "pada": 2,
+        "retrograde": false,
+        "combust": false,
+        "point_stable": true,
+        "point_alternatives": [],
+        "vargas": {
+          "D1": {
+            "sign": "Virgo",
+            "house": 7,
+            "dignity": [
+              "enemy"
+            ],
+            "hora_lord": null,
+            "stable": false,
+            "alternatives": [
+              {
+                "field": "house",
+                "value": 8,
+                "share": 0.2035
+              },
+              {
+                "field": "house",
+                "value": 7,
+                "share": 0.7069
+              },
+              {
+                "field": "house",
+                "value": 6,
+                "share": 0.0896
+              }
+            ]
+          },
+          "D9": {
+            "sign": "Taurus",
+            "house": 8,
+            "dignity": [
+              "neutral"
+            ],
+            "hora_lord": null,
+            "stable": false,
+            "alternatives": [
+              {
+                "field": "house",
+                "value": 2,
+                "share": 0.1286
+              },
+              {
+                "field": "house",
+                "value": 1,
+                "share": 0.0865
+              },
+              {
+                "field": "house",
+                "value": 12,
+                "share": 0.078
+              },
+              {
+                "field": "house",
+                "value": 11,
+                "share": 0.0779
+              },
+              {
+                "field": "house",
+                "value": 10,
+                "share": 0.0776
+              },
+              {
+                "field": "house",
+                "value": 9,
+                "share": 0.0776
+              },
+              {
+                "field": "house",
+                "value": 8,
+                "share": 0.0777
+              },
+              {
+                "field": "house",
+                "value": 7,
+                "share": 0.0781
+              },
+              {
+                "field": "house",
+                "value": 6,
+                "share": 0.0784
+              },
+              {
+                "field": "house",
+                "value": 5,
+                "share": 0.0792
+              },
+              {
+                "field": "house",
+                "value": 4,
+                "share": 0.0798
+              },
+              {
+                "field": "house",
+                "value": 3,
+                "share": 0.0806
+              }
+            ]
+          }
+        }
+      },
+      {
+        "point": "Mercury",
+        "longitude": 265.5233,
+        "degree_in_sign": 25.5233,
+        "nakshatra": "Purva Ashadha",
+        "pada": 4,
+        "retrograde": true,
+        "combust": false,
+        "point_stable": true,
+        "point_alternatives": [],
+        "vargas": {
+          "D1": {
+            "sign": "Sagittarius",
+            "house": 10,
+            "dignity": [
+              "neutral"
+            ],
+            "hora_lord": null,
+            "stable": false,
+            "alternatives": [
+              {
+                "field": "house",
+                "value": 11,
+                "share": 0.2035
+              },
+              {
+                "field": "house",
+                "value": 10,
+                "share": 0.7069
+              },
+              {
+                "field": "house",
+                "value": 9,
+                "share": 0.0896
+              }
+            ]
+          },
+          "D9": {
+            "sign": "Scorpio",
+            "house": 2,
+            "dignity": [
+              "neutral"
+            ],
+            "hora_lord": null,
+            "stable": false,
+            "alternatives": [
+              {
+                "field": "house",
+                "value": 8,
+                "share": 0.1286
+              },
+              {
+                "field": "house",
+                "value": 7,
+                "share": 0.0865
+              },
+              {
+                "field": "house",
+                "value": 6,
+                "share": 0.078
+              },
+              {
+                "field": "house",
+                "value": 5,
+                "share": 0.0779
+              },
+              {
+                "field": "house",
+                "value": 4,
+                "share": 0.0776
+              },
+              {
+                "field": "house",
+                "value": 3,
+                "share": 0.0776
+              },
+              {
+                "field": "house",
+                "value": 2,
+                "share": 0.0777
+              },
+              {
+                "field": "house",
+                "value": 1,
+                "share": 0.0781
+              },
+              {
+                "field": "house",
+                "value": 12,
+                "share": 0.0784
+              },
+              {
+                "field": "house",
+                "value": 11,
+                "share": 0.0792
+              },
+              {
+                "field": "house",
+                "value": 10,
+                "share": 0.0798
+              },
+              {
+                "field": "house",
+                "value": 9,
+                "share": 0.0806
+              }
+            ]
+          }
+        }
+      },
+      {
+        "point": "Jupiter",
+        "longitude": 289.21,
+        "degree_in_sign": 19.21,
+        "nakshatra": "Shravana",
+        "pada": 3,
+        "retrograde": false,
+        "combust": true,
+        "point_stable": true,
+        "point_alternatives": [],
+        "vargas": {
+          "D1": {
+            "sign": "Capricorn",
+            "house": 11,
+            "dignity": [
+              "debilitation"
+            ],
+            "hora_lord": null,
+            "stable": false,
+            "alternatives": [
+              {
+                "field": "house",
+                "value": 12,
+                "share": 0.2035
+              },
+              {
+                "field": "house",
+                "value": 11,
+                "share": 0.7069
+              },
+              {
+                "field": "house",
+                "value": 10,
+                "share": 0.0896
+              }
+            ]
+          },
+          "D9": {
+            "sign": "Gemini",
+            "house": 9,
+            "dignity": [
+              "enemy"
+            ],
+            "hora_lord": null,
+            "stable": false,
+            "alternatives": [
+              {
+                "field": "house",
+                "value": 3,
+                "share": 0.1286
+              },
+              {
+                "field": "house",
+                "value": 2,
+                "share": 0.0865
+              },
+              {
+                "field": "house",
+                "value": 1,
+                "share": 0.078
+              },
+              {
+                "field": "house",
+                "value": 12,
+                "share": 0.0779
+              },
+              {
+                "field": "house",
+                "value": 11,
+                "share": 0.0776
+              },
+              {
+                "field": "house",
+                "value": 10,
+                "share": 0.0776
+              },
+              {
+                "field": "house",
+                "value": 9,
+                "share": 0.0777
+              },
+              {
+                "field": "house",
+                "value": 8,
+                "share": 0.0781
+              },
+              {
+                "field": "house",
+                "value": 7,
+                "share": 0.0784
+              },
+              {
+                "field": "house",
+                "value": 6,
+                "share": 0.0792
+              },
+              {
+                "field": "house",
+                "value": 5,
+                "share": 0.0798
+              },
+              {
+                "field": "house",
+                "value": 4,
+                "share": 0.0806
+              }
+            ]
+          }
+        }
+      },
+      {
+        "point": "Venus",
+        "longitude": 290.7379,
+        "degree_in_sign": 20.7379,
+        "nakshatra": "Shravana",
+        "pada": 4,
+        "retrograde": true,
+        "combust": false,
+        "point_stable": true,
+        "point_alternatives": [],
+        "vargas": {
+          "D1": {
+            "sign": "Capricorn",
+            "house": 11,
+            "dignity": [
+              "friend"
+            ],
+            "hora_lord": null,
+            "stable": false,
+            "alternatives": [
+              {
+                "field": "house",
+                "value": 12,
+                "share": 0.2035
+              },
+              {
+                "field": "house",
+                "value": 11,
+                "share": 0.7069
+              },
+              {
+                "field": "house",
+                "value": 10,
+                "share": 0.0896
+              }
+            ]
+          },
+          "D9": {
+            "sign": "Cancer",
+            "house": 10,
+            "dignity": [
+              "enemy"
+            ],
+            "hora_lord": null,
+            "stable": false,
+            "alternatives": [
+              {
+                "field": "house",
+                "value": 4,
+                "share": 0.1286
+              },
+              {
+                "field": "house",
+                "value": 3,
+                "share": 0.0865
+              },
+              {
+                "field": "house",
+                "value": 2,
+                "share": 0.078
+              },
+              {
+                "field": "house",
+                "value": 1,
+                "share": 0.0779
+              },
+              {
+                "field": "house",
+                "value": 12,
+                "share": 0.0776
+              },
+              {
+                "field": "house",
+                "value": 11,
+                "share": 0.0776
+              },
+              {
+                "field": "house",
+                "value": 10,
+                "share": 0.0777
+              },
+              {
+                "field": "house",
+                "value": 9,
+                "share": 0.0781
+              },
+              {
+                "field": "house",
+                "value": 8,
+                "share": 0.0784
+              },
+              {
+                "field": "house",
+                "value": 7,
+                "share": 0.0792
+              },
+              {
+                "field": "house",
+                "value": 6,
+                "share": 0.0798
+              },
+              {
+                "field": "house",
+                "value": 5,
+                "share": 0.0806
+              }
+            ]
+          }
+        }
+      },
+      {
+        "point": "Saturn",
+        "longitude": 145.6295,
+        "degree_in_sign": 25.6295,
+        "nakshatra": "Purva Phalguni",
+        "pada": 4,
+        "retrograde": true,
+        "combust": false,
+        "point_stable": true,
+        "point_alternatives": [],
+        "vargas": {
+          "D1": {
+            "sign": "Leo",
+            "house": 6,
+            "dignity": [
+              "enemy"
+            ],
+            "hora_lord": null,
+            "stable": false,
+            "alternatives": [
+              {
+                "field": "house",
+                "value": 7,
+                "share": 0.2035
+              },
+              {
+                "field": "house",
+                "value": 6,
+                "share": 0.7069
+              },
+              {
+                "field": "house",
+                "value": 5,
+                "share": 0.0896
+              }
+            ]
+          },
+          "D9": {
+            "sign": "Scorpio",
+            "house": 2,
+            "dignity": [
+              "enemy"
+            ],
+            "hora_lord": null,
+            "stable": false,
+            "alternatives": [
+              {
+                "field": "house",
+                "value": 8,
+                "share": 0.1286
+              },
+              {
+                "field": "house",
+                "value": 7,
+                "share": 0.0865
+              },
+              {
+                "field": "house",
+                "value": 6,
+                "share": 0.078
+              },
+              {
+                "field": "house",
+                "value": 5,
+                "share": 0.0779
+              },
+              {
+                "field": "house",
+                "value": 4,
+                "share": 0.0776
+              },
+              {
+                "field": "house",
+                "value": 3,
+                "share": 0.0776
+              },
+              {
+                "field": "house",
+                "value": 2,
+                "share": 0.0777
+              },
+              {
+                "field": "house",
+                "value": 1,
+                "share": 0.0781
+              },
+              {
+                "field": "house",
+                "value": 12,
+                "share": 0.0784
+              },
+              {
+                "field": "house",
+                "value": 11,
+                "share": 0.0792
+              },
+              {
+                "field": "house",
+                "value": 10,
+                "share": 0.0798
+              },
+              {
+                "field": "house",
+                "value": 9,
+                "share": 0.0806
+              }
+            ]
+          }
+        }
+      },
+      {
+        "point": "Rahu",
+        "longitude": 347.6191,
+        "degree_in_sign": 17.6191,
+        "nakshatra": "Revati",
+        "pada": 1,
+        "retrograde": true,
+        "combust": null,
+        "point_stable": true,
+        "point_alternatives": [],
+        "vargas": {
+          "D1": {
+            "sign": "Pisces",
+            "house": 1,
+            "dignity": [
+              "neutral"
+            ],
+            "hora_lord": null,
+            "stable": false,
+            "alternatives": [
+              {
+                "field": "house",
+                "value": 2,
+                "share": 0.2035
+              },
+              {
+                "field": "house",
+                "value": 1,
+                "share": 0.7069
+              },
+              {
+                "field": "house",
+                "value": 12,
+                "share": 0.0896
+              }
+            ]
+          },
+          "D9": {
+            "sign": "Sagittarius",
+            "house": 3,
+            "dignity": [
+              "neutral"
+            ],
+            "hora_lord": null,
+            "stable": false,
+            "alternatives": [
+              {
+                "field": "house",
+                "value": 9,
+                "share": 0.1286
+              },
+              {
+                "field": "house",
+                "value": 8,
+                "share": 0.0865
+              },
+              {
+                "field": "house",
+                "value": 7,
+                "share": 0.078
+              },
+              {
+                "field": "house",
+                "value": 6,
+                "share": 0.0779
+              },
+              {
+                "field": "house",
+                "value": 5,
+                "share": 0.0776
+              },
+              {
+                "field": "house",
+                "value": 4,
+                "share": 0.0776
+              },
+              {
+                "field": "house",
+                "value": 3,
+                "share": 0.0777
+              },
+              {
+                "field": "house",
+                "value": 2,
+                "share": 0.0781
+              },
+              {
+                "field": "house",
+                "value": 1,
+                "share": 0.0784
+              },
+              {
+                "field": "house",
+                "value": 12,
+                "share": 0.0792
+              },
+              {
+                "field": "house",
+                "value": 11,
+                "share": 0.0798
+              },
+              {
+                "field": "house",
+                "value": 10,
+                "share": 0.0806
+              }
+            ]
+          }
+        }
+      },
+      {
+        "point": "Ketu",
+        "longitude": 167.6191,
+        "degree_in_sign": 17.6191,
+        "nakshatra": "Hasta",
+        "pada": 3,
+        "retrograde": true,
+        "combust": null,
+        "point_stable": true,
+        "point_alternatives": [],
+        "vargas": {
+          "D1": {
+            "sign": "Virgo",
+            "house": 7,
+            "dignity": [
+              "enemy"
+            ],
+            "hora_lord": null,
+            "stable": false,
+            "alternatives": [
+              {
+                "field": "house",
+                "value": 8,
+                "share": 0.2035
+              },
+              {
+                "field": "house",
+                "value": 7,
+                "share": 0.7069
+              },
+              {
+                "field": "house",
+                "value": 6,
+                "share": 0.0896
+              }
+            ]
+          },
+          "D9": {
+            "sign": "Gemini",
+            "house": 9,
+            "dignity": [
+              "enemy"
+            ],
+            "hora_lord": null,
+            "stable": false,
+            "alternatives": [
+              {
+                "field": "house",
+                "value": 3,
+                "share": 0.1286
+              },
+              {
+                "field": "house",
+                "value": 2,
+                "share": 0.0865
+              },
+              {
+                "field": "house",
+                "value": 1,
+                "share": 0.078
+              },
+              {
+                "field": "house",
+                "value": 12,
+                "share": 0.0779
+              },
+              {
+                "field": "house",
+                "value": 11,
+                "share": 0.0776
+              },
+              {
+                "field": "house",
+                "value": 10,
+                "share": 0.0776
+              },
+              {
+                "field": "house",
+                "value": 9,
+                "share": 0.0777
+              },
+              {
+                "field": "house",
+                "value": 8,
+                "share": 0.0781
+              },
+              {
+                "field": "house",
+                "value": 7,
+                "share": 0.0784
+              },
+              {
+                "field": "house",
+                "value": 6,
+                "share": 0.0792
+              },
+              {
+                "field": "house",
+                "value": 5,
+                "share": 0.0798
+              },
+              {
+                "field": "house",
+                "value": 4,
+                "share": 0.0806
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "dasha": {
+    "computable": true,
+    "reason": null,
+    "method": "dasha.vimshottari",
+    "all_levels_unsupported": false,
+    "note": null,
+    "first_lord": "Ketu",
+    "dasha_year_days": 365.25,
+    "half_window_minutes": 60.0,
+    "event_half_window_minutes": 1.0,
+    "levels": [
+      {
+        "level": 1,
+        "name": "maha",
+        "lord": "Moon",
+        "lords": [
+          "Moon"
+        ],
+        "start": "1976-06-19T19:00:07.428020+00:00",
+        "end": "1986-06-20T07:00:07.428020+00:00",
+        "start_interval": [
+          "1976-03-17T12:28:57.057226+00:00",
+          "1976-09-22T01:12:46.628092+00:00"
+        ],
+        "end_interval": [
+          "1986-03-18T00:28:57.057226+00:00",
+          "1986-09-22T13:12:46.628092+00:00"
+        ],
+        "boundary_uncertainty_days": 94.271648,
+        "stable": true,
+        "supported": true,
+        "lords_at_window_ends": [
+          [
+            "Moon"
+          ],
+          [
+            "Moon"
+          ]
+        ],
+        "reason": "",
+        "lord_state": {
+          "computable": true,
+          "reason": null,
+          "D1": {
+            "sign": "Aries",
+            "house": 2,
+            "dignity": [
+              "neutral"
+            ],
+            "houses_ruled": [
+              5
+            ],
+            "stable": false
+          },
+          "D9": {
+            "sign": "Cancer",
+            "house": 10,
+            "dignity": [
+              "own"
+            ],
+            "houses_ruled": [
+              10
+            ],
+            "stable": false
+          }
+        }
+      },
+      {
+        "level": 2,
+        "name": "antar",
+        "lord": "Saturn",
+        "lords": [
+          "Moon",
+          "Saturn"
+        ],
+        "start": "1980-09-19T02:30:07.428020+00:00",
+        "end": "1982-04-20T10:00:07.428020+00:00",
+        "start_interval": [
+          "1980-06-16T19:58:57.057226+00:00",
+          "1980-12-22T08:42:46.628092+00:00"
+        ],
+        "end_interval": [
+          "1982-01-16T03:28:57.057226+00:00",
+          "1982-07-23T16:12:46.628092+00:00"
+        ],
+        "boundary_uncertainty_days": 94.271648,
+        "stable": false,
+        "supported": true,
+        "lords_at_window_ends": [
+          [
+            "Moon",
+            "Jupiter"
+          ],
+          [
+            "Moon",
+            "Saturn"
+          ]
+        ],
+        "reason": "running lords differ across the founding-time window; a boundary interval contains the event",
+        "lord_state": {
+          "computable": true,
+          "reason": null,
+          "D1": {
+            "sign": "Leo",
+            "house": 6,
+            "dignity": [
+              "enemy"
+            ],
+            "houses_ruled": [
+              11,
+              12
+            ],
+            "stable": false
+          },
+          "D9": {
+            "sign": "Scorpio",
+            "house": 2,
+            "dignity": [
+              "enemy"
+            ],
+            "houses_ruled": [
+              4,
+              5
+            ],
+            "stable": false
+          }
+        }
+      },
+      {
+        "level": 3,
+        "name": "pratyantar",
+        "lord": "Saturn",
+        "lords": [
+          "Moon",
+          "Saturn",
+          "Saturn"
+        ],
+        "start": "1980-09-19T02:30:07.428020+00:00",
+        "end": "1980-12-19T16:05:22.428020+00:00",
+        "start_interval": [
+          "1980-06-16T19:58:57.057226+00:00",
+          "1980-12-22T08:42:46.628092+00:00"
+        ],
+        "end_interval": [
+          "1980-09-16T09:34:12.057226+00:00",
+          "1981-03-23T22:18:01.628092+00:00"
+        ],
+        "boundary_uncertainty_days": 94.271648,
+        "stable": false,
+        "supported": true,
+        "lords_at_window_ends": [
+          [
+            "Moon",
+            "Jupiter",
+            "Rahu"
+          ],
+          [
+            "Moon",
+            "Saturn",
+            "Mercury"
+          ]
+        ],
+        "reason": "running lords differ across the founding-time window; a boundary interval contains the event; a coarser level is unstable",
+        "lord_state": {
+          "computable": true,
+          "reason": null,
+          "D1": {
+            "sign": "Leo",
+            "house": 6,
+            "dignity": [
+              "enemy"
+            ],
+            "houses_ruled": [
+              11,
+              12
+            ],
+            "stable": false
+          },
+          "D9": {
+            "sign": "Scorpio",
+            "house": 2,
+            "dignity": [
+              "enemy"
+            ],
+            "houses_ruled": [
+              4,
+              5
+            ],
+            "stable": false
+          }
+        }
+      }
+    ]
+  },
+  "transits": {
+    "computable": true,
+    "reason": null,
+    "note": null,
+    "event_window_half_minutes": 1.0,
+    "natal_window_half_minutes": 60.0,
+    "positions": [
+      {
+        "graha": "Sun",
+        "longitude": 214.0295,
+        "sign": "Scorpio",
+        "nakshatra": "Anuradha",
+        "speed": 1.00916,
+        "retrograde": false,
+        "signs_across_window": [
+          "Scorpio"
+        ],
+        "stable": true,
+        "house_from_lagna": 9,
+        "house_from_lagna_stable": false,
+        "house_from_moon": 8,
+        "house_from_moon_stable": true
+      },
+      {
+        "graha": "Moon",
+        "longitude": 358.9943,
+        "sign": "Pisces",
+        "nakshatra": "Revati",
+        "speed": 15.00023,
+        "retrograde": false,
+        "signs_across_window": [
+          "Pisces"
+        ],
+        "stable": true,
+        "house_from_lagna": 1,
+        "house_from_lagna_stable": false,
+        "house_from_moon": 12,
+        "house_from_moon_stable": true
+      },
+      {
+        "graha": "Mars",
+        "longitude": 244.692,
+        "sign": "Sagittarius",
+        "nakshatra": "Mula",
+        "speed": 0.75447,
+        "retrograde": false,
+        "signs_across_window": [
+          "Sagittarius"
+        ],
+        "stable": true,
+        "house_from_lagna": 10,
+        "house_from_lagna_stable": false,
+        "house_from_moon": 9,
+        "house_from_moon_stable": true
+      },
+      {
+        "graha": "Mercury",
+        "longitude": 194.5638,
+        "sign": "Libra",
+        "nakshatra": "Swati",
+        "speed": 1.00842,
+        "retrograde": false,
+        "signs_across_window": [
+          "Libra"
+        ],
+        "stable": true,
+        "house_from_lagna": 8,
+        "house_from_lagna_stable": false,
+        "house_from_moon": 7,
+        "house_from_moon_stable": true
+      },
+      {
+        "graha": "Jupiter",
+        "longitude": 160.6842,
+        "sign": "Virgo",
+        "nakshatra": "Hasta",
+        "speed": 0.1665,
+        "retrograde": false,
+        "signs_across_window": [
+          "Virgo"
+        ],
+        "stable": true,
+        "house_from_lagna": 7,
+        "house_from_lagna_stable": false,
+        "house_from_moon": 6,
+        "house_from_moon_stable": true
+      },
+      {
+        "graha": "Venus",
+        "longitude": 181.1594,
+        "sign": "Libra",
+        "nakshatra": "Chitra",
+        "speed": 1.22739,
+        "retrograde": false,
+        "signs_across_window": [
+          "Libra"
+        ],
+        "stable": true,
+        "house_from_lagna": 8,
+        "house_from_lagna_stable": false,
+        "house_from_moon": 7,
+        "house_from_moon_stable": true
+      },
+      {
+        "graha": "Saturn",
+        "longitude": 163.1867,
+        "sign": "Virgo",
+        "nakshatra": "Hasta",
+        "speed": 0.09291,
+        "retrograde": false,
+        "signs_across_window": [
+          "Virgo"
+        ],
+        "stable": true,
+        "house_from_lagna": 7,
+        "house_from_lagna_stable": false,
+        "house_from_moon": 6,
+        "house_from_moon_stable": true
+      },
+      {
+        "graha": "Rahu",
+        "longitude": 111.1622,
+        "sign": "Cancer",
+        "nakshatra": "Ashlesha",
+        "speed": -0.05299,
+        "retrograde": true,
+        "signs_across_window": [
+          "Cancer"
+        ],
+        "stable": true,
+        "house_from_lagna": 5,
+        "house_from_lagna_stable": false,
+        "house_from_moon": 4,
+        "house_from_moon_stable": true
+      },
+      {
+        "graha": "Ketu",
+        "longitude": 291.1622,
+        "sign": "Capricorn",
+        "nakshatra": "Shravana",
+        "speed": -0.05299,
+        "retrograde": true,
+        "signs_across_window": [
+          "Capricorn"
+        ],
+        "stable": true,
+        "house_from_lagna": 11,
+        "house_from_lagna_stable": false,
+        "house_from_moon": 10,
+        "house_from_moon_stable": true
+      }
+    ],
+    "readings": {
+      "core": {
+        "transit.gochara_moon": {
+          "method": {
+            "id": "transit.gochara_moon",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": 0
+          },
+          "natal_moon_sign_values": [
+            "Aries"
+          ],
+          "rows": [
+            {
+              "graha": "Sun",
+              "house": 8,
+              "houses_across_windows": [
+                8
+              ],
+              "stable": true,
+              "fast": false
+            },
+            {
+              "graha": "Moon",
+              "house": 12,
+              "houses_across_windows": [
+                12
+              ],
+              "stable": true,
+              "fast": false
+            },
+            {
+              "graha": "Mars",
+              "house": 9,
+              "houses_across_windows": [
+                9
+              ],
+              "stable": true,
+              "fast": false
+            },
+            {
+              "graha": "Mercury",
+              "house": 7,
+              "houses_across_windows": [
+                7
+              ],
+              "stable": true,
+              "fast": false
+            },
+            {
+              "graha": "Jupiter",
+              "house": 6,
+              "houses_across_windows": [
+                6
+              ],
+              "stable": true,
+              "fast": false
+            },
+            {
+              "graha": "Venus",
+              "house": 7,
+              "houses_across_windows": [
+                7
+              ],
+              "stable": true,
+              "fast": false
+            },
+            {
+              "graha": "Saturn",
+              "house": 6,
+              "houses_across_windows": [
+                6
+              ],
+              "stable": true,
+              "fast": false
+            },
+            {
+              "graha": "Rahu",
+              "house": 4,
+              "houses_across_windows": [
+                4
+              ],
+              "stable": true,
+              "fast": false
+            },
+            {
+              "graha": "Ketu",
+              "house": 10,
+              "houses_across_windows": [
+                10
+              ],
+              "stable": true,
+              "fast": false
+            }
+          ]
+        },
+        "transit.from_lagna": {
+          "method": {
+            "id": "transit.from_lagna",
+            "tier": "core",
+            "tradition": "practitioner",
+            "citation_status": "unverified",
+            "level": 0
+          },
+          "natal_lagna_sign_values": [
+            "Aquarius",
+            "Pisces",
+            "Aries"
+          ],
+          "rows": [
+            {
+              "graha": "Sun",
+              "house": 9,
+              "houses_across_windows": [
+                8,
+                9,
+                10
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Moon",
+              "house": 1,
+              "houses_across_windows": [
+                1,
+                2,
+                12
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Mars",
+              "house": 10,
+              "houses_across_windows": [
+                9,
+                10,
+                11
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Mercury",
+              "house": 8,
+              "houses_across_windows": [
+                7,
+                8,
+                9
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Jupiter",
+              "house": 7,
+              "houses_across_windows": [
+                6,
+                7,
+                8
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Venus",
+              "house": 8,
+              "houses_across_windows": [
+                7,
+                8,
+                9
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Saturn",
+              "house": 7,
+              "houses_across_windows": [
+                6,
+                7,
+                8
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Rahu",
+              "house": 5,
+              "houses_across_windows": [
+                4,
+                5,
+                6
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Ketu",
+              "house": 11,
+              "houses_across_windows": [
+                10,
+                11,
+                12
+              ],
+              "stable": false,
+              "fast": false
+            }
+          ]
+        },
+        "transit.conjunct_natal": {
+          "method": {
+            "id": "transit.conjunct_natal",
+            "tier": "core",
+            "tradition": "practitioner",
+            "citation_status": "unverified",
+            "level": 0
+          },
+          "orb": 3.0,
+          "rows": [
+            {
+              "graha": "Moon",
+              "natal_point": "Lagna",
+              "orb": 3.0,
+              "separation": 16.273,
+              "held_at_nominal": false,
+              "stable": false
+            },
+            {
+              "graha": "Ketu",
+              "natal_point": "Jupiter",
+              "orb": 3.0,
+              "separation": 1.952,
+              "held_at_nominal": true,
+              "stable": true
+            },
+            {
+              "graha": "Ketu",
+              "natal_point": "Venus",
+              "orb": 3.0,
+              "separation": 0.424,
+              "held_at_nominal": true,
+              "stable": true
+            }
+          ]
+        }
+      },
+      "extended": {
+        "transit.over_varga": {
+          "method": {
+            "id": "transit.over_varga",
+            "tier": "extended",
+            "tradition": "practitioner",
+            "citation_status": "unverified",
+            "level": 0
+          },
+          "varga": 9,
+          "natal_d9_lagna_values": [
+            "Aries",
+            "Taurus",
+            "Gemini",
+            "Cancer",
+            "Leo",
+            "Virgo",
+            "Libra",
+            "Scorpio",
+            "Sagittarius",
+            "Capricorn",
+            "Aquarius",
+            "Pisces"
+          ],
+          "note": null,
+          "rows": [
+            {
+              "graha": "Sun",
+              "house": 2,
+              "houses_across_windows": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Moon",
+              "house": 6,
+              "houses_across_windows": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Mars",
+              "house": 3,
+              "houses_across_windows": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Mercury",
+              "house": 1,
+              "houses_across_windows": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Jupiter",
+              "house": 12,
+              "houses_across_windows": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Venus",
+              "house": 1,
+              "houses_across_windows": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Saturn",
+              "house": 12,
+              "houses_across_windows": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Rahu",
+              "house": 10,
+              "houses_across_windows": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Ketu",
+              "house": 4,
+              "houses_across_windows": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ],
+              "stable": false,
+              "fast": false
+            }
+          ]
+        },
+        "transit.in_varga": {
+          "method": {
+            "id": "transit.in_varga",
+            "tier": "extended",
+            "tradition": "practitioner",
+            "citation_status": "unverified",
+            "level": 0
+          },
+          "varga": 9,
+          "natal_d9_lagna_values": [
+            "Aries",
+            "Taurus",
+            "Gemini",
+            "Cancer",
+            "Leo",
+            "Virgo",
+            "Libra",
+            "Scorpio",
+            "Sagittarius",
+            "Capricorn",
+            "Aquarius",
+            "Pisces"
+          ],
+          "note": null,
+          "rows": [
+            {
+              "graha": "Sun",
+              "house": 11,
+              "houses_across_windows": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Moon",
+              "house": 6,
+              "houses_across_windows": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Mars",
+              "house": 8,
+              "houses_across_windows": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Mercury",
+              "house": 5,
+              "houses_across_windows": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Jupiter",
+              "house": 7,
+              "houses_across_windows": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Venus",
+              "house": 1,
+              "houses_across_windows": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Saturn",
+              "house": 7,
+              "houses_across_windows": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Rahu",
+              "house": 4,
+              "houses_across_windows": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ],
+              "stable": false,
+              "fast": false
+            },
+            {
+              "graha": "Ketu",
+              "house": 10,
+              "houses_across_windows": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ],
+              "stable": false,
+              "fast": false
+            }
+          ]
+        }
+      }
+    }
+  },
+  "event_sky": {
+    "computable": true,
+    "reason": null,
+    "event_id": "usgs:usp0001aw2",
+    "moment_utc": "1980-11-19T19:00:46.900000+00:00",
+    "time_precision": "minute",
+    "methods": {
+      "sky.bs32_mandala": {
+        "id": "sky.bs32_mandala",
+        "tier": "core",
+        "tradition": "samhita",
+        "citation_status": "unverified",
+        "level": 0
+      },
+      "sky.eclipse": {
+        "id": "sky.eclipse",
+        "tier": "core",
+        "tradition": "samhita",
+        "citation_status": "unverified",
+        "level": 0
+      },
+      "sky.samvatsara": {
+        "id": "sky.samvatsara",
+        "tier": "core",
+        "tradition": "samhita",
+        "citation_status": "unverified",
+        "level": 0
+      }
+    },
+    "window_half_minutes": 1.0,
+    "place": {
+      "lat": 27.394,
+      "lon": 88.752
+    },
+    "lagna": {
+      "computed": true,
+      "longitude": 141.227,
+      "value": 4,
+      "values_across_window": [
+        4
+      ],
+      "stable": true
+    },
+    "moon_nakshatra": {
+      "longitude": 358.9943,
+      "pada": 4,
+      "value": "Revati",
+      "values_across_window": [
+        "Revati"
+      ],
+      "stable": true
+    },
+    "mandala": {
+      "method": "sky.bs32_mandala",
+      "value": "varuna",
+      "values_across_window": [
+        "varuna"
+      ],
+      "stable": true
+    },
+    "tithi": {
+      "name": "Shukla 13",
+      "value": 13,
+      "values_across_window": [
+        13
+      ],
+      "stable": true
+    },
+    "weekday_lord": {
+      "weekday": 2,
+      "convention": "sunrise_to_sunrise",
+      "value": "Mercury",
+      "values_across_window": [
+        "Mercury"
+      ],
+      "stable": true
+    },
+    "eclipses": {
+      "before": {
+        "kind": "lunar",
+        "subtype": "penumbral",
+        "moment_utc": "1980-08-26T03:30:34.137587+00:00",
+        "days_from_event": -85.646,
+        "sidereal_longitude": 309.3513
+      },
+      "after": {
+        "kind": "lunar",
+        "subtype": "penumbral",
+        "moment_utc": "1981-01-20T07:49:51.284265+00:00",
+        "days_from_event": 61.5341,
+        "sidereal_longitude": 96.6847
+      }
+    },
+    "samvatsara": {
+      "name": "Raudra",
+      "index": 53,
+      "starts_utc": "1980-03-16T18:55:53.154212+00:00",
+      "convention": "Chaitra Shukla Pratipada, Prabhava = 1987 (a parameter, ADR-006 section 4.3)"
+    },
+    "aggregate_guard": "aggregate counts over events outside the Himalayan polygon raise until the ADR-004 D2 confirm record exists"
+  },
+  "annual": {
+    "computable": false,
+    "reason": "Phase 2 (ADR-006 WP-59): the Mesha sankranti chart of the capital is not built"
+  },
+  "factors": {
+    "computable": true,
+    "reason": null,
+    "plan_id": "mundane-india-himalaya-eq-v1",
+    "tests_declared": 18,
+    "base_rate_note": "share of calendar dates on which the same factor is true for this chart; no event data is used",
+    "rows": [
+      {
+        "factor_id": "dasha.identity.antar:Saturn",
+        "family_id": "F1_dasha_lord_identity",
+        "test_id": "dasha.identity.antar",
+        "cell": "Saturn",
+        "method": "dasha.vimshottari",
+        "methods": [
+          {
+            "id": "dasha.vimshottari",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          }
+        ],
+        "citation_status": "unverified",
+        "level": "L0",
+        "tier": "core",
+        "fired": true,
+        "stable": false,
+        "stability": {
+          "detail": {
+            "founding_window": false,
+            "event_window": true,
+            "dasha_boundaries": false,
+            "dasha_reason": "running lords differ across the founding-time window; a boundary interval contains the event"
+          },
+          "alternatives": [
+            "Jupiter"
+          ],
+          "founding_values": [
+            {
+              "value": "Jupiter",
+              "share": 0.1728
+            },
+            {
+              "value": "Saturn",
+              "share": 0.8272
+            }
+          ],
+          "event_values": [
+            {
+              "value": "Saturn",
+              "share": 1.0
+            }
+          ]
+        },
+        "base_rate": {
+          "value": 0.159065,
+          "reason": null,
+          "dates": 2653,
+          "true_dates": 422,
+          "step_days": 7,
+          "start": "1976-01-01",
+          "end": "2026-10-29",
+          "time_utc": "12:00"
+        },
+        "evidence": "the running Vimshottari period is Moon-Saturn; its antardasha lord is Saturn"
+      },
+      {
+        "factor_id": "dasha.identity.pratyantar:Saturn",
+        "family_id": "F1_dasha_lord_identity",
+        "test_id": "dasha.identity.pratyantar",
+        "cell": "Saturn",
+        "method": "dasha.vimshottari",
+        "methods": [
+          {
+            "id": "dasha.vimshottari",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          }
+        ],
+        "citation_status": "unverified",
+        "level": "L0",
+        "tier": "core",
+        "fired": true,
+        "stable": false,
+        "stability": {
+          "detail": {
+            "founding_window": false,
+            "event_window": true,
+            "dasha_boundaries": false,
+            "dasha_reason": "running lords differ across the founding-time window; a boundary interval contains the event; a coarser level is unstable"
+          },
+          "alternatives": [
+            "Mercury",
+            "Rahu"
+          ],
+          "founding_values": [
+            {
+              "value": "Rahu",
+              "share": 0.1728
+            },
+            {
+              "value": "Saturn",
+              "share": 0.4858
+            },
+            {
+              "value": "Mercury",
+              "share": 0.3414
+            }
+          ],
+          "event_values": [
+            {
+              "value": "Saturn",
+              "share": 1.0
+            }
+          ]
+        },
+        "base_rate": {
+          "value": 0.163211,
+          "reason": null,
+          "dates": 2653,
+          "true_dates": 433,
+          "step_days": 7,
+          "start": "1976-01-01",
+          "end": "2026-10-29",
+          "time_utc": "12:00"
+        },
+        "evidence": "the running Vimshottari period is Moon-Saturn-Saturn; its pratyantardasha lord is Saturn"
+      },
+      {
+        "factor_id": "dasha.house.antar.d1:6",
+        "family_id": "F2_dasha_lord_natal_house",
+        "test_id": "dasha.house.antar.d1",
+        "cell": 6,
+        "method": "dasha.vimshottari",
+        "methods": [
+          {
+            "id": "dasha.vimshottari",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "dasha.lord_state",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "varga.d1",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          }
+        ],
+        "citation_status": "unverified",
+        "level": "L0",
+        "tier": "core",
+        "fired": true,
+        "stable": false,
+        "stability": {
+          "detail": {
+            "founding_window": false,
+            "event_window": true,
+            "dasha_boundaries": false,
+            "dasha_reason": "running lords differ across the founding-time window; a boundary interval contains the event"
+          },
+          "alternatives": [
+            "12",
+            "5",
+            "7"
+          ],
+          "founding_values": [
+            {
+              "value": 12,
+              "share": 0.1728
+            },
+            {
+              "value": 7,
+              "share": 0.0307
+            },
+            {
+              "value": 6,
+              "share": 0.7069
+            },
+            {
+              "value": 5,
+              "share": 0.0896
+            }
+          ],
+          "event_values": [
+            {
+              "value": 6,
+              "share": 1.0
+            }
+          ]
+        },
+        "base_rate": {
+          "value": 0.159065,
+          "reason": null,
+          "dates": 2653,
+          "true_dates": 422,
+          "step_days": 7,
+          "start": "1976-01-01",
+          "end": "2026-10-29",
+          "time_utc": "12:00"
+        },
+        "evidence": "the running Vimshottari period is Moon-Saturn; its antardasha lord Saturn is in Leo in the natal chart, the 6th from the Lagna in Pisces"
+      },
+      {
+        "factor_id": "dasha.house.antar.d9:2",
+        "family_id": "F2_dasha_lord_natal_house",
+        "test_id": "dasha.house.antar.d9",
+        "cell": 2,
+        "method": "dasha.vimshottari",
+        "methods": [
+          {
+            "id": "dasha.vimshottari",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "dasha.lord_state",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "varga.d9",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          }
+        ],
+        "citation_status": "unverified",
+        "level": "L0",
+        "tier": "core",
+        "fired": true,
+        "stable": false,
+        "stability": {
+          "detail": {
+            "founding_window": false,
+            "event_window": true,
+            "dasha_boundaries": false,
+            "dasha_reason": "running lords differ across the founding-time window; a boundary interval contains the event"
+          },
+          "alternatives": [
+            "1",
+            "10",
+            "11",
+            "12",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"
+          ],
+          "founding_values": [
+            {
+              "value": 3,
+              "share": 0.1245
+            },
+            {
+              "value": 2,
+              "share": 0.1564
+            },
+            {
+              "value": 1,
+              "share": 0.1254
+            },
+            {
+              "value": 6,
+              "share": 0.0307
+            },
+            {
+              "value": 5,
+              "share": 0.0779
+            },
+            {
+              "value": 4,
+              "share": 0.0776
+            },
+            {
+              "value": 12,
+              "share": 0.0784
+            },
+            {
+              "value": 11,
+              "share": 0.0792
+            },
+            {
+              "value": 10,
+              "share": 0.0798
+            },
+            {
+              "value": 9,
+              "share": 0.0806
+            },
+            {
+              "value": 8,
+              "share": 0.0818
+            },
+            {
+              "value": 7,
+              "share": 0.0078
+            }
+          ],
+          "event_values": [
+            {
+              "value": 2,
+              "share": 1.0
+            }
+          ]
+        },
+        "base_rate": {
+          "value": 0.301168,
+          "reason": null,
+          "dates": 2653,
+          "true_dates": 799,
+          "step_days": 7,
+          "start": "1976-01-01",
+          "end": "2026-10-29",
+          "time_utc": "12:00"
+        },
+        "evidence": "the running Vimshottari period is Moon-Saturn; its antardasha lord Saturn is in Scorpio in the natal D9, the 2nd from the Lagna in Libra"
+      },
+      {
+        "factor_id": "dasha.house.pratyantar.d1:6",
+        "family_id": "F2_dasha_lord_natal_house",
+        "test_id": "dasha.house.pratyantar.d1",
+        "cell": 6,
+        "method": "dasha.vimshottari",
+        "methods": [
+          {
+            "id": "dasha.vimshottari",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "dasha.lord_state",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "varga.d1",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          }
+        ],
+        "citation_status": "unverified",
+        "level": "L0",
+        "tier": "core",
+        "fired": true,
+        "stable": false,
+        "stability": {
+          "detail": {
+            "founding_window": false,
+            "event_window": true,
+            "dasha_boundaries": false,
+            "dasha_reason": "running lords differ across the founding-time window; a boundary interval contains the event; a coarser level is unstable"
+          },
+          "alternatives": [
+            "10",
+            "2",
+            "7",
+            "9"
+          ],
+          "founding_values": [
+            {
+              "value": 2,
+              "share": 0.1728
+            },
+            {
+              "value": 7,
+              "share": 0.0307
+            },
+            {
+              "value": 6,
+              "share": 0.4551
+            },
+            {
+              "value": 10,
+              "share": 0.2518
+            },
+            {
+              "value": 9,
+              "share": 0.0896
+            }
+          ],
+          "event_values": [
+            {
+              "value": 6,
+              "share": 1.0
+            }
+          ]
+        },
+        "base_rate": {
+          "value": 0.163211,
+          "reason": null,
+          "dates": 2653,
+          "true_dates": 433,
+          "step_days": 7,
+          "start": "1976-01-01",
+          "end": "2026-10-29",
+          "time_utc": "12:00"
+        },
+        "evidence": "the running Vimshottari period is Moon-Saturn-Saturn; its pratyantardasha lord Saturn is in Leo in the natal chart, the 6th from the Lagna in Pisces"
+      },
+      {
+        "factor_id": "dasha.house.pratyantar.d9:2",
+        "family_id": "F2_dasha_lord_natal_house",
+        "test_id": "dasha.house.pratyantar.d9",
+        "cell": 2,
+        "method": "dasha.vimshottari",
+        "methods": [
+          {
+            "id": "dasha.vimshottari",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "dasha.lord_state",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "varga.d9",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          }
+        ],
+        "citation_status": "unverified",
+        "level": "L0",
+        "tier": "core",
+        "fired": true,
+        "stable": false,
+        "stability": {
+          "detail": {
+            "founding_window": false,
+            "event_window": true,
+            "dasha_boundaries": false,
+            "dasha_reason": "running lords differ across the founding-time window; a boundary interval contains the event; a coarser level is unstable"
+          },
+          "alternatives": [
+            "1",
+            "10",
+            "11",
+            "12",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"
+          ],
+          "founding_values": [
+            {
+              "value": 9,
+              "share": 0.1275
+            },
+            {
+              "value": 8,
+              "share": 0.1604
+            },
+            {
+              "value": 7,
+              "share": 0.0551
+            },
+            {
+              "value": 6,
+              "share": 0.0307
+            },
+            {
+              "value": 5,
+              "share": 0.0779
+            },
+            {
+              "value": 4,
+              "share": 0.0776
+            },
+            {
+              "value": 3,
+              "share": 0.0776
+            },
+            {
+              "value": 2,
+              "share": 0.0777
+            },
+            {
+              "value": 1,
+              "share": 0.0781
+            },
+            {
+              "value": 12,
+              "share": 0.0784
+            },
+            {
+              "value": 11,
+              "share": 0.0792
+            },
+            {
+              "value": 10,
+              "share": 0.0798
+            }
+          ],
+          "event_values": [
+            {
+              "value": 2,
+              "share": 1.0
+            }
+          ]
+        },
+        "base_rate": {
+          "value": 0.307953,
+          "reason": null,
+          "dates": 2653,
+          "true_dates": 817,
+          "step_days": 7,
+          "start": "1976-01-01",
+          "end": "2026-10-29",
+          "time_utc": "12:00"
+        },
+        "evidence": "the running Vimshottari period is Moon-Saturn-Saturn; its pratyantardasha lord Saturn is in Scorpio in the natal D9, the 2nd from the Lagna in Libra"
+      },
+      {
+        "factor_id": "dasha.dignity.antar.d1:weak",
+        "family_id": "F3_dasha_lord_dignity",
+        "test_id": "dasha.dignity.antar.d1",
+        "cell": "weak",
+        "method": "dasha.vimshottari",
+        "methods": [
+          {
+            "id": "dasha.vimshottari",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "dasha.lord_state",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "varga.d1",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          }
+        ],
+        "citation_status": "unverified",
+        "level": "L0",
+        "tier": "core",
+        "fired": true,
+        "stable": false,
+        "stability": {
+          "detail": {
+            "founding_window": true,
+            "event_window": true,
+            "dasha_boundaries": false,
+            "dasha_reason": "running lords differ across the founding-time window; a boundary interval contains the event"
+          },
+          "alternatives": [],
+          "founding_values": [
+            {
+              "value": "weak",
+              "share": 1.0
+            }
+          ],
+          "event_values": [
+            {
+              "value": "weak",
+              "share": 1.0
+            }
+          ]
+        },
+        "base_rate": {
+          "value": 0.459857,
+          "reason": null,
+          "dates": 2653,
+          "true_dates": 1220,
+          "step_days": 7,
+          "start": "1976-01-01",
+          "end": "2026-10-29",
+          "time_utc": "12:00"
+        },
+        "evidence": "the running Vimshottari period is Moon-Saturn; its antardasha lord Saturn is in Leo in the natal chart: enemy"
+      },
+      {
+        "factor_id": "dasha.dignity.antar.d9:weak",
+        "family_id": "F3_dasha_lord_dignity",
+        "test_id": "dasha.dignity.antar.d9",
+        "cell": "weak",
+        "method": "dasha.vimshottari",
+        "methods": [
+          {
+            "id": "dasha.vimshottari",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "dasha.lord_state",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "varga.d9",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          }
+        ],
+        "citation_status": "unverified",
+        "level": "L0",
+        "tier": "core",
+        "fired": true,
+        "stable": false,
+        "stability": {
+          "detail": {
+            "founding_window": true,
+            "event_window": true,
+            "dasha_boundaries": false,
+            "dasha_reason": "running lords differ across the founding-time window; a boundary interval contains the event"
+          },
+          "alternatives": [],
+          "founding_values": [
+            {
+              "value": "weak",
+              "share": 1.0
+            }
+          ],
+          "event_values": [
+            {
+              "value": "weak",
+              "share": 1.0
+            }
+          ]
+        },
+        "base_rate": {
+          "value": 0.527704,
+          "reason": null,
+          "dates": 2653,
+          "true_dates": 1400,
+          "step_days": 7,
+          "start": "1976-01-01",
+          "end": "2026-10-29",
+          "time_utc": "12:00"
+        },
+        "evidence": "the running Vimshottari period is Moon-Saturn; its antardasha lord Saturn is in Scorpio in the natal D9: enemy"
+      },
+      {
+        "factor_id": "dasha.dignity.pratyantar.d1:weak",
+        "family_id": "F3_dasha_lord_dignity",
+        "test_id": "dasha.dignity.pratyantar.d1",
+        "cell": "weak",
+        "method": "dasha.vimshottari",
+        "methods": [
+          {
+            "id": "dasha.vimshottari",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "dasha.lord_state",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "varga.d1",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          }
+        ],
+        "citation_status": "unverified",
+        "level": "L0",
+        "tier": "core",
+        "fired": true,
+        "stable": false,
+        "stability": {
+          "detail": {
+            "founding_window": false,
+            "event_window": true,
+            "dasha_boundaries": false,
+            "dasha_reason": "running lords differ across the founding-time window; a boundary interval contains the event; a coarser level is unstable"
+          },
+          "alternatives": [
+            "neutral"
+          ],
+          "founding_values": [
+            {
+              "value": "neutral",
+              "share": 0.5142
+            },
+            {
+              "value": "weak",
+              "share": 0.4858
+            }
+          ],
+          "event_values": [
+            {
+              "value": "weak",
+              "share": 1.0
+            }
+          ]
+        },
+        "base_rate": {
+          "value": 0.462495,
+          "reason": null,
+          "dates": 2653,
+          "true_dates": 1227,
+          "step_days": 7,
+          "start": "1976-01-01",
+          "end": "2026-10-29",
+          "time_utc": "12:00"
+        },
+        "evidence": "the running Vimshottari period is Moon-Saturn-Saturn; its pratyantardasha lord Saturn is in Leo in the natal chart: enemy"
+      },
+      {
+        "factor_id": "dasha.dignity.pratyantar.d9:weak",
+        "family_id": "F3_dasha_lord_dignity",
+        "test_id": "dasha.dignity.pratyantar.d9",
+        "cell": "weak",
+        "method": "dasha.vimshottari",
+        "methods": [
+          {
+            "id": "dasha.vimshottari",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "dasha.lord_state",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "varga.d9",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          }
+        ],
+        "citation_status": "unverified",
+        "level": "L0",
+        "tier": "core",
+        "fired": true,
+        "stable": false,
+        "stability": {
+          "detail": {
+            "founding_window": false,
+            "event_window": true,
+            "dasha_boundaries": false,
+            "dasha_reason": "running lords differ across the founding-time window; a boundary interval contains the event; a coarser level is unstable"
+          },
+          "alternatives": [
+            "neutral"
+          ],
+          "founding_values": [
+            {
+              "value": "neutral",
+              "share": 0.5142
+            },
+            {
+              "value": "weak",
+              "share": 0.4858
+            }
+          ],
+          "event_values": [
+            {
+              "value": "weak",
+              "share": 1.0
+            }
+          ]
+        },
+        "base_rate": {
+          "value": 0.522051,
+          "reason": null,
+          "dates": 2653,
+          "true_dates": 1385,
+          "step_days": 7,
+          "start": "1976-01-01",
+          "end": "2026-10-29",
+          "time_utc": "12:00"
+        },
+        "evidence": "the running Vimshottari period is Moon-Saturn-Saturn; its pratyantardasha lord Saturn is in Scorpio in the natal D9: enemy"
+      },
+      {
+        "factor_id": "transit.mars.from_lagna.d1:10",
+        "family_id": "F4_transit_house_d1",
+        "test_id": "transit.mars.from_lagna.d1",
+        "cell": 10,
+        "method": "transit.from_lagna",
+        "methods": [
+          {
+            "id": "transit.from_lagna",
+            "tier": "core",
+            "tradition": "practitioner",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "varga.d1",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          }
+        ],
+        "citation_status": "unverified",
+        "level": "L0",
+        "tier": "core",
+        "fired": true,
+        "stable": false,
+        "stability": {
+          "detail": {
+            "founding_window": false,
+            "event_window": true
+          },
+          "alternatives": [
+            "11",
+            "9"
+          ],
+          "founding_values": [
+            {
+              "value": 11,
+              "share": 0.2035
+            },
+            {
+              "value": 10,
+              "share": 0.7069
+            },
+            {
+              "value": 9,
+              "share": 0.0896
+            }
+          ],
+          "event_values": [
+            {
+              "value": 10,
+              "share": 1.0
+            }
+          ]
+        },
+        "base_rate": {
+          "value": 0.071617,
+          "reason": null,
+          "dates": 2653,
+          "true_dates": 190,
+          "step_days": 7,
+          "start": "1976-01-01",
+          "end": "2026-10-29",
+          "time_utc": "12:00"
+        },
+        "evidence": "transiting Mars is in Sagittarius 4.7 deg, the 10th from the natal Lagna in Pisces"
+      },
+      {
+        "factor_id": "transit.jupiter.from_lagna.d1:7",
+        "family_id": "F4_transit_house_d1",
+        "test_id": "transit.jupiter.from_lagna.d1",
+        "cell": 7,
+        "method": "transit.from_lagna",
+        "methods": [
+          {
+            "id": "transit.from_lagna",
+            "tier": "core",
+            "tradition": "practitioner",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "varga.d1",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          }
+        ],
+        "citation_status": "unverified",
+        "level": "L0",
+        "tier": "core",
+        "fired": true,
+        "stable": false,
+        "stability": {
+          "detail": {
+            "founding_window": false,
+            "event_window": true
+          },
+          "alternatives": [
+            "6",
+            "8"
+          ],
+          "founding_values": [
+            {
+              "value": 8,
+              "share": 0.2035
+            },
+            {
+              "value": 7,
+              "share": 0.7069
+            },
+            {
+              "value": 6,
+              "share": 0.0896
+            }
+          ],
+          "event_values": [
+            {
+              "value": 7,
+              "share": 1.0
+            }
+          ]
+        },
+        "base_rate": {
+          "value": 0.084433,
+          "reason": null,
+          "dates": 2653,
+          "true_dates": 224,
+          "step_days": 7,
+          "start": "1976-01-01",
+          "end": "2026-10-29",
+          "time_utc": "12:00"
+        },
+        "evidence": "transiting Jupiter is in Virgo 10.7 deg, the 7th from the natal Lagna in Pisces"
+      },
+      {
+        "factor_id": "transit.saturn.from_lagna.d1:7",
+        "family_id": "F4_transit_house_d1",
+        "test_id": "transit.saturn.from_lagna.d1",
+        "cell": 7,
+        "method": "transit.from_lagna",
+        "methods": [
+          {
+            "id": "transit.from_lagna",
+            "tier": "core",
+            "tradition": "practitioner",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "varga.d1",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          }
+        ],
+        "citation_status": "unverified",
+        "level": "L0",
+        "tier": "core",
+        "fired": true,
+        "stable": false,
+        "stability": {
+          "detail": {
+            "founding_window": false,
+            "event_window": true
+          },
+          "alternatives": [
+            "6",
+            "8"
+          ],
+          "founding_values": [
+            {
+              "value": 8,
+              "share": 0.2035
+            },
+            {
+              "value": 7,
+              "share": 0.7069
+            },
+            {
+              "value": 6,
+              "share": 0.0896
+            }
+          ],
+          "event_values": [
+            {
+              "value": 7,
+              "share": 1.0
+            }
+          ]
+        },
+        "base_rate": {
+          "value": 0.097625,
+          "reason": null,
+          "dates": 2653,
+          "true_dates": 259,
+          "step_days": 7,
+          "start": "1976-01-01",
+          "end": "2026-10-29",
+          "time_utc": "12:00"
+        },
+        "evidence": "transiting Saturn is in Virgo 13.2 deg, the 7th from the natal Lagna in Pisces"
+      },
+      {
+        "factor_id": "transit.rahu.from_lagna.d1:5",
+        "family_id": "F4_transit_house_d1",
+        "test_id": "transit.rahu.from_lagna.d1",
+        "cell": 5,
+        "method": "transit.from_lagna",
+        "methods": [
+          {
+            "id": "transit.from_lagna",
+            "tier": "core",
+            "tradition": "practitioner",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "varga.d1",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          }
+        ],
+        "citation_status": "unverified",
+        "level": "L0",
+        "tier": "core",
+        "fired": true,
+        "stable": false,
+        "stability": {
+          "detail": {
+            "founding_window": false,
+            "event_window": true
+          },
+          "alternatives": [
+            "4",
+            "6"
+          ],
+          "founding_values": [
+            {
+              "value": 6,
+              "share": 0.2035
+            },
+            {
+              "value": 5,
+              "share": 0.7069
+            },
+            {
+              "value": 4,
+              "share": 0.0896
+            }
+          ],
+          "event_values": [
+            {
+              "value": 5,
+              "share": 1.0
+            }
+          ]
+        },
+        "base_rate": {
+          "value": 0.090841,
+          "reason": null,
+          "dates": 2653,
+          "true_dates": 241,
+          "step_days": 7,
+          "start": "1976-01-01",
+          "end": "2026-10-29",
+          "time_utc": "12:00"
+        },
+        "evidence": "transiting Rahu is in Cancer 21.2 deg, the 5th from the natal Lagna in Pisces"
+      },
+      {
+        "factor_id": "transit.mars.from_moon.d1:9",
+        "family_id": "F4_transit_house_d1",
+        "test_id": "transit.mars.from_moon.d1",
+        "cell": 9,
+        "method": "transit.gochara_moon",
+        "methods": [
+          {
+            "id": "transit.gochara_moon",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "varga.d1",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          }
+        ],
+        "citation_status": "unverified",
+        "level": "L0",
+        "tier": "core",
+        "fired": true,
+        "stable": true,
+        "stability": {
+          "detail": {
+            "founding_window": true,
+            "event_window": true
+          },
+          "alternatives": [],
+          "founding_values": [
+            {
+              "value": 9,
+              "share": 1.0
+            }
+          ],
+          "event_values": [
+            {
+              "value": 9,
+              "share": 1.0
+            }
+          ]
+        },
+        "base_rate": {
+          "value": 0.071617,
+          "reason": null,
+          "dates": 2653,
+          "true_dates": 190,
+          "step_days": 7,
+          "start": "1976-01-01",
+          "end": "2026-10-29",
+          "time_utc": "12:00"
+        },
+        "evidence": "transiting Mars is in Sagittarius 4.7 deg, the 9th from the natal Moon in Aries"
+      },
+      {
+        "factor_id": "transit.jupiter.from_moon.d1:6",
+        "family_id": "F4_transit_house_d1",
+        "test_id": "transit.jupiter.from_moon.d1",
+        "cell": 6,
+        "method": "transit.gochara_moon",
+        "methods": [
+          {
+            "id": "transit.gochara_moon",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "varga.d1",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          }
+        ],
+        "citation_status": "unverified",
+        "level": "L0",
+        "tier": "core",
+        "fired": true,
+        "stable": true,
+        "stability": {
+          "detail": {
+            "founding_window": true,
+            "event_window": true
+          },
+          "alternatives": [],
+          "founding_values": [
+            {
+              "value": 6,
+              "share": 1.0
+            }
+          ],
+          "event_values": [
+            {
+              "value": 6,
+              "share": 1.0
+            }
+          ]
+        },
+        "base_rate": {
+          "value": 0.084433,
+          "reason": null,
+          "dates": 2653,
+          "true_dates": 224,
+          "step_days": 7,
+          "start": "1976-01-01",
+          "end": "2026-10-29",
+          "time_utc": "12:00"
+        },
+        "evidence": "transiting Jupiter is in Virgo 10.7 deg, the 6th from the natal Moon in Aries"
+      },
+      {
+        "factor_id": "transit.saturn.from_moon.d1:6",
+        "family_id": "F4_transit_house_d1",
+        "test_id": "transit.saturn.from_moon.d1",
+        "cell": 6,
+        "method": "transit.gochara_moon",
+        "methods": [
+          {
+            "id": "transit.gochara_moon",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "varga.d1",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          }
+        ],
+        "citation_status": "unverified",
+        "level": "L0",
+        "tier": "core",
+        "fired": true,
+        "stable": true,
+        "stability": {
+          "detail": {
+            "founding_window": true,
+            "event_window": true
+          },
+          "alternatives": [],
+          "founding_values": [
+            {
+              "value": 6,
+              "share": 1.0
+            }
+          ],
+          "event_values": [
+            {
+              "value": 6,
+              "share": 1.0
+            }
+          ]
+        },
+        "base_rate": {
+          "value": 0.097625,
+          "reason": null,
+          "dates": 2653,
+          "true_dates": 259,
+          "step_days": 7,
+          "start": "1976-01-01",
+          "end": "2026-10-29",
+          "time_utc": "12:00"
+        },
+        "evidence": "transiting Saturn is in Virgo 13.2 deg, the 6th from the natal Moon in Aries"
+      },
+      {
+        "factor_id": "transit.rahu.from_moon.d1:4",
+        "family_id": "F4_transit_house_d1",
+        "test_id": "transit.rahu.from_moon.d1",
+        "cell": 4,
+        "method": "transit.gochara_moon",
+        "methods": [
+          {
+            "id": "transit.gochara_moon",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          },
+          {
+            "id": "varga.d1",
+            "tier": "core",
+            "tradition": "jataka_applied",
+            "citation_status": "unverified",
+            "level": "L0"
+          }
+        ],
+        "citation_status": "unverified",
+        "level": "L0",
+        "tier": "core",
+        "fired": true,
+        "stable": true,
+        "stability": {
+          "detail": {
+            "founding_window": true,
+            "event_window": true
+          },
+          "alternatives": [],
+          "founding_values": [
+            {
+              "value": 4,
+              "share": 1.0
+            }
+          ],
+          "event_values": [
+            {
+              "value": 4,
+              "share": 1.0
+            }
+          ]
+        },
+        "base_rate": {
+          "value": 0.090841,
+          "reason": null,
+          "dates": 2653,
+          "true_dates": 241,
+          "step_days": 7,
+          "start": "1976-01-01",
+          "end": "2026-10-29",
+          "time_utc": "12:00"
+        },
+        "evidence": "transiting Rahu is in Cancer 21.2 deg, the 4th from the natal Moon in Aries"
+      }
+    ],
+    "not_evaluated": []
+  },
+  "claims": {
+    "computable": false,
+    "reason": "claims registry not built (ADR-005); no row can name this event",
+    "rows": []
+  },
+  "provenance": {
+    "charts_sha256": "267f1ef432a277901565365683104ada5a70b4b8be42aefd53b39cbd44ade789",
+    "events_sha256": "6d06a4cd9cc0c7aeb13174f47a03042edfdb8d60a45e79140364df333c069ba9",
+    "catalogue_sha256": "5205f8bbe8f8475647f6aec1c750292a1446a6986f052a94ba6d39a11f40c2cf",
+    "plan_sha256": "93c84847520fc6412f01a7e56718d5534a6ef94930c068124f29c1213eb276bf",
+    "ayanamsa": "lahiri",
+    "node": "mean",
+    "houses": "whole_sign",
+    "dasha_year": "julian",
+    "commit": "10cee80a34cc6b71f92e3654b1a8be17486c5915"
+  },
+  "sections": [
+    {
+      "number": 1,
+      "key": "header",
+      "title": "Header",
+      "computable": true,
+      "reason": null
+    },
+    {
+      "number": 2,
+      "key": "natal",
+      "title": "Founding chart",
+      "computable": true,
+      "reason": null
+    },
+    {
+      "number": 3,
+      "key": "dasha",
+      "title": "Dasha at the event",
+      "computable": true,
+      "reason": null
+    },
+    {
+      "number": 4,
+      "key": "transits",
+      "title": "Transits at the event",
+      "computable": true,
+      "reason": null
+    },
+    {
+      "number": 5,
+      "key": "event_sky",
+      "title": "Event-time sky chart",
+      "computable": true,
+      "reason": null
+    },
+    {
+      "number": 6,
+      "key": "annual",
+      "title": "Annual context",
+      "computable": false,
+      "reason": "Phase 2 (ADR-006 WP-59): the Mesha sankranti chart of the capital is not built"
+    },
+    {
+      "number": 7,
+      "key": "factors",
+      "title": "Factors that fire",
+      "computable": true,
+      "reason": null
+    },
+    {
+      "number": 8,
+      "key": "claims",
+      "title": "Practitioner explanations",
+      "computable": false,
+      "reason": "claims registry not built (ADR-005); no row can name this event"
+    },
+    {
+      "number": 9,
+      "key": "provenance",
+      "title": "Provenance",
+      "computable": true,
+      "reason": null
+    }
+  ]
+}

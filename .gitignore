@@ -64,6 +64,13 @@ studies/*/artifacts/*
 !studies/earthquake/artifacts/family_explore.csv
 !studies/earthquake/artifacts/rate_tests_all.csv
 !studies/earthquake/artifacts/raw_descriptive.csv
+# Mundane engine (ADR-006): committed for transparency.
+!studies/mundane/artifacts/burden.json
+!studies/mundane/artifacts/factor_table.csv
+!studies/mundane/artifacts/controls_*
+!studies/mundane/artifacts/summary.json
+!studies/mundane/artifacts/cases/
+!studies/mundane/artifacts/secondary/
 docs/_build/
 
 /.quarto/
