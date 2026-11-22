@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.bhadrabahu_samhita_graha_yuddha_metals
+name: Bhadrabahu Samhita: Planetary war involving Mars creates acute metal scarcity and price spike
+domain: financial
+claim: When Mars enters planetary war (Graha Yuddha within 1° longitude) with another tara-graha in fiery or airy constellations, metal prices (including gold) surge sharply.
+source:
+  text: Bhadrabahu Samhita
+  edition: Edited with Hindi commentary by Dr. Nemichandra Shastri (Bharatiya Jnanpith, 1959)
+  chapter: '12'
+  verse: 45-48
+  url: https://archive.org/details/1050-jyotish-books-with-siderial-zodiac
+  published: '1050-01-01'
+author: Acharya Bhadrabahu (operationalised by astro-research 2026-11-22)
+tier: classical
+verification:
+  verified: false
+  evidence_url: "NOT FOUND"
+  edition: "Bhadrabahu Samhita, ed. Nemichandra Shastri (Bharatiya Jnanpith, 1959)"
+  page: "Unverified (cited ch. 12, v. 45-48)"
+  notes: "Unverified: cited URL is a generic 1050-book collection on archive.org without page scan or direct link to verse text."
+params:
+  orb: {value: 1.0, min: 0.2, max: 1.5, step: 0.1, unit: deg}
+conditions:
+  combatant_1: Mars
+  combatant_2: [Mercury, Venus, Jupiter, Saturn]
+  separation_deg_lte: 1.0
+  zodiac: sidereal_lahiri
+chart: transit
+window:
+  unit: days
+  before: 3
+  after: 21
+expected_effect:
+  series: gold_usd
+  direction: up
+  size: volatility_spike
+reference_cases:
+  - moment: '2022-04-05T00:00:00Z'
+    expect: fires
+    note: Mars conjunct Saturn in Capricorn/Aquarius border within 0°30'; gold spiked toward $1980 amid wartime supply shock before consolidating.
+    url: https://astrologicalmusings.com/what-does-astrology-say-about-the-rapid-increase-in-the-prices-of-gold-and-silver/
+  - moment: '2023-01-15T00:00:00Z'
+    expect: silent
+    note: Mars in Taurus separated from other planets by more than 15°.
+    url: https://rajeevprakash.com/blog/
+ex_ante: true
+computable: true
+notes:
+  sanskrit_text: "भौमस्य युद्धेऽन्यग्रहेण सार्धं सर्वधातूनां महर्घता जायते ॥ (Bhadrabahu Samhita, Arghakanda)"
+  literal_translation: "In the war of Mars with another planet, scarcity and extreme dearness (maharghe) occurs in all metals."

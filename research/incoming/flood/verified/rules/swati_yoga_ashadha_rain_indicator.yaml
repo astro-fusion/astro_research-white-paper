@@ -1,0 +1,55 @@
+id: mundane.classical.swati_yoga_ashadha_rain_indicator
+name: "Swati Yoga: Rain Occurrence on Moon-Swati Conjunction in Ashadha"
+domain: mundane
+claim: >-
+  During the month of Ashadha, if rain falls when the Moon conjoins the asterism Swati,
+  abundant rain will fall during the entire monsoon season; if there is heavy wind without rain,
+  scarcity and poor agricultural yield follow.
+source:
+  text: Brihat Samhita
+  edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, Part 1, 1981, ISBN: 978-81-208-1060-0)"
+  chapter: "25"
+  verse: "1-7"
+  page: "pp. 255-257"
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc228926.html
+  published: "c. 550 CE"
+tier: classical
+params:
+  observation_nakshatra: Swati
+  month: Ashadha
+conditions:
+  all:
+    - month_paksha:
+        months:
+          - Ashadha
+    - in_nakshatra:
+        planet: Moon
+        nakshatras:
+          - Swati
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "Duration of Moon transit through Swati in Ashadha"
+window:
+  unit: months
+  before: 0
+  after: 3
+lag: 0 days
+region: Local station raingauge
+expected_effect:
+  series: rainfall
+  direction: increase
+reference_cases:
+  - moment: "2022-07-08T08:00:00Z"
+    expect: fires
+    note: "Moon in Swati in Ashadha. Rain recorded on station gauge forecasts abundant seasonal total."
+    verified_with: Swiss Ephemeris & IMD station rain gauge
+ex_ante: true
+computable_from_ephemeris: no
+computable_explanation: >-
+  NON-COMPUTABLE FROM EPHEMERIS ALONE: Moon in Swati timing is computable from ephemeris, but the
+  critical test condition is whether physical precipitation occurred on the rain gauge during that specific transit.
+verified: yes
+edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, Part 1, 1981)"
+page: "pp. 255-257"
+evidence_url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc228926.html

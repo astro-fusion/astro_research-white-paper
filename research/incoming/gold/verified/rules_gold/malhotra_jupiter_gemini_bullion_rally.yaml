@@ -1,0 +1,52 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.malhotra_jupiter_gemini_bullion_rally
+name: Sachin Malhotra: Jupiter in inimical Gemini drives safe-haven bullion rally
+domain: financial
+claim: When Jupiter transits sidereal Gemini (an enemy sign ruled by Mercury), stock market sluggishness and economic distrust push investors into physical bullion, driving gold up.
+source:
+  text: Astrological Musings
+  edition: Sachin Malhotra (K.N. Rao School of Vedic Astrology)
+  chapter: Gold and Silver Market Forecasts
+  verse: Article: What does astrology say about the rapid increase in prices of gold and silver
+  url: https://astrologicalmusings.com/what-does-astrology-say-about-the-rapid-increase-in-the-prices-of-gold-and-silver/
+  published: '2024-04-18'
+author: Sachin Malhotra (operationalised by astro-research 2026-11-22)
+tier: practitioner
+verification:
+  verified: false
+  evidence_url: "https://astrologicalmusings.com/what-does-astrology-say-about-the-rapid-increase-in-the-prices-of-gold-and-silver/"
+  edition: "Astrological Musings online publication (Sachin Malhotra, May 2024)"
+  page: "Article: What does astrology say about the rapid increase in prices of gold and silver"
+  notes: "Unverified / Disproven: live article text states prices will decrease after June 1 due to exalted Jupiter in Cancer, contradicting the rally claim."
+params:
+  orb: {value: 30, min: 10, max: 30, step: 1, unit: deg}
+conditions:
+  planet: Jupiter
+  sign: Gemini
+  zodiac: sidereal_lahiri
+chart: transit
+window:
+  unit: days
+  before: 0
+  after: 180
+expected_effect:
+  series: gold_usd
+  direction: up
+  size: strong_bull_trend
+reference_cases:
+  - moment: '2013-05-30T00:00:00Z'
+    expect: fires
+    note: Jupiter entered sidereal Gemini in late May 2013; gold formed an intermediate rebound low at $1180 in June 2013 and consolidated before next move.
+    url: https://astrologicalmusings.com/forecasting-commodities-prices-and-financial-markets-in-mundane-astrology/
+  - moment: '2026-01-15T00:00:00Z'
+    expect: fires
+    note: Jupiter retrograde re-entering sidereal Gemini in December 2025/early 2026; bullion markets forecast to remain elevated under monetary friction.
+    url: https://astrologicalmusings.com/what-does-astrology-say-about-the-rapid-increase-in-the-prices-of-gold-and-silver/
+  - moment: '2022-07-01T00:00:00Z'
+    expect: silent
+    note: Jupiter in Pisces (own sign), not Gemini.
+    url: https://astrologicalmusings.com/
+ex_ante: true
+computable: true
+notes:
+  practitioner_quote: "When wealth-significator Jupiter transits through enemy signs like Gemini, equity returns falter and traditional safe-haven demand pushes gold and silver sharply higher."

@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.brihat_samhita_sun_malefic_argha_fall
+name: Brihat Samhita: Sun aspected by malefics lowers commodity prices
+domain: financial
+claim: When the Sun is accompanied by or within view of malefic planets, the general price of commodities falls (argha-mandata).
+source:
+  text: Brihat Samhita
+  edition: Translation by N. Chidambaram Iyer (1884), Chapter 42
+  chapter: '42'
+  verse: '14'
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/word136153.html
+  published: '0550-01-01'
+author: Varahamihira (operationalised by astro-research 2026-11-22)
+tier: classical
+params:
+  orb: {value: 8, min: 3, max: 12, step: 1, unit: deg}
+conditions:
+  target_planet: Sun
+  afflicting_planets: [Saturn, Mars, Rahu, Ketu]
+  aspect_type: conjunction_opposition_or_special_drishti
+  zodiac: sidereal_lahiri
+chart: transit
+window:
+  unit: days
+  before: 1
+  after: 7
+expected_effect:
+  series: gold_usd
+  direction: down
+  size: moderate_fall
+reference_cases:
+  - moment: '2022-08-14T17:10:00Z'
+    expect: fires
+    note: Sun in Cancer 27° in exact 180° opposition with Saturn retrograde in Capricorn 27°; gold suffered sharp multi-week decline from $1800 to $1620 over August-September 2022.
+    url: https://rajeevprakash.com/blog/
+  - moment: '2020-07-15T00:00:00Z'
+    expect: silent
+    note: Sun in Gemini 29° moving into Cancer, unafflicted by close malefic opposition.
+    url: https://astrologicalmusings.com/
+ex_ante: true
+computable: true
+notes:
+  sanskrit_text: "क्रूरैर्दिवाकरे वा दृष्टे संसर्गिते वाऽर्घहानिः स्यात् ॥ (Ch. 42, v. 14)"
+  literal_translation: "If the Sun should be either accompanied by or within view of malefic planets, the price will fall."

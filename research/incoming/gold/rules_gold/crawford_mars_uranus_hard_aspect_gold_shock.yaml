@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.crawford_mars_uranus_hard_aspect_gold_shock
+name: Arch Crawford: Mars-Uranus hard aspects trigger safe-haven gold shocks
+domain: financial
+claim: Hard geometric aspects (0°, 90°, 180°) between Mars and Uranus within a 4° orb coincide with sudden geopolitical or financial shocks that drive sharp upside volatility in gold.
+source:
+  text: Crawford Perspectives
+  edition: Arch Crawford (Interview with Timer Digest, 2006/2011)
+  chapter: Newsletter archives
+  verse: Gold timing rules
+  url: https://www.forbes.com/2006/03/24/astrology-crawford-investing-cx_pm_0324crawford.html
+  published: '2006-03-24'
+author: Arch Crawford (operationalised by astro-research 2026-11-22)
+tier: practitioner
+params:
+  orb: {value: 4.0, min: 1.5, max: 5.0, step: 0.5, unit: deg}
+conditions:
+  planet_1: Mars
+  planet_2: Uranus
+  aspects: [0, 90, 180]
+  orb: $orb
+  zodiac: tropical
+chart: transit
+window:
+  unit: days
+  before: 3
+  after: 5
+expected_effect:
+  series: gold_usd
+  direction: volatility
+  size: sharp_spike
+reference_cases:
+  - moment: '2024-07-15T14:00:00Z'
+    expect: fires
+    note: Mars conjunct Uranus in Taurus 26°10' (tropical); gold spiked to fresh record highs above $2450 within 48 hours.
+    url: https://www.mmacycles.com/free-weekly-forecast/
+  - moment: '2023-10-15T00:00:00Z'
+    expect: silent
+    note: Mars in Scorpio 2°, Uranus in Taurus 22° (aspect separation 20°, outside 4° orb).
+    url: https://www.forbes.com/
+ex_ante: true
+computable: true
+notes:
+  practitioner_quote: "Mars-Uranus hard aspects are the most explosive configurations in the heavens. They trigger accidents, violent geopolitical events, and sudden sharp turns in precious metals."

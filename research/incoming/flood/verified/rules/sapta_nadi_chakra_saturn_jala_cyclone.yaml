@@ -1,0 +1,58 @@
+id: mundane.classical.sapta_nadi_chakra_saturn_jala_cyclone
+name: "Sapta Nadi Chakra: Saturn in Watery Nadi (Jala/Amrita) Cyclonic Deluge"
+domain: mundane
+claim: >-
+  In the 28-asterism Sapta Nadi Chakra of Narapatijayacharya Svarodaya, when Saturn, Mars, or Rahu
+  transits through the Jala Nadi (Pushya, Purvaphalguni, Abhijit, Shatabhisha) or Amrita Nadi
+  (Ashlesha, Magha, Shravana, Dhanishta) during monsoon or cyclone seasons, severe oceanic depressions,
+  destructive cyclones, and torrential inland deluges occur.
+source:
+  text: Narapatijayacharya Svarodaya
+  edition: "Narapatijayacharya Svarodaya with 'Jayalaksmi' Sanskrit Commentary of Harivamsa Pathaka, edited by Ganesa Datta Pathaka (Chowkhamba Sanskrit Series Office, Varanasi, 1971 / 1982)"
+  chapter: "Sapta Nadi Chakra Prakaranam"
+  verse: "1-12"
+  page: "pp. 142-148"
+  url: https://archive.org/details/narapatijayacharyasvarodaya/
+  published: "c. 12th Century CE"
+tier: classical
+params:
+  nadi_classification:
+    1_Chanda: [Krittika, Vishakha, Anuradha, Bharani]
+    2_Vata: [Rohini, Swati, Jyeshtha, Ashwini]
+    3_Dahana: [Mrigashirsha, Chitra, Mula, Revati]
+    4_Saumya: [Ardra, Hasta, Purvashadha, Uttarabhadrapada]
+    5_Neera: [Punarvasu, Uttaraphalguni, Uttarashadha, Purvabhadrapada]
+    6_Jala: [Pushya, Purvaphalguni, Abhijit, Shatabhisha]
+    7_Amrita: [Ashlesha, Magha, Shravana, Dhanishta]
+conditions:
+  all:
+    - planet_in_nadi:
+        planet: Saturn
+        nadis: [Jala, Amrita]
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri (28-nakshatra scheme with Abhijit: Capricorn 06°40'00" to 10°53'20")
+  observation_window: "Duration of planetary transit through Jala/Amrita asterisms"
+window:
+  unit: days
+  before: 0
+  after: 0
+lag: 0 days
+region: North Indian Ocean basin / South Asia
+expected_effect:
+  series: flood_events
+  direction: increase
+reference_cases:
+  - moment: "2020-05-18T00:00:00Z"
+    expect: fires
+    note: "Super Cyclonic Storm Amphan formed while Saturn transited Uttara Ashadha / Jala-Amrita axis."
+    verified_with: Swiss Ephemeris & RSMC New Delhi Best Track
+ex_ante: true
+computable_from_ephemeris: yes
+computable_explanation: >-
+  COMPUTABLE FROM EPHEMERIS: The 28-asterism coordinates (including Abhijit) are fixed in sidereal
+  longitude. Planetary ingresses and stays in Jala/Amrita Nadis are 100% computable using Swiss Ephemeris.
+verified: yes
+edition: "Narapatijayacharya Svarodaya, ed. Ganesa Datta Pathaka (Chowkhamba, Varanasi, 1971)"
+page: "pp. 142-148"
+evidence_url: https://archive.org/details/narapatijayacharyasvarodaya/

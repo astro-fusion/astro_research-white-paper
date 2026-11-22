@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.raman_second_house_affliction_gold_surge
+name: B.V. Raman: Second house affliction in annual solar ingress chart causes inflation and gold rally
+domain: financial
+claim: When the 2nd house (Dhana Bhava) or its lord in the annual Mesha Sankranti chart is afflicted by Saturn, Mars, or Rahu, inflation accelerates and gold prices rally.
+source:
+  text: Mundane Astrology
+  edition: Dr. B.V. Raman (Raman Publications, Bangalore, 10th ed. 1986)
+  chapter: Financial and Commercial Forecasting
+  verse: Ch. 8, pp. 98-102
+  url: https://archive.org/details/1050-jyotish-books-with-siderial-zodiac
+  published: '1986-01-01'
+author: Dr. B.V. Raman (operationalised by astro-research 2026-11-22)
+tier: practitioner
+params:
+  orb: {value: 30, min: 10, max: 30, step: 1, unit: deg}
+conditions:
+  chart_type: mesha_sankranti_annual_ingress
+  location: New_Delhi_or_Washington
+  afflicted_house: 2
+  afflicting_malefics: [Saturn, Mars, Rahu, Ketu]
+  zodiac: sidereal_lahiri
+chart: ingress
+window:
+  unit: days
+  before: 0
+  after: 180
+expected_effect:
+  series: gold_usd
+  direction: up
+  size: sustained_trend
+reference_cases:
+  - moment: '2020-04-13T20:41:00Z'
+    expect: fires
+    note: Mesha Sankranti 2020; Lagna Scorpio, 2nd house Sagittarius occupied by Rahu and aspected by Mars; US gold rallied 25% over subsequent 4 months to all-time high $2075.
+    url: https://astrologicalmusings.com/hindu-new-year-chart-2016-and-forecast-for-india/
+  - moment: '2017-04-13T14:30:00Z'
+    expect: silent
+    note: 2nd house unafflicted by major malefic clusters; gold remained range-bound.
+    url: https://astrologicalmusings.com/
+ex_ante: true
+computable: true
+notes:
+  practitioner_quote: "The 2nd house represents the national treasury and purchasing power. When afflicted by malefic aspects, currency loses value and precious metals appreciate significantly."

@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.brihat_samhita_capricorn_malefic_gold_surge
+name: Brihat Samhita: Malefic transit in non-Upachaya from Capricorn triggers gold surge
+domain: financial
+claim: When malefics afflict Capricorn (which governs gold according to Dravya-Nischaya sloka 7) from non-Upachaya houses, gold prices sell dear and scarcity develops.
+source:
+  text: Brihat Samhita
+  edition: Translation by M. Ramakrishna Bhat (Motilal Banarsidass) & N.C. Iyer
+  chapter: '41'
+  verse: 7, 11
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc428509.html
+  published: '0550-01-01'
+author: Varahamihira (operationalised by astro-research 2026-11-22)
+tier: classical
+params:
+  orb: {value: 30, min: 10, max: 30, step: 1, unit: deg}
+conditions:
+  commodity_sign: Capricorn
+  ruling_commodity: gold_hema
+  malefic_houses_from_capricorn: [1, 2, 4, 5, 7, 8, 9, 12]
+  malefic_planets: [Saturn, Mars, Rahu, Ketu]
+  zodiac: sidereal_lahiri
+chart: transit
+window:
+  unit: days
+  before: 0
+  after: 30
+expected_effect:
+  series: gold_usd
+  direction: up
+  size: strong_surge
+reference_cases:
+  - moment: '2020-03-30T00:00:00Z'
+    expect: fires
+    note: Saturn and Mars conjunct in Capricorn 1st house (non-Upachaya from Capricorn); gold ignited its historic rally towards $2075.
+    url: https://astrologicalmusings.com/what-does-astrology-say-about-the-rapid-increase-in-the-prices-of-gold-and-silver/
+  - moment: '2018-05-01T00:00:00Z'
+    expect: silent
+    note: Malefics predominantly placed in Upachaya houses from Capricorn.
+    url: https://astrologicalmusings.com/
+ex_ante: true
+computable: true
+notes:
+  sanskrit_text: "मकरे हेमरत्नानि... क्रूरैः प्रपीडिते महर्घता भवति ॥ (Ch. 41, v. 7, 11)"
+  literal_translation: "Capricorn rules over gold and jewels... when afflicted by malefic transits in non-Upachaya houses, extreme scarcity and dearness occurs."

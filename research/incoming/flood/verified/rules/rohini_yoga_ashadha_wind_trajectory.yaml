@@ -1,0 +1,59 @@
+id: mundane.classical.rohini_yoga_ashadha_wind_trajectory
+name: "Rohini Yoga: Moon-Rohini Conjunction Wind Vectors in Ashadha"
+domain: mundane
+claim: >-
+  When the Moon conjoins the Rohini asterism in the dark half of Ashadha (Ashadha Krishna Rohini),
+  the wind direction observed across the four watches of the day forecasts seasonal rainfall:
+  winds from the East and Northeast bring abundant rainfall and prosperity, while South and
+  Southwest winds bring acute drought and famine.
+source:
+  text: Brihat Samhita
+  edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, Part 1, 1981, ISBN: 978-81-208-1060-0)"
+  chapter: "24"
+  verse: "1-15"
+  page: "pp. 238-245"
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc228925.html
+  published: "c. 550 CE"
+tier: classical
+params:
+  observation_nakshatra: Rohini
+  lunar_phase: Krishna Paksha
+  month: Ashadha
+conditions:
+  all:
+    - month_paksha:
+        months:
+          - Ashadha
+        paksha: krishna
+    - in_nakshatra:
+        planet: Moon
+        nakshatras:
+          - Rohini
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "24 hours of Moon-Rohini transit during Ashadha Krishna Paksha"
+window:
+  unit: months
+  before: 0
+  after: 3
+lag: 0 days
+region: Local observer meteorological station
+expected_effect:
+  series: rainfall
+  direction: increase
+reference_cases:
+  - moment: "2021-07-04T12:00:00Z"
+    expect: fires
+    note: "Moon in Rohini in Ashadha Krishna Paksha. Easterly wind logged brings plentiful rain."
+    verified_with: Swiss Ephemeris & Local station log
+ex_ante: true
+computable_from_ephemeris: no
+computable_explanation: >-
+  NON-COMPUTABLE FROM EPHEMERIS ALONE: The Moon-Rohini transit window in Ashadha Krishna Paksha is
+  100% computable from Swiss Ephemeris. However, the rule explicitly requires real-time anemometer
+  or wind-vane observations of 8 cardinal wind directions across the four watches (yamas) of the 24-hour period.
+verified: yes
+edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, Part 1, 1981)"
+page: "pp. 238-245"
+evidence_url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc228925.html

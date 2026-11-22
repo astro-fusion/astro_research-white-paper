@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.meghamala_rohini_malefic_gold_scarcity
+name: Meghamala: Malefic transit through Rohini Nakshatra causes bullion inflation
+domain: financial
+claim: Transits of major malefics (Saturn, Mars, Rahu) through Rohini Nakshatra (the cosmic cart) produce agrarian crisis, monetary debasement, and violent surges in gold prices.
+source:
+  text: Rudra Yamala / Meghamala
+  edition: Classical Samhita compilation, cited in Teji-Mandi Jyotisha (Varanasi editions)
+  chapter: '7'
+  verse: 12-14
+  url: https://archive.org/details/1050-jyotish-books-with-siderial-zodiac
+  published: '1200-01-01'
+author: Traditional Samhita (operationalised by astro-research 2026-11-22)
+tier: classical
+verification:
+  verified: false
+  evidence_url: "NOT FOUND"
+  edition: "Rudra Yamala / Meghamala (Venkateshwar Press / Khemraj Shrikrishnadass)"
+  page: "Unverified (cited ch. 7, v. 12-14)"
+  notes: "Unverified: cited URL is a generic archive.org collection; missing authenticated critical edition scan."
+params:
+  orb: {value: 13.33, min: 5, max: 13.33, step: 0.1, unit: deg}
+conditions:
+  planet: [Saturn, Mars, Rahu]
+  nakshatra: Rohini
+  degrees_sidereal: '40.0 to 53.33 Taurus'
+  zodiac: sidereal_lahiri
+chart: transit
+window:
+  unit: days
+  before: 0
+  after: 45
+expected_effect:
+  series: gold_usd
+  direction: up
+  size: major_surge
+reference_cases:
+  - moment: '2021-02-15T00:00:00Z'
+    expect: fires
+    note: Rahu transiting through Rohini Nakshatra in Taurus; silver and gold saw speculative rushes and elevated retail premiums globally.
+    url: https://astrologicalmusings.com/what-does-astrology-say-about-the-rapid-increase-in-the-prices-of-gold-and-silver/
+  - moment: '2023-08-01T00:00:00Z'
+    expect: silent
+    note: Rahu in Aries (Ashwini), not Rohini.
+    url: https://rajeevprakash.com/blog/
+ex_ante: true
+computable: true
+notes:
+  sanskrit_text: "रोहिणीशकटभेदे च मलिने क्रूरसंयुते । सुवर्णरजतादीनां महर्घत्वं प्रजायते ॥"
+  literal_translation: "When Rohini is afflicted or occupied by malefic planets, extreme dearness occurs in gold, silver, and precious commodities."

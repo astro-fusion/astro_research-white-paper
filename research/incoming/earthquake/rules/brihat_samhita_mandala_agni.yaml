@@ -1,0 +1,46 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: seismic.brihat_samhita_mandala_agni
+name: Brihat-Samhita-Agni-Mandala
+domain: seismic
+claim: >-
+  An earthquake occurring while the Moon transits the Agni (Fire) mandala nakshatras
+  (Pushya, Krittika, Vishakha, Bharani, Magha, Purva Bhadrapada, Purva Phalguni)
+  produces tremors extending 110 yojanas, preceded 15 days by meteor trails and burning horizons.
+source:
+  text: Brihat Samhita
+  edition: M. Ramakrishna Bhat (Motilal Banarsidass 1981, Part II)
+  chapter: '32'
+  verse: 12-15
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc299127.html
+  published: '0550-01-01'
+tier: classical
+params:
+  window_days: {value: 15, min: 3, max: 21, step: 1, unit: days}
+conditions:
+  moon_mandala:
+    mandalas:
+      - agni
+chart: transit-only
+window:
+  unit: days
+  before: 15
+  after: 15
+region: Ashmaka, Anga, Vanga, Kalinga, Dravida (Central, Eastern, and Southern India)
+expected_effect:
+  series: quake_rate
+  direction: two-sided
+  magnitude: '>= 4.0'
+reference_cases:
+  - moment: '2023-02-06T01:17:35Z'
+    expect: fires
+    note: >-
+      2023 Mw 7.8 Turkey-Syria earthquake: Moon was in sidereal Cancer / Leo in Magha
+      (Agni mandala, BS 32.12).
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+  - moment: '2015-04-25T06:11:26Z'
+    expect: silent
+    note: >-
+      2015 Mw 7.8 Gorkha earthquake: Moon was in Punarvasu (Vayu mandala), not Agni.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+ex_ante: false
+computable: true

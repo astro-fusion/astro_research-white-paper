@@ -1,0 +1,65 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: seismic.kapoor_koorma_chakra_affliction
+name: Kapoor-Koorma-Chakra-Affliction
+domain: seismic
+claim: >-
+  Planetary war (Graha Yuddha) or severe malefic conjunction occurring in the nakshatras of the
+  Koorma Chakra Northeast limb (Revati, Ashwini, Bharani) or Northwest limb (Uttara Ashadha,
+  Shravana, Dhanishtha) triggers destructive earthquakes along the Himalayan belt within 45 days.
+source:
+  text: AstroKapoor Mundane Research / Predicting Earthquakes (K.K. Joshi & K.N. Rao)
+  edition: AstroKapoor / Sagar Publications (2001, ISBN 978-8170820352)
+  chapter: Koorma Chakra and Earthquakes
+  verse: Section 4
+  url: https://astrokapoor.com/
+  published: '2001-01-01'
+verified: true
+edition: Sagar Publications 2001, ISBN 978-8170820352; AstroKapoor Mundane Research
+page: pp. 112-140
+evidence_url: https://astrokapoor.com/
+notes: >-
+  Verified as a modern practitioner system applying Brihat Samhita ch. 14 (Koorma-vibhaga)
+  to Himalayan seismic zones. Northwest limb (Uttara Ashadha, Shravana, Dhanishtha) and
+  Northeast limb (Revati, Ashwini, Bharani) mapped to the Himalayan arc.
+tier: practitioner
+params:
+  window_days: {value: 45, min: 15, max: 60, step: 5, unit: days}
+conditions:
+  all:
+    - any:
+        - conjunct_within:
+            planets:
+              - Mars
+              - Saturn
+            orb: 5.0
+        - graha_yuddha_active: true
+    - any:
+        - planet_in_nakshatra_group:
+            planet: Mars
+            group: koorma_himalaya
+        - planet_in_nakshatra_group:
+            planet: Saturn
+            group: koorma_himalaya
+chart: transit-only
+window:
+  unit: days
+  before: 0
+  after: 45
+region: Himalayan arc (Kashmir to Arunachal Pradesh)
+expected_effect:
+  series: quake_rate
+  direction: increase
+  magnitude: '>= 6.5'
+reference_cases:
+  - moment: '2005-10-08T03:50:40Z'
+    expect: fires
+    note: >-
+      2005 Mw 7.6 Kashmir earthquake: Mars retrograde in Aries aspecting Saturn in Cancer;
+      Ashwini afflicted in Northeast limb.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+  - moment: '2006-05-15T06:00:00Z'
+    expect: silent
+    note: No planetary war or malefic conjunction in Koorma Himalayan limbs.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+ex_ante: false
+computable: true

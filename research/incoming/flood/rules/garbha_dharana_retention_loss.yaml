@@ -1,0 +1,66 @@
+id: mundane.classical.garbha_dharana_retention_loss
+name: "Garbha Dharana: Affliction and Abortion of the Rain Pregnancy"
+domain: mundane
+claim: >-
+  A formed rain foetus is aborted (garbhasrava) if malefic planets (Mars, Saturn, Rahu) conjunct
+  or aspect the Sun or Moon during the 195-day gestation period, or if unseasonal heavy rain
+  exceeding one-third drona (~12.5 mm) falls during winter/spring, causing monsoon deficit 195 days later.
+source:
+  text: Brihat Samhita
+  edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, 1981)"
+  chapter: "22"
+  verse: "1-8"
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc362878.html
+  published: "c. 550 CE"
+tier: classical
+params:
+  malefic_orb_degs:
+    value: 6.0
+    min: 2.0
+    max: 10.0
+    step: 1.0
+    unit: deg
+conditions:
+  any:
+    - conjunct_within:
+        planets:
+          - Mars
+          - Sun
+        orb: $malefic_orb_degs
+    - conjunct_within:
+        planets:
+          - Saturn
+          - Sun
+        orb: $malefic_orb_degs
+    - graha_drishti:
+        planet: Saturn
+        target: Moon
+        aspects:
+          - 3
+          - 7
+          - 10
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "Winter and spring gestation months (Margashirsha through Vaishakha)"
+window:
+  unit: days
+  before: 2
+  after: 2
+  note: "Delivery suppression window 195 days after malefic affliction"
+lag: 195 days
+region: Regional meteorological subdivision of observation
+expected_effect:
+  series: rainfall
+  direction: decrease
+reference_cases:
+  - moment: "2019-01-20T12:00:00Z"
+    expect: fires
+    note: "Saturn casts 10th aspect on Moon during winter gestation window. Delivery suppressed 195 days later in August 2019."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+  - moment: "2020-04-15T12:00:00Z"
+    expect: silent
+    note: "Jupiter aspects Moon with no malefic conjunction on Sun; foetus preserved."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+ex_ante: true
+computable: true

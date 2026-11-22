@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: seismic.brihat_samhita_mandala_indra
+name: Brihat-Samhita-Indra-Mandala
+domain: seismic
+claim: >-
+  An earthquake occurring while the Moon transits the Indra (Surapati) mandala nakshatras
+  (Abhijit, Shravana, Dhanishtha, Rohini, Jyeshtha, Uttara Ashadha, Anuradha)
+  produces tremors extending 160 yojanas, preceded 7 days by dark rain clouds and lightning.
+source:
+  text: Brihat Samhita
+  edition: M. Ramakrishna Bhat (Motilal Banarsidass 1981, Part II)
+  chapter: '32'
+  verse: 16-19
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc299127.html
+  published: '0550-01-01'
+tier: classical
+params:
+  window_days: {value: 7, min: 1, max: 14, step: 1, unit: days}
+conditions:
+  moon_mandala:
+    mandalas:
+      - indra
+chart: transit-only
+window:
+  unit: days
+  before: 7
+  after: 7
+region: Kasi, Yugandhara, Chedi, Kuru, Magadha (Gangetic plains and Central India)
+expected_effect:
+  series: quake_rate
+  direction: two-sided
+  magnitude: '>= 4.0'
+reference_cases:
+  - moment: '1934-01-15T08:43:00Z'
+    expect: fires
+    note: >-
+      1934 Mw 8.1 Bihar-Nepal earthquake: Moon was in Shravana nakshatra (Indra mandala, BS 32.16).
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+  - moment: '2015-04-25T06:11:26Z'
+    expect: silent
+    note: >-
+      2015 Mw 7.8 Gorkha earthquake: Moon was in Punarvasu (Vayu mandala), not Indra.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+ex_ante: false
+computable: true

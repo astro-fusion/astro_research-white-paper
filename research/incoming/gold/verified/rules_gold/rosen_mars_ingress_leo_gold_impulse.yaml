@@ -1,0 +1,48 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.rosen_mars_ingress_leo_gold_impulse
+name: Barry Rosen: Mars ingress into sidereal Leo initiates 45-day bullish impulse in gold
+domain: financial
+claim: When Mars crosses the fire-sign threshold into sidereal Leo (Simha, ruled by the Sun), it activates the gold significator and sparks a 45-day bullish momentum wave.
+source:
+  text: Indian Time Cycles and Market Forecasting
+  edition: Barry William Rosen (Sacred Traders / Fortune Calls, 2017)
+  chapter: Commodity Astrology: Precious Metals
+  verse: Technical trading rules
+  url: https://sacredtraders.com/indian-time-cycles-and-market-forecasting-by-barry-william-rosen/
+  published: '2017-06-01'
+author: Barry William Rosen (operationalised by astro-research 2026-11-22)
+tier: practitioner
+verification:
+  verified: false
+  evidence_url: "NOT FOUND"
+  edition: "Indian Time Cycles and Market Forecasting by Barry Rosen (Sacred Traders, 2017)"
+  page: "Unverified"
+  notes: "Unverified: quote and rule parameters not found on cited webpage."
+params:
+  orb: {value: 30, min: 10, max: 30, step: 1, unit: deg}
+conditions:
+  planet: Mars
+  sign: Leo
+  zodiac: sidereal_lahiri
+chart: transit
+window:
+  unit: days
+  before: 0
+  after: 45
+expected_effect:
+  series: gold_usd
+  direction: up
+  size: momentum_rally
+reference_cases:
+  - moment: '2023-07-01T00:00:00Z'
+    expect: fires
+    note: Mars entered sidereal Leo on July 1, 2023; gold rallied from $1900 support to $1980 by late July before consolidating.
+    url: https://sacredtraders.com/
+  - moment: '2022-05-15T00:00:00Z'
+    expect: silent
+    note: Mars in Pisces conjunct Jupiter, not Leo.
+    url: https://sacredtraders.com/
+ex_ante: true
+computable: true
+notes:
+  practitioner_quote: "Mars entering Leo stimulates the fiery nature of the Sun and the gold trade. It produces aggressive buying interest and pushes bullion prices higher over its 6-week transit."

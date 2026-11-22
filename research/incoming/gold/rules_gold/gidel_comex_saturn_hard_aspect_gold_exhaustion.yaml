@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.gidel_comex_saturn_hard_aspect_gold_exhaustion
+name: Susan Abbott Gidel: Transiting Saturn hard aspect to COMEX Gold natal Sun marks trend exhaustion
+domain: financial
+claim: Transiting Saturn forming hard aspects (0°, 90°, 180°, orb 3°) to the COMEX Gold futures natal Sun (Capricorn 9°25', first trade 1974-12-31) marks major cycle bottoms or exhaustion lows.
+source:
+  text: Trading In Sync With Commodities & MoneyShow Articles
+  edition: Susan Abbott Gidel (2018 / MoneyShow 2019-02-22)
+  chapter: Gold Futures First-Trade Horoscope
+  verse: Article ID 50940
+  url: https://www.moneyshow.com/articles/tradingidea-50940/
+  published: '2019-02-22'
+author: Susan Abbott Gidel (operationalised by astro-research 2026-11-22)
+tier: practitioner
+params:
+  orb: {value: 3.0, min: 1.0, max: 4.5, step: 0.5, unit: deg}
+conditions:
+  chart_base: COMEX_Gold_First_Trade_1974_12_31_0925_EST
+  natal_point: Sun_Capricorn_9deg25min
+  transiting_planet: Saturn
+  aspects: [0, 90, 180]
+  orb: $orb
+  zodiac: tropical
+chart: named_contract_COMEX_1974_12_31_0925_EST
+window:
+  unit: days
+  before: 15
+  after: 30
+expected_effect:
+  series: gold_usd
+  direction: up
+  size: major_cyclical_low_and_turn
+reference_cases:
+  - moment: '2018-12-15T00:00:00Z'
+    expect: fires
+    note: Transiting Saturn at Capricorn 9° conjunct COMEX Gold natal Sun at Capricorn 9°25'; marked the exact end of the 2018 gold decline at $1200 and the launch of the massive 2019-2020 rally.
+    url: https://www.moneyshow.com/articles/tradingidea-50940/
+  - moment: '2021-05-01T00:00:00Z'
+    expect: silent
+    note: Transiting Saturn at Aquarius 13°, not in hard aspect to Capricorn 9°.
+    url: https://www.moneyshow.com/articles/tradingidea-50940/
+ex_ante: true
+computable: true
+notes:
+  practitioner_quote: "Commodity markets respect their first-trade birth horoscopes. When transiting Saturn contacts the COMEX gold natal Sun, selling dries up and structural bottoms are formed."

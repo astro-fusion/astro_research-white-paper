@@ -1,0 +1,57 @@
+id: mundane.classical.varsheshvara_samvatsara_king_monsoon
+name: "Varsheshvara: Samvatsara King Planet Annual Agricultural and Rainfall Index"
+domain: mundane
+claim: >-
+  The King of the Year (Varsheshvara / Raja), determined by the planetary weekday of sunrise at
+  the start of Chaitra Shukla Pratipada (the Hindu New Year), governs the annual rainfall and crops.
+  Benefic kings (Moon, Mercury, Jupiter, Venus) ensure copious rainfall, high agricultural yields, and full reservoirs;
+  malefic kings (Sun, Mars, Saturn) bring heatwaves, pestilence, erratic monsoons, and droughts.
+source:
+  text: Brihat Samhita
+  edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, Part 1, 1981, ISBN: 978-81-208-1060-0)"
+  chapter: "19"
+  verse: "1-9"
+  page: "pp. 200-205"
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc228920.html
+  published: "c. 550 CE"
+tier: classical
+params:
+  calculation: "Weekday at sunrise following the exact Sun-Moon conjunction in Pisces (Chaitra Shukla Pratipada)"
+  planetary_outcomes:
+    Moon: copious_rain_abundant_food
+    Jupiter: abundant_rain_peace_virtue
+    Venus: heavy_timely_rains_bumper_crops
+    Mercury: plentiful_rains_thriving_trade
+    Sun: scanty_rain_fires_strife
+    Mars: severe_scarcity_fire_famine
+    Saturn: storms_drought_pestilence
+conditions:
+  all:
+    - lunar_month_pratipada: Chaitra Shukla 1
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "Annual agricultural cycle (Chaitra to Phalguna)"
+window:
+  unit: months
+  before: 0
+  after: 12
+lag: 0 months
+region: All-India seasonal rainfall and crop yield
+expected_effect:
+  series: rainfall
+  direction: increase
+reference_cases:
+  - moment: "2022-04-02T06:00:00Z"
+    expect: fires
+    note: "Chaitra Shukla Pratipada sunrise fell on Saturday (Saturn king). Deficient rain in pockets with excessive heatwaves."
+    verified_with: Swiss Ephemeris
+ex_ante: true
+computable_from_ephemeris: yes
+computable_explanation: >-
+  COMPUTABLE FROM EPHEMERIS: The Sun-Moon conjunction in sidereal Pisces (Amavasya ending moment) and the
+  exact weekday of the subsequent sunrise are 100% computable from Swiss Ephemeris.
+verified: yes
+edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, Part 1, 1981)"
+page: "pp. 200-205"
+evidence_url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc228920.html

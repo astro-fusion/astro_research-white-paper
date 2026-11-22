@@ -1,0 +1,60 @@
+id: mundane.classical.meghamala_garga_cloud_wind_monsoon
+name: "Meghamala: Ashadha Shukla Panchami Cloud Formation and Flood Trigger"
+domain: mundane
+claim: >-
+  On Ashadha Shukla Panchami (5th tithi of the bright half of Ashadha), observe cloud structures
+  and prevailing wind at sunrise and sunset. If the eastern wind blows and clouds form dense,
+  dark, elephant- or mountain-shaped arrays (meghamala) with continuous distant thunder,
+  copious monsoon rain and extensive riverine floods will inundate northern and eastern India.
+  If south-westerly dry winds prevail, seasonal rain fails.
+source:
+  text: Meghamala
+  edition: "Meghamala: An Ancient Sanskrit Treatise on Meteorology and Cloud Divination (Venkateshwara Steam Press, Bombay / Chaukhamba Sanskrit Pratishthan)"
+  chapter: "Ashadha-Panchami-Lakshana"
+  verse: "1-18"
+  url: https://archive.org/details/meghamala_sanskrit
+  published: "c. 800 CE"
+tier: classical
+params:
+  tithi:
+    value: 5
+    unit: tithi
+  month:
+    value: Ashadha
+    unit: lunar_month
+conditions:
+  all:
+    - month_paksha:
+        months:
+          - Ashadha
+        paksha: shukla
+    - in_nakshatra:
+        planet: Moon
+        nakshatras:
+          - Magha
+          - Purva Phalguni
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "Dawn to dusk on Ashadha Shukla Panchami (June / July)"
+window:
+  unit: months
+  before: 0
+  after: 3
+  note: "Active throughout the July-September core monsoon period"
+lag: 20 to 80 days
+region: Indo-Gangetic Plain and Brahmaputra Basin
+expected_effect:
+  series: flood_events
+  direction: increase
+reference_cases:
+  - moment: "2020-06-25T06:00:00Z"
+    expect: fires
+    note: "Ashadha Shukla Panchami 2020 (Moon in Leo); triggers Meghamala observation day."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+  - moment: "2020-07-20T06:00:00Z"
+    expect: silent
+    note: "Ashadha Amavasya; outside Panchami window."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+ex_ante: true
+computable: false

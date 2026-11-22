@@ -1,0 +1,56 @@
+id: mundane.classical.megheshvara_lord_of_clouds_monsoon
+name: "Megheshvara: Planetary Lord of Clouds Monsoon Index"
+domain: mundane
+claim: >-
+  In the traditional Hindu Panchang Navanayaka cabinet, the planet ruling the weekday at sunrise
+  on the day the Sun enters Ardra nakshatra (Ardra Pravesha) becomes the Lord of Clouds (Megheshvara).
+  Watery benefics (Moon, Venus) predict torrential rain and riverine floods; Jupiter and Mercury predict
+  timely, well-distributed rain; fiery malefics (Mars, Sun, Saturn) predict erratic distribution,
+  localized drought, and heat anomalies.
+source:
+  text: Panchanga Navanayaka System
+  edition: "Babu Madhavrao Joshi Panchang / Shri Venkateshwara Panchang (Varsha-Phala-Prakaranam)"
+  chapter: "Megheshvara-Phala"
+  verse: "Navanayaka Section"
+  url: https://archive.org/details/panchang_weather_astrology
+  published: "c. 1200 CE"
+tier: classical
+params:
+  ingress_nakshatra:
+    value: Ardra
+    unit: nakshatra
+conditions:
+  all:
+    - in_sign:
+        planet: Sun
+        signs:
+          - Gemini
+    - in_nakshatra:
+        planet: Sun
+        nakshatras:
+          - Ardra
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "Sunrise moment on the calendar day of Sun's entry into Ardra nakshatra (June 21-23)"
+window:
+  unit: months
+  before: 0
+  after: 3.5
+  note: "June 22 through September 30 monsoon season"
+lag: 10 to 90 days
+region: All-India Summer Monsoon Rainfall (ISMR)
+expected_effect:
+  series: rainfall
+  direction: increase
+reference_cases:
+  - moment: "2020-06-21T00:30:00Z"
+    expect: fires
+    note: "Sun enters Ardra on Sunday (solar eclipse); rule fires evaluating Megheshvara."
+    verified_with: Swiss Ephemeris / Drik Siddhanta Panchang
+  - moment: "2020-05-01T00:00:00Z"
+    expect: silent
+    note: "Sun in Aries; silent."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+ex_ante: true
+computable: true

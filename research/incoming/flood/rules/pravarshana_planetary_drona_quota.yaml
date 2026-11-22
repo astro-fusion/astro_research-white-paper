@@ -1,0 +1,62 @@
+id: mundane.classical.pravarshana_planetary_drona_quota
+name: "Pravarshana: Planetary Rainfall Quota in Dronas"
+domain: mundane
+claim: >-
+  Rainfall volume during delivery is quantified in standard units (1 drona = 4 adhakas ~ 50 mm).
+  The governing planet delivering the rain dictates the seasonal rainfall quota: Jupiter and Venus
+  yield 16 dronas each (~800 mm, abundant rain), Mercury yields 12 dronas (~600 mm, timely rain),
+  Sun and Mars yield 6 dronas each (~300 mm, scanty rain), and Saturn yields 4 dronas (~200 mm, severe drought).
+source:
+  text: Brihat Samhita
+  edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, 1981)"
+  chapter: "23"
+  verse: "6-10"
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc362879.html
+  published: "c. 550 CE"
+tier: classical
+params:
+  drona_mm_equivalent:
+    value: 50.0
+    min: 40.0
+    max: 64.0
+    step: 2.0
+    unit: mm
+conditions:
+  any:
+    - in_sign:
+        planet: Jupiter
+        signs:
+          - Cancer
+          - Pisces
+          - Sagittarius
+    - in_sign:
+        planet: Venus
+        signs:
+          - Taurus
+          - Libra
+          - Pisces
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "Ingress of Sun into Gemini/Cancer and lunar transits during Jyeshtha/Ashadha"
+window:
+  unit: months
+  before: 0
+  after: 4
+  note: "June to September Indian Summer Monsoon season (JJAS)"
+lag: 0 to 120 days
+region: All-India Summer Monsoon Rainfall (ISMR)
+expected_effect:
+  series: rainfall
+  direction: increase
+reference_cases:
+  - moment: "2014-07-01T00:00:00Z"
+    expect: fires
+    note: "Jupiter exalted in watery Cancer; rule fires predicting high rainfall quota."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+  - moment: "2002-07-01T00:00:00Z"
+    expect: silent
+    note: "Saturn and Rahu dominating Gemini without benefic Jupiter/Venus watery placement."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+ex_ante: true
+computable: true

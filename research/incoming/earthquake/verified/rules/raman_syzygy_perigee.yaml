@@ -1,0 +1,54 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: seismic.raman_syzygy_perigee
+name: Raman-Syzygy-Perigee-Trigger
+domain: seismic
+claim: >-
+  A New Moon (Amavasya) or Full Moon (Purnima) within 2 days coincident with the Moon at perigee
+  triggers severe earthquakes along unstable fault zones.
+source:
+  text: Astrology in Predicting Weather and Earthquakes
+  edition: B.V. Raman (compiled/edited by Gayatri Devi Vasudev, IBH Prakashana 1992, ISBN 978-8170840503)
+  chapter: Earthquakes
+  verse: Practitioner rule (codified as Indicators 1 and 9 by VedAstro)
+  url: https://archive.org/details/AstrologyInPredictingWeatherAndEarthquakesBVRaman
+  published: '1992-01-01'
+verified: partial
+edition: IBH Prakashana 1992, ISBN 978-8170840503
+page: pp. 68-72
+evidence_url: https://archive.org/details/AstrologyInPredictingWeatherAndEarthquakesBVRaman
+notes: >-
+  Verified as a qualitative practitioner observation cited by B.V. Raman in The Astrological Magazine.
+  Operationalized as perigee syzygy in VedAstro. Directly tested and refuted in global seismic data
+  by Kennedy, Vidale & Parker (2004, SRL) and Hough (2018, SRL).
+tier: practitioner
+params:
+  tithi_window_hours: {value: 48, min: 12, max: 72, step: 6, unit: hours}
+conditions:
+  all:
+    - any:
+        - lunar_phase_is: amavasya
+        - lunar_phase_is: purnima
+    - moon_distance_lte_au: 0.00245
+chart: transit-only
+window:
+  unit: days
+  before: 2
+  after: 2
+region: Global / Himalayan Thrust
+expected_effect:
+  series: quake_rate
+  direction: increase
+  magnitude: '>= 6.5'
+reference_cases:
+  - moment: '1934-01-15T08:43:00Z'
+    expect: fires
+    note: >-
+      1934 Mw 8.1 Bihar-Nepal earthquake occurred on Amavasya (solar-lunar elongation 1.2 deg)
+      with the Moon near perigee.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+  - moment: '1934-01-22T06:00:00Z'
+    expect: silent
+    note: First quarter Moon (Ashtami), 90 deg elongation.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+ex_ante: true
+computable: true

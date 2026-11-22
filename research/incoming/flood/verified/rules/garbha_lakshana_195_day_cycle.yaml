@@ -1,0 +1,71 @@
+id: mundane.classical.garbha_lakshana_195_day_cycle
+name: "Garbha Lakshana: 195-day Cloud Gestation and Delivery Cycle"
+domain: mundane
+claim: >-
+  The pregnancy of clouds (megha-garbha) begins when the Moon enters Purvashadha in the
+  bright fortnight of Margashirsha (sidereal Sagittarius). A healthy conception delivers
+  abundant rainfall exactly 195 solar days later when the Moon returns to the corresponding
+  asterism during the monsoon season.
+source:
+  text: Brihat Samhita
+  edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, Part 1, 1981, ISBN: 978-81-208-1060-0)"
+  chapter: "21"
+  verse: "6-7"
+  page: "pp. 210-212"
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc228922.html
+  published: "c. 550 CE"
+tier: classical
+params:
+  gestation_lag_days:
+    value: 195
+    min: 190
+    max: 200
+    step: 1
+    unit: days
+  conception_month:
+    value: Margashirsha
+    unit: lunar_month
+conditions:
+  all:
+    - month_paksha:
+        months:
+          - Margashirsha
+        paksha: shukla
+    - in_nakshatra:
+        planet: Moon
+        nakshatras:
+          - Purvashadha
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "Dawn and dusk during Margashirsha Shukla Paksha (sunrise/sunset atmospheric observations)"
+window:
+  unit: days
+  before: 1
+  after: 1
+  note: "Delivery window centered on day 195 (+/- 1 day) from conception observation"
+lag: 195 days
+region: Local raingauge station where conception symptoms were recorded
+expected_effect:
+  series: rainfall
+  direction: increase
+reference_cases:
+  - moment: "2018-12-19T06:00:00Z"
+    expect: fires
+    note: "Moon in Purvashadha in Margashirsha Shukla Paksha (conception moment). Delivery expected ~195 days later on 2019-07-02."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+  - moment: "2019-03-15T06:00:00Z"
+    expect: silent
+    note: "Moon in Ardra in Phalguna Shukla Paksha; outside Margashirsha conception window."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+ex_ante: true
+computable_from_ephemeris: no
+computable_explanation: >-
+  NON-COMPUTABLE FROM EPHEMERIS ALONE: Brihat Samhita 21.6-25 explicitly specifies that cloud pregnancy
+  requires local atmospheric and meteorological observations (pleasant gentle breezes, soft pearly clouds,
+  halos around the Sun/Moon, rainbows at sunrise/sunset). While the astronomical transit of Moon through
+  Purvashadha is computable from ephemeris, whether a conception actually formed requires a local station weather diary.
+verified: yes
+edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, Part 1, 1981)"
+page: "pp. 210-212"
+evidence_url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc228922.html

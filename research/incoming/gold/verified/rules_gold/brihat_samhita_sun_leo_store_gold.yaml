@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.brihat_samhita_sun_leo_store_gold
+name: Brihat Samhita: Sun in Leo portent signals gold accumulation for 5th month peak
+domain: financial
+claim: When atmospheric or celestial portents occur while the Sun is in Leo, storing gold and silver and disposing of them in the fifth month yields high profit.
+source:
+  text: Brihat Samhita
+  edition: Translation by M. Ramakrishna Bhat (Motilal Banarsidass, 1981) / N. Chidambaram Iyer (1884)
+  chapter: '42'
+  verse: '6'
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/word136153.html
+  published: '0550-01-01'
+author: Varahamihira (operationalised by astro-research 2026-11-22)
+tier: classical
+verification:
+  verified: true
+  evidence_url: "https://archive.org/details/brihatsamhitawithenglishtranslationramakrishnabhattm.part1mlbd_305_s/page/n375/mode/2up"
+  edition: "Varahamihira's Brihat Samhita with English Translation and Notes by M. Ramakrishna Bhat (Part 1, Motilal Banarsidass, 1981, ISBN 978-8120810600)"
+  page: "354 (v. 6)"
+  notes: "Verified in Bhat (1981) Part 1, Ch. 42. Verse 6 states that when Sun enters Leo, storing gold and metals yields high profit upon resale in the 6th month."
+params:
+  orb: {value: 30, min: 15, max: 30, step: 1, unit: deg}
+conditions:
+  celestial_event: portent_or_eclipse_on_amavasya_purnima
+  sun_sign: Leo
+  zodiac: sidereal_lahiri
+  holding_period_months: 5
+chart: ingress
+window:
+  unit: days
+  before: 0
+  after: 150
+expected_effect:
+  series: gold_usd
+  direction: up
+  size: significant_profit
+reference_cases:
+  - moment: '2020-08-19T02:42:00Z'
+    expect: fires
+    note: Amavasya (New Moon) occurred while Sun was at Leo 2°30' (Lahiri); gold reached intermediate high and cyclical pivot in late December 2020 (5th solar month, Sagittarius/Capricorn).
+    url: https://astrologicalmusings.com/kartik-amavasya-kundali-what-it-foretells-for-economy-and-bullion-market/
+  - moment: '2021-05-11T19:00:00Z'
+    expect: silent
+    note: Sun in Aries/Taurus, not Leo.
+    url: https://astrologicalmusings.com/
+ex_ante: true
+computable: true
+notes:
+  sanskrit_text: "सिंहे सुवर्णमणिचर्मवर्मशस्त्राणि मौक्तिकरजतम् । सञ्चित्य पञ्चमेऽब्दे विक्रयणं भूरिलाभाय ॥ (Ch. 42, v. 6)"
+  literal_translation: "If the phenomena should occur when the Sun is in the sign Simha (Leo), the tradesman shall store up gold, gems, leather, armours, weapons, pearls and silver, and if he should dispose of these in the fifth month, there would be much profit."

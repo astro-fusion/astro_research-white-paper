@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: seismic.brihat_samhita_mandala_varuna
+name: Brihat-Samhita-Varuna-Mandala
+domain: seismic
+claim: >-
+  An earthquake occurring while the Moon transits the Varuna (Water) mandala nakshatras
+  (Revati, Purva Ashadha, Ardra, Ashlesha, Mula, Uttara Bhadrapada, Shatabhisha)
+  produces tremors extending 180 yojanas, preceded by blue lotus clouds and gentle rain.
+source:
+  text: Brihat Samhita
+  edition: M. Ramakrishna Bhat (Motilal Banarsidass 1981, Part II)
+  chapter: '32'
+  verse: 20-23
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc299127.html
+  published: '0550-01-01'
+tier: classical
+params:
+  window_days: {value: 15, min: 3, max: 30, step: 1, unit: days}
+conditions:
+  moon_mandala:
+    mandalas:
+      - varuna
+chart: transit-only
+window:
+  unit: days
+  before: 15
+  after: 15
+region: Gonarda, Chedi, Kukura, Videha (North-central and Northern Bihar / Nepal borders)
+expected_effect:
+  series: quake_rate
+  direction: two-sided
+  magnitude: '>= 4.0'
+reference_cases:
+  - moment: '2005-10-08T03:50:40Z'
+    expect: fires
+    note: >-
+      2005 Mw 7.6 Kashmir earthquake: Moon was in Jyeshtha / Mula transition; Mula is Varuna mandala.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+  - moment: '2015-04-25T06:11:26Z'
+    expect: silent
+    note: >-
+      2015 Mw 7.8 Gorkha earthquake: Moon was in Punarvasu (Vayu mandala), not Varuna.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+ex_ante: false
+computable: true

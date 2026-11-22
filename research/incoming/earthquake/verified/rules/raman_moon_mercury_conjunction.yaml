@@ -1,0 +1,53 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: seismic.raman_moon_mercury_conjunction
+name: Raman-Moon-Mercury-Conjunction
+domain: seismic
+claim: >-
+  An exact conjunction between the Moon and Mercury within 3 degrees orb acts as a high-frequency
+  trigger for seismic shock release when background malefic stress is present.
+source:
+  text: Astrology in Predicting Weather and Earthquakes
+  edition: B.V. Raman (compiled/edited by Gayatri Devi Vasudev, IBH Prakashana 1992, ISBN 978-8170840503)
+  chapter: Earthquakes
+  verse: Practitioner rule (codified as Indicator 2 by VedAstro)
+  url: https://vedastro.org/
+  published: '1992-01-01'
+verified: partial
+edition: IBH Prakashana 1992, ISBN 978-8170840503
+page: pp. 72-76
+evidence_url: https://vedastro.org/
+notes: >-
+  Verified as a qualitative practitioner observation cited by B.V. Raman in The Astrological Magazine.
+  Operationalized as Indicator 2 (exact Moon-Mercury conjunction within 3 degrees) in VedAstro.
+tier: practitioner
+params:
+  orb: {value: 3.0, min: 1.0, max: 6.0, step: 0.5, unit: deg}
+conditions:
+  conjunct_within:
+    planets:
+      - Moon
+      - Mercury
+    orb: $orb
+chart: transit-only
+window:
+  unit: days
+  before: 1
+  after: 1
+region: Global / Regional subduction and collision arcs
+expected_effect:
+  series: quake_rate
+  direction: increase
+  magnitude: '>= 5.5'
+reference_cases:
+  - moment: '1991-10-19T21:23:14Z'
+    expect: fires
+    note: >-
+      1991 Uttarkashi earthquake Mw 6.8: Moon in Aquarius 22 deg and Mercury in Aquarius 24 deg
+      in tight conjunction (2.1 deg apart).
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+  - moment: '1991-10-01T06:00:00Z'
+    expect: silent
+    note: Moon in Gemini and Mercury in Virgo; separation > 80 degrees.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+ex_ante: true
+computable: true

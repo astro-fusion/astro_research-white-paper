@@ -1,0 +1,51 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.patel_sarvatobhadra_malefic_vedha_krittika
+name: C.S. Patel: Malefic Vedha on Krittika in Sarvatobhadra Chakra raises gold prices
+domain: financial
+claim: When a malefic planet (Saturn, Mars, or Rahu) casts a direct Vedha (obstruction ray) onto Krittika Nakshatra in the Sarvatobhadra Chakra, gold supply tightens and prices surge.
+source:
+  text: Sarvatobhadra Chakra
+  edition: C.S. Patel (Sagar Publications, New Delhi)
+  chapter: Chapter 7 (Vedha on Nakshatras and Commodities)
+  verse: pp. 88-94
+  url: https://www.saptarishisshop.com/
+  published: '1996-01-01'
+author: C.S. Patel (operationalised by astro-research 2026-11-22)
+tier: practitioner
+verification:
+  verified: false
+  evidence_url: "NOT FOUND"
+  edition: "Sarvatobhadra Chakra by Chandrakant S. Patel (Sagar Publications, 2007, ISBN 978-8170820468)"
+  page: "Chapter 7, pp. 88-94"
+  notes: "Unverified: cited URL is an online shop link; missing verified page scan."
+params:
+  orb: {value: 13.33, min: 3.0, max: 13.33, step: 0.5, unit: deg}
+conditions:
+  chakra: Sarvatobhadra_Chakra_81_grid
+  target_nakshatra: Krittika
+  target_ruler: Sun
+  afflicting_planets: [Saturn, Mars, Rahu]
+  vedha_type: [samukha, vamavedha, dakshinavedha]
+  zodiac: sidereal_lahiri
+chart: transit
+window:
+  unit: days
+  before: 2
+  after: 15
+expected_effect:
+  series: gold_usd
+  direction: up
+  size: sharp_teji
+reference_cases:
+  - moment: '2023-11-10T00:00:00Z'
+    expect: fires
+    note: Saturn stationary direct in Dhanishta casting cross-vedha onto Krittika; gold surged from $1930 to $2050 through late November and December 2023.
+    url: https://www.youtube.com/watch?v=aKSgcEpAp2g
+  - moment: '2021-09-01T00:00:00Z'
+    expect: silent
+    note: Benefic Jupiter casting sole vedha on Krittika from Aquarius without malefic cross-rays.
+    url: https://www.youtube.com/watch?v=aKSgcEpAp2g
+ex_ante: true
+computable: true
+notes:
+  practitioner_quote: "Krittika is ruled by the Sun, the lord of gold. Malefic vedha on Krittika in SBC directly triggers supply curtailment and heavy teji in gold markets."

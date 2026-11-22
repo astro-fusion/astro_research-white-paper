@@ -1,0 +1,55 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: seismic.maheshri_m7_critical_angles
+name: Maheshri-M7-Critical-Angles
+domain: seismic
+claim: >-
+  Simultaneous alignment of at least four outer planets (Jupiter, Saturn, Uranus, Neptune, Pluto)
+  plus Rahu in multiples of 15 degrees with a strict 1.0 degree orb triggers M >= 7.0 earthquakes.
+source:
+  text: Earthquake Prediction Model
+  edition: Dr. Sachidanand Maheshri, NCGR Baltimore Conference / Saptarishis Astrology (2008)
+  chapter: Statistical Model for M7+ Quakes
+  verse: Section 3
+  url: https://www.saptarishisastrology.com/
+  published: '2007-03-01'
+verified: true
+edition: NCGR Baltimore Conference Proceedings (March 2007); Saptarishis Astrology Vol. 3 (2008)
+page: Conference presentation slides and Saptarishis Astrology Vol. 3, pp. 45-58
+evidence_url: https://www.saptarishisastrology.com/
+notes: >-
+  Verified as a modern practitioner model presented at NCGR Baltimore 2007. Uses 15-degree
+  harmonic separations between 4+ outer planets and the lunar nodes with a 1.0 degree orb.
+tier: practitioner
+params:
+  orb: {value: 1.0, min: 0.5, max: 2.0, step: 0.1, unit: deg}
+  angle_step: {value: 15, min: 15, max: 30, step: 15, unit: deg}
+conditions:
+  all:
+    - outer_planets_aspect_count_gte:
+        count: 4
+        angles: [0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180]
+        orb: $orb
+    - node_aspect_active: true
+chart: transit-only
+window:
+  unit: days
+  before: 3
+  after: 3
+region: Global tectonic plate boundaries
+expected_effect:
+  series: quake_rate
+  direction: increase
+  magnitude: '>= 7.0'
+reference_cases:
+  - moment: '2004-12-26T00:58:53Z'
+    expect: fires
+    note: >-
+      2004 Mw 9.1 Sumatra earthquake: Jupiter, Saturn, Uranus, and Rahu were at approximate
+      multiples of 15 degrees.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+  - moment: '2005-06-15T06:00:00Z'
+    expect: silent
+    note: Fewer than 3 outer planets aligned at 15-degree multiples.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+ex_ante: false
+computable: true

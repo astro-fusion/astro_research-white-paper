@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: seismic.raman_mars_saturn_kendra
+name: Raman-Mars-Saturn-Kendra
+domain: seismic
+claim: >-
+  Mars and Saturn in mutual Kendra (square or opposition: 90 or 180 degrees within 8 degrees orb)
+  destabilize crustal stress, causing earthquakes.
+source:
+  text: Astrology in Predicting Weather and Earthquakes
+  edition: B.V. Raman (compiled/edited by Gayatri Devi Vasudev, IBH Prakashana 1992, ISBN 978-8170840503)
+  chapter: Earthquakes
+  verse: Practitioner rule (codified as Indicator 4 by VedAstro)
+  url: https://archive.org/details/AstrologyInPredictingWeatherAndEarthquakesBVRaman
+  published: '1992-01-01'
+verified: partial
+edition: IBH Prakashana 1992, ISBN 978-8170840503
+page: pp. 65-88
+evidence_url: https://archive.org/details/AstrologyInPredictingWeatherAndEarthquakesBVRaman
+notes: >-
+  Verified as a qualitative practitioner principle discussed by B.V. Raman across editorial
+  essays and historical charts. Raman did not publish a numbered 18-point checklist; the 18
+  weighted configurations were algorithmically codified and weighted by the open-source software VedAstro.
+tier: practitioner
+params:
+  orb: {value: 8, min: 2, max: 12, step: 1, unit: deg}
+conditions:
+  any:
+    - conjunct_within:
+        planets:
+          - Mars
+          - Saturn
+        orb: $orb
+    - aspect_within:
+        planets:
+          - Mars
+          - Saturn
+        angle: 90
+        orb: $orb
+    - aspect_within:
+        planets:
+          - Mars
+          - Saturn
+        angle: 180
+        orb: $orb
+chart: transit-only
+window:
+  unit: days
+  before: 7
+  after: 7
+region: Global / Regional tectonic boundaries
+expected_effect:
+  series: quake_rate
+  direction: increase
+  magnitude: '>= 6.0'
+reference_cases:
+  - moment: '1976-07-28T03:42:00Z'
+    expect: fires
+    note: >-
+      1976 Tangshan earthquake Mw 7.8: Mars in Leo 5 deg and Saturn in Cancer 28 deg
+      (close conjunction across sign border).
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+  - moment: '2010-06-15T06:00:00Z'
+    expect: silent
+    note: Mars in Leo 22 deg and Saturn in Virgo 28 deg (separation 36 deg, no Kendra).
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+ex_ante: true
+computable: true

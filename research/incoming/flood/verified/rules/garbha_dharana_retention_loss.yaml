@@ -1,0 +1,54 @@
+id: mundane.classical.garbha_dharana_retention_loss
+name: "Garbha Dharana: Retention and Destruction of Conceived Clouds"
+domain: mundane
+claim: >-
+  Clouds conceived during Margashirsha-Vaishakha must be retained without miscarriage.
+  Premature rainfall, meteors, dust storms, earthquakes, or planetary afflictions
+  destroy the conception, resulting in failed rainfall 195 days later.
+source:
+  text: Brihat Samhita
+  edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, Part 1, 1981, ISBN: 978-81-208-1060-0)"
+  chapter: "22"
+  verse: "1-8"
+  page: "pp. 224-226"
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc228923.html
+  published: "c. 550 CE"
+tier: classical
+params:
+  destruction_factors:
+    - meteors
+    - severe_duststorms
+    - earthquakes
+    - premature_downpour
+conditions:
+  any:
+    - adverse_meteorological_event: true
+    - premature_rainfall: true
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "During the 195-day gestation window following Margashirsha conception"
+window:
+  unit: days
+  before: 0
+  after: 195
+lag: 195 days
+region: Local station where embryo formation was logged
+expected_effect:
+  series: rainfall
+  direction: decrease
+reference_cases:
+  - moment: "2019-01-15T06:00:00Z"
+    expect: fires
+    note: "Severe unseasonal storm during Pausha gestation destroys conceived cloud embryos."
+    verified_with: Local meteorological station log
+ex_ante: true
+computable_from_ephemeris: no
+computable_explanation: >-
+  NON-COMPUTABLE FROM EPHEMERIS ALONE: Retention or destruction of cloud embryos depends on physical
+  environmental disturbances (earthquakes, meteors, thunderbolts, unseasonal precipitation). Ephemeris
+  cannot detect these localized atmospheric and geological events.
+verified: yes
+edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, Part 1, 1981)"
+page: "pp. 224-226"
+evidence_url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc228923.html

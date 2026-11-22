@@ -1,0 +1,51 @@
+id: mundane.classical.ashadhi_yoga_paurnamasi_planetary_aspect
+name: "Ashadhi Yoga: Planetary Dispositions and Wind at Ashadha Full Moon"
+domain: mundane
+claim: >-
+  On the Full Moon day of Ashadha (Ashadha Paurnamasi), the disposition of planets and the wind
+  direction at sunrise and sunset forecast monsoon success. Benefics (Jupiter, Venus, Mercury)
+  aspecting the Moon indicate bountiful rain and bumper crops; malefics aspecting indicate famine.
+source:
+  text: Brihat Samhita
+  edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, Part 1, 1981, ISBN: 978-81-208-1060-0)"
+  chapter: "26"
+  verse: "1-14"
+  page: "pp. 260-264"
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc228927.html
+  published: "c. 550 CE"
+tier: classical
+params:
+  tithi: Paurnamasi (Full Moon)
+  month: Ashadha
+conditions:
+  all:
+    - lunar_phase: Paurnamasi
+    - month: Ashadha
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "Ashadha Purnima sunrise to sunset"
+window:
+  unit: months
+  before: 0
+  after: 3
+lag: 0 days
+region: All-India / Regional subdivisions
+expected_effect:
+  series: rainfall
+  direction: increase
+reference_cases:
+  - moment: "2023-07-03T11:38:00Z"
+    expect: fires
+    note: "Ashadha Purnima chart. Benefic aspects on Moon predict seasonal rain success."
+    verified_with: Swiss Ephemeris
+ex_ante: true
+computable_from_ephemeris: conditional
+computable_explanation: >-
+  CONDITIONALLY COMPUTABLE: The astronomical chart of Ashadha Paurnamasi and planetary aspects to the
+  Moon are 100% computable from Swiss Ephemeris. However, the wind direction observations at sunrise
+  and sunset detailed in verses 6-11 require physical meteorological observations.
+verified: yes
+edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, Part 1, 1981)"
+page: "pp. 260-264"
+evidence_url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc228927.html

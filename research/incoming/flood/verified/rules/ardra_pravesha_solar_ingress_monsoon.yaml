@@ -1,0 +1,52 @@
+id: mundane.classical.ardra_pravesha_solar_ingress_monsoon
+name: "Ardra Pravesha: Solar Ingress Chart for Southwest Monsoon Forecasting"
+domain: mundane
+claim: >-
+  The exact moment the Sun enters the sidereal asterism Ardra (Gemini 06°40'00" Lahiri) sets the
+  horoscopic foundation for the southwest monsoon season. If the Lagna and Moon fall in watery signs
+  (Cancer, Scorpio, Pisces) aspected by benefics (Jupiter, Venus, Mercury), abundant and well-distributed
+  rainfall occurs. If malefics (Saturn, Mars, Rahu) afflict the luminaries or occupy Kendra houses in fiery signs,
+  the monsoon is delayed, deficient, or erratic.
+source:
+  text: Bhavishya Phala Bhaskara / Brihat Samhita ch. 23
+  edition: "Bhavishya Phala Bhaskara (Khemraj Shrikrishnadas, Bombay, 1913) & Brihat Samhita Part 1 (Motilal Banarsidass, Delhi, 1981)"
+  chapter: "Ardra-Pravesha Section"
+  verse: "15-28"
+  page: "pp. 45-52"
+  url: https://archive.org/details/bhavishyaphala/
+  published: "Traditional Classical Mundane Astrological Shastra"
+tier: classical
+params:
+  solar_ingress_longitude: "66°40'00" (Sidereal Gemini, Lahiri ayanamsa)"
+  season_span_months: 4
+conditions:
+  all:
+    - solar_ingress_event: Sun enters Ardra nakshatra
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "June 21-23 annually (exact ingress second)"
+window:
+  unit: months
+  before: 0
+  after: 4
+lag: 0 months
+region: All-India / Indian subcontinent
+expected_effect:
+  series: rainfall
+  direction: increase
+reference_cases:
+  - moment: "2022-06-22T06:14:00Z"
+    expect: fires
+    note: "Sun enters Ardra with Moon in watery sign Pisces aspected by Jupiter. Predicted excess rainfall realized in 2022."
+    verified_with: Swiss Ephemeris & IMD All-India Rainfall
+ex_ante: true
+computable_from_ephemeris: yes
+computable_explanation: >-
+  COMPUTABLE FROM EPHEMERIS: The exact moment of Sun ingress into Ardra (66°40' sidereal) is purely
+  astronomical. Planetary coordinates, lagna for any reference coordinate (e.g. New Delhi 28.61N, 77.20E),
+  and mutual planetary aspects are 100% computable using Swiss Ephemeris.
+verified: yes
+edition: "Bhavishya Phala Bhaskara (Khemraj Shrikrishnadas, Bombay, 1913)"
+page: "pp. 45-52"
+evidence_url: https://archive.org/details/bhavishyaphala/

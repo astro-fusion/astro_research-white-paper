@@ -1,0 +1,59 @@
+id: mundane.classical.varsheshvara_samvatsara_king_monsoon
+name: "Varsheshvara: Samvatsara King Planet Monsoon and Agricultural Index"
+domain: mundane
+claim: >-
+  The planet ruling the weekday at sunrise on Chaitra Shukla Pratipada (the Hindu Lunar New Year)
+  becomes the King (Varsheshvara / Raja) of the year. Benefic Kings (Moon, Mercury, Jupiter, Venus)
+  predict bountiful seasonal rainfall, high agricultural productivity, and full reservoirs.
+  Malefic Kings (Mars, Saturn, Sun) portend below-normal monsoon rain, heatwaves, pest outbreaks, and drought.
+source:
+  text: Brihat Samhita
+  edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, 1981)"
+  chapter: "19"
+  verse: "1-9"
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc362875.html
+  published: "c. 550 CE"
+tier: classical
+params:
+  calendar_standard:
+    value: Chaitra_Shukla_1_Sunrise
+    unit: panchang_epoch
+conditions:
+  all:
+    - month_paksha:
+        months:
+          - Chaitra
+        paksha: shukla
+    - nakshatra_on_tithi:
+        months:
+          - Chaitra
+        tithis:
+          - 1
+        nakshatras:
+          - Revati
+          - Ashwini
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "Sunrise moment of Chaitra Shukla Pratipada (March / April)"
+window:
+  unit: months
+  before: 0
+  after: 6
+  note: "Spans the agricultural kharif season (June through October)"
+lag: 60 to 180 days
+region: All-India
+expected_effect:
+  series: rainfall
+  direction: increase
+reference_cases:
+  - moment: "2020-03-25T00:30:00Z"
+    expect: fires
+    note: "Chaitra Shukla Pratipada 2020 (Wednesday sunrise -> Mercury King); fires predicting favorable rain/agricultural yield."
+    verified_with: Swiss Ephemeris / Drik Siddhanta Panchang
+  - moment: "2020-07-01T00:00:00Z"
+    expect: silent
+    note: "Mid-monsoon date; outside New Year King determination window."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+ex_ante: true
+computable: true

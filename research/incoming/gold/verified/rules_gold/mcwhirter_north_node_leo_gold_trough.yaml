@@ -1,0 +1,48 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.mcwhirter_north_node_leo_gold_trough
+name: Louise McWhirter: North Node in Leo marks business peak and counter-cyclical gold cycle trough
+domain: financial
+claim: When the Moon's North Node transits tropical Leo, general business volume reaches its cycle peak, causing counter-cyclical gold prices to form a long-term cyclical low.
+source:
+  text: Astrology and Stock Market Forecasting / The McWhirter Theory of Stock Market Forecasting
+  edition: Louise McWhirter (Astrological Library, New York, 1938)
+  chapter: Chapter 2 (The 18.6 Year Nodal Cycle)
+  verse: pp. 24-38
+  url: https://en.wikipedia.org/wiki/Louise_McWhirter
+  published: '1938-01-01'
+author: Louise McWhirter (operationalised by astro-research 2026-11-22)
+tier: practitioner
+verification:
+  verified: false
+  evidence_url: "NOT FOUND"
+  edition: "Astrology and Stock Market Forecasting by Louise McWhirter (American Federation of Astrologers, 1977, ISBN 978-0866901840)"
+  page: "Chapter 2, pp. 24-38"
+  notes: "Unverified: cited URL is Wikipedia; McWhirter theory models general NYSE stock levels, not physical gold prices."
+params:
+  orb: {value: 30, min: 10, max: 30, step: 1, unit: deg}
+conditions:
+  node: north_node_mean
+  sign: Leo
+  zodiac: tropical
+chart: transit
+window:
+  unit: days
+  before: 0
+  after: 500
+expected_effect:
+  series: gold_usd
+  direction: down
+  size: cyclical_trough
+reference_cases:
+  - moment: '2018-01-15T00:00:00Z'
+    expect: fires
+    note: Mean North Node transiting tropical Leo (entered May 2017, exited Nov 2018); gold fell from $1360 to cyclical trough of $1160 in August 2018 before reversing.
+    url: https://www.mmacycles.com/free-weekly-forecast/
+  - moment: '2023-01-01T00:00:00Z'
+    expect: silent
+    note: North Node in Taurus, not Leo.
+    url: https://www.mmacycles.com/
+ex_ante: true
+computable: true
+notes:
+  practitioner_quote: "When the North Node is in Leo, business activity reaches the top of the 18.6-year cycle. High confidence reduces demand for defensive hedges."

@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: seismic.kapoor_koorma_chakra_affliction
+name: Kapoor-Koorma-Chakra-Affliction
+domain: seismic
+claim: >-
+  Planetary war (Graha Yuddha) or severe malefic conjunction occurring in the nakshatras of the
+  Koorma Chakra Northeast limb (Revati, Ashvini, Bharani) or Northwest limb (Uttara Ashadha,
+  Shravana, Dhanishtha) triggers destructive earthquakes along the Himalayan belt within 45 days.
+source:
+  text: AstroKapoor Mundane Research / Predicting Earthquakes (K.K. Joshi & K.N. Rao)
+  edition: AstroKapoor / Sagar Publications 2001
+  chapter: Koorma Chakra and Earthquakes
+  verse: Section 4
+  url: https://astrokapoor.com/
+  published: '2012-05-15'
+tier: practitioner
+params:
+  window_days: {value: 45, min: 15, max: 60, step: 5, unit: days}
+conditions:
+  all:
+    - any:
+        - conjunct_within:
+            planets:
+              - Mars
+              - Saturn
+            orb: 5.0
+        - conjunct_within:
+            planets:
+              - Mars
+              - Rahu
+            orb: 5.0
+    - any:
+        - kurma_direction:
+            planet: Mars
+            directions:
+              - north_east
+              - north_west
+            start: krittika
+        - kurma_direction:
+            planet: Saturn
+            directions:
+              - north_east
+              - north_west
+            start: krittika
+chart: transit-only
+window:
+  unit: days
+  before: 0
+  after: 45
+region: Himalayan collision belt (Kashmir, Himachal, Uttarakhand, Nepal, Sikkim, Bhutan, Assam)
+expected_effect:
+  series: quake_rate
+  direction: increase
+  magnitude: '>= 6.5'
+reference_cases:
+  - moment: '2015-04-25T06:11:26Z'
+    expect: fires
+    note: >-
+      2015 Gorkha Mw 7.8: Mars transit in Aries (Ashvini/Bharani, Northeast limb of Koorma Chakra)
+      under aspect of Saturn in Scorpio.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+  - moment: '2013-10-15T06:00:00Z'
+    expect: silent
+    note: Mars in Leo (Southeast limb, not Northern Himalayan limbs).
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+ex_ante: true
+computable: true

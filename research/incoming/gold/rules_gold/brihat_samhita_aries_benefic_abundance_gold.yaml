@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.brihat_samhita_aries_benefic_abundance_gold
+name: Brihat Samhita: Powerful benefics in houses from Aries cause gold abundance and falling prices
+domain: financial
+claim: When benefic planets are powerful in signs relative to Aries (the gold sign), gold flourishes and prices become moderate or decline (argha-mandata).
+source:
+  text: Brihat Samhita
+  edition: Translation by N. Chidambaram Iyer (1884), Chapter 41
+  chapter: '41'
+  verse: 2, 12
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc428509.html
+  published: '0550-01-01'
+author: Varahamihira (operationalised by astro-research 2026-11-22)
+tier: classical
+params:
+  orb: {value: 30, min: 10, max: 30, step: 1, unit: deg}
+conditions:
+  commodity_sign: Aries
+  benefic_planets: [Jupiter, Venus, Mercury]
+  benefic_strength: exalted_or_own_sign
+  zodiac: sidereal_lahiri
+chart: transit
+window:
+  unit: days
+  before: 0
+  after: 60
+expected_effect:
+  series: gold_usd
+  direction: down
+  size: moderate_decline
+reference_cases:
+  - moment: '2014-06-19T00:00:00Z'
+    expect: fires
+    note: Jupiter entered Cancer (4th house from Aries, exaltation for Jupiter); gold entered prolonged trading range and multi-month downtrend through late 2014-2015.
+    url: https://astrologicalmusings.com/forecasting-commodities-prices-and-financial-markets-in-mundane-astrology/
+  - moment: '2011-08-01T00:00:00Z'
+    expect: silent
+    note: Jupiter in Aries was conjunct no other benefics and aspected by Saturn in Virgo, not exalted.
+    url: https://astrologicalmusings.com/
+ex_ante: true
+computable: true
+notes:
+  sanskrit_text: "सौम्यास्तु वीर्यवन्तो द्रव्यसमृद्धिं प्रकुर्वन्ति ॥ (Ch. 41, v. 12)"
+  literal_translation: "Generally, if benefic planets should be powerful in their several signs as stated above, articles will flourish and the prices will be moderate and the articles themselves can be had easily."

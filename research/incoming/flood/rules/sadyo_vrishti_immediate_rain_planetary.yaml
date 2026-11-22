@@ -1,0 +1,68 @@
+id: mundane.classical.sadyo_vrishti_immediate_rain_planetary
+name: "Sadyovrishti: Immediate Rainfall Triggers from Benefic Conjunctions"
+domain: mundane
+claim: >-
+  Immediate rainfall occurs within hours to 3 days when Mercury and Venus form a close conjunction (yuti)
+  in the same sign, or when the Moon transits a watery sign (Cancer, Scorpio, Pisces) under direct benefic
+  aspect from Jupiter or Venus without malefic intervention.
+source:
+  text: Brihat Samhita
+  edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, 1981)"
+  chapter: "28"
+  verse: "1-10"
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc362884.html
+  published: "c. 550 CE"
+tier: classical
+params:
+  orb_degrees:
+    value: 3.0
+    min: 1.0
+    max: 5.0
+    step: 0.5
+    unit: deg
+conditions:
+  any:
+    - conjunct_within:
+        planets:
+          - Mercury
+          - Venus
+        orb: $orb_degrees
+    - all:
+        - in_sign:
+            planet: Moon
+            signs:
+              - Cancer
+              - Scorpio
+              - Pisces
+        - graha_drishti:
+            planet: Jupiter
+            target: Moon
+            aspects:
+              - 5
+              - 7
+              - 9
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "Any day during the June-September monsoon period"
+window:
+  unit: days
+  before: 0
+  after: 3
+  note: "Immediate rainfall delivery within 72 hours of exact aspect/conjunction"
+lag: 0 to 72 hours
+region: Local synoptic subdivisions where conjunction is overhead
+expected_effect:
+  series: rainfall
+  direction: increase
+reference_cases:
+  - moment: "2020-07-08T00:00:00Z"
+    expect: fires
+    note: "Mercury and Venus conjunct within 2.5 degrees in Taurus during monsoon; triggers immediate rain rule."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+  - moment: "2020-05-10T00:00:00Z"
+    expect: silent
+    note: "Mercury in Aries and Venus in Gemini (45 degrees apart); silent."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+ex_ante: true
+computable: true

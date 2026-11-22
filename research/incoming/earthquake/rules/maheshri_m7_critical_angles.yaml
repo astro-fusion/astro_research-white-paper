@@ -1,0 +1,48 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: seismic.maheshri_m7_critical_angles
+name: Maheshri-M7-Critical-Angles
+domain: seismic
+claim: >-
+  Simultaneous alignment of at least four outer planets (Jupiter, Saturn, Uranus, Neptune, Pluto)
+  plus Rahu in multiples of 15 degrees with a strict 1.0 degree orb triggers M >= 7.0 earthquakes.
+source:
+  text: Earthquake Prediction Model
+  edition: NCGR Baltimore Conference / Saptarishis Astrology
+  chapter: Statistical Model for M7+ Quakes
+  verse: Section 3
+  url: https://saptarishisshop.com/
+  published: '2007-03-01'
+tier: practitioner
+params:
+  orb: {value: 1.0, min: 0.5, max: 2.0, step: 0.1, unit: deg}
+  angle_step: {value: 15, min: 15, max: 30, step: 15, unit: deg}
+conditions:
+  all:
+    - outer_planets_aspect_count_gte:
+        count: 4
+        angles: [0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180]
+        orb: $orb
+    - node_aspect_active: true
+chart: transit-only
+window:
+  unit: days
+  before: 1
+  after: 2
+region: Global tectonic plate boundaries
+expected_effect:
+  series: quake_rate
+  direction: increase
+  magnitude: '>= 7.0'
+reference_cases:
+  - moment: '2004-12-26T00:58:53Z'
+    expect: fires
+    note: >-
+      2004 Sumatra Mw 9.1: Jupiter in Virgo 22 deg, Saturn in Cancer 0 deg, Uranus in Aquarius 9 deg,
+      Pluto in Sagittarius 28 deg engaged in multiples of 15 deg within 1.0 deg orb.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+  - moment: '2004-06-15T06:00:00Z'
+    expect: silent
+    note: Outer planets distributed outside 15-degree harmonic multiples within 1 deg orb.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+ex_ante: true
+computable: true

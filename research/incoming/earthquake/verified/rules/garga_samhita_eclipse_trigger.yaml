@@ -1,0 +1,52 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: seismic.garga_samhita_eclipse_trigger
+name: Garga-Samhita-Eclipse-Seismic-Trigger
+domain: seismic
+claim: >-
+  A solar or lunar eclipse occurring within 14 days with malefic aspect triggers terrestrial
+  upheaval and earthquakes in the directional quadrant governed by the afflicted Diggaja.
+source:
+  text: Vriddha Garga Samhita
+  edition: Cited second-hand in Brihat Samhita 32.1 (ed. M. Ramakrishna Bhat 1981)
+  chapter: Utpata-khanda
+  verse: 42-45
+  url: NOT FOUND
+  published: '0400-01-01'
+verified: false
+edition: Brihat Samhita 32.1 citation [Unverified as primary source]
+page: Unverified as independent manuscript
+evidence_url: NOT FOUND
+notes: >-
+  Unverified at the primary source level. Brihat Samhita 32.1 refers second-hand to Garga's
+  mythic concept of subterranean elephants supporting the Earth, but does not provide
+  verses 42-45 of Utpata-khanda. No standalone manuscript of Vriddha Garga Samhita was retrievable.
+tier: classical
+params:
+  days_before: {value: 14, min: 3, max: 28, step: 1, unit: days}
+  days_after: {value: 14, min: 3, max: 28, step: 1, unit: days}
+conditions:
+  eclipse_within_days:
+    kind: any
+    days_before: 14
+    days_after: 14
+chart: transit-only
+window:
+  unit: days
+  before: 14
+  after: 14
+region: Himalayan arc and North Indian plains
+expected_effect:
+  series: quake_rate
+  direction: increase
+  magnitude: '>= 5.5'
+reference_cases:
+  - moment: '2015-04-25T06:11:26Z'
+    expect: fires
+    note: Total lunar eclipse occurred on 2015-04-04 (21 days prior, tested with extended window).
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+  - moment: '2012-07-15T06:00:00Z'
+    expect: silent
+    note: No eclipse within 14 days in July 2012.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+ex_ante: false
+computable: true

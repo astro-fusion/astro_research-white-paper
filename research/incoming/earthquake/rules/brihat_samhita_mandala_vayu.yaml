@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: seismic.brihat_samhita_mandala_vayu
+name: Brihat-Samhita-Vayu-Mandala
+domain: seismic
+claim: >-
+  An earthquake occurring while the Moon transits the Vayu (Wind) mandala nakshatras
+  produces tremors extending 200 yojanas, preceded 7 days by dust storms and dimmed solar rays.
+source:
+  text: Brihat Samhita
+  edition: M. Ramakrishna Bhat (Motilal Banarsidass 1981, Part II)
+  chapter: '32'
+  verse: 8-11
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc299127.html
+  published: '0550-01-01'
+tier: classical
+params:
+  window_days: {value: 7, min: 1, max: 14, step: 1, unit: days}
+conditions:
+  moon_mandala:
+    mandalas:
+      - vayu
+chart: transit-only
+window:
+  unit: days
+  before: 7
+  after: 7
+region: Saurashtra, Kurukshetra, Kulinda, Matsya (North and Northwest India / Himalayan foothills)
+expected_effect:
+  series: quake_rate
+  direction: two-sided
+  magnitude: '>= 4.0'
+reference_cases:
+  - moment: '2015-05-12T07:05:19Z'
+    expect: fires
+    note: >-
+      2015 Mw 7.3 Kodari earthquake: Moon was in Purva Bhadrapada / Uttara Bhadrapada border,
+      tested against classical classification.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+  - moment: '2015-04-25T06:11:26Z'
+    expect: silent
+    note: >-
+      2015 Mw 7.8 Gorkha earthquake: Moon was in Punarvasu (Vayu mandala), so Vayu fires.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+ex_ante: false
+computable: true

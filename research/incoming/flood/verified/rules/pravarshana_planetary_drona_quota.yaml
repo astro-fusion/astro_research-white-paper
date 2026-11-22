@@ -1,0 +1,56 @@
+id: mundane.classical.pravarshana_planetary_drona_quota
+name: "Pravarshana: Planetary Rainfall Quotas in Dronas and Rain-Gauge Specification"
+domain: mundane
+claim: >-
+  Rainfall volume during the monsoon is measured in Dronas using a standardized circular vessel.
+  The planetary ruler of the year/cloud establishes the seasonal quota: Jupiter gives 16 Dronas,
+  Venus 16 Dronas, Mercury 12 Dronas, Mars 10 Dronas, Saturn 5 Dronas, and Sun 6 Dronas.
+source:
+  text: Brihat Samhita
+  edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, Part 1, 1981, ISBN: 978-81-208-1060-0)"
+  chapter: "23"
+  verse: "1-10"
+  page: "pp. 230-234"
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc228924.html
+  published: "c. 550 CE"
+tier: classical
+params:
+  planetary_quotas_dronas:
+    Jupiter: 16
+    Venus: 16
+    Mercury: 12
+    Mars: 10
+    Saturn: 5
+    Sun: 6
+  gauge_dimension: "1 cubit (hasta ~ 45 cm) diameter circular mouth, measured in Adhakas (50 Palas each, 4 Adhakas = 1 Drona)"
+conditions:
+  all:
+    - planetary_ruler_identified: true
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "Southwest monsoon delivery season (Ashadha to Ashvina)"
+window:
+  unit: months
+  before: 0
+  after: 4
+lag: 0 months
+region: All-India / sub-divisional seasonal rainfall
+expected_effect:
+  series: rainfall
+  direction: increase
+reference_cases:
+  - moment: "2023-06-22T10:00:00Z"
+    expect: fires
+    note: "Mercury as ruler gives intermediate quota of 12 Dronas (~normal to slightly deficient)."
+    verified_with: Swiss Ephemeris
+ex_ante: true
+computable_from_ephemeris: yes
+computable_explanation: >-
+  COMPUTABLE FROM EPHEMERIS: The planetary ruler (Megheshvara or Varsheshvara) is strictly computable
+  from planetary ingress and weekday at sunrise. The theoretical quota rank (Venus/Jupiter > Mercury > Mars > Sun > Saturn)
+  can be directly correlated against seasonal rainfall totals.
+verified: yes
+edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, Part 1, 1981)"
+page: "pp. 230-234"
+evidence_url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc228924.html

@@ -1,0 +1,58 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: seismic.bhadrabahu_graha_yuddha
+name: Bhadrabahu-Graha-Yuddha-Earthquake
+domain: seismic
+claim: >-
+  Planetary war (Graha Yuddha, angular separation <= 1.0 degree between two non-luminous planets)
+  in earthy or airy signs causes severe earthquakes within 30 days.
+source:
+  text: Bhadrabahu Samhita
+  edition: Dr. Nemichandra Shastri (Bharatiya Jnanpith 1959)
+  chapter: '28'
+  verse: 14-19
+  url: NOT FOUND
+  published: '1959-01-01'
+verified: false
+edition: Dr. Nemichandra Shastri (Bharatiya Jnanpith 1959) [Unverified at source]
+page: Unverified (cited JainQQ ID 002778 resolves to Kuvalayamala Part 2)
+evidence_url: NOT FOUND
+notes: >-
+  Unverified at the primary source level. The cited JainQQ URL https://jainqq.org/explore/002778/1
+  points to Kuvalayamala Part 2, not Bhadrabahu Samhita. No scanned manuscript of Chapter 28
+  verses 14-19 was retrievable. Marked unverified in compliance with Hard Rule 1.
+tier: classical
+params:
+  orb: {value: 1.0, min: 0.2, max: 2.0, step: 0.1, unit: deg}
+conditions:
+  all:
+    - conjunct_within:
+        planets:
+          - Mars
+          - Saturn
+        orb: $orb
+    - any:
+        - planet: Mars
+          element_is: earth
+        - planet: Mars
+          element_is: air
+chart: transit-only
+window:
+  unit: days
+  before: 0
+  after: 30
+region: Subcontinent / Global tectonic belts
+expected_effect:
+  series: quake_rate
+  direction: increase
+  magnitude: '>= 6.0'
+reference_cases:
+  - moment: '2000-04-17T06:00:00Z'
+    expect: fires
+    note: Mars and Saturn in Aries within 0.8 degrees.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+  - moment: '2000-02-11T06:00:00Z'
+    expect: silent
+    note: Mars in Pisces 5.5 deg and Saturn in Aries 17.3 deg; separation 41.7 deg.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+ex_ante: false
+computable: true

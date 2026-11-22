@@ -1,0 +1,57 @@
+id: mundane.classical.sapta_nadi_chakra_saturn_jala_cyclone
+name: "Sapta Nadi Chakra: Saturn in Jala or Amrita Nadi Flood and Cyclone Trigger"
+domain: mundane
+claim: >-
+  The 28 asterisms (including Abhijit) are distributed across 7 Nadis in serpentine sequence.
+  When Saturn or outer malefics transit the asterisms of Jala Nadi (Pushya, Purva Phalguni, Abhijit,
+  Shatabhisha) or Amrita Nadi (Ashlesha, Magha, Shravana, Dhanishta) during the monsoon season,
+  intense precipitation, cyclones, and riverine floods are triggered across South Asia.
+source:
+  text: Narapatijayacharya Svarodaya
+  edition: "Narapatijayacharya Svarodaya with Sanskrit commentary by Harihar (Kshemaraja Krishnadas / Venkateshwara Steam Press, Bombay)"
+  chapter: "Sapta-Nadi-Cakra-Prakaranam"
+  verse: "1-12"
+  url: https://archive.org/details/narapatijayacharyasvarodaya
+  published: "c. 1100 CE"
+tier: classical
+params:
+  nadi_group:
+    value: Jala_Amrita
+    unit: nadi_category
+conditions:
+  in_nakshatra:
+    planet: Saturn
+    nakshatras:
+      - Pushya
+      - Purva Phalguni
+      - Abhijit
+      - Shatabhisha
+      - Ashlesha
+      - Magha
+      - Shravana
+      - Dhanishta
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "Transit duration of Saturn through Jala or Amrita Nadi asterisms"
+window:
+  unit: months
+  before: 0
+  after: 4
+  note: "Active throughout the monsoon season while transit persists"
+lag: Concurrent to +30 days
+region: North Indian Ocean coastal zones and major river basins (Indus, Ganges, Brahmaputra)
+expected_effect:
+  series: flood_events
+  direction: increase
+reference_cases:
+  - moment: "2023-07-15T00:00:00Z"
+    expect: fires
+    note: "Saturn transiting Shatabhisha nakshatra (Aquarius) in Jala Nadi during monsoon 2023; heavy floods in North India."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+  - moment: "2019-06-15T00:00:00Z"
+    expect: silent
+    note: "Saturn in Purvashadha (Soumya Nadi); silent for Jala Nadi trigger."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+ex_ante: true
+computable: true

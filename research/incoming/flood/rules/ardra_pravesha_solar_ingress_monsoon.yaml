@@ -1,0 +1,56 @@
+id: mundane.classical.ardra_pravesha_solar_ingress_monsoon
+name: "Ardra Pravesha: Solar Ingress into Ardra Nakshatra Monsoon Forecast"
+domain: mundane
+claim: >-
+  The horoscope cast for the exact moment the Sun enters Ardra nakshatra (sidereal longitude 66°40' Gemini)
+  determines the overall character and volume of the Indian southwest monsoon. If the lagna is a watery sign
+  (Cancer, Scorpio, Pisces) or aspected by benefics (Jupiter, Venus) with watery Moon placement, rainfall is
+  excessive with high flood frequency. If the lagna is fiery (Aries, Leo, Sagittarius) and afflicted by Mars,
+  drought occurs.
+source:
+  text: Bhavishya Phala Bhaskar
+  edition: "Bhavishya Phala Bhaskar (Mundane Ingress Astro-meteorology, Khemraj Shrikrishnadass, Bombay)"
+  chapter: "Ardra-Pravesha-Adhyaya"
+  verse: "15-28"
+  url: https://archive.org/details/bhavishyaphala
+  published: "c. 1400 CE"
+tier: classical
+params:
+  ingress_longitude_deg:
+    value: 66.6667
+    unit: deg
+conditions:
+  all:
+    - in_sign:
+        planet: Sun
+        signs:
+          - Gemini
+    - in_nakshatra:
+        planet: Sun
+        nakshatras:
+          - Ardra
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "Annual astronomical ingress moment (typically June 21-23)"
+window:
+  unit: months
+  before: 0
+  after: 3.5
+  note: "June 22 through September 30 Indian summer monsoon"
+lag: 10 to 100 days
+region: All-India Summer Monsoon Rainfall (ISMR)
+expected_effect:
+  series: rainfall
+  direction: increase
+reference_cases:
+  - moment: "2020-06-21T18:00:00Z"
+    expect: fires
+    note: "Sun ingress into Ardra 66.67 deg during solar eclipse with watery Moon; fires predicting excess rain/floods."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+  - moment: "2020-05-15T00:00:00Z"
+    expect: silent
+    note: "Sun in Taurus; outside Ardra ingress window."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+ex_ante: true
+computable: true

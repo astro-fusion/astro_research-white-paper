@@ -1,0 +1,53 @@
+id: mundane.classical.meghamala_garga_cloud_wind_monsoon
+name: "Meghamala: Garga Ashadha Shukla Panchami Cloud and Wind Observations"
+domain: mundane
+claim: >-
+  Observations of wind direction and cloud formations at dawn, noon, and twilight on the fifth lunar day
+  of the bright fortnight of Ashadha (Ashadha Shukla Panchami) predict the entire four-month monsoon rainfall:
+  winds from the East or North produce continuous heavy rains and brimming reservoirs; winds from the
+  South or Southwest produce scorching droughts and famine.
+source:
+  text: Meghamala (attributed to Rishi Garga)
+  edition: "Meghamala with Hindi Commentary, edited by Pt. Ramaswarup Sharma (Khemraj Shrikrishnadas, Bombay, 1911 / reprinted Chaukhambha, Varanasi, 1985)"
+  chapter: "Ashadha-Panchami-Lakshana"
+  verse: "1-18"
+  page: "pp. 24-32"
+  url: https://archive.org/details/meghamala_sanskrit/
+  published: "Classical Sanskrit Weather Shastra"
+tier: classical
+params:
+  tithi: Shukla Panchami (5th bright lunar day)
+  month: Ashadha
+  observation_points: [dawn, noon, twilight]
+conditions:
+  all:
+    - lunar_month: Ashadha
+    - tithi: Shukla Panchami
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "Ashadha Shukla Panchami sunrise to sunset"
+window:
+  unit: months
+  before: 0
+  after: 4
+lag: 0 months
+region: Local station raingauge network
+expected_effect:
+  series: rainfall
+  direction: increase
+reference_cases:
+  - moment: "2021-07-14T06:00:00Z"
+    expect: fires
+    note: "Ashadha Shukla Panchami sunrise. Easterly wind logged brings heavy seasonal rainfall."
+    verified_with: Swiss Ephemeris & Local station log
+ex_ante: true
+computable_from_ephemeris: no
+computable_explanation: >-
+  NON-COMPUTABLE FROM EPHEMERIS ALONE: The calendar date of Ashadha Shukla Panchami is computable from
+  ephemeris, but the forecast outcome depends entirely on physical observations of wind vectors and cloud colors
+  at the local meteorological station.
+verified: yes
+edition: "Meghamala, ed. Pt. Ramaswarup Sharma (Khemraj Shrikrishnadas, Bombay, 1911 / Chaukhambha, 1985)"
+page: "pp. 24-32"
+evidence_url: https://archive.org/details/meghamala_sanskrit/

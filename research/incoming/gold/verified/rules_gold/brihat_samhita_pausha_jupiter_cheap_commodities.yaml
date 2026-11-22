@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.brihat_samhita_pausha_jupiter_cheap_commodities
+name: Brihat Samhita: Jupiter in Pausha nakshatras (Pushya/Ashlesha) lowers commodity prices
+domain: financial
+claim: During the Pausha year of Jupiter (transit through Pushya and Ashlesha nakshatras in Cancer), commodity prices become cheap doubly or trebly.
+source:
+  text: Brihat Samhita
+  edition: Translation by N. Chidambaram Iyer (1884), Chapter 8 (Course of Jupiter)
+  chapter: '8'
+  verse: '5'
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/
+  published: '0550-01-01'
+author: Varahamihira (operationalised by astro-research 2026-11-22)
+tier: classical
+verification:
+  verified: true
+  evidence_url: "https://archive.org/details/brihatsamhitawithenglishtranslationramakrishnabhattm.part1mlbd_305_s/page/n113/mode/2up"
+  edition: "Varahamihira's Brihat Samhita with English Translation and Notes by M. Ramakrishna Bhat (Part 1, Motilal Banarsidass, 1981, ISBN 978-8120810600)"
+  page: "89 (v. 5)"
+  notes: "Verified in Bhat (1981) Part 1, Ch. 8 (Bṛhaspaticāra). Verse 5 states that in the Pausha year of Jupiter, commodities are abundant and cheap."
+params:
+  orb: {value: 13.33, min: 5, max: 13.33, step: 0.1, unit: deg}
+conditions:
+  planet: Jupiter
+  nakshatras: [Pushya, Ashlesha]
+  sign: Cancer
+  zodiac: sidereal_lahiri
+chart: transit
+window:
+  unit: days
+  before: 0
+  after: 120
+expected_effect:
+  series: gold_usd
+  direction: down
+  size: heavy_drawdown
+reference_cases:
+  - moment: '2014-10-01T00:00:00Z'
+    expect: fires
+    note: Jupiter transiting Pushya Nakshatra in Cancer; gold dropped from $1300 to $1140 in autumn 2014.
+    url: https://www.tempora.ltd/findings/gold-jupiter
+  - moment: '2020-04-01T00:00:00Z'
+    expect: silent
+    note: Jupiter in Uttarashadha in Capricorn, not Pushya or Ashlesha.
+    url: https://astrologicalmusings.com/
+ex_ante: true
+computable: true
+notes:
+  sanskrit_text: "पौषे समप्रचारो द्विगुणत्रिगुणा च सस्यनिष्पत्तिः । अर्घस्य च लाघवता ॥ (Ch. 8, v. 5)"
+  literal_translation: "In the Pausha year of Jupiter, mankind will be happy... and the price of food crops and commodities will become cheap doubly or trebly."

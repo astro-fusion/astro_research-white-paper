@@ -1,0 +1,54 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: seismic.brihat_samhita_mandala_varuna
+name: Brihat-Samhita-Varuna-Mandala
+domain: seismic
+claim: >-
+  An earthquake occurring while the Moon transits the Varuna (Water) mandala nakshatras
+  (Revati, Purva Ashadha, Ardra, Ashlesha, Mula, Uttara Bhadrapada, Shatabhisha)
+  produces tremors extending 180 yojanas, preceded by blue lotus clouds and gentle rain.
+source:
+  text: Brihat Samhita
+  edition: N. Chidambaram Iyer (1884, reprinted 1987) / M. Ramakrishna Bhat (Motilal Banarsidass 1981, Part II)
+  chapter: '32'
+  verse: 20-23, 28, 31
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc229177.html
+  published: '0550-01-01'
+verified: true
+edition: M. Ramakrishna Bhat (Motilal Banarsidass 1981, Part II, pp. 287-296); N. Chidambaram Iyer (1884)
+page: Part II, pp. 294-296; Chapter 32 verses 20-23, 31
+evidence_url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc229177.html
+textual_hermeneutic_finding: >-
+  In classical Jyotish (Brihat Samhita 32.7, 32.23, 32.27, 32.31), the mandala of the Moon's nakshatra
+  is evaluated at the moment an earthquake occurs to determine its geographic radius (180 yojanas for Varuna)
+  and predict its socioeconomic aftermath over the subsequent 6 months. It was not intended as a forward
+  causal trigger for earthquake nucleation.
+tier: classical
+params:
+  window_days: {value: 15, min: 3, max: 30, step: 1, unit: days}
+conditions:
+  moon_mandala:
+    mandalas:
+      - varuna
+chart: transit-only
+window:
+  unit: days
+  before: 15
+  after: 15
+region: Gonarda, Chedi, Kukura, Videha (North-central and Northern Bihar / Nepal borders)
+expected_effect:
+  series: quake_rate
+  direction: two-sided
+  magnitude: '>= 4.0'
+reference_cases:
+  - moment: '2005-10-08T03:50:40Z'
+    expect: fires
+    note: >-
+      2005 Mw 7.6 Kashmir earthquake: Moon was in Mula (Varuna mandala, BS 32.20).
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+  - moment: '2015-04-25T06:11:26Z'
+    expect: silent
+    note: >-
+      2015 Mw 7.8 Gorkha earthquake: Moon was in Punarvasu (Vayu mandala), not Varuna.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+ex_ante: false
+computable: true

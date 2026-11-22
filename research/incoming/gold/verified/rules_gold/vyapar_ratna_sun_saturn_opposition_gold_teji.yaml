@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.vyapar_ratna_sun_saturn_opposition_gold_teji
+name: Vyapar Ratna: Sun-Saturn opposition causes sharp teji (rally) in gold
+domain: financial
+claim: When the Sun (karaka of gold) is in exact 180° opposition with Saturn, gold prices experience an acute upward price spike (teji).
+source:
+  text: Vyapar Ratna (Share Stock Market Sona Chandi Teji Mandi Jyotish Guide)
+  edition: Pandit Hardev Sharma Trivedi and Pandit Gopesh Kumar Ojha
+  chapter: Sona-Chandi Teji-Mandi Vichar
+  verse: Section 3, p. 112
+  url: https://www.flipkart.com/vyapar-ratna-share-stock-market-sona-chandi-teji-mandi-jyotish-guide-business-astrology-book-hardev-sharma-trivedi-gopesh-kumar-ojha/p/itm3e73cd42ef062
+  published: '1975-01-01'
+author: Hardev Sharma Trivedi & Gopesh Kumar Ojha (operationalised 2026-11-22)
+tier: practitioner
+verification:
+  verified: false
+  evidence_url: "NOT FOUND"
+  edition: "Vyapar Ratna by Pandit Hardev Sharma Trivedi & Pandit Gopesh Kumar Ojha (1975)"
+  page: "112 (unverified scan)"
+  notes: "Unverified: cited URL is an e-commerce product listing on Flipkart; missing primary book scan."
+params:
+  orb: {value: 4.0, min: 1.0, max: 6.0, step: 0.5, unit: deg}
+conditions:
+  planet_1: Sun
+  planet_2: Saturn
+  aspect_deg: 180.0
+  orb: $orb
+  zodiac: sidereal_lahiri
+chart: transit
+window:
+  unit: days
+  before: 3
+  after: 7
+expected_effect:
+  series: gold_usd
+  direction: up
+  size: short_term_spike
+reference_cases:
+  - moment: '2023-08-27T08:28:00Z'
+    expect: fires
+    note: Sun in Leo 9°50' opposed Saturn retrograde in Aquarius 9°50' (exact opposition); gold bounced from $1904 to $1945 over subsequent 5 sessions.
+    url: https://rajeevprakash.com/blog/
+  - moment: '2023-05-15T00:00:00Z'
+    expect: silent
+    note: Sun in Taurus 0° square Saturn in Aquarius 12°, outside opposition orb.
+    url: https://rajeevprakash.com/blog/
+ex_ante: true
+computable: true
+notes:
+  practitioner_quote: "सूर्य-शनि का समसप्तक योग सोने के भाव में आकस्मिक तेजी लाता है क्योंकि सूर्य स्वर्ण का कारक है और शनि से पीड़ित होने पर धातु की कमी पैदा होती है।"

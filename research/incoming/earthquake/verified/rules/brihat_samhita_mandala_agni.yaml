@@ -1,0 +1,54 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: seismic.brihat_samhita_mandala_agni
+name: Brihat-Samhita-Agni-Mandala
+domain: seismic
+claim: >-
+  An earthquake occurring while the Moon transits the Agni (Fire) mandala nakshatras
+  (Pushya, Krittika, Vishakha, Bharani, Magha, Purva Bhadrapada, Purva Phalguni)
+  produces tremors extending 110 yojanas, preceded 15 days by meteor trails and burning horizons.
+source:
+  text: Brihat Samhita
+  edition: N. Chidambaram Iyer (1884, reprinted 1987) / M. Ramakrishna Bhat (Motilal Banarsidass 1981, Part II)
+  chapter: '32'
+  verse: 12-15, 28, 31
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc229177.html
+  published: '0550-01-01'
+verified: true
+edition: M. Ramakrishna Bhat (Motilal Banarsidass 1981, Part II, pp. 287-296); N. Chidambaram Iyer (1884)
+page: Part II, pp. 291-293; Chapter 32 verses 12-15, 31
+evidence_url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc229177.html
+textual_hermeneutic_finding: >-
+  In classical Jyotish (Brihat Samhita 32.7, 32.23, 32.27, 32.31), the mandala of the Moon's nakshatra
+  is evaluated at the moment an earthquake occurs to determine its geographic radius (110 yojanas for Agni)
+  and predict its socioeconomic aftermath over the subsequent 6 months. It was not intended as a forward
+  causal trigger for earthquake nucleation.
+tier: classical
+params:
+  window_days: {value: 15, min: 3, max: 21, step: 1, unit: days}
+conditions:
+  moon_mandala:
+    mandalas:
+      - agni
+chart: transit-only
+window:
+  unit: days
+  before: 15
+  after: 15
+region: Ashmaka, Anga, Vanga, Kalinga, Dravida (Central, Eastern, and Southern India)
+expected_effect:
+  series: quake_rate
+  direction: two-sided
+  magnitude: '>= 4.0'
+reference_cases:
+  - moment: '2023-02-06T01:17:35Z'
+    expect: fires
+    note: >-
+      2023 Mw 7.8 Turkey-Syria earthquake: Moon was in Magha nakshatra (Agni mandala, BS 32.12).
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+  - moment: '2015-04-25T06:11:26Z'
+    expect: silent
+    note: >-
+      2015 Mw 7.8 Gorkha earthquake: Moon was in Punarvasu (Vayu mandala), not Agni.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+ex_ante: false
+computable: true

@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.vyapar_ratna_guru_chandal_monetary_panic
+name: Vyapar Ratna: Guru Chandal Yoga (Jupiter conjunct Rahu) drives capital flight to gold
+domain: financial
+claim: A conjunction of Jupiter and Rahu within 8° triggers monetary instability, distrust in financial institutions, and rapid speculative inflation in gold.
+source:
+  text: Vyapar Ratna
+  edition: Hardev Sharma Trivedi and Gopesh Kumar Ojha, Teji Mandi Section
+  chapter: Graha Yogas for Bullion
+  verse: p. 145
+  url: https://www.flipkart.com/vyapar-ratna-share-stock-market-sona-chandi-teji-mandi-jyotish-guide-business-astrology-book-hardev-sharma-trivedi-gopesh-kumar-ojha/p/itm3e73cd42ef062
+  published: '1975-01-01'
+author: Hardev Sharma Trivedi & Gopesh Kumar Ojha (operationalised 2026-11-22)
+tier: practitioner
+params:
+  orb: {value: 8.0, min: 3.0, max: 10.0, step: 1.0, unit: deg}
+conditions:
+  planet_1: Jupiter
+  planet_2: Rahu
+  aspect_deg: 0.0
+  orb: $orb
+  zodiac: sidereal_lahiri
+chart: transit
+window:
+  unit: days
+  before: 15
+  after: 60
+expected_effect:
+  series: gold_usd
+  direction: up
+  size: major_bull_leg
+reference_cases:
+  - moment: '2023-05-27T00:00:00Z'
+    expect: fires
+    note: Jupiter in Aries 6° conjunct Rahu in Aries 9° (Guru Chandal Yoga within 3°); gold held resilient above $1950 before consolidating for next major breakout.
+    url: https://astrologicalmusings.com/kartik-amavasya-kundali-what-it-foretells-for-economy-and-bullion-market/
+  - moment: '2021-08-01T00:00:00Z'
+    expect: silent
+    note: Jupiter in Aquarius, Rahu in Taurus (90° apart, no conjunction).
+    url: https://astrologicalmusings.com/
+ex_ante: true
+computable: true
+notes:
+  practitioner_quote: "गुरु-राहु युति (गुरु चांडाल योग) होने पर वित्तीय भ्रम और मुद्रा अवमूल्यन होता है, जिससे व्यापारी सोने-चांदी में पूंजी लगाते हैं और भारी तेजी आती है।"

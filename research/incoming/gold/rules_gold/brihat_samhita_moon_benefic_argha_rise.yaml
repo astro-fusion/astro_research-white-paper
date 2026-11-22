@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.brihat_samhita_moon_benefic_argha_rise
+name: Brihat Samhita: New/Full Moon aspected by benefics raises commodity prices
+domain: financial
+claim: When a New Moon or Full Moon is conjunct or aspected by benefic planets, the price of commodities (argha) rises.
+source:
+  text: Brihat Samhita
+  edition: Translation by N. Chidambaram Iyer (1884), Chapter 42 (Fluctuation of prices)
+  chapter: '42'
+  verse: '14'
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/word136153.html
+  published: '0550-01-01'
+author: Varahamihira (operationalised by astro-research 2026-11-22)
+tier: classical
+params:
+  orb: {value: 6, min: 2, max: 10, step: 1, unit: deg}
+conditions:
+  lunation: new_moon_or_full_moon
+  aspecting_planets: [Jupiter, Venus]
+  aspect_type: conjunction_or_drishti
+  zodiac: sidereal_lahiri
+chart: lunation
+window:
+  unit: days
+  before: 2
+  after: 14
+expected_effect:
+  series: gold_usd
+  direction: up
+  size: moderate_rise
+reference_cases:
+  - moment: '2024-04-23T23:49:00Z'
+    expect: fires
+    note: Full Moon in Chitra/Swati aspected by Jupiter from Aries within 5° orb; gold rallied toward fresh highs in subsequent 14 trading days.
+    url: https://www.mmacycles.com/free-weekly-forecast/
+  - moment: '2022-09-25T21:54:00Z'
+    expect: silent
+    note: New Moon in Virgo conjunct Sun and Mercury, aspected heavily by retrograde Saturn from Capricorn with no benefic Jupiter/Venus trine; prices did not rise.
+    url: https://astrologicalmusings.com/
+ex_ante: true
+computable: true
+notes:
+  sanskrit_text: "सौम्यैर्निरीक्षितेन्दौ समुपगते वा महर्घता भवति । (Ch. 42, v. 14)"
+  literal_translation: "If the New or Full Moon should either be accompanied by or within view of benefic planets, the price of commodities will rise."

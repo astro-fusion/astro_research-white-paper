@@ -1,0 +1,58 @@
+id: mundane.classical.rohini_yoga_ashadha_wind_trajectory
+name: "Rohini Yoga: Ashadha Lunar Conjunction and Wind Trajectory"
+domain: mundane
+claim: >-
+  During Ashadha Krishna Paksha, when the Moon transits Rohini (sidereal Taurus 10°00'-23°20'),
+  the direction of the prevailing wind and the celestial latitude of the Moon determine the monsoon.
+  Wind from the East or North-East with northern lunar passage brings widespread rainfall and high harvest yield;
+  wind from the South or South-West with southern lunar passage portends deficient monsoon and agricultural crisis.
+source:
+  text: Brihat Samhita
+  edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, 1981)"
+  chapter: "24"
+  verse: "1-15"
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc362880.html
+  published: "c. 550 CE"
+tier: classical
+params:
+  transit_orb_hours:
+    value: 24
+    min: 12
+    max: 48
+    step: 6
+    unit: hours
+conditions:
+  all:
+    - month_paksha:
+        months:
+          - Ashadha
+        paksha: krishna
+    - in_nakshatra:
+        planet: Moon
+        nakshatras:
+          - Rohini
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "24-48 hours during Moon transit in Rohini during Ashadha Krishna Paksha (July)"
+window:
+  unit: months
+  before: 0
+  after: 3
+  note: "Governs remainder of the southwest monsoon (July, August, September)"
+lag: 15 to 90 days
+region: All-India and regional subdivisions (Western, Central, and Northern India)
+expected_effect:
+  series: rainfall
+  direction: increase
+reference_cases:
+  - moment: "2020-07-13T06:00:00Z"
+    expect: fires
+    note: "Moon in Rohini during Ashadha Krishna Paksha (ashtami tithi); triggers Rohini Yoga observation."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+  - moment: "2020-06-25T06:00:00Z"
+    expect: silent
+    note: "Moon in Leo in Magha; outside Ashadha Krishna Rohini window."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+ex_ante: true
+computable: false

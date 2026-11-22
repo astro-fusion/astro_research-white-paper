@@ -1,0 +1,54 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.meridian_jupiter_square_neptune_gold_peak
+name: Bill Meridian: Geocentric Jupiter square Neptune coincides with speculative gold exhaustion peaks
+domain: financial
+claim: Geocentric squares (90° aspect) between Jupiter and Neptune within a 3° orb mark speculative blow-off tops and exhaustion peaks in gold prices.
+source:
+  text: Planetary Stock Trading / Cycles Research
+  edition: Bill Meridian (Cycles Research, 4th ed. 2008)
+  chapter: Precious Metals and Planetary Cycles
+  verse: Interview records, 1974 gold observation
+  url: https://www.billmeridian.com/
+  published: '1998-01-01'
+author: Bill Meridian (operationalised by astro-research 2026-11-22)
+tier: practitioner
+verification:
+  verified: false
+  evidence_url: "NOT FOUND"
+  edition: "Planetary Stock Trading by Bill Meridian (Cycles Research, 2008, ISBN 978-0964762008)"
+  page: "Unverified"
+  notes: "Unverified: cited URL is billmeridian.com homepage; missing specific page number."
+params:
+  orb: {value: 3.0, min: 1.0, max: 4.5, step: 0.5, unit: deg}
+conditions:
+  planet_1: Jupiter
+  planet_2: Neptune
+  aspect_deg: 90.0
+  orb: $orb
+  zodiac: tropical
+chart: transit
+window:
+  unit: days
+  before: 10
+  after: 20
+expected_effect:
+  series: gold_usd
+  direction: down
+  size: major_exhaustion_reversal
+reference_cases:
+  - moment: '1974-04-15T00:00:00Z'
+    expect: fires
+    note: Geocentric Jupiter in Pisces 9° square Neptune in Sagittarius 9°; gold hit intermediate exhaustion top near $197/oz and retraced.
+    url: https://www.traders.com/
+  - moment: '2019-09-21T16:00:00Z'
+    expect: fires
+    note: Exact Jupiter in Sagittarius 17° square Neptune in Pisces 17°; gold peaked at $1555 in early September 2019 and entered 3-month consolidation.
+    url: https://www.mmacycles.com/
+  - moment: '2021-06-01T00:00:00Z'
+    expect: silent
+    note: Jupiter in Pisces, Neptune in Pisces (conjunction zone approaching, not 90° square).
+    url: https://www.billmeridian.com/
+ex_ante: true
+computable: true
+notes:
+  practitioner_quote: "An Indian bullion dealer taught me in 1974 that gold peaks whenever Jupiter is 90 degrees from Neptune geocentrically. It marks the culmination of speculative illusion."

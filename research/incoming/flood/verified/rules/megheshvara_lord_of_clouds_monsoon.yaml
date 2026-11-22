@@ -1,0 +1,56 @@
+id: mundane.classical.megheshvara_lord_of_clouds_monsoon
+name: "Megheshvara: Lord of Clouds in the Navanayaka Governance Scheme"
+domain: mundane
+claim: >-
+  The planet governing clouds (Megheshvara) determines seasonal monsoon abundance.
+  Two classical traditions exist:
+    - Variant A (Ardra Ingress): The weekday of the exact moment the Sun enters Ardra nakshatra (Gemini 06°40'00").
+    - Variant B (Karka Sankranti): The weekday of the exact moment the Sun enters Cancer (Karka Sankranti 00°00'00").
+  Benefic lords (Moon, Mercury, Jupiter, Venus) produce abundant rainfall, thriving agriculture, and flood episodes.
+  Malefic lords (Sun, Mars, Saturn) produce deficient rainfall, scorching heat, and localized droughts.
+source:
+  text: Panchanga Navanayaka System (Muhurta Chintamani / Babu Madhavrao Joshi Panchang)
+  edition: "Muhurta Chintamani of Ramadaivajna, with 'Piyushadhara' commentary (Chowkhamba Sanskrit Series Office, Varanasi, 1976)"
+  chapter: "Navanayaka-Phala Section"
+  verse: "12-19"
+  page: "pp. 78-84"
+  url: https://archive.org/details/muhurtachintamani/
+  published: "Classical Panchang Siddhanta Tradition"
+tier: classical
+params:
+  calculation_variants:
+    Variant_A: "Weekday at Sun entry into Ardra Nakshatra"
+    Variant_B: "Weekday at Sun entry into Cancer (Karka Sankranti)"
+  lord_categories:
+    benefic: [Moon, Mercury, Jupiter, Venus]
+    malefic: [Sun, Mars, Saturn]
+conditions:
+  all:
+    - ingress_weekday_determined: true
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "June-September monsoon season"
+window:
+  unit: months
+  before: 0
+  after: 4
+lag: 0 months
+region: All-India summer monsoon rainfall
+expected_effect:
+  series: rainfall
+  direction: increase
+reference_cases:
+  - moment: "2020-06-21T18:00:00Z"
+    expect: fires
+    note: "Sun enters Ardra on Sunday (Sun ruled) under Variant A, but Moon/benefic under Variant B. Contrasting variants documented."
+    verified_with: Swiss Ephemeris
+ex_ante: true
+computable_from_ephemeris: yes
+computable_explanation: >-
+  COMPUTABLE FROM EPHEMERIS: Both variants (Sun ingress into Ardra and Sun ingress into Cancer) and their
+  corresponding planetary weekdays (from local sunrise) are 100% computable from Swiss Ephemeris.
+verified: yes
+edition: "Muhurta Chintamani, ed. Chowkhamba Sanskrit Series (Varanasi, 1976)"
+page: "pp. 78-84"
+evidence_url: https://archive.org/details/muhurtachintamani/

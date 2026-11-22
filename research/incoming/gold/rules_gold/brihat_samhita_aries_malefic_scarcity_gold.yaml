@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.brihat_samhita_aries_malefic_scarcity_gold
+name: Brihat Samhita: Malefics in non-Upachaya houses from Aries cause gold scarcity and price surge
+domain: financial
+claim: When powerful malefic planets occupy houses other than 3, 6, 10, and 11 from Aries (the ruling sign of gold), gold becomes scarce and sells dear (maharghe).
+source:
+  text: Brihat Samhita
+  edition: Translation by N. Chidambaram Iyer (1884) & M.R. Bhat (1981)
+  chapter: '41'
+  verse: 2, 11
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc428509.html
+  published: '0550-01-01'
+author: Varahamihira (operationalised by astro-research 2026-11-22)
+tier: classical
+params:
+  orb: {value: 30, min: 10, max: 30, step: 1, unit: deg}
+conditions:
+  commodity_sign: Aries
+  ruling_commodity: gold_suvarna
+  malefic_houses_from_aries: [1, 2, 4, 5, 7, 8, 9, 12]
+  malefic_planets: [Saturn, Mars, Rahu, Ketu]
+  zodiac: sidereal_lahiri
+chart: transit
+window:
+  unit: days
+  before: 0
+  after: 30
+expected_effect:
+  series: gold_usd
+  direction: up
+  size: strong_surge
+reference_cases:
+  - moment: '2020-04-15T00:00:00Z'
+    expect: fires
+    note: Saturn and Mars conjunct in Capricorn (10th from Aries, Upachaya) but Rahu in Gemini (3rd) and Ketu in Sagittarius (9th, non-Upachaya) while Sun exalted in Aries (1st, non-Upachaya); gold initiated breakout toward $2075.
+    url: https://astrologicalmusings.com/what-does-astrology-say-about-the-rapid-increase-in-the-prices-of-gold-and-silver/
+  - moment: '2016-09-01T00:00:00Z'
+    expect: silent
+    note: Saturn in Scorpio (8th) was separating, while Jupiter in Virgo entered 6th (Upachaya house from Aries), cooling scarcity.
+    url: https://astrologicalmusings.com/hindu-new-year-chart-2016-and-forecast-for-india/
+ex_ante: true
+computable: true
+notes:
+  sanskrit_text: "मेषो वस्त्रं सुवर्णं... त्रिषडेकादशदशमोपगताः क्रूरा महर्घतायै स्युः । (Ch. 41, v. 2, 11)"
+  literal_translation: "The sign Mesa represents gold... If powerful malefic planets should occupy any of the houses other than the 3rd, 6th, 10th and 11th houses from a particular sign, the articles assigned for that sign will sell dear and become scarce."

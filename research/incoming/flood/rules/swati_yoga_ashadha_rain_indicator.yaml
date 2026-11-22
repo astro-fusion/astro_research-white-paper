@@ -1,0 +1,58 @@
+id: mundane.classical.swati_yoga_ashadha_rain_indicator
+name: "Swati Yoga: Ashadha Shukla Lunar Rain Trigger"
+domain: mundane
+claim: >-
+  In the month of Ashadha, during Shukla Paksha, when the Moon conjuncts the star Swati
+  (sidereal Libra 6°40'-20°00'). If rain falls on the day of the Moon-Swati conjunction,
+  unbroken, abundant rainfall will occur throughout the subsequent monsoon season; if it is dry,
+  dusty, and hot, monsoon rains will fail.
+source:
+  text: Brihat Samhita
+  edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, 1981)"
+  chapter: "25"
+  verse: "1-7"
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc362881.html
+  published: "c. 550 CE"
+tier: classical
+params:
+  daily_rain_threshold_mm:
+    value: 2.5
+    min: 0.1
+    max: 10.0
+    step: 0.5
+    unit: mm
+conditions:
+  all:
+    - month_paksha:
+        months:
+          - Ashadha
+        paksha: shukla
+    - in_nakshatra:
+        planet: Moon
+        nakshatras:
+          - Swati
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "24-hour day of Moon transit in Swati in Ashadha Shukla Paksha (late June / early July)"
+window:
+  unit: months
+  before: 0
+  after: 2.5
+  note: "Monsoon delivery period through Shravana and Bhadrapada"
+lag: 15 to 75 days
+region: All-India and regional river basins
+expected_effect:
+  series: rainfall
+  direction: increase
+reference_cases:
+  - moment: "2020-06-30T06:00:00Z"
+    expect: fires
+    note: "Moon in Swati (Libra 10.1 deg) during Ashadha Shukla Paksha (Dashami tithi); Swati Yoga fires."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+  - moment: "2020-06-15T06:00:00Z"
+    expect: silent
+    note: "Moon in Revati in Jyeshtha Krishna Paksha; silent."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+ex_ante: true
+computable: false

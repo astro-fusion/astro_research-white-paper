@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.gann_jupiter_saturn_twenty_year_cycle
+name: W.D. Gann: 20-Year Jupiter-Saturn synodic conjunction cycle in commodities
+domain: financial
+claim: The 19.86-year synodic conjunction of Jupiter and Saturn marks macro structural trend pivots and generational turning points in commodity and precious metals prices.
+source:
+  text: How to Make Profits in Commodities
+  edition: W.D. Gann (1942/1951, W.D. Gann Publishing Co.)
+  chapter: Master Time Factor and Planetary Cycles
+  verse: pp. 78-84
+  url: https://www.sacredtraders.com/
+  published: '1951-01-01'
+author: W.D. Gann (operationalised by astro-research 2026-11-22)
+tier: practitioner
+verification:
+  verified: false
+  evidence_url: "NOT FOUND"
+  edition: "How to Make Profits in Commodities by W.D. Gann (Lambert-Gann Publishing, 1942/1951, ISBN 978-0939093045)"
+  page: "78-84"
+  notes: "Unverified: cited URL sacredtraders.com is a homepage; rule applies to generic commodities; missing page scan from 1942 edition."
+params:
+  orb: {value: 3.0, min: 1.0, max: 5.0, step: 0.5, unit: deg}
+conditions:
+  planet_1: Jupiter
+  planet_2: Saturn
+  aspect_deg: 0.0
+  orb: $orb
+  zodiac: tropical
+chart: transit
+window:
+  unit: days
+  before: 60
+  after: 180
+expected_effect:
+  series: gold_usd
+  direction: volatility
+  size: secular_trend_reversal
+reference_cases:
+  - moment: '2020-12-21T18:22:00Z'
+    expect: fires
+    note: The Great Conjunction of Jupiter and Saturn at 0°29' Aquarius (tropical); marked the structural base of the multi-year commodity and precious metals inflation wave.
+    url: https://www.tempora.ltd/findings/gold-jupiter
+  - moment: '2000-05-28T16:00:00Z'
+    expect: fires
+    note: Jupiter-Saturn conjunction at 22°43' Taurus; marked the end of the 20-year gold bear market ($255/oz base) and launch of the 2001-2011 secular bull market.
+    url: https://www.mmacycles.com/
+ex_ante: true
+computable: true
+notes:
+  practitioner_quote: "The 20-year cycle of Jupiter and Saturn is the greatest of all business and commodity cycle regulators. Every 20 years markets begin a new long-term cycle."

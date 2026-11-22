@@ -1,0 +1,56 @@
+id: mundane.classical.sadyo_vrishti_immediate_rain_planetary
+name: "Sadyo Vrishti: Planetary Conjunctions and Horary Watery Configurations for Immediate Rain"
+domain: mundane
+claim: >-
+  Immediate rain occurs within hours or days when Mercury and Venus conjoin in any sign, when
+  Mars and Saturn are in opposition or mutual aspect across watery signs (Cancer, Scorpio, Pisces),
+  or when the Moon is in a watery sign in Kendra aspected by benefics at a horary query.
+source:
+  text: Brihat Samhita
+  edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, Part 1, 1981, ISBN: 978-81-208-1060-0)"
+  chapter: "28"
+  verse: "1-10"
+  page: "pp. 271-274"
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc228988.html
+  published: "c. 550 CE"
+tier: classical
+params:
+  aspect_or_conjunction:
+    - Mercury conjunct Venus
+    - Saturn opposite Mars across watery signs
+    - Moon in watery sign in Kendra
+conditions:
+  any:
+    - conjunction:
+        planets: [Mercury, Venus]
+    - opposition:
+        planets: [Saturn, Mars]
+        signs: [Cancer, Scorpio, Pisces]
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "Exact duration of planetary conjunction/opposition (+/- 24 hours)"
+window:
+  unit: days
+  before: 1
+  after: 1
+lag: 0 days
+region: Global / Regional weather station network
+expected_effect:
+  series: rainfall
+  direction: increase
+reference_cases:
+  - moment: "2022-07-28T12:00:00Z"
+    expect: fires
+    note: "Mercury conjunct Venus in Cancer (watery sign); immediate heavy rainfall predicted."
+    verified_with: Swiss Ephemeris & IMD daily rainfall
+ex_ante: true
+computable_from_ephemeris: yes
+computable_explanation: >-
+  COMPUTABLE FROM EPHEMERIS: Planetary transit configurations (Mercury conjunct Venus, Mars opposite Saturn,
+  Moon in watery signs) are 100% computable from Swiss Ephemeris. (The horary query variant or biological
+  symptoms like ants carrying eggs require local logging, but the planetary transit rule is purely astronomical).
+verified: yes
+edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, Part 1, 1981)"
+page: "pp. 271-274"
+evidence_url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc228988.html

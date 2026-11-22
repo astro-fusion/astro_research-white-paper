@@ -1,0 +1,57 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: seismic.raman_mars_saturn_kendra
+name: Raman-Mars-Saturn-Kendra
+domain: seismic
+claim: >-
+  Mars and Saturn in mutual Kendra (square or opposition: 90 or 180 degrees within 8 degrees orb)
+  destabilize crustal stress, causing earthquakes.
+source:
+  text: Astrology in Predicting Weather and Earthquakes
+  edition: Gayatri Devi Vasudev (IBH Prakashana 1992)
+  chapter: Earthquakes
+  verse: Rule 4
+  url: https://archive.org/details/AstrologyInPredictingWeatherAndEarthquakesBVRaman
+  published: '1992-01-01'
+tier: practitioner
+params:
+  orb: {value: 8, min: 2, max: 12, step: 1, unit: deg}
+conditions:
+  any:
+    - conjunct_within:
+        planets:
+          - Mars
+          - Saturn
+        orb: $orb
+    - aspect_within:
+        planet: Mars
+        target: Saturn
+        angle: 90
+        orb: $orb
+    - aspect_within:
+        planet: Mars
+        target: Saturn
+        angle: 180
+        orb: $orb
+chart: transit-only
+window:
+  unit: days
+  before: 3
+  after: 3
+region: Global / Sensitive tectonic collision zones
+expected_effect:
+  series: quake_rate
+  direction: increase
+  magnitude: '>= 6.0'
+reference_cases:
+  - moment: '2001-01-26T03:16:40Z'
+    expect: fires
+    note: >-
+      2001-01-26 Bhuj earthquake Mw 7.7: Mars in Libra 21 deg and Saturn in Taurus 0 deg
+      were in mutual 8th/7th sign relation; square/opposition evaluated.
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+  - moment: '2000-08-15T06:00:00Z'
+    expect: silent
+    note: Mars in Gemini and Saturn in Taurus: 30 deg separation (non-kendra).
+    verified_with: astro-research engine 2026-11-08 (Lahiri, mean node)
+ex_ante: true
+computable: true

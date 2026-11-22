@@ -1,0 +1,56 @@
+id: mundane.classical.ashadhi_yoga_paurnamasi_planetary_aspect
+name: "Ashadhi Yoga: Full Moon Ingress and Four-Month Outlook"
+domain: mundane
+claim: >-
+  Observed on the Full Moon day of Ashadha (Ashadhi Paurnamasi). The direction of wind at sunset
+  and the configuration of planets in kendras and watery signs forecast the subsequent four months
+  (Shravana, Bhadrapada, Ashvina, Kartika). Benefic planets aspecting the Moon bring heavy monsoon rains
+  and overflowing rivers; malefic transits in dry signs indicate unseasonable dry spells.
+source:
+  text: Brihat Samhita
+  edition: "Varahamihira's Brihat Samhita with English Translation by M. Ramakrishna Bhat (Motilal Banarsidass, Delhi, 1981)"
+  chapter: "26"
+  verse: "1-14"
+  url: https://www.wisdomlib.org/hinduism/book/brihat-samhita/d/doc362882.html
+  published: "c. 550 CE"
+tier: classical
+params:
+  tithi:
+    value: 15
+    unit: tithi
+conditions:
+  all:
+    - month_paksha:
+        months:
+          - Ashadha
+        paksha: shukla
+    - in_nakshatra:
+        planet: Moon
+        nakshatras:
+          - Purvashadha
+          - Uttarashadha
+chart:
+  zodiac: sidereal
+  ayanamsa: Lahiri
+  observation_window: "Sunset window on Ashadhi Purnima (Tithi 15 Shukla Ashadha, typically July)"
+window:
+  unit: months
+  before: 0
+  after: 4
+  note: "Four monsoon and post-monsoon months (July through October)"
+lag: 15 to 120 days
+region: All-India and Indo-Gangetic Basin
+expected_effect:
+  series: rainfall
+  direction: increase
+reference_cases:
+  - moment: "2020-07-05T12:00:00Z"
+    expect: fires
+    note: "Full Moon in Sagittarius/Capricorn (Ashadhi Purnima with lunar eclipse); triggers Ashadhi Yoga."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+  - moment: "2020-08-03T12:00:00Z"
+    expect: silent
+    note: "Shravana Purnima; outside Ashadhi Yoga window."
+    verified_with: Swiss Ephemeris (Lahiri ayanamsa)
+ex_ante: true
+computable: true

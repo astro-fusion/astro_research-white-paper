@@ -143,7 +143,8 @@ research/reports/visualizations/test-output.html
 **/manuscripts/use_cases/
 # Pre-reorganization folders (ADR-001). Everything tracked in them moved to
 # studies/, papers/, scripts/ and notebooks/; local leftovers stay ignored.
-/research/
+/research/*
+!/research/incoming/
 /use_cases/
 /research_papers/
 docs/research/track_*/

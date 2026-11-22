@@ -1,0 +1,48 @@
+# yaml-language-server: $schema=../../../../rules/schema.json
+id: financial.skinner_jupiter_uranus_conjunction_metals_surge
+name: Christeen Skinner: Jupiter-Uranus conjunction triggers sudden precious metals repricing
+domain: financial
+claim: The 14-year conjunction of Jupiter and Uranus within 4° orb accelerates monetary debasement expectations and triggers aggressive upside repricing in gold and silver.
+source:
+  text: The Financial Universe & Navigating the Financial Universe
+  edition: Christeen Skinner (Alpha Press / Wessex Astrologer, 2016)
+  chapter: Outer Planet Cycles and Commodities
+  verse: pp. 112-118
+  url: https://www.financialuniverse.co.uk/
+  published: '2016-09-20'
+author: Christeen Skinner (operationalised by astro-research 2026-11-22)
+tier: practitioner
+params:
+  orb: {value: 4.0, min: 1.0, max: 6.0, step: 0.5, unit: deg}
+conditions:
+  planet_1: Jupiter
+  planet_2: Uranus
+  aspect_deg: 0.0
+  orb: $orb
+  zodiac: tropical
+chart: transit
+window:
+  unit: days
+  before: 30
+  after: 90
+expected_effect:
+  series: gold_usd
+  direction: up
+  size: explosive_rally
+reference_cases:
+  - moment: '2024-04-20T23:27:00Z'
+    expect: fires
+    note: Exact Jupiter-Uranus conjunction at 21°49' Taurus (tropical); gold surged from $2150 in March to $2400+ in April/May 2024, initiating the historic 2024 bull run.
+    url: https://www.financialuniverse.co.uk/
+  - moment: '2010-06-08T00:00:00Z'
+    expect: fires
+    note: Jupiter conjunct Uranus at 0° Aries; gold broke out above $1200 toward $1300 in summer 2010.
+    url: https://www.financialuniverse.co.uk/
+  - moment: '2022-01-01T00:00:00Z'
+    expect: silent
+    note: Jupiter in Pisces, Uranus in Taurus (60° sextile, not conjunction).
+    url: https://www.financialuniverse.co.uk/
+ex_ante: true
+computable: true
+notes:
+  practitioner_quote: "When Jupiter unites with Uranus, expect lightning-fast shifts in the financial system. It sparks sudden currency revaluations and huge moves in precious metals."
