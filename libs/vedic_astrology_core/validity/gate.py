@@ -21,8 +21,9 @@ Two abilities, as in ADR-007 5.1:
 
 The control blocks are the ones the primary test will read: neighbour blocks
 or, for a season-linked calendar, same-season windows (core/stats/season.py
-control_design()). The gate and the test therefore report the same side and
-the same number of used blocks (S-15, B6).
+control_design()), built with the plan seed as side_seed (Amendment A2) and
+with the dataset's missing-bar mask (`available`). The gate and the test
+therefore report the same side and the same number of used blocks (S-15, B6).
 
 The gate also computes **P(S given SESOI)**: the probability that the primary
 test reaches a_test on the confirm blocks when a steady effect equal to the
@@ -315,7 +316,7 @@ def _block_summary(sd: _season.SeasonDesign, side: str) -> Dict[str, Any]:
     return out
 
 
-def run_gate(calendar, dates, confirm, spec: GateSpec) -> GateResult:
+def run_gate(calendar, dates, confirm, spec: GateSpec, *, available=None) -> GateResult:
     """Run the gate of one test from its calendar, the grid dates and the plan.
 
     Args:
@@ -323,12 +324,27 @@ def run_gate(calendar, dates, confirm, spec: GateSpec) -> GateResult:
         dates: The grid's instants (for season_r2 and same-season windows).
         confirm: Boolean mask of the confirm-period bars (the plan's split).
         spec: The plan's fixed inputs for this test (GateSpec).
+        available: Optional boolean mask of the bars that carry an outcome
+            (the dataset's declared missing bars, known from the grid and the
+            source's inventory, never from outcome values). None: every bar.
+            The primary test builds its blocks with the same mask (S-15).
+
+    Blocks follow Amendment A2: the plan seed (spec.plan_seed) is passed as
+    side_seed, so single-bar and edge episodes keep one-sided equal-size
+    blocks, exactly as the primary test builds them.
     """
     spec.check()
     cal = np.asarray(calendar, dtype=bool).ravel()
     conf = np.asarray(confirm, dtype=bool).ravel()
     if conf.shape != cal.shape:
         raise GateError("confirm mask and calendar must have the same length")
+    avail = None
+    if available is not None:
+        avail = np.asarray(available).ravel()
+        if avail.shape != cal.shape or avail.dtype.kind != "b":
+            raise GateError("available must be a boolean mask with one value per bar")
+        if avail.all():
+            avail = None  # no missing bar: the same design as without a mask
     side, t, a = spec.side, spec.outcome_type, float(spec.a_test)
 
     common: List[str] = []
@@ -341,9 +357,11 @@ def run_gate(calendar, dates, confirm, spec: GateSpec) -> GateResult:
     if spec.national_chart_ok is False:
         common.append("chart_time")
 
-    full_sd = _season.control_design(cal, dates, merge_gap=spec.merge_gap, guard_bars=spec.guard_bars)
+    seed = spec.plan_seed
+    full_sd = _season.control_design(cal, dates, merge_gap=spec.merge_gap, guard_bars=spec.guard_bars,
+                                     available=avail, side_seed=seed)
     conf_sd = _season.control_design(cal, dates, merge_gap=spec.merge_gap, guard_bars=spec.guard_bars,
-                                     available=conf)
+                                     available=conf if avail is None else conf & avail, side_seed=seed)
     full_d, conf_d = full_sd.blocks, conf_sd.blocks
 
     # ---- can support (confirm period)

@@ -14,7 +14,18 @@ in one fixed order and adds no statistic of its own:
     record: explore rows only without a confirm handle.
 3.  Block designs and the primary block sign-flip test (stats/blocks.py,
     stats/season.py) on the explore, confirm and whole period. The confirm
-    and whole-period designs must equal the gate's (S-15).
+    and whole-period designs must equal the gate's (S-15). Every design
+    takes the plan seed as side_seed (ADR-008 Amendment A2: single-bar and
+    edge episodes keep one-sided equal-size blocks) and the dataset's
+    declared missing bars (``DomainRun.missing_bars``) as its
+    ``available`` mask, in the gate and in the test alike. The outcome
+    read must be missing on exactly the declared bars, or the run stops.
+3a. Daily and hourly grids (stats/season.py detrend_required): continuous
+    and log-ratio outcomes are detrended by a centred running mean over the
+    plan's ``detrend_window`` before any block statistic (A2: one-sided
+    controls are sensitive to trend). Without a declared window such a run
+    stops before any outcome is read. Exclusion removes the effect in the
+    shape the detrending gives it (stats/exclusion.py effect_shape).
 4.  Exclusion by effect removal (stats/exclusion.py): p_ex, X95 and X-strict
     at the test's a_test.
 5.  Robustness R1 to R4 (validity/robustness.py): baselines, placebo skies,
@@ -204,6 +215,13 @@ class DomainRun:
     """The domain plan's fixed inputs for one run.
 
     ``vintage`` is the plan vintage (id, confirm_period, seen, never_opened).
+    ``detrend_window`` is the plan's window (odd number of bars) of the centred
+    running mean that detrends daily and hourly continuous and log-ratio
+    outcomes (ADR-008 A2); required on such grids. ``missing_bars`` maps an
+    outcome name to a function of the grid instants giving the bars where
+    the dataset has no value (from the source's inventory, never from
+    outcome values); the gate and every design use its complement as the
+    ``available`` mask.
     ``baselines`` gives the domain's baselines on the grid (outcome-free); with
     none, R1 and R4 are not computable and do not pass (conservative: every
     sealed plan declares its baselines, ADR-008 S-12). ``plan`` is the plan
@@ -223,6 +241,8 @@ class DomainRun:
     domains_in_run_set: int = 1
     sampling_frame: Mapping[str, int] = field(
         default_factory=lambda: {"not_encodable": 0, "not_sourced": 0, "untestable": 0})
+    detrend_window: Optional[int] = None
+    missing_bars: Mapping[str, Callable[[pd.DatetimeIndex], Any]] = field(default_factory=dict)
 
 
 # ----------------------------------------------------------------- helpers
@@ -368,6 +388,8 @@ class _Prepared:
     gate: Optional[GateResult] = None
     gate_record: Optional[GateRecord] = None
     input_sha256: Optional[str] = None
+    available: Optional[np.ndarray] = None  # declared bars with an outcome; None: every bar
+    detrend: bool = False  # A2: centred running mean before the block test
 
 
 def _a_test_open(lock: FamilyLock, test_id: str) -> float:
@@ -381,10 +403,46 @@ def _a_test_open(lock: FamilyLock, test_id: str) -> float:
     return a_test_for(alpha_for_batch(b), max(len(lock.batch_tests(b)), 1))
 
 
-def _design(cal: np.ndarray, dates: pd.DatetimeIndex, t: TestDefinition, available=None) -> _season.SeasonDesign:
-    """The control design the gate uses (core/stats/season.py control_design)."""
+def _design(cal: np.ndarray, dates: pd.DatetimeIndex, t: TestDefinition, available,
+            plan_seed: Union[int, str]) -> _season.SeasonDesign:
+    """The control design the gate uses (core/stats/season.py control_design, A2 on)."""
     return _season.control_design(cal, dates, merge_gap=t.merge_gap, guard_bars=t.guard_bars,
-                                  available=available)
+                                  available=available, side_seed=plan_seed)
+
+
+def _available(run: DomainRun, outcome: str, dates: pd.DatetimeIndex) -> Optional[np.ndarray]:
+    """The declared bars with an outcome (outcome-free); None when none is missing."""
+    fn = run.missing_bars.get(outcome) if run.missing_bars else None
+    if fn is None:
+        return None
+    missing = _evaluate(fn, dates, f"missing bars of {outcome!r}")
+    return None if not missing.any() else ~missing
+
+
+def _and(a: np.ndarray, avail: Optional[np.ndarray]) -> np.ndarray:
+    return a if avail is None else (a & avail)
+
+
+def _effect_shape(p: _Prepared, run: DomainRun, finite: np.ndarray) -> np.ndarray:
+    return _season.detrended_effect_shape(p.calendar, int(run.detrend_window), finite)
+
+
+def _check_detrending(p: _Prepared, dates: pd.DatetimeIndex, run: DomainRun) -> None:
+    """Before any outcome: a window is declared and no used block is absorbed by it."""
+    if not p.detrend or p.gate is None or p.gate.untestable:
+        return
+    if run.detrend_window is None:
+        raise PipelineError(f"{p.test.test_id}: a daily or hourly outcome needs the plan's detrend_window "
+                            "(ADR-008 A2); run stopped before any outcome was read")
+    try:
+        sd = _design(p.calendar, dates, p.test, p.available, run.plan_seed)
+        fin = np.ones(len(dates), dtype=bool) if p.available is None else p.available
+        c = _exclusion.shape_contrasts(sd.blocks, _effect_shape(p, run, fin))
+    except ValueError as exc:
+        raise PipelineError(f"{p.test.test_id}: detrending: {exc}; run stopped") from exc
+    if len(c) and not (c > 0).all():
+        raise PipelineError(f"{p.test.test_id}: the detrend_window {run.detrend_window} absorbs a used "
+                            "block's active run (effect shape not positive); run stopped")
 
 
 def _primary(design: _blocks.BlockDesign, y: np.ndarray, t: TestDefinition, side: str,
@@ -432,7 +490,7 @@ def _robustness(p: _Prepared, dates: pd.DatetimeIndex, y_with: np.ndarray, avail
         plan = _rob.time_shift_plan(season_linked, stream_rng(run.plan_seed, t.test_id, "placebo"))
         for s in plan["shifts"]:
             pc = _evaluate(t.calendar, _shifted(dates, plan["kind"], s), f"{t.test_id} placebo {s}")
-            stat = _statistic(_design(pc, dates, t, avail).blocks, y_with, t.outcome_type)
+            stat = _statistic(_design(pc, dates, t, avail, run.plan_seed).blocks, y_with, t.outcome_type)
             if stat is None:
                 skipped += 1  # a sky with no used block has no statistic; it is not counted
                 continue
@@ -443,7 +501,7 @@ def _robustness(p: _Prepared, dates: pd.DatetimeIndex, y_with: np.ndarray, avail
     cells = []
     for name in sorted(t.sensitivity):
         cc = _evaluate(t.sensitivity[name], dates, f"{t.test_id} cell {name}")
-        stat = _statistic(_design(cc, dates, t, avail).blocks, y_with, t.outcome_type)
+        stat = _statistic(_design(cc, dates, t, avail, run.plan_seed).blocks, y_with, t.outcome_type)
         if stat is not None:
             cells.append(_rob.Cell(name, stat, _rob.changed_share(p.calendar, cc)))
     r3 = _rob.r3_sensitivity(t0, cells, side) if has_t else None
@@ -474,6 +532,9 @@ def _prepare(tests: Sequence[TestDefinition], dates: pd.DatetimeIndex, lock: Fam
                                          first_look_calendars=run.first_look_calendars)
         a = p.eligibility.a_test
         p.a_test = float(a) if a is not None else _a_test_open(lock, p.test.test_id)
+        p.available = _available(run, p.test.outcome, dates)
+        p.detrend = (p.test.outcome_type in ("continuous", "log_ratio")
+                     and _season.detrend_required(dates))
     return prepared
 
 
@@ -483,7 +544,7 @@ def _gate(p: _Prepared, dates: pd.DatetimeIndex, confirm: np.ndarray, grade: str
                     merge_gap=t.merge_gap, guard_bars=t.guard_bars, sesoi=t.sesoi, base_rate=t.base_rate,
                     noise_sd=t.noise_sd, level=int(t.level), encoded=bool(t.encoded), data_grade=grade,
                     national_chart_ok=t.national_chart_ok, plan_seed=run.plan_seed, power_reps=t.power_reps)
-    return run_gate(p.calendar, dates, confirm, spec)
+    return run_gate(p.calendar, dates, confirm, spec, available=p.available)
 
 
 def _input_hash(p: _Prepared, dataset_sha: str, run: DomainRun) -> str:
@@ -492,6 +553,8 @@ def _input_hash(p: _Prepared, dataset_sha: str, run: DomainRun) -> str:
         "gate_sha256": p.gate_record.sha256 if p.gate_record else None, "dataset_sha256": dataset_sha,
         "plan_sha256": run.plan_sha256, "plan_seed": str(run.plan_seed), "a_test": p.a_test,
         "eligibility": _clean(p.eligibility.as_dict()), "vintage": _clean(dict(run.vintage)),
+        "available_sha256": None if p.available is None else _sha(np.packbits(p.available).tobytes()),
+        "detrend_window": int(run.detrend_window) if p.detrend else None,
     }))
 
 
@@ -506,17 +569,32 @@ def _compute(p: _Prepared, dates: pd.DatetimeIndex, y_raw: np.ndarray, B: Option
     rob_passed: Dict[str, bool] = {}
     if not g.untestable:
         finite = np.isfinite(y_raw)
+        avail_full = p.available
+        expected = _and(np.ones(len(dates), dtype=bool) if confirm_open else explore, avail_full)
+        if (finite != expected).any():
+            undeclared = int((~finite & expected).sum())
+            extra = int((finite & ~expected).sum())
+            raise PipelineError(
+                f"{t.test_id}: outcome {t.outcome!r} is missing on {undeclared} bar(s) the plan's "
+                f"missing_bars does not declare and has values on {extra} declared-missing or unreadable "
+                "bar(s); the gate's blocks would differ from the test's (S-15); run stopped")
         y_with = y_raw
         if t.outcome_type in ("continuous", "log_ratio") and B is not None:
             y_with = _season.remove_baselines(y_raw, B)
         y_with = np.where(finite, y_with, np.nan)
-        avail_full = None if bool(finite.all()) else finite
-        sd_exp = _design(p.calendar, dates, t, explore & finite)
+        y_without = np.where(finite, y_raw, np.nan)
+        shape = None
+        if p.detrend:  # A2: centred running mean before every block statistic
+            w = int(run.detrend_window)
+            y_with = _season.centred_detrend(y_with, w)
+            y_without = _season.centred_detrend(y_without, w)
+            shape = _effect_shape(p, run, finite)
+        sd_exp = _design(p.calendar, dates, t, _and(explore, avail_full), seed)
         res_exp = _primary(sd_exp.blocks, y_with, t, side, seed)
         res_conf = None
         if confirm_open:
-            sd_conf = _design(p.calendar, dates, t, confirm & finite)
-            sd_full = _design(p.calendar, dates, t, avail_full)
+            sd_conf = _design(p.calendar, dates, t, _and(confirm, avail_full), seed)
+            sd_full = _design(p.calendar, dates, t, avail_full, seed)
             if (sd_conf.blocks.design_id != g.confirm["design_id"]
                     or sd_full.blocks.design_id != g.full["design_id"]):
                 raise PipelineError(f"{t.test_id}: the test's blocks differ from the gate's "
@@ -527,12 +605,17 @@ def _compute(p: _Prepared, dates: pd.DatetimeIndex, y_raw: np.ndarray, B: Option
         res_full = _primary(sd_full.blocks, y_with, t, side, seed)
         opp = _opposite(side)
         res_opp = _primary(sd_full.blocks, y_with, t, opp, seed) if opp and res_full.n_used else None
-        stat_without = _statistic(sd_full.blocks, np.where(finite, y_raw, np.nan), t.outcome_type)
-        ex = _exclusion.exclusion(
-            sd_full.blocks, y_with, outcome_type=t.outcome_type, side=side, sesoi=t.sesoi, grid=t.x_grid,
-            a_test=p.a_test, thinning_rng=stream_rng(seed, t.test_id, "thinning"),
-            signflip_seed=stream_seed(seed, t.test_id, "signflip"), n_thin=t.n_thin, n_draws=t.n_draws)
-        rob, extra = _robustness(p, dates, y_with, avail_full, res_full, B, sd_full.season_linked, run)
+        stat_without = _statistic(sd_full.blocks, y_without, t.outcome_type)
+        try:
+            ex = _exclusion.exclusion(
+                sd_full.blocks, y_with, outcome_type=t.outcome_type, side=side, sesoi=t.sesoi, grid=t.x_grid,
+                a_test=p.a_test, thinning_rng=stream_rng(seed, t.test_id, "thinning"),
+                signflip_seed=stream_seed(seed, t.test_id, "signflip"), n_thin=t.n_thin, n_draws=t.n_draws,
+                effect_shape=shape)
+        except ValueError as exc:
+            raise PipelineError(f"{t.test_id}: exclusion: {exc}; run stopped") from exc
+        rob, extra = _robustness(p, dates, y_with, finite if not finite.all() else None,
+                                 res_full, B, sd_full.season_linked, run)
         rob_passed = rob.passed()
         vin = dict(
             p_sup=res_conf.p_value if res_conf is not None and res_conf.n_used else None,
@@ -738,6 +821,7 @@ def run_domain(
             "schema": DOMAIN_GATE_SCHEMA, "domain": run.domain, "plan_sha256": run.plan_sha256,
             "dataset_sha256": ds.sha256, "vintage": dict(run.vintage), "tests": gate_index}))
         for p in prepared:
+            _check_detrending(p, dates, run)  # A2, still before any outcome is read
             p.input_sha256 = _input_hash(p, ds.sha256, run)
 
         reuse = _reusable_batches(lock, prev)

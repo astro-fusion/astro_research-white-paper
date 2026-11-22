@@ -42,6 +42,15 @@ Section 6.1, item by item:
    :data:`PHYSICAL_BASELINE_DOMAINS`). :func:`remove_baselines` gives the
    outcome "with baselines" for the primary row of the card (section 7.3).
 
+Amendment A2 (single-day and edge episodes): :func:`control_design` and
+:func:`season_design` take the plan seed as `side_seed`, which allows
+one-sided equal-size blocks (single-bar season windows alternate between the
+earlier and the later year). One-sided controls are sensitive to trend, so
+daily and hourly outcomes (:func:`detrend_required`) are detrended first by
+:func:`centred_detrend`, a centred running mean over a window the plan
+declares; :func:`detrended_effect_shape` gives the shape a steady effect
+takes after it (for exclusion by effect removal).
+
 Deviation from the ADR text, conservative (recorded in the WP-87 report): the
 nodal term is entered as the first :data:`NODAL_HARMONICS` (6) harmonics of
 the 18.6-year cycle, not the first harmonic alone. A node-in-one-sign
@@ -88,6 +97,10 @@ NODAL_HARMONICS = 6
 SOLAR_SMOOTHING_WINDOW = 13
 #: Item 6: plans that must add the nodal and solar-cycle baselines.
 PHYSICAL_BASELINE_DOMAINS = ("monsoon", "flood", "earthquake")
+
+#: Amendment A2: grids with a median bar spacing at or below this many days
+#: (daily, business-daily, hourly) are detrended before the block test.
+DETREND_MAX_SPACING_DAYS = 1.0
 
 #: The card's reason when the season cannot be held fixed.
 SEASON_REASON = "cannot be separated from the season"
@@ -316,14 +329,26 @@ def season_design(
     merge_gap: Union[int, str, pd.Timedelta],
     available=None,
     r2: Optional[float] = None,
+    side_seed: Optional[Union[int, str]] = None,
 ) -> SeasonDesign:
-    """Same-season control windows for every episode (item 2, Amendment A1).
+    """Same-season control windows for every episode (item 2, Amendments A1 and A2).
 
     Reads the calendar, the grid dates and `available` only (see the module
     docstring for the rule). Episodes are served in time order; a span
     chosen for one episode is reserved and never serves another. Returns the
     design whether or not the calendar is season-linked;
     :func:`control_design` chooses between this and the neighbour blocks.
+
+    With `side_seed` (the plan seed, Amendment A2) a block may take its
+    equal-size control from ONE year: (a) when no same-season window is found
+    on the other side, the side with a window is used for every active bar
+    (forced); (b) a single-bar episode with a window on both sides takes its
+    one control bar from one year, the side alternating in calendar order
+    over such episodes, the first side fixed by :func:`.blocks.start_side`.
+    Only the spans that give a control bar are reserved. Without
+    `side_seed` the A1 rule holds (a missing window on an existing side
+    drops the block; a single bar always takes the earlier year first, and
+    the block design then drops it as one-sided).
     """
     active = _mask(calendar, "calendar")
     n = len(active)
@@ -336,6 +361,7 @@ def season_design(
         in_span[ep.start : ep.end + 1] = True
     free = ~active & ~in_span & avail
     reserved = np.zeros(n, dtype=bool)
+    turn = None if side_seed is None else _blocks.start_side(side_seed)
 
     entries: List[Tuple] = []
     windows: List[SeasonWindow] = []
@@ -360,15 +386,20 @@ def season_design(
         reason = None
         if len(on) == 0:
             reason = None  # the block design drops it as no_active
-        elif (l_exists and l_years is None) or (r_exists and r_years is None) or (
-            l_years is None and r_years is None
-        ):
+        elif l_years is None and r_years is None:
             reason = DROP_NO_SEASON_WINDOW
+        elif turn is None and ((l_exists and l_years is None) or (r_exists and r_years is None)):
+            reason = DROP_NO_SEASON_WINDOW  # A1: an existing side needs its window
         left: List[int] = []
         right: List[int] = []
         if reason is None and len(on):
             sides = [(s, y, sp) for s, y, sp in (("L", l_years, l_sp), ("R", r_years, r_sp))
                      if y is not None]
+            if turn is not None and len(on) == 1 and len(sides) == 2:
+                # A2 (b): alternate the year of single-bar blocks in calendar order.
+                first = "L" if turn == _blocks.SIDE_LEFT else "R"
+                sides = sorted(sides, key=lambda e: e[0] != first)
+                turn = _blocks.SIDE_RIGHT if turn == _blocks.SIDE_LEFT else _blocks.SIDE_LEFT
             match = {s: _counterparts(ns, _shift_ns(idx, on, y), sp[0], sp[1])
                      for s, y, sp in sides}
             taken = set()
@@ -386,8 +417,8 @@ def season_design(
                     reason = DROP_UNBALANCED
                     break
         if reason is None:
-            for sp in (l_sp, r_sp):
-                if sp is not None and len(on):
+            for sp, got_side in ((l_sp, left), (r_sp, right)):
+                if sp is not None and len(on) and (turn is None or len(got_side)):
                     reserved[sp[0] : sp[1] + 1] = True
             entries.append((np.asarray(left, dtype=np.int64), np.asarray(right, dtype=np.int64),
                             bool(l_exists), bool(r_exists)))
@@ -397,7 +428,8 @@ def season_design(
             entries.append((empty, empty, bool(l_exists), bool(r_exists)))
             windows.append(SeasonWindow(k, None, None, bool(l_exists), bool(r_exists), reason))
 
-    design = _blocks.design_from_windows(active, entries, merge_gap=merge_gap, available=available)
+    design = _blocks.design_from_windows(active, entries, merge_gap=merge_gap, available=available,
+                                         side_seed=side_seed)
     if r2 is None:
         r2 = season_r2(active, idx)
     return SeasonDesign(design, float(r2), is_season_linked(r2), tuple(windows))
@@ -410,20 +442,25 @@ def control_design(
     merge_gap: Union[int, str, pd.Timedelta],
     guard_bars: int = 0,
     available=None,
+    side_seed: Optional[Union[int, str]] = None,
 ) -> SeasonDesign:
     """The control design the primary test uses (items 1 and 2).
 
     Measures :func:`season_r2`; a season-linked calendar gets
     :func:`season_design`, any other the neighbour blocks of
     :func:`.blocks.build_blocks` (with the plan's `guard_bars`).
-    Reads no outcome.
+    `side_seed` is the plan seed: given, Amendment A2 (one-sided
+    equal-size blocks) applies to both kinds; the gate and the pipeline
+    always pass it. Reads no outcome.
     """
     c = _mask(calendar, "calendar")
     idx = _dates(dates, calendar, len(c))
     r2 = season_r2(c, idx)
     if is_season_linked(r2):
-        return season_design(c, idx, merge_gap=merge_gap, available=available, r2=r2)
-    design = _blocks.build_blocks(c, merge_gap=merge_gap, guard_bars=guard_bars, available=available)
+        return season_design(c, idx, merge_gap=merge_gap, available=available, r2=r2,
+                             side_seed=side_seed)
+    design = _blocks.build_blocks(c, merge_gap=merge_gap, guard_bars=guard_bars, available=available,
+                                  side_seed=side_seed)
     return SeasonDesign(design, r2, False, ())
 
 
@@ -508,6 +545,81 @@ def leave_year_out_anomaly(values, dates=None, *, by: str = "doy",
     np.divide(s, c, out=base, where=c > 0)
     out[ok] = y[ok] - base
     return out
+
+
+# --------------------------------------------------------------------------
+# Amendment A2: detrending baseline for daily and hourly outcomes
+# --------------------------------------------------------------------------
+
+
+def detrend_required(dates) -> bool:
+    """True for a daily or finer grid (median bar spacing at most one day).
+
+    Amendment A2: one-sided controls are sensitive to trend, so a daily or
+    hourly outcome is detrended (:func:`centred_detrend`) before the block
+    test. Business-day grids count as daily. Reads the grid only.
+    """
+    arr = np.asarray(dates)
+    if arr.dtype.kind in "iu" or len(arr) < 2:
+        return False  # plain years, or no spacing to measure
+    idx = _dates(dates)
+    return bool(np.median(np.diff(idx.asi8)) <= DETREND_MAX_SPACING_DAYS * _NS_PER_DAY)
+
+
+def _check_window(window) -> int:
+    if isinstance(window, bool) or not isinstance(window, (int, np.integer)):
+        raise ValueError("the detrending window must be an odd whole number of bars (from the plan)")
+    w = int(window)
+    if w < 3 or w % 2 == 0:
+        raise ValueError("the detrending window must be an odd number of bars, at least 3")
+    return w
+
+
+def centred_detrend(values, window: int) -> np.ndarray:
+    """Values minus a centred running mean over `window` bars, past and future alike.
+
+    The window is declared in the plan (odd, at least 3). Each bar's
+    baseline is the mean of the finite values within `h` bars on either
+    side, with `h = window // 2` cut back symmetrically near the ends of
+    the grid (`h_i = min(h, i, n - 1 - i)`), so the baseline never looks
+    further one way than the other and a linear trend is removed exactly at
+    every bar (the first and last bars are 0). Missing values (NaN) stay
+    missing and enter no mean. Linear in the values, so the same operator
+    applied to the active-bar indicator gives the shape a steady effect
+    takes after detrending (:func:`detrended_effect_shape`).
+    """
+    w = _check_window(window)
+    y = np.asarray(values, dtype=float)
+    if y.ndim != 1:
+        raise ValueError("values must be one-dimensional")
+    n = len(y)
+    ok = np.isfinite(y)
+    out = np.full(n, np.nan)
+    if n == 0 or not ok.any():
+        return out
+    i = np.arange(n)
+    h = np.minimum(np.minimum(w // 2, i), n - 1 - i)
+    cs = np.concatenate(([0.0], np.cumsum(np.where(ok, y, 0.0))))
+    cn = np.concatenate(([0], np.cumsum(ok)))
+    lo, hi = i - h, i + h + 1
+    s, c = cs[hi] - cs[lo], cn[hi] - cn[lo]
+    out[ok] = y[ok] - s[ok] / c[ok]  # c >= 1 on a finite bar (the bar itself)
+    return out
+
+
+def detrended_effect_shape(calendar, window: int, finite=None) -> np.ndarray:
+    """What a steady effect of size 1 on every active bar becomes after :func:`centred_detrend`.
+
+    `finite` marks the bars that carry an outcome (NaN elsewhere, as the
+    outcome). Exclusion by effect removal (core/stats/exclusion.py,
+    `effect_shape`) removes `r` times this shape, so the removed effect
+    is the one the detrended data carry. Reads the calendar only.
+    """
+    c = _mask(calendar, "calendar")
+    ind = c.astype(float)
+    if finite is not None:
+        ind = np.where(_mask(finite, "finite", len(c)), ind, np.nan)
+    return centred_detrend(ind, window)
 
 
 # --------------------------------------------------------------------------

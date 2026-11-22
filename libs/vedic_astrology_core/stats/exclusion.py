@@ -66,6 +66,16 @@ Details that make it one deterministic procedure (section 2.2):
   10 at 0.001). Otherwise the record is ``unbounded: true`` with no number
   (G-11), and verdict E is impossible.
 
+Detrended outcomes (ADR-008 Amendment A2). Daily and hourly continuous and
+log-ratio outcomes are detrended by a centred running mean before the block
+test (core/stats/season.py centred_detrend). A steady effect r on the active
+bars then shows in block k as ``r * c_k``, with ``c_k`` the block difference
+of the detrended active-bar indicator (``effect_shape``,
+:func:`shape_contrasts`); removal subtracts exactly that, so the exactness
+argument above is unchanged. Events and flags are not detrended (thinning
+needs whole counts); measured with A2 blocks on daily new-moon and eclipse
+calendars, a doubling event rate holds size without it.
+
 What stays outside the guarantee (section 2.3): the guarantee is for a
 **steady** effect. :func:`card_lines` gives the two fixed sentences every card
 with an X prints, with ``f = 1 - 0.05 ** (1 / K)`` (:func:`not_addressed_share`).
@@ -295,22 +305,53 @@ def _raw_shift(r: float, outcome_type: str) -> float:
     return r
 
 
-def shift_active(design: BlockDesign, outcome, r: float, *, outcome_type: str) -> np.ndarray:
+def shift_active(design: BlockDesign, outcome, r: float, *, outcome_type: str,
+                 effect_shape=None) -> np.ndarray:
     """Outcome with an effect of raw size ``r`` removed from the active bars.
 
     ``continuous``: subtract ``r``; ``log_ratio``: subtract ``log r`` (r a
     ratio). Bars outside the used blocks are unchanged. Running
     :func:`.blocks.primary_test` on the result gives the exclusion p-value of
     :class:`EffectRemoval` (tested).
+
+    With ``effect_shape`` (a detrended outcome, Amendment A2) the removed
+    effect is ``r`` times the shape on every bar: what a steady effect on the
+    active bars becomes after the detrending (core/stats/season.py
+    detrended_effect_shape).
     """
     _check_type(outcome_type)
     if outcome_type in THINNED_TYPES:
         raise ValueError("events and flags are thinned, not shifted")
     y = np.array(outcome, dtype=float, copy=True)
     s = _raw_shift(float(r), outcome_type)
+    if effect_shape is not None:
+        h = _check_shape(effect_shape, design.n_bars)
+        fin = np.isfinite(h)
+        y[fin] = y[fin] - s * h[fin]
+        return y
     for b in design.used_blocks:
         y[b.active] = y[b.active] - s
     return y
+
+
+def _check_shape(effect_shape, n: int) -> np.ndarray:
+    h = np.asarray(effect_shape, dtype=float).ravel()
+    if len(h) != n:
+        raise ValueError(f"effect_shape must have one value per bar ({n}), got {len(h)}")
+    return h
+
+
+def shape_contrasts(design: BlockDesign, effect_shape) -> np.ndarray:
+    """Per used block: active mean minus control mean of the effect shape.
+
+    1 for every block without detrending. A steady raw effect r shows in
+    block k as ``r * c_k``; exclusion needs every ``c_k > 0`` (the detrending
+    window must be long enough that an active run is not absorbed by its own
+    baseline). Reads the calendar-derived shape only, so the pipeline checks
+    it before any outcome is read.
+    """
+    h = _check_shape(effect_shape, design.n_bars)
+    return _blocks.block_differences(design, h, outcome_type="continuous").d
 
 
 class EffectRemoval:
@@ -335,6 +376,13 @@ class EffectRemoval:
             ``signflip`` seed (``family.stream_seed(..., "signflip")``).
         n_thin: Thinning repetitions (199; other values for tests only).
         n_draws: Monte Carlo sign patterns above 20 used blocks.
+        effect_shape: ``continuous`` and ``log_ratio`` only: per bar, what a
+            steady effect of size 1 on the active bars becomes after the
+            outcome's detrending (Amendment A2; core/stats/season.py
+            detrended_effect_shape). Removing an effect r then subtracts
+            ``r * c_k`` from block k's difference (:func:`shape_contrasts`),
+            so the removed effect is the one the detrended data carry. None:
+            ``c_k = 1`` (no detrending). Every ``c_k`` must be positive.
     """
 
     def __init__(
@@ -347,6 +395,7 @@ class EffectRemoval:
         signflip_seed: Optional[int] = None,
         n_thin: int = N_THIN,
         n_draws: int = _blocks.DEFAULT_DRAWS,
+        effect_shape=None,
     ):
         self.design = design
         self.outcome_type = _check_type(outcome_type)
@@ -361,6 +410,16 @@ class EffectRemoval:
         self.d0 = diffs.d
         self.thinned = outcome_type in THINNED_TYPES
         self.n_thin = 1
+        self.c = np.ones(self.k)
+        if effect_shape is not None:
+            if self.thinned:
+                raise ValueError("events and flags are not detrended; effect_shape is for shifts only")
+            self.c = shape_contrasts(design, effect_shape)
+            if self.k and not (np.isfinite(self.c).all() and (self.c > 0).all()):
+                raise ValueError(
+                    "the detrended effect shape is not positive in every used block: "
+                    "the detrending window is too short for the active runs"
+                )
         if not self.thinned:
             return
         if int(n_thin) < 1:
@@ -434,7 +493,7 @@ class EffectRemoval:
         ``r`` is a shift for ``continuous`` and a ratio for the other types.
         """
         if not self.thinned:
-            return (self.d0 - _raw_shift(float(r), self.outcome_type))[None, :]
+            return (self.d0 - _raw_shift(float(r), self.outcome_type) * self.c)[None, :]
         ka, kc = self.kept_counts(r)
         return ka / self.m - kc / self.m
 
@@ -689,6 +748,7 @@ def exclusion(
     n_thin: int = N_THIN,
     n_draws: int = _blocks.DEFAULT_DRAWS,
     steps: int = BISECT_STEPS,
+    effect_shape=None,
 ) -> ExclusionResult:
     """Exclusion p at the SESOI, X95 and X-strict for one test (section 2.2).
 
@@ -703,7 +763,8 @@ def exclusion(
             measured at the SESOI).
         grid: The plan's grid for X, on the claim scale, increasing.
         a_test: The test's family threshold (section 3); gives X-strict.
-        thinning_rng, signflip_seed, n_thin, n_draws: See :class:`EffectRemoval`.
+        thinning_rng, signflip_seed, n_thin, n_draws, effect_shape: See
+            :class:`EffectRemoval`.
     """
     side = _check_side(side)
     outcome_type = _check_type(outcome_type)
@@ -715,7 +776,7 @@ def exclusion(
         levels.append(float(a_test))
     er = EffectRemoval(design, outcome, outcome_type=outcome_type,
                        thinning_rng=thinning_rng, signflip_seed=signflip_seed,
-                       n_thin=n_thin, n_draws=n_draws)
+                       n_thin=n_thin, n_draws=n_draws, effect_shape=effect_shape)
     p_excl = info = p_reps = None
     if sesoi is not None:
         s = _check_magnitude(sesoi, outcome_type)

@@ -11,12 +11,15 @@ import hashlib
 import json
 from pathlib import Path
 
+from datetime import date
+
 import numpy as np
+import pandas as pd
 import pytest
 import yaml
 from scipy import stats as _st
 
-from vedic_astrology_core.domains.base import DomainAdapter
+from vedic_astrology_core.domains.base import DomainAdapter, Periods
 from vedic_astrology_core.domains.simulated import SimulatedDomain, simulated_grades, simulated_registers
 from vedic_astrology_core.rules.schema import Rule
 from vedic_astrology_core.validity import pipeline as P
@@ -367,3 +370,163 @@ def test_report_gate_passes_on_the_output(tmp_path):
     assert len([k for k in manifest["pages"] if k.startswith("card/")]) == 2
     codes = sorted(r["verdict"]["code"] for r in res["records"])
     assert codes == ["S", "U"]
+
+# ------------------------------------------- outcome gaps (WP-69 open issue)
+GAP_YEARS = (1903, 1904, 1951, 1952, 1953, 1990)
+
+
+class GappyDomain(PlantedDomain):
+    """PlantedDomain whose source has no value in GAP_YEARS (known from its inventory)."""
+
+    def __init__(self, **kw):
+        super().__init__(**kw)
+        years = np.arange(START, START + YEARS)
+        self._values[np.isin(years, GAP_YEARS)] = np.nan
+
+
+def gap_years(dates) -> np.ndarray:
+    return np.isin(np.asarray([d.year for d in dates]), GAP_YEARS)
+
+
+def test_outcome_gaps_go_to_the_gate_as_the_missing_bar_mask(tmp_path):
+    t = definition()
+    lock = make_lock(tmp_path, [t])
+    dom = GappyDomain(seed=11, effect=1.5, run_dir=tmp_path / "run")
+    h = handle_for([t], "gaps")
+    try:
+        res = P.run_domain(dom, run_spec(missing_bars={"value": gap_years}), [t], lock, tmp_path / "run",
+                           handle=h, provisional=False, sealer=FakeSeal)
+    finally:
+        SB._ISSUED.pop("gaps", None)
+    rec = res["records"][0]
+    assert dom.outcome_reads == 1 and rec["verdict"]["code"] == "S"
+    # The gate saw the mask: its whole-period design is the one the test used (S-15).
+    assert rec["gate"]["full"]["design_id"] == rec["effect"]["full"]["design_id"]
+    assert rec["gate"]["confirm"]["design_id"] == rec["effect"]["confirm"]["design_id"]
+    plain, _, _ = confirm_run(tmp_path / "plain", effect=1.5, seed=11)
+    assert plain["records"][0]["gate"]["full"]["design_id"] != rec["gate"]["full"]["design_id"]
+    assert plain["records"][0]["input_sha256"] != rec["input_sha256"]
+
+
+def test_undeclared_outcome_gap_stops_the_run(tmp_path):
+    t = definition()
+    lock = make_lock(tmp_path, [t])
+    dom = GappyDomain(seed=11, effect=0.0, run_dir=tmp_path / "run")
+    h = handle_for([t], "undeclared")
+    try:
+        with pytest.raises(P.PipelineError, match="missing_bars does not declare"):
+            P.run_domain(dom, run_spec(), [t], lock, tmp_path / "run", handle=h, provisional=False,
+                         sealer=FakeSeal)
+        # A declared gap that carries values is refused too.
+        dom2 = PlantedDomain(seed=11, effect=0.0, run_dir=tmp_path / "run2")
+        with pytest.raises(P.PipelineError, match="declared-missing"):
+            P.run_domain(dom2, run_spec(missing_bars={"value": gap_years}), [t], lock, tmp_path / "run2",
+                         handle=h, provisional=False, sealer=FakeSeal)
+    finally:
+        SB._ISSUED.pop("undeclared", None)
+
+
+def test_provisional_run_with_gaps(tmp_path):
+    t = definition()
+    lock = make_lock(tmp_path, [t])
+    dom = GappyDomain(seed=11, effect=1.5, run_dir=tmp_path / "run")
+    res = P.run_domain(dom, run_spec(missing_bars={"value": gap_years}), [t], lock, tmp_path / "run",
+                       provisional=True, sealer=FakeSeal)
+    rec = res["records"][0]
+    assert rec["p"]["descriptive"]["explore"] < 0.01 and rec["p"]["support_confirm"] is None
+
+
+# ------------------------------------- daily grid: A2 blocks and detrending
+DAILY_START, DAILY_DAYS = "1990-01-01", 3000
+VINTAGE_D = {"id": "sim_d1", "confirm_period": {"start": "1995-01-01", "end": "1998-12-31"}, "seen": False}
+
+
+def every_tenth_day(d) -> np.ndarray:
+    """Single-day episodes, one in ten days (new-moon-like; A1 drops them all)."""
+    days = (pd.DatetimeIndex(d) - pd.Timestamp(DAILY_START)).days
+    return np.asarray(days % 10 == 3)
+
+
+class DailyDomain(SimulatedDomain):
+    """Daily toy series with a strong drift (slope and random walk), effect on every_tenth_day()."""
+
+    def __init__(self, *, seed: int, effect: float, slope: float = 0.02, step: float = 0.05):
+        super().__init__(seed=seed, n_years=10, start_year=1990, effect=0.0)
+        rng = np.random.default_rng(seed + 104729)
+        self._dates = pd.date_range(DAILY_START, periods=DAILY_DAYS, freq="D")
+        t = np.arange(DAILY_DAYS, dtype=float)
+        act = every_tenth_day(self._dates).astype(float)
+        self._values = (rng.normal(size=DAILY_DAYS) + slope * t + np.cumsum(rng.normal(0, step, DAILY_DAYS))
+                        + effect * act)
+        self.sha256 = hashlib.sha256(self._values.tobytes()).hexdigest()
+        index, licences = simulated_registers(self.sha256)
+        DomainAdapter.__init__(self, index, licences, simulated_grades(self.sha256))
+
+    def grid(self):
+        return [x.date() for x in self._dates]
+
+    def periods(self):
+        return Periods(explore=(date(1990, 1, 1), date(1994, 12, 31)),
+                       confirm=(date(1995, 1, 1), self._dates[-1].date()))
+
+
+def daily_definition(**over) -> P.TestDefinition:
+    kw = dict(calendar=every_tenth_day, merge_gap=0, sensitivity={
+        "days_3_4": lambda d: np.asarray((pd.DatetimeIndex(d) - pd.Timestamp(DAILY_START)).days % 10 < 5)
+        & np.asarray((pd.DatetimeIndex(d) - pd.Timestamp(DAILY_START)).days % 10 > 2)},
+        rule_id="sim.tenth_day")
+    kw.update(over)
+    return definition(**kw)
+
+
+def daily_run(tmp_path: Path, effect: float, seed: int = 1, **spec):
+    t = daily_definition()
+    lock = FamilyLock(tmp_path / "lock.jsonl", "simulated")
+    dom = DailyDomain(seed=seed, effect=effect)
+    dates = pd.DatetimeIndex(pd.to_datetime(list(dom.grid())))
+    lock.register(rule_id=t.rule_id, version=t.version, outcome=t.outcome,
+                  calendar_hash=calendar_hash(t.calendar(dates)))
+    lock.close_batch(vintage=VINTAGE_D, seal_bundle_sha256="ab" * 32)
+    h = SB.ConfirmHandle(domain="simulated", batch=1, bundle_sha256="ab" * 32, bundle_path="seals/sim.json",
+                         ots_path="seals/sim.json.ots", block_height=1, vintage_id="sim_d1",
+                         period=("1995-01-01", "1998-12-31"), test_ids=(t.test_id,),
+                         ledger_commit="c0ffee", token=f"daily-{tmp_path.name}-{seed}")
+    SB._ISSUED[h.token] = h
+    kw = dict(vintage=VINTAGE_D, plan={"domain": "simulated", "outcomes": [{"id": "value"}],
+                                       "vintages": [VINTAGE_D]})
+    kw.update(spec)
+    try:
+        res = P.run_domain(dom, run_spec(**kw), [t], lock, tmp_path / "run", handle=h, provisional=False,
+                           sealer=FakeSeal)
+    finally:
+        SB._ISSUED.pop(h.token, None)
+    return res, dom
+
+
+def test_daily_outcome_without_a_detrend_window_stops_before_any_read(tmp_path, monkeypatch):
+    def no_read(self):
+        raise AssertionError("an outcome was read")
+
+    monkeypatch.setattr(DailyDomain, "_outcomes", no_read)
+    with pytest.raises(P.PipelineError, match="detrend_window"):
+        daily_run(tmp_path, effect=0.0)
+    # The gate is written (calendar only), but no outcome was read.
+    assert (tmp_path / "run" / "gates").is_dir()
+
+
+def test_daily_drift_is_detrended_and_single_day_blocks_are_used(tmp_path):
+    res, dom = daily_run(tmp_path / "null", effect=0.0, seed=3, detrend_window=31)
+    rec = res["records"][0]
+    assert dom.outcome_reads == 1
+    g = rec["gate"]["full"]
+    assert g["n_used"] == g["n_episodes"] == 300  # A2: every single-day episode keeps a block
+    assert rec["gate"]["full"]["design_id"] == rec["effect"]["full"]["design_id"]
+    assert rec["verdict"]["code"] != "S"
+    # Raw drift is 60 noise SD over the record; detrended, the estimate is noise-sized.
+    assert abs(rec["effect"]["full"]["statistic"]) < 0.25
+    assert abs(rec["estimate"]["without_baselines"]) < 0.25
+    found, _ = daily_run(tmp_path / "planted", effect=1.0, seed=3, detrend_window=31)
+    frec = found["records"][0]
+    assert frec["verdict"]["code"] == "S", frec["verdict"]
+    assert 0.7 < frec["effect"]["confirm"]["estimate"] < 1.3
+    assert frec["input_sha256"] != rec["input_sha256"]

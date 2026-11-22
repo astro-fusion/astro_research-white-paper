@@ -350,10 +350,11 @@ def _result(case, cell, hits, reps, fast):
 def run_z1(reps, fast=False, names=DAILY, sides=("greater", "less")):
     frame = sim.daily_calendars()
     dates = frame.index
-    loo = lambda y: S.leave_year_out_anomaly(y, dates, by="doy")
+    # As the pipeline does for a daily outcome: anomaly, then the A2 detrending.
+    loo = lambda y: S.centred_detrend(S.leave_year_out_anomaly(y, dates, by="doy"), DETREND_WINDOW)
     out = []
     for name in names:
-        d = S.control_design(frame[name].to_numpy(), dates, merge_gap=0).blocks
+        d = S.control_design(frame[name].to_numpy(), dates, merge_gap=0, side_seed=BASE_SEED).blocks
         for side in sides:
             cell = f"{name} {side}"
             hits = _rejections(d, lambda rng: sim.seasonal_daily(dates, rng), reps,
@@ -370,7 +371,7 @@ def run_z2(reps, fast=False, names=DAILY, parent_rate=0.05):
     draw = lambda rng: sim.neyman_scott(len(dates), rng, parent_rate, multiplier=mult)["counts"].astype(float)
     out = []
     for name in names:
-        d = S.control_design(frame[name].to_numpy(), dates, merge_gap=0).blocks
+        d = S.control_design(frame[name].to_numpy(), dates, merge_gap=0, side_seed=BASE_SEED).blocks
         hits = _rejections(d, draw, reps, cal.case_seed(BASE_SEED, "Z2", name), outcome_type="events")
         out.append(_result("Z2", name, hits, reps, fast))
     return out
@@ -382,7 +383,7 @@ def run_z3(reps, fast=False, names=YEARLY):
     dates = _yearly_dates(years)
     out = []
     for name in names:
-        d = S.control_design(frame[name].to_numpy(), dates, merge_gap=0).blocks
+        d = S.control_design(frame[name].to_numpy(), dates, merge_gap=0, side_seed=BASE_SEED).blocks
         for otype in ("continuous", "flags"):
             cell = f"{name} {otype}"
             seed = cal.case_seed(BASE_SEED, "Z3", cell)
@@ -426,7 +427,7 @@ def run_z6(reps, fast=False, signs=sim.SIGNS):
         name = f"rahu_in_{s.lower()}"
         c = frame[name].to_numpy()
         r4[name] = S.r4_passes(S.baseline_r2(c, nb))
-        d = S.control_design(c, dates, merge_gap=0).blocks
+        d = S.control_design(c, dates, merge_gap=0, side_seed=BASE_SEED).blocks
         hits = _rejections(d, lambda rng: sim.nodal_wave(lon, rng), reps,
                            cal.case_seed(BASE_SEED, "Z6", name),
                            transform=lambda y: S.remove_baselines(y, nb))
@@ -468,3 +469,145 @@ def test_full_z_cases():
     _assert_all(run_z1(10_000) + run_z2(10_000) + run_z3(10_000) + z6)
     assert any(r[4] for r in run_z4(10_000))
     assert not any(r4.values())
+
+# ------------------------------------------------- Amendment A2 in season.py
+def test_single_bar_season_windows_alternate_sides_with_the_plan_seed():
+    dates = pd.date_range("2000-01-01", "2009-12-31", freq="D")
+    days = [f"2004-{m:02d}-15" for m in range(1, 13)]
+    c = _box(dates, [(d, d) for d in days])  # twelve single-day episodes, one a month
+    a1 = S.season_design(c, dates, merge_gap=0)
+    assert a1.blocks.n_used == 0  # A1: a single bar cannot be split over two years
+    a2 = S.season_design(c, dates, merge_gap=0, side_seed=BASE_SEED)
+    assert a2.blocks.n_used == 12 and a2.blocks.n_one_sided == 12
+    sides = ["left" if len(b.control_left) else "right" for b in a2.blocks.blocks]
+    first = B.start_side(BASE_SEED)
+    other = B.SIDE_RIGHT if first == B.SIDE_LEFT else B.SIDE_LEFT
+    assert sides == [first, other] * 6  # alternating in calendar order from the seed
+    for b in a2.blocks.blocks:  # the twin is the same day in the year before or after
+        (x,) = b.control.tolist()
+        (a,) = b.active.tolist()
+        assert (dates[x].month, dates[x].day) == (dates[a].month, dates[a].day)
+        assert abs(dates[x].year - dates[a].year) == 1
+    # Another seed may start on the other side; the side never depends on an outcome.
+    seed2 = next(s for s in range(100) if B.start_side(s) != first)
+    a3 = S.season_design(c, dates, merge_gap=0, side_seed=seed2)
+    assert ["left" if len(b.control_left) else "right" for b in a3.blocks.blocks] == [other, first] * 6
+
+
+def test_missing_season_window_on_one_side_gives_a_one_sided_block_with_a2():
+    dates = pd.date_range("2000-01-01", "2009-12-31", freq="D")
+    # Episode in 2004; the same days are active in 2001 to 2003, so no earlier
+    # window lies within three years, while 2005 is free.
+    c = _box(dates, [(f"{y}-03-01", f"{y}-03-10") for y in (2001, 2002, 2003, 2004)])
+    a1 = S.season_design(c, dates, merge_gap=0)
+    a2 = S.season_design(c, dates, merge_gap=0, side_seed=BASE_SEED)
+    b1, b2 = a1.blocks.blocks[3], a2.blocks.blocks[3]
+    assert not b1.used and a1.windows[3].reason == S.DROP_NO_SEASON_WINDOW
+    assert b2.used and b2.side_rule == B.SIDE_FORCED and len(b2.control_left) == 0
+    # Earlier episodes reserved 2005 and 2006 first; the nearest free later year serves.
+    assert set(dates[b2.control_right].year) == {2007} and b2.n_control == b2.n_active
+
+
+def test_control_design_passes_the_side_seed(daily):
+    dates = daily.index
+    c = np.zeros(len(dates), dtype=bool)
+    c[10::30] = True  # single-day episodes, not season-linked
+    plain = S.control_design(c, dates, merge_gap=0)
+    a2 = S.control_design(c, dates, merge_gap=0, side_seed=BASE_SEED)
+    assert not a2.season_linked and plain.blocks.n_used == 0
+    assert a2.blocks.n_used == a2.blocks.n_episodes and a2.blocks.side_seed == BASE_SEED
+
+
+# --------------------------------------------------- A2 detrending baseline
+def test_centred_detrend_is_symmetric_and_removes_a_linear_trend():
+    n = 200
+    t = np.arange(n, dtype=float)
+    out = S.centred_detrend(3.0 + 0.7 * t, 31)
+    assert np.allclose(out, 0.0)  # exact at every bar, the ends included
+    # Past and future weigh alike: a spike moves the baseline of the bars
+    # 15 before and 15 after it by the same amount.
+    y = np.zeros(n)
+    y[100] = 31.0
+    d = S.centred_detrend(y, 31)
+    assert d[85] == d[115] == -1.0 and d[84] == d[116] == 0.0 and d[100] == 30.0
+    # Near the ends the half-window is cut back on both sides.
+    assert S.centred_detrend(np.r_[5.0, np.zeros(n - 1)], 31)[0] == 0.0
+    # NaN stays NaN and enters no mean.
+    y = np.random.default_rng(1).normal(size=n)
+    y[50] = np.nan
+    d = S.centred_detrend(y, 11)
+    assert np.isnan(d[50]) and np.isfinite(np.delete(d, 50)).all()
+    assert d[45] == pytest.approx(y[45] - np.nanmean(y[40:51]))
+    for bad in (2, 4, 1, 3.0, True):
+        with pytest.raises(ValueError):
+            S.centred_detrend(y, bad)
+
+
+def test_detrend_required_for_daily_and_hourly_grids_only():
+    assert S.detrend_required(pd.date_range("2000-01-01", periods=50, freq="D"))
+    assert S.detrend_required(pd.bdate_range("2000-01-03", periods=50))
+    assert S.detrend_required(pd.date_range("2000-01-01", periods=50, freq="h"))
+    assert not S.detrend_required(pd.date_range("2000-01-01", periods=50, freq="MS"))
+    assert not S.detrend_required(_yearly_dates(range(1900, 1950)))
+    assert not S.detrend_required(np.arange(1900, 1950))
+
+
+def test_detrended_effect_shape_is_the_detrended_indicator():
+    c = np.zeros(120, dtype=bool)
+    c[40:47] = True
+    fin = np.ones(120, dtype=bool)
+    fin[60] = False
+    h = S.detrended_effect_shape(c, 31, fin)
+    ind = np.where(fin, c.astype(float), np.nan)
+    assert np.allclose(h, S.centred_detrend(ind, 31), equal_nan=True)
+    y = np.random.default_rng(2).normal(size=120)
+    y[~fin] = np.nan
+    # Linearity: detrending (y + r * indicator) = detrended y + r * shape.
+    assert np.allclose(S.centred_detrend(np.where(c, y + 0.8, y), 31),
+                       S.centred_detrend(y, 31) + 0.8 * h, equal_nan=True)
+
+
+# D1 (Amendment A2): drift. Slope and random-walk step in noise standard
+# deviations, as in tests/test_stats_blocks.py; window declared by the plan.
+DRIFT_SLOPE = 0.02
+DRIFT_STEP = 0.05
+DETREND_WINDOW = 31
+
+
+def _drift(n, rng):
+    t = np.arange(n, dtype=float)
+    return rng.standard_normal(n) + DRIFT_SLOPE * t + np.cumsum(rng.normal(0, DRIFT_STEP, n))
+
+
+def _new_moon_like(n, period=29.530589, start=3):
+    c = np.zeros(n, dtype=bool)
+    c[np.round(np.arange(start, n, period)).astype(int)] = True
+    return c
+
+
+def run_d1(reps, fast=False, detrend=True, sides=("greater", "less")):
+    """D1: no effect, drifting outcome, A2 blocks; detrended by the centred running mean."""
+    frame = sim.daily_calendars()
+    dates = frame.index
+    n = len(dates)
+    cals = {"eclipse_window": frame["eclipse_window"].to_numpy(), "new_moon_like": _new_moon_like(n)}
+    tf = (lambda y: S.centred_detrend(y, DETREND_WINDOW)) if detrend else None
+    out = []
+    for name, c in cals.items():
+        d = S.control_design(c, dates, merge_gap=0, side_seed=BASE_SEED).blocks
+        assert d.n_used >= B.MIN_K_EFF
+        for side in sides:
+            cell = f"A2 drift {'detrended' if detrend else 'raw'} {name} {side}"
+            hits = _rejections(d, lambda rng: _drift(n, rng), reps, cal.case_seed(BASE_SEED, "B3", cell),
+                               alternative=side, transform=tf)
+            out.append(_result("B3", cell, hits, reps, fast))
+    return out
+
+
+def test_d1_drift_holds_size_after_detrending_fast():
+    _assert_all(run_d1(FAST_REPS, fast=True))
+
+
+@pytest.mark.skipif(not FULL, reason="full calibration runs in the certificate suite")
+def test_full_d1_drift():
+    _assert_all(run_d1(10_000))

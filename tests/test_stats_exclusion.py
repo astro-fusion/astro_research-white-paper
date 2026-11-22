@@ -42,7 +42,8 @@ def _rng(case, cell, i, purpose="outcome"):
 
 def _design(k, n_active=8, balance=1.0):
     c = sim.balance_calendar(balance, k, n_active)
-    return c, B.build_blocks(c, merge_gap=0)
+    # Amendment A2 on, as in every real run (the plan seed as side_seed).
+    return c, B.build_blocks(c, merge_gap=0, side_seed=BASE_SEED)
 
 
 def _excluded(design, y, outcome_type, sesoi, thin_rng=None, side="greater", a=ALPHA):
@@ -418,6 +419,108 @@ def test_x10_exclusion_p_never_increases_with_r(outcome_type, side):
                              signflip_seed=7, n_draws=2000)
         p = [er.exclusion_p(m, side) for m in grid]
         assert all(b <= a for a, b in zip(p, p[1:])), (k, p)
+
+
+# ------------------------------------------- A2: daily events, detrended
+#: Window of the centred running mean the plan declares (A2 runs in
+#: tests/test_stats_blocks.py and tests/test_stats_season.py use the same).
+DETREND_WINDOW = 31
+DAILY_REPS = 10_000 if FULL else 400
+
+
+def _new_moon_like(n, period=29.530589, start=3):
+    c = np.zeros(n, dtype=bool)
+    c[np.round(np.arange(start, n, period)).astype(int)] = True
+    return c
+
+
+def _daily_cal(name):
+    frame = sim.daily_calendars()
+    if name == "new_moon_like":
+        return _new_moon_like(len(frame))
+    return frame[name].to_numpy()
+
+
+def run_x_daily(case, kind, cal_name, sesoi=0.5, reps=DAILY_REPS, shaped=True):
+    """X1, X2 on daily-event calendars, A2 blocks, outcome detrended as in the pipeline.
+
+    The SESOI is planted in the raw bars, the series is detrended
+    (core/stats/season.py centred_detrend), and the effect is removed in the
+    shape the detrending gives it (``effect_shape``). ``shaped=False``
+    removes a flat r instead (documents why the shape is needed).
+    """
+    from vedic_astrology_core.stats import season as Z
+
+    c = _daily_cal(cal_name)
+    d = B.build_blocks(c, merge_gap=0, side_seed=BASE_SEED)
+    shape = Z.detrended_effect_shape(c, DETREND_WINDOW) if shaped else None
+    hits = 0
+    for i in range(reps):
+        rng = _rng(case, f"daily/{kind}/{cal_name}/{shaped}", i)
+        y = Z.centred_detrend(sim.plant_shift(sim.continuous_bars(kind, len(c), rng), c, sesoi), DETREND_WINDOW)
+        er = X.EffectRemoval(d, y, outcome_type="continuous", effect_shape=shape,
+                             signflip_seed=int(rng.integers(2**63)), n_draws=1999)
+        hits += er.exclusion_p(sesoi, "greater") <= ALPHA and X.can_limit(er.k_eff, er.informative_at(sesoi, "greater"), ALPHA)
+    return hits, d
+
+
+def test_effect_shape_of_ones_is_the_plain_removal():
+    c, d = _design(12)
+    y = np.random.default_rng(4).normal(size=len(c))
+    ones = np.where(c, 1.0, 0.0)
+    a = X.EffectRemoval(d, y, outcome_type="continuous")
+    b = X.EffectRemoval(d, y, outcome_type="continuous", effect_shape=ones)
+    assert np.allclose(b.c, 1.0)
+    for r in (0.1, 0.5, 1.3):
+        assert a.p_value(r, "less") == b.p_value(r, "less")
+
+
+def test_shaped_removal_is_the_primary_test_on_adjusted_bars():
+    from vedic_astrology_core.stats import season as Z
+
+    c = _new_moon_like(3000)
+    d = B.build_blocks(c, merge_gap=0, side_seed=BASE_SEED)
+    assert d.n_one_sided == d.n_used  # single-day blocks: all one-sided (A2)
+    rng = np.random.default_rng(5)
+    raw = rng.normal(size=3000)
+    y = Z.centred_detrend(sim.plant_shift(raw, c, 0.4), DETREND_WINDOW)
+    shape = Z.detrended_effect_shape(c, DETREND_WINDOW)
+    er = X.EffectRemoval(d, y, outcome_type="continuous", effect_shape=shape, signflip_seed=11, n_draws=999)
+    adj = X.shift_active(d, y, 0.4, outcome_type="continuous", effect_shape=shape)
+    res = B.primary_test(d, adj, alternative="less", outcome_type="continuous",
+                         rng=np.random.default_rng(11), n_draws=999)
+    assert er.p_value(0.4, "less") == pytest.approx(res.p_value)
+    # The removed effect is exactly the one the detrended data carry: removal
+    # gives back the detrended series without the effect, on every bar.
+    assert np.allclose(adj, Z.centred_detrend(raw, DETREND_WINDOW))
+
+
+def test_effect_shape_rules():
+    c, d = _design(12)
+    y = np.random.default_rng(6).poisson(1.0, len(c)).astype(float)
+    with pytest.raises(ValueError, match="not detrended"):
+        X.EffectRemoval(d, y, outcome_type="events", thinning_rng=np.random.default_rng(1),
+                        effect_shape=np.where(c, 1.0, 0.0))
+    with pytest.raises(ValueError, match="too short"):
+        X.EffectRemoval(d, y, outcome_type="continuous", effect_shape=np.where(c, -1.0, 0.0))
+    with pytest.raises(ValueError, match="one value per bar"):
+        X.EffectRemoval(d, y, outcome_type="continuous", effect_shape=np.ones(3))
+
+
+@pytest.mark.parametrize("cal_name", ["new_moon_like", "eclipse_window"])
+@pytest.mark.parametrize("kind", ["normal", "lognormal"])
+def test_x1_x2_daily_events_a2_detrended(kind, cal_name):
+    hits, d = run_x_daily("X1" if kind == "normal" else "X2", kind, cal_name)
+    assert d.k_eff >= X.MIN_K_EFF
+    _assert_rate(hits, DAILY_REPS)
+
+
+@pytest.mark.skipif(not FULL, reason="full calibration runs in the certificate suite")
+@pytest.mark.parametrize("cal_name", ["new_moon_like", "eclipse_window"])
+@pytest.mark.parametrize("kind", ["normal", "t3", "lognormal", "exponential"])
+def test_full_x1_x2_daily_events_a2_detrended(kind, cal_name):
+    hits, _ = run_x_daily("X1" if kind in ("normal", "t3") else "X2", kind, cal_name)
+    _assert_rate(hits, DAILY_REPS)
 
 
 # -------------------------------------------------------------- X1 to X7

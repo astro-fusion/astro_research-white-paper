@@ -423,8 +423,11 @@ def spec(**kw):
 
 def test_gate_reads_no_outcome():
     import inspect
-    params = list(inspect.signature(G.run_gate).parameters)
-    assert params == ["calendar", "dates", "confirm", "spec"]
+    sig = inspect.signature(G.run_gate)
+    params = list(sig.parameters)
+    # `available` is the dataset's declared missing-bar mask (grid inventory, no value read).
+    assert params == ["calendar", "dates", "confirm", "spec", "available"]
+    assert sig.parameters["available"].kind is inspect.Parameter.KEYWORD_ONLY
     assert not any("outcome" in f for f in G.GateSpec.__dataclass_fields__ if f != "outcome_type")
 
 
@@ -532,13 +535,56 @@ def test_gate_and_primary_test_agree_on_side_and_blocks():
     from vedic_astrology_core.stats import season as Z
     c = periodic(8, 32)
     g = G.run_gate(c, DATES, CONFIRM, spec())
-    sd = Z.control_design(c, DATES, merge_gap=1, available=CONFIRM)
+    # The gate passes the plan seed as side_seed (A2); the test builds the same design.
+    sd = Z.control_design(c, DATES, merge_gap=1, available=CONFIRM, side_seed=7)
     y = np.random.default_rng(1).normal(size=N_BARS)
     res = B.primary_test(sd.blocks, y, alternative="greater", outcome_type="continuous",
                          rng=fam.stream_rng(7, "t", "signflip"))
     gs = res.gate_summary()
     for k in ("design_id", "alternative", "n_used", "n_dropped", "k_eff", "p_min"):
         assert gs[k] == g.confirm[k]
+
+
+def test_gate_uses_the_plan_seed_as_side_seed_a2():
+    from vedic_astrology_core.stats import blocks as B
+    from vedic_astrology_core.stats import season as Z
+    c = periodic(1, 9)  # single-day episodes: A1 drops every block, A2 keeps them
+    a1 = Z.control_design(c, DATES, merge_gap=0)
+    assert a1.blocks.n_used == 0
+    g = G.run_gate(c, DATES, CONFIRM, spec(merge_gap=0))
+    assert g.full["n_used"] == g.full["n_episodes"] and g.can_support
+    sd = Z.control_design(c, DATES, merge_gap=0, available=CONFIRM, side_seed=7)
+    y = np.random.default_rng(2).normal(size=N_BARS)
+    res = B.primary_test(sd.blocks, y, alternative="greater", outcome_type="continuous",
+                         rng=fam.stream_rng(7, "t", "signflip"))
+    for k in ("design_id", "alternative", "n_used", "n_dropped", "k_eff", "p_min"):
+        assert res.gate_summary()[k] == g.confirm[k]  # S-15 with A2 on
+    # The seed decides the starting side; another seed, another design id.
+    other = G.run_gate(c, DATES, CONFIRM, spec(merge_gap=0, plan_seed=8))
+    assert other.full["n_used"] == g.full["n_used"]
+    if B.start_side(8) != B.start_side(7):
+        assert other.full["design_id"] != g.full["design_id"]
+
+
+def test_gate_takes_the_missing_bar_mask():
+    from vedic_astrology_core.stats import blocks as B
+    from vedic_astrology_core.stats import season as Z
+    c = periodic(8, 32)
+    avail = np.ones(N_BARS, dtype=bool)
+    avail[1500:1530] = False  # a gap in the source, known from its inventory
+    g = G.run_gate(c, DATES, CONFIRM, spec(), available=avail)
+    plain = G.run_gate(c, DATES, CONFIRM, spec())
+    assert g.full["design_id"] != plain.full["design_id"]
+    sd = Z.control_design(c, DATES, merge_gap=1, available=CONFIRM & avail, side_seed=7)
+    y = np.random.default_rng(3).normal(size=N_BARS)
+    y[~avail] = np.nan
+    res = B.primary_test(sd.blocks, y, alternative="greater", outcome_type="continuous",
+                         rng=fam.stream_rng(7, "t", "signflip"))
+    assert res.gate_summary()["design_id"] == g.confirm["design_id"]
+    # An all-true mask is the same design as no mask.
+    assert G.run_gate(c, DATES, CONFIRM, spec(), available=np.ones(N_BARS, bool)).gate_hash == plain.gate_hash
+    with pytest.raises(G.GateError):
+        G.run_gate(c, DATES, CONFIRM, spec(), available=np.ones(N_BARS - 1, bool))
 
 
 # ------------------------------------------------------------- imports
