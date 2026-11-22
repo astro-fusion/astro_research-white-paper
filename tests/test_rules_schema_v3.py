@@ -92,8 +92,11 @@ def test_every_existing_rule_file_loads_unchanged():
     """Schema v3 is additive: the committed rules/ validates as before."""
     loaded, problems = load_rules([default_rules_dir()])
     assert not problems, "\n".join(str(p) for p in problems)
-    assert len(loaded) == 121
-    assert all(not r.rule.tests and not r.rule.variants for r in loaded)
+    # The 121 pre-v3 files are unchanged; study ports (ADR-007 WP-71) are new
+    # v3 files that carry tests blocks by design.
+    old = [r for r in loaded if ".study." not in r.rule.id]
+    assert len(old) == 121
+    assert all(not r.rule.tests and not r.rule.variants for r in old)
 
 
 def test_the_four_blocks_validate_as_in_section_3_2():

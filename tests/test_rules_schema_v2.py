@@ -209,7 +209,10 @@ def test_every_committed_rule_is_version_2_and_unvalidated_or_stamped():
     loaded, problems = load_rules([default_rules_dir()])
     assert not problems
     for item in loaded:
-        assert item.rule.version >= 2, item.rule.id
+        # New rules written after the migration (study ports, ADR-007 WP-71)
+        # legitimately start at version 1.
+        if ".study." not in item.rule.id:
+            assert item.rule.version >= 2, item.rule.id
         assert item.rule.validation.status in (
             "unvalidated",
             "confirmed",

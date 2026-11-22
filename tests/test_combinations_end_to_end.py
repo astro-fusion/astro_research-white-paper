@@ -70,7 +70,9 @@ def _moment_only_rules(domain):
     return [
         item.rule
         for item in loaded
-        if item.rule.conditions is not None and not rule_inputs(item.rule)
+        if item.rule.conditions is not None
+        and not rule_inputs(item.rule)
+        and ".study." not in item.rule.id  # validity inputs, not combinations
     ]
 
 

@@ -86,12 +86,17 @@ class CombinationRegistry:
         """Load ``rules/`` (or ``paths``); rules needing a place or natal are skipped.
 
         Rules with ``status: needs_predicates`` have no conditions and are
-        skipped too; the full set is in :attr:`rule_registry`.
+        skipped too; the full set is in :attr:`rule_registry`. Study-indicator
+        ports (``<domain>.study.*``, ADR-007 WP-71) are validity-pipeline
+        inputs, not combinations, so they are skipped here: adding them would
+        silently add duplicate ``rule:`` feature columns to old pipelines.
         """
         self.rule_registry = RuleRegistry.load(paths)
         self._rules: Dict[str, RegistryRule] = {}
         for rule in self.rule_registry:
             if rule.conditions is None or rule_inputs(rule):
+                continue
+            if ".study." in rule.id:
                 continue
             self._rules[rule.name] = RegistryRule(rule)
 
