@@ -1,0 +1,34 @@
+id: "annual.mesha_sankranti"
+name:
+  sanskrit: "Mesha sankranti"
+  english: "Chart of the Sun's entry into sidereal Aries, cast for the capital"
+family: "annual"
+tradition: "practitioner"
+tier: "phase2"
+source:
+  text: "B.V. Raman (title and pages to be recorded)"
+  edition: null
+  translator: null
+  chapter: null
+  verse: null
+  quote: null
+  url: null
+  archive_url: null
+  checked_by: null
+  checked_at: null
+definition:
+  inputs: ["event_year","capital_place"]
+  formula: "The chart cast for the capital at the moment the Sun enters sidereal Aries in the year of the event."
+  conventions: {zodiac: sidereal, ayanamsa: lahiri, node: mean, houses: whole_sign}
+  variants: []
+implementation:
+  module: "vedic_astrology_core.rules.predicates.mundane"
+  function: "ingress"
+predicates: ["ingress"]
+needs:
+  founding_time_precision_minutes: null
+  place: true
+change_period: "needs place and year; no founding time"
+reference_cases: []
+scope: ["case_file"]
+notes: "Phase 2. Title and pages to be recorded (H11)."

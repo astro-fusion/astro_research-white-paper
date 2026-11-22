@@ -1,0 +1,32 @@
+id: "transit.in_varga"
+name:
+  sanskrit: null
+  english: "The transiting graha's own varga sign against the natal varga"
+family: "transit"
+tradition: "practitioner"
+tier: "extended"
+source:
+  text: null
+  edition: null
+  translator: null
+  chapter: null
+  verse: null
+  quote: null
+  url: null
+  archive_url: null
+  checked_by: null
+  checked_at: null
+definition:
+  inputs: ["transit_longitude","natal_varga_sign"]
+  formula: null
+  conventions: {zodiac: sidereal, ayanamsa: lahiri, node: mean, houses: whole_sign}
+  variants: []
+implementation: null
+predicates: ["transit_in_house_from_natal"]
+needs:
+  founding_time_precision_minutes: 2
+  place: false
+change_period: "transit graha varga sign: hours to days for the Moon, as the varga for others"
+reference_cases: []
+scope: ["case_file"]
+notes: "\"Transit navamsa\". No classical verse known to the architect. Needs predicates (WP-52). Extended: case file only."

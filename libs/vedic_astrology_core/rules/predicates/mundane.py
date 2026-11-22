@@ -2,12 +2,12 @@
 
 from typing import List, Literal, Optional
 
-from pydantic import Field, field_validator
+from pydantic import Field, field_validator, model_validator
 
 from ...astrology.chart import get_nakshatra
 from ...astrology.combustion import angular_separation
 from ...utils.datetime_utils import julian_day_to_datetime
-from ..context import EvalContext, fmt_lon
+from ..context import EvalContext, check_varga, fmt_lon
 from ..eclipses import eclipses_between
 from ..vocabulary import SIGN_NAMES, ordinal
 from . import (
@@ -22,6 +22,7 @@ from . import (
     point_label,
     predicate,
 )
+from .relations import GRAHA_DRISHTI
 
 
 class TransitHouse(Params):
@@ -30,7 +31,24 @@ class TransitHouse(Params):
     planet: PlanetName
     from_: PointName = Field(default="Lagna", alias="from")
     houses: HouseList
+    varga: int = 1
+    transit_varga: int = 1
     natal_fields = ("from_",)
+
+    @field_validator("varga", "transit_varga", mode="before")
+    @classmethod
+    def _varga(cls, value):
+        return check_varga(value, houses=True)
+
+    @model_validator(mode="after")
+    def _pairing(self):
+        if self.transit_varga not in (1, self.varga):
+            raise ValueError(
+                "transit_varga must be 1 (the transit's rashi) or equal to "
+                f"varga (D{self.varga}); D{self.transit_varga} against "
+                f"D{self.varga} is not a catalogued reading"
+            )
+        return self
 
 
 @predicate(
@@ -52,10 +70,39 @@ def transit_in_house_from_natal(ctx: EvalContext, p: TransitHouse) -> Outcome:
     Gochara: the planet's sign now is counted by whole sign from the natal
     Lagna (default) or a natal planet (the natal Moon for classical
     gochara). The natal chart may be a person's or a nation's.
+
+    Catalogue ids: ``transit.gochara_moon`` (from the Moon),
+    ``transit.from_lagna`` (from the Lagna), with ``varga`` and
+    ``transit_varga`` both 1 (the default). With ``varga`` n > 1 the origin
+    is the natal point's sign in the natal D-n chart: ``transit.over_varga``
+    when the transit's rashi sign is counted (``transit_varga: 1``),
+    ``transit.in_varga`` when the transit's own D-n sign is counted
+    (``transit_varga`` equal to ``varga``). Both varga readings are
+    extended methods with no classical source. D2 has no houses and
+    raises, as does any varga the engine does not compute.
     """
     natal = ctx.require_natal()
-    origin_sign = natal.sign(p.from_)
-    house = house_from(origin_sign, ctx.sky.sign(p.planet))
+    if p.varga == 1 and p.transit_varga == 1:
+        origin_sign = natal.sign(p.from_)
+        house = house_from(origin_sign, ctx.sky.sign(p.planet))
+    else:
+        origin_sign = natal.varga_sign(p.from_, p.varga)
+        transit_sign = ctx.sky.varga_sign(p.planet, p.transit_varga)
+        house = house_from(origin_sign, transit_sign)
+        held = house in p.houses
+        moved = (
+            f"transiting {ctx.sky.describe(p.planet)}"
+            if p.transit_varga == 1
+            else f"transiting {p.planet} is {SIGN_NAMES[transit_sign]} in "
+            f"D{p.transit_varga} ({fmt_lon(ctx.sky.lon(p.planet))})"
+        )
+        return Outcome(
+            held,
+            f"{moved}, the {ordinal(house)} from the natal "
+            f"{point_label(p.from_).replace('the ', '')} in "
+            f"{SIGN_NAMES[origin_sign]} in D{p.varga}"
+            f"{'' if held else ', not ' + ', '.join(ordinal(h) for h in p.houses)}",
+        )
     held = house in p.houses
     return Outcome(
         held,
@@ -95,6 +142,73 @@ def transit_conjunct_natal(ctx: EvalContext, p: TransitConjunct) -> Outcome:
         f"transiting {ctx.sky.describe(p.planet)} is {sep:.1f} deg from the natal "
         f"{point_label(p.natal_point).replace('the ', '')} at {fmt_lon(natal_lon)}"
         f" ({'within' if held else 'outside'} {p.orb:g} deg)",
+    )
+
+
+class TransitAspect(Params):
+    """Parameters of ``transit_aspects_natal``."""
+
+    planet: PlanetName
+    natal_point: PointName
+    aspects: Optional[List[int]] = None
+    natal_fields = ("natal_point",)
+
+    @field_validator("aspects", mode="before")
+    @classmethod
+    def _listify(cls, value):
+        return _list(value)
+
+    @model_validator(mode="after")
+    def _legal(self):
+        legal = GRAHA_DRISHTI[self.planet]
+        if self.aspects is not None:
+            bad = [a for a in self.aspects if a not in legal]
+            if bad or not self.aspects:
+                raise ValueError(
+                    f"{self.planet} casts only the "
+                    + ", ".join(ordinal(a) for a in sorted(legal))
+                    + f" aspect(s); {', '.join(ordinal(a) for a in bad)} is not one"
+                )
+        return self
+
+
+@predicate(
+    "transit_aspects_natal",
+    TransitAspect,
+    needs=("natal",),
+    category="mundane",
+    example={
+        "transit_aspects_natal": {
+            "planet": "Saturn",
+            "natal_point": "Moon",
+            "aspects": [10],
+        }
+    },
+)
+def transit_aspects_natal(ctx: EvalContext, p: TransitAspect) -> Outcome:
+    """Check that the transiting planet casts graha drishti on a natal point.
+
+    Catalogue id: ``transit.aspects_natal`` (practitioner usage of transits
+    to natal points; unverified). Whole-sign Parashari aspects as in
+    ``graha_drishti``: counted from the transit planet's sign to the natal
+    point's sign, every planet aspects the 7th, Mars also the 4th and 8th,
+    Jupiter the 5th and 9th, Saturn the 3rd and 10th; Rahu and Ketu are
+    given the 7th only. The same sign is a conjunction, not an aspect (use
+    ``transit_in_house_from_natal`` with houses [1]). ``aspects`` restricts
+    the test to some of the planet's legal aspects.
+    """
+    natal = ctx.require_natal()
+    target_sign = natal.sign(p.natal_point)
+    house = house_from(ctx.sky.sign(p.planet), target_sign)
+    allowed = set(p.aspects or GRAHA_DRISHTI[p.planet])
+    held = house in allowed
+    return Outcome(
+        held,
+        f"transiting {ctx.sky.describe(p.planet)}; the natal "
+        f"{point_label(p.natal_point).replace('the ', '')} in "
+        f"{SIGN_NAMES[target_sign]} is the {ordinal(house)} sign from it, "
+        f"{'which is' if held else 'not'} one of its aspects "
+        f"({', '.join(ordinal(a) for a in sorted(allowed))})",
     )
 
 
@@ -248,4 +362,4 @@ def ingress(ctx: EvalContext, p: Ingress) -> Outcome:
     return Outcome(held, f"{'; '.join(words)} ({window}){wanted}")
 
 
-__all__ = ["eclipse_in_sign", "ingress"]
+__all__ = ["eclipse_in_sign", "ingress", "transit_aspects_natal"]

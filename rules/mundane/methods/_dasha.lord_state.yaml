@@ -1,0 +1,32 @@
+id: "dasha.lord_state"
+name:
+  sanskrit: null
+  english: "Dasha lord natal house, lordship and dignity"
+family: "dasha"
+tradition: "jataka_applied"
+tier: "core"
+source:
+  text: "BPHS dasha-result chapters"
+  edition: null
+  translator: null
+  chapter: null
+  verse: null
+  quote: null
+  url: null
+  archive_url: null
+  checked_by: null
+  checked_at: null
+definition:
+  inputs: ["natal_chart","dasha_lord"]
+  formula: "The natal house, the houses ruled and the dignity of the running dasha lord, read from the founding chart."
+  conventions: {zodiac: sidereal, ayanamsa: lahiri, node: mean, houses: whole_sign}
+  variants: []
+implementation: null
+predicates: ["dasha_lord_in_house","dasha_lord_rules_house","dasha_lord_dignity"]
+needs:
+  founding_time_precision_minutes: 5
+  place: false
+change_period: "as dasha.vimshottari plus lagna 120 min"
+reference_cases: []
+scope: ["case_file","aggregate"]
+notes: "No implementation until predicates exist (WP-52). From memory or a docstring, no page and no quotation; owner task H11."

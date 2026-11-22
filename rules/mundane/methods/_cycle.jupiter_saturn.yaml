@@ -1,0 +1,34 @@
+id: "cycle.jupiter_saturn"
+name:
+  sanskrit: null
+  english: "Jupiter-Saturn conjunction cycle"
+family: "cycle"
+tradition: "western_mundane"
+tier: "extended"
+source:
+  text: "Perso-Arabic and Western mundane astrology; not an Indian classical method"
+  edition: null
+  translator: null
+  chapter: null
+  verse: null
+  quote: null
+  url: null
+  archive_url: null
+  checked_by: null
+  checked_at: null
+definition:
+  inputs: ["event_moment"]
+  formula: null
+  conventions: {zodiac: sidereal, ayanamsa: lahiri, node: mean, houses: whole_sign}
+  variants: []
+implementation:
+  module: "vedic_astrology_core.rules.predicates.bhava"
+  function: "cycle_resonance"
+predicates: ["cycle_resonance"]
+needs:
+  founding_time_precision_minutes: null
+  place: false
+change_period: "20 years per conjunction; needs only the event moment"
+reference_cases: []
+scope: ["case_file"]
+notes: "Off by default. Catalogued under its true tradition. Extended: case file only."

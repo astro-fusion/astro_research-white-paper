@@ -1,0 +1,32 @@
+id: "house.mundane_meaning"
+name:
+  sanskrit: null
+  english: "What each house means for a nation"
+family: "house"
+tradition: "practitioner"
+tier: "core"
+source:
+  text: "B.V. Raman and M.C. Jain (attributed in the AstroFusion registry; edition not identified)"
+  edition: null
+  translator: null
+  chapter: null
+  verse: null
+  quote: null
+  url: null
+  archive_url: null
+  checked_by: null
+  checked_at: null
+definition:
+  inputs: ["natal_chart"]
+  formula: "A label table: 4th house land, 8th calamity, 10th government, and so on. Labels only; no computation and no test."
+  conventions: {zodiac: sidereal, ayanamsa: lahiri, node: mean, houses: whole_sign}
+  variants: []
+implementation: null
+predicates: []
+needs:
+  founding_time_precision_minutes: 60
+  place: false
+change_period: "as the lagna used"
+reference_cases: []
+scope: ["case_file"]
+notes: "Labels only (rule core.r008). The attribution is unverified: edition not identified (H11)."

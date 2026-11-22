@@ -381,6 +381,11 @@ def test_transit_in_house_from_natal():
     assert check(context, t, planet="Saturn", houses=[7], **{"from": "Moon"}).held
     assert check(context, t, planet="Ketu", houses=[3]).held
     assert not check(context, t, planet="Ketu", houses=[9]).held
+    # WP-52: the new varga fields default to 1 and change nothing.
+    for planet, houses in (("Saturn", [9]), ("Ketu", [3]), ("Ketu", [9])):
+        assert check(context, t, planet=planet, houses=houses) == check(
+            context, t, planet=planet, houses=houses, varga=1, transit_varga=1
+        )
 
 
 def test_transit_conjunct_natal():

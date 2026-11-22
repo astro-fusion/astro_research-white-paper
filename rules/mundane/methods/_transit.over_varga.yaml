@@ -1,0 +1,32 @@
+id: "transit.over_varga"
+name:
+  sanskrit: null
+  english: "Transit sign read against a natal varga lagna or position"
+family: "transit"
+tradition: "practitioner"
+tier: "extended"
+source:
+  text: null
+  edition: null
+  translator: null
+  chapter: null
+  verse: null
+  quote: null
+  url: null
+  archive_url: null
+  checked_by: null
+  checked_at: null
+definition:
+  inputs: ["transit_longitude","natal_varga_sign"]
+  formula: null
+  conventions: {zodiac: sidereal, ayanamsa: lahiri, node: mean, houses: whole_sign}
+  variants: []
+implementation: null
+predicates: ["transit_in_house_from_natal"]
+needs:
+  founding_time_precision_minutes: 2
+  place: false
+change_period: "as the varga used"
+reference_cases: []
+scope: ["case_file"]
+notes: "No classical verse known to the architect. Needs predicates (WP-52). Extended: case file only."

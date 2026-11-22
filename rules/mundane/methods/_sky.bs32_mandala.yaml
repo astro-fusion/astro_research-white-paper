@@ -1,0 +1,34 @@
+id: "sky.bs32_mandala"
+name:
+  sanskrit: "Mandala"
+  english: "Earthquake class by the Moon's nakshatra circle (Vayu, Agni, Indra, Varuna)"
+family: "sky"
+tradition: "samhita"
+tier: "core"
+source:
+  text: "Brihat Samhita"
+  edition: "Iyer translation, 1884, read online 2026-11-08"
+  translator: "N. Chidambaram Iyer"
+  chapter: "32"
+  verse: "8, 12, 16, 20"
+  quote: null
+  url: null
+  archive_url: null
+  checked_by: null
+  checked_at: null
+definition:
+  inputs: ["moon_nakshatra"]
+  formula: "The Moon's sidereal nakshatra at the event falls in one of four circles of seven nakshatras (Vayu, Agni, Indra, Varuna); the circle classes the earthquake. The text reads the mandala from an earthquake that has happened, so the case file shows it as a classification, with no forward-trigger claim."
+  conventions: {zodiac: sidereal, ayanamsa: lahiri, node: mean, houses: whole_sign}
+  variants: []
+implementation:
+  module: "vedic_astrology_core.astrology.mundane"
+  function: "mandala_of"
+predicates: ["moon_mandala"]
+needs:
+  founding_time_precision_minutes: null
+  place: false
+change_period: "Moon nakshatra 24 h; needs only the event moment"
+reference_cases: []
+scope: ["case_file","aggregate"]
+notes: "Lists confirmed in the incoming audit (docs/research/handover/INCOMING_AUDIT_2026-11-22.md). Becomes page_cited once chapter, edition, quotation and a maintainer check are logged here; Bhat cross-check open (H11)."

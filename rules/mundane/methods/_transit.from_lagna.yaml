@@ -1,0 +1,34 @@
+id: "transit.from_lagna"
+name:
+  sanskrit: null
+  english: "Transit sign counted from natal lagna"
+family: "transit"
+tradition: "practitioner"
+tier: "core"
+source:
+  text: null
+  edition: null
+  translator: null
+  chapter: null
+  verse: null
+  quote: null
+  url: null
+  archive_url: null
+  checked_by: null
+  checked_at: null
+definition:
+  inputs: ["transit_longitude","natal_lagna_sign"]
+  formula: "House number of the transiting graha's sidereal sign counted from the natal lagna sign, whole-sign, inclusive."
+  conventions: {zodiac: sidereal, ayanamsa: lahiri, node: mean, houses: whole_sign}
+  variants: []
+implementation:
+  module: "vedic_astrology_core.rules.predicates.mundane"
+  function: "transit_in_house_from_natal"
+predicates: ["transit_in_house_from_natal"]
+needs:
+  founding_time_precision_minutes: 60
+  place: false
+change_period: "lagna about 120 min"
+reference_cases: []
+scope: ["case_file","aggregate"]
+notes: "Modern practice. A source must be named (H11)."

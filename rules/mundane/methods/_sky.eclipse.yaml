@@ -1,0 +1,34 @@
+id: "sky.eclipse"
+name:
+  sanskrit: "Grahana"
+  english: "Eclipse near the event; eclipse on a natal point"
+family: "sky"
+tradition: "samhita"
+tier: "core"
+source:
+  text: "Brihat Samhita"
+  edition: null
+  translator: null
+  chapter: "5"
+  verse: null
+  quote: null
+  url: null
+  archive_url: null
+  checked_by: null
+  checked_at: null
+definition:
+  inputs: ["event_moment","eclipse_list"]
+  formula: "A solar or lunar eclipse whose greatest phase lies within a stated window around the event, or in a stated sign or at a natal point."
+  conventions: {zodiac: sidereal, ayanamsa: lahiri, node: mean, houses: whole_sign}
+  variants: []
+implementation:
+  module: "vedic_astrology_core.rules.eclipses"
+  function: "eclipses_between"
+predicates: ["eclipse_within_days","eclipse_in_sign"]
+needs:
+  founding_time_precision_minutes: null
+  place: false
+change_period: "eclipses about every 6 months; needs only the event moment"
+reference_cases: []
+scope: ["case_file","aggregate"]
+notes: "From memory or a docstring, no page and no quotation; owner task H11."

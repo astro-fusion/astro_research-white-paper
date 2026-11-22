@@ -151,10 +151,22 @@
                 "$ref": "#/$defs/Leaf_weekday_lord_is"
               },
               {
+                "$ref": "#/$defs/Leaf_dasha_lord_in_house"
+              },
+              {
+                "$ref": "#/$defs/Leaf_dasha_lord_rules_house"
+              },
+              {
+                "$ref": "#/$defs/Leaf_dasha_lord_dignity"
+              },
+              {
                 "$ref": "#/$defs/Leaf_transit_in_house_from_natal"
               },
               {
                 "$ref": "#/$defs/Leaf_transit_conjunct_natal"
+              },
+              {
+                "$ref": "#/$defs/Leaf_transit_aspects_natal"
               },
               {
                 "$ref": "#/$defs/Leaf_eclipse_in_sign"
@@ -300,10 +312,22 @@
                 "$ref": "#/$defs/Leaf_weekday_lord_is"
               },
               {
+                "$ref": "#/$defs/Leaf_dasha_lord_in_house"
+              },
+              {
+                "$ref": "#/$defs/Leaf_dasha_lord_rules_house"
+              },
+              {
+                "$ref": "#/$defs/Leaf_dasha_lord_dignity"
+              },
+              {
                 "$ref": "#/$defs/Leaf_transit_in_house_from_natal"
               },
               {
                 "$ref": "#/$defs/Leaf_transit_conjunct_natal"
+              },
+              {
+                "$ref": "#/$defs/Leaf_transit_aspects_natal"
               },
               {
                 "$ref": "#/$defs/Leaf_eclipse_in_sign"
@@ -567,10 +591,22 @@
                 "$ref": "#/$defs/Leaf_weekday_lord_is"
               },
               {
+                "$ref": "#/$defs/Leaf_dasha_lord_in_house"
+              },
+              {
+                "$ref": "#/$defs/Leaf_dasha_lord_rules_house"
+              },
+              {
+                "$ref": "#/$defs/Leaf_dasha_lord_dignity"
+              },
+              {
                 "$ref": "#/$defs/Leaf_transit_in_house_from_natal"
               },
               {
                 "$ref": "#/$defs/Leaf_transit_conjunct_natal"
+              },
+              {
+                "$ref": "#/$defs/Leaf_transit_aspects_natal"
               },
               {
                 "$ref": "#/$defs/Leaf_eclipse_in_sign"
@@ -1027,6 +1063,162 @@
       "title": "CycleResonance",
       "type": "object"
     },
+    "DashaLordDignity": {
+      "additionalProperties": false,
+      "description": "Parameters of ``dasha_lord_dignity``.",
+      "properties": {
+        "dignities": {
+          "items": {
+            "enum": [
+              "own",
+              "exaltation",
+              "debilitation",
+              "moolatrikona",
+              "friend",
+              "enemy",
+              "neutral"
+            ],
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Dignities",
+          "type": "array"
+        },
+        "level": {
+          "anyOf": [
+            {
+              "default": 1,
+              "maximum": 3,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Level"
+        },
+        "rahu_exalted_in": {
+          "default": "taurus",
+          "enum": [
+            "taurus",
+            "gemini"
+          ],
+          "title": "Rahu Exalted In",
+          "type": "string"
+        },
+        "varga": {
+          "anyOf": [
+            {
+              "default": 1,
+              "type": "integer"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Varga"
+        }
+      },
+      "required": [
+        "dignities"
+      ],
+      "title": "DashaLordDignity",
+      "type": "object"
+    },
+    "DashaLordInHouse": {
+      "additionalProperties": false,
+      "description": "Parameters of ``dasha_lord_in_house``.",
+      "properties": {
+        "from": {
+          "default": "Lagna",
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya",
+            "Lagna",
+            "Ascendant"
+          ],
+          "title": "From",
+          "type": "string"
+        },
+        "houses": {
+          "items": {
+            "anyOf": [
+              {
+                "maximum": 12,
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                "type": "string"
+              }
+            ]
+          },
+          "minItems": 1,
+          "title": "Houses",
+          "type": "array"
+        },
+        "level": {
+          "anyOf": [
+            {
+              "default": 1,
+              "maximum": 3,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Level"
+        },
+        "varga": {
+          "anyOf": [
+            {
+              "default": 1,
+              "type": "integer"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Varga"
+        }
+      },
+      "required": [
+        "houses"
+      ],
+      "title": "DashaLordInHouse",
+      "type": "object"
+    },
     "DashaLordIs": {
       "additionalProperties": false,
       "description": "Parameters of ``dasha_lord_is``.",
@@ -1086,6 +1278,97 @@
         "lords"
       ],
       "title": "DashaLordIs",
+      "type": "object"
+    },
+    "DashaLordRulesHouse": {
+      "additionalProperties": false,
+      "description": "Parameters of ``dasha_lord_rules_house``.",
+      "properties": {
+        "from": {
+          "default": "Lagna",
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya",
+            "Lagna",
+            "Ascendant"
+          ],
+          "title": "From",
+          "type": "string"
+        },
+        "houses": {
+          "items": {
+            "anyOf": [
+              {
+                "maximum": 12,
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                "type": "string"
+              }
+            ]
+          },
+          "minItems": 1,
+          "title": "Houses",
+          "type": "array"
+        },
+        "level": {
+          "anyOf": [
+            {
+              "default": 1,
+              "maximum": 3,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Level"
+        },
+        "varga": {
+          "anyOf": [
+            {
+              "default": 1,
+              "type": "integer"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Varga"
+        }
+      },
+      "required": [
+        "houses"
+      ],
+      "title": "DashaLordRulesHouse",
       "type": "object"
     },
     "DashaWeight": {
@@ -2865,6 +3148,34 @@
       "title": "Leaf_cycle_resonance",
       "type": "object"
     },
+    "Leaf_dasha_lord_dignity": {
+      "additionalProperties": false,
+      "properties": {
+        "dasha_lord_dignity": {
+          "$ref": "#/$defs/DashaLordDignity",
+          "description": "Check that the running dasha lord has one of the listed natal dignities."
+        }
+      },
+      "required": [
+        "dasha_lord_dignity"
+      ],
+      "title": "Leaf_dasha_lord_dignity",
+      "type": "object"
+    },
+    "Leaf_dasha_lord_in_house": {
+      "additionalProperties": false,
+      "properties": {
+        "dasha_lord_in_house": {
+          "$ref": "#/$defs/DashaLordInHouse",
+          "description": "Check that the running dasha lord occupies one of the listed natal houses."
+        }
+      },
+      "required": [
+        "dasha_lord_in_house"
+      ],
+      "title": "Leaf_dasha_lord_in_house",
+      "type": "object"
+    },
     "Leaf_dasha_lord_is": {
       "additionalProperties": false,
       "properties": {
@@ -2877,6 +3188,20 @@
         "dasha_lord_is"
       ],
       "title": "Leaf_dasha_lord_is",
+      "type": "object"
+    },
+    "Leaf_dasha_lord_rules_house": {
+      "additionalProperties": false,
+      "properties": {
+        "dasha_lord_rules_house": {
+          "$ref": "#/$defs/DashaLordRulesHouse",
+          "description": "Check that the running dasha lord rules one of the listed natal houses."
+        }
+      },
+      "required": [
+        "dasha_lord_rules_house"
+      ],
+      "title": "Leaf_dasha_lord_rules_house",
       "type": "object"
     },
     "Leaf_dignity_in": {
@@ -3269,6 +3594,20 @@
         "separation_within"
       ],
       "title": "Leaf_separation_within",
+      "type": "object"
+    },
+    "Leaf_transit_aspects_natal": {
+      "additionalProperties": false,
+      "properties": {
+        "transit_aspects_natal": {
+          "$ref": "#/$defs/TransitAspect",
+          "description": "Check that the transiting planet casts graha drishti on a natal point."
+        }
+      },
+      "required": [
+        "transit_aspects_natal"
+      ],
+      "title": "Leaf_transit_aspects_natal",
       "type": "object"
     },
     "Leaf_transit_conjunct_natal": {
@@ -4196,10 +4535,22 @@
               "$ref": "#/$defs/Leaf_weekday_lord_is"
             },
             {
+              "$ref": "#/$defs/Leaf_dasha_lord_in_house"
+            },
+            {
+              "$ref": "#/$defs/Leaf_dasha_lord_rules_house"
+            },
+            {
+              "$ref": "#/$defs/Leaf_dasha_lord_dignity"
+            },
+            {
               "$ref": "#/$defs/Leaf_transit_in_house_from_natal"
             },
             {
               "$ref": "#/$defs/Leaf_transit_conjunct_natal"
+            },
+            {
+              "$ref": "#/$defs/Leaf_transit_aspects_natal"
             },
             {
               "$ref": "#/$defs/Leaf_eclipse_in_sign"
@@ -5087,6 +5438,105 @@
       "title": "Strength",
       "type": "object"
     },
+    "TransitAspect": {
+      "additionalProperties": false,
+      "description": "Parameters of ``transit_aspects_natal``.",
+      "properties": {
+        "aspects": {
+          "anyOf": [
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                    "type": "string"
+                  }
+                ]
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Aspects"
+        },
+        "natal_point": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya",
+            "Lagna",
+            "Ascendant"
+          ],
+          "title": "Natal Point",
+          "type": "string"
+        },
+        "planet": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mars",
+            "Mercury",
+            "Jupiter",
+            "Venus",
+            "Saturn",
+            "Rahu",
+            "Ketu",
+            "Brihaspati",
+            "Budha",
+            "Chandra",
+            "Guru",
+            "Kuja",
+            "Mangal",
+            "Mangala",
+            "Northnode",
+            "Ravi",
+            "Sani",
+            "Shani",
+            "Shukra",
+            "Soma",
+            "Southnode",
+            "Sukra",
+            "Surya"
+          ],
+          "title": "Planet",
+          "type": "string"
+        }
+      },
+      "required": [
+        "planet",
+        "natal_point"
+      ],
+      "title": "TransitAspect",
+      "type": "object"
+    },
     "TransitConjunct": {
       "additionalProperties": false,
       "description": "Parameters of ``transit_conjunct_natal``.",
@@ -5264,6 +5714,32 @@
           ],
           "title": "Planet",
           "type": "string"
+        },
+        "transit_varga": {
+          "anyOf": [
+            {
+              "default": 1,
+              "type": "integer"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Transit Varga"
+        },
+        "varga": {
+          "anyOf": [
+            {
+              "default": 1,
+              "type": "integer"
+            },
+            {
+              "pattern": "^\\$([a-z][a-z0-9_]*)$",
+              "type": "string"
+            }
+          ],
+          "title": "Varga"
         }
       },
       "required": [
@@ -5762,10 +6238,22 @@
               "$ref": "#/$defs/Leaf_weekday_lord_is"
             },
             {
+              "$ref": "#/$defs/Leaf_dasha_lord_in_house"
+            },
+            {
+              "$ref": "#/$defs/Leaf_dasha_lord_rules_house"
+            },
+            {
+              "$ref": "#/$defs/Leaf_dasha_lord_dignity"
+            },
+            {
               "$ref": "#/$defs/Leaf_transit_in_house_from_natal"
             },
             {
               "$ref": "#/$defs/Leaf_transit_conjunct_natal"
+            },
+            {
+              "$ref": "#/$defs/Leaf_transit_aspects_natal"
             },
             {
               "$ref": "#/$defs/Leaf_eclipse_in_sign"

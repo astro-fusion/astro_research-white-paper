@@ -1,0 +1,34 @@
+id: "sky.samvatsara"
+name:
+  sanskrit: "Samvatsara"
+  english: "Sixty-year Jupiter cycle year"
+family: "sky"
+tradition: "samhita"
+tier: "core"
+source:
+  text: "Brihat Samhita"
+  edition: null
+  translator: null
+  chapter: "8 (as cited in astrology/mundane.py)"
+  verse: null
+  quote: null
+  url: null
+  archive_url: null
+  checked_by: null
+  checked_at: null
+definition:
+  inputs: ["event_moment"]
+  formula: "The year of the sixty-year cycle running at the moment, counted from Chaitra Shukla Pratipada. The calendar convention is a parameter."
+  conventions: {zodiac: sidereal, ayanamsa: lahiri, node: mean, houses: whole_sign}
+  variants: []
+implementation:
+  module: "vedic_astrology_core.astrology.mundane"
+  function: "samvatsara"
+predicates: ["samvatsara_is"]
+needs:
+  founding_time_precision_minutes: null
+  place: false
+change_period: "1 year; needs only the event moment"
+reference_cases: []
+scope: ["case_file","aggregate"]
+notes: "From memory or a docstring, no page and no quotation; owner task H11. Calendar convention is a parameter."

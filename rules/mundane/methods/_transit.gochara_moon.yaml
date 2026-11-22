@@ -1,0 +1,34 @@
+id: "transit.gochara_moon"
+name:
+  sanskrit: "Gochara"
+  english: "Transit sign counted from natal Moon"
+family: "transit"
+tradition: "jataka_applied"
+tier: "core"
+source:
+  text: "Phaladeepika; Brihat Samhita"
+  edition: null
+  translator: null
+  chapter: "26 (Phaladeepika); 104 (Brihat Samhita)"
+  verse: null
+  quote: null
+  url: null
+  archive_url: null
+  checked_by: null
+  checked_at: null
+definition:
+  inputs: ["transit_longitude","natal_moon_sign"]
+  formula: "House number of the transiting graha's sidereal sign counted from the natal Moon's sign, whole-sign, inclusive."
+  conventions: {zodiac: sidereal, ayanamsa: lahiri, node: mean, houses: whole_sign}
+  variants: []
+implementation:
+  module: "vedic_astrology_core.rules.predicates.mundane"
+  function: "transit_in_house_from_natal"
+predicates: ["transit_in_house_from_natal"]
+needs:
+  founding_time_precision_minutes: 360
+  place: false
+change_period: "natal Moon sign 2.3 d; transit graha weeks to years"
+reference_cases: []
+scope: ["case_file","aggregate"]
+notes: "From memory or a docstring, no page and no quotation; owner task H11. Chapters in the ADR are from memory; the Phaladeepika and Brihat Samhita chapters are not confirmed."

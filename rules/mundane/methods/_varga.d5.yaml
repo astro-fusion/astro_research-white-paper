@@ -1,0 +1,32 @@
+id: "varga.d5"
+name:
+  sanskrit: "Panchamsa"
+  english: "Panchamsa"
+family: "varga"
+tradition: "practitioner"
+tier: "extended"
+source:
+  text: null
+  edition: null
+  translator: null
+  chapter: null
+  verse: null
+  quote: null
+  url: null
+  archive_url: null
+  checked_by: null
+  checked_at: null
+definition:
+  inputs: ["sidereal_longitude"]
+  formula: null
+  conventions: {zodiac: sidereal, ayanamsa: lahiri, node: mean, houses: whole_sign}
+  variants: []
+implementation: null
+predicates: []
+needs:
+  founding_time_precision_minutes: 6
+  place: false
+change_period: "lagna about 24 min"
+reference_cases: []
+scope: ["case_file"]
+notes: "Not one of BPHS's sixteen vargas. Believed to belong to the Tajika twelve-varga scheme (Tajika Nilakanthi) and to modern Jaimini-school books (from memory). Several rival computation rules exist, so none is implemented. Not cited: no text, edition or page defines it (owner task H11). The code in astrology/divisional.py deliberately raises on D5. Extended methods never enter a confirmatory family."

@@ -1,0 +1,34 @@
+id: "transit.conjunct_natal"
+name:
+  sanskrit: null
+  english: "Transit graha within orb of a natal point"
+family: "transit"
+tradition: "practitioner"
+tier: "core"
+source:
+  text: "Existing rule files under rules/mundane/"
+  edition: null
+  translator: null
+  chapter: null
+  verse: null
+  quote: null
+  url: null
+  archive_url: null
+  checked_by: null
+  checked_at: null
+definition:
+  inputs: ["transit_longitude","natal_point_longitude","orb"]
+  formula: "Angular distance between the transiting graha and a natal point is at most the orb, in degrees of sidereal longitude."
+  conventions: {zodiac: sidereal, ayanamsa: lahiri, node: mean, houses: whole_sign}
+  variants: []
+implementation:
+  module: "vedic_astrology_core.rules.predicates.mundane"
+  function: "transit_conjunct_natal"
+predicates: ["transit_conjunct_natal"]
+needs:
+  founding_time_precision_minutes: 60
+  place: false
+change_period: "natal Moon 13 deg/day; lagna 1 deg per 4 min"
+reference_cases: []
+scope: ["case_file","aggregate"]
+notes: "Practitioner usage, taken from existing rule files; no book or page recorded."

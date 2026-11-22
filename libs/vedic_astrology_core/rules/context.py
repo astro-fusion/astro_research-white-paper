@@ -15,6 +15,8 @@ import pytz
 import swisseph as swe
 
 from ..astrology.chart import compute_sidereal_houses, get_nakshatra
+from ..astrology.divisional import VARGA_FACTORS
+from ..astrology.divisional import varga_sign as _varga_sign
 from ..astrology.ephemeris import EphemerisEngine
 from ..config.constants import Planet, PlanetDict
 from ..dasha.vimshottari import compute_vimshottari_nested_periods
@@ -24,6 +26,43 @@ from .vocabulary import LAGNA, SIGN_NAMES, to_planet_enum
 
 class MissingInputError(ValueError):
     """A predicate needs a place or a natal chart the caller did not give."""
+
+
+class VargaNotComputable(ValueError):
+    """A varga (divisional chart) the engine does not compute, or not for houses."""
+
+
+def check_varga(value, houses: bool = False) -> int:
+    """Return the varga factor of ``value`` (9, "9" or "D9"), or raise.
+
+    Only the sixteen Shodasavargas of BPHS Ch. 6 that
+    :mod:`~vedic_astrology_core.astrology.divisional` implements are
+    computable; D5, D6 and D8 deliberately are not (ADR-006 4.4) and raise.
+    With ``houses`` true, D2 also raises: Parashara's hora has two signs
+    only (Cancer and Leo), so houses counted in D2 have no meaning.
+    """
+    raw = value
+    if isinstance(value, str):
+        value = value.strip()
+        if value[:1] in ("D", "d"):
+            value = value[1:]
+    try:
+        factor = int(value)
+    except (TypeError, ValueError):
+        raise VargaNotComputable(f"{raw!r} is not a varga; write 9 or D9") from None
+    if isinstance(raw, float) and raw != factor:
+        raise VargaNotComputable(f"{raw!r} is not a varga; write 9 or D9")
+    if factor not in VARGA_FACTORS:
+        raise VargaNotComputable(
+            f"D{factor} is not computable; use one of "
+            + ", ".join(f"D{f}" for f in VARGA_FACTORS)
+        )
+    if houses and factor == 2:
+        raise VargaNotComputable(
+            "D2 (hora) has two signs only, so houses and lordships cannot be "
+            "counted in it"
+        )
+    return factor
 
 
 @dataclass(frozen=True)
@@ -125,6 +164,17 @@ class Sky:
         """Longitude speed in degrees per day."""
         return float(self.record(planet)["longitude_speed"])
 
+    def varga_sign(self, point: str, varga: int = 1) -> int:
+        """Sign index (Aries = 0) of a planet or the Lagna in the D-``varga`` chart.
+
+        D1 is the rashi sign itself. Raises :class:`VargaNotComputable` for a
+        varga the engine does not compute (D5, D6, D8, ...).
+        """
+        factor = check_varga(varga)
+        if factor == 1:
+            return self.sign(point)
+        return _varga_sign(self.lon(point), factor)
+
     def nakshatra(self, point: str) -> Dict:
         """Nakshatra record (index, name, lord, pada) of a point."""
         return get_nakshatra(self.lon(point))
@@ -172,6 +222,27 @@ class EvalContext:
             )
         return self.natal
 
+    def natal_varga_sign(self, point: str, varga: int = 1) -> int:
+        """Sign index of a natal point in the natal D-``varga`` chart.
+
+        Raises :class:`MissingInputError` without a natal chart (or without a
+        natal place for the Lagna) and :class:`VargaNotComputable` for a
+        varga the engine does not compute.
+        """
+        return self.require_natal().varga_sign(point, varga)
+
+    def natal_house_of(
+        self, point: str, origin: str, varga: int = 1
+    ) -> int:
+        """Whole-sign house (1-12) of a natal point from a natal origin in D-``varga``.
+
+        Houses are counted from the origin's sign in the same varga (the
+        varga Lagna or the varga Moon). D2 raises: it has no houses.
+        """
+        factor = check_varga(varga, houses=True)
+        start = self.natal_varga_sign(origin, factor)
+        return (self.natal_varga_sign(point, factor) - start) % 12 + 1
+
     def dasha_chain(self, level: int) -> Tuple[str, ...]:
         """Vimshottari lords (mahadasha, antardasha, ...) running now."""
         natal = self.require_natal()
@@ -217,6 +288,8 @@ __all__ = [
     "MissingInputError",
     "Planet",
     "Sky",
+    "VargaNotComputable",
+    "check_varga",
     "fmt_lon",
     "get_engine",
     "sunrise_before",

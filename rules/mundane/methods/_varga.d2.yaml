@@ -1,0 +1,34 @@
+id: "varga.d2"
+name:
+  sanskrit: "Hora"
+  english: "Hora, Parashara"
+family: "varga"
+tradition: "jataka_applied"
+tier: "core"
+source:
+  text: "Brihat Parashara Hora Shastra"
+  edition: "Ranjan Publications, 1984"
+  translator: "R. Santhanam"
+  chapter: "6"
+  verse: null
+  quote: null
+  url: null
+  archive_url: null
+  checked_by: null
+  checked_at: null
+definition:
+  inputs: ["sidereal_longitude"]
+  formula: "Two parts of 15 degrees. Odd signs: first half Sun's hora (Leo), second half Moon's hora (Cancer). Even signs: first half Moon, second half Sun. Only the Sun's or Moon's hora is read; houses in D2 have no meaning."
+  conventions: {zodiac: sidereal, ayanamsa: lahiri, node: mean, houses: whole_sign}
+  variants: []
+implementation:
+  module: "vedic_astrology_core.astrology.divisional"
+  function: "d2_hora"
+predicates: []
+needs:
+  founding_time_precision_minutes: 30
+  place: false
+change_period: "lagna 60 min; Moon 15 d; Sun 15 d"
+reference_cases: []
+scope: ["case_file","aggregate"]
+notes: "BPHS chapter number is from memory (ADR-006 4.3 (m)); no page or quotation recorded, so the source is unverified. Computation is golden-tested against PyJHora (tests/test_golden_vargas.py). Owner task H11. D2 contributes one factor per graha (Sun or Moon hora)."

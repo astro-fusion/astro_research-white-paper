@@ -1,0 +1,34 @@
+id: "varga.d4"
+name:
+  sanskrit: "Chaturthamsa"
+  english: "Chaturthamsa"
+family: "varga"
+tradition: "jataka_applied"
+tier: "core"
+source:
+  text: "Brihat Parashara Hora Shastra"
+  edition: "Ranjan Publications, 1984"
+  translator: "R. Santhanam"
+  chapter: "6"
+  verse: null
+  quote: null
+  url: null
+  archive_url: null
+  checked_by: null
+  checked_at: null
+definition:
+  inputs: ["sidereal_longitude"]
+  formula: "Divide the sign into 4 parts of 7 deg 30 min. Part k maps to the (1 + 3k)th sign from the rashi: 1st, 4th, 7th, 10th."
+  conventions: {zodiac: sidereal, ayanamsa: lahiri, node: mean, houses: whole_sign}
+  variants: []
+implementation:
+  module: "vedic_astrology_core.astrology.divisional"
+  function: "d4_chaturthamsa"
+predicates: []
+needs:
+  founding_time_precision_minutes: 8
+  place: false
+change_period: "lagna 30 min; Moon 0.7 d; Sun 7.5 d"
+reference_cases: []
+scope: ["case_file","aggregate"]
+notes: "BPHS chapter number is from memory (ADR-006 4.3 (m)); no page or quotation recorded, so the source is unverified. Computation is golden-tested against PyJHora (tests/test_golden_vargas.py). Owner task H11."

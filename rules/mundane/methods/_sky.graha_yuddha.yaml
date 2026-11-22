@@ -1,0 +1,32 @@
+id: "sky.graha_yuddha"
+name:
+  sanskrit: null
+  english: "Planetary war"
+family: "sky"
+tradition: "samhita"
+tier: "extended"
+source:
+  text: "Brihat Samhita"
+  edition: null
+  translator: null
+  chapter: "17"
+  verse: null
+  quote: null
+  url: null
+  archive_url: null
+  checked_by: null
+  checked_at: null
+definition:
+  inputs: ["event_moment"]
+  formula: null
+  conventions: {zodiac: sidereal, ayanamsa: lahiri, node: mean, houses: whole_sign}
+  variants: []
+implementation: null
+predicates: []
+needs:
+  founding_time_precision_minutes: null
+  place: false
+change_period: "days; needs only the event moment"
+reference_cases: []
+scope: ["case_file"]
+notes: "From memory or a docstring, no page and no quotation; owner task H11. No implementation. Extended: case file only."

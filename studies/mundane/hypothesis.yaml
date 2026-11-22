@@ -1,61 +1,536 @@
-# Pre-registration template for the mundane study.
-# Nothing here may change after the first confirmatory run; changes before it are
-# recorded in git history. Fields marked TBD are filled when founding times with
-# citations exist.
-status: draft, awaiting sourced founding times
-version: 0
+# Plan v1 for the mundane study, first slice (ADR-006 design task D6).
+# India; Himalayan earthquakes of Mw 6 and above; D1 + D9 + Vimshottari.
+# Replaces the version 0 draft. Read by core/mundane (WP-55 burden, controls,
+# aggregate; WP-56 CLI). Section numbers below refer to
+# docs/adr/ADR-006-retrospective-mundane-chart-engine.md.
+#
+# THIS SLICE IS DESCRIPTIVE ONLY. It has about 5 events (India) out of 12
+# Himalayan mainshocks. The floor for any p-value is 30 events (section 5.4).
+# The families below are declared now so that nothing is chosen after reading
+# outcomes; none of them can be tested until the floor and the method status
+# gate are both met.
+#
+# ---------------------------------------------------------------------------
+# SCHEMA (top-level keys; every key is required unless marked optional)
+#
+#   schema              "mundane-plan/1". The loader rejects unknown keys.
+#   id, version, lineage, status, registered_on, registered_commit
+#                       Identity. One confirm run per lineage; a version bump
+#                       does not reset it (WP-63).
+#   scope               Country, event type and the slice's verdict ceiling.
+#   question            What the report counts. Wording follows section 1.4.
+#   inputs              Paths and SHA-256 hashes of registries and catalogue.
+#                       A null hash means "not built yet"; the report command
+#                       refuses to run while any hash is null or differs.
+#   settings            Primary conventions and named variants (section 3.2).
+#   charts              Primary-chart rule, expected result, secondary charts,
+#                       case-file-only charts (section 3.3).
+#   events              Event definition, declustering, time window of the
+#                       event itself, case-file-only events (section 6.2).
+#   periods             Explore and confirm split (section 1.3).
+#   windows             When a factor counts as active at an event.
+#   stability           The founding-time check and its thresholds (3.4).
+#   testability         Rules decided from the calendar alone (section 5.3.7).
+#   method_gate         Citation status a method needs for each use (4.2).
+#   families            The declared omnibus tests. Each family lists its
+#                       tests; each test is ONE partition = ONE omnibus test.
+#   shown_not_tested    Factors printed in the report with no test.
+#   excluded            What may never enter a family, with the reason.
+#   controls            C1, C2, C3 (section 1.3).
+#   statistics          Statistic, omnibus test, hierarchy, alpha, verdicts.
+#   budgets             Caps on omnibus tests; the event floor.
+#   mde                 Minimal detectable rate ratio table (section 5.4).
+#   calibration         Engine checks WP-55 must pass on simulated data.
+#   outputs             Paths written by the slice run (section 6.4).
+#   reporting           What is always published.
+#   amendments          Dated list of changes after registration.
+#
+# Counting rule used by "burden": omnibus tests = sum of len(tests) over
+# families. This file declares 2 + 4 + 4 + 8 = 18 (cap 24). Family size is
+# the declared count and never shrinks: a test that turns out untestable
+# stays in the count with verdict "untestable".
+#
+# Factor id pattern (for cells of a partition):
+#   <test_id>:<cell>          e.g. dasha.identity.antar:Saturn
+#                                  transit.saturn.from_lagna.d1:8
+# ---------------------------------------------------------------------------
+
+schema: mundane-plan/1
+id: mundane-india-himalaya-eq-v1
+version: 1
+lineage: mundane-india-himalaya-eq
+status: planned            # planned -> registered (set when every hash below is filled)
 registered_on: null
 registered_commit: null
 
-question: >
-  Do recorded national events of a given class occur more often, in the window
-  around the event, when the pre-declared sign-level indicators are active for
-  that country's natal chart than the circular-shift null predicts?
+scope:
+  country_iso: IN
+  event_type: earthquake
+  slice: first               # ADR-006 section 8, "First slice"
+  verdict_ceiling: descriptive only   # no test statistic or p-value may be printed in this slice
+  forecasting: false         # the engine reads past events only (section 1.2)
 
+question: >-
+  For Himalayan earthquakes of Mw 6 and above in India since 1976, how often
+  was each declared factor of the national founding chart (running antar and
+  pratyantar lord, that lord's natal house and dignity in D1 and D9, and the
+  D1 house transited by Mars, Jupiter, Saturn and Rahu) active at the events,
+  and how often on season-matched control dates?
+
+# ---------------------------------------------------------------------------
 inputs:
-  countries: studies/mundane/data/countries.yaml   # only entries with time_known: true
-  events: studies/mundane/data/events.jsonl        # plus USGS and DFO snapshots (hashed)
-  snapshot_hashes: TBD                             # SHA-256 of each snapshot, from its manifest
-  natal_chart: one chart per country, fixed before any outcome is seen (TBD)
+  chart_registry:
+    path: data/registry/mundane/charts.yaml          # WP-49
+    sha256: null
+  event_registry:
+    path: data/registry/mundane/events.jsonl         # WP-49
+    sha256: null
+  method_catalogue:
+    path: rules/mundane/methods/                     # WP-48; hash of the whole directory
+    sha256: null
+  earthquake_catalogue:
+    path: data/snapshots/usgs_d3d3d6ec8405.csv
+    sha256: d3d3d6ec840599341782147b35579b69dae3919dd2668d762659270baef19972
+    row_count: 1645
+  region_definition:
+    path: studies/earthquake/hypothesis.yaml         # keys region, magnitude, declustering
+    note: The polygon, magnitude homogenisation and declustering are reused unchanged.
+  forbidden:                                         # the engine must not read these (section 7.3)
+    - studies/earthquake/data/india_dasha_periods.csv
+    - studies/earthquake/data/nepal_dasha_periods.csv
+    - research/incoming/
 
-indicators:   # fixed list; adding one later makes it exploratory
-  - {id: SATURN_ASPECTS_NATAL_SUN, rule: "transit Saturn whole-sign aspects or conjoins natal Sun sign"}
-  - {id: MARS_ASPECTS_NATAL_MOON, rule: "transit Mars whole-sign aspects or conjoins natal Moon sign"}
-  - {id: JUPITER_ASPECTS_NATAL_JUPITER, rule: "transit Jupiter whole-sign aspects or conjoins natal Jupiter sign"}
-  - {id: RAHU_CONJUNCT_NATAL_SUN, rule: "transit Rahu in natal Sun sign"}
-  - {id: ECLIPSE_IN_WINDOW, rule: "solar or lunar eclipse within the window"}
-  - {id: STATION_SATURN_OR_MARS, rule: "Saturn or Mars station within the window"}
-  - {id: SUN_INGRESS_IN_WINDOW, rule: "Sun sign ingress within the window"}
+settings:
+  primary:
+    zodiac: sidereal
+    ayanamsa: lahiri
+    node: mean
+    houses: whole_sign
+    dasha_year: julian          # 365.25 days (DashaYear.JULIAN)
+    rahu_exalted_in: default    # the workbench default; not varied in this slice
+  variants:                     # named, reported beside the primary, never used to pick a winner
+    run_in_this_slice: false    # variants start with WP-61
+    list:
+      - {id: ayanamsa_raman, ayanamsa: raman}
+      - {id: dasha_year_360, dasha_year: savana_360}
+      - {id: node_true, node: "true"}
 
-event_classes:
-  earthquake: {source: usgs, definition: "M>=6 with epicentre within 500 km of the country's capital or border (TBD)"}
-  flood: {source: dfo, definition: "DFO archive event with the country in its country list, severity class >= 1 (TBD)"}
-  war_start: {source: events.jsonl, definition: "event_type War after review (event_type_reviewed: true), first-day date only"}
-  government_change: {source: events.jsonl, definition: "event_type Political or Independence after review, regime or government change only (TBD)"}
+# ---------------------------------------------------------------------------
+charts:
+  primary_rule:
+    # Applied to the candidate charts of scope.country_iso, before any outcome is read.
+    # Each step only breaks ties left by the step before it.
+    steps:
+      - {order: 1, key: grade, prefer: highest, ranking: [A, B, C, D]}
+      - {order: 2, key: named_users, prefer: most,
+         definition: "count of used_by entries that name a person or an organisation; phrases such as 'most Vedic practitioners' count as zero"}
+      - {order: 3, key: founding_instant, prefer: earliest}
+      - {order: 4, key: chart_id, prefer: lexicographically_first}
+    eligible_grades: [A, B, C, D]      # R and X are never primary
+    requires_valid_from_on_or_before: "1976-01-01"   # the chart must cover the whole event period
+    fixed_once: true                   # the resolved chart_id is written to results.json; a later
+                                       # grade change (H10) is an amendment, not a re-pick
+  expected_primary:
+    chart_id: in-1947-midnight         # 1947-08-15 00:00:00 Asia/Kolkata, New Delhi
+    expected_grade: C                  # until H10 is done (no source opened); half-window 60 min
+    on_mismatch: fail                  # "validate" stops if the rule resolves to another chart
+  secondary:
+    selector: {country_iso: IN, grades: [A, B, C, D, R]}   # every other India candidate
+    use: [case_file, descriptive_table]
+    note: Reported beside the primary. Never searched for the best fit. No "best chart" column.
+  case_file_only:
+    - selector: {country_iso: NP, founding_date: "2008-05-28"}   # date-only, grade D
+      events: [gorkha_2015]
+      purpose: Show what a grade D chart can and cannot support.
+  grade_half_window_minutes: {A: 2, B: 15, C: 60, D: 720}   # defaults of section 3.3; the registry may override per chart
 
-windows_days: [0, 7, 30]   # indicator active at the event date; +-7 and +-30 day windows
+# ---------------------------------------------------------------------------
+events:
+  definition:
+    event_type: earthquake
+    catalogue: usgs_d3d3d6ec8405               # inputs.earthquake_catalogue
+    region: himalayan_arc_polygon              # studies/earthquake/hypothesis.yaml: region
+    magnitude: {scale: Mw, homogenised: true, min: 6.0}
+    max_depth_km: 70
+    start_utc: "1976-01-01T00:00:00Z"
+    end_utc: "2026-11-01T00:00:00Z"
+    country_iso: IN                            # event_registry field country_iso contains IN
+    country_assignment: >-
+      As recorded in the event registry: epicentre against the committed
+      world-atlas snapshot (data/snapshots/world_atlas_110m_2516c915867c.json).
+      An event on a border is listed under every country it touches and is
+      included when IN is one of them.
+    exhaustive_only: true                      # hand-picked events get case files, never counts
+  declustering:
+    primary: gardner_knopoff                   # mainshocks only enter counts
+    sensitivity: nearest_neighbour             # shown in a second table
+    raw_catalogue: descriptive                 # undeclustered counts shown, outside every family
+  event_time_window:
+    # The event's own uncertainty (section 3.4, last paragraph).
+    by_time_precision_minutes: {minute: 1, hour: 30, day: 720}
+    month: excluded
+  expected_counts:                             # rough, from section 5.4; "burden" prints the real ones
+    himalaya_mainshocks_all_countries: 12
+    india: 5
+  case_file_only:
+    - key: gorkha_2015
+      selector: {date_utc: "2015-04-25", magnitude_min: 7.5, region: himalayan_arc_polygon}
+      expected_event_id: "usgs:us20002926"     # check against the registry; the selector decides
+  guard: >-
+    No event outside the Himalayan polygon may be counted against any
+    event-sky factor until the ADR-004 D2 test has its confirm record (WP-53).
 
-null_model:
-  kind: circular_shift
-  description: >
-    Shift the indicator series by a random whole number of days (wrapping around
-    the study period) and recompute the statistic; this keeps the series' own
-    autocorrelation and the seasonal structure of the event process.
-  draws: 10000
-  seed: 20261108
+periods:
+  explore: {start: "1976-01-01", end: "2010-12-31"}
+  confirm: {start: "2011-01-01", end: "2026-10-31"}
+  purge_days: 0
+  basis: Same dates as studies/earthquake/hypothesis.yaml (split), fixed there on 2026-11-08.
+  label: pseudo-out-of-sample      # both parts are history the analyst knows (ADR-004 D-2)
+  disclosure: >-
+    The dates and magnitudes of these events have been seen in the earthquake
+    study (both periods). No national-chart factor has been counted against
+    them before this plan.
+  confirm_enabled: false           # no confirm command exists before WP-63
+  report_period_in_this_slice: explore
+  confirm_requirements:            # all must hold before a confirm run (section 8, WP-63)
+    min_confirm_events: 30
+    family_method_status: verified
+    clean_tree: true
+    hashes_match_plan: true
+    runs_per_lineage: 1
 
-test_statistic: "difference in event rate with indicator active vs inactive, per indicator x event class x country group"
+windows:
+  # One window only. Each extra window multiplies the test count (section 5.1).
+  days: [0]
+  rule: >-
+    A factor is active at an event when it is true at the event's origin time.
+    A factor that changes value inside events.event_time_window is marked
+    unstable for that event.
+  control_dates: Evaluated at the same UTC time of day as the matched event.
 
-correction:
-  family: all indicator x event_class x window tests declared in this file
-  method: benjamini_yekutieli
-  alpha: 0.05
+# ---------------------------------------------------------------------------
+stability:
+  founding_grid_minutes: {A: 1, B: 1, C: 1, D: 10}
+  dasha: two_point            # both ends of the window; the shift is monotonic
+  main_table: stable_only
+  second_table: unstable events added at their stated-time value, labelled
+  on_disagreement: main_table_wins
+  min_stable_share: 0.80      # below this the test is "untestable: founding time too coarse"
+  expected_in_this_slice: >-
+    With the India chart at grade C (60 minutes): D1 lagna, D9 lagna and the
+    pratyantar lord are expected to be unstable, so every test with
+    needs_stable containing d1_lagna, d9_lagna or pratyantar is expected to be
+    untestable. That is the correct output until H10 is done.
 
-out_of_sample:
-  split: "events dated up to 1999-12-31 are exploratory; 2000-01-01 onward are held out and used once"
-  rule: "an effect counts only if it survives BY correction in the held-out part with the same sign"
+testability:
+  # Decided from the chart and the calendar, before outcomes are read.
+  min_episodes: 8                    # separate runs of a cell in the period (ADR-004 D-6)
+  min_expected_events_inside: 3      # per cell, from the control rate
+  min_expected_events_outside: 3
+  min_stable_share: 0.80
+  cell_rule: A cell that fails stays in the partition for the omnibus test and is not examined alone.
+  test_rule: >-
+    An omnibus test is testable when at least two of its cells pass. Otherwise
+    its verdict is "untestable". It still counts toward the family size.
+  never_testable_single_country: [dasha.identity.maha]   # 6 or 7 runs since 1947
+
+method_gate:
+  case_file: [unverified, page_cited, verified]     # unverified shown with a warning badge
+  descriptive_table: [unverified, page_cited, verified]   # counts and control rates only, status printed per row
+  explore_test: [page_cited, verified]
+  confirm_family: [verified]
+  tiers_allowed_in_families: [core]                 # extended, phase2 and phase3 never
+  on_gate_fail: >-
+    The test keeps its place in the family with verdict "descriptive only" and
+    the reason "method status <status>". Today every method below is
+    unverified, so this applies to all 18 tests.
+
+# ---------------------------------------------------------------------------
+# Families. Each entry of "tests" is one partition = one omnibus test.
+# Keys per test:
+#   id            stable test id
+#   predicate     workbench predicate that evaluates a cell (WP-52)
+#   params        fixed parameters; the cell value fills the "cell_param" key
+#   cells         the mutually exclusive answers
+#   needs_stable  what must be stable for the event to count in the main table
+#   methods       catalogue ids; the weakest status sets the gate
+families:
+  - id: F1_dasha_lord_identity
+    label: Which graha is the running antar or pratyantar lord
+    partition_cells: &lords [Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn, Rahu, Ketu]
+    tests:
+      - id: dasha.identity.antar
+        predicate: dasha_lord_is
+        params: {level: 2}
+        cell_param: lord
+        cells: *lords
+        needs_stable: [antar]
+        methods: [dasha.vimshottari]
+      - id: dasha.identity.pratyantar
+        predicate: dasha_lord_is
+        params: {level: 3}
+        cell_param: lord
+        cells: *lords
+        needs_stable: [pratyantar]
+        methods: [dasha.vimshottari]
+
+  - id: F2_dasha_lord_natal_house
+    label: Natal house of the running lord, counted from the varga lagna
+    partition_cells: &houses [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    tests:
+      - id: dasha.house.antar.d1
+        predicate: dasha_lord_in_house
+        params: {level: 2, varga: 1, from: Lagna}
+        cell_param: house
+        cells: *houses
+        needs_stable: [antar, d1_lagna]
+        methods: [dasha.vimshottari, dasha.lord_state, varga.d1]
+      - id: dasha.house.antar.d9
+        predicate: dasha_lord_in_house
+        params: {level: 2, varga: 9, from: Lagna}
+        cell_param: house
+        cells: *houses
+        needs_stable: [antar, d9_lagna, lord_d9_sign]
+        methods: [dasha.vimshottari, dasha.lord_state, varga.d9]
+      - id: dasha.house.pratyantar.d1
+        predicate: dasha_lord_in_house
+        params: {level: 3, varga: 1, from: Lagna}
+        cell_param: house
+        cells: *houses
+        needs_stable: [pratyantar, d1_lagna]
+        methods: [dasha.vimshottari, dasha.lord_state, varga.d1]
+      - id: dasha.house.pratyantar.d9
+        predicate: dasha_lord_in_house
+        params: {level: 3, varga: 9, from: Lagna}
+        cell_param: house
+        cells: *houses
+        needs_stable: [pratyantar, d9_lagna, lord_d9_sign]
+        methods: [dasha.vimshottari, dasha.lord_state, varga.d9]
+
+  - id: F3_dasha_lord_dignity
+    label: Natal dignity of the running lord
+    # Five states that exclude each other, collapsed from dignities_of() in
+    # this order: debilitation -> weak; exaltation -> exalted; moolatrikona or
+    # own -> own; else the natural relation to the sign lord (friend, neutral;
+    # enemy -> weak).
+    partition_cells: &dignity [exalted, own, friend, neutral, weak]
+    collapse:
+      exalted: [exaltation]
+      own: [moolatrikona, own]
+      friend: [friend]
+      neutral: [neutral]
+      weak: [debilitation, enemy]
+      priority: [debilitation, exaltation, moolatrikona, own, friend, neutral, enemy]
+    tests:
+      - id: dasha.dignity.antar.d1
+        predicate: dasha_lord_dignity
+        params: {level: 2, varga: 1}
+        cell_param: dignity
+        cells: *dignity
+        needs_stable: [antar, lord_d1_sign]
+        methods: [dasha.vimshottari, dasha.lord_state, varga.d1]
+      - id: dasha.dignity.antar.d9
+        predicate: dasha_lord_dignity
+        params: {level: 2, varga: 9}
+        cell_param: dignity
+        cells: *dignity
+        needs_stable: [antar, lord_d9_sign]
+        methods: [dasha.vimshottari, dasha.lord_state, varga.d9]
+      - id: dasha.dignity.pratyantar.d1
+        predicate: dasha_lord_dignity
+        params: {level: 3, varga: 1}
+        cell_param: dignity
+        cells: *dignity
+        needs_stable: [pratyantar, lord_d1_sign]
+        methods: [dasha.vimshottari, dasha.lord_state, varga.d1]
+      - id: dasha.dignity.pratyantar.d9
+        predicate: dasha_lord_dignity
+        params: {level: 3, varga: 9}
+        cell_param: dignity
+        cells: *dignity
+        needs_stable: [pratyantar, lord_d9_sign]
+        methods: [dasha.vimshottari, dasha.lord_state, varga.d9]
+
+  - id: F4_transit_house_d1
+    label: D1 house transited by a slow graha, from natal lagna and from natal Moon
+    # Ketu is always opposite Rahu and adds nothing. Transit and natal are both D1
+    # (transit_varga 1, varga 1): the extended transit.over_varga and
+    # transit.in_varga methods are not used.
+    tests:
+      - {id: transit.mars.from_lagna.d1,    predicate: transit_in_house_from_natal, params: {planet: Mars,    from: Lagna, varga: 1, transit_varga: 1}, cell_param: houses, cells: *houses, needs_stable: [d1_lagna],     methods: [transit.from_lagna, varga.d1]}
+      - {id: transit.jupiter.from_lagna.d1, predicate: transit_in_house_from_natal, params: {planet: Jupiter, from: Lagna, varga: 1, transit_varga: 1}, cell_param: houses, cells: *houses, needs_stable: [d1_lagna],     methods: [transit.from_lagna, varga.d1]}
+      - {id: transit.saturn.from_lagna.d1,  predicate: transit_in_house_from_natal, params: {planet: Saturn,  from: Lagna, varga: 1, transit_varga: 1}, cell_param: houses, cells: *houses, needs_stable: [d1_lagna],     methods: [transit.from_lagna, varga.d1]}
+      - {id: transit.rahu.from_lagna.d1,    predicate: transit_in_house_from_natal, params: {planet: Rahu,    from: Lagna, varga: 1, transit_varga: 1}, cell_param: houses, cells: *houses, needs_stable: [d1_lagna],     methods: [transit.from_lagna, varga.d1]}
+      - {id: transit.mars.from_moon.d1,     predicate: transit_in_house_from_natal, params: {planet: Mars,    from: Moon,  varga: 1, transit_varga: 1}, cell_param: houses, cells: *houses, needs_stable: [moon_d1_sign], methods: [transit.gochara_moon, varga.d1]}
+      - {id: transit.jupiter.from_moon.d1,  predicate: transit_in_house_from_natal, params: {planet: Jupiter, from: Moon,  varga: 1, transit_varga: 1}, cell_param: houses, cells: *houses, needs_stable: [moon_d1_sign], methods: [transit.gochara_moon, varga.d1]}
+      - {id: transit.saturn.from_moon.d1,   predicate: transit_in_house_from_natal, params: {planet: Saturn,  from: Moon,  varga: 1, transit_varga: 1}, cell_param: houses, cells: *houses, needs_stable: [moon_d1_sign], methods: [transit.gochara_moon, varga.d1]}
+      - {id: transit.rahu.from_moon.d1,     predicate: transit_in_house_from_natal, params: {planet: Rahu,    from: Moon,  varga: 1, transit_varga: 1}, cell_param: houses, cells: *houses, needs_stable: [moon_d1_sign], methods: [transit.gochara_moon, varga.d1]}
+
+declared_counts:               # "burden" recomputes these and fails on any difference
+  families: 4
+  omnibus_tests: 18
+  by_family: {F1_dasha_lord_identity: 2, F2_dasha_lord_natal_house: 4, F3_dasha_lord_dignity: 4, F4_transit_house_d1: 8}
+  cells_total: 182             # 2*9 + 4*12 + 4*5 + 8*12
+
+shown_not_tested:
+  - id: dasha.identity.maha
+    reason: 6 or 7 runs since 1947; under 8 episodes. Testable only when pooled over countries (WP-61).
+  - id: sky.bs32_mandala
+    reason: Already analysed on this catalogue (FINDINGS_LEDGER section 7). Shown as a classification of the event; not re-tested.
+  - id: rules/mundane/**
+    reason: Existing rule files fire in the case file when active and catalogued. No rule-stated combination is tested in this slice.
+
+excluded:
+  - {what: purely natal factors, reason: "Constant per chart; true at every event and every control date (section 5.1). Case file only."}
+  - {what: "D2, D3, D4, D7 factors", reason: "Outside this slice; added by WP-58."}
+  - {what: "D5, D6, D8", reason: "Extended tier, not cited (H11). The loader raises."}
+  - {what: "transit.over_varga, transit.in_varga, cycle.jupiter_saturn, sky.graha_yuddha", reason: Extended tier.}
+  - {what: pairs and triples of factors, reason: "No combination by search (section 5.3.6)."}
+  - {what: Ketu transits, reason: Always opposite Rahu.}
+  - {what: other candidate charts as tests, reason: "One primary chart; the rest are reported beside it."}
+
+# ---------------------------------------------------------------------------
+controls:
+  C1_season_matched:
+    enabled: true
+    per_event: 20
+    same_country: true
+    day_of_year_tolerance_days: 15
+    other_years_only: true                 # never the event's own calendar year
+    min_gap_days_from_any_event: 30        # any event of the same type and country, mainshock or not (raw catalogue)
+    draw_from: {start: "1976-01-01", end: "2026-10-31"}
+    within_period: true                    # a control for an explore event is drawn from explore years only
+    time_of_day: same_utc_time_as_event
+    replacement: false                     # no date twice within one event's set
+    if_fewer_available: use_all_and_record # record the shortfall per event in the controls manifest
+    seed: 20261122
+    reproducible_from: [seed, plan_sha256]
+    output: studies/mundane/artifacts/controls_<plan_sha12>.csv
+    answers: Is the factor more common at events than at the same time of year?
+  C2_shifted_sky:
+    enabled: true
+    kind: circular_shift                   # core/stats/nulls.py: circular_shift_null
+    shared_offset: true                    # one offset for all factors per draw, as the atlas does
+    grid_step_hours: 24
+    min_shift_days: 767                    # as studies/earthquake (longer than the Mars-Saturn synodic period)
+    draws: 10000
+    seed: 20261122
+    p_value: (n_extreme + 1) / (n_draws + 1)
+    answers: Same question, keeping event clustering intact.
+  C3_placebo_chart:
+    enabled: true
+    date_shift:
+      n: 99
+      shift_days: {distribution: uniform_integer, min_abs: 30, max_abs: 3650}   # either sign
+      keep: [time_of_day, place, time_zone]
+      founding_must_precede: "1976-01-01"
+      seed: 20261122
+    other_country:
+      enabled: false                       # no other country has a chart of grade C or better yet
+      enable_when: at least 5 other countries have a primary chart of the same or better grade (WP-61)
+    statistic: placebo_rank                # rank of the real chart's omnibus statistic among the placebos, 1 = most extreme
+    answers: Does the national chart add anything at all?
+
+statistics:
+  cell_statistic: rate_ratio               # share of events with the cell active over the C1 control share
+  interval: exact_conditional_binomial_95
+  omnibus: permutation_chi_square          # within matched sets (event + its controls); 10000 permutations
+  omnibus_permutations: 10000
+  omnibus_seed: 20261122
+  direction: two_sided                     # no direction is registered for any cell in v1
+  hierarchy:
+    level_1: {unit: family, method: benjamini_yekutieli, alpha: 0.05, combine: "minimum omnibus p in the family, Bonferroni within the family"}
+    level_2: {unit: omnibus test inside a passed family, method: benjamini_yekutieli, alpha: "0.05 * (families passed / families declared)"}
+    level_3: {unit: cell inside a passed omnibus test, method: benjamini_yekutieli, alpha: as level_2}
+    best_factor: romano_wolf               # adjusted p for the single best cell, from the same permutations
+  denominators: declared_counts            # always the declared sizes, never the testable subset
+  below_event_floor: >-
+    Print n_events, n_active, control_rate, rate_ratio with its interval,
+    episodes, stable_share and mde. Print no p_matched, p_shift, q_family or
+    placebo_rank (write null). Verdict "descriptive only".
+  verdicts: [effect found, effect excluded, inconclusive, untestable, descriptive only]
+  verdict_rules:
+    descriptive only: n_events below budgets.min_events_for_test, or the method gate fails
+    untestable: the testability block fails
+    effect found: q_family below alpha in the confirm run, same direction as explore
+    effect excluded: the upper end of the rate-ratio interval is below the mde of the test
+    inconclusive: anything else
+  report_columns: [n_events, n_active, control_rate, rate_ratio, ci, p_matched, p_shift, q_family,
+                   episodes, stable_share, placebo_rank, mde, verdict]   # section 2.2
+  cuts_in_this_slice: [per_country]        # per event type and pooled start with WP-61
+
+budgets:
+  max_omnibus_tests_first_slice: 24
+  max_omnibus_tests_per_country_event_type: 60
+  max_omnibus_tests_programme_per_data_vintage: 200
+  used_by_this_plan: 18
+  min_events_for_test: 30                  # below this: "descriptive only", no p-value
+  over_budget: fail                        # "burden" exits non-zero
+
+# ---------------------------------------------------------------------------
+mde:
+  # Smallest rate ratio found with 80% power (section 5.4). One-sided exact
+  # binomial on the count of events with the factor active; events treated as
+  # independent (declustered). "duty" is the share of time the factor is
+  # active. "burden" must reproduce these within rounding
+  # (core/stats/power.py: minimum_detectable_rate_ratio).
+  power: 0.80
+  test: one_sided_exact_binomial
+  thresholds:
+    one_test: 0.05
+    family_24: 5.5e-4          # Benjamini-Yekutieli rank 1 for 24 tests
+    family_60: 1.8e-4          # Benjamini-Yekutieli rank 1 for 60 tests
+    all_32000: 1.6e-6          # Bonferroni
+  columns: [events, one_test, family_24, family_60, all_32000]
+  duty_0.10:
+    - [10, 8.4, 18.5, 18.5, 48]
+    - [20, 4.1, 8.0, 9.7, 14.4]
+    - [30, 3.6, 5.8, 6.7, 10.0]
+    - [50, 2.9, 4.4, 4.8, 6.2]
+    - [100, 2.1, 3.0, 3.2, 3.9]
+    - [200, 1.7, 2.3, 2.4, 2.8]
+    - [500, 1.4, 1.7, 1.8, 2.0]
+    - [1000, 1.3, 1.5, 1.5, 1.7]
+  duty_0.25:
+    - [10, 6.2, 16.0, 33, 133]
+    - [20, 3.2, 7.3, 9.2, 15.9]
+    - [30, 2.9, 5.0, 5.7, 9.0]
+    - [50, 2.3, 3.4, 3.7, 5.1]
+    - [100, 1.7, 2.4, 2.5, 3.2]
+    - [200, 1.5, 1.9, 2.0, 2.3]
+    - [500, 1.3, 1.5, 1.5, 1.7]
+    - [1000, 1.2, 1.3, 1.4, 1.5]
+  check: {events: 128, duty: 0.25, one_test: 1.63}   # reproduces the ADR-005 figure
+  this_plan:
+    family_size_used: 24       # the budget cap, not the 18 declared; conservative
+    reading: >-
+      With about 5 events nothing realistic is detectable; at 10 events a
+      factor active 10% of the time would have to multiply the event rate by
+      about 18. The slice is descriptive. To test anything on earthquakes the
+      engine must pool countries or lower the magnitude threshold (186
+      mainshocks at Mw 5.2 and above); either choice needs a new plan version
+      made before outcomes are read (design task D7).
+  per_test_mde: computed by "burden" at the observed event count and each cell's calendar duty
+
+calibration:               # WP-55 acceptance, run on simulated data, not on this catalogue
+  null_datasets: 200
+  null_events_clustered: true
+  max_flag_rate: "0.05 plus three binomial standard errors"
+  planted: {rate_ratio: 3, events: 100, min_detection_rate: 0.80}
+  seed: 20261122
+
+outputs:
+  case_files: studies/mundane/artifacts/cases/<event_id>__<chart_id>.json
+  controls: studies/mundane/artifacts/controls_<plan_sha12>.csv
+  results: studies/mundane/artifacts/results.json        # marked provisional when the tree is dirty
+  factor_table: studies/mundane/artifacts/factor_table.csv
+  burden: studies/mundane/artifacts/burden.json
 
 reporting:
-  report_all_results: true
+  report_all_rows: true            # winners and losers, every declared cell
   negative_results: published with the same prominence
-  deviations: listed in the paper under "Deviations from the pre-registration"
+  allowed_wording: section 1.4 of ADR-006
+  readme_must_state: [event count, grade of each chart used, "descriptive only"]
+  deviations: listed under "Deviations from the plan" in any write-up
+
+amendments: []

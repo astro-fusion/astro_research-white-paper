@@ -187,10 +187,14 @@ a list.
 | `planet_speed_below` | relation | the planet moves slower than `speed` degrees per day (near its station) | `{planet_speed_below: {planet: Saturn, speed: 0.05}}` |
 | `dasha_lord_is` | time | the natal chart's running Vimshottari lord at `level` (1 maha, 2 antar, 3 pratyantar) is listed (needs natal) | `{dasha_lord_is: {level: 1, lords: [Saturn]}}` |
 | `antardasha_lord_is` | time | the running antardasha (bhukti) lord is listed (needs natal) | `{antardasha_lord_is: {lords: [Rahu]}}` |
+| `dasha_lord_in_house` | time | the running dasha lord at `level` is in one of the natal houses, counted from `from` (Lagna default) in the natal D-`varga` chart (needs natal) | `{dasha_lord_in_house: {level: 1, varga: 1, from: Lagna, houses: [8]}}` |
+| `dasha_lord_rules_house` | time | the running dasha lord at `level` rules one of the listed houses, counted from `from` in the natal D-`varga` chart; Rahu and Ketu rule none (needs natal) | `{dasha_lord_rules_house: {level: 2, varga: 9, from: Moon, houses: [8]}}` |
+| `dasha_lord_dignity` | time | the running dasha lord at `level` has one of the listed dignities in the natal D-`varga` chart (moolatrikona only in D1) (needs natal) | `{dasha_lord_dignity: {level: 1, varga: 9, dignities: [debilitation, enemy]}}` |
 | `moon_phase` | time | the paksha (`waxing`, `waning`, `new`, `full`) or the tithi (1-30) matches | `{moon_phase: {phase: full}}` |
 | `weekday_lord_is` | time | the lord of the vara, counted sunrise to sunrise when a place is given, is listed | `{weekday_lord_is: {lords: [Saturn]}}` |
-| `transit_in_house_from_natal` | mundane | the transiting planet is in one of the houses from a natal point (Lagna by default) | `{transit_in_house_from_natal: {planet: Saturn, from: Moon, houses: [8]}}` |
+| `transit_in_house_from_natal` | mundane | the transiting planet is in one of the houses from a natal point (Lagna by default); optional `varga` n counts from the natal D-n sign, and `transit_varga` (1 or equal to `varga`) uses the transit's own D-n sign instead of its rashi | `{transit_in_house_from_natal: {planet: Saturn, from: Moon, houses: [8]}}` |
 | `transit_conjunct_natal` | mundane | the transiting planet is within `orb` degrees of a natal point | `{transit_conjunct_natal: {planet: Saturn, natal_point: Sun, orb: 3}}` |
+| `transit_aspects_natal` | mundane | the transiting planet casts a whole-sign graha drishti on a natal point (`aspects` restricts the houses; the same sign is a conjunction, not an aspect) | `{transit_aspects_natal: {planet: Saturn, natal_point: Moon, aspects: [10]}}` |
 | `eclipse_in_sign` | mundane | a solar or lunar eclipse falls in the window and in the listed signs or nakshatras | `{eclipse_in_sign: {kind: solar, signs: [Leo], days_before: 15, days_after: 15}}` |
 | `ingress` | mundane | the planet enters a sign (sankranti for the Sun) within the window | `{ingress: {planet: Sun, signs: [Aries], days_before: 1}}` |
 | `planets_in_one_sign_gte` | mundane | at least `count` of `bodies` (default the seven visible grahas) share one sign (Brihat Jataka 12 sankhya yogas; the pancha graha cluster) | `{planets_in_one_sign_gte: {count: 5}}` |

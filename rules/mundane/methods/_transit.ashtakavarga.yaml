@@ -1,0 +1,32 @@
+id: "transit.ashtakavarga"
+name:
+  sanskrit: null
+  english: "Transit strength by ashtakavarga points"
+family: "transit"
+tradition: "jataka_applied"
+tier: "phase3"
+source:
+  text: "BPHS ashtakavarga chapters"
+  edition: null
+  translator: null
+  chapter: null
+  verse: null
+  quote: null
+  url: null
+  archive_url: null
+  checked_by: null
+  checked_at: null
+definition:
+  inputs: ["transit_longitude","natal_chart"]
+  formula: null
+  conventions: {zodiac: sidereal, ayanamsa: lahiri, node: mean, houses: whole_sign}
+  variants: []
+implementation: null
+predicates: []
+needs:
+  founding_time_precision_minutes: 60
+  place: false
+change_period: "as lagna"
+reference_cases: []
+scope: ["case_file"]
+notes: "Phase 3. No implementation. From memory or a docstring, no page and no quotation; owner task H11."

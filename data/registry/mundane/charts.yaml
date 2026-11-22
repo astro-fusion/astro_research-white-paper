@@ -1,0 +1,186 @@
+# Country chart registry (ADR-006 section 6.1). Written by studies/mundane/scripts/build_registry.py.
+# The grade is computed by core/mundane/registry.py from time_evidence; it is not stored.
+- chart_id: in-1947-midnight
+  country_iso: IN
+  event: Independence Act takes effect (midnight chart)
+  founding:
+    date: '1947-08-15'
+    time: 00:00:00
+    time_zone: Asia/Kolkata
+    place: New Delhi
+    lat: 28.6139
+    lon: 77.209
+  time_evidence:
+    kind: secondary
+    stated_precision_minutes: 60
+    source:
+      title: National charts in mundane astrology (Paramarsh)
+      url: https://paramarsh.app/patrika/mundane-astrology/national-charts-mundane-astrology
+      archive_url: null
+      accessed: null
+      quote: null
+    checked_by: null
+    checked_at: null
+    rectified: false
+    rectification_published: null
+  half_window_minutes: null
+  used_by:
+  - most Vedic practitioners
+  - Prashant Kapoor
+  - Maneeza Ahuja
+  - PVR Narasimha Rao
+  - Vishal Aksh
+  - Tempora Research
+  - Anvaya
+  claimed_confidence: documented
+  valid_from: '1947-08-15'
+  notes: Legal moment of the transfer of power; Taurus lagna (sidereal). Also https://www.astrovedica.in/blog/india-independence-chart-2026-saturn-rahu-dasha-protests.
+    One account credits Pandit Hardeo Sharma Trivedi with choosing the moment (Facebook group post, unverified).
+- chart_id: in-1947-kn-rao
+  country_iso: IN
+  event: Independence (K.N. Rao variant)
+  founding:
+    date: '1947-08-15'
+    time: 00:01:00
+    time_zone: Asia/Kolkata
+    place: New Delhi
+    lat: 28.6139
+    lon: 77.209
+  time_evidence:
+    kind: convention
+    stated_precision_minutes: 60
+    source:
+      title: Journal of Astrology article 591
+      url: https://www.journalofastrology.com/article.php?article_id=591
+      archive_url: null
+      accessed: null
+      quote: null
+    checked_by: null
+    checked_at: null
+    rectified: false
+    rectification_published: null
+  half_window_minutes: null
+  used_by:
+  - K.N. Rao
+  claimed_confidence: disputed
+  valid_from: '1947-08-15'
+  notes: One minute after midnight.
+- chart_id: in-1947-noon
+  country_iso: IN
+  event: Independence (noon chart)
+  founding:
+    date: '1947-08-15'
+    time: '12:00:00'
+    time_zone: Asia/Kolkata
+    place: New Delhi
+    lat: 28.6139
+    lon: 77.209
+  time_evidence:
+    kind: convention
+    stated_precision_minutes: 60
+    source:
+      title: Independence of India, part I (2013-05-17)
+      url: https://classicalastrologer.com/2013/05/17/independence-of-india-part-i/
+      archive_url: null
+      accessed: null
+      quote: null
+    checked_by: null
+    checked_at: null
+    rectified: false
+    rectification_published: null
+  half_window_minutes: null
+  used_by:
+  - anonymous author, classicalastrologer.com
+  claimed_confidence: conventional
+  valid_from: '1947-08-15'
+  notes: Proposed because the luminaries are below the horizon at midnight; Sun in the 10th at noon.
+- chart_id: in-1950-republic
+  country_iso: IN
+  event: Republic Day (constitution in force)
+  founding:
+    date: '1950-01-26'
+    time: '10:18:00'
+    time_zone: Asia/Kolkata
+    place: New Delhi
+    lat: 28.6139
+    lon: 77.209
+  time_evidence:
+    kind: convention
+    stated_precision_minutes: 60
+    source:
+      title: Mundane astrology (AskAstrologer)
+      url: https://askastrologer.com/articles/mundane-astrology/
+      archive_url: null
+      accessed: null
+      quote: null
+    checked_by: null
+    checked_at: null
+    rectified: false
+    rectification_published: null
+  half_window_minutes: null
+  used_by:
+  - askastrologer.com
+  - astromantra.com
+  claimed_confidence: disputed
+  valid_from: '1950-01-26'
+  notes: Argued to mark full sovereignty as a republic; time provenance not stated.
+- chart_id: np-2008-republic
+  country_iso: NP
+  event: Abolition of the monarchy (republic declared)
+  founding:
+    date: '2008-05-28'
+    time: null
+    time_zone: Asia/Kathmandu
+    place: Kathmandu
+    lat: 27.7172
+    lon: 85.324
+  time_evidence:
+    kind: none
+    stated_precision_minutes: null
+    source:
+      title: National charts in mundane astrology (Paramarsh)
+      url: https://paramarsh.app/patrika/mundane-astrology/national-charts-mundane-astrology
+      archive_url: null
+      accessed: null
+      quote: null
+    checked_by: null
+    checked_at: null
+    rectified: false
+    rectification_published: null
+  half_window_minutes: null
+  used_by:
+  - named as a contender by Paramarsh
+  claimed_confidence: disputed
+  valid_from: '2008-05-28'
+  notes: The practitioner names the event without a date or time; the date is the Constituent Assembly's
+    first sitting. No source opened states the hour.
+- chart_id: np-2015-constitution
+  country_iso: NP
+  event: Constitution of Nepal 2015 promulgated
+  founding:
+    date: '2015-09-20'
+    time: null
+    time_zone: Asia/Kathmandu
+    place: Kathmandu
+    lat: 27.7172
+    lon: 85.324
+  time_evidence:
+    kind: none
+    stated_precision_minutes: null
+    source:
+      title: Nepal gets new constitution (The Himalayan Times, 2015-09-21)
+      url: https://thehimalayantimes.com/ampArticle/126755
+      archive_url: null
+      accessed: null
+      quote: null
+    checked_by: null
+    checked_at: null
+    rectified: false
+    rectification_published: null
+  half_window_minutes: null
+  used_by:
+  - named as a contender by Paramarsh
+  claimed_confidence: disputed
+  valid_from: '2015-09-20'
+  notes: Date confirmed by the news report (opened 2026-11-08), which gives no time of day. The unification
+    of the 18th century is the third contender (no date stated).

@@ -1,0 +1,34 @@
+id: "transit.aspects_natal"
+name:
+  sanskrit: null
+  english: "Transit graha casting graha drishti on a natal point"
+family: "transit"
+tradition: "practitioner"
+tier: "core"
+source:
+  text: null
+  edition: null
+  translator: null
+  chapter: null
+  verse: null
+  quote: null
+  url: null
+  archive_url: null
+  checked_by: null
+  checked_at: null
+definition:
+  inputs: ["transit_longitude","natal_point_sign"]
+  formula: "House number of the natal point's sign counted from the transiting graha's sidereal sign, whole-sign, inclusive, is one of that graha's Parashari aspects: all the 7th; Mars also 4th and 8th; Jupiter 5th and 9th; Saturn 3rd and 10th; Rahu and Ketu the 7th only. The same sign is a conjunction, not an aspect."
+  conventions: {zodiac: sidereal, ayanamsa: lahiri, node: mean, houses: whole_sign}
+  variants: []
+implementation:
+  module: "vedic_astrology_core.rules.predicates.mundane"
+  function: "transit_aspects_natal"
+predicates: ["transit_aspects_natal"]
+needs:
+  founding_time_precision_minutes: 60
+  place: false
+change_period: "natal Moon sign 2.3 d; lagna about 120 min; transit graha weeks to years"
+reference_cases: []
+scope: ["case_file","aggregate"]
+notes: "Unverified, from memory: practitioner usage with no book or page recorded; owner task H11."

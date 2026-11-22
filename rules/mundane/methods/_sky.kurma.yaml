@@ -1,0 +1,34 @@
+id: "sky.kurma"
+name:
+  sanskrit: "Kurma chakra"
+  english: "Region by nakshatra, Kurma chakra"
+family: "sky"
+tradition: "samhita"
+tier: "core"
+source:
+  text: "Brihat Samhita"
+  edition: "Iyer translation, 1884, read online"
+  translator: "N. Chidambaram Iyer"
+  chapter: "14"
+  verse: null
+  quote: null
+  url: null
+  archive_url: null
+  checked_by: null
+  checked_at: null
+definition:
+  inputs: ["moon_nakshatra","start_nakshatra"]
+  formula: "Each nakshatra belongs to one of nine divisions of the tortoise (north, north-east, ... centre). The division names the region. The starting nakshatra is disputed and is a parameter (krittika or ashwini)."
+  conventions: {zodiac: sidereal, ayanamsa: lahiri, node: mean, houses: whole_sign}
+  variants: []
+implementation:
+  module: "vedic_astrology_core.astrology.mundane"
+  function: "kurma_division"
+predicates: ["kurma_direction"]
+needs:
+  founding_time_precision_minutes: null
+  place: false
+change_period: "nakshatra 24 h for the Moon; weeks for slow grahas"
+reference_cases: []
+scope: ["case_file","aggregate"]
+notes: "Starting nakshatra is a parameter. Check at source (H11)."
