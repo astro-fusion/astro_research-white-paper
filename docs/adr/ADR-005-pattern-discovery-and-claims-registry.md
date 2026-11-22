@@ -1,11 +1,18 @@
 # ADR-005: Pattern discovery, forecast ledger and claims registry
 
-- Status: proposed
+- Status: partly superseded by [ADR-007](ADR-007-principle-validity-reports.md) on 2026-11-22 (earlier amended by ADR-006). Sections 1 and 2 remain in force as the feasibility record.
 - Date: 2026-11-22
 - Deciders: repository owner (single developer); architect (design only)
 - Builds on: [ADR-003](ADR-003-rule-workbench.md) (workbench, combination atlas), [ADR-004](ADR-004-paper-production-and-principle-validation.md) (decisions D-1 to D-9, packages WP-01 to WP-30)
 - Inputs: [RESEARCH_REVIEW_2026-11-22.md](../../RESEARCH_REVIEW_2026-11-22.md), [INCOMING_AUDIT_2026-11-22.md](../research/handover/INCOMING_AUDIT_2026-11-22.md), the committed `results.json` files
 - Companion documents: [FINDINGS_LEDGER.md](../research/FINDINGS_LEDGER.md) (what was found), [CLAIMS_REGISTRY_SPEC.md](../research/CLAIMS_REGISTRY_SPEC.md) (astrologer claims)
+
+> **Superseded parts (ADR-007, owner's scope: past events only, no forecasting).**
+> - **Removed:** E-1, E-6, E-7, E-8, E-9 (K2 to K6): forecast ledger, forecast scoring, model registry, kill monitor. Packages WP-32, WP-34, WP-38 to WP-41.
+> - **Removed:** E-2, E-3, E-4: fitted models and the capped pattern search. Packages WP-42 to WP-47.
+> - **Re-scoped:** the claims registry (WP-31) survives only as a source of **principles** that astrologers state, to be encoded as rule files and tested. Published predictions are not scored. WP-33 is replaced by the principle catalogue.
+> - **Kept:** sections 1 and 2; E-5 levels 1 and 2 as vocabulary; K1 (calibration on simulated data); baselines WP-35 to WP-37 as controls inside ADR-007 packages.
+> - Read the text below as history. ADR-007 section 12 has the full table.
 
 ## The question
 

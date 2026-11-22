@@ -1,12 +1,19 @@
 # ADR-006: Retrospective mundane chart engine
 
-- Status: proposed
+- Status: proposed; first slice delivered (WP-48 to WP-56); amended by [ADR-007](ADR-007-principle-validity-reports.md) on 2026-11-22
 - Date: 2026-11-22
 - Deciders: repository owner (single developer); architect (design only)
 - Builds on: [ADR-003](ADR-003-rule-workbench.md) (workbench, predicates, atlas), [ADR-004](ADR-004-paper-production-and-principle-validation.md) (levels L0 to L6, quarantine, packages WP-01 to WP-30)
 - Amends: [ADR-005](ADR-005-pattern-discovery-and-claims-registry.md) (see section 10). ADR-005 sections 1 and 2 stay in force.
 - Inputs: `studies/mundane/` (README, plan draft, 113 countries, 825 events, 65 candidate charts), `libs/vedic_astrology_core/`, [FINDINGS_LEDGER.md](../research/FINDINGS_LEDGER.md), [CLAIMS_REGISTRY_SPEC.md](../research/CLAIMS_REGISTRY_SPEC.md), [RESEARCH_REVIEW_2026-11-22.md](../../RESEARCH_REVIEW_2026-11-22.md) (section 5.3, question 15)
 - `core/` below stands for `libs/vedic_astrology_core/`.
+
+> **Superseded parts (ADR-007).**
+> - Section 10: every ADR-005 item listed there as "deprioritised" or "can be revived" (model registry, forecast ledger, forecast scoring, search) is now **removed** from the plan. The claims registry is kept only as a source of principles to test.
+> - Section 2.1, case file section 8 (practitioner explanations with a before-or-after timing class): not rendered in validity reports; no classification of published predictions is published.
+> - Section 2.2 verdict words are mapped to the five ADR-007 verdicts by the national-chart adapter (ADR-007 WP-80).
+> - WP-62 (site pages) and WP-63 (confirm run) are replaced by ADR-007 WP-73 and WP-80. WP-57 to WP-61 and WP-64 stay.
+> - Everything else in this ADR stays in force.
 
 ## The request
 
