@@ -1,0 +1,51 @@
+﹟,Glide ﹟,Start Date,End Date,Country,Area (km²),Source,Main Cause,Fatalities,Displaced,Severity,Flood impact index
+5506,,1/6/24,1/9/24,Australia,605,News,Heavy rain,0,0,1.5,3.6
+5505,,1/1/24,1/5/24,Germany,"47,931",News,Heavy rain,0,0,1,5.4
+5503,,12/30/23,1/5/24,France,"7,396",News,Heavy rain,0,491,1,4.7
+5504,,12/28/23,1/4/24,United Kingdom of Great Britain and Northern Ireland,"21,869",FloodList,Heavy rain,0,130,1,5.2
+5495,,12/25/23,12/29/23,South Africa,"91,791",News,Heavy rain,21,5600,1,5.7
+5498,,12/22/23,12/28/23,Lesotho,"3,034",News,Heavy rain,0,0,1,4.3
+5500,,12/22/23,12/25/23,Thailand,"21,103",News,Heavy rain,6,0,1,4.9
+5496,,12/18/23,12/21/23,United States of America,"89,167",USGS,Heavy rain,0,0,1.5,5.7
+5497,,12/16/23,12/16/23,Argentina,"1,145",News,Heavy rain,13,0,1,3.1
+5494,,12/13/23,12/18/23,Australia,"9,740",FloodList,Heavy rain,0,0,1,4.8
+5501,,12/10/23,12/13/23,India,"23,760",News,Heavy rain,0,7500,1,5
+5502,,12/10/23,12/13/23,Bolivia (Plurinational State of),"261,750",News,Heavy rain,8,0,1,6
+5493,,12/4/23,12/6/23,United States of America,"53,724",FloodList,Heavy rain,1,0,1,5.2
+5499,FL-2023-000259-COG,12/1/23,12/29/23,Congo,"175,295",News,Heavy rain,7,4928,1.5,6.9
+5491,FL-2023-000249-AGO,11/30/23,12/4/23,Angola,"237,560",News,Heavy rain,30,20000,2,6.4
+5488,,11/17/23,11/20/23,United States of America,"3,194",News,Heavy rain,0,8,1,4.1
+5490,FL-2023-000236-DOM,11/17/23,11/18/23,"Dominican Republic,Haiti","10,138",News,Heavy rain,34,37000,2,4.6
+5486,,11/2/23,11/7/23,Ethiopia,"311,914",News,Heavy rain,20,12000,2,6.6
+5487,,11/2/23,11/3/23,Italy,"19,489",FloodList,Heavy rain,3,300,1,4.6
+5484,,10/30/23,11/4/23,Paraguay,"51,408",News,Heavy rain,6,0,1,5.5
+5485,FL-2023-000232-COL,10/30/23,11/3/23,Colombia,"34,324",News,Heavy rain,0,0,1,5.2
+5492,,10/29/23,11/2/23,Malawi,"5,157",FloodList,Heavy rain,1,0,1,4.4
+5483,,10/26/23,10/27/23,Burundi,"1,591",News,Heavy rain,7,0,1,3.5
+5479,TC-2023-000212-YEM,10/24/23,10/31/23,Yemen,"13,013",News,Tropical cyclone,1,15939,1.5,5.2
+5478,,10/18/23,10/21/23,United Kingdom of Great Britain and Northern Ireland,"22,157",FloodList,Heavy rain,4,340,1.5,5.1
+5477,FL-2023-000216-KEN,10/15/23,11/11/23,Kenya,"229,835",News,Heavy rain,46,58000,1.5,7
+5473,,10/6/23,10/10/23,Myanmar,"4,674",FloodList,Heavy rain,5,14934,1.5,4.5
+5475,,10/6/23,10/7/23,Sri Lanka,"21,227",News,Heavy rain,7,0,1,4.6
+5482,,10/4/23,10/4/23,India,"21,138",News,Ice jam/break-up,92,12400,1.5,4.5
+5489,,10/4/23,11/30/23,Somalia,"637,728",News,Heavy rain,55,695000,2,7.9
+5474,,10/3/23,10/10/23,Brazil,"93,711",FloodList,Heavy rain,2,12289,1.5,6.1
+5480,,9/28/23,9/29/23,United States of America,"6,665",News,Torrential rain,0,0,1,4.1
+5471,,9/25/23,9/25/23,Mexico,80,FloodList,Heavy rain,8,0,1,1.9
+5472,,9/24/23,9/25/23,Guatemala,110,FloodList,Heavy rain,6,0,1,2.3
+5469,,9/23/23,9/26/23,South Africa,"132,164",News,Heavy rain,11,2710,1.5,5.9
+5470,FL-2023-000199-SDN,9/15/23,9/22/23,Sudan,"72,376",News,Heavy rain,0,8000,1.5,5.9
+5476,FL-2023-000215-GHA,9/15/23,10/24/23,Ghana,"5,412",News,Dam/Levy break or release,0,26000,1,5.3
+5466,,9/10/23,9/11/23,Libya,211,FloodList,Dam/Levy break or release,5300,40000,2,2.9
+5465,,9/9/23,9/9/23,United States of America,805,FloodList,Heavy rain,0,0,1,2.9
+5481,,9/9/23,9/13/23,United States of America,"98,217",News,Heavy rain,2,0,1,5.7
+5463,,9/8/23,9/8/23,"China,Hong Kong Special Administrative Region","108,684",FloodList,Torrential rain,2,11000,1.5,5.2
+5464,,9/8/23,9/8/23,Japan,"5,091",FloodList,Heavy rain,3,40,1,3.7
+5468,,9/7/23,9/8/23,Myanmar,"1,144",News,Heavy rain,0,1000,1,3.4
+5462,,9/5/23,9/7/23,"Greece,Türkiye, Bulgaria","11,585",FloodList,Torrential rain,11,340,1.5,4.7
+5459,,9/2/23,9/3/23,Algeria,"234,541",FloodList,Heavy rain,8,0,1,5.7
+5460,,9/2/23,9/4/23,Spain,"452,296",FloodList,Torrential rain,0,0,1.5,6.3
+5461,FL-2023-000169-BRA,9/2/23,9/4/23,Brazil,"285,553",FloodList,Heavy rain,46,25855,2,6.2
+5467,FL-2023-000167-LBR,9/1/23,9/4/23,Liberia,"9,264",Relief web,Heavy rain,0,520,1,4.6
+5458,,8/27/23,8/29/23,United States of America,"4,931",FloodList,Heavy rain,0,0,1,4.2
+5457,,8/23/23,8/23/23,Tajikistan,"24,805",FloodList,Heavy rain,13,400,1,4.4

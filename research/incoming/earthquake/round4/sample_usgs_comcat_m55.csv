@@ -1,0 +1,51 @@
+time,latitude,longitude,depth,mag,magType,nst,gap,dmin,rms,net,id,updated,place,type,horizontalError,depthError,magError,magNst,status,locationSource,magSource
+2025-10-17T12:15:03.739Z,36.7572,72.8064,8,5.5,mww,110,41,1.574,0.94,us,us6000rhs3,2026-01-09T15:38:39.040Z,"48 km ESE of Khandūd, Afghanistan",earthquake,7.64,1.839,0.063,24,reviewed,us,us
+2025-09-14T11:11:51.373Z,26.7097,92.2103,29,5.5,mww,215,20,3.132,0.81,us,us7000qw56,2025-12-03T03:58:30.040Z,"11 km ESE of Udalguri, India",earthquake,7.83,1.8,0.103,9,reviewed,us,us
+2025-05-11T21:11:22.060Z,29.0536,87.6068,9,5.5,mww,151,22,2.401,0.67,us,us7000pyq7,2025-07-24T21:30:14.040Z,"126 km W of Rikaze, China",earthquake,8.15,1.787,0.08,15,reviewed,us,us
+2025-01-08T07:44:22.866Z,34.8006,97.4685,10,5.5,mww,106,57,5.216,0.62,us,us6000pijd,2025-03-20T20:54:47.040Z,"Southern Qinghai, China",earthquake,8.9,1.805,0.065,23,reviewed,us,us
+2025-01-07T01:05:16.734Z,28.6036,87.3781,10,7.1,mww,315,17,3.458,0.56,us,us6000pi9w,2025-08-11T06:50:22.632Z,"2025 Southern Tibetan Plateau Earthquake",earthquake,8.15,1.74,0.039,63,reviewed,us,us
+2024-06-01T00:46:38.484Z,34.1381,86.3128,20.71,5.9,mww,318,20,6.024,0.52,us,us7000mpe2,2024-08-06T20:32:49.040Z,"western Xizang",earthquake,8.66,3.329,0.08,15,reviewed,us,us
+2024-04-13T05:44:39.593Z,33.5479,81.8672,10,5.5,mww,209,25,6.438,0.59,us,us7000mbuv,2024-06-17T02:15:21.040Z,"western Xizang",earthquake,7.97,1.846,0.066,22,reviewed,us,us
+2024-04-05T12:45:38.655Z,26.4924,96.9139,69.136,5.7,mb,157,22,5.571,0.71,us,us7000ma59,2024-06-12T21:51:54.040Z,"33 km NNE of Sarupathar, India",earthquake,8.38,6.269,0.031,379,reviewed,us,us
+2024-03-07T10:06:30.797Z,33.5389,92.9927,10,5.6,mww,179,26,4.142,0.57,us,us7000m3ur,2024-05-15T17:35:03.040Z,"244 km NNE of Nagqu, China",earthquake,7.24,1.832,0.089,12,reviewed,us,us
+2023-11-03T18:02:53.465Z,28.858,82.1531,12,5.7,mww,232,21,2.95,0.94,us,us7000l8p5,2024-01-10T06:01:50.040Z,"43 km E of Dailekh, Nepal",earthquake,5.99,1.688,0.06,27,reviewed,us,us
+2023-10-03T09:21:03.018Z,29.4973,81.242,13,5.7,mww,226,23,3.93,0.33,us,us6000lcgj,2023-12-14T21:26:51.040Z,"39 km NE of Dipayal, Nepal",earthquake,4.47,1.784,0.052,36,reviewed,us,us
+2023-05-31T11:20:14.013Z,25.1051,96.2315,10,5.9,mww,194,43,4.379,0.71,us,us7000k58h,2023-09-23T14:37:07.535Z,"121 km WSW of Myitkyina, Myanmar",earthquake,6.38,1.321,0.075,17,reviewed,us,us
+2022-11-10T05:01:05.611Z,28.3835,94.4118,15,5.5,mww,182,35,6.722,0.5,us,us7000inqd,2023-01-21T19:27:18.040Z,"16 km SSE of Shi Yomi, India",earthquake,8.34,1.843,0.089,12,reviewed,us,us
+2022-11-08T20:27:22.316Z,29.2917,81.1593,11,5.7,mww,268,13,3.917,0.69,us,us7000incn,2023-01-21T19:27:15.040Z,"Nepal",earthquake,6.94,1.653,0.057,30,reviewed,us,us
+2022-08-14T08:20:00.340Z,33.1157,92.7977,5,5.7,mww,191,25,8.375,0.47,us,us6000iaqi,2022-10-28T02:25:50.040Z,"194 km NNE of Nagqu, China",earthquake,7.45,1.83,0.098,10,reviewed,us,us
+2021-11-30T13:53:41.109Z,31.723,87.9296,6.77,5.5,mww,,29,9.596,0.72,us,us6000g7wd,2025-12-22T22:21:09.692Z,"289 km NNW of Rikaze, China",earthquake,7.4,3.7,0.093,11,reviewed,us,us
+2021-04-28T02:21:26.212Z,26.7813,92.4565,34,6,mww,,11,1.324,0.79,us,us7000dy3b,2025-12-22T18:57:22.181Z,"8 km NNW of Dhekiajuli, India",earthquake,6.6,1.7,0.066,22,reviewed,us,us
+2021-03-29T17:27:23.269Z,34.3549,87.6921,8,5.5,mww,,46,5.478,0.73,us,us6000dxge,2025-12-22T18:55:17.027Z,"western Xizang",earthquake,7.4,1.7,0.093,11,reviewed,us,us
+2021-03-19T06:11:27.113Z,31.9246,92.9151,8,5.7,mww,,19,2.696,0.59,us,us7000dkv0,2025-12-22T18:54:37.042Z,"95 km ENE of Nagqu, China",earthquake,7.1,1.8,0.086,13,reviewed,us,us
+2020-07-22T20:07:19.194Z,33.1438,86.8637,10,6.3,mww,,14,5.168,0.88,us,us6000b26j,2025-12-22T18:38:35.515Z,"western Xizang",earthquake,2.8,1.7,0.071,19,reviewed,us,us
+2020-06-25T21:05:18.140Z,35.5948,82.4158,10,6.3,mww,,24,6.134,0.63,us,us7000abmk,2025-12-22T18:37:10.742Z,"278 km SE of Hotan, China",earthquake,7,1.7,0.062,25,reviewed,us,us
+2020-03-20T01:33:15.443Z,28.5896,87.3081,10,5.7,mww,,18,0.766,1.02,us,us70008cld,2025-12-22T18:31:23.016Z,"85 km NE of Lobujya, Nepal",earthquake,5.7,1.7,0.063,24,reviewed,us,us
+2019-12-30T17:18:57.445Z,35.5909,74.628,13.82,5.6,mww,,41,2.236,0.74,us,us70006sj8,2025-12-22T18:24:57.099Z,"46 km SE of Gilgit, Pakistan",earthquake,6.6,3.7,0.061,26,reviewed,us,us
+2019-07-19T09:22:15.514Z,27.7188,92.8302,15,5.5,mww,,17,2.313,0.54,us,us70004nrn,2025-12-22T18:13:38.404Z,"64 km NE of Bomdila, India",earthquake,7.6,1.7,0.062,25,reviewed,us,us
+2019-04-23T20:15:50.777Z,28.4073,94.5605,14,5.9,mww,,20,3.271,0.85,us,us70003axc,2025-12-22T17:54:15.702Z,"22 km SE of Shi Yomi, India",earthquake,7,1.8,0.062,25,reviewed,us,us
+2018-12-23T19:32:22.060Z,30.4079,87.62,10,5.8,mww,,32,2.54,1.18,us,us2000iws8,2022-05-03T19:42:26.122Z,"177 km NW of Rikaze, China",earthquake,2.6,1.7,0.061,26,reviewed,us,us
+2017-11-17T22:34:19.450Z,29.8333,94.9838,8,6.4,mww,,13,3.355,0.76,us,us2000bqsn,2022-05-03T20:02:37.973Z,"156 km NNE of Shi Yomi, India",earthquake,7,1.7,0.043,52,reviewed,us,us
+2016-10-17T07:14:50.870Z,32.8959,94.8768,35,5.9,mww,,11,4.519,0.82,us,us20007eqh,2022-05-03T18:01:59.791Z,"Xizang-Qinghai border region",earthquake,4.6,1.7,,,reviewed,us,us
+2015-05-16T11:34:09.980Z,27.5603,86.0734,7,5.5,mww,,13,4.928,0.72,us,us100029rn,2022-07-31T07:18:14.026Z,"45 km SSE of Kod?ri??, Nepal",earthquake,7.5,1.7,,,reviewed,us,us
+2015-05-12T07:36:54.490Z,27.625,86.1617,15,6.3,mww,,10,0.664,0.93,us,us20002ek5,2022-07-31T05:59:39.785Z,"42 km SSE of Kod?ri??, Nepal",earthquake,7.5,1.7,,,reviewed,us,us
+2015-05-12T07:17:20.640Z,27.7141,86.2177,13.01,5.5,mb,,66,0.579,0.89,us,us20002ek0,2022-07-31T05:58:33.083Z,"37 km SE of Kod?ri??, Nepal",earthquake,6.8,4.7,0.043,183,reviewed,us,us
+2015-05-12T07:05:19.730Z,27.8087,86.0655,15,7.3,mww,,11,0.677,0.92,us,us20002ejl,2024-06-26T05:18:41.027Z,"Nepal",earthquake,7.4,1.7,,,reviewed,us,us
+2015-04-26T07:09:10.670Z,27.7711,86.0173,22.91,6.7,mww,,13,0.727,0.86,us,us200029bt,2025-02-22T05:38:38.490Z,"21 km SSE of Kod?ri??, Nepal",earthquake,6.6,2.9,,,reviewed,us,us
+2015-04-25T09:17:02.310Z,28.3902,87.3173,10,5.7,mb,,22,0.619,0.7,us,us2000294g,2022-07-31T01:17:38.200Z,"69 km NE of Lobujya, Nepal",earthquake,5.8,1.4,0.033,328,reviewed,us,us
+2015-04-25T06:56:33.860Z,27.8822,85.7505,10,5.5,mb,,39,0.942,0.65,us,us20002934,2022-07-31T01:12:49.171Z,"22 km WSW of Kod?ri??, Nepal",earthquake,3,1.8,0.053,123,reviewed,us,us
+2015-04-25T06:45:21.320Z,28.2244,84.8216,10,6.6,mww,,16,1.778,0.64,us,us2000292y,2025-02-22T05:33:18.829Z,"71 km NNE of Bharatpur, Nepal",earthquake,7.4,1.7,,,reviewed,us,us
+2015-04-25T06:18:10.870Z,27.6857,86.0213,10,5.6,mb,,42,0.751,0.76,us,us20002bi0,2024-06-16T23:45:39.737Z,"31 km SSE of Kod?ri??, Nepal",earthquake,7.4,1.9,0.109,30,reviewed,us,us
+2015-04-25T06:15:22.910Z,27.6285,85.5398,10,6.1,mb,,43,1.173,1.02,us,us20002bi4,2024-06-16T23:45:44.729Z,"0 km NNW of Dhulikhel, Nepal",earthquake,8,1.8,0.089,48,reviewed,us,us
+2015-04-25T06:11:25.950Z,28.2305,84.7314,8.22,7.8,mww,,12,1.857,0.96,us,us20002926,2025-08-07T10:31:11.955Z,"67 km NNE of Bharatpur, Nepal",earthquake,7.3,2.9,,,reviewed,us,us
+2014-02-12T09:24:43.010Z,35.8221,82.4667,10,5.7,mb,,29,9.192,0.93,us,usc000mz3i,2022-05-03T16:42:21.136Z,"267 km ESE of Hotan, China",earthquake,,1.8,0.067,83,reviewed,us,us
+2014-02-12T09:19:49.060Z,35.9053,82.5864,10,6.9,mww,,18,7.496,0.83,us,usc000mnvj,2022-07-26T07:05:22.867Z,"272 km ESE of Hotan, China",earthquake,,1.7,,,reviewed,us,us
+2013-08-11T21:23:41.310Z,30.0464,97.9565,6,5.7,mww,,12,5.94,0.94,us,usb000j0t5,2022-05-03T16:51:55.603Z,"141 km SSE of Qamdo, China",earthquake,,1,,,reviewed,us,us
+2013-05-01T06:57:13.480Z,33.061,75.863,15,5.7,mww,137,25,,1.11,us,usb000gjhz,2022-07-25T01:04:28.396Z,"16 km ENE of Bhadarw?h, India",earthquake,,,,,reviewed,us,us
+2013-01-09T01:41:53.260Z,25.329,95.048,93,5.8,mww,482,14.7,,0.99,us,usp000jy3c,2024-06-17T20:55:42.290Z,"66 km SE of Phek, India",earthquake,,,,,reviewed,us,us
+2012-08-12T10:47:06.450Z,35.661,82.518,13,6.2,mww,471,14.5,,0.86,us,usp000jq7p,2024-06-17T19:55:48.504Z,"281 km SE of Hotan, China",earthquake,,,,,reviewed,us,us
+2012-07-01T04:13:52.090Z,25.592,94.696,58,5.6,mwb,279,17.6,,1.08,us,usp000jnev,2022-05-03T15:43:32.385Z,"21 km ESE of Phek, India",earthquake,,,,,reviewed,us,us
+2012-03-12T06:06:40.640Z,36.741,73.152,11,5.6,mww,283,28.1,,1.07,us,usp000jg4d,2022-05-03T15:33:37.819Z,"77 km ESE of Khand?d, Afghanistan",earthquake,,,,,reviewed,us,us
+2011-09-18T12:40:51.830Z,27.73,88.155,50,6.9,mww,383,13,,0.96,us,usp000j88b,2025-03-03T10:37:14.677Z,"43 km NW of Mangan, India",earthquake,,,,,reviewed,us,us
+2010-06-03T05:35:44.760Z,33.335,96.15,24.2,5.5,mwc,147,53.7,,0.98,us,usp000hdh0,2022-05-02T21:58:13.554Z,"263 km NNW of Qamdo, China",earthquake,,10.6,,,reviewed,us,gcmt
+2010-05-29T02:29:48.640Z,33.165,96.07,7,5.8,mwc,304,25,,1.05,us,usp000hdaw,2022-05-02T22:37:59.008Z,"248 km NNW of Qamdo, China",earthquake,,,,,reviewed,us,gcmt

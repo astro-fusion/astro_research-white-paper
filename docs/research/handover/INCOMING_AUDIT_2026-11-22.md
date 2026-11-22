@@ -120,3 +120,42 @@ Gemini's Bundesbank codes (BBDK01.WT5512 / WT5511, BBEX3.D.XAU.EUR.EA.AC.C04) an
 - **Flood:** the computable versus observation-only split of the 12 rules, and the recommendation to start the first Registered Report with Megheshvara plus Mars in Rohini. The verified ENSO/IOD figures are Kumar 1999 (r −0.60 → −0.32) and Ashok 2001 (R 0.59). The "63.2% IMD hit rate" is confirmed as invented.
 - **Gold episodes:** two dates corrected (2015-12-17 low; 2024-10-30 PM-fix peak).
 - **Gold news 2024–2026:** now cites Kitco articles that load. The 2025–2026 levels (e.g. "$4,690 in May 2026") must be checked against the price series before any use.
+
+
+---
+
+## Round 4 audit (2026-11-22): D2 earthquake and D3 monsoon/flood
+
+Method: every hashed source was re-downloaded independently with curl (generic client name), SHA-256 compared; DOIs checked on Crossref; ETAS values compared against the published table; key dates spot-checked against IMD records known to the auditor. Gemini's fetch scripts were NOT executed.
+
+### Downloads: 7 of 7 hashes reproduce
+
+| Source | HTTP | SHA-256 matches Gemini | Lines |
+|---|---|---|---|
+| IITM all-India + macro-regions (1871–2016) | 200 | yes | 960 |
+| IITM 30 subdivisions (1871–2016) | 200 | yes | 4,800 |
+| IITM longest instrumental series (1813–2006) | 200 | yes | 196 |
+| NOAA ONI | 200 | yes | 86 |
+| DFO Global Flood Records (Zenodo 19288171, CC0) | 200 | yes | 5,503 |
+| USGS ComCat box M≥5.5, 1976–2025 | 200 | yes | 183 |
+| ISC Bulletin box M≥5.5, 1976–2025 | 200 | yes | 259 |
+| IMD Forecast_Performance.html | timeout | not checked (server unreachable from here) | |
+
+This is the first round with no fabricated source. The data score for earthquake and monsoon can move up once WP-11 fetch scripts land these sources in data/snapshots.
+
+### ETAS parameters
+- Ogata & Tsuruoka 2016, EPS 68, **article 44** (Gemini wrote 41): all four rows match Table 1(a) and 1(d) exactly. These are **aftershock-sequence fits with μ = 0**, not background-rate fits for a 50-year regional catalogue, so they cannot decluster the study catalogue by themselves.
+- Bansal, Dimri & Babu, J. Seismol. 17(2):255–264: DOI resolves to the right paper (issued 2012 online, 2013 issue). Values not yet checked against the table (paywalled).
+- Muralidharan & Das, arXiv 2505.24412: exists ("A Time-Scaled ETAS Model for Earthquake Forecasting"); values not checked.
+
+### Claims rejected or needing work
+1. **"ETAS correctly classifies Kodari as an aftershock (P > 0.98)"**: unsupported. No ETAS fit was run; the probe has no computation behind it. WP-26 must compute this.
+2. **IMD forecasts (imd_forecasts.csv)**: the forecast column mixes the April first-stage forecast and the June update while the issue date is always April. Examples: 2022 shows 103 (the May update) with an April date (April said 99); 2009 shows 93 (June) not 96 (April); 2015 shows 88 (June) not 93 (April). 1988–2002 issue dates are all "05-25", a placeholder. Fix: one row per issued forecast with stage (April/May/June). Realised values spot-checked correct (2002 81, 2009 78, 2019 110, 2024 108, 2025 108); 2023 realised is 94 in IMD's end-of-season statement, not 95.
+3. **"5-category hit rate 63.2%"**: this figure was flagged as invented in round 2; it is now computed from the file above, so it inherits the April/June mix-up. Recompute after the fix.
+4. **IITM licence quote** ("Government of India Open Data directives"): not found on the cited page. Treat licence as unclear until H4.
+5. Kerala onset 2014–2025: 12 of 12 dates correct. 1901–2013 from the IMD Forecasting Manual: not yet spot-checked.
+6. ISC-GEM v13 requires a manual CAPTCHA download (owner task). The "isc_only" rows (56) arise because the ISC FDSN filter matches any agency's magnitude; the comparison must use a single magnitude type before conclusions.
+7. Nepal DHM onset/withdrawal 1968–2025: source PDF not yet opened by the auditor.
+
+### Status
+Usable now (after WP-11 fetch): IITM series, ONI/Niño 3.4/DMI/SILSO, DFO floods, USGS and ISC catalogue extracts, Kerala onset 2014–2025. Needs fixing: IMD forecasts table. Needs owner action: ISC-GEM download, licence reading (H4).
