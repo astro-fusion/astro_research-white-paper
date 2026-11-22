@@ -124,6 +124,8 @@ def clean(value: Any) -> Any:
         return None if math.isnan(f) or math.isinf(f) else round(f, 6)
     if isinstance(value, np.bool_):
         return bool(value)
+    if hasattr(value, "isoformat"):  # date / datetime from rule YAML
+        return value.isoformat()
     return value
 
 
@@ -1384,7 +1386,7 @@ def param_links(rule) -> Dict[str, Any]:
     """
     params = getattr(rule, "params", None) or {}
     base = machine_tree(rule.conditions)
-    template = json.loads(json.dumps(base)) if base else None
+    template = json.loads(json.dumps(base, default=str)) if base else None
     links: Dict[str, Any] = {}
     for name, spec in params.items():
         alt = spec.max if spec.value != spec.max else spec.min
