@@ -41,6 +41,10 @@ ISC_OPEN_ITEM = (
 MB_OPEN_ITEM = "magnitudes are mostly converted from mb (review M7)"
 
 
+class PinError(RuntimeError):
+    """The plan pins no snapshot hash, or the pinned one is unknown."""
+
+
 def _study_modules():
     """Import the unchanged study scripts (they expect their folder on sys.path)."""
     for p in (str(SCRIPTS), str(REPO), str(REPO / "libs")):
@@ -71,15 +75,14 @@ class EarthquakeDomain(DomainAdapter):
         *,
         snapshot: Optional[Path] = None,
         declustering: str = PRIMARY_METHOD,
-        reproduced: bool = False,
-        extra_open_items: Sequence[str] = (),
+        pinned_sha256: Optional[str] = None,
+        grades: Optional[Sequence[Mapping[str, Any]]] = None,
     ) -> None:
-        super().__init__(index, licences)
+        super().__init__(index, licences, grades)
         if declustering not in METHODS:
             raise ValueError(f"unknown declustering method {declustering!r}")
         self.declustering = declustering
-        self._reproduced = reproduced
-        self._extra_open = tuple(extra_open_items)
+        self._pinned = pinned_sha256
         self._snapshot = Path(snapshot) if snapshot else None
         self._hyp_cache: Optional[Dict] = None
         self._grid: Optional[pd.DatetimeIndex] = None
@@ -93,14 +96,19 @@ class EarthquakeDomain(DomainAdapter):
         return self._hyp_cache
 
     def snapshot_path(self) -> Path:
-        """The pinned snapshot, else the newest one made for this plan."""
+        """The snapshot whose SHA-256 the plan pins (ADR-008 D-03).
+
+        There is no "newest snapshot" fallback: without `pinned_sha256` (or an
+        explicit `snapshot` file) this raises :class:`PinError`.
+        """
         if self._snapshot is not None:
             return self._snapshot
-        *_, pipeline, _ = _study_modules()
-        path = pipeline.latest_snapshot(self.hyp)
-        if path is None:
-            raise FileNotFoundError("no committed USGS snapshot for this plan")
-        return Path(path)
+        if not self._pinned:
+            raise PinError("earthquake adapter needs the plan's pinned snapshot hash (D-03)")
+        for e in self._index.get("snapshots", []):
+            if e.get("sha256") == self._pinned:
+                return REPO / e["file"]
+        raise PinError(f"pinned snapshot {self._pinned[:12]} is not in the snapshot index")
 
     def dataset_spec(self) -> DatasetSpec:
         from vedic_astrology_core.stats.manifest import file_sha256
@@ -115,8 +123,6 @@ class EarthquakeDomain(DomainAdapter):
             span=(str(grid[0].date()), str(grid[-1].date())),
             n_units=int(len(grid)),
             n_events=None,
-            reproduced=self._reproduced,
-            open_items=(ISC_OPEN_ITEM, MB_OPEN_ITEM) + self._extra_open,
         )
 
     # -- outcome-free ---------------------------------------------------

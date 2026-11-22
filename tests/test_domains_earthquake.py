@@ -13,6 +13,7 @@ from pathlib import Path
 
 import yaml
 
+PINNED = "d3d3d6ec840599341782147b35579b69dae3919dd2668d762659270baef19972"
 GATE = write_gate(Path(tempfile.mkdtemp()) / "gate.json", {"test": "earthquake"})
 
 
@@ -21,7 +22,7 @@ def adapter():
     index = json.loads((REPO_ROOT / "data" / "snapshot_index.json").read_text())
     lic = yaml.safe_load((REPO_ROOT / "data" / "registry" / "licences.yaml").read_text())
     lic = lic.get("sources", lic)
-    return EarthquakeDomain(index, lic)
+    return EarthquakeDomain(index, lic, pinned_sha256=PINNED)
 
 
 @pytest.fixture(scope="module")
@@ -106,3 +107,21 @@ def test_shifted_sky_rotates(adapter):
     f = pd.DataFrame({"a": np.arange(10)})
     out = adapter.shifted_sky(f, 3)
     assert sorted(out["a"]) == list(range(10)) and out["a"].tolist() != list(range(10))
+
+
+def test_adapter_raises_without_pinned_hash():
+    """D-03: no 'newest snapshot' fallback."""
+    from vedic_astrology_core.domains.earthquake import PinError
+
+    index = json.loads((REPO_ROOT / "data" / "snapshot_index.json").read_text())
+    with pytest.raises(PinError):
+        EarthquakeDomain(index, {}).snapshot_path()
+    with pytest.raises(PinError):
+        EarthquakeDomain(index, {}, pinned_sha256="0" * 64).snapshot_path()
+
+
+def test_earthquake_old_grade_arguments_raise():
+    with pytest.raises(TypeError):
+        EarthquakeDomain({}, {}, reproduced=True)
+    with pytest.raises(TypeError):
+        EarthquakeDomain({}, {}, extra_open_items=["x"])

@@ -12,8 +12,8 @@ spec = importlib.util.spec_from_file_location("check_paper_keys", ROOT / "tools"
 gate = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(gate)
 
-PLAN = b"study: demo\nversion: 2\n"
 DATA_SHA = "ab" * 32
+PLAN = ("study: demo\nversion: 2\nsnapshots:\n  - id: main\n    file: x.csv\n    sha256: %s\n" % DATA_SHA).encode()
 
 
 def make_results(**over):
@@ -189,3 +189,21 @@ def test_commit_only_inside_another_block_is_not_provenance(paper_dir, capsys):
     r["slice"] = {"commit": "c0ffee", "tree_dirty": False}
     assert run(paper_dir, GOOD, r) == 1
     assert "DIRTY" in capsys.readouterr().err
+
+
+def test_indexed_but_unpinned_data_hash_fails(paper_dir, capsys):
+    """D-08: a hash that is in the index but not pinned by the plan is stale."""
+    other = "cd" * 32
+    (paper_dir / "index.json").write_text(
+        json.dumps({"snapshots": [{"sha256": DATA_SHA}, {"sha256": other}]})
+    )
+    assert run(paper_dir, GOOD, make_results(data={"sha256": other})) == 1
+    assert "not one" in capsys.readouterr().err
+
+
+def test_plan_without_pins_fails(paper_dir, capsys):
+    bare = b"study: demo\nversion: 2\n"
+    (paper_dir / "hypothesis.yaml").write_bytes(bare)
+    res = make_results(plan={"sha256": hashlib.sha256(bare).hexdigest()})
+    assert run(paper_dir, GOOD, res) == 1
+    assert "pins no snapshot hash" in capsys.readouterr().err

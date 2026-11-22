@@ -15,7 +15,16 @@ from vedic_astrology_core.domains.base import (
     verdicts_allowed,
     write_gate,
 )
-from vedic_astrology_core.domains.simulated import SimulatedDomain, simulated_registers
+from vedic_astrology_core.domains.base import (
+    deposit_problems,
+    festival_spotcheck_problems,
+    load_grade_register,
+)
+from vedic_astrology_core.domains.simulated import (
+    SimulatedDomain,
+    simulated_grades,
+    simulated_registers,
+)
 
 
 
@@ -82,10 +91,11 @@ def test_grade_a_and_record():
 
 
 def test_grade_b_cases():
-    d = SimulatedDomain(open_items=["unit conversion open"])
+    sha = SimulatedDomain().sha256
+    d = SimulatedDomain(grades=simulated_grades(sha, open_items=["unit conversion open"]))
     assert d.dataset().grade == "B"
     assert d.dataset().limitations == ("unit conversion open",)
-    assert SimulatedDomain(reproduced=False).dataset().grade == "B"
+    assert SimulatedDomain(grades=simulated_grades(sha, reproduced=False)).dataset().grade == "B"
     base = SimulatedDomain()
     idx, lic = simulated_registers(base.sha256, verified=False, date_read=None)
     unread = SimulatedDomain(index=idx, licences=lic)
@@ -95,7 +105,9 @@ def test_grade_b_cases():
 
 
 def test_grade_c_cases_block_verdicts():
-    flawed = SimulatedDomain(quality_flaws=["median volume 53 contracts"])
+    flawed = SimulatedDomain(
+        grades=simulated_grades(SimulatedDomain().sha256, quality_flaws=["median volume 53 contracts"])
+    )
     assert flawed.dataset().grade == "C"
     with pytest.raises(DatasetGradeError):
         flawed.require_verdict_grade()
@@ -135,3 +147,80 @@ def test_simulated_is_deterministic():
     a, b = SimulatedDomain(seed=3), SimulatedDomain(seed=3)
     assert a.sha256 == b.sha256
     assert a.sha256 != SimulatedDomain(seed=4).sha256
+
+
+def test_old_grade_arguments_raise_type_error():
+    """D-05: reproduced, open_items and quality_flaws are not constructor arguments."""
+    for kw in ({"reproduced": True}, {"open_items": ["x"]}, {"quality_flaws": ["y"]}):
+        with pytest.raises(TypeError):
+            SimulatedDomain(**kw)
+    with pytest.raises(TypeError):
+        DatasetSpec("x", "y", "z", ("a", "b"), 1, reproduced=True)
+
+
+def test_register_row_without_checker_or_date_is_grade_c():
+    sha = SimulatedDomain().sha256
+    for kw in ({"checked_by": None}, {"checked_by": "  "}, {"date": None}):
+        d = SimulatedDomain(grades=simulated_grades(sha, **kw))
+        assert d.dataset().grade == "C"
+        assert "no named checker or date" in d.dataset().limitations[0]
+
+
+def test_no_register_row_is_at_best_grade_b():
+    d = SimulatedDomain(grades=[])
+    assert d.dataset().grade == "B"
+    assert "not yet reproduced independently" in d.dataset().limitations
+
+
+def test_source_row_adds_open_items_but_cannot_set_reproduced():
+    base = SimulatedDomain()
+    rows = [{"source_id": "simulated", "reproduced": True, "open_items": ["source-wide gap"],
+             "checked_by": "t", "date": "2026-11-22"}]
+    lim = SimulatedDomain(grades=rows).dataset().limitations
+    assert "source-wide gap" in lim and "not yet reproduced independently" in lim
+    assert base.dataset().grade == "A"
+
+
+def test_committed_register_rows_are_complete():
+    rows = load_grade_register()
+    assert rows
+    for r in rows:
+        assert r["checked_by"] and r["date"]
+
+
+def test_register_row_needs_exactly_one_key(tmp_path):
+    p = tmp_path / "g.yaml"
+    p.write_text("rows:\n  - reproduced: true\n")
+    with pytest.raises(ValueError):
+        load_grade_register(p)
+
+
+def test_deposit_problems():
+    idx = {"snapshots": [
+        {"file": "a", "sha256": "a" * 64, "deposit_doi": "10.5281/zenodo.1"},
+        {"file": "b", "sha256": "b" * 64, "owner_archive": True, "owner_archive_reason": "licence forbids"},
+        {"file": "c", "sha256": "c" * 64, "owner_archive": True},
+        {"file": "d", "sha256": "d" * 64, "deposit_doi": None, "owner_archive": None},
+    ]}
+    assert deposit_problems(idx, ["a" * 64, "b" * 64]) == []
+    probs = deposit_problems(idx, ["c" * 64, "d" * 64, "e" * 64])
+    assert len(probs) == 3 and "not in the snapshot index" in probs[2]
+
+
+def test_committed_index_has_deposit_fields():
+    import json
+    from pathlib import Path
+
+    idx = json.loads((Path(__file__).resolve().parents[1] / "data" / "snapshot_index.json").read_text())
+    assert all("deposit_doi" in e and "owner_archive" in e for e in idx["snapshots"])
+
+
+def test_festival_spotcheck(tmp_path):
+    assert any("owner task" in p for p in festival_spotcheck_problems())  # committed table is empty
+    p = tmp_path / "f.yaml"
+    p.write_text("rows:\n  - {festival: Diwali, year: 2012, date: '2012-11-13', reference: Almanac X p1}\n"
+                 "  - {festival: Holi, year: 2013}\n")
+    probs = festival_spotcheck_problems(p, leap_years=[2012, 2015])
+    assert any("rows[1]: missing" in x for x in probs)
+    assert any("2015" in x for x in probs) and not any("2012 has" in x for x in probs)
+    assert festival_spotcheck_problems(tmp_path / "none.yaml")

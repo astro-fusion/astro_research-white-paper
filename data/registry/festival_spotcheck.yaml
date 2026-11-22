@@ -1,0 +1,8 @@
+# External spot-check table for festival dates (ADR-008 D-09).
+#
+# The owner supplies reference almanac dates, especially for years with a
+# leap (adhika) month. The festival baseline is not used until
+# `festival_spotcheck_problems()` (domains/base.py) returns no problem.
+# Row keys: festival, year, date (the almanac's, YYYY-MM-DD), reference
+# (almanac name, edition, page), note (optional).
+rows: []

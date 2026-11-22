@@ -149,6 +149,30 @@ def _sha256_values(node) -> Iterable[str]:
             yield from _sha256_values(v)
 
 
+def pinned_hashes(plan: Path) -> set:
+    """SHA-256 values the plan pins: its `snapshots` list, else any `sha256` key."""
+    import yaml
+
+    doc = yaml.safe_load(plan.read_text(encoding="utf-8"))
+    if not isinstance(doc, dict):
+        raise ValueError("plan is not a mapping")
+    node = doc.get("snapshots") if doc.get("snapshots") else doc
+    return set(_sha256_values(node))
+
+
+def _check_pinned(label: str, data_sha: Optional[str], plan: Path) -> List[str]:
+    """D-08: the results' data hash must be one the plan pins, not just any indexed hash."""
+    try:
+        pins = pinned_hashes(plan)
+    except Exception as exc:  # unreadable or not YAML
+        return [f"STALE {label}: cannot read the data hashes {plan.name} pins: {exc}"]
+    if not pins:
+        return [f"STALE {label}: {plan.name} pins no snapshot hash"]
+    if data_sha is not None and data_sha not in pins:
+        return [f"STALE {label}: data hash is not one {plan.name} pins"]
+    return []
+
+
 def check_stale(
     label: str, res: Results, plan: Optional[Path], index: Optional[Path]
 ) -> List[str]:
@@ -162,6 +186,7 @@ def check_stale(
             failures.append(f"STALE {label}: no plan hash in results to compare with {plan.name}")
         elif have != want:
             failures.append(f"STALE {label}: plan hash differs from current {plan.name}")
+        failures += _check_pinned(label, prov["data_sha256"], plan)
     if index is not None:
         if not index.exists():
             failures.append(f"STALE {label}: snapshot index {index} not found")

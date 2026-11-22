@@ -1,0 +1,24 @@
+# Dataset grade register (ADR-008 D-05; ADR-007 section 4.1).
+#
+# `reproduced`, `open_items` and `quality_flaws` are read from here and from
+# nowhere else; adapters take no such arguments. A row names ONE snapshot
+# (`sha256`, the only way `reproduced` counts) or a whole source
+# (`source_id`, for open items and flaws that hold for every snapshot).
+# Every row needs `checked_by` (a named checker) and `date`; a row without
+# either makes the dataset grade C.
+rows:
+  - sha256: 76380a8e9ee3b635f5d2b998dac18540d77622f82cbf6c5bb4e2adf64091947b
+    reproduced: true
+    open_items:
+      - 2015 and 2016 come from IMD subdivisional rainfall, 1871 to 2014 from 306 stations (series splice, stated in the file header)
+    quality_flaws: []
+    checked_by: "round 4 data audit (re-download, hash matched)"
+    date: "2026-11-22"
+  - source_id: usgs_comcat
+    reproduced: false
+    open_items:
+      - ISC Bulletin cross-check catalogue not yet a committed snapshot (second-dataset cell open)
+      - magnitudes are mostly converted from mb (review M7)
+    quality_flaws: []
+    checked_by: "adapter author, from review M7 and the ISC cell status"
+    date: "2026-11-22"

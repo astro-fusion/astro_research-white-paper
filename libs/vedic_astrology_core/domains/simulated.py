@@ -30,6 +30,22 @@ def simulated_registers(
     return index, licences
 
 
+def simulated_grades(
+    sha256: str,
+    *,
+    reproduced: bool = True,
+    open_items: Sequence[str] = (),
+    quality_flaws: Sequence[str] = (),
+    checked_by: Optional[str] = "simulated test checker",
+    date: Optional[str] = "2026-11-22",
+) -> list:
+    """In-memory grade register rows for one simulated snapshot."""
+    return [{
+        "sha256": sha256, "reproduced": reproduced, "open_items": list(open_items),
+        "quality_flaws": list(quality_flaws), "checked_by": checked_by, "date": date,
+    }]
+
+
 class SimulatedDomain(DomainAdapter):
     """Yearly toy series: Gaussian outcome, optional planted effect."""
 
@@ -42,17 +58,12 @@ class SimulatedDomain(DomainAdapter):
         n_years: int = 100,
         start_year: int = 1900,
         effect: float = 0.0,
-        reproduced: bool = True,
-        open_items: Sequence[str] = (),
-        quality_flaws: Sequence[str] = (),
+        grades: Optional[Sequence[Mapping[str, Any]]] = None,
         index: Optional[Mapping[str, Any]] = None,
         licences: Optional[Mapping[str, Mapping[str, Any]]] = None,
     ) -> None:
         self.seed, self.n_years, self.start_year = seed, n_years, start_year
         self.effect = effect
-        self._reproduced = reproduced
-        self._open_items = tuple(open_items)
-        self._quality_flaws = tuple(quality_flaws)
         self.outcome_reads = 0
         rng = np.random.default_rng(seed)
         self._active = (np.arange(n_years) % 4 == 0).astype(float)
@@ -60,7 +71,9 @@ class SimulatedDomain(DomainAdapter):
         self.sha256 = hashlib.sha256(self._values.tobytes()).hexdigest()
         if index is None or licences is None:
             index, licences = simulated_registers(self.sha256)
-        super().__init__(index, licences)
+        if grades is None:
+            grades = simulated_grades(self.sha256)
+        super().__init__(index, licences, grades)
 
     def dataset_spec(self) -> DatasetSpec:
         return DatasetSpec(
@@ -69,9 +82,6 @@ class SimulatedDomain(DomainAdapter):
             source_id=SOURCE_ID,
             span=(str(self.start_year), str(self.start_year + self.n_years - 1)),
             n_units=self.n_years,
-            reproduced=self._reproduced,
-            open_items=self._open_items,
-            quality_flaws=self._quality_flaws,
         )
 
     def grid(self) -> Sequence[date]:

@@ -283,6 +283,49 @@ def vara_lord(jd: float, convention: str, place: Mapping[str, Any]) -> Tuple[str
     return WEEKDAY_LORDS[day.weekday()], day
 
 
+# ------------------------------------------------- leave-year-out baselines
+def leave_year_out_anomaly_pct(
+    values: Sequence[float], years: Sequence[int], base_years: Tuple[int, int]
+) -> np.ndarray:
+    """Percent anomaly of each year against the base-period mean WITHOUT that year (D-06).
+
+    For a year outside the base period this equals the usual anomaly; for a
+    year inside it the year is dropped from its own mean, so a spike cannot
+    pull its own baseline toward itself.
+    """
+    v = np.asarray(values, dtype=float)
+    y = np.asarray(years, dtype=int)
+    inb = (y >= int(base_years[0])) & (y <= int(base_years[1])) & np.isfinite(v)
+    n, tot = int(inb.sum()), float(v[inb].sum())
+    out = np.full(len(v), np.nan)
+    for i in range(len(v)):
+        if not np.isfinite(v[i]):
+            continue
+        if inb[i]:
+            if n < 2:
+                continue
+            base = (tot - v[i]) / (n - 1)
+        else:
+            if n < 1:
+                continue
+            base = tot / n
+        out[i] = 100.0 * (v[i] - base) / base
+    return out
+
+
+def leave_year_out_running_mean(values: Sequence[float], half_window: int) -> np.ndarray:
+    """Mean of the `half_window` years either side, leaving the year itself out (D-06)."""
+    a = np.asarray(values, dtype=float)
+    k = int(half_window)
+    out = np.full(len(a), np.nan)
+    for i in range(len(a)):
+        w = np.r_[a[max(0, i - k):i], a[i + 1:i + 1 + k]]
+        w = w[np.isfinite(w)]
+        if w.size:
+            out[i] = w.mean()
+    return out
+
+
 # ------------------------------------------------------------- principles
 @dataclass(frozen=True)
 class MonsoonPrinciple:
@@ -574,8 +617,9 @@ class MonsoonDomain(DomainAdapter):
         registered_plan_sha256: Optional[str] = None,
         simulated: Optional[Mapping[str, pd.DataFrame]] = None,
         repo: Path = REPO,
+        grades: Optional[Sequence[Mapping[str, Any]]] = None,
     ) -> None:
-        super().__init__(index, licences)
+        super().__init__(index, licences, grades)
         self.plan_path = Path(plan_path)
         self.rules_dir = Path(rules_dir)
         self.repo = Path(repo)
@@ -601,8 +645,6 @@ class MonsoonDomain(DomainAdapter):
             span=tuple(str(s) for s in prim["span"]),
             n_units=len(self.grid()),
             n_events=None,
-            reproduced=bool(prim.get("reproduced", False)),
-            open_items=tuple(prim.get("open_items") or ()),
         )
 
     def grid(self) -> pd.Index:
@@ -815,6 +857,9 @@ class MonsoonDomain(DomainAdapter):
             fin = np.isfinite(anom)
             series[f"{region}_jjas_mm"] = jjas
             series[f"{region}_jjas_anomaly_pct"] = anom
+            series[f"{region}_jjas_loo_anomaly_pct"] = leave_year_out_anomaly_pct(
+                jjas, years, (b0, b1)
+            )
             series[f"{region}_drought"] = np.where(fin, (anom < lo).astype(float), np.nan)
             series[f"{region}_excess"] = np.where(fin, (anom > hi).astype(float), np.nan)
             for m in SEASON_MONTHS:
@@ -858,6 +903,20 @@ class MonsoonDomain(DomainAdapter):
                 continue
             df = parse_psl_monthly(path.read_text(encoding="latin-1")).reindex(years)
             out[name] = df[list(cols)].mean(axis=1, skipna=False).to_numpy(float)
+        long_cfg = (cfg.get("enso") or {}).get("nino34_long")
+        if long_cfg:  # one series for explore and confirm years (ADR-008 6.1 item 7)
+            path = self._path(long_cfg["file"])
+            if not path.is_file():
+                out["missing"]["nino34_long"] = f"snapshot {long_cfg['file']} not present"
+            elif _sha256(path) != long_cfg["sha256"]:
+                out["missing"]["nino34_long"] = (
+                    f"snapshot {long_cfg['file']} does not match the plan's SHA-256"
+                )
+            else:
+                df = parse_psl_monthly(path.read_text(encoding="latin-1")).reindex(years)
+                out["nino34_long"] = df[list(SEASON_MONTHS)].mean(axis=1, skipna=False).to_numpy(float)
+                out["nino34_long_covers"] = (int(df.dropna(how="all").index.min()),
+                                              int(df.dropna(how="all").index.max()))
         if "oni_jas" in out:
             # PSL lists ONI by centre month: JUL, AUG, SEP are JJA, JAS, ASO.
             oni = out["oni_jas"]
@@ -876,17 +935,12 @@ class MonsoonDomain(DomainAdapter):
         }]
         out["pending"] = {
             "sunspot": "SILSO has no fetch script or snapshot yet",
-            "nino34_long": "no Nino 3.4 snapshot before 1948",
         }
+        if "nino34_long" not in out:
+            out["pending"]["nino34_long"] = "no pinned long Nino 3.4 snapshot in the plan (scripts/fetch/nino34_long.py)"
         anom = self._season_outcomes()["series"][self.plan["outcomes"]["primary"]]
         k = int(cfg["epoch"]["running_mean_years"]) // 2
-        epoch = np.full(len(anom), np.nan)
-        for i in range(len(anom)):
-            w = np.r_[anom[max(0, i - k):i], anom[i + 1:i + 1 + k]]
-            w = w[np.isfinite(w)]
-            if w.size:
-                epoch[i] = w.mean()
-        out["epoch_31y"] = epoch
+        out["epoch_31y"] = leave_year_out_running_mean(anom, k)
         lag = int(cfg["persistence"]["lag_years"])
         out["last_year_anomaly"] = np.r_[np.full(lag, np.nan), anom[:-lag]]
         return out
@@ -934,6 +988,8 @@ __all__ = [
     "VariantError",
     "YearCalendar",
     "chaitra_shukla_pratipada",
+    "leave_year_out_anomaly_pct",
+    "leave_year_out_running_mean",
     "load_plan",
     "load_principles",
     "parse_iitm_regions",

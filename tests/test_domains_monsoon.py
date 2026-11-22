@@ -365,3 +365,46 @@ def test_rule_file_with_wrong_domain_is_refused(tmp_path):
     (tmp_path / "x.yaml").write_text(src.replace("domain: monsoon", "domain: mundane"))
     with pytest.raises(PlanError):
         load_principles(tmp_path)
+
+
+def test_leave_year_out_anomaly_sees_a_planted_spike():
+    """D-06: the tested year no longer pulls its own baseline toward itself."""
+    from vedic_astrology_core.domains.monsoon import (
+        leave_year_out_anomaly_pct,
+        leave_year_out_running_mean,
+    )
+
+    years = np.arange(1951, 2001)
+    v = np.full(50, 100.0)
+    v[10] = 200.0  # spike
+    loo = leave_year_out_anomaly_pct(v, years, (1951, 2000))
+    assert loo[10] == pytest.approx(100.0)  # baseline of the other 49 years is 100
+    old = 100.0 * (v[10] - v.mean()) / v.mean()
+    assert old < loo[10]  # the old mean understates it
+    assert loo[0] == pytest.approx(-2.0)  # others' mean is 102.04: the spike counts for the others
+    outside = leave_year_out_anomaly_pct([200.0], [2010], (1951, 2000))
+    assert np.isnan(outside[0])  # no base years, no anomaly
+    rm = leave_year_out_running_mean(v, 3)
+    assert rm[10] == pytest.approx(100.0)  # excludes the spike itself
+    assert rm[11] == pytest.approx((200.0 + 5 * 100.0) / 6)  # but a neighbour sees it
+
+
+def test_long_nino34_control_is_loaded_when_pinned(tmp_path):
+    import hashlib
+
+    rows = ["          1870        1880"] + [
+        f" {y}" + "".join(f" {26.0 + (y % 3):7.2f}" for _ in range(12)) for y in range(1870, 1881)
+    ]
+    f = tmp_path / "n34.data"
+    f.write_text("\n".join(rows) + "\n")
+    sha = hashlib.sha256(f.read_bytes()).hexdigest()
+    import yaml
+
+    plan = yaml.safe_load(PLAN.read_text())
+    plan["controls"]["enso"]["nino34_long"] = {"file": str(f), "sha256": sha}
+    p2 = tmp_path / "plan.yaml"
+    p2.write_text(yaml.safe_dump(plan))
+    dom = MonsoonDomain(*registers(), plan_path=p2, simulated=simulate_rainfall(YEARS, seed=1))
+    out = dom._controls()
+    assert out["nino34_long_covers"] == (1871, 1880)  # 1870 is outside the plan's grid
+    assert "nino34_long" not in out["pending"]

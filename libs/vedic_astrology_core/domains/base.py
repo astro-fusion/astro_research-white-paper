@@ -13,9 +13,12 @@ confirm periods. Two entry points are kept apart on purpose:
   hash, so a made-up 64-hex string no longer opens the outcomes (code audit
   m9, strategy audit S-05 d).
 
-Grades (ADR-007 4.1) are computed from the snapshot index and the licence
-register plus the open items a plan declares. They are never written by hand:
-:class:`DatasetSpec` has no grade field.
+Grades (ADR-007 4.1) are computed from the snapshot index, the licence
+register and the dataset grade register (`data/registry/dataset_grades.yaml`,
+ADR-008 D-05). `reproduced`, `open_items` and `quality_flaws` come only from
+that register; each row names a checker and a date, or it grades C. They are
+never written by hand: :class:`DatasetSpec` has no grade field and the
+adapters take no such arguments.
 
 - A: in the index, hash matches, licence read (`verified` and `date_read`),
   reproduced independently, no open item.
@@ -34,9 +37,14 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
-from typing import Any, Dict, Mapping, Optional, Sequence, Tuple, Union
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple, Union
+
+import yaml
 
 GRADES = ("A", "B", "C")
+REPO = Path(__file__).resolve().parents[3]
+GRADES_PATH = REPO / "data" / "registry" / "dataset_grades.yaml"
+FESTIVAL_SPOTCHECK_PATH = REPO / "data" / "registry" / "festival_spotcheck.yaml"
 _HEX64 = re.compile(r"^[0-9a-f]{64}$")
 
 
@@ -116,9 +124,6 @@ class DatasetSpec:
     span: Tuple[str, str]
     n_units: int
     n_events: Optional[int] = None
-    reproduced: bool = False
-    open_items: Tuple[str, ...] = ()
-    quality_flaws: Tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -173,18 +178,64 @@ def _snapshot_entry(sha256: str, index: Mapping[str, Any]) -> Optional[dict]:
     return None
 
 
+def load_grade_register(path: Union[str, Path] = GRADES_PATH) -> List[dict]:
+    """Rows of the dataset grade register (ADR-008 D-05).
+
+    Each row has `sha256` (one snapshot) or `source_id` (every snapshot of
+    that source), the inputs `reproduced`, `open_items`, `quality_flaws`, and
+    `checked_by` and `date`. A missing file is an empty register.
+    """
+    p = Path(path)
+    if not p.is_file():
+        return []
+    doc = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
+    rows = doc.get("rows", []) if isinstance(doc, Mapping) else doc
+    if not isinstance(rows, list):
+        raise ValueError(f"{p}: 'rows' must be a list")
+    out = []
+    for i, row in enumerate(rows):
+        if not isinstance(row, Mapping) or not (("sha256" in row) ^ ("source_id" in row)):
+            raise ValueError(f"{p}: rows[{i}] needs exactly one of 'sha256' or 'source_id'")
+        out.append(dict(row))
+    return out
+
+
+def _row_problem(row: Mapping[str, Any]) -> Optional[str]:
+    who, when = row.get("checked_by"), row.get("date")
+    if not (isinstance(who, str) and who.strip()) or not when or not str(when).strip():
+        key = row.get("sha256") or row.get("source_id")
+        return f"grade register row for {str(key)[:12]} has no named checker or date"
+    return None
+
+
 def compute_grade(
     spec: DatasetSpec,
     index: Mapping[str, Any],
     licences: Mapping[str, Mapping[str, Any]],
+    register: Optional[Iterable[Mapping[str, Any]]] = None,
 ) -> Tuple[str, Tuple[str, ...]]:
-    """Grade and limitation list from the index and licence register.
+    """Grade and limitation list from the index, licence and grade registers.
 
     `index` is the parsed `data/snapshot_index.json`; `licences` is the
-    `source_id -> record` mapping of `data/registry/licences.yaml`.
+    `source_id -> record` mapping of `data/registry/licences.yaml`; `register`
+    is the rows of `data/registry/dataset_grades.yaml` (default: that file).
     """
-    if spec.quality_flaws:
-        return "C", tuple(spec.quality_flaws)
+    rows = list(load_grade_register() if register is None else register)
+    mine = [r for r in rows if r.get("sha256") == spec.sha256 or
+            (r.get("source_id") == spec.source_id and "sha256" not in r)]
+    flaws: List[str] = []
+    items: List[str] = []
+    reproduced = False
+    for r in mine:
+        bad = _row_problem(r)
+        if bad:
+            return "C", (bad,)
+        flaws += [str(x) for x in r.get("quality_flaws") or ()]
+        items += [str(x) for x in r.get("open_items") or ()]
+        if r.get("sha256") == spec.sha256 and r.get("reproduced"):
+            reproduced = True
+    if flaws:
+        return "C", tuple(flaws)
     if not _HEX64.match(spec.sha256 or ""):
         return "C", ("dataset hash is not a SHA-256",)
     entry = _snapshot_entry(spec.sha256, index)
@@ -198,10 +249,69 @@ def compute_grade(
     limits = []
     if not (record.get("verified") and record.get("date_read")):
         limits.append("licence not yet read")
-    if not spec.reproduced:
+    if not reproduced:
         limits.append("not yet reproduced independently")
-    limits.extend(spec.open_items)
+    limits.extend(items)
     return ("B" if limits else "A"), tuple(limits)
+
+
+def deposit_problems(
+    index: Mapping[str, Any], sha256s: Iterable[str]
+) -> List[str]:
+    """ADR-008 D-04: every snapshot a sealed plan uses is deposited or archived.
+
+    A snapshot passes with `deposit_doi` (a DOI string) or with
+    `owner_archive: true` and a non-empty `owner_archive_reason`. Unknown
+    hashes fail. The build calls this with the hashes of each sealed plan.
+    """
+    out = []
+    for sha in sha256s:
+        e = _snapshot_entry(sha, index)
+        if e is None:
+            out.append(f"{sha[:12]}: not in the snapshot index")
+        elif e.get("deposit_doi"):
+            continue
+        elif e.get("owner_archive") is True and str(e.get("owner_archive_reason") or "").strip():
+            continue
+        else:
+            out.append(
+                f"{e.get('file', sha[:12])}: no deposit_doi, and no owner_archive with a reason"
+            )
+    return out
+
+
+def festival_spotcheck_problems(
+    path: Union[str, Path] = FESTIVAL_SPOTCHECK_PATH,
+    leap_years: Iterable[int] = (),
+) -> List[str]:
+    """ADR-008 D-09: the festival baseline needs an external spot-check table.
+
+    The table (`data/registry/festival_spotcheck.yaml`) lists almanac dates
+    supplied by the owner. Each row needs `festival`, `year`, `date` (the
+    almanac's) and `reference`. Every year in `leap_years` (years with an
+    adhika month) needs at least one row. Empty list means the baseline may be used.
+    """
+    p = Path(path)
+    if not p.is_file():
+        return [f"{p.name}: spot-check table not found"]
+    doc = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
+    rows = doc.get("rows") or []
+    problems: List[str] = []
+    years = set()
+    for i, r in enumerate(rows):
+        if not isinstance(r, Mapping):
+            problems.append(f"rows[{i}]: not a mapping")
+            continue
+        miss = [k for k in ("festival", "year", "date", "reference") if not r.get(k)]
+        if miss:
+            problems.append(f"rows[{i}]: missing {miss}")
+        else:
+            years.add(int(r["year"]))
+    if not rows:
+        problems.append("no almanac dates supplied yet (owner task)")
+    for y in sorted(set(int(v) for v in leap_years) - years):
+        problems.append(f"leap-month year {y} has no spot-check row")
+    return problems
 
 
 def verdicts_allowed(grade: str) -> bool:
@@ -220,9 +330,11 @@ class DomainAdapter(ABC):
         self,
         index: Mapping[str, Any],
         licences: Mapping[str, Mapping[str, Any]],
+        grades: Optional[Iterable[Mapping[str, Any]]] = None,
     ) -> None:
         self._index = index
         self._licences = licences
+        self._grades = None if grades is None else list(grades)
 
     # -- outcome-free entry points -------------------------------------
     @abstractmethod
@@ -232,7 +344,7 @@ class DomainAdapter(ABC):
     def dataset(self) -> DomainDataset:
         """Dataset with its hash and a grade computed from the registers."""
         spec = self.dataset_spec()
-        grade, limits = compute_grade(spec, self._index, self._licences)
+        grade, limits = compute_grade(spec, self._index, self._licences, self._grades)
         return DomainDataset(spec, grade, limits)
 
     @abstractmethod
