@@ -1,0 +1,27 @@
+# SESOI source table (ADR-008 section 7.2, finding S-13).
+#
+# A smallest effect size of interest (SESOI) in a domain plan may come only from
+#   (1) the rule's own source, quoted with page (kind: source, in the plan), or
+#   (2) a yardstick listed here: the published size of the best-established
+#       non-astrological effect of the same kind on the same outcome.
+# Neither: the test has no SESOI, verdict E is impossible, and the card shows
+# X95 and X-strict only.
+#
+# The table starts EMPTY on purpose. Design task D11 fills it from the
+# publications; the owner checks every number at the page (H18). No value is
+# chosen by this project, and no entry may cite a file inside this repository
+# (results, ledgers, ADRs, site data).
+#
+# Entry fields (all required, validated by core/validity/plan.py):
+#   id:                 unique key that a plan's sesoi.yardstick_id refers to
+#   kind:               one of daily_returns, monthly_returns, earthquake_rate,
+#                       monsoon_rainfall, flood_rate
+#   citation:           full external publication (authors, year, title, venue, DOI or URL)
+#   page:               page, table or figure of the number
+#   number_as_printed:  the number exactly as printed, with its unit
+#   conversion:         how it becomes the plan's effect scale
+#   converted_value:    the number on the plan's effect scale
+#   checker:            name of the person who checked it at the page
+#   date:               ISO date of the check
+schema_version: 1
+entries: []
