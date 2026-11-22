@@ -635,3 +635,10 @@ Until all hold, every number on real data is provisional and labelled so.
 **Decision:** the balance floor of section 1.1 is raised from 0.5 to **1.0**. Every block is equal-size: the active side and the control side have the same number of bars. The longer side is trimmed, dropping the bars farthest from the active/control boundary. A block that cannot reach equal size within its gap-midpoint limits and guard bars is dropped and counted with the reason `unbalanced`. Season-matched windows (WP-87) obey the same rule.
 
 **Consequence:** fewer usable blocks for short gaps, so some principles move to Untestable. This is the honest price of a test that holds its size on skewed data. B2 must pass at full size before any certificate is issued.
+
+
+## Amendment A2 (2026-11-22): single-day and edge episodes stay testable
+
+A1 dropped every block with one active bar (a one-sided block was forbidden) and most edge episodes. That makes daily-event principles (tithi days, new/full moon, ingress days, eclipse days) Untestable by construction, which is a bias against testing exactly the principles practitioners use most.
+
+**Decision:** a block may take its equal-size control from ONE side when the other side is unavailable or when the active run is a single bar. The side is chosen before any outcome is read: alternate sides in calendar order, starting side fixed by the plan seed. Each control bar still lies within the gap-midpoint limit and outside guard bars, and is used by one block only. B1, B2, B3 and X1, X2 must pass at full size for daily-event calendars (new moon, tithi, eclipse window) under this rule, including a drift simulator (one-sided controls are sensitive to trend: the leave-year-out anomaly or detrending baseline must be applied first, and a drift case D1 must hold size).
