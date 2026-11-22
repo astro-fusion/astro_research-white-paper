@@ -80,6 +80,9 @@ UTC = timezone.utc
 REPORT_COLUMNS = ("n_events", "n_active", "control_rate", "rate_ratio", "ci", "p_matched",
                   "p_shift", "q_family", "episodes", "stable_share", "placebo_rank", "mde",
                   "verdict")
+#: ADR-008 G-07: this output is a descriptive page, not a verdict of the one scheme.
+DESCRIPTIVE_LABEL = ("descriptive: omnibus and hierarchical output of ADR-006, "
+                     "not a verdict of the validity scheme")
 VERDICTS = ("effect found", "effect excluded", "inconclusive", "untestable", "descriptive only")
 SECOND_TABLE_LABEL = ("SECOND TABLE: unstable events added at their stated-time value. "
                       "Where it disagrees with the main table, the main table wins.")
@@ -731,7 +734,8 @@ def summary_lines(report: Dict[str, Any]) -> List[str]:
     """Short text for the CLI. Under the floor it says "descriptive only" and prints no p-value."""
     m = report["main"]
     lines = [f"{report['plan_id']} ({report['period']}, {report.get('label')}): "
-             f"{report['n_events_total']} events"]
+             f"{report['n_events_total']} events",
+             DESCRIPTIVE_LABEL]
     if report["descriptive_only"]:
         lines.append("descriptive only: no test statistic or p-value is reported")
         return lines

@@ -309,10 +309,11 @@ def _gate_module():
 def test_mundane_results_pass_the_paper_key_gate(open_plan, sim, tmp_path):
     """M2: the writer's provenance is the one the gate reads (end to end)."""
     gate, root = _gate_module()
-    data_sha = "d3" * 32
+    plan_file = root / "studies" / "mundane" / "hypothesis.yaml"
+    # D-08: the data hash must be one the plan itself pins.
+    data_sha = sorted(gate.pinned_hashes(plan_file))[0]
     index = tmp_path / "index.json"
     index.write_text(json.dumps({"snapshots": [{"sha256": data_sha}]}))
-    plan_file = root / "studies" / "mundane" / "hypothesis.yaml"
     r = ag.build_report(open_plan, sim, n_perm=99, n_shift=99, second_table=False,
                         provisional=False, git={"commit": "c0ffee", "dirty": False},
                         data_sha256=data_sha)
