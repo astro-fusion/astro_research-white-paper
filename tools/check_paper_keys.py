@@ -202,6 +202,23 @@ def check_stale(
     return failures
 
 
+def check_results_hash(label: str, path, manifest: Dict, changelog: Optional[Path] = None) -> List[str]:
+    """G-08: the results file against the hash in the run manifest and the changelog chain.
+
+    Render equality of generated pages is checked by validity.report.check_report.
+    """
+    from vedic_astrology_core.validity import report as _report
+
+    return [f"HASH {label}: {p}" for p in _report.check_results_hash(path, manifest, changelog)]
+
+
+def check_render(results_path: Path, pages: Path, manifest: Optional[Dict], changelog: Optional[Path]) -> List[str]:
+    """G-08: every generated page must equal a fresh template render of the results file."""
+    from vedic_astrology_core.validity import report as _report
+
+    return _report.check_report(results_path, pages, manifest, changelog)
+
+
 def parse_results(specs: List[str], paper: Path) -> Tuple[Dict[str, Results], Optional[str]]:
     if not specs:
         specs = [str(paper.parent.parent / "artifacts" / "results.json")]
@@ -215,7 +232,12 @@ def parse_results(specs: List[str], paper: Path) -> Tuple[Dict[str, Results], Op
 
 def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    ap.add_argument("paper", type=Path)
+    ap.add_argument("paper", type=Path, nargs="?", help="paper (.qmd); omit with --pages")
+    ap.add_argument("--pages", type=Path, metavar="DIR",
+                    help="generated report pages: render-equality, results-hash and allow-list gate (ADR-008 9.3)")
+    ap.add_argument("--run-manifest", type=Path, metavar="JSON",
+                    help="run or report manifest holding the results hash (default with --pages: DIR/report_manifest.json)")
+    ap.add_argument("--changelog", type=Path, help="hash-chained changelog the manifest's head must match")
     ap.add_argument("--results", action="append", default=[], metavar="[LABEL=]PATH")
     ap.add_argument("--allowlist", type=Path)
     ap.add_argument("--plan", type=Path, help="hypothesis.yaml (default: beside artifacts)")
@@ -223,9 +245,35 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument(
         "--no-provenance",
         action="store_true",
-        help="skip checks 3 and 4 (key and number checks only; for fixtures)",
+        help="skip checks 3 and 4 (papers only, for fixtures; refused with --pages or --run-manifest)",
     )
     args = ap.parse_args(argv)
+    if args.no_provenance and (args.pages or args.run_manifest):
+        print("ERROR --no-provenance is refused with --pages or --run-manifest (ADR-008 9.3)", file=sys.stderr)
+        return 2
+    if args.paper is None and args.pages is None:
+        ap.error("give a paper or --pages")
+
+    if args.pages is not None:
+        try:
+            results, _ = parse_results(args.results, args.pages / "x" / "x")
+        except (OSError, ValueError) as exc:
+            print(f"ERROR cannot load results: {exc}", file=sys.stderr)
+            return 1
+        if len(results) != 1:
+            print("ERROR --pages takes exactly one --results file", file=sys.stderr)
+            return 1
+        res = next(iter(results.values()))
+        mpath = args.run_manifest or args.pages / "report_manifest.json"
+        manifest = json.loads(mpath.read_text(encoding="utf-8")) if mpath.exists() else None
+        failures = check_render(Path(res.path), args.pages, manifest, args.changelog)
+        for f in failures:
+            print(f, file=sys.stderr)
+        if failures:
+            print(f"FAIL: {len(failures)} problem(s) in {args.pages}", file=sys.stderr)
+            return 1
+        print(f"OK: {args.pages}")
+        return 0
 
     text = args.paper.read_text()
     try:
@@ -245,6 +293,11 @@ def main(argv: Optional[List[str]] = None) -> int:
         for label, res in results.items():
             failures += check_dirty(label, res)
             failures += check_stale(label, res, plan, args.snapshot_index)
+
+    if args.run_manifest is not None:
+        manifest = json.loads(args.run_manifest.read_text(encoding="utf-8"))
+        for label, res in results.items():
+            failures += check_results_hash(label, Path(res.path), manifest, args.changelog)
 
     for f in failures:
         print(f, file=sys.stderr)
