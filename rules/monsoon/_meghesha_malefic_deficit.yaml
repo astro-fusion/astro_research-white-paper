@@ -1,0 +1,60 @@
+# yaml-language-server: $schema=../schema.json
+#
+# NOT YET IN THE RULE CATALOGUE. The leading "_" keeps the rules loader from
+# reading this file: the schema's `domain` enum gains "monsoon" only with
+# ADR-007 WP-65. When it does, drop the "_" from the file name and update the
+# counts in tests/test_rules_catalog.py. Until then only the monsoon adapter
+# (core/domains/monsoon.py) reads it.
+# The principle list comes from the WP-79 brief (D9 is not yet written).
+id: monsoon.meghesha_malefic_deficit
+version: 1
+name: 'Meghesha (lord of clouds) is a malefic: a deficient monsoon'
+domain: monsoon
+claim: >-
+  The lord of the clouds (Meghesha) is the lord of the weekday on which the Sun enters the
+  asterism Ardra. When that lord is a malefic (Sun, Mars or Saturn) the year's monsoon rain
+  is deficient.
+source:
+  app_registry: docs/mundane/rule-registry.yaml
+  id: RULE-009
+  note: >-
+    Only the definition is sourced: RULE-009 of the AstroFusion mundane registry names the
+    Lord of Clouds as the Ardra-ingress weekday lord (encoded as
+    mundane.core.r009_varsheshvara_annual_cabinet_portfolios). The direction (malefic lord,
+    less rain) is our operationalisation of the general Varsheshvara tradition; no text,
+    edition, page or quotation is in hand (owner task H11). Citation level L0.
+author: astro-research WP-79 (2026-11-22)
+tier: experimental
+status: needs_predicates
+zodiac: sidereal
+ayanamsa: lahiri
+node_model: mean
+conditions: null
+expected_effect:
+  series: all_india_jjas_anomaly_pct
+  direction: decrease
+  description: June to September all-India rainfall below the long-period average
+validation:
+  status: unvalidated
+notes:
+  mapping_status: partial
+  original_condition:
+  - Lord of Clouds = lord of the weekday of the Sun's ingress into Ardra (RULE-009).
+  - A malefic Lord of Clouds gives scanty rain (tradition; not yet sourced).
+  needs_predicates: >-
+    The rule reads the weekday lord at one instant per year (the Sun's entry into Ardra), not
+    a condition that holds at a moment. The monsoon adapter computes it from
+    season_calendar below; a predicate is not needed for the yearly test.
+  season_calendar:
+    kind: weekday_lord_at_instant
+    instant: sun_nakshatra_ingress
+    nakshatra: Ardra
+    vara: sunrise            # the weekday runs sunrise to sunrise at the plan's reference place
+    active_lords: [Sun, Mars, Saturn]
+    range_source: "author's choice (malefic = Sun, Mars, Saturn), pending a sourced table (H11)"
+    outcomes:
+      all_india_jjas_anomaly_pct: decrease
+      all_india_drought: increase
+    variants:
+      ayanamsa: [raman, krishnamurti]
+      vara: [civil]          # civil date at the reference place instead of sunrise to sunrise

@@ -1,0 +1,124 @@
+# =====================================================================
+# DRAFT. NOT A REGISTERED PLAN. NOT APPROVED.
+#
+# Monsoon domain plan (ADR-007 section 4.2, design task D9).
+# D9 has not been written yet. This file holds the values ADR-007 section 4.2
+# proposes, so that the WP-79 adapter has one place to read them from.
+# Owner decision H16 ("SESOI, budgets and splits as proposed in ADR-007")
+# is a default adopted pending owner review (docs/research/OWNER_DECISIONS.md);
+# H17 (the section 4.3 firewall) likewise.
+#
+# While status is "draft" the adapter refuses real rainfall (ADR-007 4.3):
+# only simulated rainfall can be analysed. Registration (WP-83) copies this
+# plan to studies/validity/domains/monsoon.yaml with status: registered, and
+# D9 replaces every value marked "proposed".
+# =====================================================================
+domain: monsoon
+status: draft            # draft | registered
+plan_version: 0
+design_task: D9 (not yet written)
+decisions:
+  H16: default adopted 2026-11-22, pending owner review (SESOI, budget, split)
+  H17: default adopted 2026-11-22, pending owner review (firewall of ADR-007 4.3)
+  H4: waiting for owner (IITM licence unread; dataset graded B at best)
+
+# The unit of evidence is the season: one value per year. A calendar is one
+# yes/no per year; an episode is a run of consecutive active seasons; every
+# interval and p-value is computed over episodes, never over months or days.
+unit_of_evidence: season
+
+years: [1871, 2016]       # IITM all-India series; the grid is one step per year
+periods:                  # proposed (ADR-007 4.2)
+  explore: [1871, 1960]
+  confirm: [1961, 2016]
+  pseudo_out_of_sample: true   # every year was published before this plan; none is unseen
+
+dataset:
+  primary:
+    id: iitm_all_india_macro
+    file: data/snapshots/iitm_all_india_macro_76380a8e9ee3.txt
+    sha256: 76380a8e9ee3b635f5d2b998dac18540d77622f82cbf6c5bb4e2adf64091947b
+    source_id: iitm_rainfall
+    span: ['1871', '2016']
+    reproduced: true        # round 4 audit re-downloaded it and the hash matched
+    open_items:
+      - 2015 and 2016 come from IMD subdivisional rainfall, 1871 to 2014 from 306 stations (series splice, stated in the file header)
+  secondary:
+    - id: iitm_subdivisions
+      file: data/snapshots/iitm_subdivisions_b8781f2be3a5.txt
+      sha256: b8781f2be3a5f824f4a05e226a6ff1eefee20923aa375995be7fefc1e85b76d7
+      note: 30 subdivisions; sensitivity cells only
+
+lpa:                      # long-period average that defines "percent of LPA"
+  base_years: [1951, 2000]  # proposed: IMD's LPA base period in use until 2022
+  season: JJAS
+
+outcomes:                 # proposed (ADR-007 4.2)
+  primary: all_india_jjas_anomaly_pct
+  regions: [all_india, northwest_india, west_central_india, central_northeast_india, northeast_india, peninsular_india]
+  drought_below_pct: -10.0
+  excess_above_pct: 10.0
+  months: [JUN, JUL, AUG, SEP]
+
+sesoi:                    # proposed (ADR-007 4.2)
+  jjas_anomaly_pct: 5.0     # 5 % of the long-period average
+  drought_risk_ratio: 2.0
+
+budget_m: 40              # proposed family budget (ADR-007 4.2)
+
+test:
+  # "An active year is compared with nearby inactive years" (ADR-007 5.2).
+  local_baseline:
+    half_window_years: 15   # inactive seasons within +-15 years of the episode (a 31-year window)
+    min_inactive: 5         # fewer inactive neighbours: the episode is dropped and counted
+    same_period_only: true  # the baseline never crosses the explore/confirm boundary
+  p_method: sign_flip_over_episodes
+  n_draws: 99999
+  interval: wild_cluster_over_episodes
+
+reference_place:          # where a weekday (vara) is counted from sunrise
+  name: Ujjain
+  lat: 23.1765
+  lon: 75.7885
+  tz_offset_hours: 5.5
+
+controls:
+  enso:
+    oni:
+      file: data/snapshots/noaa_oni_27af499bc406.data
+      sha256: 27af499bc406f8e5f5e9655013d2299a97d6a1cc92f27db30990b04dbc872f60
+      source_id: noaa_enso
+      from: 1950
+    nino34:
+      file: data/snapshots/noaa_nino34_8ba6cd0536ad.data
+      sha256: 8ba6cd0536adffc9a904133762f5786513008429e711c1fc016c10d54cf9ccd1
+      source_id: noaa_enso
+      from: 1948
+      note: ERSST v6 from 1948 only; the long (1870) Nino 3.4 series named in ADR-007 is not yet a snapshot
+    el_nino_threshold: 0.5   # mean ONI over JJA, JAS, ASO at or above it: El Nino season
+    positive_control: true   # ADR-007 WP-83: ENSO is the domain's positive control
+  iod:
+    dmi:
+      file: data/snapshots/noaa_dmi_hadley_e243536c6944.data
+      sha256: e243536c69444c7348fa6ea26ec39dec20094bdcac2436284348909826f804c2
+      source_id: noaa_dmi
+      from: 1870
+  sunspot:
+    status: pending          # SILSO has no fetch script or snapshot yet
+  epoch:
+    running_mean_years: 31   # centred, the season itself left out
+  persistence:
+    lag_years: 1             # last year's anomaly
+
+principles:               # rule files under rules/monsoon/ (see their notes.season_calendar)
+  - monsoon.meghesha_malefic_deficit
+  - monsoon.varsheshvara_malefic_deficit
+  - monsoon.mars_in_rohini_deficit
+
+untestable_now:
+  - what: monsoon onset principles
+    why: Kerala onset dates verified for 2014 to 2025 only (12 seasons); 1901 to 2013 not yet checked
+
+firewall:                 # ADR-007 4.3; all three must hold before real rainfall is read
+  calibration_record: studies/validity/calibration/monsoon.json   # written by WP-70 on simulated rainfall
+  family_lock: studies/validity/locks/monsoon.lock                # written by WP-66

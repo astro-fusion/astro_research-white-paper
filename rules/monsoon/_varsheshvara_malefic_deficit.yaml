@@ -1,0 +1,59 @@
+# yaml-language-server: $schema=../schema.json
+#
+# NOT YET IN THE RULE CATALOGUE. The leading "_" keeps the rules loader from
+# reading this file: the schema's `domain` enum gains "monsoon" only with
+# ADR-007 WP-65. When it does, drop the "_" from the file name and update the
+# counts in tests/test_rules_catalog.py. Until then only the monsoon adapter
+# (core/domains/monsoon.py) reads it.
+# The principle list comes from the WP-79 brief (D9 is not yet written).
+id: monsoon.varsheshvara_malefic_deficit
+version: 1
+name: 'Varsheshvara (king of the year) is a malefic: a deficient monsoon'
+domain: monsoon
+claim: >-
+  The king of the year (Varsheshvara, raja) is the lord of the weekday on which Chaitra
+  Shukla Pratipada (the luni-solar new year) falls. A malefic king (Sun, Mars or Saturn)
+  brings scanty rain in that year's monsoon.
+source:
+  text: Brihat Samhita
+  chapter: '19'
+  note: >-
+    Chapter as given by the repository's method registry
+    (rules/mundane/methods/_annual.chaitra_pratipada.yaml), from memory: no edition, page,
+    verse or quotation (owner task H11). The lord-to-rain direction is our reading of the
+    tradition and is not verified. Citation level L0.
+author: astro-research WP-79 (2026-11-22)
+tier: experimental
+status: needs_predicates
+zodiac: sidereal
+ayanamsa: lahiri
+node_model: mean
+conditions: null
+expected_effect:
+  series: all_india_jjas_anomaly_pct
+  direction: decrease
+  description: June to September all-India rainfall below the long-period average
+validation:
+  status: unvalidated
+notes:
+  mapping_status: partial
+  original_condition:
+  - King of the year = lord of the weekday of Chaitra Shukla Pratipada.
+  - A malefic king gives scanty rain (tradition; not yet sourced).
+  needs_predicates: >-
+    The rule reads the weekday lord of one day per year, not a condition that holds at a
+    moment. The monsoon adapter computes it from season_calendar below.
+  season_calendar:
+    kind: weekday_lord_at_instant
+    instant: chaitra_shukla_pratipada   # the new Moon that starts Chaitra (amanta; adhika Chaitra counts as the start)
+    vara: udaya              # the weekday of the first sunrise after the new Moon (pratipada at sunrise)
+    active_lords: [Sun, Mars, Saturn]
+    range_source: "author's choice (malefic = Sun, Mars, Saturn), pending a sourced table (H11)"
+    outcomes:
+      all_india_jjas_anomaly_pct: decrease
+      all_india_drought: increase
+    variants:
+      vara: [sunrise]        # the weekday in which the new Moon itself falls
+    reference_years:         # published panchanga kings (Vikram Samvat 2080 and 2081)
+      2023: Mercury
+      2024: Mars

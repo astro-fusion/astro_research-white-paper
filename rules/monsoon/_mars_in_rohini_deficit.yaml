@@ -1,0 +1,93 @@
+# yaml-language-server: $schema=../schema.json
+#
+# NOT YET IN THE RULE CATALOGUE. The leading "_" keeps the rules loader from
+# reading this file: the schema's `domain` enum gains "monsoon" only with
+# ADR-007 WP-65. When it does, drop the "_" from the file name and update the
+# counts in tests/test_rules_catalog.py. Until then only the monsoon adapter
+# (core/domains/monsoon.py) reads it.
+# The principle list comes from the WP-79 brief (D9 is not yet written).
+id: monsoon.mars_in_rohini_deficit
+version: 1
+name: 'Mars in Rohini: a below-normal monsoon in the south'
+domain: monsoon
+claim: >-
+  Mars in the asterism Rohini causes dryness; used to forecast below-normal monsoon rain for
+  the southern states. Tested on past seasons only.
+source:
+  url: https://astrologicalmusings.com/sapta-nadi-chakra-and-forecasting-summer-season-treads-for-2019/
+  text: astrologicalmusings.com, "Sapta Nadi Chakra and forecasting summer season trends for 2019" (2019)
+  note: >-
+    Practitioner statement; the page has not yet been opened by a maintainer. The practitioner
+    cites Brihat Samhita for Mars in Rohini without a chapter. Same principle as
+    mundane.practitioner.mars_in_rohini_weak_monsoon, made yearly for the monsoon domain.
+    Citation level L0.
+author: astro-research WP-79 (2026-11-22)
+tier: experimental
+status: active
+zodiac: sidereal
+ayanamsa: lahiri
+node_model: mean
+window:
+  unit: months
+  before: $window_before
+  after: $window_after
+  note: >-
+    The season is active when Mars is in Rohini on any day from (1 June - after) to
+    (30 September + before): with after = 3 months, from 1 March to 30 September.
+expected_effect:
+  series: peninsular_india_jjas_anomaly_pct
+  direction: decrease
+  description: June to September rainfall of peninsular (southern) India below its long-period average
+params:
+  window_before:
+    value: 0
+    min: 0
+    max: 3
+    step: 1
+    unit: months
+    range_source: practitioner rule mundane.practitioner.mars_in_rohini_weak_monsoon
+  window_after:
+    value: 3
+    min: 0
+    max: 6
+    step: 1
+    unit: months
+    range_source: practitioner rule mundane.practitioner.mars_in_rohini_weak_monsoon
+conditions:
+  in_nakshatra:
+    planet: Mars
+    nakshatras:
+    - Rohini
+reference_cases:
+- moment: '2019-04-10T00:00:00Z'
+  expect: fires
+  note: 'Spring 2019. Engine: in_nakshatra(planet=Mars, nakshatras=[Rohini]): Mars is in Taurus 12.3 deg,
+    in Rohini pada 1, one of Rohini.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+- moment: '2019-06-15T00:00:00Z'
+  expect: silent
+  note: 'Monsoon onset 2019. Engine: in_nakshatra(planet=Mars, nakshatras=[Rohini]): Mars is in Gemini
+    25.1 deg, in Punarvasu pada 2, not one of Rohini.'
+  verified_with: astro-rules explain 2026-11-08 (Lahiri, mean node, whole sign); not yet checked in JHora
+validation:
+  status: unvalidated
+notes:
+  mapping_status: practitioner_extracted
+  season_calendar:
+    kind: condition_in_season_window
+    season: [6, 9]           # June to September; widened by the rule's window
+    step_days: 1
+    outcomes:
+      peninsular_india_jjas_anomaly_pct: decrease
+      peninsular_india_drought: increase
+      all_india_jjas_anomaly_pct: decrease
+    variants:
+      window: [season_only]  # Mars in Rohini during June to September itself
+  practitioner:
+    name: astrologicalmusings.com
+    url: https://astrologicalmusings.com/sapta-nadi-chakra-and-forecasting-summer-season-treads-for-2019/
+    date: '2019'
+    checked: false
+  bib:
+  - astrologicalmusings2019saptanadi
+  - brihatsamhita_iyer1884
