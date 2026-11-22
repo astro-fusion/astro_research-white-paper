@@ -2273,6 +2273,24 @@
           "default": null,
           "title": "Event"
         },
+        "fixed_by": {
+          "anyOf": [
+            {
+              "enum": [
+                "text",
+                "practitioner",
+                "project"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "who fixed the direction (schema 3.1, A-08)",
+          "title": "Fixed By"
+        },
         "series": {
           "anyOf": [
             {
@@ -4682,6 +4700,43 @@
       "additionalProperties": false,
       "description": "One choice the source does not fix, and who fixed it.",
       "properties": {
+        "alternatives": {
+          "description": "other values of a project-fixed choice; they enter the sensitivity grid (schema 3.1, F-04)",
+          "items": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                    "type": "string"
+                  }
+                ]
+              },
+              {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "pattern": "^\\$([a-z][a-z0-9_]*)$",
+                    "type": "string"
+                  }
+                ]
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "title": "Alternatives",
+          "type": "array"
+        },
         "choice": {
           "minLength": 1,
           "title": "Choice",
@@ -5771,6 +5826,28 @@
       "title": "Strength",
       "type": "object"
     },
+    "Synthesis": {
+      "additionalProperties": false,
+      "description": "A practitioner's scoring function, hashed so a change is a new version.\n\nfunction is 'module:qualname'; sha256 is the SHA-256 of its source text\n(see function_hash).",
+      "properties": {
+        "function": {
+          "pattern": "^[A-Za-z_][\\w.]*:[A-Za-z_][\\w.]*$",
+          "title": "Function",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "function",
+        "sha256"
+      ],
+      "title": "Synthesis",
+      "type": "object"
+    },
     "TestSpec": {
       "additionalProperties": false,
       "description": "Where the principle is tested: one domain outcome, one slot.",
@@ -5808,6 +5885,26 @@
           "pattern": "^[a-z][a-z0-9_]*$",
           "title": "Outcome",
           "type": "string"
+        },
+        "project_extension": {
+          "default": false,
+          "description": "true when no source words justify the outcome",
+          "title": "Project Extension",
+          "type": "boolean"
+        },
+        "quote": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "source words that justify this outcome and direction (F-06)",
+          "title": "Quote"
         }
       },
       "required": [
@@ -6227,14 +6324,14 @@
         "use": {
           "anyOf": [
             {
-              "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)+$",
+              "pattern": "^[a-z0-9_]+(\\.[a-z0-9_]+)+(@[1-9][0-9]*)?$",
               "type": "string"
             },
             {
               "$ref": "#/$defs/UseTarget"
             }
           ],
-          "description": "a rule id, or {id, version} to pin the version"
+          "description": "id@version (pinned; required to register), a bare id, or {id, version}"
         }
       },
       "required": [
@@ -6876,6 +6973,20 @@
       "title": "Id",
       "type": "string"
     },
+    "known_channel": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "a known physical or social route to the outcome (schema 3.1)",
+      "title": "Known Channel"
+    },
     "name": {
       "minLength": 1,
       "title": "Name",
@@ -6972,6 +7083,17 @@
       "anyOf": [
         {
           "$ref": "#/$defs/Strength"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "synthesis": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Synthesis"
         },
         {
           "type": "null"

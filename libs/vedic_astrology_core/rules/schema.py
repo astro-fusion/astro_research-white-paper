@@ -21,9 +21,23 @@ vocabulary in :mod:`.predicates`. Unknown keys anywhere are errors.
 
 import copy
 import difflib
+import hashlib
+import importlib
+import inspect
 import json
+import re
 from pathlib import Path
-from typing import Annotated, Any, ClassVar, Dict, List, Literal, Optional, Union
+from typing import (
+    Annotated,
+    Any,
+    ClassVar,
+    Dict,
+    Iterable,
+    List,
+    Literal,
+    Optional,
+    Union,
+)
 
 import pytz
 from pydantic import (
@@ -198,14 +212,20 @@ class UseTarget(Strict):
     )
 
 
+USE_PATTERN = r"^[a-z0-9_]+(\.[a-z0-9_]+)+(@[1-9][0-9]*)?$"
+
+
 def _hide_expansion(schema: Dict[str, Any]) -> None:
     """The expanded parent conditions are not written by authors."""
     props = schema.get("properties", {})
     props.pop("all", None)
     if "use" in props:
         props["use"] = {
-            "anyOf": [{"type": "string", "pattern": ID_PATTERN}, props["use"]],
-            "description": "a rule id, or {id, version} to pin the version",
+            "anyOf": [{"type": "string", "pattern": USE_PATTERN}, props["use"]],
+            "description": (
+                "id@version (pinned; required to register), a bare id, "
+                "or {id, version}"
+            ),
         }
     if "all" in schema.get("required", []):
         schema["required"] = [k for k in schema["required"] if k != "all"]
@@ -238,6 +258,11 @@ class UseOf(AllOf):
     @field_validator("use", mode="before")
     @classmethod
     def _shorthand(cls, value):
+        if isinstance(value, str) and "@" in value:
+            rule_id, _, version = value.partition("@")
+            if not version.isdigit() or int(version) < 1:
+                raise ValueError(f"'{value}': write the pin as id@version (a whole number)")
+            return {"id": rule_id, "version": int(version)}
         return {"id": value} if isinstance(value, str) else value
 
     @model_validator(mode="wrap")
@@ -420,6 +445,9 @@ class ExpectedEffect(Strict):
 
     series: Optional[str] = None
     direction: Optional[Literal["up", "down", "increase", "decrease", "either"]] = None
+    fixed_by: Optional[Literal["text", "practitioner", "project"]] = Field(
+        default=None, description="who fixed the direction (schema 3.1, A-08)"
+    )
     event: Optional[str] = None
     description: Optional[str] = None
 
@@ -468,7 +496,23 @@ class OperationalChoice(Strict):
     choice: str = Field(min_length=1)
     value: Union[bool, int, float, str, List[Union[bool, int, float, str]]]
     fixed_by: Literal["text", "practitioner", "project"]
+    alternatives: List[Union[bool, int, float, str]] = Field(
+        default_factory=list,
+        description="other values of a project-fixed choice; they enter the "
+        "sensitivity grid (schema 3.1, F-04)",
+    )
     note: Optional[str] = Field(default=None, min_length=1)
+
+
+class Synthesis(Strict):
+    """A practitioner's scoring function, hashed so a change is a new version.
+
+    function is 'module:qualname'; sha256 is the SHA-256 of its source text
+    (see function_hash).
+    """
+
+    function: str = Field(pattern=r"^[A-Za-z_][\w.]*:[A-Za-z_][\w.]*$")
+    sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
 
 
 class TestSpec(Strict):
@@ -479,6 +523,14 @@ class TestSpec(Strict):
     domain: str = Field(pattern=SLUG, description="validity domain, e.g. gold")
     outcome: str = Field(pattern=SLUG, description="outcome id in the domain plan")
     direction: Literal["increase", "decrease", "either"]
+    quote: Optional[str] = Field(
+        default=None,
+        min_length=1,
+        description="source words that justify this outcome and direction (F-06)",
+    )
+    project_extension: bool = Field(
+        default=False, description="true when no source words justify the outcome"
+    )
     note: Optional[str] = Field(default=None, min_length=1)
 
 
@@ -570,6 +622,12 @@ class Rule(Strict):
         description="where this principle is tested; one slot each (ADR-007)",
     )
     variants: List[Variant] = Field(default_factory=list)
+    known_channel: Optional[str] = Field(
+        default=None,
+        min_length=1,
+        description="a known physical or social route to the outcome (schema 3.1)",
+    )
+    synthesis: Optional[Synthesis] = None
     notes: Optional[Dict[str, Any]] = None
 
     _template: Dict[str, Any] = PrivateAttr(default_factory=dict)
@@ -691,6 +749,109 @@ class Rule(Strict):
         return self
 
 
+# ------------------------------------------------- register checks (WP-91)
+#: Choices every rule with tests must fix, each with fixed_by (A-05).
+REQUIRED_CHOICES = ("day_convention", "place", "horizon")
+_BS_NAMES = ("brihat parashara", "brihat parasara", "bphs")
+_RULE_ID = re.compile(r"(?<![\w.])[a-z0-9_]+(?:\.[a-z0-9_]+)+(?![\w])")
+
+
+def function_hash(function: str) -> str:
+    """SHA-256 of the source text of 'module:qualname'."""
+    module_name, _, qual = function.partition(":")
+    obj: Any = importlib.import_module(module_name)
+    for part in qual.split("."):
+        obj = getattr(obj, part)
+    return hashlib.sha256(inspect.getsource(obj).encode("utf-8")).hexdigest()
+
+
+def parse_disputes(text: str) -> List[str]:
+    """Rule ids named in a DISPUTES.md (any dotted lowercase id)."""
+    return sorted(set(_RULE_ID.findall(text)))
+
+
+def _unpinned_uses(node: Any) -> List[str]:
+    found: List[str] = []
+    if isinstance(node, UseOf) and node.use.version is None:
+        found.append(node.use.id)
+    if isinstance(node, BaseModel):
+        for name in type(node).model_fields:
+            if name != "use":
+                found += _unpinned_uses(getattr(node, name))
+    elif isinstance(node, list):
+        for item in node:
+            found += _unpinned_uses(item)
+    return found
+
+
+def registration_problems(rule: Rule, disputes: Iterable[str] = ()) -> List[str]:
+    """Return what a rule lacks to be registered for testing (schema 3.1).
+
+    An empty list means registrable. Old rule files still load; they are
+    just reported here as "not registrable" with the missing fields.
+    """
+    out: List[str] = []
+    if not rule.tests:
+        out.append("tests: no outcome is named")
+    if rule.reading is None:
+        out.append("reading: not stated")
+    chosen = {c.choice: c for c in rule.operationalisation}
+    for name in REQUIRED_CHOICES:
+        if name not in chosen:
+            out.append(f"operationalisation.{name}: missing (with fixed_by)")
+    for c in rule.operationalisation:
+        if c.fixed_by == "project" and not c.alternatives:
+            out.append(
+                f"operationalisation.{c.choice}: fixed by the project but "
+                "lists no alternatives"
+            )
+    if not rule.source.published:
+        out.append("source.published: missing")
+    if any(n in (rule.source.text or "").lower() for n in _BS_NAMES) and not (
+        rule.source.page
+    ):
+        out.append("source.page: missing for a BPHS-sourced rule (H11 page check)")
+    effect = rule.expected_effect
+    if effect is None or effect.direction is None:
+        out.append("expected_effect.direction: missing")
+    elif effect.fixed_by is None:
+        out.append("expected_effect.fixed_by: missing")
+    if rule.id in set(disputes):
+        if effect is not None and effect.direction not in (None, "either"):
+            out.append("expected_effect.direction: disputed rule must be 'either'")
+        for t in rule.tests:
+            if t.direction != "either":
+                out.append(
+                    f"tests.{t.domain}.{t.outcome}: disputed rule cannot be "
+                    f"directional ({t.direction}); use 'either'"
+                )
+    for t in rule.tests:
+        label = f"tests.{t.domain}.{t.outcome}"
+        if t.quote and t.project_extension:
+            out.append(f"{label}: give a quote or project_extension, not both")
+        elif not t.quote and not t.project_extension:
+            out.append(f"{label}: needs a source quote or project_extension: true")
+    for parent in sorted(set(_unpinned_uses(rule.conditions))):
+        out.append(f"use {parent}: not pinned; write use: {parent}@<version>")
+    if rule.synthesis is not None:
+        try:
+            actual = function_hash(rule.synthesis.function)
+        except Exception as err:  # import or source lookup failed
+            out.append(f"synthesis.function: cannot be read ({err})")
+        else:
+            if actual != rule.synthesis.sha256:
+                out.append(
+                    "synthesis.sha256: differs from the function source; a "
+                    "changed function is a new version"
+                )
+    return out
+
+
+def is_registrable(rule: Rule, disputes: Iterable[str] = ()) -> bool:
+    """True when registration_problems finds nothing."""
+    return not registration_problems(rule, disputes)
+
+
 def json_schema() -> Dict[str, Any]:
     """Return the JSON Schema of a rule file."""
     schema = allow_param_refs(Rule.model_json_schema(by_alias=True))
@@ -722,11 +883,16 @@ __all__ = [
     "ReviewEntry",
     "Rule",
     "Source",
+    "Synthesis",
     "TestSpec",
     "UseOf",
     "UseTarget",
     "Variant",
     "Window",
+    "function_hash",
+    "is_registrable",
     "json_schema",
+    "parse_disputes",
+    "registration_problems",
     "write_json_schema",
 ]
