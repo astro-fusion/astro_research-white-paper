@@ -1,0 +1,77 @@
+# yaml-language-server: $schema=../../schema.json
+# Within 7 days either side of an eclipse maximum: earthquake study indicator as a rule file.
+id: seismic.study.eclipse_window
+version: 1
+name: Earthquake Within 7 days either side of an eclipse maximum
+domain: seismic
+claim: 'Within 7 days either side of an eclipse maximum: the rate of declustered Himalayan-arc earthquakes
+  differs from the rate outside it.'
+source:
+  text: Study plan studies/earthquake/hypothesis.yaml
+  note: The fixed indicator family of the pre-registered plan (2026-11-08). No classical text or chapter
+    is cited.
+author: astro-research study plan (ported 2026-11-22)
+tier: experimental
+status: active
+conditions:
+  eclipse_within_days:
+    kind: any
+    days_before: $days
+    days_after: $days
+    penumbral: false
+expected_effect:
+  event: earthquake
+  direction: increase
+  fixed_by: project
+params:
+  days:
+    value: 7
+    min: 3
+    max: 15
+    step: 1
+    unit: days
+reference_cases:
+- moment: '2001-07-10T06:00:00Z'
+  expect: fires
+  note: Within 7 days either side of an eclipse maximum holds at this moment (06:00 UTC, 4-day scan 1990-2024)
+  verified_with: astro-research engine 2026-11-22 (Lahiri, mean node); not yet checked in JHora
+- moment: '2001-09-04T06:00:00Z'
+  expect: silent
+  note: Within 7 days either side of an eclipse maximum does not hold at this moment (06:00 UTC, 4-day
+    scan 1990-2024)
+  verified_with: astro-research engine 2026-11-22 (Lahiri, mean node); not yet checked in JHora
+reading:
+  kind: concurrent
+  note: The state at a grid step is set against the events in that step.
+operationalisation:
+- choice: day_convention
+  value: hourly UTC grid step containing the event, no day boundary
+  fixed_by: project
+  alternatives:
+  - daily at 12:00 UTC
+  - sunrise day at the arc centre
+- choice: place
+  value: 'none: geocentric sidereal positions'
+  fixed_by: project
+  alternatives:
+  - arc centre 28 N 85 E
+- choice: horizon
+  value: the same grid step as the event
+  fixed_by: project
+  alternatives:
+  - 24 hours
+- choice: ayanamsa
+  value: Lahiri
+  fixed_by: project
+  alternatives:
+  - Raman
+  - Krishnamurti
+tests:
+- domain: earthquake
+  outcome: mainshock_rate
+  direction: increase
+  project_extension: true
+notes:
+  ported_from: Moved unchanged from studies/earthquake/hypothesis.yaml (ADR-007 WP-71); the plan's indicator
+    id is eclipse_window.
+  plan_indicator: eclipse_window

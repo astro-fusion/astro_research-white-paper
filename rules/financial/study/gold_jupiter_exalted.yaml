@@ -1,0 +1,79 @@
+# yaml-language-server: $schema=../../schema.json
+# Jupiter in Cancer (exalted): gold study indicator as a rule file.
+id: financial.study.gold_jupiter_exalted
+version: 1
+name: Gold Jupiter in Cancer (exalted)
+domain: financial
+claim: Jupiter in Cancer (exalted) changes the gold return, its absolute size or the chance of an extreme
+  move on the next bar.
+source:
+  text: Study plan studies/gold_market/hypothesis.yaml
+  note: The fixed indicator family of the pre-registered plan (2026-11-08). No classical text or chapter
+    is cited for the market claim.
+author: astro-research study plan (ported 2026-11-22)
+tier: experimental
+conditions:
+  in_sign:
+    planet: Jupiter
+    signs:
+    - Cancer
+expected_effect:
+  series: gold_usd
+  direction: either
+  fixed_by: project
+  description: The plan tests a difference in either direction.
+reference_cases:
+- moment: '2002-07-09T06:00:00Z'
+  expect: fires
+  note: Jupiter in Cancer (exalted) holds at this moment (06:00 UTC, 4-day scan 1990-2024)
+  verified_with: astro-research engine 2026-11-22 (Lahiri, mean node); not yet checked in JHora
+- moment: '2001-08-31T06:00:00Z'
+  expect: silent
+  note: Jupiter in Cancer (exalted) does not hold at this moment (06:00 UTC, 4-day scan 1990-2024)
+  verified_with: astro-research engine 2026-11-22 (Lahiri, mean node); not yet checked in JHora
+reading:
+  kind: forward_trigger
+  note: The state on bar t-1 is set against the outcome on bar t.
+operationalisation:
+- choice: day_convention
+  value: sample instant of the previous trading bar (market fixing time, in UTC)
+  fixed_by: project
+  alternatives:
+  - noon UTC
+  - sunrise at the exchange city
+  note: The plan tests the state on bar t-1 against the outcome on bar t.
+- choice: place
+  value: 'none: geocentric sidereal positions'
+  fixed_by: project
+  alternatives:
+  - Delhi
+  - New York
+- choice: horizon
+  value: the next bar of the outcome series
+  fixed_by: project
+  alternatives:
+  - 5 bars
+  - 21 bars
+- choice: ayanamsa
+  value: Lahiri
+  fixed_by: project
+  alternatives:
+  - Raman
+  - Krishnamurti
+tests:
+- domain: gold
+  outcome: log_return
+  direction: either
+  project_extension: true
+- domain: gold
+  outcome: abs_return
+  direction: either
+  project_extension: true
+- domain: gold
+  outcome: extreme_move
+  direction: either
+  project_extension: true
+notes:
+  ported_from: Moved unchanged from studies/gold_market/hypothesis.yaml (ADR-007 WP-71); the plan's indicator
+    id is jupiter_exalted.
+  plan_indicator: jupiter_exalted

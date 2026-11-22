@@ -23,8 +23,8 @@ def test_rules_directory_validates():
 def test_rule_counts():
     """Catalog (12), general yogas (3), mundane drafts (67), practitioner rules (39)."""
     registry = RuleRegistry(LOADED)
-    assert len(registry.by_domain["financial"]) == 25  # 4 migrated + 21 practitioner
-    assert len(registry.by_domain["seismic"]) == 8
+    assert len(registry.by_domain["financial"]) == 53  # 4 migrated + 21 practitioner + 28 ported study indicators (WP-71)
+    assert len(registry.by_domain["seismic"]) == 21  # 8 + 13 ported study indicators (WP-71)
     assert len(registry.by_domain["general"]) == 3
     assert len(registry.by_domain["mundane"]) == 85  # 67 drafts + 18 practitioner
 
@@ -53,7 +53,7 @@ def test_status_counts():
     counts = Counter((r.domain, r.status) for r in RULES)
     assert counts[("mundane", "active")] == 44
     assert counts[("mundane", "needs_predicates")] == 41
-    assert sum(r.status == "needs_predicates" for r in RULES) == 47
+    assert sum(r.status == "needs_predicates" for r in RULES) == 52  # 47 + 5 station windows (WP-71)
 
 
 @pytest.mark.parametrize(
