@@ -383,6 +383,9 @@ class EffectRemoval:
             ``r * c_k`` from block k's difference (:func:`shape_contrasts`),
             so the removed effect is the one the detrended data carry. None:
             ``c_k = 1`` (no detrending). Every ``c_k`` must be positive.
+        raw: Optional outcome before baselines and detrending, as for
+            :func:`.blocks.primary_test`: a block whose raw values are all
+            equal starts from ``d_k = 0`` (CALIBRATION-FIX).
     """
 
     def __init__(
@@ -396,13 +399,14 @@ class EffectRemoval:
         n_thin: int = N_THIN,
         n_draws: int = _blocks.DEFAULT_DRAWS,
         effect_shape=None,
+        raw=None,
     ):
         self.design = design
         self.outcome_type = _check_type(outcome_type)
         self.signflip_seed = signflip_seed
         self.n_draws = int(n_draws)
         # Validates the outcome exactly as the primary test does.
-        diffs = _blocks.block_differences(design, outcome, outcome_type=outcome_type)
+        diffs = _blocks.block_differences(design, outcome, outcome_type=outcome_type, raw=raw)
         self.w = diffs.w
         self.k = len(self.w)
         self.k_eff = float(design.k_eff)
@@ -749,6 +753,7 @@ def exclusion(
     n_draws: int = _blocks.DEFAULT_DRAWS,
     steps: int = BISECT_STEPS,
     effect_shape=None,
+    raw=None,
 ) -> ExclusionResult:
     """Exclusion p at the SESOI, X95 and X-strict for one test (section 2.2).
 
@@ -763,7 +768,7 @@ def exclusion(
             measured at the SESOI).
         grid: The plan's grid for X, on the claim scale, increasing.
         a_test: The test's family threshold (section 3); gives X-strict.
-        thinning_rng, signflip_seed, n_thin, n_draws, effect_shape: See
+        thinning_rng, signflip_seed, n_thin, n_draws, effect_shape, raw: See
             :class:`EffectRemoval`.
     """
     side = _check_side(side)
@@ -776,7 +781,7 @@ def exclusion(
         levels.append(float(a_test))
     er = EffectRemoval(design, outcome, outcome_type=outcome_type,
                        thinning_rng=thinning_rng, signflip_seed=signflip_seed,
-                       n_thin=n_thin, n_draws=n_draws, effect_shape=effect_shape)
+                       n_thin=n_thin, n_draws=n_draws, effect_shape=effect_shape, raw=raw)
     p_excl = info = p_reps = None
     if sesoi is not None:
         s = _check_magnitude(sesoi, outcome_type)

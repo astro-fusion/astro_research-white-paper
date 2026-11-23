@@ -217,3 +217,57 @@ def test_festival_channel_with_and_without_baselines():
     rows = R.baseline_rows({"estimate": 0.1}, {"estimate": 0.4}, channel="festival buying")
     assert rows["primary"] == "with_baselines" and rows["tested_claim"] == "beyond_channel"
     assert set(rows) >= {"with_baselines", "without_baselines"}
+
+
+# ----------------------------------------- CALIBRATION-FIX (WP-98 W1 and Z3)
+def test_placebo_overlap_is_the_carried_share_of_a_steady_effect():
+    real = np.tile(np.r_[np.ones(8, bool), np.zeros(8, bool)], 20)
+    same = B.build_blocks(real, merge_gap=0, side_seed=1)
+    anti = np.roll(real, 8)
+    quarter = np.roll(real, 4)
+    assert R.placebo_overlap(same, real) == pytest.approx(1.0)
+    assert R.placebo_overlap(B.build_blocks(anti, merge_gap=0, side_seed=1), real) == pytest.approx(-1.0, abs=0.06)
+    assert abs(R.placebo_overlap(B.build_blocks(quarter, merge_gap=0, side_seed=1), real)) < R.MAX_PLACEBO_OVERLAP
+
+
+def test_distinct_clusters_merge_near_copies():
+    base = np.zeros(400, bool)
+    base[::2] = True  # 200 active bars
+    near = base.copy()
+    near[0] = False  # one bar of 200 changed: 0.5%, below 1%: a near copy
+    far = np.roll(base, 1)
+    assert R.distinct_clusters([base, near, far, base, far], int(base.sum())) == [0, 0, 1, 0, 1]
+    assert R.count_distinct([base, near, far], int(base.sum())) == 2
+
+
+def test_r2_needs_distinct_placebo_calendars_and_counts_each_once():
+    sk = [R.Placebo("time_shift", -1.0, 0.5, cluster=i) for i in range(R.MIN_DISTINCT_PLACEBOS)]
+    ok = R.r2_placebo(1.0, sk, "greater", n_distinct=R.MIN_DISTINCT_PLACEBOS)
+    assert ok.passes and ok.p_value == pytest.approx(1 / (R.MIN_DISTINCT_PLACEBOS + 1))
+    few = R.r2_placebo(1.0, sk[:-1], "greater", n_distinct=R.MIN_DISTINCT_PLACEBOS - 1, n_rejected_overlap=7)
+    assert not few.passes and few.status == R.R2_INSUFFICIENT and "distinct" in few.reason
+    assert few.to_dict()["n_rejected_overlap"] == 7 and few.to_dict()["min_distinct"] == R.MIN_DISTINCT_PLACEBOS
+    # 180 copies of one calendar below the real sky cannot outvote 20 distinct calendars above it.
+    dup = [R.Placebo("time_shift", -1.0, 0.5, cluster=0) for _ in range(180)]
+    dup += [R.Placebo("time_shift", 2.0, 0.5, cluster=1 + i) for i in range(20)]
+    unweighted = R.r2_placebo(1.0, dup, "greater")
+    weighted = R.r2_placebo(1.0, dup, "greater", n_distinct=21)
+    assert unweighted.p_value == pytest.approx(21 / 201) and weighted.p_value == pytest.approx(21 / 22)
+    assert weighted.n_larger == 20 and not weighted.passes
+
+
+def test_r2_needs_a_real_statistic_in_the_claimed_direction():
+    zeros = [R.Placebo("time_shift", 0.0, 0.5, cluster=i) for i in range(30)]
+    r = R.r2_placebo(0.0, zeros, "greater", n_distinct=30)
+    assert not r.passes and r.n_larger == 0 and r.n_tied == 30 and "direction" in r.reason
+    assert not R.r2_placebo(0.0, zeros, "two-sided", n_distinct=30).passes
+    assert R.r2_placebo(-0.5, [R.Placebo("time_shift", 0.0, 0.5, cluster=i) for i in range(30)], "less",
+                        n_distinct=30).passes
+
+
+def test_more_offsets_are_fresh_and_in_range():
+    rng = np.random.default_rng(5)
+    plan = R.time_shift_plan(False, rng)
+    extra = R.more_offsets(rng, plan["shifts"], 300)
+    assert len(extra) == 300 and not set(extra) & set(plan["shifts"]) and len(set(extra)) == 300
+    assert all(R.MIN_OFFSET_DAYS <= abs(s) <= R.MAX_OFFSET_DAYS for s in extra)

@@ -675,8 +675,8 @@ class CalibDomain(DomainAdapter):
 
 
 # ============================================================ outcome-free cache
-_ORIGINAL = {"run_gate": P.run_gate, "_design": P._design}
-_CACHE: Dict[str, Dict[Any, Any]] = {"gate": {}, "design": {}}
+_ORIGINAL = {"run_gate": P.run_gate, "_design": P._design, "_placebo_skies": P._placebo_skies}
+_CACHE: Dict[str, Dict[Any, Any]] = {"gate": {}, "design": {}, "skies": {}}
 
 
 def _hb(a) -> bytes:
@@ -704,15 +704,27 @@ def _cached_design(cal_, dates, t, available, plan_seed):
     return hit
 
 
+def _cached_placebo_skies(cal_, dates, t, avail, plan_seed, season_linked):
+    key = (_hb(cal_), _hb(pd.DatetimeIndex(dates).asi8), t.test_id, repr(t.merge_gap), int(t.guard_bars),
+           None if avail is None else _hb(avail), str(plan_seed), bool(season_linked))
+    hit = _CACHE["skies"].get(key)
+    if hit is None:
+        hit = _ORIGINAL["_placebo_skies"](cal_, dates, t, avail, plan_seed, season_linked)
+        _CACHE["skies"][key] = hit
+    return hit
+
+
 def install_cache() -> None:
-    """Memoise the outcome-free gate and block designs of the pipeline (same objects, same bytes)."""
+    """Memoise the outcome-free gate, block designs and placebo skies of the pipeline (same bytes)."""
     P.run_gate = _cached_run_gate
     P._design = _cached_design
+    P._placebo_skies = _cached_placebo_skies
 
 
 def remove_cache() -> None:
     P.run_gate = _ORIGINAL["run_gate"]
     P._design = _ORIGINAL["_design"]
+    P._placebo_skies = _ORIGINAL["_placebo_skies"]
     clear_cache()
 
 

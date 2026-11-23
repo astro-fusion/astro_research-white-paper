@@ -446,17 +446,81 @@ def _check_detrending(p: _Prepared, dates: pd.DatetimeIndex, run: DomainRun) -> 
 
 
 def _primary(design: _blocks.BlockDesign, y: np.ndarray, t: TestDefinition, side: str,
-             plan_seed: Union[int, str]) -> _blocks.BlockTestResult:
+             plan_seed: Union[int, str], raw: Optional[np.ndarray] = None) -> _blocks.BlockTestResult:
     # A fresh generator on the test's own sign-flip stream for every call (3.5).
+    # raw: the outcome as read; a block constant in it has d_k = 0 (CALIBRATION-FIX).
     return _blocks.primary_test(design, y, alternative=side, outcome_type=t.outcome_type,
-                                rng=stream_rng(plan_seed, t.test_id, "signflip"), n_draws=t.n_draws)
+                                rng=stream_rng(plan_seed, t.test_id, "signflip"), n_draws=t.n_draws,
+                                raw=raw)
 
 
-def _statistic(design: _blocks.BlockDesign, y: np.ndarray, outcome_type: str) -> Optional[float]:
+def _statistic(design: _blocks.BlockDesign, y: np.ndarray, outcome_type: str,
+               raw: Optional[np.ndarray] = None) -> Optional[float]:
     if design.n_used == 0:
         return None
-    v = float(_blocks.block_differences(design, y, outcome_type=outcome_type).statistic)
+    v = float(_blocks.block_differences(design, y, outcome_type=outcome_type, raw=raw).statistic)
     return v if math.isfinite(v) else None
+
+
+@dataclass(frozen=True)
+class PlaceboSkies:
+    """The valid placebo skies of one test, chosen before any outcome is read (CALIBRATION-FIX).
+
+    ``skies``: (label, block design, changed share, distinct-calendar id) of
+    every valid sky, in draw order. Counts: skies without a used block, skies rejected by the overlap
+    rule, shifts tried, and distinct calendars among the valid skies.
+    """
+
+    kind: str
+    skies: Tuple[Tuple[str, _blocks.BlockDesign, float, int], ...]
+    n_no_blocks: int
+    n_rejected_overlap: int
+    n_candidates: int
+    n_distinct: int
+
+
+def _placebo_skies(cal: np.ndarray, dates: pd.DatetimeIndex, t: TestDefinition, avail: Optional[np.ndarray],
+                   plan_seed: Union[int, str], season_linked: bool) -> PlaceboSkies:
+    """Time-shift skies of one test (section 5 with the CALIBRATION-FIX rules of robustness.py).
+
+    Calendar only: no outcome is read. Draws shifts from the test's placebo
+    stream; a sky with no used block or with |placebo_overlap| at or above
+    MAX_PLACEBO_OVERLAP is not valid; day-offset skies are replaced from the
+    same stream until N_TIME_SHIFT are valid or MAX_PLACEBO_CANDIDATES were
+    tried. Whole-year skies are a fixed set and are not replaced.
+    """
+    rng = stream_rng(plan_seed, t.test_id, "placebo")
+    plan = _rob.time_shift_plan(season_linked, rng)
+    queue = list(plan["shifts"])
+    used = set(queue)
+    skies: List[Tuple[str, _blocks.BlockDesign, float]] = []
+    masks: List[np.ndarray] = []
+    no_blocks = rejected = tried = 0
+    while len(skies) < _rob.N_TIME_SHIFT and tried < _rob.MAX_PLACEBO_CANDIDATES:
+        if not queue:
+            if plan["kind"] != "random_offset":
+                break
+            need = min(_rob.N_TIME_SHIFT - len(skies), _rob.MAX_PLACEBO_CANDIDATES - tried)
+            queue = _rob.more_offsets(rng, used, need)
+            if not queue:
+                break
+            used.update(queue)
+        s = queue.pop(0)
+        tried += 1
+        pc = _evaluate(t.calendar, _shifted(dates, plan["kind"], s), f"{t.test_id} placebo {s}")
+        design = _design(pc, dates, t, avail, plan_seed).blocks
+        if design.n_used == 0:
+            no_blocks += 1  # a sky with no used block has no statistic; it is not counted
+            continue
+        ov = _rob.placebo_overlap(design, cal)
+        if not (math.isfinite(ov) and abs(ov) < _rob.MAX_PLACEBO_OVERLAP):
+            rejected += 1
+            continue
+        skies.append((f"{plan['kind']}:{s}", design, _rob.changed_share(cal, pc)))
+        masks.append(pc)
+    ids = _rob.distinct_clusters(masks, int(np.asarray(cal, dtype=bool).sum()))
+    return PlaceboSkies(plan["kind"], tuple(s + (c,) for s, c in zip(skies, ids)), no_blocks, rejected,
+                        tried, (max(ids) + 1) if ids else 0)
 
 
 def _shifted(dates: pd.DatetimeIndex, kind: str, shift: int) -> pd.DatetimeIndex:
@@ -467,7 +531,7 @@ def _shifted(dates: pd.DatetimeIndex, kind: str, shift: int) -> pd.DatetimeIndex
 
 def _robustness(p: _Prepared, dates: pd.DatetimeIndex, y_with: np.ndarray, avail: Optional[np.ndarray],
                 full_res: _blocks.BlockTestResult, B: Optional[np.ndarray], season_linked: bool,
-                run: DomainRun) -> Tuple[_rob.RobustnessResult, Dict[str, Any]]:
+                run: DomainRun, raw: Optional[np.ndarray] = None) -> Tuple[_rob.RobustnessResult, Dict[str, Any]]:
     """R1 to R4 of one test on its own statistic T over the available period."""
     t = p.test
     side = t.side
@@ -483,25 +547,27 @@ def _robustness(p: _Prepared, dates: pd.DatetimeIndex, y_with: np.ndarray, avail
     # R2: placebo skies, per test, on T only (section 5).
     placebos: List[_rob.Placebo] = []
     skipped = 0
+    sky_counts: Dict[str, Any] = {"n_distinct": None, "n_rejected_overlap": 0, "n_candidates": 0}
     for kind in t.placebo_kinds:
         if kind != "time_shift":
             raise PipelineError(f"{t.test_id}: placebo kind {kind!r} is declared but the pipeline "
                                 "implements only time_shift skies; run stopped")
-        plan = _rob.time_shift_plan(season_linked, stream_rng(run.plan_seed, t.test_id, "placebo"))
-        for s in plan["shifts"]:
-            pc = _evaluate(t.calendar, _shifted(dates, plan["kind"], s), f"{t.test_id} placebo {s}")
-            stat = _statistic(_design(pc, dates, t, avail, run.plan_seed).blocks, y_with, t.outcome_type)
+        ps = _placebo_skies(p.calendar, dates, t, avail, run.plan_seed, season_linked)
+        skipped += ps.n_no_blocks
+        sky_counts = {"n_distinct": ps.n_distinct, "n_rejected_overlap": ps.n_rejected_overlap,
+                      "n_candidates": ps.n_candidates}
+        for label, design, share, cluster in ps.skies:
+            stat = _statistic(design, y_with, t.outcome_type, raw)
             if stat is None:
-                skipped += 1  # a sky with no used block has no statistic; it is not counted
+                skipped += 1
                 continue
-            placebos.append(_rob.Placebo("time_shift", stat, _rob.changed_share(p.calendar, pc),
-                                         f"{plan['kind']}:{s}"))
-    r2 = _rob.r2_placebo(t0, placebos, side) if has_t else None
+            placebos.append(_rob.Placebo("time_shift", stat, share, label, cluster))
+    r2 = _rob.r2_placebo(t0, placebos, side, **sky_counts) if has_t else None
     # R3: declared sensitivity cells only.
     cells = []
     for name in sorted(t.sensitivity):
         cc = _evaluate(t.sensitivity[name], dates, f"{t.test_id} cell {name}")
-        stat = _statistic(_design(cc, dates, t, avail, run.plan_seed).blocks, y_with, t.outcome_type)
+        stat = _statistic(_design(cc, dates, t, avail, run.plan_seed).blocks, y_with, t.outcome_type, raw)
         if stat is not None:
             cells.append(_rob.Cell(name, stat, _rob.changed_share(p.calendar, cc)))
     r3 = _rob.r3_sensitivity(t0, cells, side) if has_t else None
@@ -589,8 +655,11 @@ def _compute(p: _Prepared, dates: pd.DatetimeIndex, y_raw: np.ndarray, B: Option
             y_with = _season.centred_detrend(y_with, w)
             y_without = _season.centred_detrend(y_without, w)
             shape = _effect_shape(p, run, finite)
+        # CALIBRATION-FIX: the outcome as read; a block whose raw values are all
+        # equal has d_k = 0 whatever residue baselines or detrending left there.
+        raw = np.where(finite, y_raw, np.nan)
         sd_exp = _design(p.calendar, dates, t, _and(explore, avail_full), seed)
-        res_exp = _primary(sd_exp.blocks, y_with, t, side, seed)
+        res_exp = _primary(sd_exp.blocks, y_with, t, side, seed, raw)
         res_conf = None
         if confirm_open:
             sd_conf = _design(p.calendar, dates, t, _and(confirm, avail_full), seed)
@@ -599,23 +668,23 @@ def _compute(p: _Prepared, dates: pd.DatetimeIndex, y_raw: np.ndarray, B: Option
                     or sd_full.blocks.design_id != g.full["design_id"]):
                 raise PipelineError(f"{t.test_id}: the test's blocks differ from the gate's "
                                     "(outcome bars missing?); run stopped (S-15)")
-            res_conf = _primary(sd_conf.blocks, y_with, t, side, seed)
+            res_conf = _primary(sd_conf.blocks, y_with, t, side, seed, raw)
         else:
             sd_full = sd_exp  # explore rows only: descriptive numbers on the explore period
-        res_full = _primary(sd_full.blocks, y_with, t, side, seed)
+        res_full = _primary(sd_full.blocks, y_with, t, side, seed, raw)
         opp = _opposite(side)
-        res_opp = _primary(sd_full.blocks, y_with, t, opp, seed) if opp and res_full.n_used else None
-        stat_without = _statistic(sd_full.blocks, y_without, t.outcome_type)
+        res_opp = _primary(sd_full.blocks, y_with, t, opp, seed, raw) if opp and res_full.n_used else None
+        stat_without = _statistic(sd_full.blocks, y_without, t.outcome_type, raw)
         try:
             ex = _exclusion.exclusion(
                 sd_full.blocks, y_with, outcome_type=t.outcome_type, side=side, sesoi=t.sesoi, grid=t.x_grid,
                 a_test=p.a_test, thinning_rng=stream_rng(seed, t.test_id, "thinning"),
                 signflip_seed=stream_seed(seed, t.test_id, "signflip"), n_thin=t.n_thin, n_draws=t.n_draws,
-                effect_shape=shape)
+                effect_shape=shape, raw=raw)
         except ValueError as exc:
             raise PipelineError(f"{t.test_id}: exclusion: {exc}; run stopped") from exc
         rob, extra = _robustness(p, dates, y_with, finite if not finite.all() else None,
-                                 res_full, B, sd_full.season_linked, run)
+                                 res_full, B, sd_full.season_linked, run, raw)
         rob_passed = rob.passed()
         vin = dict(
             p_sup=res_conf.p_value if res_conf is not None and res_conf.n_used else None,

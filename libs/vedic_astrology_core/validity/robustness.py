@@ -27,6 +27,52 @@ R2 Placebo skies (section 5)
     * R2 passes when (1 + number of applicable placebos with a strictly larger
       statistic) / (n + 1) <= 0.05, "larger" in the claimed direction (|T| for
       two-sided). Ties never count against the real sky.
+    * CALIBRATION-FIX (WP-98 W1, Z3), two outcome-free rules on the skies:
+      (a) Overlap. A shifted sky is a valid placebo only if it carries less
+          than MAX_PLACEBO_OVERLAP (0.5) of a steady effect on the real
+          active bars: placebo_overlap() is the placebo's own statistic T
+          computed on the real calendar's 0/1 indicator, i.e. the share of
+          real active bars among the placebo's active bars minus that share
+          among its control bars, and its absolute value must be below 0.5.
+          A periodic calendar shifted by about a whole period otherwise
+          re-tests the real calendar (W1: 39 of 200 skies shared over half
+          the active bars and carried the planted effect), and an anti-phase
+          sky (negative overlap) is anti-correlated with the real statistic
+          and makes a null real sky look extreme. Why 0.5: a valid placebo's
+          mean under a steady effect e is below e/2, so at the W1 effect
+          (twice the gate's minimal detectable effect) the real sky leads
+          every valid placebo by more than the minimal detectable effect
+          itself. A smaller bound is not safer: it removes the real sky's
+          near neighbours, which share its luckiest bars, and so breaks the
+          exchangeability the rank needs (measured, 10,000 null runs, 98%-
+          zero bars 5/50 K=12: R2 passed in 5.61% at 0.25, failing the 0.06
+          bound, and in 5.26% at 0.5; W1 power was 0.89 to 0.97 at 0.25 and
+          0.91 to 0.97 at 0.5). A rejected sky is replaced by a fresh day offset
+          from the same stream (up to MAX_PLACEBO_CANDIDATES draws); whole-
+          year skies are a fixed set and are not replaced. The rejected
+          count is recorded.
+      (b) Distinct calendars. Valid skies are grouped greedily, in draw
+          order, into distinct calendars: a sky is a new calendar when it
+          differs from every earlier one in at least 1% of the real active
+          bars (MIN_PLACEBO_CHANGE: the change that makes a sky differ from
+          the real one at all, applied between skies; a periodic calendar
+          shifted by whole periods differs only at the grid edges and
+          collapses into one calendar). With m distinct
+          calendars the rank of the real sky is resolved only to 1/(m + 1):
+          near-copies of one calendar must not count as many placebos (Z3:
+          about 20 distinct yearly offsets, each drawn about ten times,
+          passed R2 in 9% to 11.5% of null runs). So each distinct calendar
+          counts once: p = (1 + sum over distinct calendars of the share of
+          its skies with a strictly larger statistic) / (m + 1). The smallest
+          attainable p is then 1/(m + 1), which reaches the pass mark 0.05
+          only for m >= 19 = MIN_DISTINCT_PLACEBOS. Fewer gives status
+          "insufficient_placebos": R2 does not pass, so the test cannot be
+          Supported (the conservative reading), and the record says why.
+    * CALIBRATION-FIX: R2 does not pass when the real statistic is not in the
+      claimed direction (0 or the wrong sign; two-sided: 0). Ties never count
+      against the real sky, so a real T of exactly 0 (all blocks constant on
+      a 98%-zero outcome) tied with most skies and passed R2 in about 4% of
+      null runs (WP-98 R2N, B2 zero_inflated).
     * With no applicable placebo at all R2 is "not computable" and does not
       pass (the conservative reading: a check that could not run cannot
       clear a Supported).
@@ -55,6 +101,7 @@ from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple
 
 import numpy as np
 
+from ..stats import blocks as _blocks
 from ..stats import season as _season
 
 __all__ = [
@@ -68,6 +115,10 @@ __all__ = [
     "R3_SAME_SIGN_SHARE",
     "MIN_OFFSET_DAYS",
     "MAX_OFFSET_DAYS",
+    "MAX_PLACEBO_OVERLAP",
+    "MIN_DISTINCT_PLACEBOS",
+    "MAX_PLACEBO_CANDIDATES",
+    "R2_INSUFFICIENT",
     "RobustnessError",
     "Placebo",
     "R2Result",
@@ -77,6 +128,10 @@ __all__ = [
     "RobustnessResult",
     "changed_share",
     "time_shift_plan",
+    "more_offsets",
+    "placebo_overlap",
+    "count_distinct",
+    "distinct_clusters",
     "r1_baselines",
     "baseline_rows",
     "r2_placebo",
@@ -104,6 +159,15 @@ R3_SAME_SIGN_SHARE = 0.8
 #: Day offsets of time-shift placebos for calendars that are not season-linked.
 MIN_OFFSET_DAYS = 400
 MAX_OFFSET_DAYS = 3650
+#: CALIBRATION-FIX (a): a sky is a valid placebo only if |placebo_overlap| is below this
+#: (it carries less than half of a steady effect on the real active bars).
+MAX_PLACEBO_OVERLAP = 0.5
+#: CALIBRATION-FIX (b): distinct valid placebo calendars R2 needs: 1/(m+1) <= R2_LEVEL.
+MIN_DISTINCT_PLACEBOS = 19
+#: Day offsets tried at most per test (the first N_TIME_SHIFT plus replacements).
+MAX_PLACEBO_CANDIDATES = 10 * N_TIME_SHIFT
+#: R2 status when fewer than MIN_DISTINCT_PLACEBOS distinct calendars exist.
+R2_INSUFFICIENT = "insufficient_placebos"
 
 _SIDES = ("greater", "less", "two-sided")
 
@@ -170,6 +234,72 @@ def time_shift_plan(season_linked: bool, rng: Optional[np.random.Generator] = No
     return {"kind": "random_offset", "unit": "days", "shifts": [int(s) for s in shifts]}
 
 
+def _offset_pool() -> np.ndarray:
+    return np.concatenate([np.arange(MIN_OFFSET_DAYS, MAX_OFFSET_DAYS + 1),
+                           -np.arange(MIN_OFFSET_DAYS, MAX_OFFSET_DAYS + 1)])
+
+
+def more_offsets(rng: np.random.Generator, used: Iterable[int], n: int) -> List[int]:
+    """Up to n fresh day offsets not in ``used``, from the same placebo stream (replacements)."""
+    if not isinstance(rng, np.random.Generator):
+        raise RobustnessError("replacement offsets need the test's own placebo stream (rng)")
+    pool = _offset_pool()
+    pool = pool[~np.isin(pool, np.asarray(sorted(set(int(u) for u in used)), dtype=np.int64))]
+    k = min(int(n), len(pool))
+    if k < 1:
+        return []
+    return [int(s) for s in rng.choice(pool, size=k, replace=False)]
+
+
+def placebo_overlap(placebo_design, real_calendar) -> float:
+    """Share of a steady effect on the real active bars that a placebo's statistic carries.
+
+    The placebo's own block statistic T computed on the real calendar's 0/1
+    indicator: (real active share of its active bars) minus (real active
+    share of its control bars), weighted as T is. 1 for the real calendar
+    itself, about 0 for an unrelated sky, negative for an anti-phase sky.
+    Outcome-free (calendar only). NaN when the placebo has no used block.
+    """
+    a = np.asarray(real_calendar, dtype=bool).ravel().astype(float)
+    if placebo_design.n_used == 0:
+        return float("nan")
+    return float(_blocks.block_differences(placebo_design, a, outcome_type="continuous").statistic)
+
+
+def distinct_clusters(masks: Iterable[Any], n_real_active: int) -> List[int]:
+    """Distinct-calendar id of every placebo mask, greedily in order (CALIBRATION-FIX b).
+
+    A mask opens a new distinct calendar when it differs from every earlier
+    representative in at least MIN_PLACEBO_CHANGE (1%) of the real calendar's
+    active bars; otherwise it joins the first representative it is that close
+    to. Ids are 0, 1, ... in order of first appearance.
+    """
+    reps: List[np.ndarray] = []
+    exact: Dict[bytes, int] = {}
+    ids: List[int] = []
+    denom = max(int(n_real_active), 1)
+    for m in masks:
+        m = np.asarray(m, dtype=bool).ravel()
+        key = np.packbits(m).tobytes() + str(len(m)).encode()
+        if key in exact:
+            ids.append(exact[key])
+            continue
+        cid = next((j for j, r in enumerate(reps)
+                    if np.count_nonzero(m != r) / denom < MIN_PLACEBO_CHANGE), None)
+        if cid is None:
+            cid = len(reps)
+            reps.append(m)
+        exact[key] = cid
+        ids.append(cid)
+    return ids
+
+
+def count_distinct(masks: Iterable[Any], n_real_active: int) -> int:
+    """Number of distinct calendars among placebo masks (see distinct_clusters)."""
+    ids = distinct_clusters(masks, n_real_active)
+    return (max(ids) + 1) if ids else 0
+
+
 # ---------------------------------------------------------------------- R1
 @dataclass(frozen=True)
 class CheckResult:
@@ -225,6 +355,8 @@ class Placebo:
     statistic: float
     changed_share: float
     label: str = ""
+    #: CALIBRATION-FIX: id of the distinct calendar this sky belongs to (distinct_clusters).
+    cluster: Optional[int] = None
 
 
 @dataclass(frozen=True)
@@ -239,16 +371,28 @@ class R2Result:
     not_applicable_kinds: Tuple[str, ...]
     real_statistic: float
     side: str
+    #: CALIBRATION-FIX: distinct valid calendars (None: not given by the caller).
+    n_distinct: Optional[int] = None
+    #: Skies rejected because |placebo_overlap| >= MAX_PLACEBO_OVERLAP.
+    n_rejected_overlap: int = 0
+    #: Shifts tried in all (valid, rejected and without a used block).
+    n_candidates: Optional[int] = None
+    #: Plain words for a status other than pass or fail.
+    reason: Optional[str] = None
 
     def to_dict(self) -> Dict[str, Any]:
         d = asdict(self)
         d["check"] = "R2"
+        d["min_distinct"] = MIN_DISTINCT_PLACEBOS
+        d["max_overlap"] = MAX_PLACEBO_OVERLAP
         d["applicable_kinds"] = list(self.applicable_kinds)
         d["not_applicable_kinds"] = list(self.not_applicable_kinds)
         return d
 
 
-def r2_placebo(real_statistic: float, placebos: Iterable[Placebo], side: str) -> R2Result:
+def r2_placebo(real_statistic: float, placebos: Iterable[Placebo], side: str, *,
+               n_distinct: Optional[int] = None, n_rejected_overlap: int = 0,
+               n_candidates: Optional[int] = None) -> R2Result:
     """R2 for one test on its own statistic T (section 5).
 
     A kind applies when its skies change, on average, at least 1% of the
@@ -256,6 +400,16 @@ def r2_placebo(real_statistic: float, placebos: Iterable[Placebo], side: str) ->
     counted. Every sky of an applicable kind counts (a sky equal to the real
     one is a tie and ties never count against the real sky). Then
     p = (1 + #strictly larger) / (n + 1) and R2 passes at p <= 0.05.
+
+    ``placebos`` must already be the valid skies (overlap rule (a), applied by
+    the caller before any outcome is read). ``n_distinct`` is their number of
+    distinct calendars (count_distinct); below MIN_DISTINCT_PLACEBOS the
+    status is "insufficient_placebos" and R2 does not pass, whatever p is.
+    When every sky carries its ``cluster`` id, each distinct calendar counts
+    once: p = (1 + sum_c larger_c / size_c) / (m + 1) with m distinct
+    calendars, and ``n_larger`` reports the unweighted count. The pipeline
+    always passes both; None (direct callers, unit tests) skips the rule and
+    the weighting.
     """
     side = _side(side)
     real = _finite(real_statistic, "real statistic")
@@ -270,18 +424,23 @@ def r2_placebo(real_statistic: float, placebos: Iterable[Placebo], side: str) ->
             raise RobustnessError("changed_share must be non-negative")
         by_kind.setdefault(pl.kind, []).append(pl)
     used: List[float] = []
+    clusters: List[Optional[int]] = []
     applicable, not_applicable = [], []
     for kind in sorted(by_kind):
         skies = by_kind[kind]
         if float(np.mean([float(p.changed_share) for p in skies])) >= MIN_PLACEBO_CHANGE:
             applicable.append(kind)
             used.extend(float(p.statistic) for p in skies)
+            clusters.extend((kind, p.cluster) if p.cluster is not None else None for p in skies)
         else:
             not_applicable.append(kind)
     n = len(used)
+    extra = {"n_distinct": None if n_distinct is None else int(n_distinct),
+             "n_rejected_overlap": int(n_rejected_overlap),
+             "n_candidates": None if n_candidates is None else int(n_candidates)}
     if n == 0:
         return R2Result(False, "not_computable", None, 0, 0, 0, tuple(applicable), tuple(not_applicable),
-                        real, side)
+                        real, side, reason="no valid placebo sky", **extra)
     arr = np.asarray(used, dtype=float)
     eps = _tol(real)
     if side == "greater":
@@ -296,9 +455,27 @@ def r2_placebo(real_statistic: float, placebos: Iterable[Placebo], side: str) ->
         tied = np.abs(arr - real) <= eps
     k = int(larger.sum())
     p = (1 + k) / (n + 1)
+    if n_distinct is not None and all(c is not None for c in clusters):
+        groups: Dict[Any, List[int]] = {}
+        for i, c in enumerate(clusters):
+            groups.setdefault(c, []).append(i)
+        m = len(groups)
+        p = (1.0 + sum(float(larger[ix].mean()) for ix in groups.values())) / (m + 1)
+    if n_distinct is not None and int(n_distinct) < MIN_DISTINCT_PLACEBOS:
+        why = (f"only {int(n_distinct)} distinct placebo calendars (at least {MIN_DISTINCT_PLACEBOS} "
+               "are needed); the placebo check cannot clear a Supported")
+        return R2Result(False, R2_INSUFFICIENT, p, n, k, int(tied.sum()), tuple(applicable),
+                        tuple(not_applicable), real, side, reason=why, **extra)
+    if not _in_direction(real, side):
+        # CALIBRATION-FIX: a real statistic of exactly 0 (every block constant, as
+        # for a 98%-zero outcome) tied with most skies and "passed", because ties
+        # never count against the real sky. A sky that shows no effect in the
+        # claimed direction cannot stand out from the placebos.
+        return R2Result(False, "fail", p, n, k, int(tied.sum()), tuple(applicable), tuple(not_applicable),
+                        real, side, reason="the real statistic is not in the claimed direction", **extra)
     ok = p <= R2_LEVEL + 1e-15
     return R2Result(ok, "pass" if ok else "fail", p, n, k, int(tied.sum()), tuple(applicable),
-                    tuple(not_applicable), real, side)
+                    tuple(not_applicable), real, side, **extra)
 
 
 # ---------------------------------------------------------------------- R3

@@ -27,7 +27,12 @@ an outcome, so the gate can run it before any outcome exists:
    side), is dropped as ``unbalanced``. Active bars are never trimmed.
    Blocks with no control bar, or with control bars on one side only when
    the other side exists, are dropped too. Drops are counted by reason; the
-   gate and the test read the same counts (S-15).
+   gate and the test read the same counts (S-15). CALIBRATION-FIX: when the
+   plan seed is given, a trim decided by a distance tie (an odd active count
+   with both halves full, e.g. 5 active bars against 3 + 3 offered control
+   bars) trims the left and the right side in turn over the blocks, so the
+   extra control bar sits on each side equally often; the A1 rule (always
+   the right) stays without a seed.
 4a. Amendment A2 (one-sided equal-size blocks), on when the plan seed is
    passed as ``side_seed``. A block may take its equal-size control from
    ONE side (a) when the other side is unavailable (it does not exist, or
@@ -373,7 +378,8 @@ def _other(side: str) -> str:
 
 
 def _equalise(ep: Episode, n_active: int, left, right, left_exists: bool, right_exists: bool,
-              *, cap: Optional[int] = None, turn: Optional[str] = None):
+              *, cap: Optional[int] = None, turn: Optional[str] = None,
+              tie_trim: str = SIDE_RIGHT):
     """Section 1.1 item 4 as amended by A1 (equal-size blocks) and A2 (one side).
 
     Returns ``(left, right, reason, one_sided, side_rule)`` with both sides
@@ -390,18 +396,23 @@ def _equalise(ep: Episode, n_active: int, left, right, left_exists: bool, right_
     ``ceil(n_active / 2)`` rule of item 2; None for season windows). A longer
     control side is trimmed one bar at a time, always the bar farthest from
     the episode (bars from its first bar on the left, from its last bar on
-    the right; a tie trims the right side); a side is never cut to its last
-    bar while the other side has more than one. A dropped block keeps the
+    the right; a tie trims the ``tie_trim`` side); a side is never cut to its
+    last bar while the other side has more than one. A dropped block keeps the
     bars it was offered.
+
+    ``tie_trim`` is ``"right"`` under the A1 rule. The last return value
+    ``tie_used`` is True when such a tie decided a trim; :func:`build_blocks`
+    then alternates ``tie_trim`` over the blocks when the plan seed is given
+    (CALIBRATION-FIX; see there).
     """
     left = np.asarray(left, dtype=np.int64).ravel()
     right = np.asarray(right, dtype=np.int64).ravel()
     left = _nearest_first(left, np.abs(ep.start - left))
     right = _nearest_first(right, np.abs(right - ep.end))
     if n_active == 0:
-        return left, right, DROP_NO_ACTIVE, None, None
+        return left, right, DROP_NO_ACTIVE, None, None, False
     if len(left) + len(right) == 0:
-        return left, right, DROP_NO_CONTROL, None, None
+        return left, right, DROP_NO_CONTROL, None, None, False
     if turn is not None:
         side, rule = None, None
         if len(left) == 0:
@@ -416,28 +427,35 @@ def _equalise(ep: Episode, n_active: int, left, right, left_exists: bool, right_
             empty = bars[:0]
             out = (bars, empty) if side == SIDE_LEFT else (empty, bars)
             if len(bars) < n_active:
-                return out[0], out[1], DROP_UNBALANCED, None, None
-            return out[0], out[1], None, side, rule
+                return out[0], out[1], DROP_UNBALANCED, None, None, False
+            return out[0], out[1], None, side, rule, False
     if cap is not None:
         left, right = left[:cap], right[:cap]
     if (left_exists and len(left) == 0) or (right_exists and len(right) == 0):
-        return left, right, DROP_ONE_SIDED, None, None
+        return left, right, DROP_ONE_SIDED, None, None, False
     if len(left) + len(right) < MIN_BALANCE * n_active:
-        return left, right, DROP_UNBALANCED, None, None
+        return left, right, DROP_UNBALANCED, None, None, False
     nl, nr = len(left), len(right)
+    tie_used = False
     while nl + nr > n_active:
         can_l = nl > 1 or (nl == 1 and nr <= 1)
         can_r = nr > 1 or (nr == 1 and nl <= 1)
         dl = abs(ep.start - int(left[nl - 1])) if can_l else -1
         dr = abs(int(right[nr - 1]) - ep.end) if can_r else -1
-        if dr >= dl:
+        if dr == dl and can_l and can_r:
+            tie_used = True
+            if tie_trim == SIDE_LEFT:
+                nl -= 1
+            else:
+                nr -= 1
+        elif dr >= dl:
             nr -= 1
         else:
             nl -= 1
     if (left_exists and nl == 0) or (right_exists and nr == 0):
         # Equal size only by emptying an existing side (one active bar, A1).
-        return left, right, DROP_UNBALANCED, None, None
-    return left[:nl], right[:nr], None, None, None
+        return left, right, DROP_UNBALANCED, None, None, False
+    return left[:nl], right[:nr], None, None, None, tie_used
 
 
 def build_blocks(
@@ -480,6 +498,13 @@ def build_blocks(
     guard = int(guard_bars)
     eps = episodes(calendar, merge_gap)
     turn = None if side_seed is None else start_side(side_seed)
+    # CALIBRATION-FIX: with the plan seed, the side trimmed on a distance tie
+    # (an odd active count with both halves full: 3 + 2 control bars)
+    # alternates over the blocks in calendar order, from the side opposite to
+    # the first one-sided turn. Without it every such block put its extra
+    # control bar on the same side, so a baseline or detrending residue gave
+    # every block a same-sign offset. A1 rule (always the right) without a seed.
+    trim = SIDE_RIGHT if side_seed is None else _other(turn)
 
     def take(region: np.ndarray, cap: int) -> np.ndarray:
         cand = region[guard:]
@@ -508,11 +533,14 @@ def build_blocks(
         # Up to n_active bars a side: a one-sided block (A2) may need them all;
         # _equalise cuts a two-sided block back to the cap.
         left, right = take(left_region, len(on)), take(right_region, len(on))
-        left, right, reason, one_sided, rule = _equalise(
-            ep, len(on), left, right, left_exists, right_exists, cap=cap, turn=turn
+        left, right, reason, one_sided, rule, tie_used = _equalise(
+            ep, len(on), left, right, left_exists, right_exists, cap=cap, turn=turn,
+            tie_trim=trim,
         )
         if rule == SIDE_ALTERNATED:
             turn = _other(turn)
+        if tie_used and side_seed is not None:
+            trim = _other(trim)
         blocks.append(
             Block(
                 number=k,
@@ -570,6 +598,7 @@ def design_from_windows(
     avail = np.ones(n, dtype=bool) if available is None else _as_mask(available, "available", n)
     eps = episodes(calendar, merge_gap)
     turn = None if side_seed is None else start_side(side_seed)
+    trim = SIDE_RIGHT if side_seed is None else _other(turn)  # as in build_blocks
     if len(windows) != len(eps):
         raise ValueError(f"need one window entry per episode ({len(eps)}), got {len(windows)}")
     blocks: List[Block] = []
@@ -597,11 +626,14 @@ def design_from_windows(
             Block(k, ep, on.astype(np.int64), left, right, bool(left_exists),
                   bool(right_exists), False, None)
         )
-        left, right, reason, one_sided, rule = _equalise(
-            ep, len(on), left, right, bool(left_exists), bool(right_exists), turn=turn
+        left, right, reason, one_sided, rule, tie_used = _equalise(
+            ep, len(on), left, right, bool(left_exists), bool(right_exists), turn=turn,
+            tie_trim=trim,
         )
         if rule == SIDE_ALTERNATED:
             turn = _other(turn)
+        if tie_used and side_seed is not None:
+            trim = _other(trim)
         blocks.append(
             Block(k, ep, on.astype(np.int64), left, right, bool(left_exists),
                   bool(right_exists), reason is None, reason, one_sided, rule)
@@ -684,10 +716,17 @@ class BlockDifferences:
     active_sum: np.ndarray
     n_active: np.ndarray
     n_control: np.ndarray
+    #: CALIBRATION-FIX: per used block, True when the RAW outcome is the same
+    #: value on every active and control bar of the block (see
+    #: :func:`block_differences`); such a block's ``d_k`` is exactly 0.
+    constant: Optional[np.ndarray] = None
 
     @property
     def d(self) -> np.ndarray:
-        return self.active_mean - self.control_mean
+        d = self.active_mean - self.control_mean
+        if self.constant is not None and len(d):
+            d = np.where(self.constant, 0.0, d)
+        return d
 
     @property
     def w(self) -> np.ndarray:
@@ -709,16 +748,39 @@ class BlockDifferences:
         return num / den
 
 
-def block_differences(design: BlockDesign, outcome, *, outcome_type: str) -> BlockDifferences:
+def _raw_values(raw, n: int) -> Optional[np.ndarray]:
+    if raw is None:
+        return None
+    r = raw.to_numpy(dtype=float) if isinstance(raw, pd.Series) else np.asarray(raw, dtype=float)
+    if r.ndim != 1 or len(r) != n:
+        raise ValueError(f"raw must be one-dimensional with {n} bars, got shape {r.shape}")
+    return r
+
+
+def block_differences(design: BlockDesign, outcome, *, outcome_type: str,
+                      raw=None) -> BlockDifferences:
     """Means over each used block's active and control bars (items 7, 8).
 
     Raises if a bar the design uses has no finite outcome: such a bar must be
     marked unavailable when the blocks are built, so the gate and the test
     count the same blocks (S-15).
+
+    ``raw`` (CALIBRATION-FIX, optional): the outcome as read, before baselines
+    were removed or the series was detrended. A used block whose raw values
+    are one and the same number on all its active and control bars carries no
+    information: its ``d_k`` is set to exactly 0, whatever residue the
+    baseline fit or the detrending left in ``outcome`` there. Without this a
+    98%-zero outcome gave every all-zero block a tiny difference of the same
+    sign (the fitted trend times the time offset of its control bars), and
+    the sign-flip read that residue as signal (WP-98 B2 failure). The rule is
+    exact under the null: swapping active and control in a constant block
+    changes nothing.
     """
     _check_type(outcome_type)
     y = _outcome_values(outcome, design.n_bars, outcome_type)
+    r = _raw_values(raw, design.n_bars)
     a_mean, c_mean, a_sum, n_a, n_c = [], [], [], [], []
+    const: List[bool] = []
     for b in design.used_blocks:
         ya, yc = y[b.active], y[b.control]
         if not (np.isfinite(ya).all() and np.isfinite(yc).all()):
@@ -726,6 +788,9 @@ def block_differences(design: BlockDesign, outcome, *, outcome_type: str) -> Blo
                 f"block {b.number} uses a bar with no finite outcome; pass "
                 "available= to build_blocks so the gate sees the same blocks"
             )
+        if r is not None:
+            rb = np.concatenate((r[b.active], r[b.control]))
+            const.append(bool(len(rb) and np.isfinite(rb).all() and (rb == rb[0]).all()))
         a_mean.append(ya.mean())
         c_mean.append(yc.mean())
         a_sum.append(ya.sum())
@@ -737,6 +802,7 @@ def block_differences(design: BlockDesign, outcome, *, outcome_type: str) -> Blo
         np.asarray(a_sum, dtype=float),
         np.asarray(n_a, dtype=np.int64),
         np.asarray(n_c, dtype=np.int64),
+        None if r is None else np.asarray(const, dtype=bool),
     )
 
 
@@ -907,6 +973,7 @@ def primary_test(
     outcome_type: str,
     rng: Optional[np.random.Generator] = None,
     n_draws: int = DEFAULT_DRAWS,
+    raw=None,
 ) -> BlockTestResult:
     """The primary test of every outcome type: block sign-flip of T.
 
@@ -921,6 +988,8 @@ def primary_test(
         outcome_type: One of :data:`OUTCOME_TYPES`.
         rng: Needed above 20 used blocks (the test's ``signflip`` stream).
         n_draws: Monte Carlo draws above 20 used blocks.
+        raw: Optional outcome before baselines and detrending; blocks whose
+            raw values are all equal get ``d_k = 0`` (:func:`block_differences`).
 
     ``estimate`` is T for ``continuous`` and ``log_ratio`` (a difference on
     the outcome's scale), and the pooled ratio at equal exposure for
@@ -930,7 +999,7 @@ def primary_test(
     """
     alternative = _check_alternative(alternative)
     outcome_type = _check_type(outcome_type)
-    diffs = block_differences(design, outcome, outcome_type=outcome_type)
+    diffs = block_differences(design, outcome, outcome_type=outcome_type, raw=raw)
     d, w = diffs.d, diffs.w
     sf = weighted_sign_flip(d, w, alternative=alternative, rng=rng, n_draws=n_draws)
     t_stat = diffs.statistic

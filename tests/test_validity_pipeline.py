@@ -273,12 +273,26 @@ def test_default_sealer_is_sealedrun_and_stamps(tmp_path, monkeypatch):
 
 # ------------------------------------------------------------- numbers
 def test_planted_effect_is_found(tmp_path):
+    """Found (p), but not Supported: a year-keyed toy calendar has too few distinct placebo skies.
+
+    Day offsets of 400 to 3650 days move a calendar keyed by the year by 1 to
+    10 years, and a 2-in-6 calendar repeats every 6 years: after the overlap
+    rule only a handful of distinct placebo calendars remain, fewer than
+    MIN_DISTINCT_PLACEBOS, so R2 is "insufficient_placebos" and cannot clear
+    an S (CALIBRATION-FIX, conservative). test_scattered_daily_calendar_reaches_s
+    shows S end to end on a calendar with enough distinct skies.
+    """
     res, _, _ = confirm_run(tmp_path, effect=1.5, seed=11)
     rec = res["records"][0]
-    assert rec["verdict"]["code"] == "S", rec["verdict"]
+    assert rec["verdict"]["code"] == "N", rec["verdict"]
+    assert "signal_not_robust" in rec["verdict"]["flags"]
     assert rec["p"]["support_confirm"] <= rec["threshold"]["a_test"] == 0.04
-    assert rec["robustness"]["passed"] == {"R1": True, "R2": True, "R3": True, "R4": True}
-    assert rec["robustness"]["R2"]["n_placebo"] == 200 - rec["robustness"]["placebo_skipped_no_blocks"]
+    assert rec["robustness"]["passed"] == {"R1": True, "R2": False, "R3": True, "R4": True}
+    r2 = rec["robustness"]["R2"]
+    assert r2["status"] == "insufficient_placebos" and r2["n_distinct"] < r2["min_distinct"] == 19
+    assert "distinct placebo calendars" in r2["reason"]
+    assert r2["n_placebo"] + r2["n_rejected_overlap"] + rec["robustness"]["placebo_skipped_no_blocks"] \
+        == r2["n_candidates"]
     assert 1.0 < rec["effect"]["confirm"]["estimate"] < 2.0
     assert res["provisional"] is False and res["confirm"]["seal_bundle_sha256"] == "ab" * 32
     assert [r["kind"] for r in rec["limitations"]][:2] == ["citation_level", "tradition"]
@@ -369,7 +383,7 @@ def test_report_gate_passes_on_the_output(tmp_path):
     assert RP.check_report(rp, out) == []
     assert len([k for k in manifest["pages"] if k.startswith("card/")]) == 2
     codes = sorted(r["verdict"]["code"] for r in res["records"])
-    assert codes == ["S", "U"]
+    assert codes == ["N", "U"]  # N: too few distinct placebo skies on the toy yearly grid (R2)
 
 # ------------------------------------------- outcome gaps (WP-69 open issue)
 GAP_YEARS = (1903, 1904, 1951, 1952, 1953, 1990)
@@ -399,7 +413,8 @@ def test_outcome_gaps_go_to_the_gate_as_the_missing_bar_mask(tmp_path):
     finally:
         SB._ISSUED.pop("gaps", None)
     rec = res["records"][0]
-    assert dom.outcome_reads == 1 and rec["verdict"]["code"] == "S"
+    assert dom.outcome_reads == 1 and rec["p"]["support_confirm"] <= rec["threshold"]["a_test"]
+    assert rec["verdict"]["code"] == "N"  # R2: too few distinct placebo skies on the toy yearly grid
     # The gate saw the mask: its whole-period design is the one the test used (S-15).
     assert rec["gate"]["full"]["design_id"] == rec["effect"]["full"]["design_id"]
     assert rec["gate"]["confirm"]["design_id"] == rec["effect"]["confirm"]["design_id"]
@@ -447,15 +462,22 @@ def every_tenth_day(d) -> np.ndarray:
     return np.asarray(days % 10 == 3)
 
 
+def scattered_days(d) -> np.ndarray:
+    """Single days where frac(day * golden ratio) < 0.1: aperiodic, so day shifts give distinct skies."""
+    days = (pd.DatetimeIndex(d) - pd.Timestamp(DAILY_START)).days.to_numpy(dtype=float)
+    return np.asarray(np.mod(days * 0.6180339887498949, 1.0) < 0.1)
+
+
 class DailyDomain(SimulatedDomain):
     """Daily toy series with a strong drift (slope and random walk), effect on every_tenth_day()."""
 
-    def __init__(self, *, seed: int, effect: float, slope: float = 0.02, step: float = 0.05):
+    def __init__(self, *, seed: int, effect: float, slope: float = 0.02, step: float = 0.05,
+                 calendar=None):
         super().__init__(seed=seed, n_years=10, start_year=1990, effect=0.0)
         rng = np.random.default_rng(seed + 104729)
         self._dates = pd.date_range(DAILY_START, periods=DAILY_DAYS, freq="D")
         t = np.arange(DAILY_DAYS, dtype=float)
-        act = every_tenth_day(self._dates).astype(float)
+        act = (calendar or every_tenth_day)(self._dates).astype(float)
         self._values = (rng.normal(size=DAILY_DAYS) + slope * t + np.cumsum(rng.normal(0, step, DAILY_DAYS))
                         + effect * act)
         self.sha256 = hashlib.sha256(self._values.tobytes()).hexdigest()
@@ -479,10 +501,10 @@ def daily_definition(**over) -> P.TestDefinition:
     return definition(**kw)
 
 
-def daily_run(tmp_path: Path, effect: float, seed: int = 1, **spec):
-    t = daily_definition()
+def daily_run(tmp_path: Path, effect: float, seed: int = 1, calendar=None, **spec):
+    t = daily_definition() if calendar is None else daily_definition(calendar=calendar, sensitivity={})
     lock = FamilyLock(tmp_path / "lock.jsonl", "simulated")
-    dom = DailyDomain(seed=seed, effect=effect)
+    dom = DailyDomain(seed=seed, effect=effect, calendar=calendar)
     dates = pd.DatetimeIndex(pd.to_datetime(list(dom.grid())))
     lock.register(rule_id=t.rule_id, version=t.version, outcome=t.outcome,
                   calendar_hash=calendar_hash(t.calendar(dates)))
@@ -527,6 +549,20 @@ def test_daily_drift_is_detrended_and_single_day_blocks_are_used(tmp_path):
     assert abs(rec["estimate"]["without_baselines"]) < 0.25
     found, _ = daily_run(tmp_path / "planted", effect=1.0, seed=3, detrend_window=31)
     frec = found["records"][0]
-    assert frec["verdict"]["code"] == "S", frec["verdict"]
+    # Every tenth day repeats every 10 days: about 10 distinct placebo skies, R2 insufficient.
+    assert frec["verdict"]["code"] == "N", frec["verdict"]
+    assert frec["robustness"]["R2"]["status"] == "insufficient_placebos"
+    assert frec["p"]["support_confirm"] <= frec["threshold"]["a_test"]
     assert 0.7 < frec["effect"]["confirm"]["estimate"] < 1.3
     assert frec["input_sha256"] != rec["input_sha256"]
+
+
+def test_scattered_daily_calendar_reaches_s(tmp_path):
+    """End to end S: an aperiodic single-day calendar has enough distinct placebo skies (R2)."""
+    res, _ = daily_run(tmp_path, effect=1.0, seed=3, calendar=scattered_days, detrend_window=31)
+    rec = res["records"][0]
+    r2 = rec["robustness"]["R2"]
+    assert r2["status"] == "pass" and r2["n_distinct"] >= r2["min_distinct"], r2
+    assert r2["n_placebo"] == 200  # rejected skies were replaced from the placebo stream
+    assert rec["verdict"]["code"] == "S", rec["verdict"]
+    assert 0.7 < rec["effect"]["confirm"]["estimate"] < 1.3

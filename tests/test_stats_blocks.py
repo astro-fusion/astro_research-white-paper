@@ -861,3 +861,37 @@ def test_full_a2_daily_events():
 def test_full_b_cases():
     results = (run_b1(10_000) + run_b2(10_000) + run_b3(10_000) + run_b5(10_000))
     _assert_all(results)
+
+
+# ------------------------------------------------- CALIBRATION-FIX (WP-98 B2)
+def test_constant_raw_block_has_zero_difference():
+    c = _cal("0001110000001110000001110000")  # odd runs: 2 + 1 control bars, a time offset
+    d = B.build_blocks(c, merge_gap=0, side_seed=1)
+    assert d.n_used == 3
+    raw = np.zeros(len(c))
+    raw[13] = 2.0  # an active bar of block 1; blocks 0 and 2 are all zero
+    resid = raw - 0.01 * np.arange(len(c))  # a fitted trend leaves a residue everywhere
+    plain = B.block_differences(d, resid, outcome_type="continuous")
+    assert (np.abs(plain.d) > 0).all()  # the residue alone looks like signal
+    fixed = B.block_differences(d, resid, outcome_type="continuous", raw=raw)
+    assert fixed.constant.tolist() == [True, False, True]
+    assert fixed.d[0] == 0.0 and fixed.d[2] == 0.0 and fixed.d[1] == plain.d[1]
+    r = B.primary_test(d, resid, alternative="greater", outcome_type="continuous", raw=raw)
+    assert r.statistic == fixed.statistic and r.p_value == 0.5  # one informative block of three
+    with pytest.raises(ValueError, match="raw"):
+        B.block_differences(d, resid, outcome_type="continuous", raw=raw[:-1])
+
+
+@pytest.mark.parametrize("first", [B.SIDE_LEFT, B.SIDE_RIGHT])
+def test_odd_blocks_alternate_the_extra_control_bar(first):
+    c = sim.periodic_calendar(5, 6, 6)  # 5 active bars, 3 + 3 offered: one trim by a distance tie
+    seed = _seed_starting(first)
+    d = B.build_blocks(c, merge_gap=0, side_seed=seed)
+    inner = [b for b in d.used_blocks if b.left_exists and b.right_exists and b.one_sided is None]
+    sides = [(len(b.control_left), len(b.control_right)) for b in inner]
+    assert all(b.n_control == b.n_active == 5 for b in inner)
+    assert set(sides) == {(3, 2), (2, 3)}
+    assert all(sides[k] != sides[k + 1] for k in range(len(sides) - 1))  # alternate in calendar order
+    a1 = B.build_blocks(c, merge_gap=0)  # A1 rule unchanged without the plan seed: right always trimmed
+    assert {(len(b.control_left), len(b.control_right)) for b in a1.used_blocks
+            if b.left_exists and b.right_exists} == {(3, 2)}
