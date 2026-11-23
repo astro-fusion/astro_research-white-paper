@@ -786,3 +786,443 @@ def yearly_calendars(start: int = YEARLY_GRID[0], end: int = YEARLY_GRID[1], mon
     ``rahu_longitude`` (degrees, sidereal) for :func:`nodal_wave`.
     """
     return _yearly_frame(int(start), int(end), int(month), int(day)).copy()
+
+
+
+# ====================================================================
+# Yearly-grid simulators (ADR-008 amendment A3.3, WP-100): cases Y1 to Y11.
+# Every generator takes (years, rng) and returns a dict with the outcome
+# "y" (one value per year, standard deviation 10 points unless stated), the
+# ENSO-like "driver" the test is allowed to see (or None), and, where a case
+# plants its own calendar, "active". None of them knows what the test does
+# with it. Pass marks live in tests/test_stats_yearly.py.
+# ====================================================================
+YEARLY_SD = 10.0
+YEARLY_LENGTHS = (34, 69, 146)
+YEARLY_DROUGHT_RATE = 0.15
+#: Y4: spectral peak (years) and lag-1 correlation of the AR(2) outcome; the
+#: alternating component's size and yearly phase-flip probability.
+BIENNIAL_PERIOD = 2.3
+BIENNIAL_RHO1 = -0.25
+ALTERNATING_AMPLITUDE = 3.0
+ALTERNATING_FLIP = 0.15
+#: Y5: proxy correlation, asymmetric responses (warm, cold), the warm/cold
+#: threshold in driver standard deviations, quasi-cycle period (years).
+ENSO_PROXY_CORR = 0.7
+ENSO_WARM_EFFECT = -8.0
+ENSO_COLD_EFFECT = 3.0
+ENSO_PHASE_SD = 0.5
+ENSO_QUASI_PERIOD = 4.0
+ENSO_QUASI_DAMPING = 0.8
+#: Y6: linear trend over the record, wave amplitude (31-year period) and
+#: step size at two thirds of the record, all in outcome standard deviations.
+TREND_SPAN = 1.0
+WAVE_AMPLITUDE = 0.5
+WAVE_PERIOD = 31.0
+STEP_SIZE = 0.5
+STEP_AT = 2.0 / 3.0
+#: Y7: R2 of the calendar on the driver (the N-02 values).
+LOADED_R2 = (0.14, 0.29, 0.39)
+#: Y11: long-memory parameter.
+LONG_MEMORY_D = 0.2
+#: Real monsoon calendars (ADR-008 A3.3): the rules of rules/monsoon.
+YEARLY_RULE_CALENDARS = ("mars_in_rohini", "ardra_weekday_malefic", "varsheshvara_malefic")
+YEARLY_SYNTHETIC_CALENDARS = ("alternation", "bernoulli_0.4", "three_on_four_off")
+#: Sign calendars of A3.3: Saturn, Jupiter and Rahu in one sign (the sign is fixed here).
+YEARLY_SIGN_CALENDARS = ("saturn_in_capricorn", "jupiter_in_sagittarius", "rahu_in_aries")
+MALEFIC_LORDS = ("Sun", "Mars", "Saturn")
+UJJAIN = {"lat": 23.1765, "lon": 75.7885, "tz_offset_hours": 5.5}
+MARS_WINDOW = ((3, 1), (9, 30))  # window_after = 3 months before 1 June
+MARS_STEP_DAYS = 2
+NINO34_SNAPSHOT = "data/snapshots/noaa_nino34_8ba6cd0536ad.data"
+
+
+def yearly_normal(years, rng: np.random.Generator, sd: float = YEARLY_SD) -> Dict[str, object]:
+    """Y1: independent Normal(0, sd)."""
+    return {"y": rng.standard_normal(len(years)) * sd, "driver": None}
+
+
+def yearly_mirrored_lognormal(years, rng: np.random.Generator, sd: float = YEARLY_SD) -> Dict[str, object]:
+    """Y2: minus a Lognormal(0, 1), centred and scaled to sd (long dry tail, skew about -6.2)."""
+    m, v = math.exp(0.5), (math.e - 1.0) * math.e
+    x = rng.lognormal(0.0, 1.0, len(years))
+    return {"y": -(x - m) / math.sqrt(v) * sd, "driver": None}
+
+
+def yearly_mirrored_exponential(years, rng: np.random.Generator, sd: float = YEARLY_SD) -> Dict[str, object]:
+    """Y2: minus an Exponential(1), centred and scaled to sd (skew -2)."""
+    return {"y": -(rng.exponential(1.0, len(years)) - 1.0) * sd, "driver": None}
+
+
+def drought_threshold(rate: float = YEARLY_DROUGHT_RATE, sd: float = YEARLY_SD) -> float:
+    """The rate point of Normal(0, sd): Y2's drought flag is y below it."""
+    from scipy.stats import norm
+
+    return float(norm.ppf(rate)) * float(sd)
+
+
+def yearly_drought_flag(years, rng: np.random.Generator, rate: float = YEARLY_DROUGHT_RATE) -> Dict[str, object]:
+    """Y2, YX2: yes/no drought flag, the Y1 value below its rate point ("y" holds the flags)."""
+    z = yearly_normal(years, rng)["y"]
+    return {"y": (z < drought_threshold(rate)).astype(np.int8), "driver": None, "latent": z}
+
+
+def yearly_ar1(years, rng: np.random.Generator, phi: float, sd: float = YEARLY_SD) -> Dict[str, object]:
+    """Y3, Y11: stationary AR(1), lag-1 correlation phi, marginal sd."""
+    return {"y": ar1(len(years), rng, phi, sd), "driver": None}
+
+
+def ar2_coefficients(period: float, rho1: float) -> Tuple[float, float]:
+    """AR(2) (phi1, phi2) with lag-1 correlation rho1 and spectral peak at period years.
+
+    rho1 = phi1 / (1 - phi2) and cos(w) = phi1 (phi2 - 1) / (4 phi2) with
+    w = 2 pi / period. With a = -phi2 this is rho1 a^2 + (2 rho1 - 4 cos w) a + rho1 = 0;
+    the root inside the stationary region is taken.
+    """
+    c = math.cos(2.0 * math.pi / period)
+    A, B, C = rho1, 2.0 * rho1 - 4.0 * c, rho1
+    disc = B * B - 4.0 * A * C
+    if disc < 0:
+        raise ValueError("no AR(2) has that peak and lag-1 correlation")
+    roots = [(-B + s * math.sqrt(disc)) / (2.0 * A) for s in (1.0, -1.0)]
+    for a in sorted(roots, key=abs):
+        phi2 = -a
+        phi1 = rho1 * (1.0 - phi2)
+        if a > 0 and -1.0 < phi2 < 1.0 and phi1 + phi2 < 1.0 and phi2 - phi1 < 1.0:
+            return phi1, phi2
+    raise ValueError("no stationary AR(2) has that peak and lag-1 correlation")
+
+
+def ar2_variance_ratio(phi1: float, phi2: float) -> float:
+    """Marginal variance of a stationary AR(2) over its innovation variance."""
+    return (1.0 - phi2) / ((1.0 + phi2) * ((1.0 - phi2) ** 2 - phi1 * phi1))
+
+
+def ar2_series(n: int, rng: np.random.Generator, phi1: float, phi2: float, sd: float = 1.0, burn: int = 300) -> np.ndarray:
+    """Stationary AR(2) scaled to marginal standard deviation sd."""
+    scale = float(sd) / math.sqrt(ar2_variance_ratio(phi1, phi2))
+    e = (rng.standard_normal(int(n) + burn) * scale).tolist()
+    x = [0.0, 0.0]
+    for t in range(len(e)):
+        x.append(phi1 * x[-1] + phi2 * x[-2] + e[t])
+    return np.asarray(x[2 + burn :])
+
+
+def yearly_biennial_ar2(years, rng: np.random.Generator, sd: float = YEARLY_SD) -> Dict[str, object]:
+    """Y4 (first): AR(2) with spectral peak at 2.3 years and lag-1 correlation -0.25."""
+    phi1, phi2 = ar2_coefficients(BIENNIAL_PERIOD, BIENNIAL_RHO1)
+    return {"y": ar2_series(len(years), rng, phi1, phi2, sd), "driver": None}
+
+
+def alternating_component(n: int, rng: np.random.Generator, amplitude: float = ALTERNATING_AMPLITUDE, flip: float = ALTERNATING_FLIP) -> np.ndarray:
+    """Plus or minus amplitude alternating each year; with probability flip a year repeats the last sign (phase flip)."""
+    s = np.empty(int(n))
+    cur = 1.0 if rng.random() < 0.5 else -1.0
+    u = rng.random(int(n))
+    for t in range(int(n)):
+        if t:
+            cur = cur if u[t] < flip else -cur
+        s[t] = cur
+    return amplitude * s
+
+
+def yearly_alternating(years, rng: np.random.Generator, sd: float = YEARLY_SD) -> Dict[str, object]:
+    """Y4 (second): Normal(0, sd) plus an alternating +-3 whose phase flips with probability 0.15 a year."""
+    n = len(years)
+    return {"y": rng.standard_normal(n) * sd + alternating_component(n, rng), "driver": None}
+
+
+def enso_quasi_cycle(n: int, rng: np.random.Generator, period: float = ENSO_QUASI_PERIOD, damping: float = ENSO_QUASI_DAMPING) -> np.ndarray:
+    """Unit-variance AR(2) driver with a peak near period years (Y5d)."""
+    w = 2.0 * math.pi / period
+    return ar2_series(n, rng, 2.0 * damping * math.cos(w), -damping * damping, 1.0)
+
+
+@lru_cache(maxsize=1)
+def _nino34_jjas() -> pd.Series:
+    from pathlib import Path
+
+    from vedic_astrology_core.domains.monsoon import parse_psl_monthly
+
+    root = Path(__file__).resolve().parents[1]
+    df = parse_psl_monthly((root / NINO34_SNAPSHOT).read_text())
+    s = df[["JUN", "JUL", "AUG", "SEP"]].mean(axis=1, skipna=False).dropna()
+    return (s - s.mean()) / s.std()
+
+
+def real_enso_driver(years) -> np.ndarray:
+    """Y5e: the pinned Nino 3.4 June-September mean anomaly (unit SD over the series), for years."""
+    s = _nino34_jjas()
+    yrs = np.asarray(years, dtype=int)
+    if yrs.min() < s.index.min() or yrs.max() > s.index.max():
+        raise ValueError(f"the pinned Nino 3.4 series covers {s.index.min()} to {s.index.max()}")
+    return s.reindex(yrs).to_numpy(dtype=float)
+
+
+def yearly_enso(years, rng: np.random.Generator, variant: str = "a", sd: float = YEARLY_SD) -> Dict[str, object]:
+    """Y5: Z3-style rainfall, 4 * driver plus Normal(0, sd) noise, variants a to e.
+
+    a: the test sees the driver. b: it sees a proxy with correlation 0.7 to it.
+    c: asymmetric, warm years (driver at or above +0.5) -8, cold years (at or below -0.5) +3.
+    d: the driver has a 4-year quasi-cycle. e: the driver is the real Nino 3.4 series.
+    """
+    n = len(years)
+    noise = rng.standard_normal(n) * sd
+    if variant == "e":
+        z = real_enso_driver(years)
+    elif variant == "d":
+        z = enso_quasi_cycle(n, rng)
+    else:
+        z = ar1(n, rng, RAIN_ENSO_PHI)
+    if variant == "c":
+        y = noise + np.where(z >= ENSO_PHASE_SD, ENSO_WARM_EFFECT, 0.0) + np.where(z <= -ENSO_PHASE_SD, ENSO_COLD_EFFECT, 0.0)
+    else:
+        y = RAIN_ENSO_WEIGHT * z + noise
+    seen = z
+    if variant == "b":
+        seen = ENSO_PROXY_CORR * z + math.sqrt(1.0 - ENSO_PROXY_CORR**2) * rng.standard_normal(n)
+    return {"y": y, "driver": seen, "true_driver": z}
+
+
+def yearly_trend_epoch(years, rng: np.random.Generator, variant: str = "trend", sd: float = YEARLY_SD) -> Dict[str, object]:
+    """Y6: Normal(0, sd) plus a trend (rise of 1 sd over the record), a wave (31 years, 0.5 sd) or a step (0.5 sd at two thirds)."""
+    n = len(years)
+    t = np.arange(n, dtype=float)
+    y = rng.standard_normal(n) * sd
+    if variant == "trend":
+        y = y + TREND_SPAN * sd * (t / max(n - 1, 1) - 0.5)
+    elif variant == "wave":
+        y = y + WAVE_AMPLITUDE * sd * np.sin(2.0 * math.pi * t / WAVE_PERIOD + rng.uniform(0.0, 2.0 * math.pi))
+    elif variant == "step":
+        y = y + STEP_SIZE * sd * (t >= int(round(STEP_AT * n))).astype(float)
+    else:
+        raise ValueError("variant must be trend, wave or step")
+    return {"y": y, "driver": None}
+
+
+def arfima_noise(n: int, rng: np.random.Generator, d: float, sd: float = YEARLY_SD, n_lags: int = 1000) -> np.ndarray:
+    """Y11: fractionally integrated ARFIMA(0, d, 0) noise with marginal sd (lag-1 correlation d / (1 - d))."""
+    if not -0.5 < d < 0.5:
+        raise ValueError("d must lie in (-0.5, 0.5)")
+    k = np.arange(1, n_lags)
+    psi = np.concatenate([[1.0], np.cumprod((k - 1 + d) / k)])
+    eps = rng.standard_normal(int(n) + n_lags)
+    x = np.convolve(eps, psi, mode="full")[n_lags : n_lags + int(n)]
+    var = math.gamma(1.0 - 2.0 * d) / math.gamma(1.0 - d) ** 2  # exact marginal variance
+    return x / math.sqrt(var) * sd
+
+
+def yearly_long_memory(years, rng: np.random.Generator, d: float = LONG_MEMORY_D, sd: float = YEARLY_SD) -> Dict[str, object]:
+    """Y11: long memory (fractional d = 0.2)."""
+    return {"y": arfima_noise(len(years), rng, d, sd), "driver": None}
+
+
+# ---------------------------------------------------------------- calendars
+def synthetic_calendar(kind: str, n: int, rng: np.random.Generator = None) -> np.ndarray:
+    """Synthetic yearly calendars: strict alternation (active first), bernoulli_0.4, three_on_four_off."""
+    t = np.arange(int(n))
+    if kind == "alternation":
+        return t % 2 == 0
+    if kind == "three_on_four_off":
+        return (t % 7) < 3
+    if kind.startswith("bernoulli_"):
+        if rng is None:
+            raise ValueError("a Bernoulli calendar needs rng")
+        return rng.random(int(n)) < float(kind.split("_", 1)[1])
+    raise ValueError(f"unknown synthetic calendar {kind!r}")
+
+
+def calendar_r2(active, driver) -> float:
+    """R2 of the 0/1 calendar regressed on the driver (baseline_r2 of one baseline)."""
+    a = np.asarray(active, dtype=float)
+    z = np.asarray(driver, dtype=float)
+    if a.std() == 0 or z.std() == 0:
+        return 0.0
+    return float(np.corrcoef(a, z)[0, 1] ** 2)
+
+
+def driver_loaded_calendar(driver, r2: float, rng: np.random.Generator, duty: float = 0.4, tol: float = 0.01) -> np.ndarray:
+    """Y7: a calendar with a duty share of active years whose R2 on the driver is r2 (within tol).
+
+    Active = the top duty share of w * driver + (1 - w) * noise; w is found by
+    bisection for the drawn noise, so the sample R2 (what R4 reads) hits the
+    target, not only its expectation.
+    """
+    z = np.asarray(driver, dtype=float)
+    z = (z - z.mean()) / z.std()
+    noise = rng.standard_normal(len(z))
+    k = max(1, int(round(duty * len(z))))
+
+    def make(w):
+        score = w * z + (1.0 - w) * noise
+        out = np.zeros(len(z), dtype=bool)
+        out[np.argsort(-score, kind="stable")[:k]] = True
+        return out
+
+    # Start from the bisection answer, then swap one active and one inactive
+    # year at a time, keeping a swap that moves the sample R2 closer to the
+    # target (the R2 of a 0/1 calendar on a short record is granular).
+    lo, hi = 0.0, 1.0
+    best = make(0.5)
+    for _ in range(30):
+        mid = (lo + hi) / 2.0
+        best = make(mid)
+        lo, hi = (mid, hi) if calendar_r2(best, z) < r2 else (lo, mid)
+    cur = best.copy()
+    err = abs(calendar_r2(cur, z) - r2)
+    for _ in range(20_000):
+        if err <= tol / 4.0:
+            break
+        i = rng.choice(np.flatnonzero(cur))
+        j = rng.choice(np.flatnonzero(~cur))
+        cur[i], cur[j] = False, True
+        e = abs(calendar_r2(cur, z) - r2)
+        if e < err:
+            err = e
+        else:
+            cur[i], cur[j] = True, False
+    if err > tol:
+        raise ValueError(f"cannot reach R2 {r2} with {len(z)} years (got {calendar_r2(cur, z):.3f})")
+    return cur
+
+
+def yearly_driver_loaded(years, rng: np.random.Generator, r2: float, duty: float = 0.4) -> Dict[str, object]:
+    """Y7: the Y5(a) outcome with a calendar loaded on the driver at R2 r2."""
+    out = yearly_enso(years, rng, "a")
+    out["active"] = driver_loaded_calendar(out["driver"], r2, rng, duty)
+    return out
+
+
+@lru_cache(maxsize=2)
+def _rule_frame(start: int, end: int) -> pd.DataFrame:
+    from vedic_astrology_core.domains import monsoon as M
+    from vedic_astrology_core.markets.align import sample_instants
+    from vedic_astrology_core.markets.features import indicator_frame
+
+    years = np.arange(int(start), int(end) + 1)
+    days = []
+    for y in years:
+        days.extend(pd.date_range(pd.Timestamp(int(y), *MARS_WINDOW[0]), pd.Timestamp(int(y), *MARS_WINDOW[1]), freq=f"{MARS_STEP_DAYS}D"))
+    f = indicator_frame(sample_instants(pd.DatetimeIndex(days), "00:00", "UTC"), ["MARS"])
+    in_rohini = (f["MARS_nakshatra"] == "Rohini").to_numpy()
+    yr = np.asarray([d.year for d in days])
+    mars = np.array([bool(in_rohini[yr == y].any()) for y in years])
+    ardra, varsh = [], []
+    for y in years:
+        jd = M.sun_nakshatra_ingress(int(y), "Ardra", "lahiri")
+        ardra.append(M.vara_lord(jd, "sunrise", UJJAIN)[0] in MALEFIC_LORDS)
+        jd = M.chaitra_shukla_pratipada(int(y))
+        varsh.append(M.vara_lord(jd, "sunrise", UJJAIN)[0] in MALEFIC_LORDS)
+    return pd.DataFrame(
+        {"mars_in_rohini": mars, "ardra_weekday_malefic": ardra, "varsheshvara_malefic": varsh},
+        index=pd.Index(years, name="year"),
+    )
+
+
+def yearly_rule_calendars(start: int = YEARLY_GRID[0], end: int = YEARLY_GRID[1]) -> pd.DataFrame:
+    """Real monsoon-rule calendars, one yes/no per year.
+
+    mars_in_rohini: Mars in Rohini on any 2-day sample from 1 March to 30
+    September (00:00 UTC, Lahiri). ardra_weekday_malefic and
+    varsheshvara_malefic: the weekday lord (sunrise at Ujjain) at the Sun's
+    Ardra ingress, and at Chaitra Shukla Pratipada, is Sun, Mars or Saturn.
+    Cached; a copy is returned.
+    """
+    return _rule_frame(int(start), int(end)).copy()
+
+
+def yearly_case_calendar(name: str, n: int, rng: np.random.Generator = None) -> np.ndarray:
+    """The calendar name over the last n years of the grid (34: 1983-2016, 69: 1948-2016, 146: 1871-2016).
+
+    Real calendars come from the ephemeris (yearly_calendars for the sign
+    calendars, yearly_rule_calendars for the rules); synthetic ones from
+    synthetic_calendar.
+    """
+    n = int(n)
+    if YEARLY_GRID[1] - n + 1 < YEARLY_GRID[0]:
+        raise ValueError("the record cannot be longer than the yearly grid")
+    if name in YEARLY_RULE_CALENDARS:
+        return yearly_rule_calendars()[name].to_numpy(dtype=bool)[-n:]
+    if name in YEARLY_SYNTHETIC_CALENDARS:
+        return synthetic_calendar(name, n, rng)
+    return yearly_calendars()[name].to_numpy(dtype=bool)[-n:]
+
+
+# --------------------------------------------- naive designs (Y10, kept on record)
+def gap_midpoint_usable_blocks(active) -> int:
+    """Y10(a): blocks the old gap-midpoint block rule can use on a yearly grid.
+
+    Each active run takes inactive years from the gap on each side; a gap
+    between two runs is split at its midpoint and an odd middle year goes to
+    neither; a gap at the record's edge goes whole to the one run beside it. A
+    run is usable when it gets at least as many control years as it has active
+    years (equal-size blocks).
+    """
+    a = np.asarray(active, dtype=bool)
+    runs = episode_runs(a)
+    n = len(a)
+    usable = 0
+    for i, (s, e) in enumerate(runs):
+        length = e - s
+        left_gap = s - (runs[i - 1][1] if i else 0)
+        right_gap = (runs[i + 1][0] if i + 1 < len(runs) else n) - e
+        left = left_gap // 2 if i else left_gap
+        right = right_gap // 2 if i + 1 < len(runs) else right_gap
+        usable += int(left + right >= length)
+    return usable
+
+
+def naive_free_permutation_p(y, active, rng: np.random.Generator, n_perm: int = 199, alternative: str = "greater") -> float:
+    """Y10(b, c): free permutation of the calendar over the years, no strata, no dependence allowance.
+
+    Statistic: mean outcome of active years minus the rest. Returns the
+    one-sided p (1 + #{T* at least as extreme}) / (n_perm + 1).
+    """
+    y = np.asarray(y, dtype=float)
+    a = np.asarray(active, dtype=bool)
+    k, n = int(a.sum()), len(y)
+    t = y[a].mean() - y[~a].mean()
+    idx = np.argsort(rng.random((int(n_perm), n)), axis=1)[:, :k]
+    sums = y[idx].sum(axis=1)
+    ts = sums / k - (y.sum() - sums) / (n - k)
+    hit = (ts >= t - 1e-12) if alternative == "greater" else (ts <= t + 1e-12)
+    return float((1 + hit.sum()) / (n_perm + 1))
+
+
+class OutcomeSpy:
+    """Y9: stands in for the outcome of a design function and records every read.
+
+    Any indexing, iteration, arithmetic or numpy conversion raises
+    AssertionError, so a design that peeks at the outcome fails loudly.
+    """
+
+    def __init__(self, n: int):
+        self.n = int(n)
+        self.reads = 0
+
+    def _peek(self, *a, **k):
+        self.reads += 1
+        raise AssertionError("the design read the outcome")
+
+    __getitem__ = __iter__ = __array__ = __add__ = __radd__ = __sub__ = __mul__ = __rmul__ = __float__ = _peek
+
+    def __len__(self):
+        return self.n
+
+
+#: Generators of cases Y1 to Y7 and Y11 by name: (years, rng) -> dict.
+YEARLY_GENERATORS = {
+    "Y1": lambda yrs, rng: yearly_normal(yrs, rng),
+    "Y2:lognormal": lambda yrs, rng: yearly_mirrored_lognormal(yrs, rng),
+    "Y2:exponential": lambda yrs, rng: yearly_mirrored_exponential(yrs, rng),
+    "Y2:flag": lambda yrs, rng: yearly_drought_flag(yrs, rng),
+    **{f"Y3:{p:+.2f}": (lambda yrs, rng, p=p: yearly_ar1(yrs, rng, p)) for p in (-0.3, -0.15, 0.15, 0.3)},
+    "Y4:ar2": lambda yrs, rng: yearly_biennial_ar2(yrs, rng),
+    "Y4:alternating": lambda yrs, rng: yearly_alternating(yrs, rng),
+    **{f"Y5:{v}": (lambda yrs, rng, v=v: yearly_enso(yrs, rng, v)) for v in "abcde"},
+    **{f"Y6:{v}": (lambda yrs, rng, v=v: yearly_trend_epoch(yrs, rng, v)) for v in ("trend", "wave", "step")},
+    **{f"Y7:{r:.2f}": (lambda yrs, rng, r=r: yearly_driver_loaded(yrs, rng, r)) for r in LOADED_R2},
+    "Y11:ar1+0.5": lambda yrs, rng: yearly_ar1(yrs, rng, 0.5),
+    "Y11:ar1-0.5": lambda yrs, rng: yearly_ar1(yrs, rng, -0.5),
+    "Y11:long_memory": lambda yrs, rng: yearly_long_memory(yrs, rng),
+}
