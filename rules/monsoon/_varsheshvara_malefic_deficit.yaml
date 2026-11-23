@@ -16,7 +16,12 @@ claim: >-
   brings scanty rain in that year's monsoon.
 source:
   text: Brihat Samhita
-  chapter: '19'
+  chapter: "19"
+  verse: "1-3, 7-9, 19-21"
+  edition: "M. Ramakrishna Bhat tr., Motilal Banarsidass, 1981, Part 1"
+  translator: "M. Ramakrishna Bhat"
+  page: "218-224"
+  quote: "[Sun's year] clouds, though resembling mountains, will not pour down sufficient rain ... [Mars's year] nowhere will they pour down sufficient rain."
   note: >-
     Chapter as given by the repository's method registry
     (rules/mundane/methods/_annual.chaitra_pratipada.yaml), from memory: no edition, page,

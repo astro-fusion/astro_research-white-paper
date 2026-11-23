@@ -1,0 +1,27 @@
+# Candidate national charts taken from the owner's own chart files (ADR-006 section 6.1).
+# Kept apart from countries.yaml, whose candidates need a public URL source. Read by
+# studies/mundane/scripts/build_registry.py into data/registry/mundane/charts.yaml.
+# evidence_origin owner_chart_file is recorded as time_evidence.kind 'secondary': no maintainer
+# has checked the time, so the computed grade stays C or lower.
+charts:
+  - chart_id: np-2008-republic-owner
+    country_iso: NP
+    event: Republic declared (owner's Maitreya chart file)
+    date: '2008-05-28'
+    time: '23:26:26'
+    time_zone: Asia/Kathmandu
+    place: Kathmandu
+    lat: 27.701672
+    lon: 85.320561
+    evidence_kind: secondary
+    evidence_origin: owner_chart_file
+    stated_precision_minutes: 60
+    source_title: "Owner's Maitreya 3.0 chart file Nepal.mtx (private, local): 2008-05-28, 23.44055556 h local time, zone +5.75 h, Kathmandu 85.32056056E 27.70167167N"
+    used_by:
+      - repository owner (Maitreya chart file)
+    confidence: disputed
+    notes: >-
+      Time 23.44055556 h decimal = 23:26:26 local. Nepal has kept UTC+05:45 since 1986, so
+      Asia/Kathmandu gives the file's zone. The file does not say where the time comes from;
+      it is a candidate for the republic declaration of the Constituent Assembly's first sitting
+      (same event as np-2008-republic, which has no time).

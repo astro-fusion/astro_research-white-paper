@@ -7,11 +7,11 @@ tradition: "samhita"
 tier: "core"
 source:
   text: "Brihat Samhita"
-  edition: null
-  translator: null
-  chapter: "8 (as cited in astrology/mundane.py)"
-  verse: null
-  quote: null
+  edition: "M. Ramakrishna Bhat tr., Motilal Banarsidass, 1981, Part 1, p. 88-91"
+  translator: "M. Ramakrishna Bhat"
+  chapter: "8"
+  verse: "20-27"
+  quote: "When Jupiter enters the first quarter of the asterism Dhanistha and at the same time rises after getting eclipsed by the Sun, in the month of Magha, Prabhava, the first year of his cycle of 60 years comes into being"
   url: null
   archive_url: null
   checked_by: null
@@ -31,4 +31,4 @@ needs:
 change_period: "1 year; needs only the event moment"
 reference_cases: []
 scope: ["case_file","aggregate"]
-notes: "From memory or a docstring, no page and no quotation; owner task H11. Calendar convention is a parameter."
+notes: "From memory or a docstring, no page and no quotation; owner task H11. Calendar convention is a parameter. Round 5 (machine-located, awaiting owner check): Bhat ch. 8 defines the cycle by Jupiter (Prabhava starts when Jupiter rises in Dhanishtha in Magha, v. 27), not by the luni-solar Chaitra start used in astrology/mundane.py."

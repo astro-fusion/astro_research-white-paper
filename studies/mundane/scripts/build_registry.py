@@ -4,7 +4,8 @@
 Writes into `data/registry/mundane/`:
 
 * `charts.yaml`: every candidate chart for India and Nepal from
-  `studies/mundane/data/countries.yaml` (which is read, never modified).
+  `studies/mundane/data/countries.yaml` (which is read, never modified), plus the charts
+  taken from the owner's chart files in `studies/mundane/data/owner_charts.yaml`.
 * `events.jsonl`: Himalayan earthquakes of Mw 6.0 and above from the hashed USGS snapshot,
   with raw and declustered (Gardner-Knopoff, nearest-neighbour) flags.
 * `MANIFEST.json`: SHA-256 of the inputs and outputs. No timestamps, so a re-run is
@@ -37,6 +38,7 @@ from vedic_astrology_core.mundane import registry as reg  # noqa: E402
 from vedic_astrology_core.stats.manifest import file_sha256  # noqa: E402
 
 COUNTRIES = REPO / "studies" / "mundane" / "data" / "countries.yaml"
+OWNER_CHARTS = REPO / "studies" / "mundane" / "data" / "owner_charts.yaml"
 SNAPSHOT_DIR = REPO / "data" / "snapshots"
 OUT_DIR = REPO / "data" / "registry" / "mundane"
 SEED_ISOS = ("IN", "NP")
@@ -50,6 +52,7 @@ CHART_IDS = {
     "Republic Day (constitution in force)": "in-1950-republic",
     "Abolition of the monarchy (republic declared)": "np-2008-republic",
     "Constitution of Nepal 2015 promulgated": "np-2015-constitution",
+    "Republic declared (owner's Maitreya chart file)": "np-2008-republic-owner",
 }
 #: Place-text country names (USGS `place` is the nearest town, not the epicentre).
 PLACE_COUNTRY = {
@@ -132,6 +135,57 @@ def build_charts(countries_path: Path = COUNTRIES) -> List[Dict[str, Any]]:
                     "notes": " ".join(str(cand.get("notes") or "").split()),
                 }
             )
+    out.extend(build_owner_charts())
+    return out
+
+
+def build_owner_charts(path: Path = OWNER_CHARTS) -> List[Dict[str, Any]]:
+    """Charts from the owner's chart files; the evidence kind is stated per chart, never checked."""
+    if not path.exists():
+        return []
+    out: List[Dict[str, Any]] = []
+    for cand in yaml.safe_load(path.read_text(encoding="utf-8"))["charts"]:
+        cid = CHART_IDS.get(cand["event"])
+        if cid is None or cid != cand["chart_id"]:
+            raise SystemExit(f"no chart_id assigned for {cand['event']!r}")
+        clock = _clock(cand.get("time"))
+        out.append(
+            {
+                "chart_id": cid,
+                "country_iso": cand["country_iso"],
+                "event": cand["event"],
+                "founding": {
+                    "date": str(cand["date"]),
+                    "time": clock,
+                    "time_zone": cand["time_zone"],
+                    "place": cand["place"],
+                    "lat": float(cand["lat"]),
+                    "lon": float(cand["lon"]),
+                },
+                "time_evidence": {
+                    "kind": cand["evidence_kind"] if clock is not None else "none",
+                    "stated_precision_minutes": cand.get("stated_precision_minutes"),
+                    "source": {
+                        "title": cand.get("source_title"),
+                        "url": None,
+                        "archive_url": None,
+                        "accessed": None,
+                        "quote": None,
+                    },
+                    "checked_by": None,
+                    "checked_at": None,
+                    "rectified": False,
+                    "rectification_published": None,
+                },
+                "half_window_minutes": None,
+                "used_by": list(cand.get("used_by") or []),
+                "claimed_confidence": cand["confidence"],
+                "valid_from": str(cand["date"]),
+                "notes": " ".join(
+                    f"Evidence origin: {cand.get('evidence_origin')}. {cand.get('notes') or ''}".split()
+                ),
+            }
+        )
     return out
 
 
@@ -266,6 +320,7 @@ def write_registries(snapshot: Path, out_dir: Path = OUT_DIR) -> Dict[str, Any]:
     manifest = {
         "inputs": {
             "countries_yaml_sha256": file_sha256(COUNTRIES),
+            "owner_charts_yaml_sha256": file_sha256(OWNER_CHARTS),
             "usgs_snapshot": snapshot.name,
             "usgs_snapshot_sha256": file_sha256(snapshot),
         },

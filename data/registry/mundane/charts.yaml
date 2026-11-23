@@ -184,3 +184,36 @@
   valid_from: '2015-09-20'
   notes: Date confirmed by the news report (opened 2026-11-08), which gives no time of day. The unification
     of the 18th century is the third contender (no date stated).
+- chart_id: np-2008-republic-owner
+  country_iso: NP
+  event: Republic declared (owner's Maitreya chart file)
+  founding:
+    date: '2008-05-28'
+    time: '23:26:26'
+    time_zone: Asia/Kathmandu
+    place: Kathmandu
+    lat: 27.701672
+    lon: 85.320561
+  time_evidence:
+    kind: secondary
+    stated_precision_minutes: 60
+    source:
+      title: 'Owner''s Maitreya 3.0 chart file Nepal.mtx (private, local): 2008-05-28, 23.44055556 h local
+        time, zone +5.75 h, Kathmandu 85.32056056E 27.70167167N'
+      url: null
+      archive_url: null
+      accessed: null
+      quote: null
+    checked_by: null
+    checked_at: null
+    rectified: false
+    rectification_published: null
+  half_window_minutes: null
+  used_by:
+  - repository owner (Maitreya chart file)
+  claimed_confidence: disputed
+  valid_from: '2008-05-28'
+  notes: 'Evidence origin: owner_chart_file. Time 23.44055556 h decimal = 23:26:26 local. Nepal has kept
+    UTC+05:45 since 1986, so Asia/Kathmandu gives the file''s zone. The file does not say where the time
+    comes from; it is a candidate for the republic declaration of the Constituent Assembly''s first sitting
+    (same event as np-2008-republic, which has no time).'

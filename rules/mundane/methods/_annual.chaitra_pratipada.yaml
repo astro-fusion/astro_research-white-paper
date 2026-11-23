@@ -7,11 +7,11 @@ tradition: "samhita"
 tier: "phase2"
 source:
   text: "Brihat Samhita"
-  edition: null
-  translator: null
+  edition: "M. Ramakrishna Bhat tr., Motilal Banarsidass, 1981, Part 1, p. 218"
+  translator: "M. Ramakrishna Bhat"
   chapter: "19"
-  verse: null
-  quote: null
+  verse: "1-3"
+  quote: "The state of things in a year, month or day presided over by the Sun will be as follows"
   url: null
   archive_url: null
   checked_by: null

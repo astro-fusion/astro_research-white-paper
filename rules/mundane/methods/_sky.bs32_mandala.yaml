@@ -7,11 +7,11 @@ tradition: "samhita"
 tier: "core"
 source:
   text: "Brihat Samhita"
-  edition: "Iyer translation, 1884, read online 2026-11-08"
-  translator: "N. Chidambaram Iyer"
+  edition: "M. Ramakrishna Bhat tr., Motilal Banarsidass, 1981, Part 1, p. 299-303"
+  translator: "M. Ramakrishna Bhat"
   chapter: "32"
-  verse: "8, 12, 16, 20"
-  quote: null
+  verse: "8-11, 12-15, 16-19, 20-22"
+  quote: "Varuna's Circle is constituted by the seven asterisms, Revati, Purvasadha, Ardra, Aslesa, Mula, Uttarabhadrapada and Satabhisaj."
   url: null
   archive_url: null
   checked_by: null
@@ -31,4 +31,4 @@ needs:
 change_period: "Moon nakshatra 24 h; needs only the event moment"
 reference_cases: []
 scope: ["case_file","aggregate"]
-notes: "Lists confirmed in the incoming audit (docs/research/handover/INCOMING_AUDIT_2026-11-22.md). Becomes page_cited once chapter, edition, quotation and a maintainer check are logged here; Bhat cross-check open (H11)."
+notes: "Lists confirmed in the incoming audit (docs/research/handover/INCOMING_AUDIT_2026-11-22.md). Becomes page_cited once chapter, edition, quotation and a maintainer check are logged here; Bhat cross-check open (H11). Round 5 (machine-located, awaiting owner check): Bhat 1981 pp. 299-303 and the owner's Surkant Jha scan (PDF pp. 280-282) both read Uttara Bhadrapada (Ahirbudhnya) in Varuna; the Iyer 1884 reading is replaced by Bhat above."

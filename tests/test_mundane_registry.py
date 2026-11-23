@@ -217,13 +217,17 @@ def test_unknown_zone_rejected():
 
 # ------------------------------------------------------------ seeded files
 def test_seeded_charts_load_and_grade():
-    """Seeded charts load; India midnight is C, Nepal charts are D, none above C."""
+    """Seeded charts load; India midnight is C, Nepal date-only charts are D, none above C."""
     charts = {c.chart_id: c for c in reg.load_charts()}
     assert set(charts) == set(br.CHART_IDS.values())
     assert charts["in-1947-midnight"].grade == "C"
     assert charts["in-1947-midnight"].half_window == 60.0
     assert charts["np-2008-republic"].grade == "D"
     assert charts["np-2015-constitution"].grade == "D"
+    # Owner's Maitreya chart file: unchecked secondary evidence, so C at most; +05:45 zone.
+    owner = charts["np-2008-republic-owner"]
+    assert owner.grade == "C"
+    assert owner.founding_instant() == datetime(2008, 5, 28, 17, 41, 26, tzinfo=timezone.utc)
     assert all(c.grade in ("C", "D") for c in charts.values())
 
 

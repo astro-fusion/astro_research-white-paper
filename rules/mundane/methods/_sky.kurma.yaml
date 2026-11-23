@@ -7,11 +7,11 @@ tradition: "samhita"
 tier: "core"
 source:
   text: "Brihat Samhita"
-  edition: "Iyer translation, 1884, read online"
-  translator: "N. Chidambaram Iyer"
+  edition: "M. Ramakrishna Bhat tr., Motilal Banarsidass, 1981, Part 1, p. 164-165"
+  translator: "M. Ramakrishna Bhat"
   chapter: "14"
-  verse: null
-  quote: null
+  verse: "1"
+  quote: "In Bharatavarsa the central region and other countries in regular order beginning with those situated in the east are assigned to the nine triads of stars beginning with Krttika."
   url: null
   archive_url: null
   checked_by: null

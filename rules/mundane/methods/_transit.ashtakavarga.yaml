@@ -6,12 +6,12 @@ family: "transit"
 tradition: "jataka_applied"
 tier: "phase3"
 source:
-  text: "BPHS ashtakavarga chapters"
-  edition: null
-  translator: null
-  chapter: null
-  verse: null
-  quote: null
+  text: "Brihat Parashara Hora Shastra (ashtakavarga chapters)"
+  edition: "R. Santhanam tr., Ranjan Publications, 1984, vol. 2, p. 842 (owner's scan 'BPHS - 2 RSanthanam.pdf', PDF p. 352)"
+  translator: "R. Santhanam"
+  chapter: "66"
+  verse: "1-4"
+  quote: "be kind enough to describe a method which would enable even the shallow minded persons to ascertain their happiness and sorrows and determine their longevity on the basis of the positions of the planets in transit."
   url: null
   archive_url: null
   checked_by: null

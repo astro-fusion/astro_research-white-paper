@@ -6,12 +6,12 @@ family: "dasha"
 tradition: "jataka_applied"
 tier: "core"
 source:
-  text: "BPHS dasha-result chapters"
-  edition: null
-  translator: null
-  chapter: null
-  verse: null
-  quote: null
+  text: "Brihat Parashara Hora Shastra (dasha-result chapters)"
+  edition: "R. Santhanam tr., Ranjan Publications, 1984, vol. 2, p. 590 (owner's scan 'BPHS - 2 RSanthanam.pdf', PDF p. 100)"
+  translator: "R. Santhanam"
+  chapter: "48"
+  verse: "2-4"
+  quote: "There will be physical well being in the Dasa of the lord of the Ascendant, distress and possibility of death in the Dasa of the lord of the 2nd"
   url: null
   archive_url: null
   checked_by: null

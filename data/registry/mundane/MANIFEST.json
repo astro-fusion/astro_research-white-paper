@@ -1,17 +1,18 @@
 {
   "counts": {
-    "charts": 6,
+    "charts": 7,
     "events": 16,
     "events_gk_mainshock": 12,
     "events_nn_mainshock": 10
   },
   "inputs": {
     "countries_yaml_sha256": "81755ee8756a52f2d3aa8512bf21fdbce3546f02394931affb495686106eb5d2",
+    "owner_charts_yaml_sha256": "a2fd95c9e0043f791c43cab3eabc82eeb5904d1e6b996b925d5b65e96059b825",
     "usgs_snapshot": "usgs_d3d3d6ec8405.csv",
     "usgs_snapshot_sha256": "d3d3d6ec840599341782147b35579b69dae3919dd2668d762659270baef19972"
   },
   "outputs": {
-    "charts_sha256": "267f1ef432a277901565365683104ada5a70b4b8be42aefd53b39cbd44ade789",
+    "charts_sha256": "5685ccbc3032bf0087a6fc0b5432b2ee12c79ea9de1f41d897c216d6374f530b",
     "events_sha256": "6d06a4cd9cc0c7aeb13174f47a03042edfdb8d60a45e79140364df333c069ba9"
   }
 }
