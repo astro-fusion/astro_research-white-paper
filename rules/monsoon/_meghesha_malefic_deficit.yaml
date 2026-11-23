@@ -33,7 +33,38 @@ conditions: null
 expected_effect:
   series: all_india_jjas_anomaly_pct
   direction: decrease
+  fixed_by: project
   description: June to September all-India rainfall below the long-period average
+reading:
+  kind: forward_trigger
+  note: The weekday lord at the Sun's entry into Ardra (before the season) is set against that season's rain.
+operationalisation:
+- choice: day_convention
+  value: the weekday runs sunrise to sunrise at the reference place (notes.season_calendar.vara)
+  fixed_by: project
+  alternatives:
+  - civil
+- choice: place
+  value: Ujjain, 23.18 N 75.79 E (the monsoon adapter plan's reference_place)
+  fixed_by: project
+  alternatives:
+  - Delhi
+- choice: horizon
+  value: the June to September season of the same year
+  fixed_by: project
+  alternatives:
+  - the June to September season of the following year
+tests:
+- domain: monsoon
+  outcome: all_india_jjas_anomaly_pct
+  direction: decrease
+  project_extension: true
+  note: No text, page or quotation is in hand for the direction (H11).
+- domain: monsoon
+  outcome: all_india_drought
+  direction: increase
+  project_extension: true
+  note: The drought threshold (anomaly below -10 percent) is the project's.
 validation:
   status: unvalidated
 notes:

@@ -16,6 +16,7 @@ claim: >-
 source:
   url: https://astrologicalmusings.com/sapta-nadi-chakra-and-forecasting-summer-season-treads-for-2019/
   text: astrologicalmusings.com, "Sapta Nadi Chakra and forecasting summer season trends for 2019" (2019)
+  published: '2019'   # the page's own year, as in its title and notes.practitioner.date
   note: >-
     Practitioner statement; the page has not yet been opened by a maintainer. The practitioner
     cites Brihat Samhita for Mars in Rohini without a chapter. Same principle as
@@ -37,7 +38,43 @@ window:
 expected_effect:
   series: peninsular_india_jjas_anomaly_pct
   direction: decrease
+  fixed_by: practitioner
   description: June to September rainfall of peninsular (southern) India below its long-period average
+reading:
+  kind: forward_trigger
+  text_says: forward_trigger
+  note: The practitioner reads Mars in Rohini before and during the season as a sign of a dry season.
+operationalisation:
+- choice: day_convention
+  value: the sky at 00:00 UTC on every day of the season window (one-day steps)
+  fixed_by: project
+  alternatives:
+  - sunrise at Ujjain
+- choice: place
+  value: 'none: geocentric sidereal positions'
+  fixed_by: project
+  alternatives:
+  - Ujjain
+- choice: horizon
+  value: the June to September season of the same year, the window opened by params window_after
+  fixed_by: practitioner
+  note: The range of window_after comes from mundane.practitioner.mars_in_rohini_weak_monsoon.
+tests:
+- domain: monsoon
+  outcome: peninsular_india_jjas_anomaly_pct
+  direction: decrease
+  project_extension: true
+  note: The practitioner page has not been opened by a maintainer, so no quotation is in hand.
+- domain: monsoon
+  outcome: peninsular_india_drought
+  direction: increase
+  project_extension: true
+  note: The drought threshold (anomaly below -10 percent) is the project's.
+- domain: monsoon
+  outcome: all_india_jjas_anomaly_pct
+  direction: decrease
+  project_extension: true
+  note: The practitioner speaks of the southern states only.
 params:
   window_before:
     value: 0

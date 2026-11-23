@@ -21,6 +21,7 @@ source:
   edition: "M. Ramakrishna Bhat tr., Motilal Banarsidass, 1981, Part 1"
   translator: "M. Ramakrishna Bhat"
   page: "218-224"
+  published: '550'   # the date the repository uses for Brihat Samhita (rules/seismic/study/moon_mandala_*.yaml)
   quote: "[Sun's year] clouds, though resembling mountains, will not pour down sufficient rain ... [Mars's year] nowhere will they pour down sufficient rain."
   note: >-
     Chapter as given by the repository's method registry
@@ -38,7 +39,38 @@ conditions: null
 expected_effect:
   series: all_india_jjas_anomaly_pct
   direction: decrease
+  fixed_by: project
   description: June to September all-India rainfall below the long-period average
+reading:
+  kind: forward_trigger
+  text_says: forward_trigger
+  note: Brihat Samhita 19 gives the effects of each year's lord for that year; the lord is fixed before the season.
+operationalisation:
+- choice: day_convention
+  value: udaya, the weekday of the first sunrise after the new Moon that starts Chaitra (notes.season_calendar.vara)
+  fixed_by: project
+  alternatives:
+  - sunrise
+  - civil
+- choice: place
+  value: Ujjain, 23.18 N 75.79 E (the monsoon adapter plan's reference_place)
+  fixed_by: project
+  alternatives:
+  - Delhi
+- choice: horizon
+  value: the June to September season of the same year
+  fixed_by: text
+  note: BS 19 gives the effects of the lord for the year it rules.
+tests:
+- domain: monsoon
+  outcome: all_india_jjas_anomaly_pct
+  direction: decrease
+  quote: "[Sun's year] clouds, though resembling mountains, will not pour down sufficient rain ... [Mars's year] nowhere will they pour down sufficient rain."
+- domain: monsoon
+  outcome: all_india_drought
+  direction: increase
+  project_extension: true
+  note: The drought threshold (anomaly below -10 percent) is the project's.
 validation:
   status: unvalidated
 notes:

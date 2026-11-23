@@ -71,7 +71,6 @@ tests:
   direction: either
   project_extension: true
   note: The text claims nothing about the event rate by mandala.
-  project_extension: false
 notes:
   ported_from: Moved unchanged from studies/earthquake/hypothesis.yaml (ADR-007 WP-71); the plan's indicator
     id is moon_mandala_vayu.

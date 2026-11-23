@@ -1,0 +1,4403 @@
+{
+  "domain": "gold",
+  "excluded": [
+    {
+      "category": "untestable",
+      "outcome": "silver.log_return",
+      "reason": "no verified daily silver series (Yahoo SI=F is grade C); monthly Pink Sheet silver needs a month horizon (D-01)",
+      "rule_id": "financial.study.silver_amavasya",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.abs_return",
+      "reason": "as silver log_return",
+      "rule_id": "financial.study.silver_amavasya",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.log_return",
+      "reason": "no verified daily silver series (Yahoo SI=F is grade C); monthly Pink Sheet silver needs a month horizon (D-01)",
+      "rule_id": "financial.study.silver_jupiter_retrograde",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.abs_return",
+      "reason": "as silver log_return",
+      "rule_id": "financial.study.silver_jupiter_retrograde",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.log_return",
+      "reason": "no verified daily silver series (Yahoo SI=F is grade C); monthly Pink Sheet silver needs a month horizon (D-01)",
+      "rule_id": "financial.study.silver_mars_retrograde",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.abs_return",
+      "reason": "as silver log_return",
+      "rule_id": "financial.study.silver_mars_retrograde",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.log_return",
+      "reason": "no verified daily silver series (Yahoo SI=F is grade C); monthly Pink Sheet silver needs a month horizon (D-01)",
+      "rule_id": "financial.study.silver_mercury_retrograde",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.abs_return",
+      "reason": "as silver log_return",
+      "rule_id": "financial.study.silver_mercury_retrograde",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.log_return",
+      "reason": "no verified daily silver series (Yahoo SI=F is grade C); monthly Pink Sheet silver needs a month horizon (D-01)",
+      "rule_id": "financial.study.silver_moon_debilitated",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.abs_return",
+      "reason": "as silver log_return",
+      "rule_id": "financial.study.silver_moon_debilitated",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.log_return",
+      "reason": "no verified daily silver series (Yahoo SI=F is grade C); monthly Pink Sheet silver needs a month horizon (D-01)",
+      "rule_id": "financial.study.silver_moon_exalted",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.abs_return",
+      "reason": "as silver log_return",
+      "rule_id": "financial.study.silver_moon_exalted",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.log_return",
+      "reason": "no verified daily silver series (Yahoo SI=F is grade C); monthly Pink Sheet silver needs a month horizon (D-01)",
+      "rule_id": "financial.study.silver_purnima",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.abs_return",
+      "reason": "as silver log_return",
+      "rule_id": "financial.study.silver_purnima",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.log_return",
+      "reason": "no verified daily silver series (Yahoo SI=F is grade C); monthly Pink Sheet silver needs a month horizon (D-01)",
+      "rule_id": "financial.study.silver_saturn_retrograde",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.abs_return",
+      "reason": "as silver log_return",
+      "rule_id": "financial.study.silver_saturn_retrograde",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.log_return",
+      "reason": "no verified daily silver series (Yahoo SI=F is grade C); monthly Pink Sheet silver needs a month horizon (D-01)",
+      "rule_id": "financial.study.silver_venus_combust",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.abs_return",
+      "reason": "as silver log_return",
+      "rule_id": "financial.study.silver_venus_combust",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.log_return",
+      "reason": "no verified daily silver series (Yahoo SI=F is grade C); monthly Pink Sheet silver needs a month horizon (D-01)",
+      "rule_id": "financial.study.silver_venus_debilitated",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.abs_return",
+      "reason": "as silver log_return",
+      "rule_id": "financial.study.silver_venus_debilitated",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.log_return",
+      "reason": "no verified daily silver series (Yahoo SI=F is grade C); monthly Pink Sheet silver needs a month horizon (D-01)",
+      "rule_id": "financial.study.silver_venus_exalted",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.abs_return",
+      "reason": "as silver log_return",
+      "rule_id": "financial.study.silver_venus_exalted",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.log_return",
+      "reason": "no verified daily silver series (Yahoo SI=F is grade C); monthly Pink Sheet silver needs a month horizon (D-01)",
+      "rule_id": "financial.study.silver_venus_jupiter_conjunction",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.abs_return",
+      "reason": "as silver log_return",
+      "rule_id": "financial.study.silver_venus_jupiter_conjunction",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.log_return",
+      "reason": "no verified daily silver series (Yahoo SI=F is grade C); monthly Pink Sheet silver needs a month horizon (D-01)",
+      "rule_id": "financial.study.silver_venus_own_sign",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.abs_return",
+      "reason": "as silver log_return",
+      "rule_id": "financial.study.silver_venus_own_sign",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.log_return",
+      "reason": "no verified daily silver series (Yahoo SI=F is grade C); monthly Pink Sheet silver needs a month horizon (D-01)",
+      "rule_id": "financial.study.silver_venus_retrograde",
+      "variant": "primary"
+    },
+    {
+      "category": "untestable",
+      "outcome": "silver.abs_return",
+      "reason": "as silver log_return",
+      "rule_id": "financial.study.silver_venus_retrograde",
+      "variant": "primary"
+    }
+  ],
+  "headline": {
+    "below_entry_level": 42,
+    "expected_at_or_below_0_05_if_no_effect": 0.6,
+    "explore_p_at_or_below_0_05_uncorrected": 0,
+    "gate_untestable": 30,
+    "note": "descriptive, explore period only, no multiplicity correction and no verdict; about 5% of tests reach p <= 0.05 with no effect at all",
+    "registrable": 42,
+    "smallest_explore_p_uncorrected": 0.38635,
+    "tests": 42,
+    "with_explore_numbers": 12
+  },
+  "notes": {
+    "baselines_declared": [
+      "calendar_terms"
+    ],
+    "fixing": "13:00 Europe/Berlin",
+    "long_gap_bars": 55,
+    "series": "gold_dem_frankfurt"
+  },
+  "outcomes_refused": null,
+  "period": {
+    "confirm_rows_read": false,
+    "explore": [
+      "1968-06-19",
+      "1986-12-31"
+    ]
+  },
+  "plan": {
+    "path": "studies/validity/domains/metals.yaml",
+    "sha256": "3acd52202b67f8c502a0749c39bb75821e62eef128b2783764ae161bc59b955a",
+    "status": "draft"
+  },
+  "provisional": true,
+  "records": [
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.07295630494685737,
+        "n_bars": 7621,
+        "sha256": "55c6ab41ba42f4d146a3fb04948b892c0e0f75217b60b2e54279bf75aac19023"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 11,
+        "full_blocks": 26,
+        "untestable": true,
+        "untestable_reason": "no_sesoi"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 7% of the time, 11 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Jupiter combust",
+      "outcome": "gold_dem_frankfurt_abs_return",
+      "outcome_type": "log_ratio",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_jupiter_combust",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_jupiter_combust@1/primary/gold_dem_frankfurt_abs_return",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.07295630494685737,
+        "n_bars": 7621,
+        "sha256": "55c6ab41ba42f4d146a3fb04948b892c0e0f75217b60b2e54279bf75aac19023"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 11,
+        "full_blocks": 26,
+        "untestable": true,
+        "untestable_reason": "no_sesoi"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 7% of the time, 11 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Jupiter combust",
+      "outcome": "gold_dem_frankfurt_extreme_move",
+      "outcome_type": "flags",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_jupiter_combust",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_jupiter_combust@1/primary/gold_dem_frankfurt_extreme_move",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.07295630494685737,
+        "n_bars": 7621,
+        "sha256": "55c6ab41ba42f4d146a3fb04948b892c0e0f75217b60b2e54279bf75aac19023"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 11,
+        "full_blocks": 28,
+        "untestable": true,
+        "untestable_reason": "no_sesoi"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 7% of the time, 11 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Jupiter combust",
+      "outcome": "gold_dem_frankfurt_log_return",
+      "outcome_type": "continuous",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_jupiter_combust",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_jupiter_combust@1/primary/gold_dem_frankfurt_log_return",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.09998687836241962,
+        "n_bars": 7621,
+        "sha256": "c3d207c2aa8b9a8decb06805122e7220d429e5f1d8a17f8409570e0fc7061467"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 1,
+        "full_blocks": 3,
+        "untestable": true,
+        "untestable_reason": "too_few_episodes"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 10% of the time, 1 episode in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: there are fewer than 8 effective episodes, no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Jupiter in Capricorn (debilitated)",
+      "outcome": "gold_dem_frankfurt_abs_return",
+      "outcome_type": "log_ratio",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_jupiter_debilitated",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_jupiter_debilitated@1/primary/gold_dem_frankfurt_abs_return",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.09998687836241962,
+        "n_bars": 7621,
+        "sha256": "c3d207c2aa8b9a8decb06805122e7220d429e5f1d8a17f8409570e0fc7061467"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 1,
+        "full_blocks": 3,
+        "untestable": true,
+        "untestable_reason": "too_few_episodes"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 10% of the time, 1 episode in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: there are fewer than 8 effective episodes, no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Jupiter in Capricorn (debilitated)",
+      "outcome": "gold_dem_frankfurt_extreme_move",
+      "outcome_type": "flags",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_jupiter_debilitated",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_jupiter_debilitated@1/primary/gold_dem_frankfurt_extreme_move",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.09998687836241962,
+        "n_bars": 7621,
+        "sha256": "c3d207c2aa8b9a8decb06805122e7220d429e5f1d8a17f8409570e0fc7061467"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 1,
+        "full_blocks": 3,
+        "untestable": true,
+        "untestable_reason": "too_few_episodes"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 10% of the time, 1 episode in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: there are fewer than 8 effective episodes, no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Jupiter in Capricorn (debilitated)",
+      "outcome": "gold_dem_frankfurt_log_return",
+      "outcome_type": "continuous",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_jupiter_debilitated",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_jupiter_debilitated@1/primary/gold_dem_frankfurt_log_return",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.06993832830337227,
+        "n_bars": 7621,
+        "sha256": "efea6bae4ac3f073bffd8a7c52021237c1556ef756960afe09bd1b9558628592"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 1,
+        "full_blocks": 2,
+        "untestable": true,
+        "untestable_reason": "too_few_episodes"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 7% of the time, 1 episode in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: there are fewer than 8 effective episodes, no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Jupiter in Cancer (exalted)",
+      "outcome": "gold_dem_frankfurt_abs_return",
+      "outcome_type": "log_ratio",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_jupiter_exalted",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_jupiter_exalted@1/primary/gold_dem_frankfurt_abs_return",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.06993832830337227,
+        "n_bars": 7621,
+        "sha256": "efea6bae4ac3f073bffd8a7c52021237c1556ef756960afe09bd1b9558628592"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 1,
+        "full_blocks": 2,
+        "untestable": true,
+        "untestable_reason": "too_few_episodes"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 7% of the time, 1 episode in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: there are fewer than 8 effective episodes, no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Jupiter in Cancer (exalted)",
+      "outcome": "gold_dem_frankfurt_extreme_move",
+      "outcome_type": "flags",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_jupiter_exalted",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_jupiter_exalted@1/primary/gold_dem_frankfurt_extreme_move",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.06993832830337227,
+        "n_bars": 7621,
+        "sha256": "efea6bae4ac3f073bffd8a7c52021237c1556ef756960afe09bd1b9558628592"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 1,
+        "full_blocks": 2,
+        "untestable": true,
+        "untestable_reason": "too_few_episodes"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 7% of the time, 1 episode in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: there are fewer than 8 effective episodes, no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Jupiter in Cancer (exalted)",
+      "outcome": "gold_dem_frankfurt_log_return",
+      "outcome_type": "continuous",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_jupiter_exalted",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_jupiter_exalted@1/primary/gold_dem_frankfurt_log_return",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.3053405064952106,
+        "n_bars": 7621,
+        "sha256": "7f3d89de6a94ac5ac6313594e940bab87e4f7f36ac03e61c2a04c9b646a545c6"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 10,
+        "full_blocks": 25,
+        "untestable": true,
+        "untestable_reason": "no_sesoi"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 31% of the time, 10 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Jupiter retrograde",
+      "outcome": "gold_dem_frankfurt_abs_return",
+      "outcome_type": "log_ratio",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_jupiter_retrograde",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_jupiter_retrograde@1/primary/gold_dem_frankfurt_abs_return",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.3053405064952106,
+        "n_bars": 7621,
+        "sha256": "7f3d89de6a94ac5ac6313594e940bab87e4f7f36ac03e61c2a04c9b646a545c6"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 10,
+        "full_blocks": 25,
+        "untestable": true,
+        "untestable_reason": "no_sesoi"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 31% of the time, 10 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Jupiter retrograde",
+      "outcome": "gold_dem_frankfurt_extreme_move",
+      "outcome_type": "flags",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_jupiter_retrograde",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_jupiter_retrograde@1/primary/gold_dem_frankfurt_extreme_move",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.3053405064952106,
+        "n_bars": 7621,
+        "sha256": "7f3d89de6a94ac5ac6313594e940bab87e4f7f36ac03e61c2a04c9b646a545c6"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 10,
+        "full_blocks": 27,
+        "untestable": true,
+        "untestable_reason": "no_sesoi"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 31% of the time, 10 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Jupiter retrograde",
+      "outcome": "gold_dem_frankfurt_log_return",
+      "outcome_type": "continuous",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_jupiter_retrograde",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_jupiter_retrograde@1/primary/gold_dem_frankfurt_log_return",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.09145781393517911,
+        "n_bars": 7621,
+        "sha256": "7b6bf80839ac3e5f6c7ea9adaea2f404be41dabee33ba7ffd58799d6d64ace8d"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 5,
+        "full_blocks": 13,
+        "untestable": true,
+        "untestable_reason": "no_sesoi"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 9% of the time, 5 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Mars retrograde",
+      "outcome": "gold_dem_frankfurt_abs_return",
+      "outcome_type": "log_ratio",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_mars_retrograde",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_mars_retrograde@1/primary/gold_dem_frankfurt_abs_return",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.09145781393517911,
+        "n_bars": 7621,
+        "sha256": "7b6bf80839ac3e5f6c7ea9adaea2f404be41dabee33ba7ffd58799d6d64ace8d"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 5,
+        "full_blocks": 13,
+        "untestable": true,
+        "untestable_reason": "no_sesoi"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 9% of the time, 5 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Mars retrograde",
+      "outcome": "gold_dem_frankfurt_extreme_move",
+      "outcome_type": "flags",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_mars_retrograde",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_mars_retrograde@1/primary/gold_dem_frankfurt_extreme_move",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.09145781393517911,
+        "n_bars": 7621,
+        "sha256": "7b6bf80839ac3e5f6c7ea9adaea2f404be41dabee33ba7ffd58799d6d64ace8d"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 5,
+        "full_blocks": 14,
+        "untestable": true,
+        "untestable_reason": "no_sesoi"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 9% of the time, 5 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Mars retrograde",
+      "outcome": "gold_dem_frankfurt_log_return",
+      "outcome_type": "continuous",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_mars_retrograde",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_mars_retrograde@1/primary/gold_dem_frankfurt_log_return",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.19013252853956172,
+        "n_bars": 7621,
+        "sha256": "abf009a6d599654b91af213b6a3659bf82f3a6ea6f52047c7d901f9f0da8719d"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": {
+        "with_baselines": -0.016547594238547136,
+        "without_baselines": -0.01843906994054091
+      },
+      "explore": {
+        "blocks_used": 52,
+        "estimate": -0.016547594238547136,
+        "p_descriptive_uncorrected": 0.78351,
+        "scale": "log_ratio",
+        "statistic": -0.016547594238547136
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": true,
+        "confirm_blocks": 38,
+        "full_blocks": 90,
+        "untestable": false,
+        "untestable_reason": null
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 19% of the time, 38 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Mercury retrograde",
+      "outcome": "gold_dem_frankfurt_abs_return",
+      "outcome_type": "log_ratio",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": {
+        "R1": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R2": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R3": {
+          "passed": null,
+          "status": "not_run"
+        },
+        "R4": {
+          "passed": null,
+          "status": "pass"
+        }
+      },
+      "rule_id": "financial.study.gold_mercury_retrograde",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_mercury_retrograde@1/primary/gold_dem_frankfurt_abs_return",
+      "variant": "primary",
+      "x95_explore_per_test": {
+        "alpha": 0.05,
+        "informative_blocks": 0,
+        "k_eff": 50.98251421780834,
+        "level": 0.95,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 5,
+        "scale": "ratio",
+        "unbounded": true
+      },
+      "x_strict_explore": {
+        "alpha": 0.0009523809523809524,
+        "informative_blocks": 0,
+        "k_eff": 50.98251421780834,
+        "level": 0.9990476190476191,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 11,
+        "scale": "ratio",
+        "unbounded": true
+      }
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.19013252853956172,
+        "n_bars": 7621,
+        "sha256": "abf009a6d599654b91af213b6a3659bf82f3a6ea6f52047c7d901f9f0da8719d"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": {
+        "with_baselines": 0.012903225806451613,
+        "without_baselines": 0.012903225806451613
+      },
+      "explore": {
+        "blocks_used": 52,
+        "estimate": 1.1923076923076923,
+        "p_descriptive_uncorrected": 0.45656,
+        "scale": "risk_ratio",
+        "statistic": 0.012903225806451613
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": true,
+        "confirm_blocks": 38,
+        "full_blocks": 90,
+        "untestable": false,
+        "untestable_reason": null
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 19% of the time, 38 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Mercury retrograde",
+      "outcome": "gold_dem_frankfurt_extreme_move",
+      "outcome_type": "flags",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": {
+        "R1": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R2": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R3": {
+          "passed": null,
+          "status": "not_run"
+        },
+        "R4": {
+          "passed": null,
+          "status": "pass"
+        }
+      },
+      "rule_id": "financial.study.gold_mercury_retrograde",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_mercury_retrograde@1/primary/gold_dem_frankfurt_extreme_move",
+      "variant": "primary",
+      "x95_explore_per_test": {
+        "alpha": 0.05,
+        "informative_blocks": 0,
+        "k_eff": 50.98251421780834,
+        "level": 0.95,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 5,
+        "scale": "risk_ratio",
+        "unbounded": true
+      },
+      "x_strict_explore": {
+        "alpha": 0.0009523809523809524,
+        "informative_blocks": 0,
+        "k_eff": 50.98251421780834,
+        "level": 0.9990476190476191,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 11,
+        "scale": "risk_ratio",
+        "unbounded": true
+      }
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.19013252853956172,
+        "n_bars": 7621,
+        "sha256": "abf009a6d599654b91af213b6a3659bf82f3a6ea6f52047c7d901f9f0da8719d"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": {
+        "with_baselines": -0.0004956111811700715,
+        "without_baselines": -0.0004665406214665683
+      },
+      "explore": {
+        "blocks_used": 59,
+        "estimate": -0.0004956111811700715,
+        "p_descriptive_uncorrected": 0.38635,
+        "scale": "difference",
+        "statistic": -0.0004956111811700715
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": true,
+        "confirm_blocks": 38,
+        "full_blocks": 97,
+        "untestable": false,
+        "untestable_reason": null
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 19% of the time, 38 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Mercury retrograde",
+      "outcome": "gold_dem_frankfurt_log_return",
+      "outcome_type": "continuous",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": {
+        "R1": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R2": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R3": {
+          "passed": null,
+          "status": "not_run"
+        },
+        "R4": {
+          "passed": null,
+          "status": "pass"
+        }
+      },
+      "rule_id": "financial.study.gold_mercury_retrograde",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_mercury_retrograde@1/primary/gold_dem_frankfurt_log_return",
+      "variant": "primary",
+      "x95_explore_per_test": {
+        "alpha": 0.05,
+        "informative_blocks": 0,
+        "k_eff": 57.73963010883629,
+        "level": 0.95,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 5,
+        "scale": "difference",
+        "unbounded": true
+      },
+      "x_strict_explore": {
+        "alpha": 0.0009523809523809524,
+        "informative_blocks": 0,
+        "k_eff": 57.73963010883629,
+        "level": 0.9990476190476191,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 11,
+        "scale": "difference",
+        "unbounded": true
+      }
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.37055504526964966,
+        "n_bars": 7621,
+        "sha256": "b4c63cd6cd397056c3f7cad7165fe492d611001851939b873aac4e294ece101a"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 11,
+        "full_blocks": 27,
+        "untestable": true,
+        "untestable_reason": "no_sesoi"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 37% of the time, 11 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Saturn retrograde",
+      "outcome": "gold_dem_frankfurt_abs_return",
+      "outcome_type": "log_ratio",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_saturn_retrograde",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_saturn_retrograde@1/primary/gold_dem_frankfurt_abs_return",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.37055504526964966,
+        "n_bars": 7621,
+        "sha256": "b4c63cd6cd397056c3f7cad7165fe492d611001851939b873aac4e294ece101a"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 11,
+        "full_blocks": 27,
+        "untestable": true,
+        "untestable_reason": "no_sesoi"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 37% of the time, 11 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Saturn retrograde",
+      "outcome": "gold_dem_frankfurt_extreme_move",
+      "outcome_type": "flags",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_saturn_retrograde",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_saturn_retrograde@1/primary/gold_dem_frankfurt_extreme_move",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.37055504526964966,
+        "n_bars": 7621,
+        "sha256": "b4c63cd6cd397056c3f7cad7165fe492d611001851939b873aac4e294ece101a"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 11,
+        "full_blocks": 28,
+        "untestable": true,
+        "untestable_reason": "no_sesoi"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 37% of the time, 11 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Saturn retrograde",
+      "outcome": "gold_dem_frankfurt_log_return",
+      "outcome_type": "continuous",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_saturn_retrograde",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_saturn_retrograde@1/primary/gold_dem_frankfurt_log_return",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.0867340244062459,
+        "n_bars": 7621,
+        "sha256": "1cf362535053b571d3929cc2ae816371edd17fcd8c33e61b092fb0c057c8639d"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": true,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 0,
+        "full_blocks": 0,
+        "untestable": true,
+        "untestable_reason": "season"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 9% of the time, 0 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: it cannot be separated from the season, the smallest attainable p-value is above the test's threshold. No effect could be excluded: it cannot be separated from the season, no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "separability",
+          "text": "The Sun's position here is almost the same variable as a stretch of the calendar year. A calendar effect cannot be told apart."
+        }
+      ],
+      "name": "Gold Sun in Libra (debilitated)",
+      "outcome": "gold_dem_frankfurt_abs_return",
+      "outcome_type": "log_ratio",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_sun_debilitated",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_sun_debilitated@1/primary/gold_dem_frankfurt_abs_return",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.0867340244062459,
+        "n_bars": 7621,
+        "sha256": "1cf362535053b571d3929cc2ae816371edd17fcd8c33e61b092fb0c057c8639d"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": true,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 0,
+        "full_blocks": 0,
+        "untestable": true,
+        "untestable_reason": "season"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 9% of the time, 0 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: it cannot be separated from the season, the smallest attainable p-value is above the test's threshold. No effect could be excluded: it cannot be separated from the season, no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "separability",
+          "text": "The Sun's position here is almost the same variable as a stretch of the calendar year. A calendar effect cannot be told apart."
+        }
+      ],
+      "name": "Gold Sun in Libra (debilitated)",
+      "outcome": "gold_dem_frankfurt_extreme_move",
+      "outcome_type": "flags",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_sun_debilitated",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_sun_debilitated@1/primary/gold_dem_frankfurt_extreme_move",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.0867340244062459,
+        "n_bars": 7621,
+        "sha256": "1cf362535053b571d3929cc2ae816371edd17fcd8c33e61b092fb0c057c8639d"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": true,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 0,
+        "full_blocks": 0,
+        "untestable": true,
+        "untestable_reason": "season"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 9% of the time, 0 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: it cannot be separated from the season, the smallest attainable p-value is above the test's threshold. No effect could be excluded: it cannot be separated from the season, no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "separability",
+          "text": "The Sun's position here is almost the same variable as a stretch of the calendar year. A calendar effect cannot be told apart."
+        }
+      ],
+      "name": "Gold Sun in Libra (debilitated)",
+      "outcome": "gold_dem_frankfurt_log_return",
+      "outcome_type": "continuous",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_sun_debilitated",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_sun_debilitated@1/primary/gold_dem_frankfurt_log_return",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.08017320561606088,
+        "n_bars": 7621,
+        "sha256": "4cd7dd9c3a477d18c1e746b06adfd0068bb06eb2608692d7bd82f9dca7996e47"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": true,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 0,
+        "full_blocks": 0,
+        "untestable": true,
+        "untestable_reason": "season"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 8% of the time, 0 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: it cannot be separated from the season, the smallest attainable p-value is above the test's threshold. No effect could be excluded: it cannot be separated from the season, no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "separability",
+          "text": "The Sun's position here is almost the same variable as a stretch of the calendar year. A calendar effect cannot be told apart."
+        }
+      ],
+      "name": "Gold Sun in Aries (exalted)",
+      "outcome": "gold_dem_frankfurt_abs_return",
+      "outcome_type": "log_ratio",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_sun_exalted",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_sun_exalted@1/primary/gold_dem_frankfurt_abs_return",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.08017320561606088,
+        "n_bars": 7621,
+        "sha256": "4cd7dd9c3a477d18c1e746b06adfd0068bb06eb2608692d7bd82f9dca7996e47"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": true,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 0,
+        "full_blocks": 0,
+        "untestable": true,
+        "untestable_reason": "season"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 8% of the time, 0 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: it cannot be separated from the season, the smallest attainable p-value is above the test's threshold. No effect could be excluded: it cannot be separated from the season, no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "separability",
+          "text": "The Sun's position here is almost the same variable as a stretch of the calendar year. A calendar effect cannot be told apart."
+        }
+      ],
+      "name": "Gold Sun in Aries (exalted)",
+      "outcome": "gold_dem_frankfurt_extreme_move",
+      "outcome_type": "flags",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_sun_exalted",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_sun_exalted@1/primary/gold_dem_frankfurt_extreme_move",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.08017320561606088,
+        "n_bars": 7621,
+        "sha256": "4cd7dd9c3a477d18c1e746b06adfd0068bb06eb2608692d7bd82f9dca7996e47"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": true,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 0,
+        "full_blocks": 0,
+        "untestable": true,
+        "untestable_reason": "season"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 8% of the time, 0 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: it cannot be separated from the season, the smallest attainable p-value is above the test's threshold. No effect could be excluded: it cannot be separated from the season, no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "separability",
+          "text": "The Sun's position here is almost the same variable as a stretch of the calendar year. A calendar effect cannot be told apart."
+        }
+      ],
+      "name": "Gold Sun in Aries (exalted)",
+      "outcome": "gold_dem_frankfurt_log_return",
+      "outcome_type": "continuous",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_sun_exalted",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_sun_exalted@1/primary/gold_dem_frankfurt_log_return",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.0893583519223199,
+        "n_bars": 7621,
+        "sha256": "b1a4c20c8bd7e710adbaa89f75c332544a5e9e5afddaa3dd4de1f762b51439f5"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": true,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 0,
+        "full_blocks": 0,
+        "untestable": true,
+        "untestable_reason": "season"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 9% of the time, 0 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: it cannot be separated from the season, the smallest attainable p-value is above the test's threshold. No effect could be excluded: it cannot be separated from the season, no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "separability",
+          "text": "The Sun's position here is almost the same variable as a stretch of the calendar year. A calendar effect cannot be told apart."
+        }
+      ],
+      "name": "Gold Sun in Leo (own sign)",
+      "outcome": "gold_dem_frankfurt_abs_return",
+      "outcome_type": "log_ratio",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_sun_own_sign",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_sun_own_sign@1/primary/gold_dem_frankfurt_abs_return",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.0893583519223199,
+        "n_bars": 7621,
+        "sha256": "b1a4c20c8bd7e710adbaa89f75c332544a5e9e5afddaa3dd4de1f762b51439f5"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": true,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 0,
+        "full_blocks": 0,
+        "untestable": true,
+        "untestable_reason": "season"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 9% of the time, 0 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: it cannot be separated from the season, the smallest attainable p-value is above the test's threshold. No effect could be excluded: it cannot be separated from the season, no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "separability",
+          "text": "The Sun's position here is almost the same variable as a stretch of the calendar year. A calendar effect cannot be told apart."
+        }
+      ],
+      "name": "Gold Sun in Leo (own sign)",
+      "outcome": "gold_dem_frankfurt_extreme_move",
+      "outcome_type": "flags",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_sun_own_sign",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_sun_own_sign@1/primary/gold_dem_frankfurt_extreme_move",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.0893583519223199,
+        "n_bars": 7621,
+        "sha256": "b1a4c20c8bd7e710adbaa89f75c332544a5e9e5afddaa3dd4de1f762b51439f5"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": true,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 0,
+        "full_blocks": 0,
+        "untestable": true,
+        "untestable_reason": "season"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 9% of the time, 0 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: it cannot be separated from the season, the smallest attainable p-value is above the test's threshold. No effect could be excluded: it cannot be separated from the season, no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "separability",
+          "text": "The Sun's position here is almost the same variable as a stretch of the calendar year. A calendar effect cannot be told apart."
+        }
+      ],
+      "name": "Gold Sun in Leo (own sign)",
+      "outcome": "gold_dem_frankfurt_log_return",
+      "outcome_type": "continuous",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_sun_own_sign",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_sun_own_sign@1/primary/gold_dem_frankfurt_log_return",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.15089883217425534,
+        "n_bars": 7621,
+        "sha256": "cd87dcb2acb7d844127b8872e78503cbd7bd38c0acc85cce45ac2d3397d0ce38"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": {
+        "with_baselines": 0.03834353106661138,
+        "without_baselines": 0.04737631934223977
+      },
+      "explore": {
+        "blocks_used": 21,
+        "estimate": 0.03834353106661138,
+        "p_descriptive_uncorrected": 0.57308,
+        "scale": "log_ratio",
+        "statistic": 0.03834353106661138
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": true,
+        "confirm_blocks": 14,
+        "full_blocks": 35,
+        "untestable": false,
+        "untestable_reason": null
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 15% of the time, 14 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Venus combust",
+      "outcome": "gold_dem_frankfurt_abs_return",
+      "outcome_type": "log_ratio",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": {
+        "R1": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R2": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R3": {
+          "passed": null,
+          "status": "not_run"
+        },
+        "R4": {
+          "passed": null,
+          "status": "pass"
+        }
+      },
+      "rule_id": "financial.study.gold_venus_combust",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_venus_combust@1/primary/gold_dem_frankfurt_abs_return",
+      "variant": "primary",
+      "x95_explore_per_test": {
+        "alpha": 0.05,
+        "informative_blocks": 0,
+        "k_eff": 12.323247124331452,
+        "level": 0.95,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 5,
+        "scale": "ratio",
+        "unbounded": true
+      },
+      "x_strict_explore": {
+        "alpha": 0.0009523809523809524,
+        "informative_blocks": 0,
+        "k_eff": 12.323247124331452,
+        "level": 0.9990476190476191,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 11,
+        "scale": "ratio",
+        "unbounded": true
+      }
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.15089883217425534,
+        "n_bars": 7621,
+        "sha256": "cd87dcb2acb7d844127b8872e78503cbd7bd38c0acc85cce45ac2d3397d0ce38"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": {
+        "with_baselines": -0.005172413793103446,
+        "without_baselines": -0.005172413793103446
+      },
+      "explore": {
+        "blocks_used": 21,
+        "estimate": 0.9433962264150944,
+        "p_descriptive_uncorrected": 0.8765,
+        "scale": "risk_ratio",
+        "statistic": -0.005172413793103446
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": true,
+        "confirm_blocks": 14,
+        "full_blocks": 35,
+        "untestable": false,
+        "untestable_reason": null
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 15% of the time, 14 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Venus combust",
+      "outcome": "gold_dem_frankfurt_extreme_move",
+      "outcome_type": "flags",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": {
+        "R1": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R2": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R3": {
+          "passed": null,
+          "status": "not_run"
+        },
+        "R4": {
+          "passed": null,
+          "status": "pass"
+        }
+      },
+      "rule_id": "financial.study.gold_venus_combust",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_venus_combust@1/primary/gold_dem_frankfurt_extreme_move",
+      "variant": "primary",
+      "x95_explore_per_test": {
+        "alpha": 0.05,
+        "informative_blocks": 0,
+        "k_eff": 12.323247124331452,
+        "level": 0.95,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 5,
+        "scale": "risk_ratio",
+        "unbounded": true
+      },
+      "x_strict_explore": {
+        "alpha": 0.0009523809523809524,
+        "informative_blocks": 0,
+        "k_eff": 12.323247124331452,
+        "level": 0.9990476190476191,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 11,
+        "scale": "risk_ratio",
+        "unbounded": true
+      }
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.15089883217425534,
+        "n_bars": 7621,
+        "sha256": "cd87dcb2acb7d844127b8872e78503cbd7bd38c0acc85cce45ac2d3397d0ce38"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": {
+        "with_baselines": 0.0005346983445643607,
+        "without_baselines": 0.0006748722644667589
+      },
+      "explore": {
+        "blocks_used": 24,
+        "estimate": 0.0005346983445643607,
+        "p_descriptive_uncorrected": 0.60192,
+        "scale": "difference",
+        "statistic": 0.0005346983445643607
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": true,
+        "confirm_blocks": 14,
+        "full_blocks": 38,
+        "untestable": false,
+        "untestable_reason": null
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 15% of the time, 14 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Venus combust",
+      "outcome": "gold_dem_frankfurt_log_return",
+      "outcome_type": "continuous",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": {
+        "R1": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R2": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R3": {
+          "passed": null,
+          "status": "not_run"
+        },
+        "R4": {
+          "passed": null,
+          "status": "pass"
+        }
+      },
+      "rule_id": "financial.study.gold_venus_combust",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_venus_combust@1/primary/gold_dem_frankfurt_log_return",
+      "variant": "primary",
+      "x95_explore_per_test": {
+        "alpha": 0.05,
+        "informative_blocks": 0,
+        "k_eff": 14.30318621967978,
+        "level": 0.95,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 5,
+        "scale": "difference",
+        "unbounded": true
+      },
+      "x_strict_explore": {
+        "alpha": 0.0009523809523809524,
+        "informative_blocks": 0,
+        "k_eff": 14.30318621967978,
+        "level": 0.9990476190476191,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 11,
+        "scale": "difference",
+        "unbounded": true
+      }
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.05812885448103924,
+        "n_bars": 7621,
+        "sha256": "52d88417fbfba6c6b4856cd07f87edca39c656fe37cd0f35aceaa818ac048457"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": {
+        "with_baselines": 0.004362057883773921,
+        "without_baselines": 0.017446115794814133
+      },
+      "explore": {
+        "blocks_used": 18,
+        "estimate": 0.004362057883773921,
+        "p_descriptive_uncorrected": 0.9548721313476562,
+        "scale": "log_ratio",
+        "statistic": 0.004362057883773921
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": true,
+        "confirm_blocks": 13,
+        "full_blocks": 31,
+        "untestable": false,
+        "untestable_reason": null
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 6% of the time, 13 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Venus-Jupiter conjunction (Shukra-Guru-Wealth)",
+      "outcome": "gold_dem_frankfurt_abs_return",
+      "outcome_type": "log_ratio",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": {
+        "R1": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R2": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R3": {
+          "passed": null,
+          "status": "not_run"
+        },
+        "R4": {
+          "passed": null,
+          "status": "pass"
+        }
+      },
+      "rule_id": "financial.study.gold_venus_jupiter_conjunction",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_venus_jupiter_conjunction@1/primary/gold_dem_frankfurt_abs_return",
+      "variant": "primary",
+      "x95_explore_per_test": {
+        "alpha": 0.05,
+        "informative_blocks": 0,
+        "k_eff": 17.16016713091922,
+        "level": 0.95,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 5,
+        "scale": "ratio",
+        "unbounded": true
+      },
+      "x_strict_explore": {
+        "alpha": 0.0009523809523809524,
+        "informative_blocks": 0,
+        "k_eff": 17.16016713091922,
+        "level": 0.9990476190476191,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 11,
+        "scale": "ratio",
+        "unbounded": true
+      }
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.05812885448103924,
+        "n_bars": 7621,
+        "sha256": "52d88417fbfba6c6b4856cd07f87edca39c656fe37cd0f35aceaa818ac048457"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": {
+        "with_baselines": 0.013513513513513514,
+        "without_baselines": 0.013513513513513514
+      },
+      "explore": {
+        "blocks_used": 18,
+        "estimate": 1.1875,
+        "p_descriptive_uncorrected": 0.7939453125,
+        "scale": "risk_ratio",
+        "statistic": 0.013513513513513514
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": true,
+        "confirm_blocks": 13,
+        "full_blocks": 31,
+        "untestable": false,
+        "untestable_reason": null
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 6% of the time, 13 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Venus-Jupiter conjunction (Shukra-Guru-Wealth)",
+      "outcome": "gold_dem_frankfurt_extreme_move",
+      "outcome_type": "flags",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": {
+        "R1": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R2": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R3": {
+          "passed": null,
+          "status": "not_run"
+        },
+        "R4": {
+          "passed": null,
+          "status": "pass"
+        }
+      },
+      "rule_id": "financial.study.gold_venus_jupiter_conjunction",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_venus_jupiter_conjunction@1/primary/gold_dem_frankfurt_extreme_move",
+      "variant": "primary",
+      "x95_explore_per_test": {
+        "alpha": 0.05,
+        "informative_blocks": 0,
+        "k_eff": 17.16016713091922,
+        "level": 0.95,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 5,
+        "scale": "risk_ratio",
+        "unbounded": true
+      },
+      "x_strict_explore": {
+        "alpha": 0.0009523809523809524,
+        "informative_blocks": 0,
+        "k_eff": 17.16016713091922,
+        "level": 0.9990476190476191,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 11,
+        "scale": "risk_ratio",
+        "unbounded": true
+      }
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.05812885448103924,
+        "n_bars": 7621,
+        "sha256": "52d88417fbfba6c6b4856cd07f87edca39c656fe37cd0f35aceaa818ac048457"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": {
+        "with_baselines": 2.168955004053603e-05,
+        "without_baselines": 2.480995913645808e-05
+      },
+      "explore": {
+        "blocks_used": 20,
+        "estimate": 2.168955004053603e-05,
+        "p_descriptive_uncorrected": 0.9779052734375,
+        "scale": "difference",
+        "statistic": 2.168955004053603e-05
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": true,
+        "confirm_blocks": 13,
+        "full_blocks": 33,
+        "untestable": false,
+        "untestable_reason": null
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 6% of the time, 13 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Venus-Jupiter conjunction (Shukra-Guru-Wealth)",
+      "outcome": "gold_dem_frankfurt_log_return",
+      "outcome_type": "continuous",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": {
+        "R1": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R2": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R3": {
+          "passed": null,
+          "status": "not_run"
+        },
+        "R4": {
+          "passed": null,
+          "status": "pass"
+        }
+      },
+      "rule_id": "financial.study.gold_venus_jupiter_conjunction",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_venus_jupiter_conjunction@1/primary/gold_dem_frankfurt_log_return",
+      "variant": "primary",
+      "x95_explore_per_test": {
+        "alpha": 0.05,
+        "informative_blocks": 0,
+        "k_eff": 19.106546854942234,
+        "level": 0.95,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 5,
+        "scale": "difference",
+        "unbounded": true
+      },
+      "x_strict_explore": {
+        "alpha": 0.0009523809523809524,
+        "informative_blocks": 0,
+        "k_eff": 19.106546854942234,
+        "level": 0.9990476190476191,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 11,
+        "scale": "difference",
+        "unbounded": true
+      }
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.18921401390893583,
+        "n_bars": 7621,
+        "sha256": "5229da6a20c63010fe3773e0edccb49dfaa45aa2b888cbc889b507827d43fd5e"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": {
+        "with_baselines": -0.02308576650030992,
+        "without_baselines": -0.02913953094762102
+      },
+      "explore": {
+        "blocks_used": 21,
+        "estimate": -0.02308576650030992,
+        "p_descriptive_uncorrected": 0.82236,
+        "scale": "log_ratio",
+        "statistic": -0.02308576650030992
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": true,
+        "confirm_blocks": 14,
+        "full_blocks": 35,
+        "untestable": false,
+        "untestable_reason": null
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 19% of the time, 14 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Venus in own sign",
+      "outcome": "gold_dem_frankfurt_abs_return",
+      "outcome_type": "log_ratio",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": {
+        "R1": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R2": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R3": {
+          "passed": null,
+          "status": "not_run"
+        },
+        "R4": {
+          "passed": null,
+          "status": "pass"
+        }
+      },
+      "rule_id": "financial.study.gold_venus_own_sign",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_venus_own_sign@1/primary/gold_dem_frankfurt_abs_return",
+      "variant": "primary",
+      "x95_explore_per_test": {
+        "alpha": 0.05,
+        "informative_blocks": 0,
+        "k_eff": 20.800157853196527,
+        "level": 0.95,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 5,
+        "scale": "ratio",
+        "unbounded": true
+      },
+      "x_strict_explore": {
+        "alpha": 0.0009523809523809524,
+        "informative_blocks": 0,
+        "k_eff": 20.800157853196527,
+        "level": 0.9990476190476191,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 11,
+        "scale": "ratio",
+        "unbounded": true
+      }
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.18921401390893583,
+        "n_bars": 7621,
+        "sha256": "5229da6a20c63010fe3773e0edccb49dfaa45aa2b888cbc889b507827d43fd5e"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": {
+        "with_baselines": -0.016528925619834708,
+        "without_baselines": -0.016528925619834708
+      },
+      "explore": {
+        "blocks_used": 21,
+        "estimate": 0.8,
+        "p_descriptive_uncorrected": 0.64044,
+        "scale": "risk_ratio",
+        "statistic": -0.016528925619834708
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": true,
+        "confirm_blocks": 14,
+        "full_blocks": 35,
+        "untestable": false,
+        "untestable_reason": null
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 19% of the time, 14 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Venus in own sign",
+      "outcome": "gold_dem_frankfurt_extreme_move",
+      "outcome_type": "flags",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": {
+        "R1": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R2": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R3": {
+          "passed": null,
+          "status": "not_run"
+        },
+        "R4": {
+          "passed": null,
+          "status": "pass"
+        }
+      },
+      "rule_id": "financial.study.gold_venus_own_sign",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_venus_own_sign@1/primary/gold_dem_frankfurt_extreme_move",
+      "variant": "primary",
+      "x95_explore_per_test": {
+        "alpha": 0.05,
+        "informative_blocks": 0,
+        "k_eff": 20.800157853196527,
+        "level": 0.95,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 5,
+        "scale": "risk_ratio",
+        "unbounded": true
+      },
+      "x_strict_explore": {
+        "alpha": 0.0009523809523809524,
+        "informative_blocks": 0,
+        "k_eff": 20.800157853196527,
+        "level": 0.9990476190476191,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 11,
+        "scale": "risk_ratio",
+        "unbounded": true
+      }
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.18921401390893583,
+        "n_bars": 7621,
+        "sha256": "5229da6a20c63010fe3773e0edccb49dfaa45aa2b888cbc889b507827d43fd5e"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": {
+        "with_baselines": -4.952576173020733e-05,
+        "without_baselines": -7.485403402763527e-05
+      },
+      "explore": {
+        "blocks_used": 23,
+        "estimate": -4.952576173020733e-05,
+        "p_descriptive_uncorrected": 0.96071,
+        "scale": "difference",
+        "statistic": -4.952576173020733e-05
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": true,
+        "confirm_blocks": 14,
+        "full_blocks": 37,
+        "untestable": false,
+        "untestable_reason": null
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 19% of the time, 14 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Venus in own sign",
+      "outcome": "gold_dem_frankfurt_log_return",
+      "outcome_type": "continuous",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": {
+        "R1": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R2": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R3": {
+          "passed": null,
+          "status": "not_run"
+        },
+        "R4": {
+          "passed": null,
+          "status": "pass"
+        }
+      },
+      "rule_id": "financial.study.gold_venus_own_sign",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_venus_own_sign@1/primary/gold_dem_frankfurt_log_return",
+      "variant": "primary",
+      "x95_explore_per_test": {
+        "alpha": 0.05,
+        "informative_blocks": 0,
+        "k_eff": 22.33816425120773,
+        "level": 0.95,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 5,
+        "scale": "difference",
+        "unbounded": true
+      },
+      "x_strict_explore": {
+        "alpha": 0.0009523809523809524,
+        "informative_blocks": 0,
+        "k_eff": 22.33816425120773,
+        "level": 0.9990476190476191,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 11,
+        "scale": "difference",
+        "unbounded": true
+      }
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.07111927568560557,
+        "n_bars": 7621,
+        "sha256": "4271e0a0334d9cb27f7cbe6c0dc6c13c27b27f9797cd79fff32a9544d664110f"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 7,
+        "full_blocks": 18,
+        "untestable": true,
+        "untestable_reason": "no_sesoi"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 7% of the time, 7 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Venus retrograde",
+      "outcome": "gold_dem_frankfurt_abs_return",
+      "outcome_type": "log_ratio",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_venus_retrograde",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_venus_retrograde@1/primary/gold_dem_frankfurt_abs_return",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.07111927568560557,
+        "n_bars": 7621,
+        "sha256": "4271e0a0334d9cb27f7cbe6c0dc6c13c27b27f9797cd79fff32a9544d664110f"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 7,
+        "full_blocks": 18,
+        "untestable": true,
+        "untestable_reason": "no_sesoi"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 7% of the time, 7 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Venus retrograde",
+      "outcome": "gold_dem_frankfurt_extreme_move",
+      "outcome_type": "flags",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_venus_retrograde",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_venus_retrograde@1/primary/gold_dem_frankfurt_extreme_move",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.07111927568560557,
+        "n_bars": 7621,
+        "sha256": "4271e0a0334d9cb27f7cbe6c0dc6c13c27b27f9797cd79fff32a9544d664110f"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "gold_dem_frankfurt_87c15f38332d",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently"
+        ],
+        "n_events": null,
+        "n_units": 7621,
+        "sha256": "87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474",
+        "span": [
+          "1968-06-19",
+          "1998-12-30"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 7,
+        "full_blocks": 19,
+        "untestable": true,
+        "untestable_reason": "no_sesoi"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/gold_market/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/gold_market/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: sample instant of the previous trading bar (market fixing time, in UTC), chosen by the project. Other values: noon UTC, sunrise at the exchange city. place: none: geocentric sidereal positions, chosen by the project. Other values: Delhi, New York. horizon: the next bar of the outcome series, chosen by the project. Other values: 5 bars, 21 bars. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention sample instant of the previous trading bar (market fixing time, in UTC), horizon the next bar of the outcome series."
+        },
+        {
+          "kind": "data",
+          "text": "1968-06-19 to 1998-12-30 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 7% of the time, 7 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on gold_dem_frankfurt_log_return, gold_dem_frankfurt_abs_return, gold_dem_frankfurt_extreme_move: the rule file names no test for them. Named in the rule but absent from the gold plan: abs_return, extreme_move, log_return. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+        }
+      ],
+      "name": "Gold Venus retrograde",
+      "outcome": "gold_dem_frankfurt_log_return",
+      "outcome_type": "continuous",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "financial.study.gold_venus_retrograde",
+      "side": "two-sided",
+      "test_id": "financial.study.gold_venus_retrograde@1/primary/gold_dem_frankfurt_log_return",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    }
+  ],
+  "refused_by_lock": [],
+  "sampling_frame": {
+    "not_encodable": 0,
+    "not_sourced": 0,
+    "untestable": 14
+  },
+  "schema": "validity-preview/1",
+  "statement": "Preview on the explore period only. Provisional, descriptive numbers; no Supported, Contradicted or Excluded verdict can come from it, and no confirm row was read. Tests below the entry level (L2) and unregistrable tests are computed and labelled.",
+  "verdicts": null,
+  "vintage": {
+    "confirm_period": {
+      "end": "1998-12-30",
+      "start": "1987-01-01"
+    },
+    "grain": "daily",
+    "id": "gold_v1_bundesbank_dem_87c15f38332d",
+    "never_opened": false,
+    "seen": false,
+    "series": "gold_dem_frankfurt",
+    "snapshot": "bundesbank_gold_dem_87c15f38332d"
+  }
+}

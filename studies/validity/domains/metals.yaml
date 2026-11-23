@@ -1,0 +1,107 @@
+# Metals domain plan (ADR-008 WP-93 schema; strategy audit 2 N-05).
+#
+# DRAFT. status stays draft and every owner sign-off is empty until the owner
+# signs. The plan is for the gold domain (the rule files name domain gold;
+# the adapter core/domains/metals.py runs one series per domain). Silver has
+# no testable outcome on the committed data (see untestable_outcomes) and so
+# no plan of its own yet.
+#
+# Only the verified daily series is used: the Frankfurt fixing in DEM
+# (Bundesbank BBEX3, 1968-06-18 to 1998-12-30). The monthly Pink Sheet series
+# are not used: ADR-008 D-01 registers monthly data only for principles whose
+# operationalisation.horizon is a month or longer, and the study rules'
+# horizon is "the next bar of the outcome series".
+#
+# Every value below was fixed without reading a gold price by calendar.
+domain: gold
+status: draft
+seed: 20261124
+merge_gap: 0
+guard_bars: 0
+r_measures:            # core/validity/robustness.py; thresholds are the module's, not set here
+  R1: {measure: with-baselines statistic in the claimed direction and its p-value, threshold: 0.05}
+  R2: {measure: placebo-sky rank p on the statistic T (time-shift skies, mid-rank ties), threshold: 0.05}
+  R3: {measure: share of distinct sensitivity cells with the claimed sign, threshold: 0.8}
+  R4: {measure: baseline_r2 of the calendar on the domain baselines (fails at or above), threshold: 0.5}
+placebo_sets: [time_shift]
+alpha_spending: {first: 0.04, ratio: 0.2, max_variants: 3}   # ADR-008 3.2 rules 3 and 8
+owner_signoffs:        # empty on purpose: a draft; registration needs every date (validator)
+  H16: null
+  H18: null
+  H19: null
+  H20: null
+  L2: null
+  Support: null
+split:
+  explore: {start: "1968-06-19", end: "1986-12-31"}
+  confirm: {start: "1987-01-01", end: "1998-12-30"}
+vintages:
+  - id: gold_v1_bundesbank_dem_87c15f38332d
+    snapshot: bundesbank_gold_dem_87c15f38332d
+    series: gold_dem_frankfurt
+    grain: daily
+    confirm_period: {start: "1987-01-01", end: "1998-12-30"}
+    seen: false           # the project has published no number on the Frankfurt DEM fixing
+    never_opened: false
+active_vintage: gold_v1_bundesbank_dem_87c15f38332d
+snapshots:
+  - id: bundesbank_gold_dem_87c15f38332d
+    file: data/snapshots/bundesbank_gold_dem_87c15f38332d.csv
+    sha256: 87c15f38332d991634191215733b37a120bb5f800b7b5bb17118884c69784474
+    source_id: bundesbank_gold
+series: gold_dem_frankfurt
+detrend_window: 251   # bars (about one trading year), centred running mean (ADR-008 A2); a test whose used block it absorbs is refused before any outcome is read
+min_train: 500        # bars before the first past-only volatility and extreme-move threshold (the adapter's MIN_TRAIN): declared missing
+long_gap_days: 4      # a return over more than 4 calendar days is declared missing (N-20), not merged
+outcomes:
+  - id: gold_dem_frankfurt_log_return
+    rule_outcome: log_return
+    market: frankfurt
+    currency: dem
+    adapter_outcome: gold_dem_frankfurt.log_return
+    type: continuous
+    estimand: pooled_difference
+    effect_model: additive shift of the daily log return in active bars
+    side: two_sided
+    sesoi: null
+    guard_bars: 0
+    grid_x: [0.0005, 0.001, 0.002, 0.005, 0.01]
+  - id: gold_dem_frankfurt_abs_return
+    rule_outcome: abs_return
+    market: frankfurt
+    currency: dem
+    adapter_outcome: gold_dem_frankfurt.abs_return_std
+    type: absolute_return
+    estimand: pooled_log_ratio
+    effect_model: multiplicative change of the past-only standardised absolute return
+    floor: 0.01         # log(max(|z|, floor)): the log-scale floor in standardised units
+    side: two_sided
+    sesoi: null
+    guard_bars: 0
+    grid_x: [1.05, 1.1, 1.25, 1.5, 2.0]
+  - id: gold_dem_frankfurt_extreme_move
+    rule_outcome: extreme_move
+    market: frankfurt
+    currency: dem
+    adapter_outcome: gold_dem_frankfurt.extreme_move
+    type: binary
+    estimand: pooled_risk_ratio
+    effect_model: multiplicative change of P(|r| above the past-only 95th percentile)
+    base_rate: 0.05     # by construction of the past-only 95th percentile threshold
+    side: two_sided
+    sesoi: null
+    guard_bars: 0
+    grid_x: [1.1, 1.25, 1.5, 2.0, 3.0]
+untestable_outcomes:
+  - {domain: gold, outcome: gold_usd_daily, why: "no verified DEM/USD series in the repository (ADR-008 D-02)"}
+  - {domain: silver, outcome: log_return, why: "no verified daily silver series (Yahoo SI=F is grade C); monthly Pink Sheet silver needs a month horizon (D-01)"}
+  - {domain: silver, outcome: abs_return, why: "as silver log_return"}
+windows:
+  next_bar: the rule's state on the previous fixing day against the return of the fixing day (reading forward_trigger)
+day_convention: sky at the 13:00 Europe/Berlin fixing instant of the previous fixing day (adapter fixing time; D-07)
+baselines:
+  - id: calendar_terms
+    source: core/markets/baselines.py calendar_terms (weekday, month, the series' own holidays)
+pending_baselines:
+  - id: festival_terms
+    why: ADR-008 D-09; the festival spot-check table has no almanac rows yet

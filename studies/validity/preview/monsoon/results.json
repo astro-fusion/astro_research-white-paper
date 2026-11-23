@@ -1,0 +1,703 @@
+{
+  "domain": "monsoon",
+  "excluded": [],
+  "headline": {
+    "below_entry_level": 7,
+    "expected_at_or_below_0_05_if_no_effect": 0.0,
+    "explore_p_at_or_below_0_05_uncorrected": 0,
+    "gate_untestable": 7,
+    "note": "descriptive, explore period only, no multiplicity correction and no verdict; about 5% of tests reach p <= 0.05 with no effect at all",
+    "registrable": 5,
+    "smallest_explore_p_uncorrected": null,
+    "tests": 7,
+    "with_explore_numbers": 0
+  },
+  "notes": {
+    "baselines_declared": [
+      "nodal_18_6y",
+      "solar_cycle",
+      "enso_nino34_jjas"
+    ],
+    "baselines_missing": [
+      "solar_cycle"
+    ],
+    "firewall": "real rainfall is read only through the adapter's ADR-007 4.3 firewall"
+  },
+  "outcomes_refused": null,
+  "period": {
+    "confirm_rows_read": false,
+    "explore": [
+      "1948-01-01",
+      "1982-12-31"
+    ]
+  },
+  "plan": {
+    "path": "studies/validity/domains/monsoon.yaml",
+    "sha256": "bf11a0e0b73f46df211ec3d9b5b468894f4eef283ed77727838d937f7dc94ab9",
+    "status": "draft"
+  },
+  "provisional": true,
+  "records": [
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.5362318840579711,
+        "n_bars": 69,
+        "sha256": "a59188a8354bf4900496bb600cbbdcc67e4afaee7b62b1e34e50e0ef5d2b782c"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "iitm_all_india_macro_76380a8e9ee3",
+        "limitations": [
+          "licence not yet read",
+          "2015 and 2016 come from IMD subdivisional rainfall, 1871 to 2014 from 306 stations (series splice, stated in the file header)"
+        ],
+        "n_events": null,
+        "n_units": 146,
+        "sha256": "76380a8e9ee3b635f5d2b998dac18540d77622f82cbf6c5bb4e2adf64091947b",
+        "span": [
+          "1871",
+          "2016"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 1,
+        "full_blocks": 2,
+        "untestable": true,
+        "untestable_reason": "too_few_episodes"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: astrologicalmusings.com, \"Sapta Nadi Chakra and forecasting summer season trends for 2019\" (2019). No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (astrologicalmusings.com, \"Sapta Nadi Chakra and forecasting summer season trends for 2019\" (2019))."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "The source reads it as a trigger that comes before the event, and it was tested the same way."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: the sky at 00:00 UTC on every day of the season window (one-day steps), chosen by the project. Other values: sunrise at Ujjain. place: none: geocentric sidereal positions, chosen by the project. Other values: Ujjain. horizon: the June to September season of the same year, the window opened by params window_after, taken from a practitioner."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac sidereal, ayanamsa lahiri, mean node, place none: geocentric sidereal positions, day convention the sky at 00:00 UTC on every day of the season window (one-day steps), horizon the June to September season of the same year, the window opened by params window_after."
+        },
+        {
+          "kind": "data",
+          "text": "1871 to 2016 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 54% of the time, 1 episode in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on all_india_drought: the rule file names no test for it. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: there are fewer than 8 effective episodes, no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "seen_before",
+          "text": "The confirm years were looked at in an earlier study (monsoon_v1_iitm_76380a8e9ee3)."
+        }
+      ],
+      "name": "Mars in Rohini: a below-normal monsoon in the south",
+      "outcome": "all_india_jjas_anomaly_pct",
+      "outcome_type": "continuous",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "monsoon.mars_in_rohini_deficit",
+      "side": "less",
+      "test_id": "monsoon.mars_in_rohini_deficit@1/primary/all_india_jjas_anomaly_pct",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.5362318840579711,
+        "n_bars": 69,
+        "sha256": "a59188a8354bf4900496bb600cbbdcc67e4afaee7b62b1e34e50e0ef5d2b782c"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "iitm_all_india_macro_76380a8e9ee3",
+        "limitations": [
+          "licence not yet read",
+          "2015 and 2016 come from IMD subdivisional rainfall, 1871 to 2014 from 306 stations (series splice, stated in the file header)"
+        ],
+        "n_events": null,
+        "n_units": 146,
+        "sha256": "76380a8e9ee3b635f5d2b998dac18540d77622f82cbf6c5bb4e2adf64091947b",
+        "span": [
+          "1871",
+          "2016"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 1,
+        "full_blocks": 2,
+        "untestable": true,
+        "untestable_reason": "too_few_episodes"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: astrologicalmusings.com, \"Sapta Nadi Chakra and forecasting summer season trends for 2019\" (2019). No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (astrologicalmusings.com, \"Sapta Nadi Chakra and forecasting summer season trends for 2019\" (2019))."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "The source reads it as a trigger that comes before the event, and it was tested the same way."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: the sky at 00:00 UTC on every day of the season window (one-day steps), chosen by the project. Other values: sunrise at Ujjain. place: none: geocentric sidereal positions, chosen by the project. Other values: Ujjain. horizon: the June to September season of the same year, the window opened by params window_after, taken from a practitioner."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac sidereal, ayanamsa lahiri, mean node, place none: geocentric sidereal positions, day convention the sky at 00:00 UTC on every day of the season window (one-day steps), horizon the June to September season of the same year, the window opened by params window_after."
+        },
+        {
+          "kind": "data",
+          "text": "1871 to 2016 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 54% of the time, 1 episode in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on all_india_drought: the rule file names no test for it. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: there are fewer than 8 effective episodes, no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "seen_before",
+          "text": "The confirm years were looked at in an earlier study (monsoon_v1_iitm_76380a8e9ee3)."
+        }
+      ],
+      "name": "Mars in Rohini: a below-normal monsoon in the south",
+      "outcome": "peninsular_india_drought",
+      "outcome_type": "flags",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "monsoon.mars_in_rohini_deficit",
+      "side": "greater",
+      "test_id": "monsoon.mars_in_rohini_deficit@1/primary/peninsular_india_drought",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.5362318840579711,
+        "n_bars": 69,
+        "sha256": "a59188a8354bf4900496bb600cbbdcc67e4afaee7b62b1e34e50e0ef5d2b782c"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "iitm_all_india_macro_76380a8e9ee3",
+        "limitations": [
+          "licence not yet read",
+          "2015 and 2016 come from IMD subdivisional rainfall, 1871 to 2014 from 306 stations (series splice, stated in the file header)"
+        ],
+        "n_events": null,
+        "n_units": 146,
+        "sha256": "76380a8e9ee3b635f5d2b998dac18540d77622f82cbf6c5bb4e2adf64091947b",
+        "span": [
+          "1871",
+          "2016"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 1,
+        "full_blocks": 2,
+        "untestable": true,
+        "untestable_reason": "too_few_episodes"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: astrologicalmusings.com, \"Sapta Nadi Chakra and forecasting summer season trends for 2019\" (2019). No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (astrologicalmusings.com, \"Sapta Nadi Chakra and forecasting summer season trends for 2019\" (2019))."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "The source reads it as a trigger that comes before the event, and it was tested the same way."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: the sky at 00:00 UTC on every day of the season window (one-day steps), chosen by the project. Other values: sunrise at Ujjain. place: none: geocentric sidereal positions, chosen by the project. Other values: Ujjain. horizon: the June to September season of the same year, the window opened by params window_after, taken from a practitioner."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac sidereal, ayanamsa lahiri, mean node, place none: geocentric sidereal positions, day convention the sky at 00:00 UTC on every day of the season window (one-day steps), horizon the June to September season of the same year, the window opened by params window_after."
+        },
+        {
+          "kind": "data",
+          "text": "1871 to 2016 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 54% of the time, 1 episode in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on all_india_drought: the rule file names no test for it. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: there are fewer than 8 effective episodes, no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "seen_before",
+          "text": "The confirm years were looked at in an earlier study (monsoon_v1_iitm_76380a8e9ee3)."
+        }
+      ],
+      "name": "Mars in Rohini: a below-normal monsoon in the south",
+      "outcome": "peninsular_india_jjas_anomaly_pct",
+      "outcome_type": "continuous",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "monsoon.mars_in_rohini_deficit",
+      "side": "less",
+      "test_id": "monsoon.mars_in_rohini_deficit@1/primary/peninsular_india_jjas_anomaly_pct",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.43478260869565216,
+        "n_bars": 69,
+        "sha256": "f5708f07602e5937563e8b58a0cc3d3031150c1c07c58c92ae4063e48f460f21"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "iitm_all_india_macro_76380a8e9ee3",
+        "limitations": [
+          "licence not yet read",
+          "2015 and 2016 come from IMD subdivisional rainfall, 1871 to 2014 from 306 stations (series splice, stated in the file header)"
+        ],
+        "n_events": null,
+        "n_units": 146,
+        "sha256": "76380a8e9ee3b635f5d2b998dac18540d77622f82cbf6c5bb4e2adf64091947b",
+        "span": [
+          "1871",
+          "2016"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 7,
+        "full_blocks": 14,
+        "untestable": true,
+        "untestable_reason": "no_sesoi"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: docs/mundane/rule-registry.yaml #RULE-009. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: a citable source: text (with edition, translator, chapter, verse or page, quote) or url (with published, archive_url, quote); a maintainer check: source.checked_by and source.checked_on."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (docs/mundane/rule-registry.yaml #RULE-009)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: the weekday runs sunrise to sunrise at the reference place (notes.season_calendar.vara), chosen by the project. Other values: civil. place: Ujjain, 23.18 N 75.79 E (the monsoon adapter plan's reference_place), chosen by the project. Other values: Delhi. horizon: the June to September season of the same year, chosen by the project. Other values: the June to September season of the following year."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac sidereal, ayanamsa lahiri, mean node, place Ujjain, 23.18 N 75.79 E (the monsoon adapter plan's reference_place), day convention the weekday runs sunrise to sunrise at the reference place (notes.season_calendar.vara), horizon the June to September season of the same year."
+        },
+        {
+          "kind": "data",
+          "text": "1871 to 2016 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 43% of the time, 7 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on peninsular_india_jjas_anomaly_pct, peninsular_india_drought: the rule file names no test for them. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "seen_before",
+          "text": "The confirm years were looked at in an earlier study (monsoon_v1_iitm_76380a8e9ee3)."
+        }
+      ],
+      "name": "Meghesha (lord of clouds) is a malefic: a deficient monsoon",
+      "outcome": "all_india_drought",
+      "outcome_type": "flags",
+      "registrable": false,
+      "registration_problems": [
+        "source.published: missing"
+      ],
+      "robustness": null,
+      "rule_id": "monsoon.meghesha_malefic_deficit",
+      "side": "greater",
+      "test_id": "monsoon.meghesha_malefic_deficit@1/primary/all_india_drought",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.43478260869565216,
+        "n_bars": 69,
+        "sha256": "f5708f07602e5937563e8b58a0cc3d3031150c1c07c58c92ae4063e48f460f21"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "iitm_all_india_macro_76380a8e9ee3",
+        "limitations": [
+          "licence not yet read",
+          "2015 and 2016 come from IMD subdivisional rainfall, 1871 to 2014 from 306 stations (series splice, stated in the file header)"
+        ],
+        "n_events": null,
+        "n_units": 146,
+        "sha256": "76380a8e9ee3b635f5d2b998dac18540d77622f82cbf6c5bb4e2adf64091947b",
+        "span": [
+          "1871",
+          "2016"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 7,
+        "full_blocks": 14,
+        "untestable": true,
+        "untestable_reason": "no_sesoi"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: docs/mundane/rule-registry.yaml #RULE-009. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: a citable source: text (with edition, translator, chapter, verse or page, quote) or url (with published, archive_url, quote); a maintainer check: source.checked_by and source.checked_on."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (docs/mundane/rule-registry.yaml #RULE-009)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as a trigger that comes before the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: the weekday runs sunrise to sunrise at the reference place (notes.season_calendar.vara), chosen by the project. Other values: civil. place: Ujjain, 23.18 N 75.79 E (the monsoon adapter plan's reference_place), chosen by the project. Other values: Delhi. horizon: the June to September season of the same year, chosen by the project. Other values: the June to September season of the following year."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac sidereal, ayanamsa lahiri, mean node, place Ujjain, 23.18 N 75.79 E (the monsoon adapter plan's reference_place), day convention the weekday runs sunrise to sunrise at the reference place (notes.season_calendar.vara), horizon the June to September season of the same year."
+        },
+        {
+          "kind": "data",
+          "text": "1871 to 2016 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 43% of the time, 7 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on peninsular_india_jjas_anomaly_pct, peninsular_india_drought: the rule file names no test for them. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "seen_before",
+          "text": "The confirm years were looked at in an earlier study (monsoon_v1_iitm_76380a8e9ee3)."
+        }
+      ],
+      "name": "Meghesha (lord of clouds) is a malefic: a deficient monsoon",
+      "outcome": "all_india_jjas_anomaly_pct",
+      "outcome_type": "continuous",
+      "registrable": false,
+      "registration_problems": [
+        "source.published: missing"
+      ],
+      "robustness": null,
+      "rule_id": "monsoon.meghesha_malefic_deficit",
+      "side": "less",
+      "test_id": "monsoon.meghesha_malefic_deficit@1/primary/all_india_jjas_anomaly_pct",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.37681159420289856,
+        "n_bars": 69,
+        "sha256": "da3d7649e1888468d0f85d62365b53117756e16a2b286ea925d86780e6e87a80"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "iitm_all_india_macro_76380a8e9ee3",
+        "limitations": [
+          "licence not yet read",
+          "2015 and 2016 come from IMD subdivisional rainfall, 1871 to 2014 from 306 stations (series splice, stated in the file header)"
+        ],
+        "n_events": null,
+        "n_units": 146,
+        "sha256": "76380a8e9ee3b635f5d2b998dac18540d77622f82cbf6c5bb4e2adf64091947b",
+        "span": [
+          "1871",
+          "2016"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 6,
+        "full_blocks": 10,
+        "untestable": true,
+        "untestable_reason": "no_sesoi"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Brihat Samhita, ch. 19, v. 1-3, 7-9, 19-21. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: a maintainer check: source.checked_by and source.checked_on."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. The rule is attributed to Brihat Samhita, ch. 19, v. 1-3, 7-9, 19-21 through a practitioner, not read from the classical text."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "The source reads it as a trigger that comes before the event, and it was tested the same way."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: udaya, the weekday of the first sunrise after the new Moon that starts Chaitra (notes.season_calendar.vara), chosen by the project. Other values: sunrise, civil. place: Ujjain, 23.18 N 75.79 E (the monsoon adapter plan's reference_place), chosen by the project. Other values: Delhi."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac sidereal, ayanamsa lahiri, mean node, place Ujjain, 23.18 N 75.79 E (the monsoon adapter plan's reference_place), day convention udaya, the weekday of the first sunrise after the new Moon that starts Chaitra (notes.season_calendar.vara), horizon the June to September season of the same year."
+        },
+        {
+          "kind": "data",
+          "text": "1871 to 2016 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 38% of the time, 6 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on peninsular_india_jjas_anomaly_pct, peninsular_india_drought: the rule file names no test for them. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "seen_before",
+          "text": "The confirm years were looked at in an earlier study (monsoon_v1_iitm_76380a8e9ee3)."
+        }
+      ],
+      "name": "Varsheshvara (king of the year) is a malefic: a deficient monsoon",
+      "outcome": "all_india_drought",
+      "outcome_type": "flags",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "monsoon.varsheshvara_malefic_deficit",
+      "side": "greater",
+      "test_id": "monsoon.varsheshvara_malefic_deficit@1/primary/all_india_drought",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.37681159420289856,
+        "n_bars": 69,
+        "sha256": "da3d7649e1888468d0f85d62365b53117756e16a2b286ea925d86780e6e87a80"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "iitm_all_india_macro_76380a8e9ee3",
+        "limitations": [
+          "licence not yet read",
+          "2015 and 2016 come from IMD subdivisional rainfall, 1871 to 2014 from 306 stations (series splice, stated in the file header)"
+        ],
+        "n_events": null,
+        "n_units": 146,
+        "sha256": "76380a8e9ee3b635f5d2b998dac18540d77622f82cbf6c5bb4e2adf64091947b",
+        "span": [
+          "1871",
+          "2016"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 6,
+        "full_blocks": 10,
+        "untestable": true,
+        "untestable_reason": "no_sesoi"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Brihat Samhita, ch. 19, v. 1-3, 7-9, 19-21. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: a maintainer check: source.checked_by and source.checked_on."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. The rule is attributed to Brihat Samhita, ch. 19, v. 1-3, 7-9, 19-21 through a practitioner, not read from the classical text."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "The source reads it as a trigger that comes before the event, and it was tested the same way."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: udaya, the weekday of the first sunrise after the new Moon that starts Chaitra (notes.season_calendar.vara), chosen by the project. Other values: sunrise, civil. place: Ujjain, 23.18 N 75.79 E (the monsoon adapter plan's reference_place), chosen by the project. Other values: Delhi."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac sidereal, ayanamsa lahiri, mean node, place Ujjain, 23.18 N 75.79 E (the monsoon adapter plan's reference_place), day convention udaya, the weekday of the first sunrise after the new Moon that starts Chaitra (notes.season_calendar.vara), horizon the June to September season of the same year."
+        },
+        {
+          "kind": "data",
+          "text": "1871 to 2016 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 38% of the time, 6 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Not tested on peninsular_india_jjas_anomaly_pct, peninsular_india_drought: the rule file names no test for them. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "seen_before",
+          "text": "The confirm years were looked at in an earlier study (monsoon_v1_iitm_76380a8e9ee3)."
+        }
+      ],
+      "name": "Varsheshvara (king of the year) is a malefic: a deficient monsoon",
+      "outcome": "all_india_jjas_anomaly_pct",
+      "outcome_type": "continuous",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "monsoon.varsheshvara_malefic_deficit",
+      "side": "less",
+      "test_id": "monsoon.varsheshvara_malefic_deficit@1/primary/all_india_jjas_anomaly_pct",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    }
+  ],
+  "refused_by_lock": [],
+  "sampling_frame": {
+    "not_encodable": 0,
+    "not_sourced": 1,
+    "untestable": 0
+  },
+  "schema": "validity-preview/1",
+  "statement": "Preview on the explore period only. Provisional, descriptive numbers; no Supported, Contradicted or Excluded verdict can come from it, and no confirm row was read. Tests below the entry level (L2) and unregistrable tests are computed and labelled.",
+  "verdicts": null,
+  "vintage": {
+    "confirm_period": {
+      "end": "2016-12-31",
+      "start": "1983-01-01"
+    },
+    "grain": "yearly",
+    "id": "monsoon_v1_iitm_76380a8e9ee3",
+    "never_opened": false,
+    "seen": true,
+    "snapshot": "iitm_all_india_macro_76380a8e9ee3"
+  }
+}

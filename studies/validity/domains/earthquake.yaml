@@ -1,0 +1,70 @@
+# Earthquake domain plan (ADR-008 WP-93 schema; strategy audit 2 N-05).
+#
+# DRAFT. status stays draft and every owner sign-off is empty until the owner
+# signs (H16, H18, H19, H20, L2, Support). Built by core/validity/bindings.py:
+# the run's DomainRun and every TestDefinition come from this file and the
+# rule files (rules/seismic/study), never from typed values.
+#
+# Every value below was fixed without reading an earthquake outcome by
+# calendar. The catalogue, polygon, completeness rule and hourly grid are those
+# of studies/earthquake/hypothesis.yaml (registered 2026-11-08); the adapter
+# (core/domains/earthquake.py) reads them from there.
+domain: earthquake
+status: draft
+seed: 20261123
+merge_gap: 0
+guard_bars: 0
+r_measures:            # core/validity/robustness.py; thresholds are the module's, not set here
+  R1: {measure: with-baselines statistic in the claimed direction and its p-value, threshold: 0.05}
+  R2: {measure: placebo-sky rank p on the statistic T (time-shift skies, mid-rank ties), threshold: 0.05}
+  R3: {measure: share of distinct sensitivity cells with the claimed sign, threshold: 0.8}
+  R4: {measure: baseline_r2 of the calendar on the domain baselines (fails at or above), threshold: 0.5}
+placebo_sets: [time_shift]
+alpha_spending: {first: 0.04, ratio: 0.2, max_variants: 3}   # ADR-008 3.2 rules 3 and 8
+owner_signoffs:        # empty on purpose: a draft; registration needs every date (validator)
+  H16: null
+  H18: null
+  H19: null
+  H20: null
+  L2: null
+  Support: null
+split:
+  explore: {start: "1976-01-01", end: "2010-12-31"}
+  confirm: {start: "2011-01-01", end: "2026-10-31"}
+vintages:
+  - id: eq_v1_usgs_comcat_d3d3d6ec8405
+    snapshot: usgs_comcat_d3d3d6ec8405
+    grain: hourly
+    confirm_period: {start: "2011-01-01", end: "2026-10-31"}
+    seen: true            # the project published 2011-2026 numbers (ADR-008 3.2 rule 7, F-05)
+    never_opened: false
+active_vintage: eq_v1_usgs_comcat_d3d3d6ec8405
+snapshots:
+  - id: usgs_comcat_d3d3d6ec8405
+    file: data/snapshots/usgs_d3d3d6ec8405.csv
+    sha256: d3d3d6ec840599341782147b35579b69dae3919dd2668d762659270baef19972
+    source_id: usgs_comcat
+    note: the snapshot fetched with the registered query on 2026-11-08 (its manifest names earthquake-himalaya-v2)
+outcomes:
+  - id: mainshock_rate
+    rule_outcome: mainshock_rate      # rule files name it so in tests[].outcome
+    type: event
+    estimand: pooled_rate_ratio
+    effect_model: multiplicative rate in active hours against the block's control hours
+    side: two_sided                   # each test takes its side from its rule; a directional plan side would refuse the others
+    sesoi: null                       # no yardstick in studies/validity/sesoi_sources.yaml yet: verdict E is impossible
+    guard_bars: 0
+    grid_x: [1.1, 1.25, 1.5, 2.0, 3.0, 5.0]
+    counting_unit: Gardner-Knopoff mainshocks per hourly bin (the adapter's primary declustering)
+    declustering: gk
+    base_rate: 0.0037                 # 1,645 catalogue rows / 444,600 hours (snapshot index row count, before the completeness cut and declustering): an upper bound, read by the gate only
+windows:
+  hourly_step: the rule's own window on the hourly grid; the plan adds none
+day_convention: hourly UTC grid, each step evaluated at its left edge (rule operationalisation day_convention)
+baselines:
+  - id: nodal_18_6y
+    source: core/stats/season.py nodal_baseline (six harmonics)
+  - id: solar_cycle
+    source: core/stats/season.py solar_cycle_baseline (needs a sunspot series)
+    status: no committed sunspot snapshot; while it is missing the run has no baselines and R1 and R4 do not pass
+limit_only: true      # ADR-008 D-03: until ETAS declustering (ADR-004 WP-26) lands the domain can only limit

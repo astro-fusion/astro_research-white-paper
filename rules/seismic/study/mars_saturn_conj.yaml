@@ -8,6 +8,7 @@ claim: 'Mars-Saturn conjunction within 8 degrees: the rate of declustered Himala
   from the rate outside it.'
 source:
   text: Study plan studies/earthquake/hypothesis.yaml
+  published: '2026-11-08'  # the study plan's registered date (its 'registered' field)
   note: The fixed indicator family of the pre-registered plan (2026-11-08). No classical text or chapter
     is cited.
 author: astro-research study plan (ported 2026-11-22)

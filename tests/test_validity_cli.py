@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 import hashlib
 import json
 import subprocess
@@ -77,6 +78,41 @@ class FakeSeal:
         return False
 
 
+class FakeSealedRun(FakeSeal):
+    """Stands in for stats/seal.py SealedRun (the tmp tree is no git checkout)."""
+
+    calls = []
+
+    def __init__(self, repo_root=None, *, provisional=False, **kw):
+        super().__init__(provisional)
+        FakeSealedRun.calls.append(provisional)
+
+
+def registered_plan(domain="simulated"):
+    """A plan that passes validity/plan.py with status registered (the seal gate, N-05)."""
+    return {
+        "domain": domain, "status": "registered", "seed": 20261122,
+        "split": {"explore": {"start": "1700-01-01", "end": "1879-12-31"},
+                  "confirm": {"start": "1880-01-01", "end": "1999-12-31"}},
+        "vintages": [{"id": "sim_v1", "snapshot": "sim", "grain": "yearly", "seen": False,
+                      "confirm_period": {"start": "1880-01-01", "end": "1999-12-31"}}],
+        "snapshots": [{"id": "sim", "file": "data/sim.csv", "sha256": "ab" * 32}],
+        "outcomes": [{"id": "value", "type": "continuous", "estimand": "pooled_difference",
+                      "effect_model": "additive", "side": "two_sided", "sesoi": None, "guard_bars": 0,
+                      "grid_x": [0.1, 0.5, 1.0]}],
+        "windows": {"year": "the year"}, "merge_gap": 0, "guard_bars": 0, "day_convention": "year",
+        "r_measures": {r: {"measure": "m", "threshold": 0.05} for r in ("R1", "R2", "R3", "R4")},
+        "placebo_sets": ["time_shift"], "baselines": [{"id": "trend"}],
+        "alpha_spending": {"first": 0.04, "ratio": 0.2, "max_variants": 3},
+        "owner_signoffs": {k: "2026-11-23" for k in ("H16", "H19", "H20", "L2", "Support")},
+    }
+
+
+def write_plan(layout, plan):
+    layout.domains_dir.mkdir(parents=True, exist_ok=True)
+    (layout.domains_dir / f"{plan['domain']}.yaml").write_text(yaml.safe_dump(plan))
+
+
 class SimBindings(cli.Bindings):
     def __init__(self, layout, *, seed=11, confirm=True, orb=15):
         super().__init__(layout)
@@ -138,6 +174,9 @@ class SimBindings(cli.Bindings):
 @pytest.fixture
 def env(tmp_path, monkeypatch):
     b = SimBindings(cli.Layout(tmp_path))
+    write_plan(b.layout, registered_plan())
+    FakeSealedRun.calls = []
+    monkeypatch.setattr(P, "SealedRun", FakeSealedRun)  # the confirm path always uses it (N-11)
 
     def fake_seal(repo_root, src, **kw):
         lock = FamilyLock(b.layout.lock("simulated"), "simulated")
@@ -169,7 +208,7 @@ def test_register_reads_no_outcome_and_is_idempotent(env, capsys):
 
 
 def test_register_refuses_an_unregistrable_rule(env, monkeypatch, capsys):
-    monkeypatch.setattr(cli, "registration_problems", lambda r: ["reading: not stated"])
+    monkeypatch.setattr(cli, "registration_problems", lambda r, d=(): ["reading: not stated"])
     assert run(env, "register") == 1
     assert "refused" in capsys.readouterr().out
     assert not env.layout.lock("simulated").exists()
@@ -300,3 +339,140 @@ def test_module_is_runnable():
     out = subprocess.run([sys.executable, "-m", "vedic_astrology_core.validity.cli", "--help"],
                          capture_output=True, text=True)
     assert out.returncode == 0 and "register" in out.stdout and "confirm" in out.stdout
+
+
+# ------------------------------------------------ strategy audit 2 (N-05, N-11, N-13, A-08)
+def test_register_checks_the_rule_with_the_disputes_lists(env, monkeypatch, tmp_path, capsys):
+    d = tmp_path / "rules" / "financial" / "practitioner"
+    d.mkdir(parents=True)
+    (d / "DISPUTES.md").write_text(f"- `{RULE.id}` is read both ways\n")
+    seen = {}
+
+    def spy(rule, disputes=()):
+        seen["disputes"] = list(disputes)
+        return []
+
+    monkeypatch.setattr(cli, "registration_problems", spy)
+    assert run(env, "register") == 0
+    assert RULE.id in seen["disputes"]
+
+
+def test_register_refuses_a_test_without_its_rule_file(env, capsys):
+    orig = env.tests
+
+    def no_rule(domain):
+        return [dataclasses.replace(t, rule=None) for t in orig(domain)]
+
+    env.tests = no_rule
+    assert run(env, "register") == 1
+    assert "no rule file" in capsys.readouterr().out
+    assert not env.layout.lock("simulated").exists()
+
+
+def test_confirm_runs_in_sealedrun_whatever_the_bindings_say(env):
+    used = []
+
+    class Lenient(FakeSeal):
+        def __init__(self, provisional):
+            used.append(provisional)
+            super().__init__(provisional)
+
+    env.sealer = lambda: Lenient
+    sealed(env)
+    assert run(env, "all") == 0
+    assert False not in used  # the bindings' sealer never ran a confirm
+    assert False in FakeSealedRun.calls  # stats/seal.py SealedRun did
+
+
+@pytest.mark.parametrize("change", ["draft", "invalid", "missing"])
+def test_seal_refuses_a_plan_that_is_not_valid_and_registered(env, capsys, change):
+    plan = registered_plan()
+    path = env.layout.domains_dir / "simulated.yaml"
+    if change == "draft":
+        plan["status"] = "draft"
+        write_plan(env.layout, plan)
+    elif change == "invalid":
+        plan["outcomes"][0]["sesoi"] = {"kind": "project", "value": 0.8}
+        write_plan(env.layout, plan)
+    else:
+        path.unlink()
+    assert run(env, "register") == 0
+    assert run(env, "seal") == 1
+    assert "refused to seal simulated" in capsys.readouterr().out
+    assert not FamilyLock(env.layout.lock("simulated"), "simulated").closed_batches()
+
+
+def test_report_refuses_results_that_differ_from_the_lock(env, capsys):
+    sealed(env)
+    assert run(env, "all") == 0
+    rid = CL.read_entries(env.layout.changelog)[0]["run_id"]
+    rp = env.layout.runs / rid / "simulated" / "results.json"
+    doc = json.loads(rp.read_text())
+    doc["records"][0]["level"] = 4  # an edited record (N-13 probe)
+    rp.write_text(json.dumps(doc))
+    capsys.readouterr()
+    assert run(env, "report", "--run", rid) == 1
+    out = capsys.readouterr().out
+    assert "changed after it was recorded" in out and "failed" in out
+
+
+def test_report_refuses_provisional_results(env, capsys):
+    run(env, "register")
+    assert run(env, "run") == 0
+    prov = next(p.name for p in env.layout.runs.iterdir() if p.name.endswith(".provisional"))
+    assert run(env, "report", "--run", prov) == 1
+    assert "provisional results are never published" in capsys.readouterr().out
+
+
+def _preview(env):
+    assert run(env, "preview") == 0
+    return json.loads((env.layout.preview / "simulated" / "results.json").read_text())
+
+
+def test_preview_is_explore_only_with_no_verdict_and_no_lock(env):
+    doc = _preview(env)
+    assert doc["schema"] == cli.PREVIEW_SCHEMA and doc["provisional"] is True and doc["verdicts"] is None
+    assert doc["period"] == {"explore": ["1700-01-01", "1879-12-31"], "confirm_rows_read": False}
+    rec = doc["records"][0]
+    assert "verdict" not in rec and rec["explore"]["blocks_used"] > 0
+    assert rec["explore"]["p_descriptive_uncorrected"] is not None
+    assert doc["headline"]["tests"] == 1 and doc["headline"]["with_explore_numbers"] == 1
+    assert not env.layout.lock("simulated").exists()  # a throwaway lock only
+    assert not env.layout.runs.exists()
+
+
+def test_preview_does_not_depend_on_confirm_rows(env):
+    first = _preview(env)
+    dom = env.dom
+    years = np.asarray([d.year for d in dom.grid()])
+    dom._values = np.where(years >= 1880, dom._values + 100.0, dom._values)  # confirm rows only
+    second = _preview(env)
+    assert first["records"] == second["records"]
+
+
+def test_preview_keeps_the_gate_when_outcomes_are_refused(env):
+    class FirewallError(RuntimeError):
+        pass
+
+    class Walled:
+        def __init__(self, inner):
+            self.inner, self.domain = inner, inner.domain
+
+        def __getattr__(self, name):
+            return getattr(self.inner, name)
+
+        def outcomes(self, gate=None, *, gate_path=None):
+            raise FirewallError("plan is a draft")
+
+    inner = env.dom
+    env.adapter = lambda d: Walled(inner)
+    doc = _preview(env)
+    assert doc["outcomes_refused"].startswith("FirewallError")
+    rec = doc["records"][0]
+    assert rec["explore"] is None and "can_support" in rec["gate"]
+
+
+def test_preview_can_leave_rules_out_and_says_so(env):
+    assert run(env, "preview", "--skip-rule", "^sim\\.") == 0
+    doc = json.loads((env.layout.preview / "simulated" / "results.json").read_text())
+    assert doc["records"] == [] and doc["left_out"]["test_ids"] == ["sim.four@1/primary/value"]

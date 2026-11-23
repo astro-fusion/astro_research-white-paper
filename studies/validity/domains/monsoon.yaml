@@ -1,0 +1,109 @@
+# Monsoon domain plan (ADR-008 WP-93 schema; strategy audit 2 N-05).
+#
+# DRAFT. status stays draft and every owner sign-off is empty until the owner
+# signs (H16, H17, H18, H19, H20, L2, Support). The yearly calendars and the
+# rainfall series come from core/domains/monsoon.py, which still reads its
+# own configuration from studies/monsoon/plan.yaml (adapter_plan below).
+#
+# Period. The validator needs one ENSO series that covers every explore and
+# confirm year. The only pinned ENSO series (NOAA PSL Nino 3.4, ERSST v6)
+# starts in 1948, so the plan starts in 1948 until a long series
+# (nino34_long, 1870 on) is pinned; the 1871-1947 seasons are not used.
+#
+# Real rainfall stays behind the ADR-007 4.3 firewall while this plan is a
+# draft: no run, preview included, reads it.
+domain: monsoon
+status: draft
+seed: 20261125
+merge_gap: 0
+guard_bars: 0
+r_measures:            # core/validity/robustness.py; thresholds are the module's, not set here
+  R1: {measure: with-baselines statistic in the claimed direction and its p-value, threshold: 0.05}
+  R2: {measure: placebo-sky rank p on the statistic T (time-shift skies, mid-rank ties), threshold: 0.05}
+  R3: {measure: share of distinct sensitivity cells with the claimed sign, threshold: 0.8}
+  R4: {measure: baseline_r2 of the calendar on the domain baselines (fails at or above), threshold: 0.5}
+placebo_sets: [time_shift]
+alpha_spending: {first: 0.04, ratio: 0.2, max_variants: 3}   # ADR-008 3.2 rules 3 and 8
+owner_signoffs:        # empty on purpose: a draft; registration needs every date (validator)
+  H16: null
+  H18: null
+  H19: null
+  H20: null
+  L2: null
+  Support: null
+adapter_plan: studies/monsoon/plan.yaml
+split:
+  explore: {start: "1948-01-01", end: "1982-12-31"}
+  confirm: {start: "1983-01-01", end: "2016-12-31"}
+vintages:
+  - id: monsoon_v1_iitm_76380a8e9ee3
+    snapshot: iitm_all_india_macro_76380a8e9ee3
+    grain: yearly
+    confirm_period: {start: "1983-01-01", end: "2016-12-31"}
+    seen: true            # every season was published before this plan (pseudo out of sample)
+    never_opened: false
+active_vintage: monsoon_v1_iitm_76380a8e9ee3
+snapshots:
+  - id: iitm_all_india_macro_76380a8e9ee3
+    file: data/snapshots/iitm_all_india_macro_76380a8e9ee3.txt
+    sha256: 76380a8e9ee3b635f5d2b998dac18540d77622f82cbf6c5bb4e2adf64091947b
+    source_id: iitm_rainfall
+  - id: noaa_nino34_8ba6cd0536ad
+    file: data/snapshots/noaa_nino34_8ba6cd0536ad.data
+    sha256: 8ba6cd0536adffc9a904133762f5786513008429e711c1fc016c10d54cf9ccd1
+    source_id: noaa_enso
+enso:
+  series_id: noaa_nino34_8ba6cd0536ad
+  sha256: 8ba6cd0536adffc9a904133762f5786513008429e711c1fc016c10d54cf9ccd1
+  covers: {start: "1948-01-01", end: "2026-09-30"}
+season_date: "07-01"  # each season sits on 1 July of its year on the pipeline's date grid
+outcomes:
+  - id: all_india_jjas_anomaly_pct
+    rule_outcome: all_india_jjas_anomaly_pct
+    type: continuous
+    estimand: pooled_difference
+    effect_model: additive shift of the June-September anomaly (percent of the long-period average)
+    side: two_sided
+    sesoi: null
+    guard_bars: 0
+    grid_x: [1.0, 2.0, 3.0, 5.0, 8.0]
+  - id: peninsular_india_jjas_anomaly_pct
+    rule_outcome: peninsular_india_jjas_anomaly_pct
+    type: continuous
+    estimand: pooled_difference
+    effect_model: additive shift of the June-September anomaly (percent of the long-period average)
+    side: two_sided
+    sesoi: null
+    guard_bars: 0
+    grid_x: [1.0, 2.0, 3.0, 5.0, 8.0]
+  - id: all_india_drought
+    rule_outcome: all_india_drought
+    type: binary
+    estimand: pooled_risk_ratio
+    effect_model: multiplicative change of P(anomaly below -10 percent)
+    base_rate: 0.5      # read only by P(S given SESOI); with no SESOI it is not used
+    side: two_sided
+    sesoi: null
+    guard_bars: 0
+    grid_x: [1.25, 1.5, 2.0, 3.0]
+  - id: peninsular_india_drought
+    rule_outcome: peninsular_india_drought
+    type: binary
+    estimand: pooled_risk_ratio
+    effect_model: multiplicative change of P(anomaly below -10 percent)
+    base_rate: 0.5      # read only by P(S given SESOI); with no SESOI it is not used
+    side: two_sided
+    sesoi: null
+    guard_bars: 0
+    grid_x: [1.25, 1.5, 2.0, 3.0]
+windows:
+  season: June to September of each year; a rule's own window widens it (rule window and notes.season_calendar)
+day_convention: the instant or window each rule's season_calendar names (weekday from sunrise at Ujjain)
+baselines:
+  - id: nodal_18_6y
+    source: core/stats/season.py nodal_baseline (six harmonics)
+  - id: solar_cycle
+    source: core/stats/season.py solar_cycle_baseline (needs a sunspot series)
+    status: no committed sunspot snapshot; while it is missing the run has no baselines and R1 and R4 do not pass
+  - id: enso_nino34_jjas
+    source: the pinned Nino 3.4 series, June-September mean

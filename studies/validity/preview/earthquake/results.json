@@ -1,0 +1,857 @@
+{
+  "domain": "earthquake",
+  "excluded": [
+    {
+      "category": "not_encodable",
+      "outcome": "mainshock_rate",
+      "reason": "no machine conditions (status needs_predicates)",
+      "rule_id": "seismic.study.station_jupiter",
+      "variant": "primary"
+    },
+    {
+      "category": "not_encodable",
+      "outcome": "mainshock_rate",
+      "reason": "no machine conditions (status needs_predicates)",
+      "rule_id": "seismic.study.station_mars",
+      "variant": "primary"
+    },
+    {
+      "category": "not_encodable",
+      "outcome": "mainshock_rate",
+      "reason": "no machine conditions (status needs_predicates)",
+      "rule_id": "seismic.study.station_mercury",
+      "variant": "primary"
+    },
+    {
+      "category": "not_encodable",
+      "outcome": "mainshock_rate",
+      "reason": "no machine conditions (status needs_predicates)",
+      "rule_id": "seismic.study.station_saturn",
+      "variant": "primary"
+    },
+    {
+      "category": "not_encodable",
+      "outcome": "mainshock_rate",
+      "reason": "no machine conditions (status needs_predicates)",
+      "rule_id": "seismic.study.station_venus",
+      "variant": "primary"
+    }
+  ],
+  "headline": {
+    "below_entry_level": 6,
+    "expected_at_or_below_0_05_if_no_effect": 0.25,
+    "explore_p_at_or_below_0_05_uncorrected": 1,
+    "gate_untestable": 1,
+    "note": "descriptive, explore period only, no multiplicity correction and no verdict; about 5% of tests reach p <= 0.05 with no effect at all",
+    "registrable": 6,
+    "smallest_explore_p_uncorrected": 0.04894,
+    "tests": 6,
+    "with_explore_numbers": 5
+  },
+  "left_out": {
+    "note": "left out of this preview on request; not run, no number",
+    "rule": [],
+    "skip_rule": [
+      "eclipse_window",
+      "sun_ingress"
+    ],
+    "test_ids": [
+      "seismic.study.eclipse_window@1/primary/mainshock_rate",
+      "seismic.study.sun_ingress@1/primary/mainshock_rate"
+    ]
+  },
+  "notes": {
+    "baselines_declared": [
+      "nodal_18_6y",
+      "solar_cycle"
+    ],
+    "baselines_missing": [
+      "solar_cycle"
+    ],
+    "limit_only": true
+  },
+  "outcomes_refused": null,
+  "period": {
+    "confirm_rows_read": false,
+    "explore": [
+      "1976-01-01",
+      "2010-12-31"
+    ]
+  },
+  "plan": {
+    "path": "studies/validity/domains/earthquake.yaml",
+    "sha256": "3f89962cea688407c22e30e65abdcf1b8c5e07ce7bc33f07e7d1dd4a9d51e491",
+    "status": "draft"
+  },
+  "provisional": true,
+  "records": [
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.04137268630724763,
+        "n_bars": 445608,
+        "sha256": "c825117c0fa79f755edbe3444c7bf6bce1fb1a83f1483dce0b4c9b6ce4dd0c58"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "usgs_comcat_himalaya_d3d3d6ec8405",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently",
+          "ISC Bulletin cross-check catalogue not yet a committed snapshot (second-dataset cell open)",
+          "magnitudes are mostly converted from mb (review M7)"
+        ],
+        "n_events": null,
+        "n_units": 445608,
+        "sha256": "d3d3d6ec840599341782147b35579b69dae3919dd2668d762659270baef19972",
+        "span": [
+          "1976-01-01",
+          "2026-10-31"
+        ]
+      },
+      "estimate_with_without_baselines": null,
+      "explore": {
+        "blocks_used": null,
+        "estimate": null,
+        "p_descriptive_uncorrected": null,
+        "scale": null,
+        "statistic": null
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": false,
+        "confirm_blocks": 10,
+        "full_blocks": 30,
+        "untestable": true,
+        "untestable_reason": "no_sesoi"
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/earthquake/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/earthquake/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as something present at the same time as the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: hourly UTC grid step containing the event, no day boundary, chosen by the project. Other values: daily at 12:00 UTC, sunrise day at the arc centre. place: none: geocentric sidereal positions, chosen by the project. Other values: arc centre 28 N 85 E. horizon: the same grid step as the event, chosen by the project. Other values: 24 hours. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti. node: mean, chosen by the project. Other values: true. orb = 8: no source is cited for its range."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention hourly UTC grid step containing the event, no day boundary, horizon the same grid step as the event."
+        },
+        {
+          "kind": "data",
+          "text": "1976-01-01 to 2026-10-31 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 4% of the time, 10 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "Support was not reachable: there are fewer than 8 effective episodes. No effect could be excluded: no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "seen_before",
+          "text": "The confirm years were looked at in an earlier study (eq_v1_usgs_comcat_d3d3d6ec8405)."
+        }
+      ],
+      "name": "Earthquake Mars-Ketu conjunction within 8 degrees",
+      "outcome": "mainshock_rate",
+      "outcome_type": "events",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": null,
+      "rule_id": "seismic.study.mars_ketu_conj",
+      "side": "greater",
+      "test_id": "seismic.study.mars_ketu_conj@1/primary/mainshock_rate",
+      "variant": "primary",
+      "x95_explore_per_test": null,
+      "x_strict_explore": null
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.04976571336241719,
+        "n_bars": 445608,
+        "sha256": "25eee5ae10689f21a98d793122500dee0618afda0a8116b974bff0d79213d66d"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "usgs_comcat_himalaya_d3d3d6ec8405",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently",
+          "ISC Bulletin cross-check catalogue not yet a committed snapshot (second-dataset cell open)",
+          "magnitudes are mostly converted from mb (review M7)"
+        ],
+        "n_events": null,
+        "n_units": 445608,
+        "sha256": "d3d3d6ec840599341782147b35579b69dae3919dd2668d762659270baef19972",
+        "span": [
+          "1976-01-01",
+          "2026-10-31"
+        ]
+      },
+      "estimate_with_without_baselines": {
+        "with_baselines": -0.00020525451559934318,
+        "without_baselines": -0.00020525451559934318
+      },
+      "explore": {
+        "blocks_used": 19,
+        "estimate": 0.5,
+        "p_descriptive_uncorrected": 0.90625,
+        "scale": "rate_ratio",
+        "statistic": -0.00020525451559934318
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": true,
+        "confirm_blocks": 9,
+        "full_blocks": 28,
+        "untestable": false,
+        "untestable_reason": null
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/earthquake/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/earthquake/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as something present at the same time as the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: hourly UTC grid step containing the event, no day boundary, chosen by the project. Other values: daily at 12:00 UTC, sunrise day at the arc centre. place: none: geocentric sidereal positions, chosen by the project. Other values: arc centre 28 N 85 E. horizon: the same grid step as the event, chosen by the project. Other values: 24 hours. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti. orb = 8: no source is cited for its range."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention hourly UTC grid step containing the event, no day boundary, horizon the same grid step as the event."
+        },
+        {
+          "kind": "data",
+          "text": "1976-01-01 to 2026-10-31 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 5% of the time, 9 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "No effect could be excluded: no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "seen_before",
+          "text": "The confirm years were looked at in an earlier study (eq_v1_usgs_comcat_d3d3d6ec8405)."
+        }
+      ],
+      "name": "Earthquake Mars-Saturn conjunction within 8 degrees",
+      "outcome": "mainshock_rate",
+      "outcome_type": "events",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": {
+        "R1": {
+          "passed": null,
+          "status": "not_computable"
+        },
+        "R2": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R3": {
+          "passed": null,
+          "status": "not_run"
+        },
+        "R4": {
+          "passed": null,
+          "status": "not_computable"
+        }
+      },
+      "rule_id": "seismic.study.mars_saturn_conj",
+      "side": "greater",
+      "test_id": "seismic.study.mars_saturn_conj@1/primary/mainshock_rate",
+      "variant": "primary",
+      "x95_explore_per_test": {
+        "alpha": 0.05,
+        "informative_blocks": 0,
+        "k_eff": 17.533165596865185,
+        "level": 0.95,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 5,
+        "scale": "rate_ratio",
+        "unbounded": true
+      },
+      "x_strict_explore": {
+        "alpha": 0.006666666666666667,
+        "informative_blocks": 0,
+        "k_eff": 17.533165596865185,
+        "level": 0.9933333333333333,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 8,
+        "scale": "rate_ratio",
+        "unbounded": true
+      }
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.2595756808674889,
+        "n_bars": 445608,
+        "sha256": "b294be3bd832386d07ca0f15da7d62d5ad6d312a7344fcb77e5039358ffae938"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "usgs_comcat_himalaya_d3d3d6ec8405",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently",
+          "ISC Bulletin cross-check catalogue not yet a committed snapshot (second-dataset cell open)",
+          "magnitudes are mostly converted from mb (review M7)"
+        ],
+        "n_events": null,
+        "n_units": 445608,
+        "sha256": "d3d3d6ec840599341782147b35579b69dae3919dd2668d762659270baef19972",
+        "span": [
+          "1976-01-01",
+          "2026-10-31"
+        ]
+      },
+      "estimate_with_without_baselines": {
+        "with_baselines": -5.4272120411744484e-05,
+        "without_baselines": -5.4272120411744484e-05
+      },
+      "explore": {
+        "blocks_used": 1808,
+        "estimate": 0.88,
+        "p_descriptive_uncorrected": 0.77015,
+        "scale": "rate_ratio",
+        "statistic": -5.4272120411744484e-05
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": true,
+        "confirm_blocks": 821,
+        "full_blocks": 2630,
+        "untestable": false,
+        "untestable_reason": null
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Varahamihira, Brihat Samhita, ch. 32, v. 12-15. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: a maintainer check: source.checked_by and source.checked_on."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. The rule is attributed to Varahamihira, Brihat Samhita, ch. 32, v. 12-15 through a practitioner, not read from the classical text."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "The text reads it as a classification made after the event. We tested it as something present at the same time as the event. A null here does not test the text's own claim. Brihat Samhita ch. 32 reads the mandala after an earthquake to judge its results. We test whether the event rate differs by mandala. The text does not claim this."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: hourly UTC grid step containing the event, no day boundary, chosen by the project. Other values: daily at 12:00 UTC, sunrise day at the arc centre. place: none: geocentric sidereal positions, chosen by the project. Other values: arc centre 28 N 85 E. horizon: the same grid step as the event, chosen by the project. Other values: 24 hours. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention hourly UTC grid step containing the event, no day boundary, horizon the same grid step as the event."
+        },
+        {
+          "kind": "data",
+          "text": "1976-01-01 to 2026-10-31 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 26% of the time, 821 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "No effect could be excluded: no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "seen_before",
+          "text": "The confirm years were looked at in an earlier study (eq_v1_usgs_comcat_d3d3d6ec8405)."
+        }
+      ],
+      "name": "Earthquake Moon in a Agni-mandala nakshatra",
+      "outcome": "mainshock_rate",
+      "outcome_type": "events",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": {
+        "R1": {
+          "passed": null,
+          "status": "not_computable"
+        },
+        "R2": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R3": {
+          "passed": null,
+          "status": "not_run"
+        },
+        "R4": {
+          "passed": null,
+          "status": "not_computable"
+        }
+      },
+      "rule_id": "seismic.study.moon_mandala_agni",
+      "side": "two-sided",
+      "test_id": "seismic.study.moon_mandala_agni@1/primary/mainshock_rate",
+      "variant": "primary",
+      "x95_explore_per_test": {
+        "alpha": 0.05,
+        "informative_blocks": 0,
+        "k_eff": 1602.547426129489,
+        "level": 0.95,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 5,
+        "scale": "rate_ratio",
+        "unbounded": true
+      },
+      "x_strict_explore": {
+        "alpha": 0.006666666666666667,
+        "informative_blocks": 0,
+        "k_eff": 1602.547426129489,
+        "level": 0.9933333333333333,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 8,
+        "scale": "rate_ratio",
+        "unbounded": true
+      }
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.22168138812588642,
+        "n_bars": 445608,
+        "sha256": "bf35fa7b17b041d43d38fb909eb988e1fab94526e75f25b591393a142c538d57"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "usgs_comcat_himalaya_d3d3d6ec8405",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently",
+          "ISC Bulletin cross-check catalogue not yet a committed snapshot (second-dataset cell open)",
+          "magnitudes are mostly converted from mb (review M7)"
+        ],
+        "n_events": null,
+        "n_units": 445608,
+        "sha256": "d3d3d6ec840599341782147b35579b69dae3919dd2668d762659270baef19972",
+        "span": [
+          "1976-01-01",
+          "2026-10-31"
+        ]
+      },
+      "estimate_with_without_baselines": {
+        "with_baselines": -3.8166482195336056e-05,
+        "without_baselines": -3.8166482195336056e-05
+      },
+      "explore": {
+        "blocks_used": 776,
+        "estimate": 0.8888888888888888,
+        "p_descriptive_uncorrected": 1.0,
+        "scale": "rate_ratio",
+        "statistic": -3.8166482195336056e-05
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": true,
+        "confirm_blocks": 333,
+        "full_blocks": 1109,
+        "untestable": false,
+        "untestable_reason": null
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Varahamihira, Brihat Samhita, ch. 32, v. 16-19. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: a maintainer check: source.checked_by and source.checked_on."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. The rule is attributed to Varahamihira, Brihat Samhita, ch. 32, v. 16-19 through a practitioner, not read from the classical text."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "The text reads it as a classification made after the event. We tested it as something present at the same time as the event. A null here does not test the text's own claim. Brihat Samhita ch. 32 reads the mandala after an earthquake to judge its results. We test whether the event rate differs by mandala. The text does not claim this."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: hourly UTC grid step containing the event, no day boundary, chosen by the project. Other values: daily at 12:00 UTC, sunrise day at the arc centre. place: none: geocentric sidereal positions, chosen by the project. Other values: arc centre 28 N 85 E. horizon: the same grid step as the event, chosen by the project. Other values: 24 hours. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention hourly UTC grid step containing the event, no day boundary, horizon the same grid step as the event."
+        },
+        {
+          "kind": "data",
+          "text": "1976-01-01 to 2026-10-31 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 22% of the time, 333 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "No effect could be excluded: no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "seen_before",
+          "text": "The confirm years were looked at in an earlier study (eq_v1_usgs_comcat_d3d3d6ec8405)."
+        }
+      ],
+      "name": "Earthquake Moon in a Indra-mandala nakshatra",
+      "outcome": "mainshock_rate",
+      "outcome_type": "events",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": {
+        "R1": {
+          "passed": null,
+          "status": "not_computable"
+        },
+        "R2": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R3": {
+          "passed": null,
+          "status": "not_run"
+        },
+        "R4": {
+          "passed": null,
+          "status": "not_computable"
+        }
+      },
+      "rule_id": "seismic.study.moon_mandala_indra",
+      "side": "two-sided",
+      "test_id": "seismic.study.moon_mandala_indra@1/primary/mainshock_rate",
+      "variant": "primary",
+      "x95_explore_per_test": {
+        "alpha": 0.05,
+        "informative_blocks": 0,
+        "k_eff": 686.5617437361174,
+        "level": 0.95,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 5,
+        "scale": "rate_ratio",
+        "unbounded": true
+      },
+      "x_strict_explore": {
+        "alpha": 0.006666666666666667,
+        "informative_blocks": 0,
+        "k_eff": 686.5617437361174,
+        "level": 0.9933333333333333,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 8,
+        "scale": "rate_ratio",
+        "unbounded": true
+      }
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.258956302400316,
+        "n_bars": 445608,
+        "sha256": "5e89725c8b33b8cfb7e3ac1769a9a33d2d73e1263be365edeec6835b1c7ca7e2"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "usgs_comcat_himalaya_d3d3d6ec8405",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently",
+          "ISC Bulletin cross-check catalogue not yet a committed snapshot (second-dataset cell open)",
+          "magnitudes are mostly converted from mb (review M7)"
+        ],
+        "n_events": null,
+        "n_units": 445608,
+        "sha256": "d3d3d6ec840599341782147b35579b69dae3919dd2668d762659270baef19972",
+        "span": [
+          "1976-01-01",
+          "2026-10-31"
+        ]
+      },
+      "estimate_with_without_baselines": {
+        "with_baselines": 0.0002527212664945755,
+        "without_baselines": 0.0002527212664945755
+      },
+      "explore": {
+        "blocks_used": 1814,
+        "estimate": 1.9333333333333333,
+        "p_descriptive_uncorrected": 0.04894,
+        "scale": "rate_ratio",
+        "statistic": 0.0002527212664945755
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": true,
+        "confirm_blocks": 818,
+        "full_blocks": 2632,
+        "untestable": false,
+        "untestable_reason": null
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Varahamihira, Brihat Samhita, ch. 32, v. 20-22. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: a maintainer check: source.checked_by and source.checked_on."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. The rule is attributed to Varahamihira, Brihat Samhita, ch. 32, v. 20-22 through a practitioner, not read from the classical text."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "The text reads it as a classification made after the event. We tested it as something present at the same time as the event. A null here does not test the text's own claim. Brihat Samhita ch. 32 reads the mandala after an earthquake to judge its results. We test whether the event rate differs by mandala. The text does not claim this."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: hourly UTC grid step containing the event, no day boundary, chosen by the project. Other values: daily at 12:00 UTC, sunrise day at the arc centre. place: none: geocentric sidereal positions, chosen by the project. Other values: arc centre 28 N 85 E. horizon: the same grid step as the event, chosen by the project. Other values: 24 hours. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention hourly UTC grid step containing the event, no day boundary, horizon the same grid step as the event."
+        },
+        {
+          "kind": "data",
+          "text": "1976-01-01 to 2026-10-31 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 26% of the time, 818 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "No effect could be excluded: no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "seen_before",
+          "text": "The confirm years were looked at in an earlier study (eq_v1_usgs_comcat_d3d3d6ec8405)."
+        }
+      ],
+      "name": "Earthquake Moon in a Varuna-mandala nakshatra",
+      "outcome": "mainshock_rate",
+      "outcome_type": "events",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": {
+        "R1": {
+          "passed": null,
+          "status": "not_computable"
+        },
+        "R2": {
+          "passed": null,
+          "status": "pass"
+        },
+        "R3": {
+          "passed": null,
+          "status": "not_run"
+        },
+        "R4": {
+          "passed": null,
+          "status": "not_computable"
+        }
+      },
+      "rule_id": "seismic.study.moon_mandala_varuna",
+      "side": "two-sided",
+      "test_id": "seismic.study.moon_mandala_varuna@1/primary/mainshock_rate",
+      "variant": "primary",
+      "x95_explore_per_test": {
+        "alpha": 0.05,
+        "informative_blocks": 0,
+        "k_eff": 1607.4322166577883,
+        "level": 0.95,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 5,
+        "scale": "rate_ratio",
+        "unbounded": true
+      },
+      "x_strict_explore": {
+        "alpha": 0.006666666666666667,
+        "informative_blocks": 0,
+        "k_eff": 1607.4322166577883,
+        "level": 0.9933333333333333,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 8,
+        "scale": "rate_ratio",
+        "unbounded": true
+      }
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.2597866286063087,
+        "n_bars": 445608,
+        "sha256": "16cef37fa3f1844c9a2715d598763e93fb02843f0e97e37386a9fd979b8d893e"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "usgs_comcat_himalaya_d3d3d6ec8405",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently",
+          "ISC Bulletin cross-check catalogue not yet a committed snapshot (second-dataset cell open)",
+          "magnitudes are mostly converted from mb (review M7)"
+        ],
+        "n_events": null,
+        "n_units": 445608,
+        "sha256": "d3d3d6ec840599341782147b35579b69dae3919dd2668d762659270baef19972",
+        "span": [
+          "1976-01-01",
+          "2026-10-31"
+        ]
+      },
+      "estimate_with_without_baselines": {
+        "with_baselines": -7.296340885046149e-05,
+        "without_baselines": -7.296340885046149e-05
+      },
+      "explore": {
+        "blocks_used": 1532,
+        "estimate": 0.8461538461538461,
+        "p_descriptive_uncorrected": 0.67725,
+        "scale": "rate_ratio",
+        "statistic": -7.296340885046149e-05
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": true,
+        "confirm_blocks": 692,
+        "full_blocks": 2224,
+        "untestable": false,
+        "untestable_reason": null
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Varahamihira, Brihat Samhita, ch. 32, v. 8-11. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: a maintainer check: source.checked_by and source.checked_on."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. The rule is attributed to Varahamihira, Brihat Samhita, ch. 32, v. 8-11 through a practitioner, not read from the classical text."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "The text reads it as a classification made after the event. We tested it as something present at the same time as the event. A null here does not test the text's own claim. Brihat Samhita ch. 32 reads the mandala after an earthquake to judge its results. We test whether the event rate differs by mandala. The text does not claim this."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: hourly UTC grid step containing the event, no day boundary, chosen by the project. Other values: daily at 12:00 UTC, sunrise day at the arc centre. place: none: geocentric sidereal positions, chosen by the project. Other values: arc centre 28 N 85 E. horizon: the same grid step as the event, chosen by the project. Other values: 24 hours. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention hourly UTC grid step containing the event, no day boundary, horizon the same grid step as the event."
+        },
+        {
+          "kind": "data",
+          "text": "1976-01-01 to 2026-10-31 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 26% of the time, 692 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "No effect could be excluded: no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "seen_before",
+          "text": "The confirm years were looked at in an earlier study (eq_v1_usgs_comcat_d3d3d6ec8405)."
+        }
+      ],
+      "name": "Earthquake Moon in a Vayu-mandala nakshatra",
+      "outcome": "mainshock_rate",
+      "outcome_type": "events",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": {
+        "R1": {
+          "passed": null,
+          "status": "not_computable"
+        },
+        "R2": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R3": {
+          "passed": null,
+          "status": "not_run"
+        },
+        "R4": {
+          "passed": null,
+          "status": "not_computable"
+        }
+      },
+      "rule_id": "seismic.study.moon_mandala_vayu",
+      "side": "two-sided",
+      "test_id": "seismic.study.moon_mandala_vayu@1/primary/mainshock_rate",
+      "variant": "primary",
+      "x95_explore_per_test": {
+        "alpha": 0.05,
+        "informative_blocks": 0,
+        "k_eff": 995.7801449081369,
+        "level": 0.95,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 5,
+        "scale": "rate_ratio",
+        "unbounded": true
+      },
+      "x_strict_explore": {
+        "alpha": 0.006666666666666667,
+        "informative_blocks": 0,
+        "k_eff": 995.7801449081369,
+        "level": 0.9933333333333333,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 8,
+        "scale": "rate_ratio",
+        "unbounded": true
+      }
+    }
+  ],
+  "refused_by_lock": [],
+  "sampling_frame": {
+    "not_encodable": 5,
+    "not_sourced": 0,
+    "untestable": 0
+  },
+  "schema": "validity-preview/1",
+  "statement": "Preview on the explore period only. Provisional, descriptive numbers; no Supported, Contradicted or Excluded verdict can come from it, and no confirm row was read. Tests below the entry level (L2) and unregistrable tests are computed and labelled.",
+  "verdicts": null,
+  "vintage": {
+    "confirm_period": {
+      "end": "2026-10-31",
+      "start": "2011-01-01"
+    },
+    "grain": "hourly",
+    "id": "eq_v1_usgs_comcat_d3d3d6ec8405",
+    "never_opened": false,
+    "seen": true,
+    "snapshot": "usgs_comcat_d3d3d6ec8405"
+  }
+}
