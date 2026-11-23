@@ -16,7 +16,7 @@ merge_gap: 0
 guard_bars: 0
 r_measures:            # core/validity/robustness.py; thresholds are the module's, not set here
   R1: {measure: with-baselines statistic in the claimed direction and its p-value, threshold: 0.05}
-  R2: {measure: placebo-sky rank p on the statistic T (time-shift skies, mid-rank ties), threshold: 0.05}
+  R2: {measure: "placebo-sky rank p on the statistic T (time-shift skies, mid-rank ties)", threshold: 0.05}
   R3: {measure: share of distinct sensitivity cells with the claimed sign, threshold: 0.8}
   R4: {measure: baseline_r2 of the calendar on the domain baselines (fails at or above), threshold: 0.5}
 placebo_sets: [time_shift]

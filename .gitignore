@@ -135,6 +135,8 @@ coverage.xml
 *.docx
 studies/**/paper/**/*.pdf
 studies/**/paper/**/*.html
+papers/registered_report/*.html
+papers/registered_report/*.pdf
 tests/test_report.json
 tests/validation_report.json
 tests/test_regression_matrix.csv

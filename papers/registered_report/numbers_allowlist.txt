@@ -1,0 +1,28 @@
+# Bare tokens allowed in the prose of manuscript.qmd (tools/check_paper_keys.py).
+# One token per line. Nothing here is a result: results are read from committed
+# files through the paper kit. Design constants that exist in the code are
+# imported from it in the manuscript; the ones below exist only in ADR-008 A3
+# (the year test is not implemented yet) or are names and labels.
+
+# Stage numbers of a Registered Report; also exponents and unit fractions in formulas
+1
+2
+
+# Chapters of the Brihat Samhita named in the text (Bhat 1981)
+8
+12
+16
+17
+19
+24
+32
+
+# Name of the ENSO index region (Nino 3.4)
+3.4
+
+# ADR-008 amendment A3.1 design constants of the planned year test (not results):
+# ENSO phase threshold in degrees C, and the lag-1 dependence envelope
+0.5
+0.3
+-0.3
++0.3

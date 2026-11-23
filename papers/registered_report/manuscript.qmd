@@ -1,0 +1,1056 @@
+---
+title: "Testing classical Vedic astrological principles on past mundane events: a calibrated, pre-registered framework applied to earthquakes, monsoon rainfall and gold prices"
+subtitle: "Stage 1 Registered Report and methods paper. Draft for owner review: the confirmatory analyses are sealed and have not been run."
+author:
+  - name: Astro Research contributors
+    affiliation: astro-fusion/astro_research-white-paper
+date: last-modified
+date-format: long
+bibliography: references.bib
+link-citations: true
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+  pdf:
+    documentclass: article
+    papersize: a4
+    geometry: [top=25mm, left=25mm, right=25mm, bottom=25mm]
+    fontsize: 11pt
+    number-sections: true
+execute:
+  echo: false
+  warning: false
+  cache: false
+  freeze: false
+keywords: [registered report, astrology, Brihat Samhita, earthquakes, Indian summer monsoon, gold, sign-flip test, equivalence, multiplicity, pre-registration]
+abstract: |
+  Classical Indian astrological texts and the practitioners who cite them state that
+  certain configurations of the sky go together with earthquakes, with deficient
+  monsoon rain and with movements in the price of gold. We ask, on past data only,
+  whether specific principles of this kind, each stated with its source and with our
+  encoding of it, show the claimed association with declustered earthquakes of the
+  Himalayan arc, with all-India and peninsular June to September rainfall, and with
+  the daily Frankfurt gold fixing; and, where they do not, which effect sizes the
+  data exclude. This Stage 1 manuscript fixes the hypotheses, the encodings, the
+  data snapshots by hash, one primary test per data grain (a block sign-flip test
+  with equal-size control blocks, and a stratified year test for yearly series),
+  exclusion limits by effect removal, baselines for season, ENSO, the solar cycle
+  and the lunar nodal cycle, placebo skies, family-wise error control with thresholds
+  fixed at registration, a confirm-once seal with an outside timestamp, and a
+  simulation certificate that the whole pipeline must hold before any confirm-period
+  outcome is read. No confirmatory analysis has been run. Pilot numbers come from
+  the explore periods only and carry no verdict. We state plainly what is not yet in
+  place: no smallest effect size of interest has been signed, the calibration
+  certificate does not yet certify the current code, every encoding is at the lowest
+  citation level, and several owner decisions are pending. No forecast is made or
+  scored anywhere in this work.
+---
+
+<!--
+Numbers are never typed. Every number in the prose is read from a committed file
+through the paper kit (libs/vedic_astrology_core/paperkit): R.num / R.count /
+R.pct / R.p / R.text with a "label:key" key, or is computed in a code cell from
+those same files. Design constants are imported from the code that uses them.
+The few bare tokens allowed in prose are in numbers_allowlist.txt.
+Check: see README.md beside this file.
+-->
+
+```{python}
+#| include: false
+import csv
+import hashlib
+import math
+import subprocess
+import sys
+from collections import Counter
+from pathlib import Path
+
+import yaml
+
+
+def _repo() -> Path:
+    here = Path.cwd().resolve()
+    for q in [here, *here.parents]:
+        if (q / "pyproject.toml").exists() and (q / "libs" / "vedic_astrology_core").exists():
+            return q
+    raise RuntimeError("repository root not found")
+
+
+REPO = _repo()
+sys.path.insert(0, str(REPO / "libs"))
+from vedic_astrology_core.paperkit import Results  # noqa: E402
+from vedic_astrology_core.paperkit.results import format_number  # noqa: E402
+from vedic_astrology_core.stats import blocks as _blocks  # noqa: E402
+from vedic_astrology_core.stats import exclusion as _exclusion  # noqa: E402
+from vedic_astrology_core.stats import season as _season  # noqa: E402
+from vedic_astrology_core.validity import family as _family  # noqa: E402
+from vedic_astrology_core.validity import gate as _gate  # noqa: E402
+from vedic_astrology_core.validity import robustness as _robustness  # noqa: E402
+from vedic_astrology_core.validity import sentences as _sentences  # noqa: E402
+
+SOURCES = {
+    "eq": "studies/validity/preview/earthquake/results.json",
+    "mon": "studies/validity/preview/monsoon/results.json",
+    "gold": "studies/validity/preview/metals/results.json",
+    "cert": "studies/validity/calibration/certificate.json",
+    "mult": "studies/project_multiplicity.json",
+    "eqold": "studies/earthquake/artifacts/results.json",
+    "goldold": "studies/gold_market/artifacts/results.json",
+    "silverold": "studies/silver_market/artifacts/results.json",
+}
+PLANS = {
+    "eq": "studies/validity/domains/earthquake.yaml",
+    "mon": "studies/validity/domains/monsoon.yaml",
+    "gold": "studies/validity/domains/metals.yaml",
+}
+DOMAIN_NAME = {"eq": "Earthquake", "mon": "Monsoon", "gold": "Gold"}
+
+
+class Multi:
+    """Several results files behind one accessor; keys are 'label:dotted.key'."""
+
+    def __init__(self, files):
+        self.r = {label: Results.load(REPO / path) for label, path in files.items()}
+
+    def _split(self, key):
+        label, sep, rest = key.partition(":")
+        if not sep or label not in self.r:
+            raise KeyError(f"key needs a known label: {key!r}")
+        return self.r[label], rest
+
+    def get(self, key):
+        res, k = self._split(key)
+        return res.get(k)
+
+    def num(self, key, digits=2):
+        res, k = self._split(key)
+        return res.num(k, digits)
+
+    def count(self, key):
+        res, k = self._split(key)
+        return res.count(k)
+
+    def pct(self, key, digits=1):
+        res, k = self._split(key)
+        return res.pct(k, digits)
+
+    def p(self, key, digits=3):
+        res, k = self._split(key)
+        return res.p(k, digits)
+
+    def text(self, key):
+        res, k = self._split(key)
+        return res.text(k)
+
+    def data(self, label):
+        return self.r[label].data
+
+
+R = Multi(SOURCES)
+
+# Domain plans are YAML; the same strict accessor is put over them.
+_PLAN = {}
+for _label, _path in PLANS.items():
+    with open(REPO / _path, encoding="utf-8") as _fh:
+        _PLAN[_label] = Results(yaml.safe_load(_fh), _path)
+
+
+def plan(label, key, kind="text", digits=2):
+    """A value of a domain plan: kind is text, num, count or raw."""
+    res = _PLAN[label]
+    if kind == "raw":
+        return res.get(key)
+    if kind == "num":
+        return res.num(key, digits)
+    if kind == "count":
+        return res.count(key)
+    return str(res.get(key))
+
+
+def plan_data(label):
+    return _PLAN[label].data
+
+
+def sha_file(rel):
+    return hashlib.sha256((REPO / rel).read_bytes()).hexdigest()
+
+
+# Design constants, read from the code that uses them.
+CONST = {
+    "min_k_eff": int(_blocks.MIN_K_EFF),
+    "max_enumerated": int(_blocks.MAX_ENUMERATED),
+    "draws": int(_blocks.DEFAULT_DRAWS),
+    "n_thin": int(_exclusion.N_THIN),
+    "n_placebo": int(_robustness.N_TIME_SHIFT),
+    "min_placebo_change": float(_robustness.MIN_PLACEBO_CHANGE),
+    "min_distinct_change": float(_robustness.MIN_DISTINCT_CHANGE),
+    "min_distinct_placebos": int(_robustness.MIN_DISTINCT_PLACEBOS),
+    "nodal_years": float(_season.NODAL_PERIOD_YEARS),
+    "nodal_harmonics": int(_season.NODAL_HARMONICS),
+    "solar_window": int(_season.SOLAR_SMOOTHING_WINDOW),
+    "season_harmonics": int(_season.SEASON_HARMONICS),
+    "max_variants": int(_family.MAX_VARIANTS),
+    "power_target": float(_gate.POWER_TARGET),
+    "entry_level": int(_gate.FAMILY_MIN_LEVEL),
+    "encoding_level": int(_sentences.ENCODING_LEVEL),
+    "min_expected_events": int(_gate.MIN_EXPECTED_EVENTS),
+}
+
+
+def const(name, digits=None):
+    v = CONST[name]
+    if digits is None:
+        return str(v)
+    return f"{v:.{digits}f}"
+
+
+def share(x, digits=0):
+    return f"{100 * float(x):.{digits}f}%"
+
+
+# ---- rule files -------------------------------------------------------------
+RULES = {}
+for _f in sorted(
+    list((REPO / "rules" / "seismic" / "study").glob("*.yaml"))
+    + list((REPO / "rules" / "financial" / "study").glob("gold_*.yaml"))
+    + list((REPO / "rules" / "monsoon").glob("_*.yaml"))
+):
+    with open(_f, encoding="utf-8") as _fh:
+        _d = yaml.safe_load(_fh)
+    _d["_file"] = str(_f.relative_to(REPO))
+    RULES[_d["id"]] = _d
+
+
+def _sub(v, params):
+    if isinstance(v, str) and v.startswith("$"):
+        p = params[v[1:]]
+        return p["value"]
+    return v
+
+
+def encoding_of(rule):
+    params = rule["params"] if "params" in rule and rule["params"] else {}
+    cond = rule["conditions"] if "conditions" in rule else None
+    notes = rule["notes"] if "notes" in rule and rule["notes"] else {}
+    out = []
+    if cond:
+        for pred, args in cond.items():
+            if pred == "use":
+                out.append(f"condition of rule {args}")
+            elif isinstance(args, dict):
+                inner = []
+                for k, v in args.items():
+                    v = _sub(v, params)
+                    if isinstance(v, list):
+                        v = "+".join(str(x) for x in v)
+                    inner.append(f"{k}={v}")
+                out.append(f"{pred}({', '.join(inner)})")
+            else:
+                out.append(f"{pred}({args})")
+    cal = notes["season_calendar"] if "season_calendar" in notes else None
+    if cal:
+        bits = [cal["kind"]]
+        for k in ("instant", "nakshatra", "vara"):
+            if k in cal:
+                bits.append(f"{k}={cal[k]}")
+        if "active_lords" in cal:
+            bits.append("active lords=" + "+".join(cal["active_lords"]))
+        out.append("yearly: " + ", ".join(bits))
+    if "window" in rule and rule["window"]:
+        w = rule["window"]
+        out.append(f"window {w['unit']}: before={_sub(w['before'], params)}, after={_sub(w['after'], params)}")
+    if not out:
+        out.append("not yet encoded (status " + str(rule["status"] if "status" in rule else "unknown") + ")")
+    return "; ".join(out)
+
+
+def source_of(rule):
+    s = rule["source"] if "source" in rule and rule["source"] else {}
+    name = None
+    for k in ("text", "app_registry", "url"):
+        if k in s and s[k]:
+            name = str(s[k])
+            break
+    name = name or "none recorded"
+    loc = []
+    if "chapter" in s:
+        loc.append(f"ch. {s['chapter']}")
+    if "verse" in s:
+        loc.append(f"v. {s['verse']}")
+    if "page" in s:
+        loc.append(f"p. {s['page']}")
+    if "id" in s and "app_registry" in s:
+        loc.append(str(s["id"]))
+    if "edition" in s:
+        loc.append(str(s["edition"]))
+    txt = name + (" (" + "; ".join(loc) + ")" if loc else "")
+    rd = rule["reading"] if "reading" in rule and rule["reading"] else {}
+    if "text_says" in rd and rd["text_says"] != rd["kind"]:
+        txt += ". Reading differs: the source reads it as " + rd["text_says"].replace("_", " ")
+    return txt
+
+
+def planned_side(rule, test):
+    """ADR-008 A3.5: one-sided only for a sourced, quoted, stated direction."""
+    ee = rule["expected_effect"] if "expected_effect" in rule else {}
+    fixed = ee["fixed_by"] if "fixed_by" in ee else "project"
+    direction = test["direction"] if "direction" in test else "either"
+    quoted = bool(test["quote"]) if "quote" in test else False
+    if direction in ("increase", "decrease") and fixed in ("source", "practitioner", "text") and quoted:
+        return "one-sided (" + direction + ")"
+    return "two-sided"
+
+
+def stated_direction(rule, test):
+    ee = rule["expected_effect"] if "expected_effect" in rule else {}
+    fixed = ee["fixed_by"] if "fixed_by" in ee else "not stated"
+    direction = test["direction"] if "direction" in test else "either"
+    return f"{direction} (fixed by {fixed})"
+
+
+def records(label):
+    return R.data(label)["records"]
+
+
+def by_rule(label):
+    out = {}
+    for rec in records(label):
+        out.setdefault(rec["rule_id"], []).append(rec)
+    return out
+
+
+def md_table(header, rows, caption=None, label=None):
+    lines = ["| " + " | ".join(header) + " |", "|" + "|".join(["---"] * len(header)) + "|"]
+    for row in rows:
+        lines.append("| " + " | ".join(str(c).replace("|", "&#124;").replace("\n", " ") for c in row) + " |")
+    if caption:
+        lines.append("")
+        lines.append(": " + caption + (" {#" + label + "}" if label else ""))
+    return "\n".join(lines) + "\n"
+
+
+def short(rule_id):
+    return rule_id.split(".")[-1]
+
+
+def fmt(x, digits=2):
+    if x is None:
+        return "n/a"
+    return format_number(x, digits)
+
+
+def fmt_sig(x):
+    if x is None:
+        return "n/a"
+    return f"{float(x):.3g}"
+
+
+# ---- derived counts (all from the files above) ------------------------------
+def gate_counts(label):
+    recs = records(label)
+    c = Counter()
+    for rec in recs:
+        g = rec["gate"]
+        if g["untestable"]:
+            c["untestable:" + str(g["untestable_reason"])] += 1
+        else:
+            c["testable"] += 1
+        if g["can_support"]:
+            c["can_support"] += 1
+        if g["can_limit"]:
+            c["can_limit"] += 1
+    return c
+
+
+A_TEST_FREE = ("season", "too_few_episodes", "too_few_years", "not_encoded", "not_operationalised", "data_quality", "chart_time")
+
+
+def n_b(label):
+    """Projected batch size under ADR-008 A3.5 item 6 (block-test grains)."""
+    n = 0
+    for rec in records(label):
+        g = rec["gate"]
+        if g["untestable"] and (g["untestable_reason"] in A_TEST_FREE or g["all_blocks_dropped"]):
+            continue
+        n += 1
+    return n
+
+
+def alpha_first(label):
+    return float(plan(label, "alpha_spending.first", "raw"))
+
+
+def a_test(label):
+    return alpha_first(label) / n_b(label)
+
+
+def min_blocks_two_sided(label):
+    a = a_test(label)
+    k = 1
+    while 2.0 * 2.0 ** (-k) > a:
+        k += 1
+    return k
+
+
+def reach(label):
+    need = min_blocks_two_sided(label)
+    return sum(1 for rec in records(label) if rec["gate"]["confirm_blocks"] >= need)
+
+
+assert R.data("mult")["studies"][0]["study"] == "combinations"
+OLD_FAMILY_TOTAL = (
+    int(R.get("eqold:headline.family_size"))
+    + int(R.get("mult:studies.0.n_tested"))
+    + int(R.get("goldold:headline.n_tests_explore"))
+    + int(R.get("silverold:headline.n_tests_explore"))
+)
+
+# ---- certificate ------------------------------------------------------------
+CERT = R.data("cert")
+CELLS = CERT["cases"]
+N_CELLS = len(CELLS)
+N_FAST = sum(1 for c in CELLS if str(c["note"] or "").startswith("FAST SUBSET"))
+N_PROPERTY = sum(1 for c in CELLS if c["replications"] is None)
+N_FULL = N_CELLS - N_FAST - N_PROPERTY
+CASE_IDS = list(CERT["case_passed"].keys())
+N_CASES = len(CASE_IDS)
+N_CASES_PASSED = sum(1 for v in CERT["case_passed"].values() if v is True)
+N_YEARLY_CASES = sum(1 for c in CASE_IDS if c.startswith("Y"))
+
+
+def _changed_code():
+    paths = list(CERT["code_hashes"].keys())
+    try:
+        out = subprocess.run(
+            ["git", "hash-object", "--"] + paths, cwd=REPO, capture_output=True, check=True
+        ).stdout.decode().split()
+    except Exception:
+        return None
+    if len(out) != len(paths):
+        return None
+    return [p for p, h in zip(paths, out) if CERT["code_hashes"][p] != h]
+
+
+CHANGED = _changed_code()
+N_CERT_FILES = len(CERT["code_hashes"])
+
+
+def changed_sentence():
+    if CHANGED is None:
+        return "the comparison of the certified file hashes with the working tree could not be made at render time"
+    if not CHANGED:
+        return f"all {N_CERT_FILES} certified files had the certified hash at render time"
+    names = ", ".join(Path(p).name for p in CHANGED)
+    return f"{len(CHANGED)} of the {N_CERT_FILES} certified files differed from their certified hash at render time ({names})"
+
+
+# ---- stale previews -----------------------------------------------------------
+def stale_previews():
+    out = []
+    for label, path in PLANS.items():
+        if R.data(label)["plan"]["sha256"] != sha_file(path):
+            out.append(label)
+    return out
+
+
+STALE = stale_previews()
+
+# ---- classical text check -----------------------------------------------------
+with open(REPO / "research/incoming/texts/round5_local_books/verification.csv", encoding="utf-8", newline="") as _fh:
+    VER = list(csv.DictReader(_fh))
+VER_Q = Counter(r["match_quality"] for r in VER)
+VER_TEXT = Counter(r["text"] for r in VER)
+VER_NOT_FOUND = sorted({r["target_id"] for r in VER if r["match_quality"] == "not_found"})
+VER_EXACT = VER_Q["exact"]
+
+def level_range():
+    lv = sorted({r["level"] for l in PLANS for r in records(l)})
+    if len(lv) == 1:
+        return f"level L{lv[0]}"
+    return f"levels L{lv[0]} to L{lv[-1]}"
+
+
+def n_tests(label, key):
+    """'1 test has' / 'N tests have' / 'No test has' for a headline count."""
+    n = int(R.get(label + ":headline." + key))
+    if n == 0:
+        return "No test has"
+    if n == 1:
+        return "1 test has"
+    return f"{n} tests have"
+
+
+# ---- sign-offs ------------------------------------------------------------------
+def unsigned(label):
+    so = plan_data(label)["owner_signoffs"]
+    return [k for k, v in so.items() if v is None]
+
+
+def sesoi_set(label):
+    return sum(1 for o in plan_data(label)["outcomes"] if o["sesoi"] is not None)
+
+
+with open(REPO / "studies/validity/sesoi_sources.yaml", encoding="utf-8") as _fh:
+    N_SESOI_ENTRIES = len(yaml.safe_load(_fh)["entries"])
+
+with open(REPO / "data/registry/licences.yaml", encoding="utf-8") as _fh:
+    LICENCES = yaml.safe_load(_fh)["sources"]
+USED_SOURCES = sorted({s["source_id"] for label in PLANS for s in plan_data(label)["snapshots"]})
+N_LICENCE_READ = sum(1 for s in USED_SOURCES if s in LICENCES and LICENCES[s]["verified"] is True)
+```
+
+::: {.callout-important}
+## Status of this manuscript
+
+This is a Stage 1 Registered Report: introduction, hypotheses, methods and pilot data. **No confirmatory analysis has been run.** The confirm-period outcomes of every dataset are closed to the pipeline; in the three pilot runs reported here the field that records whether any confirm row was read is false. All three domain plans have status "`{python} plan("eq", "status")`". Pilot numbers are provisional, come from the explore periods only, and carry no verdict.
+:::
+
+# Introduction
+
+## The question
+
+Indian (Vedic) astrology has a branch, called mundane astrology or *samhita*, that speaks about public events: earthquakes, the rains, prices. Its best-known classical source is the Brihat Samhita of Varahamihira [@bhat1981]. Practitioners today cite that text, and others, when they explain an earthquake after it has happened, describe a coming monsoon, or comment on gold.
+
+We ask a narrow question about the past. For a stated list of principles, each written down with its source and with our encoding of it:
+
+1. Does the principle show the association it claims with (a) earthquakes of the Himalayan arc, (b) Indian summer monsoon rainfall, (c) the price of gold?
+1. If it does not, which effect sizes do the data exclude?
+1. What are the limits of the encoding that was tested?
+
+Nothing in this work forecasts a future event or scores anyone's forecast. Both the period used to explore and the period used to confirm lie in the past.
+
+## Prior research
+
+**Tests of astrology.** The controlled tests in the literature concern natal astrology, the reading of a person's birth chart. In a double-blind test, astrologers matched birth charts to personality profiles no better than chance [@carlson1985]. Astrologers given full case files did not match them to charts above chance and did not agree with each other [@mcgrew1990]. Reviews of this literature, including meta-analyses and studies of people born minutes apart, report effect sizes near zero [@dean2003; @kelly1997], and a large-sample study found no relation between date of birth and personality or intelligence [@hartmann2006]. A test with Indian astrologers, who were asked to tell the charts of intellectually bright children from those of children with intellectual disability, also gave chance performance [@narlikar2009]. We know of no pre-registered test of the mundane branch on physical or economic series. <!-- TODO(owner): a literature search should confirm that no such registered test exists before submission. -->
+
+**Earthquakes.** A test of a sky calendar against earthquakes has two known physical effects to respect. Seismicity in the Nepal Himalaya is modulated by the season, with more events in winter [@bollinger2007], which has been linked to surface water loading [@bettinelli2008]. The solid-Earth and ocean tides, which follow the Moon and the Sun, have a small, measurable effect on some classes of earthquakes [@cochran2004; @ide2016]. So a calendar tied to the Sun's yearly path can copy the season, and a calendar tied to the Moon has a real physical channel. Aftershock clustering also breaks the independence that simple tests assume, which is why catalogues are declustered before rates are compared [@gardner1974; @zaliapin2013; @ogata1988].
+
+**Gold.** Calendar anomalies are documented for gold: day-of-the-week effects in returns and in volatility [@ball1982; @ma1986; @luceytully2006; @blose2013] and a seasonal ("autumn") effect [@baur2013]. Lunar-phase effects have been reported for stock returns [@dichev2003; @yuan2006] and examined for precious metals [@lucey2010]. These matter in two ways. They are baselines that a sky calendar must beat, and their published sizes are the natural yardstick for what counts as an effect worth caring about.
+
+**Monsoon.** All-India summer monsoon rainfall is documented as a long homogeneous series [@parthasarathy1994; @mooley1984]. Its best-established outside driver is the El Niño-Southern Oscillation: El Niño years tend to be dry [@rasmusson1983], the strength of the link changes over decades [@kumar1999], and the location of the warming matters [@kumar2006]. A yearly sky calendar that happens to load on El Niño years would look like an effect unless ENSO is held fixed.
+
+**Method.** Three ideas from the methods literature shape the design. First, analytic flexibility inflates false positives, and fixing the analysis before the outcomes are seen removes it [@simmons2011; @nosek2018; @chambers2013]. Second, a holdout that is consulted repeatedly stops being a holdout [@dwork2015]. Third, a failure to find an effect says something only when the test could have found one, so a null must come with the effect sizes it excludes [@lakens2017; @lakens2018].
+
+## Why classical texts
+
+A fair test needs a claim that was fixed before the data and by someone other than the tester. A classical text gives that: its words predate every dataset used here by many centuries. A practitioner's page gives a weaker version of it: a dated statement, which may postdate part of the data. A rule written by this project gives none of it. We record which of the three each principle is, and the verdict words change with it (@sec-levels).
+
+The source also decides *what* is claimed. Chapter 32 of the Brihat Samhita assigns the lunar asterisms to four "circles" (mandalas) and uses the circle of the asterism at the time of an earthquake to read the earthquake's consequences. It does not say that earthquakes are more frequent in one circle. Testing the rate by circle is therefore a hypothesis of this project that is derived from the text, and a null on it is not a null on the text. We keep that distinction in every table.
+
+## Prior exploratory work by this project
+
+Before the framework described here, this project ran `{python} str(OLD_FAMILY_TOTAL)` planned tests in four exploratory families: `{python} R.count("eqold:headline.family_size")` earthquake rate tests, `{python} R.count("mult:studies.0.n_tested")` tests in a declared search over `{python} R.count("mult:studies.0.n_examined")` sky combinations, `{python} R.count("goldold:headline.n_tests_explore")` gold tests and `{python} R.count("silverold:headline.n_tests_explore")` silver tests. Counting every stored test in every study, the project's multiplicity record holds `{python} R.count("mult:n_hypotheses_tested")` tests, of which `{python} R.count("mult:n_nominal_significant")` were below the nominal `{python} R.pct("mult:alpha", 0)` level where about `{python} R.num("mult:expected_nominal_false_positives_if_all_null", 1)` would be expected with no effect anywhere. None is a confirmed finding.
+
+That work is **exploratory and has known flaws**, listed in the repository's `CORRECTIONS.md` and findings ledger. The plans were committed together with the first run, on a working tree with uncommitted changes, so they were fixed analysis plans and not pre-registrations. The stored gold artifact still shows `{python} R.count("goldold:headline.n_significant_explore")` exploration "discovery" (and the multiplicity record still counts `{python} R.count("mult:n_corrected_significant")` corrected-significant results from that study); its p-value was not attainable by the shift test that produced it, the corrected reading is that nothing passed, and the artifact has not been re-run. The gold and silver series were futures prices from an unverified source. The combination search could not have passed its own correction with the number of random draws it used. Earlier results, before a correction of sidereal positions and of the lunar node, are withdrawn. We use this work for one purpose only: it tells us which confirm periods the project has already seen (@sec-multiplicity).
+
+## Contribution
+
+1. A list of hypotheses in which each principle carries its source, the reading of the source, the encoding, the choices the source does not fix, and a citation level computed from evidence.
+1. One primary test per data grain, whose error rates are shown by simulation on the calendars actually used, and an exclusion limit that does not depend on the shape of the outcome distribution.
+1. Error control over time: thresholds fixed at registration, a confirm-once ledger, and an outside timestamp, so that later tests cannot change earlier verdicts.
+1. A fixed set of five verdicts with their exact sentences, in which a null on an encoding is never worded as a null on a text or on astrology.
+1. An honest account of what is pending before any of this can run.
+
+# Hypotheses {#sec-hypotheses}
+
+Each row of @tbl-h-eq, @tbl-h-mon and @tbl-h-gold is one principle, read from its rule file under `rules/`. "Stated direction" is what the rule file says and who fixed it. "Registered side" applies the side rule of the plan (@sec-multiplicity): a test is one-sided only when the direction comes from the source or a practitioner and the quotation is in the rule file. "Level" is the citation level the pilot run computed (@sec-levels).
+
+```{python}
+#| output: asis
+def hyp_rows(label, prefix):
+    grain = plan_data(label)["vintages"][0]["grain"]
+    test_name = "year test (planned)" if grain == "yearly" else "block sign-flip"
+    recs = by_rule(label)
+    excluded = {}
+    for e in R.data(label)["excluded"]:
+        excluded.setdefault(e["rule_id"], e["reason"])
+    ids = sorted(set(recs) | {r for r in excluded if r in RULES})
+    rows = []
+    for i, rid in enumerate(ids, 1):
+        rule = RULES[rid]
+        tests = rule["tests"] if "tests" in rule else []
+        outs = "; ".join(t["outcome"] for t in tests)
+        dirs = "; ".join(sorted({stated_direction(rule, t) for t in tests}))
+        sides = "; ".join(sorted({planned_side(rule, t) for t in tests}))
+        level = "L" + str(recs[rid][0]["level"]) if rid in recs else "n/a"
+        status = "in pilot" if rid in recs else "not run: " + excluded[rid]
+        rows.append([f"{prefix}{i}", short(rid), source_of(rule), encoding_of(rule), outs, dirs, sides, level, test_name, status])
+    return rows
+
+
+HEAD = ["Id", "Principle", "Source", "Encoding", "Outcome(s)", "Stated direction", "Registered side", "Level", "Test", "Status"]
+print(md_table(HEAD, hyp_rows("eq", "E"), "Earthquake hypotheses (Himalayan arc, declustered mainshock rate).", "tbl-h-eq"))
+```
+
+```{python}
+#| output: asis
+print(md_table(HEAD, hyp_rows("mon", "M"), "Monsoon hypotheses (June to September rainfall anomaly and drought flag).", "tbl-h-mon"))
+```
+
+```{python}
+#| output: asis
+print(md_table(HEAD, hyp_rows("gold", "G"), "Gold hypotheses (Frankfurt fixing in DEM; each principle on three outcomes).", "tbl-h-gold"))
+```
+
+**What these tables show about the title's word "classical".** Only the four mandala rules and the year-lord rule cite a classical chapter with edition and page, and the mandala rules test a reading the text does not make. The other earthquake and gold principles come from this project's earlier study plans, with no classical chapter cited for the event or market claim; one monsoon principle comes from a practitioner's page and one from an application registry. In the pilot records every principle is at `{python} level_range()` today. Raising the list to sourced, page-checked classical principles is owner work that precedes registration (@sec-signoffs); the framework, not the present list, is the main contribution of this Stage 1.
+
+**Smallest effect size of interest (SESOI).** A SESOI may come only from the rule's own source or from a published yardstick: the size of the best-established non-astrological effect of the same kind on the same outcome. @tbl-sesoi gives the candidate yardstick per outcome. None is in force: the source table has `{python} str(N_SESOI_ENTRIES)` entries and `{python} str(sum(sesoi_set(l) for l in PLANS))` plan outcomes carry a SESOI, because each number must first be read at the page by the owner (decision H18). Until then no test can return the verdict "effect excluded".
+
+```{python}
+#| output: asis
+CAND = {
+    "mainshock_rate": "Seasonal modulation of seismicity on the same arc [@bollinger2007]; winter-to-summer rate ratio, to be read at the page",
+    "all_india_jjas_anomaly_pct": "Mean June to September anomaly of El Niño years [@rasmusson1983; @kumar1999; @kumar2006]; a printed composite mean must be found",
+    "peninsular_india_jjas_anomaly_pct": "A regional El Niño composite; none found yet",
+    "all_india_drought": "Share of El Niño years that were drought years against other years [@kumar2006]; must be computable from printed counts",
+    "peninsular_india_drought": "As the all-India drought flag, for the region; none found yet",
+    "gold_dem_frankfurt_log_return": "Day-of-the-week effect in gold returns [@ball1982; @ma1986; @luceytully2006; @blose2013], in that order",
+    "gold_dem_frankfurt_abs_return": "Weekday seasonality in gold volatility [@luceytully2006], with a stated conversion caveat",
+    "gold_dem_frankfurt_extreme_move": "None known on this scale; no SESOI proposed",
+}
+rows = []
+for label in PLANS:
+    for o in plan_data(label)["outcomes"]:
+        rows.append([
+            DOMAIN_NAME[label], o["id"], o["estimand"].replace("_", " "), o["effect_model"],
+            CAND[o["id"]], "none" if o["sesoi"] is None else str(o["sesoi"]),
+            ", ".join(fmt_sig(x) for x in o["grid_x"]),
+        ])
+print(md_table(["Domain", "Outcome", "Estimand", "Effect model", "Candidate yardstick (proposal only)", "SESOI in the plan", "Grid for X"], rows,
+               "Outcomes, effect models and SESOI basis. Candidates are proposals awaiting the owner's check at the page.", "tbl-sesoi"))
+```
+
+**Design summary.** For every hypothesis the same chain applies. *Question:* does the encoded calendar go with a different outcome? *Hypothesis:* the pooled difference (or ratio) between active time and matched control time is not zero, in the registered side. *Sampling plan:* the whole committed snapshot, split once by date; no data can be added, so attainability is reported in place of a sample-size calculation (@sec-sampling). *Analysis plan:* @sec-blocktest to @sec-multiplicity. *Interpretation:* the verdict function of @sec-verdicts, which no person overrides. *What could be shown wrong:* the project's encoding of the principle on this dataset, and, only at level L`{python} const("encoding_level")` or above, the principle as a practitioner attests it.
+
+# Methods
+
+## Data {#sec-data}
+
+@tbl-data lists every snapshot the plans pin, with its SHA-256. A run refuses a file whose hash differs. @tbl-grades gives the grade and open items of each primary dataset as the pilot run recorded them, and the explore and confirm periods.
+
+```{python}
+#| output: asis
+rows = []
+for label in PLANS:
+    pd_ = plan_data(label)
+    primary = pd_["vintages"][0]["snapshot"]
+    for s in pd_["snapshots"]:
+        role = "primary outcome" if s["id"] == primary else "baseline input"
+        lic = LICENCES[s["source_id"]] if s["source_id"] in LICENCES else None
+        lic_txt = "not in the licence register" if lic is None else f"{lic['decision']}; read by a person: {'yes' if lic['verified'] is True else 'no'}"
+        rows.append([DOMAIN_NAME[label], s["id"], s["source_id"], role, "`" + s["sha256"] + "`", lic_txt])
+print(md_table(["Domain", "Snapshot", "Source", "Role", "SHA-256", "Licence decision"], rows,
+               "Pinned data snapshots.", "tbl-data"))
+```
+
+```{python}
+#| output: asis
+rows = []
+for label in PLANS:
+    pd_ = plan_data(label)
+    ds = records(label)[0]["dataset"]
+    v = pd_["vintages"][0]
+    rows.append([
+        DOMAIN_NAME[label], ds["id"], ds["grade"], f"{ds['span'][0]} to {ds['span'][1]}", str(ds["n_units"]) + " " + v["grain"] + " units",
+        f"{pd_['split']['explore']['start']} to {pd_['split']['explore']['end']}",
+        f"{pd_['split']['confirm']['start']} to {pd_['split']['confirm']['end']}",
+        "yes" if v["seen"] else "no",
+        "; ".join(ds["limitations"]),
+    ])
+print(md_table(["Domain", "Dataset", "Grade", "Span", "Size", "Explore", "Confirm", "Confirm period seen before", "Open items"], rows,
+               "Primary datasets, grades, periods and vintage status (from the pilot records and the draft plans).", "tbl-grades"))
+```
+
+**Earthquake.** The catalogue is the USGS ComCat snapshot [@usgs_comcat] fetched with the query of the project's earlier earthquake plan: the Himalayan arc polygon, with that plan's completeness rule. The counting unit is the declustered mainshock under the window method of @gardner1974, on an hourly UTC grid. The plan declares the domain limit-only (its limit-only flag is set in the plan) until a model-based declustering [@ogata1988] is in place, and its confirm period is marked as seen, because the project published numbers for those years.
+
+**Monsoon.** The outcome is the June to September rainfall anomaly, in percent of the long-period average, for all India and for peninsular India, from the IITM homogeneous series [@iitm_rainfall; @parthasarathy1994], and a drought flag derived from it. The ENSO series is the NOAA Niño 3.4 index [@noaa_nino34], which begins later than the rainfall series; the plan therefore starts where the pinned ENSO series starts and does not use the earlier seasons. Every season was published before this plan, so the vintage is marked as seen. While the plan is a draft, a firewall keeps real rainfall from every run, the pilot included.
+
+**Gold.** The series is the daily Frankfurt gold fixing in German marks from the Deutsche Bundesbank [@bundesbank_gold], the only verified daily gold series in the repository. Outcomes are the daily log return, the past-only standardised absolute return and an extreme-move flag (a move beyond the past-only percentile named in the plan). A return across a gap of more than `{python} plan("gold", "long_gap_days", "count")` calendar days is declared missing. The slow level of the series is removed with a centred running mean of `{python} plan("gold", "detrend_window", "count")` bars before one-sided blocks are compared. The project has published no number on this series, so its confirm period is not marked as seen. Silver has no verified daily series and is not tested; `{python} str(len(R.data("gold")["excluded"]))` silver tests are listed as untestable for that reason.
+
+**Sunspots.** The solar-cycle baseline uses the SILSO monthly sunspot number [@silso], smoothed over `{python} const("solar_window")` months.
+
+**Grades and licences.** Grade A needs a snapshot fetched by our script from the primary provider, hashed, reproduced independently, with its licence read by the owner. Grade B is the same with one of those items open; verdicts are allowed and the open item is printed. Grade C allows no verdict. The licence register lists `{python} str(len(USED_SOURCES))` sources used here and records `{python} str(N_LICENCE_READ)` of them as read and confirmed by a person (decision H4), so no dataset can be better than grade B today and some snapshots can be published by hash only.
+
+## Ephemeris and conventions
+
+Planetary positions are geocentric and sidereal with the Lahiri ayanamsa and the mean lunar node, computed with the Swiss Ephemeris library [@swisseph] using its built-in analytic (Moshier) ephemeris unless ephemeris data files are installed; the seal records which was used and the hash of every ephemeris file. Each rule file states its day convention, place and horizon and who fixed each. A choice fixed by the project puts its alternatives into the sensitivity grid.
+
+## Principle encoding and citation levels {#sec-levels}
+
+One principle is one rule file: an id, a source, machine conditions, a claimed direction, the reading (whether the source uses the configuration as a trigger before the event, as something concurrent, or as a classification after it), and the operational choices. The citation level is computed by code from what the file and its fixtures contain; it is never typed.
+
+| Level | Name | Evidence required |
+|---|---|---|
+| L0 | Recorded | The rule file loads against the schema |
+| L1 | Sourced | Text, edition, translator, chapter, verse or page and a quotation (or URL, publication date and archive link), and a recorded maintainer check |
+| L2 | Operationalised | Structured conditions; every parameter with its range and the source of the range; direction; zodiac, ayanamsa and node model stated |
+| L3 | Computationally verified | Reference cases pass; several agree with a manual reading in independent software; instants agree with JPL Horizons |
+| L4 | Faithful | A review by a second person, committed before the batch closes, attesting that the encoding is faithful to the source |
+| L5 | Explored | A logged fit on explore-period data |
+| L6 | Confirmed or refuted | One sealed confirm for the current version |
+
+: Citation levels. {#tbl-levels}
+
+A rule may enter a confirmatory family at L`{python} const("entry_level")` or above. Below L`{python} const("encoding_level")` every verdict says "encoding" and carries a fixed second line (@sec-verdicts). In the pilot, `{python} str(sum(R.get(l + ":headline.below_entry_level") for l in PLANS))` of `{python} str(sum(R.get(l + ":headline.tests") for l in PLANS))` tests are below the entry level, so **none could be registered today**.
+
+## Verification of classical citations {#sec-texts}
+
+Citations of the Brihat Samhita [@bhat1981] and of the Brihat Parashara Hora Shastra [@santhanam1984] in the rule files and in the method catalogue were checked against scans and OCR text (file `research/incoming/texts/round5_local_books/verification.csv`). The check covers `{python} str(len(VER))` citations: `{python} str(VER_TEXT["Brihat Samhita"])` of the Brihat Samhita and `{python} str(VER_TEXT["Brihat Parashara Hora Shastra"])` of the Brihat Parashara Hora Shastra. For `{python} str(VER_Q["close"])` the passage was found and supports what the file cites; for `{python} str(VER_Q["not_found"])` no passage at the cited place supports the claim; `{python} str(VER_EXACT)` are rated exact, because every quotation passed through OCR.
+
+Two cautions apply. The passages were located by machine and **no row has yet been confirmed by a person against the book**, so no citation level rose. And the English Brihat Samhita was read from an online OCR text of the edition, not from a copy held by the project.
+
+The check led to corrections, recorded in `CORRECTIONS.md`:
+
+- Two Mars-Ketu earthquake rules cited chapter 17, which treats planetary war and has no Mars-Ketu or earthquake passage. The citation now says that no verse was found.
+- The sixty-year cycle of chapter 8 is defined by Jupiter; the code's count from the luni-solar new year is now labelled a project convention.
+- Chapter 19 gives the effects of the year's lord but not how the lord is chosen, nor a new-year chart for the capital; the year-lord monsoon rule now says so, and its direction stays fixed by the project.
+- A rule on the rising of Canopus tested the wrong solar position; chapter 12 places it with the Sun in the asterism Hasta. The rule was re-versioned before any study used it.
+- Two registry rules cited the wrong chapters; the passages are in chapters 16 and 24.
+- The four mandala lists of chapter 32 match the code in both editions checked.
+
+The targets rated not found are: `{python} ", ".join(short(x) for x in VER_NOT_FOUND)`.
+
+## Primary test on hourly and daily grids: block sign-flip {#sec-blocktest}
+
+The unit of evidence is the **episode**: one unbroken run of bars in which the calendar is active. The test reads the calendar first and the outcome second.
+
+1. *Control bars.* Each inactive gap between two episodes is cut at its midpoint; the left half can serve the episode on its left, the right half the episode on its right. No inactive bar serves two episodes.
+1. *Equal-size blocks.* A block is an episode with control bars equal in number to its active bars; the longer side is trimmed, keeping the bars nearest the boundary. This rule replaced an earlier floor on the control-to-active ratio after simulation showed that unequal blocks inflate the false-alarm rate on skewed outcomes. A block that cannot reach equal size is dropped and counted.
+1. *One-sided blocks.* A single-bar episode, or an episode with no usable control on one side, takes its control from one side. The side is fixed before any outcome is read: sides alternate in calendar order from a start set by the plan seed. Because one-sided controls are sensitive to trend, the outcome is first detrended, and a drift case in the certificate must hold its size.
+1. *Season-linked calendars* take their controls from the same days of the year in the nearest years in which the calendar is inactive. A calendar that follows the Sun through the year finds no such window and is untestable, with the reason "it cannot be separated from the season".
+1. *Statistic.* With $d_k$ the difference between the active mean and the control mean in block $k$, and $w_k$ the number of active bars used, $T = \sum_k w_k d_k / \sum_k w_k$. For event outcomes $T$ is on the scale of counts at equal exposure and the card shows the pooled rate ratio. This one number is the estimate, the tested quantity, the scale of the exclusion limit and the scale of the SESOI.
+1. *Effective episodes.* $K_{\mathrm{eff}} = (\sum_k w_k)^2 / \sum_k w_k^2$. A test needs $K_{\mathrm{eff}}$ of at least `{python} const("min_k_eff")`.
+1. *Null distribution.* The signs of the block differences are flipped: every sign pattern is enumerated when there are at most `{python} const("max_enumerated")` blocks, and `{python} const("draws")` random patterns are drawn otherwise, with the observed pattern counted so that a p-value is never zero. The test is exact when, within a block, exchanging "active" and "control" does not change the joint distribution under no effect [@fisher1935]. It does not assume normal or symmetric outcomes.
+
+Residual dependence between blocks (volatility clustering, aftershock tails) is not removed by argument; whether it matters is decided by the simulation certificate (@sec-certificate). The circular-shift test of the earlier studies stays as a declared sensitivity cell and cannot change a verdict.
+
+## Primary test on yearly grids: the year test (planned) {#sec-yeartest}
+
+The block rule fails on yearly data. A calendar that is active in alternate years leaves single inactive years between episodes, and a single year cut at its midpoint gives neither neighbour a control. In the pilot the block gate called `{python} R.count("mon:headline.gate_untestable")` of `{python} R.count("mon:headline.tests")` monsoon tests untestable for this kind of reason (@sec-pilot). A yearly series therefore uses a different primary test, chosen by the grain of the data and not rule by rule. **It is specified but not yet implemented or certified**; nothing yearly runs on real outcomes before its certificate cases pass.
+
+1. *Units and strata.* Years of the tested period are stratified by ENSO phase (cold, neutral or warm by the June to September mean Niño 3.4 anomaly, with thresholds at 0.5 °C either side of zero) and by epoch (the two halves of the period). Strata with too few active or inactive years are collapsed, then dropped, by a rule that reads counts only.
+1. *Statistic.* The difference between active and inactive years within strata, weighted by the number of active years, after a leave-year-out anomaly and after the plan's baselines.
+1. *Null distribution.* Residuals are prewhitened with a lag-one coefficient $\rho$, their innovations are permuted, the series is rebuilt and the statistic recomputed. This is done for every $\rho$ on a fixed grid from -0.3 to +0.3, and the reported p-value is the **largest** over the grid. The negative end covers the two-year tendency that is the real danger for calendars that alternate.
+1. *Safety check.* If the lag-one autocorrelation of the residuals lies outside the envelope by more than its sampling error, the record is flagged and no verdict other than N or U is possible.
+
+The basis for the envelope is the published description of the all-India series as having no significant year-to-year persistence [@mooley1984]; that statement is to be read at the page by the owner (decision H21). The validity of the year test is shown by simulation, not claimed by argument, because means and baselines are estimated. The card will print: "Valid if the year-to-year dependence of the outcome, after ENSO and trend, is no stronger than lag-1 correlation 0.3 in either direction."
+
+## Exclusion by effect removal, and X95 {#sec-exclusion}
+
+No interval method can bound the mean of an unknown skewed distribution from a handful of episodes. So exclusion is done by a test whose validity does not depend on shape. To test the hypothesis "the effect is at least $r$", an effect of size $r$ is **removed** from the active bars and the primary test is run on the adjusted data, one-sided, for "active below control". If the true effect is exactly $r$ and steady, the adjusted data have no effect and the test is exact for the same reason the support test is.
+
+| Outcome type | Effect model | How an effect of size $r$ is removed |
+|---|---|---|
+| Continuous (returns, rainfall anomaly) | Constant shift | Subtract $r$ from every active bar |
+| Absolute returns (standardised) | Constant ratio, on the log scale | Subtract $\log r$ from every active bar |
+| Events (mainshocks) | Constant rate ratio | Keep each active-side event with probability $\tfrac{1}{r}$ (thinning) |
+| Yes or no per bar or year | Constant risk ratio | Keep each active-side "yes" with probability $\tfrac{1}{r}$ |
+
+: Effect models and effect removal. {#tbl-removal}
+
+Thinning is repeated `{python} const("n_thin")` times with nested kept sets, and the reported p-value is twice the median of those p-values, which is valid under any dependence between them [@meinshausen2009]. **X95** is the smallest $r$ on the plan's grid (@tbl-sesoi) whose exclusion p-value is at or below `{python} R.num("eq:records.0.x95_explore_per_test.alpha", 2)`; **X-strict** is the same at the test's family threshold. A limit is printed only if $K_{\mathrm{eff}}$ meets its floor and enough blocks carry information: the pilot records require `{python} R.count("eq:records.0.x95_explore_per_test.required_informative_blocks")` informative blocks for X95 and `{python} R.count("eq:records.0.x_strict_explore.required_informative_blocks")` for the strict level used there. Otherwise the limit is recorded as unbounded and no number is printed. For two-sided claims both directions must be excluded and the larger limit is printed. On yearly grids the effect is removed on the raw scale before anomalies, baselines and strata are computed, and the whole chain is re-run for each $r$.
+
+The guarantee is for a **steady** effect. An effect that is strong in a few episodes and absent in the rest can be missed by any method with few episodes, and each card says so in two fixed lines (@sec-verdicts).
+
+One open problem is stated here because it bears on this section. The second audit found that exclusion was anti-conservative when a baseline correlated with the calendar. A fix (baseline-aware removal) has been merged, but the certificate has not been re-run on it, so no exclusion with baselines can be trusted until it has.
+
+## Baselines and confounds {#sec-baselines}
+
+- **Season.** Seasonal outcomes are tested as anomalies from a day-of-year or month mean computed without the year being tested. Season-linked calendars get same-season controls and whole-year placebo shifts.
+- **ENSO** (monsoon). The June to September mean of the pinned Niño 3.4 series is a baseline and, in the year test, a stratum. One series must cover both periods.
+- **Solar cycle** (earthquake, monsoon). The smoothed sunspot number.
+- **Lunar nodal cycle** (earthquake, monsoon). `{python} const("nodal_harmonics")` harmonics of the `{python} const("nodal_years", 1)`-year cycle. A principle tied to the lunar nodes would otherwise be able to copy a nodal tide.
+- **Calendar terms** (gold). Weekday, month and the series' own holidays. A festival-day baseline is declared pending: its spot-check table has no almanac rows yet.
+
+The primary test is the one **with** baselines; the card shows the estimate with and without them. A principle with a known physical or social route (Moon and tide; lunar day and festival buying) carries a "known channel" flag and is counted under "calendar is associated with the outcome" but not under "beyond known physical and social channels". The pilot records of `{python} str(sum(1 for l in PLANS if "baselines_missing" in R.data(l)["notes"] and "solar_cycle" in R.data(l)["notes"]["baselines_missing"]))` domains list the solar-cycle baseline as declared but missing, because the pilot runs predate the commit of the sunspot snapshot.
+
+## Robustness checks R1 to R4 and placebo skies {#sec-robust}
+
+A signal counts toward "supported" only if four checks pass. Their measures and thresholds are in the plans.
+
+```{python}
+#| output: asis
+rows = []
+for k, v in plan_data("eq")["r_measures"].items():
+    rows.append([k, v["measure"], fmt_sig(v["threshold"])])
+print(md_table(["Check", "Measure", "Threshold"], rows, "Robustness checks, as parsed from the domain plans (identical in the three plans). The R2 text is cut at a comma by the YAML parser; the paragraph below gives the full rule.", "tbl-r"))
+```
+
+**R2, placebo skies.** The real calendar is compared with `{python} const("n_placebo")` calendars from skies shifted in time, on the test's own statistic. A placebo kind applies to a test only if it changes at least `{python} share(CONST["min_placebo_change"])` of the test's active bars; otherwise it is "not applicable", never "failed". At least `{python} const("min_distinct_placebos")` distinct placebo calendars are needed, or the check is recorded as not possible and "supported" is unavailable. Season-linked calendars are shifted by whole years, so the Sun and the season stay in place. The tropical zodiac is a rival system, not a placebo, and sits in the sensitivity grid.
+
+**R3** counts only sensitivity cells that are distinct calendars, changing at least `{python} share(CONST["min_distinct_change"])` of the active bars. **R4** fails a calendar that the domain baselines explain too well, because such a calendar cannot be told apart from them.
+
+## Multiplicity over time {#sec-multiplicity}
+
+**Batches and thresholds.** The tests registered before a domain's first confirm on a data vintage form a closed batch. Batch $b$ of a domain receives $\alpha_b = \alpha_1 \rho^{\,b-1}$ with $\alpha_1$ = `{python} plan("eq", "alpha_spending.first", "num", 2)` and $\rho$ = `{python} plan("eq", "alpha_spending.ratio", "num", 1)`, so the sum over all batches for ever is `{python} R.num("mult:alpha", 2)`. Each of the $n_b$ tests in the batch is judged at the fixed threshold $a_{\mathrm{test}} = \alpha_b / n_b$ [@dunn1961], stored at batch close and never recomputed. Support, opposite-direction and exclusion p-values each use it. The false-discovery-rate procedure of the earlier studies [@benjamini2001] is dropped, because its thresholds depend on other tests' p-values; online procedures [@javanmard2018] were considered and rejected, because they assume each new p-value is valid given the past, which fails for a test designed after a holdout is public. At most `{python} const("max_variants")` candidate variants per principle may enter a batch, and each pays its own share.
+
+**Which tests count in $n_b$.** At batch close the calendar-only gate runs once. A test it can never judge, for a reason that does not depend on the threshold (season, too few episodes, not encoded), is recorded as untestable for that vintage and does not count. Tests that fail only because a p-value is not attainable, or because no SESOI exists, do count. One pass, no iteration.
+
+**Side.** A test is one-sided if and only if its rule states a direction, the direction was fixed by the source or a practitioner, the quotation is in the rule file, and the rule is not in the list of disputed directions. A direction fixed by the project is tested two-sided. A two-sided test can be "supported" with the wording "differs" and can never be "contradicted". Nothing may be switched to one-sided because the two-sided threshold is out of reach. Under this rule every test in @sec-hypotheses is two-sided today. The pilot runs predate the rule and used the direction then in each rule file, so some pilot p-values are one-sided (@sec-pilot).
+
+**Seen data cannot support.** If the project published effects for a confirm period before sealing, the vintage is marked as seen: "supported" and "contradicted" are impossible on it, and a signal is recorded as not supported with a flag. That is the case for the earthquake and monsoon vintages (@tbl-grades). An exclusion is still allowed there for a calendar fixed before the project's first look. A test registered after a batch closes gets descriptive numbers on that vintage and no verdict; it can be registered again in a later batch on a vintage whose confirm outcomes nobody could have seen.
+
+**What the guarantee is.** Per domain and per verdict type, family-wise: the chance of at least one false "supported" in a domain is at most `{python} R.pct("mult:alpha", 0)` over all time, under any dependence. There is no project-wide guarantee across domains and verdict types beyond the sum of these.
+
+## Sealing and confirm-once {#sec-seal}
+
+1. *Seal.* A command builds one seal bundle: the commit id, the domain plan hash, the batch's test ids with the hash of each test's calendar, the gate outputs, rule-file hashes, dataset hashes, the environment lock hash, ephemeris file hashes and the calibration certificate hash. Its SHA-256 is written to a hash-chained ledger as the batch close, committed and pushed to the public remote.
+1. *Outside timestamp.* The bundle hash is stamped with OpenTimestamps [@opentimestamps], which needs no account, sends only a hash, and can be verified by anyone against the Bitcoin block chain. A deposit of the Stage 1 protocol with the journal or on a registry is the human-readable copy.
+1. *Confirm.* The confirm command issues a handle to confirm-period rows only if the tree is clean, the bundle recomputed now equals the stamped one, the timestamp proof is complete, and the commit holding the batch close is on the public branch. A completed proof takes hours, so sealing and confirming are never the same sitting. All tests of the batch are confirmed in one run.
+1. *Once.* A confirm entry is keyed by domain, dataset hash, period, the principle's lineage (which includes the calendar hash, so a renamed copy is a duplicate), version, variant and outcome. One entry per key, for ever.
+
+**Status.** The seal bundle, ledger and checks exist and refuse correctly. The timestamp client is not yet wired to a real proof, the second audit lists ways the holdout could still be reopened by a determined operator, and the public-remote and timestamp choice awaits decision H19. We will not claim an outside timestamp until one exists and verifies.
+
+## Calibration certificate and its current status {#sec-certificate}
+
+The claim that the pipeline holds its error rates rests on simulation of the **whole** pipeline, on the real calendars, with no effect planted (for false "supported", false "contradicted" and false "excluded") and with effects planted (for power and for coverage of X95). Pass marks are stated as upper one-sided confidence bounds on a rate [@clopper1934]. The certificate file records every cell with its replications, rate and pass mark, the git hash of every certified source file, the environment lock hash and the seed. The confirm command refuses a missing certificate, a failed or reduced-size case for the outcome type, and any certified file that has changed.
+
+The committed certificate (created `{python} R.text("cert:created_utc")`, seed `{python} R.count("cert:seed")`) has `{python} str(N_CELLS)` cells in `{python} str(N_CASES)` cases. All `{python} str(N_CASES_PASSED)` cases are marked as passed. **That is not a valid certificate, and we do not claim that the pipeline has passed calibration**, for four reasons:
+
+1. `{python} str(N_FAST)` of the `{python} str(N_CELLS)` cells are fast subsets with a reduced number of replications and a looser pass mark; `{python} str(N_FULL)` are at the size the design requires and `{python} str(N_PROPERTY)` are property checks. The checker rightly refuses fast cells.
+1. The certified code has changed since: `{python} changed_sentence()`.
+1. The second audit found that most cells carry counts produced by code that predates later fixes, and that two placebo-sky cells, when re-run on current code, fail their mark.
+1. The certificate has `{python} str(N_YEARLY_CASES)` cases for the year test of @sec-yeartest, which is not yet implemented, and none yet for exclusion with correlated baselines.
+
+A full calibration from an empty work directory, on the locked environment and the final code, is a precondition of the first seal. @tbl-cert in the appendix lists the cases as they stand.
+
+## Sampling plan and attainability {#sec-sampling}
+
+The data are fixed historical records; no observation can be added. A conventional power analysis at a SESOI cannot yet be given, because no SESOI is signed, and the pilot records carry no minimal detectable effect. What can be stated in advance is **attainability**: whether the smallest p-value a test can reach is below its threshold, and whether enough blocks carry information to print a limit. The gate computes this from the calendar alone, before any outcome is read. Once a SESOI exists the gate also computes the chance of "supported" at an effect equal to the SESOI and flags a test where it is below `{python} share(CONST["power_target"])`. The certificate's power cases require "supported" in at least that share of runs when an effect of twice the gate's minimal detectable effect is planted in tests the gate called supportable.
+
+```{python}
+#| output: asis
+def reasons(label):
+    c = gate_counts(label)
+    parts = [f"{k.split(':', 1)[1]}: {v}" for k, v in sorted(c.items()) if k.startswith("untestable:")]
+    return "; ".join(parts) if parts else "none"
+
+
+rows = []
+for label in PLANS:
+    c = gate_counts(label)
+    yearly = plan_data(label)["vintages"][0]["grain"] == "yearly"
+    seen = plan_data(label)["vintages"][0]["seen"]
+    rows.append([
+        DOMAIN_NAME[label],
+        R.count(label + ":headline.tests"),
+        str(len(R.data(label)["excluded"])),
+        str(c["can_support"]),
+        str(c["can_limit"]),
+        reasons(label),
+        "gate to be re-run under the year test" if yearly else str(n_b(label)),
+        "n/a" if yearly else fmt_sig(a_test(label)),
+        "n/a" if yearly else str(min_blocks_two_sided(label)),
+        "n/a" if yearly else str(reach(label)),
+        "no (vintage seen)" if seen else "yes",
+    ])
+print(md_table(
+    ["Domain", "Tests in pilot", "Excluded before the gate", "Gate: can support", "Gate: can limit", "Gate: untestable, by reason",
+     "Projected n_b", "Projected a_test (first batch)", "Blocks needed, two-sided sign-flip", "Tests with that many confirm blocks", "S or C possible on this vintage"],
+    rows, "Attainability from the calendar-only gate of the pilot runs, with the batch size and threshold projected under the counting rule of the multiplicity section. Final values are fixed by the gate at batch close.", "tbl-attain"))
+```
+
+Three things follow from @tbl-attain and are stated before any outcome is read.
+
+- **No test can limit today.** The count of tests that can limit is zero in every domain because no SESOI exists. With signed yardsticks, the tests that have enough blocks to limit but not to support become informative.
+- **Earthquake and monsoon cannot return "supported" or "contradicted"** on these vintages, whatever the gate says about blocks, because the confirm periods were seen. Their possible verdicts are "excluded" (given a SESOI), "not supported, not excluded" and "untestable".
+- **Gold is the only domain where "supported" is reachable**, for the tests whose effective number of confirm blocks reaches the count in the table; $K_{\mathrm{eff}}$, not the raw count, decides.
+
+The explore and confirm periods of each domain are in @tbl-grades. The split is by date, fixed in the plan.
+
+**Level of bias control.** All data exist. We state what has been observed, per domain, so that an editor can place the study on the journal's scale of prior data access. <!-- TODO(owner): map these statements onto the target venue's own bias-control levels before submission. -->
+
+- *Gold.* The snapshot is on the authors' disk. The pipeline has read explore-period rows only. The price history of gold in those years is public knowledge, and the project has analysed other gold series for later years; it has computed no statistic on the Frankfurt series in the confirm years. The seal and outside timestamp are what make that claim checkable from the sealing date on; before it, the claim rests on the authors' word and the commit history.
+- *Earthquake and monsoon.* The key variables of the confirm periods have been observed and, for earthquakes, analysed. We therefore do not ask for confirmatory status for support on these vintages: the verdict function cannot return "supported" or "contradicted" there. Only exclusion limits, at a yardstick fixed from outside publications, are sought.
+
+# Pilot data {#sec-pilot}
+
+The numbers in this section are **pilot, descriptive and provisional**. They come from preview runs on the explore periods only, on draft plans, from a working tree that was not sealed. They are uncorrected for multiplicity. No verdict was computed (the verdict field of every preview file is empty) and no confirm row was read. Their purpose is to show that the pipeline runs end to end on real calendars and what the gate says. They are not evidence for or against any principle.
+
+`{python} "The preview files were written from earlier revisions of " + str(len(STALE)) + " of the " + str(len(PLANS)) + " draft plans (the plan hash stored in the preview differs from the current file), and they predate the side rule and the year test. They will be regenerated before Stage 1 is submitted." if STALE else "The plan hash stored in each preview equals the current plan file."`
+
+## Earthquake
+
+`{python} R.count("eq:headline.tests")` tests were run on the explore period (`{python} R.text("eq:period.explore.0")` to `{python} R.text("eq:period.explore.1")`); `{python} R.count("eq:sampling_frame.not_encodable")` further principles (planetary stations) have no machine conditions yet and were not run. `{python} R.count("eq:headline.with_explore_numbers")` tests have explore numbers. `{python} n_tests("eq", "explore_p_at_or_below_0_05_uncorrected")` an uncorrected explore p-value at or below `{python} R.num("mult:alpha", 2)`; with no effect at all, `{python} R.num("eq:headline.expected_at_or_below_0_05_if_no_effect", 2)` would be expected. The smallest is `{python} R.p("eq:headline.smallest_explore_p_uncorrected")`, for the Moon in a Varuna-mandala asterism. This is the same explore-period signal the earlier exploratory study reported, on the same catalogue, so it is not new information; the text does not make this claim; and the vintage is seen. It will be reported under whatever verdict the sealed run gives, which on this vintage cannot be "supported".
+
+```{python}
+#| output: asis
+def pilot_rows(label, only_numbers=False):
+    rows = []
+    for rec in records(label):
+        ex = rec["explore"]
+        if only_numbers and ex["estimate"] is None:
+            continue
+        g = rec["gate"]
+        rob = rec["robustness"] or {}
+        r2 = rob["R2"]["status"] if "R2" in rob else "n/a"
+        gate_txt = ("untestable: " + str(g["untestable_reason"])) if g["untestable"] else ("can support" if g["can_support"] else "limit only")
+        rows.append([
+            short(rec["rule_id"]), rec["outcome"].replace("gold_dem_frankfurt_", ""), rec["side"],
+            share(rec["calendar"]["duty_cycle"], 1),
+            "n/a" if ex["blocks_used"] is None else str(ex["blocks_used"]),
+            "n/a" if ex["estimate"] is None else fmt_sig(ex["estimate"]) + " (" + str(ex["scale"]).replace("_", " ") + ")",
+            "n/a" if ex["p_descriptive_uncorrected"] is None else fmt(ex["p_descriptive_uncorrected"], 3),
+            r2, str(g["full_blocks"]), str(g["confirm_blocks"]), gate_txt,
+        ])
+    return rows
+
+
+PHEAD = ["Principle", "Outcome", "Side used in pilot", "Active share", "Explore blocks used", "Explore estimate", "Descriptive p (uncorrected)", "R2 (explore)", "Blocks, whole period", "Blocks, confirm period", "Gate"]
+print(md_table(PHEAD, pilot_rows("eq"), "Earthquake pilot, explore period only. Descriptive; no verdict.", "tbl-p-eq"))
+```
+
+## Monsoon
+
+No rainfall was read. `{python} R.count("mon:headline.tests")` tests were passed through the calendar-only gate (explore years `{python} R.text("mon:period.explore.0")` to `{python} R.text("mon:period.explore.1")`); `{python} R.count("mon:headline.with_explore_numbers")` have explore numbers and `{python} R.count("mon:headline.gate_untestable")` are untestable under the block rule, which is the finding that led to the year test. `{python} R.count("mon:headline.registrable")` of the `{python} R.count("mon:headline.tests")` would pass the registration checks other than level; the rest lack a publication date for their source.
+
+```{python}
+#| output: asis
+print(md_table(PHEAD, pilot_rows("mon"), "Monsoon pilot: gate only, block rule (superseded for yearly grids by the planned year test). No outcome read.", "tbl-p-mon"))
+```
+
+## Gold
+
+`{python} R.count("gold:headline.tests")` tests were run on the explore period (`{python} R.text("gold:period.explore.0")` to `{python} R.text("gold:period.explore.1")`) of the Frankfurt fixing. `{python} R.count("gold:headline.gate_untestable")` are untestable at the gate and `{python} R.count("gold:headline.with_explore_numbers")` have explore numbers (@tbl-p-gold). `{python} n_tests("gold", "explore_p_at_or_below_0_05_uncorrected")` an uncorrected explore p-value at or below `{python} R.num("mult:alpha", 2)` (expected with no effect: `{python} R.num("gold:headline.expected_at_or_below_0_05_if_no_effect", 2)`); the smallest is `{python} R.p("gold:headline.smallest_explore_p_uncorrected")`. The gate's reasons for the untestable tests are: `{python} reasons("gold")`. The Sun-in-sign principles are untestable because they cannot be separated from the season; the Jupiter-in-sign principles have too few episodes in three decades.
+
+```{python}
+#| output: asis
+print(md_table(PHEAD, pilot_rows("gold", only_numbers=True), "Gold pilot, explore period only, tests with explore numbers. Descriptive; no verdict.", "tbl-p-gold"))
+```
+
+In the pilot tables an R2 status of "fail" on an explore-only run means only that the explore statistic did not stand out from the placebo skies; with no signal that is the expected result.
+
+# Verdict definitions {#sec-verdicts}
+
+There are five verdicts. Each is the output of one pure function of the stored numbers; no person chooses it. With $p_{\mathrm{sup}}$ the p-value in the registered side on the confirm period, $p_{\mathrm{opp}}$ the p-value in the opposite direction on the whole period, and $p_{\mathrm{ex}}$ the exclusion p-value at the SESOI on the whole period, each compared with the stored $a_{\mathrm{test}}$:
+
+| Code | Condition (all must hold) |
+|---|---|
+| U | The gate fails for both abilities (to support and to limit), or every block was dropped |
+| S | The vintage's confirm period was unseen and the test was in the closed batch; the gate said "can support"; $p_{\mathrm{sup}} \le a_{\mathrm{test}}$; the explore effect has the same sign; R1 to R4 pass; the source was published before the confirm period starts |
+| C | As S for eligibility; a one-sided claim whose direction is not disputed; $p_{\mathrm{opp}} \le a_{\mathrm{test}}$ |
+| E | Eligible for exclusion; a SESOI exists; the minimum-information rule is met; $p_{\mathrm{ex}} \le a_{\mathrm{test}}$ |
+| N | Everything else |
+
+: The verdict function. {#tbl-verdict}
+
+Support needs the confirm period; exclusion may use the whole period. The asymmetry is deliberate: tuning on the explore years can only inflate an effect in the claimed direction, which makes an exclusion harder, never easier.
+
+## The exact sentences
+
+Reports may contain only sentences from an allow-list in the code, with typed slots. @tbl-sentences prints the verdict lines and their explanations as they are in the code today. Below level L`{python} const("encoding_level")` every verdict line says "encoding", and this second line is fixed:
+
+> `{python} _sentences.TEMPLATES["scope.enc"]`
+
+Every card also prints: "`{python} _sentences.TEMPLATES["single_condition"]`"
+
+```{python}
+#| output: asis
+T = _sentences.TEMPLATES
+NAMES = {"S": "Supported", "C": "Contradicted", "E": "Effect excluded above X", "N": "Not supported, not excluded", "U": "Untestable"}
+rows = []
+for code in ("S", "C", "E", "N", "U"):
+    expl_l4 = T["explain.l4." + code] if ("explain.l4." + code) in T else T["explain." + code]
+    expl_enc = T["explain.enc." + code] if ("explain.enc." + code) in T else T["explain." + code]
+    rows.append([code, NAMES[code], T["verdict.enc." + code], expl_enc, T["verdict.l4." + code], expl_l4])
+print(md_table(["Code", "Verdict", "Verdict line below L4", "What it may say below L4", "Verdict line at L4 and above", "What it may say at L4 and above"], rows,
+               "Exact verdict sentences, read from the allow-list in the code. Slots in braces are filled with typed values.", "tbl-sentences"))
+```
+
+```{python}
+#| output: asis
+KEYS = ["x_strict.value", "x_strict.unbounded", "x95.value", "x95.unbounded", "ruled_out", "not_addressed",
+        "flag.limit_only", "flag.seen_data", "flag.signal_on_seen_data", "flag.registered_after_unblinding",
+        "flag.source_postdates_data", "flag.project_extension", "flag.reading_differs", "flag.known_channel.generic",
+        "flag.support_underpowered", "flag.signal_not_robust", "flag.control_not_detected", "title.reading_differs"]
+rows = [[k, T[k]] for k in KEYS if k in T]
+print(md_table(["Sentence id", "Sentence"], rows, "Sentences for limits and flags that accompany a verdict.", "tbl-flags"))
+```
+
+The reasons that may follow "because" in an untestable verdict are also fixed: `{python} "; ".join(_sentences.UNTESTABLE_REASONS.values())`.
+
+Sentences that cite a limit cite X-strict, which carries the family guarantee; X95 is shown as the per-test value. The summary across principles opens with the sampling frame (how each principle entered, and how many candidates were not encodable, not sourced or untestable), keeps principles at L`{python} const("encoding_level")` and above apart from the rest, gives no total across levels, and contains no sentence about astrology as a whole.
+
+## Interpretation fixed in advance
+
+- **S** (reachable on gold only): the encoded calendar differed in the held-out years and survived baselines and placebo skies. It is a result about this encoding on the Frankfurt fixing in German marks, to be replicated on another vintage before anything more is said.
+- **E**: a steady effect at or above the yardstick is ruled out for this encoding. Effects below the yardstick, and effects confined to a few episodes, are not addressed.
+- **N**: nothing was shown and nothing was excluded at the yardstick; X-strict, if bounded, says what was.
+- **U**: the dataset cannot test the encoding, for the stated reason. This is a statement about the data.
+- No outcome will be worded as proof or disproof of astrology, of Vedic astrology, or of a classical text.
+
+# Limitations {#sec-limitations}
+
+**Encodings are not astrology.** Each test takes one condition, without the cancellations, strengths and combinations a practitioner applies, on one dataset, with conventions the source often does not fix. A null on an encoding is a null on that encoding. The principles here are not a sample of the tradition, and no rate over them describes it.
+
+**Readings.** Chapter 32 of the Brihat Samhita reads the mandala after an earthquake; the four mandala hypotheses test a rate claim the text does not make, and are labelled project hypotheses derived from the text. The year-lord rule cites chapter 19 for the effects of the lord, but the way the lord is chosen is not in that chapter; its direction is fixed by the project.
+
+**Citation levels.** Every principle is at L0 to L2, in fact at the lowest level today. No page has been confirmed by a person, no computation has been cross-checked in independent software, and no practitioner has attested an encoding. Until that changes every verdict is about the project's encoding and says so.
+
+**Seen data.** The earthquake and monsoon confirm periods were seen, so those domains can only limit. The one earlier loose end, the Varuna mandala, can be tested properly only on a catalogue the project has not touched.
+
+**Outcome choices.** Gold is tested on the Frankfurt fixing in German marks, for the years the Bundesbank series covers. A null there is not a null on gold in dollars or rupees, or in later years. The earthquake counting unit depends on the declustering method; magnitudes in the catalogue are of mixed type. The monsoon series has a splice in its last years.
+
+**Yardsticks will not fit exactly.** Published calendar effects for gold are on dollar prices in London or New York; published seasonal modulation of Himalayan seismicity counts small events from a regional network. Each mismatch will be printed with the SESOI.
+
+**Steady effects only.** The exclusion guarantee is for a steady effect. With few episodes no method can exclude an effect that appears in a minority of them.
+
+**Dependence.** The year test is valid only if year-to-year dependence, after ENSO and trend, lies inside its envelope. The block test relies on local exchangeability within a block. Both are checked by simulation on plausible generators, which is evidence, not proof.
+
+**Licences and reproducibility.** Licences are unread; some snapshots can be shared by hash and fetch script only, so a reader may have to re-fetch the data to reproduce a number. The ephemeris in use is the library's analytic fallback unless data files are installed.
+
+**State of the machinery.** The certificate is not valid for the current code, the year test is not implemented, the outside timestamp is not wired, and the second audit of the design lists open findings. Those are preconditions, tracked in @sec-signoffs, and none can be waived by the authors after outcomes are seen.
+
+**Single-developer project.** Author, encoder and runner are at present the same person, assisted by AI tools whose outputs (citations in particular) have proved unreliable and are treated as pointers to be checked. Independent attestation of encodings and an independent rerun are the main things an outside collaborator could add.
+
+# Owner decisions and work pending before registration {#sec-signoffs}
+
+No batch closes while a decision below is unsigned. In the draft plans the unsigned fields are: `{python} "; ".join(DOMAIN_NAME[l] + ": " + ", ".join(unsigned(l)) for l in PLANS)`.
+
+| Id | Decision | Status |
+|---|---|---|
+| H16 | Explore and confirm splits and vintages per domain, including which vintages are seen | Default adopted; owner review pending |
+| H18 | SESOI yardsticks: read each cited number at the page and choose by the fixed order | Not done; without it no "effect excluded" verdict exists |
+| H20 | Alpha table, one threshold per batch, limit on variants per principle | Proposed; unsigned |
+| H21 | Year test: dependence envelope, ENSO threshold, epoch halves; read the persistence statement at the page | Proposed; unsigned |
+| H22 | Side rule and the counting of the batch size | Proposed; unsigned |
+| H4 | Read the licence terms of each data source | Not done |
+| H19 | Public remote and OpenTimestamps as the outside timestamp | Proposed; unsigned |
+| H11 | Open the classical texts and record edition, page and verse; confirm the machine-located passages | Partly done by machine; no row confirmed by a person |
+| L2, Support | Entry at level L2 with "encoding" wording; support needs an unseen confirm period | Default adopted; owner review pending |
+
+: Decisions pending. {#tbl-signoffs}
+
+Work that must be finished before the seal, in order: implement and certify the year test; regenerate the pilot under the current plans and side rule; raise at least the classical-text principles to the entry level; fill and sign the SESOI table; run the full calibration on the final code and locked environment; wire and verify the outside timestamp; pass a third audit with no critical finding. If Stage 1 is accepted in principle before all of these are done, the seal bundle hash and its timestamp will be sent to the editor before the confirm run, and any change to this protocol after acceptance will be reported as a deviation.
+
+# Data and code availability
+
+Everything is in the public repository <https://github.com/astro-fusion/astro_research-white-paper>: rule files (`rules/`), domain plans (`studies/validity/domains/`), pilot results (`studies/validity/preview/`), the calibration certificate (`studies/validity/calibration/certificate.json`), the statistics and pipeline code (`libs/vedic_astrology_core/stats`, `validity`, `domains`), the design records (ADR-007 and ADR-008 with amendments A1 to A3), both audits, the findings ledger and the corrections log. Data snapshots are identified by the hashes in @tbl-data; each is fetched by a committed script, and files whose licence allows it will be deposited with a DOI before the seal. The numbers in this manuscript are read at render time from those committed files; a gate (`tools/check_paper_keys.py`) fails the build on a missing key or a typed number.
+
+# Appendix: certificate cases as they stand {.appendix}
+
+```{python}
+#| output: asis
+rows = []
+for cid in CASE_IDS:
+    cells = [c for c in CELLS if c["case_id"] == cid]
+    reps = sorted({c["replications"] for c in cells if c["replications"] is not None})
+    rates = [c["rate"] for c in cells if c["rate"] is not None]
+    fast = sum(1 for c in cells if str(c["note"] or "").startswith("FAST SUBSET"))
+    thr = cells[0]["threshold"]
+    rows.append([
+        cid, str(len(cells)), cells[0]["rule"].replace("_", " "), "n/a" if thr is None else fmt_sig(thr),
+        ", ".join(str(r) for r in reps) if reps else "property",
+        "n/a" if not rates else fmt_sig(min(rates)) + " to " + fmt_sig(max(rates)),
+        str(fast), cells[0]["cell"],
+    ])
+print(md_table(["Case", "Cells", "Pass rule", "Mark", "Replications", "Rate, lowest to highest cell", "Fast cells", "First cell (example)"], rows,
+               "Certificate cases in the committed file. Not a valid certificate: see the certificate section.", "tbl-cert"))
+```
+
+# References {.unnumbered}
+
+::: {#refs}
+:::
