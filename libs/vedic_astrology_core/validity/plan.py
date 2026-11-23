@@ -18,7 +18,18 @@ refuses a plan, with one message per problem, when
 * a snapshot hash is not pinned (64 hex characters, no "latest");
 * a GARCH-X block is not secondary, or carries a_test or a verdict;
 * a monsoon plan's ENSO series does not cover every explore and confirm period;
-* a monsoon, flood or earthquake plan lacks the nodal and solar-cycle baselines.
+* a monsoon, flood or earthquake plan lacks the nodal and solar-cycle baselines;
+* (ADR-008 A3) a plan with a yearly vintage lacks `enso.phase_base_period`; a
+  SESOI's grid_x lacks the SESOI or a value on each side of it; a yes/no outcome
+  with a SESOI has no named source for its base rate; a SESOI is set per test;
+  a category boundary is used without the source naming the class; a yardstick's
+  kind does not fit the outcome type; or a yardstick is only a candidate.
+
+SESOI candidates (studies/validity/sesoi_sources.yaml, key "candidates") carry
+the status "proposed, awaiting H18". They are listed and reported by
+sesoi_report() but never usable: a plan that points at one is refused, so
+verdict E stays impossible until the owner has read the number at the page and
+moved the entry to "entries".
 
 Pure Python, no outcome access, no network.
 """
@@ -28,6 +39,7 @@ from __future__ import annotations
 import datetime as _dt
 import hashlib
 import json
+import math
 import re
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple
@@ -44,6 +56,8 @@ __all__ = [
     "can_return_e",
     "validate_sesoi_sources",
     "load_sesoi_sources",
+    "sesoi_report",
+    "CANDIDATE_STATUS",
 ]
 
 #: Day the project's published numbers reach (ADR-008 3.2 rule 7, F-05).
@@ -100,7 +114,23 @@ SESOI_KINDS = (
     "earthquake_rate",
     "monsoon_rainfall",
     "flood_rate",
+    "daily_volatility",
+    "extreme_move_risk",
+    "monsoon_drought_risk",
 )
+
+#: Which yardstick kinds fit which outcome type (A3.4 item 5).
+_KINDS_FOR_TYPE = {
+    "continuous": ("daily_returns", "monthly_returns", "monsoon_rainfall"),
+    "absolute_return": ("daily_volatility",),
+    "event": ("earthquake_rate", "flood_rate"),
+    "binary": ("extreme_move_risk", "monsoon_drought_risk"),
+}
+
+#: Status every unchecked candidate carries; such a candidate is never usable.
+CANDIDATE_STATUS = "proposed, awaiting H18"
+_CANDIDATE_FIELDS = ("id", "kind", "outcomes", "status", "citation")
+_PER_TEST_KEYS = ("tests", "per_test", "per_rule", "rules", "overrides", "by_test", "by_rule")
 
 # seen rules: (domain, grain, first seen date). A vintage whose period overlaps
 # [since, SEEN_THROUGH] must carry seen: true.
@@ -246,6 +276,33 @@ def validate_sesoi_sources(doc: Any) -> List[str]:
         cv = e.get("converted_value")
         if cv is not None and (isinstance(cv, bool) or not isinstance(cv, (int, float))):
             errs.append(f"{where}: converted_value must be a number")
+    cands = doc.get("candidates", [])
+    if not isinstance(cands, list):
+        return errs + ["sesoi_sources: 'candidates' must be a list"]
+    for i, c in enumerate(cands):
+        where = f"sesoi_sources.candidates[{i}]"
+        if not isinstance(c, Mapping):
+            errs.append(f"{where}: not a mapping")
+            continue
+        for f in _CANDIDATE_FIELDS:
+            if c.get(f) in (None, "", []):
+                errs.append(f"{where}: missing '{f}'")
+        if c.get("id") in seen_ids:
+            errs.append(f"{where}: duplicate id '{c.get('id')}'")
+        seen_ids.add(c.get("id"))
+        if c.get("status") not in (None, "") and c.get("status") != CANDIDATE_STATUS:
+            errs.append(f"{where}: status must be '{CANDIDATE_STATUS}' (a checked entry belongs in 'entries')")
+        if c.get("kind") not in SESOI_KINDS and c.get("kind") not in (None, ""):
+            errs.append(f"{where}: kind '{c.get('kind')}' not in {list(SESOI_KINDS)}")
+        if c.get("outcomes") not in (None, "") and not (
+            isinstance(c["outcomes"], list) and all(isinstance(x, str) and x for x in c["outcomes"])
+        ):
+            errs.append(f"{where}: outcomes must be a list of outcome ids")
+        if c.get("citation") not in (None, "") and not _check_citation(c.get("citation")):
+            errs.append(f"{where}: citation must be an external publication, not a file of this repository")
+        for f in ("converted_value", "checker", "number_as_printed"):
+            if c.get(f) not in (None, ""):
+                errs.append(f"{where}: '{f}' is filled; once the owner has read the page, move it to 'entries'")
     return errs
 
 
@@ -260,6 +317,49 @@ def load_sesoi_sources(path: Any) -> Dict[str, Any]:
     return doc
 
 
+def _candidate_table(sesoi_sources: Any) -> Dict[str, Mapping]:
+    if not isinstance(sesoi_sources, Mapping):
+        return {}
+    return {
+        c["id"]: c for c in sesoi_sources.get("candidates") or [] if isinstance(c, Mapping) and "id" in c
+    }
+
+
+def sesoi_report(plan: Any, sesoi_sources: Any = None) -> List[Dict[str, Any]]:
+    """Per outcome: is a SESOI in force, can E be returned, and which candidates wait for H18.
+
+    A candidate is always reported as not usable for E (status "proposed,
+    awaiting H18"); only a validated plan SESOI backed by a checked entry or a
+    quoted source counts. Pure reporting; it changes nothing.
+    """
+    out: List[Dict[str, Any]] = []
+    if not isinstance(plan, Mapping):
+        return out
+    table = _sesoi_table(sesoi_sources)
+    cands = _candidate_table(sesoi_sources)
+    for i, o in enumerate(plan.get("outcomes") or []):
+        if not isinstance(o, Mapping):
+            continue
+        errs: List[str] = []
+        _check_sesoi(o, f"outcomes[{i}]", table, errs, cands)
+        usable = can_return_e(o) and not errs
+        waiting = [
+            {"id": c["id"], "status": c.get("status"), "usable_for_e": False,
+             "recommended": bool(c.get("recommended"))}
+            for c in cands.values()
+            if o.get("id") in (c.get("outcomes") or [])
+        ]
+        if usable:
+            note = "SESOI in force"
+        elif waiting:
+            note = "no SESOI in force; candidates await the owner (H18): E not usable, X95 and X-strict only"
+        else:
+            note = "no SESOI and no candidate: E impossible, X95 and X-strict only"
+        out.append({"outcome": o.get("id"), "usable_for_e": usable, "candidates": waiting,
+                    "problems": errs, "note": note})
+    return out
+
+
 def _sesoi_table(sesoi_sources: Any) -> Dict[str, Mapping]:
     if not sesoi_sources:
         return {}
@@ -270,7 +370,13 @@ def _sesoi_table(sesoi_sources: Any) -> Dict[str, Mapping]:
 # --------------------------------------------------------------------------- validation
 
 
-def _check_sesoi(o: Mapping, where: str, table: Dict[str, Mapping], errs: List[str]) -> None:
+def _check_sesoi(
+    o: Mapping,
+    where: str,
+    table: Dict[str, Mapping],
+    errs: List[str],
+    cands: Optional[Dict[str, Mapping]] = None,
+) -> None:
     if "sesoi" not in o:
         return  # reported as missing key
     s = o["sesoi"]
@@ -282,17 +388,63 @@ def _check_sesoi(o: Mapping, where: str, table: Dict[str, Mapping], errs: List[s
     v = s.get("value")
     if isinstance(v, bool) or not isinstance(v, (int, float)) or v <= 0:
         errs.append(f"{where}.sesoi.value: must be a positive number")
+    for k in _PER_TEST_KEYS:
+        if k in s:
+            errs.append(f"{where}.sesoi.{k}: one SESOI per (domain, outcome); no per-test values (A3.4 item 1)")
+    # A3.2 item 7: grid_x holds the SESOI and a value on each side
+    grid = o.get("grid_x")
+    if (
+        isinstance(grid, list)
+        and grid
+        and all(isinstance(g, (int, float)) and not isinstance(g, bool) for g in grid)
+        and isinstance(v, (int, float))
+        and not isinstance(v, bool)
+        and v > 0
+    ):
+        if not any(math.isclose(g, v, rel_tol=1e-9, abs_tol=1e-12) for g in grid):
+            errs.append(f"{where}.grid_x: must contain the SESOI {v} (A3.2 item 7)")
+        if not any(g < v and not math.isclose(g, v, rel_tol=1e-9) for g in grid) or not any(
+            g > v and not math.isclose(g, v, rel_tol=1e-9) for g in grid
+        ):
+            errs.append(f"{where}.grid_x: needs at least one value on each side of the SESOI (A3.2 item 7)")
+    # a yes/no outcome with a SESOI needs a base rate from a named publication
+    if o.get("type") == "binary":
+        br = o.get("base_rate")
+        if isinstance(br, bool) or not isinstance(br, (int, float)) or not 0 < br < 1:
+            errs.append(f"{where}.base_rate: a binary outcome with a SESOI needs a base rate in (0, 1)")
+        if not (isinstance(o.get("base_rate_source"), str) and o["base_rate_source"].strip()):
+            errs.append(f"{where}.base_rate_source: the base rate must come from a named publication (A3.2 item 7)")
     kind = s.get("kind")
     if kind == "source":
         for f in ("rule_id", "page", "quotation"):
             if not s.get(f):
                 errs.append(f"{where}.sesoi: kind 'source' needs '{f}'")
+        if s.get("category_boundary"):  # A3.4 item 4
+            word = str(s.get("class_word") or "").strip().lower()
+            if not word or word not in str(s.get("quotation") or "").lower():
+                errs.append(
+                    f"{where}.sesoi: a category boundary is not an effect size; the quotation must contain "
+                    "the class word (class_word) the source itself uses (A3.4 item 4)"
+                )
+            if not s.get("band_citation"):
+                errs.append(f"{where}.sesoi: a category boundary needs 'band_citation' for the number")
     elif kind == "yardstick":
         yid = s.get("yardstick_id")
         entry = table.get(yid)
-        if entry is None:
+        if entry is None and cands and yid in cands:
+            errs.append(
+                f"{where}.sesoi: yardstick_id '{yid}' is a candidate ('{cands[yid].get('status')}'); "
+                "not usable for E until the owner has checked it at the page (H18)"
+            )
+        elif entry is None:
             errs.append(f"{where}.sesoi: yardstick_id '{yid}' has no entry in sesoi_sources")
         else:
+            allowed = _KINDS_FOR_TYPE.get(o.get("type"))
+            if allowed and entry.get("kind") not in allowed:
+                errs.append(
+                    f"{where}.sesoi: yardstick kind '{entry.get('kind')}' does not fit outcome type "
+                    f"'{o.get('type')}' (allowed: {list(allowed)})"
+                )
             missing = [f for f in _SOURCE_FIELDS if entry.get(f) in (None, "", [])]
             if missing:
                 errs.append(f"{where}.sesoi: sesoi_sources entry '{yid}' lacks {missing}")
@@ -308,7 +460,9 @@ def _check_sesoi(o: Mapping, where: str, table: Dict[str, Mapping], errs: List[s
         )
 
 
-def _check_outcomes(plan: Mapping, table: Dict[str, Mapping], errs: List[str]) -> None:
+def _check_outcomes(
+    plan: Mapping, table: Dict[str, Mapping], errs: List[str], cands: Optional[Dict[str, Mapping]] = None
+) -> None:
     outcomes = plan.get("outcomes")
     if not isinstance(outcomes, list) or not outcomes:
         if "outcomes" in plan:
@@ -364,7 +518,7 @@ def _check_outcomes(plan: Mapping, table: Dict[str, Mapping], errs: List[str]) -
                     val = o.get(f)
                     if isinstance(val, str) and val.strip() and val.lower() not in tokens:
                         errs.append(f"{where}.id '{oid}' must contain the {f} '{val}'")
-        _check_sesoi(o, where, table, errs)
+        _check_sesoi(o, where, table, errs, cands)
 
 
 def _check_vintages(plan: Mapping, errs: List[str]) -> List[Tuple[_dt.date, _dt.date]]:
@@ -455,11 +609,12 @@ def _check_snapshots(plan: Mapping, snapshot_index: Any, errs: List[str]) -> Non
 
 
 def _check_monsoon(plan: Mapping, spans: List[Tuple[_dt.date, _dt.date]], errs: List[str]) -> None:
-    if plan.get("domain") != "monsoon":
+    yearly = any(isinstance(v, Mapping) and v.get("grain") == "yearly" for v in plan.get("vintages") or [])
+    if plan.get("domain") != "monsoon" and not yearly:
         return
     enso = plan.get("enso")
     if not isinstance(enso, Mapping):
-        errs.append("enso: a monsoon plan needs one ENSO series ('enso' mapping with series_id, sha256, covers)")
+        errs.append("enso: a monsoon or yearly plan needs one ENSO series ('enso' mapping with series_id, sha256, covers)")
         return
     for k in ("series_id", "sha256", "covers"):
         if not enso.get(k):
@@ -470,6 +625,12 @@ def _check_monsoon(plan: Mapping, spans: List[Tuple[_dt.date, _dt.date]], errs: 
     cov = _period(enso.get("covers"))
     if enso.get("covers") and cov is None:
         errs.append("enso.covers: needs readable start and end")
+    if yearly:  # A3.1 item 2: the anomaly base period of the phase threshold
+        base = _period(enso.get("phase_base_period"))
+        if base is None:
+            errs.append("enso.phase_base_period: a yearly plan needs the anomaly base period (start and end)")
+        elif cov and (base[0] < cov[0] or base[1] > cov[1]):
+            errs.append("enso.phase_base_period: must lie inside the ENSO series' covers")
     if cov:
         for a, b in spans:
             if a < cov[0] or b > cov[1]:
@@ -566,7 +727,10 @@ def validate_plan(
             if m:
                 errs.append(f"{path}: the word '{m.group(0)}' is refused; nothing in a plan may be open")
     table = _sesoi_table(sesoi_sources)
-    _check_outcomes(plan, table, errs)
+    _check_outcomes(plan, table, errs, _candidate_table(sesoi_sources))
+    for k in plan:
+        if re.fullmatch(r"sesoi[_-]?(by|per|override).*", str(k), re.I):
+            errs.append(f"{k}: one SESOI per (domain, outcome), set inside the outcome (A3.4 item 1)")
     spans = _check_split(plan, errs) + _check_vintages(plan, errs)
     _check_snapshots(plan, snapshot_index, errs)
     _check_monsoon(plan, spans, errs)

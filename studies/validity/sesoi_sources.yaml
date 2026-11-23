@@ -7,10 +7,20 @@
 # Neither: the test has no SESOI, verdict E is impossible, and the card shows
 # X95 and X-strict only.
 #
-# The table starts EMPTY on purpose. Design task D11 fills it from the
+# "entries" starts EMPTY on purpose. Design task D11 fills it from the
 # publications; the owner checks every number at the page (H18). No value is
 # chosen by this project, and no entry may cite a file inside this repository
 # (results, ledgers, ADRs, site data).
+#
+# "candidates" lists publications that MIGHT qualify (docs/research/SESOI_PROPOSAL.md),
+# each with status "proposed, awaiting H18". A candidate carries no number, is
+# reported by validity/plan.py sesoi_report() as not usable for E, and a plan
+# that names one as its yardstick_id is refused. When the owner has read the
+# page, the entry is written into "entries" (all fields below) and the candidate
+# is deleted. Order of choice: ADR-008 A3.4 item 2 (same market/arc/region, then
+# overlapping sample period, then earliest). No candidate exists for gold
+# extreme moves, peninsular drought, or "strong" earthquake triggering (no
+# published yardstick known): those outcomes keep sesoi: null.
 #
 # Entry fields (all required, validated by core/validity/plan.py):
 #   id:                 unique key that a plan's sesoi.yardstick_id refers to
@@ -25,3 +35,60 @@
 #   date:               ISO date of the check
 schema_version: 1
 entries: []
+candidates:
+  - id: M-1
+    outcomes: [all_india_jjas_anomaly_pct]
+    kind: monsoon_rainfall
+    status: "proposed, awaiting H18"
+    recommended: true
+    read_at_page: "mean June-September anomaly (percent of LPA) of El Nino years; must be a printed composite mean, else it does not qualify"
+    citation: "Kumar, Rajagopalan, Hoerling, Bates and Cane (2006), Unraveling the mystery of Indian monsoon failure during El Nino, Science 314, 115-119 [index]. Also: Rasmusson and Carpenter (1983), Monthly Weather Review 111, 517-528 [memory]; Kumar, Rajagopalan and Cane (1999), Science 284, 2156-2159 [memory]"
+  - id: M-2
+    outcomes: [all_india_jjas_anomaly_pct]
+    kind: monsoon_rainfall
+    status: "proposed, awaiting H18"
+    recommended: false
+    read_at_page: "the IMD boundary of the deficient class (seasonal rain below 90 percent of LPA); a category boundary, usable only under A3.4 item 4 (the rule's own source must say deficient or drought)"
+    citation: "India Meteorological Department monsoon FAQ (imdpune.gov.in/faq_monsoon.php); Parthasarathy, Munot and Kothawale (1994), All-India monthly and seasonal rainfall series 1871-1993, Theoretical and Applied Climatology 49, 217-224, doi:10.1007/BF00867461 [index]"
+  - id: M-3
+    outcomes: [peninsular_india_jjas_anomaly_pct]
+    kind: monsoon_rainfall
+    status: "proposed, awaiting H18"
+    recommended: false
+    read_at_page: "El Nino composite for the peninsular series; none found yet, a regional yardstick may not exist in print (then sesoi: null)"
+    citation: "IITM homogeneous-region rainfall series documentation (Parthasarathy and co-authors; report number to confirm) [memory]"
+  - id: M-4
+    outcomes: [all_india_drought, peninsular_india_drought]
+    kind: monsoon_drought_risk
+    status: "proposed, awaiting H18"
+    recommended: true
+    read_at_page: "share of El Nino years that were drought years divided by the share among other years; computable from printed counts only; the plan's base_rate must come from the same table (base_rate_source)"
+    citation: "Kumar, Rajagopalan, Hoerling, Bates and Cane (2006), Science 314, 115-119 [index]; IMD all-India drought criterion (below -10 percent), to confirm at the IMD page"
+  - id: G-1
+    outcomes: [gold_dem_frankfurt_log_return]
+    kind: daily_returns
+    status: "proposed, awaiting H18"
+    recommended: true
+    read_at_page: "mean return difference of the anomalous weekday against other days. Read (a) first; if it prints no significant weekday difference the order moves to (b), (c), (d). Mismatch to state on the card: London or New York dollar series, tested series is the Frankfurt fixing in DEM"
+    citation: "(a) Ball, Torous and Tschoegl (1982), Gold and the weekend effect, Journal of Futures Markets 2(2), 175-182 [memory]; (b) Ma (1986), Journal of Futures Markets 6(3), 409-419 [memory]; (c) Lucey and Tully (2006), Seasonality, risk and return in daily COMEX gold and silver data 1982-2002, Applied Financial Economics 16, 319-333 [index]; (d) Blose and Gondhalekar (2013), Weekend gold returns in bull and bear markets, Accounting and Finance 53(3), 609-622 [index]"
+  - id: G-2
+    outcomes: [gold_dem_frankfurt_abs_return]
+    kind: daily_volatility
+    status: "proposed, awaiting H18"
+    recommended: true
+    read_at_page: "ratio of the standard deviation of returns on the anomalous weekday to other days; the entry must state that a ratio of standard deviations equals a ratio of mean absolute returns only for the same distribution shape; same currency and market mismatch as G-1"
+    citation: "Lucey and Tully (2006), Applied Financial Economics 16, 319-333 [index]. Alternatives (intraday, less comparable): Christie-David, Chaudhry and Koch (2000), Journal of Economics and Business 52, 405-421 [memory]; Cai, Cheung and Wong (2001), Journal of Futures Markets 21(3), 257-278 [memory]"
+  - id: E-1
+    outcomes: [mainshock_rate]
+    kind: earthquake_rate
+    status: "proposed, awaiting H18"
+    recommended: true
+    read_at_page: "winter-to-summer seismicity rate ratio at the magnitude cut-off nearest the plan's completeness magnitude. Mismatch to state: Nepal network small events against a declustered global-catalogue mainshock rate"
+    citation: "Bollinger, Perrier, Avouac, Sapkota, Gautam and Tiwari (2007), Seasonal modulation of seismicity in the Himalaya of Nepal, Geophysical Research Letters 34, L08304, doi:10.1029/2006GL029192 [index]; supporting: Bettinelli et al. (2008), Earth and Planetary Science Letters 266, 332-344 [memory]"
+  - id: E-2
+    outcomes: [mainshock_rate]
+    kind: earthquake_rate
+    status: "proposed, awaiting H18"
+    recommended: false
+    read_at_page: "tidal-triggering rate ratio (a few percent). Not recommended as the SESOI (other arc; at the catalogue base rate every test would be unbounded); intended as a known-channel reference for lunar rules"
+    citation: "Cochran, Vidale and Tanaka (2004), Earth tides can trigger shallow thrust fault earthquakes, Science 306, 1164-1166 [index]; Tanaka, Ohtake and Sato (2002), Journal of Geophysical Research 107(B10), 2211 [memory]; Metivier et al. (2009), Earth and Planetary Science Letters 278, 370-375 [memory]"

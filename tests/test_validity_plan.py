@@ -71,7 +71,8 @@ def _monsoon():
     p["outcomes"] = [_outcome(id="jjas_rainfall_pct", market=None, currency=None)]
     del p["outcomes"][0]["market"], p["outcomes"][0]["currency"]
     p["baselines"] = ["enso", "nodal_18_6y", "solar_cycle"]
-    p["enso"] = {"series_id": "nino34_long", "sha256": H2, "covers": {"start": 1870, "end": 2016}}
+    p["enso"] = {"series_id": "nino34_long", "sha256": H2, "covers": {"start": 1870, "end": 2016},
+                 "phase_base_period": {"start": 1901, "end": 1930}}
     return p
 
 
@@ -170,6 +171,7 @@ def test_event_and_absolute_return_extra_keys():
 def _with_sesoi(s):
     p = _base()
     p["outcomes"][0]["sesoi"] = s
+    p["outcomes"][0]["grid_x"] = [5.0, 11.0, 20.0]  # A3.2 item 7: the SESOI and a value each side
     return p
 
 
@@ -225,7 +227,7 @@ def test_sesoi_chosen_by_project_refused():
 
 
 def test_sesoi_from_source_needs_page_and_quotation():
-    s = {"value": 2.0, "kind": "source", "rule_id": "r1"}
+    s = {"value": 11.0, "kind": "source", "rule_id": "r1"}
     errs = _errs(_with_sesoi(s))
     assert any("'page'" in e for e in errs) and any("'quotation'" in e for e in errs)
     s.update(page="p. 3", quotation="twice as often")
@@ -237,11 +239,115 @@ def test_empty_sesoi_table_validates():
     assert P.validate_sesoi_sources({"entries": []})  # schema_version missing
 
 
-def test_committed_sesoi_table_loads_and_is_empty():
+def test_committed_sesoi_table_loads_entries_empty_candidates_pending():
     from pathlib import Path
 
     path = Path(__file__).resolve().parents[1] / "studies" / "validity" / "sesoi_sources.yaml"
-    assert P.load_sesoi_sources(path)["entries"] == []
+    doc = P.load_sesoi_sources(path)
+    assert doc["entries"] == []
+    assert doc["candidates"]
+    assert all(c["status"] == P.CANDIDATE_STATUS for c in doc["candidates"])
+
+
+def _cand_table():
+    return {"schema_version": 1, "entries": [],
+            "candidates": [{"id": "C1", "kind": "daily_returns", "outcomes": ["gold_dem_frankfurt"],
+                            "status": P.CANDIDATE_STATUS, "citation": "A. Author (1990), Journal 1, 1-2"}]}
+
+
+def test_candidate_is_not_usable_for_e():
+    s = {"value": 11.0, "kind": "yardstick", "yardstick_id": "C1"}
+    p = _with_sesoi(s)
+    assert any("candidate" in e and "H18" in e for e in _errs(p, sesoi_sources=_cand_table()))
+    rep = P.sesoi_report(p, _cand_table())[0]
+    assert rep["usable_for_e"] is False and rep["candidates"][0]["usable_for_e"] is False
+    rep = P.sesoi_report(_base(), _cand_table())[0]
+    assert rep["usable_for_e"] is False and rep["candidates"][0]["id"] == "C1"
+    assert P.sesoi_report(_with_sesoi({"value": 11.0, "kind": "yardstick", "yardstick_id": "ys1"}), TABLE)[0][
+        "usable_for_e"
+    ] is True
+
+
+def test_candidate_table_validation():
+    assert P.validate_sesoi_sources(_cand_table()) == []
+    t = _cand_table()
+    t["candidates"][0]["status"] = "checked"
+    assert any("status" in e for e in P.validate_sesoi_sources(t))
+    t = _cand_table()
+    t["candidates"][0]["converted_value"] = 5
+    assert any("entries" in e for e in P.validate_sesoi_sources(t))
+    t = _cand_table()
+    t["candidates"][0]["citation"] = "docs/research/SESOI_PROPOSAL.md"
+    assert any("repository" in e for e in P.validate_sesoi_sources(t))
+    t = _cand_table()
+    t["entries"] = [dict(YARDSTICK, id="C1")]
+    assert any("duplicate" in e for e in P.validate_sesoi_sources(t))
+
+
+def test_new_kinds_and_kind_must_fit_outcome_type():
+    for k in ("daily_volatility", "extreme_move_risk", "monsoon_drought_risk"):
+        assert k in P.SESOI_KINDS
+    t = copy.deepcopy(TABLE)
+    t["entries"][0]["kind"] = "daily_volatility"
+    s = {"value": 11.0, "kind": "yardstick", "yardstick_id": "ys1"}
+    assert any("does not fit" in e for e in _errs(_with_sesoi(s), sesoi_sources=t))
+
+
+def test_grid_x_must_hold_sesoi_with_a_value_each_side():
+    s = {"value": 11.0, "kind": "yardstick", "yardstick_id": "ys1"}
+    for grid in ([5.0, 20.0], [11.0, 20.0], [5.0, 11.0]):
+        p = _with_sesoi(s)
+        p["outcomes"][0]["grid_x"] = grid
+        assert any("grid_x" in e for e in _errs(p, sesoi_sources=TABLE)), grid
+
+
+def test_binary_sesoi_needs_named_base_rate_source():
+    t = copy.deepcopy(TABLE)
+    t["entries"][0]["kind"] = "monsoon_drought_risk"
+    s = {"value": 1.5, "kind": "source", "rule_id": "r1", "page": "p. 1", "quotation": "x"}
+    p = _with_sesoi(s)
+    p["outcomes"][0].update(type="binary", estimand="pooled_risk_ratio", grid_x=[1.25, 1.5, 2.0], base_rate=0.17)
+    assert any("base_rate_source" in e for e in _errs(p))
+    p["outcomes"][0]["base_rate_source"] = "IMD (2020), Table 3"
+    assert _errs(p) == []
+
+
+def test_one_sesoi_per_outcome_and_category_boundary_rule():
+    s = {"value": 11.0, "kind": "yardstick", "yardstick_id": "ys1", "per_test": {"r1": 3.0}}
+    assert any("per-test" in e for e in _errs(_with_sesoi(s), sesoi_sources=TABLE))
+    p = _base()
+    p["sesoi_by_rule"] = {"r1": 3.0}
+    assert any("one SESOI" in e for e in _errs(p))
+    s = {"value": 10.0, "kind": "source", "rule_id": "r1", "page": "p. 1",
+         "quotation": "rain below normal", "category_boundary": True, "class_word": "deficient"}
+    p = _with_sesoi(s)
+    p["outcomes"][0]["grid_x"] = [5.0, 10.0, 20.0]
+    errs = _errs(p)
+    assert any("category boundary" in e for e in errs)
+    s.update(quotation="a deficient season", band_citation="IMD FAQ")
+    assert _errs(p) == []
+
+
+def test_yearly_plan_needs_enso_phase_base_period():
+    p = _monsoon()
+    del p["enso"]["phase_base_period"]
+    assert any("phase_base_period" in e for e in _errs(p))
+    p = _monsoon()
+    p["enso"]["phase_base_period"] = {"start": 1850, "end": 1880}  # outside covers
+    assert any("phase_base_period" in e for e in _errs(p))
+    q = _base("gold")
+    q["vintages"][0]["grain"] = "yearly"  # any yearly plan, not only monsoon
+    assert any("enso" in e for e in _errs(q))
+
+
+def test_committed_domain_plans_validate_and_report_no_usable_sesoi():
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1] / "studies" / "validity"
+    src = P.load_sesoi_sources(root / "sesoi_sources.yaml")
+    for name in ("earthquake", "metals", "monsoon"):
+        plan = P.load_plan(root / "domains" / f"{name}.yaml", sesoi_sources_path=root / "sesoi_sources.yaml")
+        assert not any(r["usable_for_e"] for r in P.sesoi_report(plan, src))
 
 
 # ---- market and currency (A-06)
@@ -400,6 +506,7 @@ def test_registered_plan_needs_signoffs():
     p["owner_signoffs"] = {d: "2026-12-01" for d in P.REQUIRED_SIGNOFFS}
     assert _errs(p) == []
     p["outcomes"][0]["sesoi"] = {"value": 11.0, "kind": "yardstick", "yardstick_id": "ys1"}
+    p["outcomes"][0]["grid_x"] = [5.0, 11.0, 20.0]
     assert any("H18" in e for e in _errs(p, sesoi_sources=TABLE))
     p["owner_signoffs"]["H18"] = dt.date(2026, 12, 2)
     assert _errs(p, sesoi_sources=TABLE) == []

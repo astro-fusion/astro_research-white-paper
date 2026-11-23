@@ -61,6 +61,9 @@ enso:
   series_id: noaa_nino34_8ba6cd0536ad
   sha256: 8ba6cd0536adffc9a904133762f5786513008429e711c1fc016c10d54cf9ccd1
   covers: {start: "1948-01-01", end: "2026-09-30"}
+  # ADR-008 A3.1 item 2: anomaly base period of the JJAS phase threshold (+-0.5 C); the series holds
+  # absolute SST. The 30-year NOAA climatological base is used; owner checks under H21.
+  phase_base_period: {start: "1991-01-01", end: "2020-12-31"}
 sunspot:
   series_id: silso_sn_monthly_1cf8a1f6f28f
   sha256: 1cf8a1f6f28ff9ee479783d72fa323eb70a824056450ccf60d0152fa28abd72f
@@ -74,7 +77,7 @@ outcomes:
     estimand: pooled_difference
     effect_model: additive shift of the June-September anomaly (percent of the long-period average)
     side: two_sided
-    sesoi: null
+    sesoi: null           # candidate M-1 (M-2 only if the rule's source says deficient) in sesoi_sources.yaml awaits the owner (H18); until then E is impossible
     guard_bars: 0
     grid_x: [1.0, 2.0, 3.0, 5.0, 8.0]
   - id: peninsular_india_jjas_anomaly_pct
@@ -83,7 +86,7 @@ outcomes:
     estimand: pooled_difference
     effect_model: additive shift of the June-September anomaly (percent of the long-period average)
     side: two_sided
-    sesoi: null
+    sesoi: null           # none (M-3 unresolved); E is impossible, X95 and X-strict only
     guard_bars: 0
     grid_x: [1.0, 2.0, 3.0, 5.0, 8.0]
   - id: all_india_drought
@@ -93,7 +96,7 @@ outcomes:
     effect_model: multiplicative change of P(anomaly below -10 percent)
     base_rate: 0.5      # read only by P(S given SESOI); with no SESOI it is not used
     side: two_sided
-    sesoi: null
+    sesoi: null           # candidate M-4 in sesoi_sources.yaml awaits the owner (H18); until then E is impossible
     guard_bars: 0
     grid_x: [1.25, 1.5, 2.0, 3.0]
   - id: peninsular_india_drought
@@ -103,7 +106,7 @@ outcomes:
     effect_model: multiplicative change of P(anomaly below -10 percent)
     base_rate: 0.5      # read only by P(S given SESOI); with no SESOI it is not used
     side: two_sided
-    sesoi: null
+    sesoi: null           # candidate M-4 in sesoi_sources.yaml awaits the owner (H18); until then E is impossible
     guard_bars: 0
     grid_x: [1.25, 1.5, 2.0, 3.0]
 windows:

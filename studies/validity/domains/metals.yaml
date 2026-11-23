@@ -63,7 +63,7 @@ outcomes:
     estimand: pooled_difference
     effect_model: additive shift of the daily log return in active bars
     side: two_sided
-    sesoi: null
+    sesoi: null           # candidate G-1 in sesoi_sources.yaml awaits the owner (H18); until then E is impossible
     guard_bars: 0
     grid_x: [0.0005, 0.001, 0.002, 0.005, 0.01]
   - id: gold_dem_frankfurt_abs_return
@@ -76,7 +76,7 @@ outcomes:
     effect_model: multiplicative change of the past-only standardised absolute return
     floor: 0.01         # log(max(|z|, floor)): the log-scale floor in standardised units
     side: two_sided
-    sesoi: null
+    sesoi: null           # candidate G-2 in sesoi_sources.yaml awaits the owner (H18); until then E is impossible
     guard_bars: 0
     grid_x: [1.05, 1.1, 1.25, 1.5, 2.0]
   - id: gold_dem_frankfurt_extreme_move
@@ -89,7 +89,7 @@ outcomes:
     effect_model: multiplicative change of P(|r| above the past-only 95th percentile)
     base_rate: 0.05     # by construction of the past-only 95th percentile threshold
     side: two_sided
-    sesoi: null
+    sesoi: null           # none: no published yardstick; E is impossible, X95 and X-strict only
     guard_bars: 0
     grid_x: [1.1, 1.25, 1.5, 2.0, 3.0]
 untestable_outcomes:
