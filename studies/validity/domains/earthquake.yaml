@@ -45,6 +45,16 @@ snapshots:
     sha256: d3d3d6ec840599341782147b35579b69dae3919dd2668d762659270baef19972
     source_id: usgs_comcat
     note: the snapshot fetched with the registered query on 2026-11-08 (its manifest names earthquake-himalaya-v2)
+  - id: silso_sn_monthly_1cf8a1f6f28f
+    file: data/snapshots/silso_sn_monthly_1cf8a1f6f28f.csv
+    sha256: 1cf8a1f6f28ff9ee479783d72fa323eb70a824056450ccf60d0152fa28abd72f
+    source_id: silso_sunspots
+    note: SILSO monthly total sunspot number v2.0, 1749-01 to 2026-10; input of the solar_cycle baseline only (13-month smoothing, season.py); CC BY-NC 4.0 so hash only
+sunspot:
+  series_id: silso_sn_monthly_1cf8a1f6f28f
+  sha256: 1cf8a1f6f28ff9ee479783d72fa323eb70a824056450ccf60d0152fa28abd72f
+  covers: {start: "1749-01-01", end: "2026-10-31"}
+  column: monthly mean total sunspot number (4th field, -1 is missing)
 outcomes:
   - id: mainshock_rate
     rule_outcome: mainshock_rate      # rule files name it so in tests[].outcome
@@ -65,6 +75,6 @@ baselines:
   - id: nodal_18_6y
     source: core/stats/season.py nodal_baseline (six harmonics)
   - id: solar_cycle
-    source: core/stats/season.py solar_cycle_baseline (needs a sunspot series)
-    status: no committed sunspot snapshot; while it is missing the run has no baselines and R1 and R4 do not pass
+    source: core/stats/season.py solar_cycle_baseline (smoothed sunspot number)
+    snapshot: silso_sn_monthly_1cf8a1f6f28f
 limit_only: true      # ADR-008 D-03: until ETAS declustering (ADR-004 WP-26) lands the domain can only limit

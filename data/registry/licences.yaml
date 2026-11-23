@@ -122,6 +122,14 @@ sources:
     decision: commit
     verified: false
     date_read: null
+  silso_sunspots:
+    name: SILSO monthly total sunspot number v2.0 (World Data Center SILSO, Royal Observatory of Belgium)
+    licence: CC BY-NC 4.0 (data policy on the SILSO pages, checked 2026-11-23)
+    terms_url: https://www.sidc.be/SILSO/legal
+    decision: hash_only
+    verified: false
+    date_read: null
+    note: The brief said CC BY 4.0; the SILSO pages say CC BY-NC (non-commercial), so hash only until the owner reads the terms (H4). Acknowledge SILSO, Royal Observatory of Belgium, Brussels.
   noaa_dmi:
     name: Indian Ocean Dipole Mode Index, HadISST1 (NOAA PSL, Saji et al. 1999)
     licence: Free for scientific research with citation

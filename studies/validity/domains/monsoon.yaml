@@ -52,10 +52,20 @@ snapshots:
     file: data/snapshots/noaa_nino34_8ba6cd0536ad.data
     sha256: 8ba6cd0536adffc9a904133762f5786513008429e711c1fc016c10d54cf9ccd1
     source_id: noaa_enso
+  - id: silso_sn_monthly_1cf8a1f6f28f
+    file: data/snapshots/silso_sn_monthly_1cf8a1f6f28f.csv
+    sha256: 1cf8a1f6f28ff9ee479783d72fa323eb70a824056450ccf60d0152fa28abd72f
+    source_id: silso_sunspots
+    note: SILSO monthly total sunspot number v2.0, 1749-01 to 2026-10; input of the solar_cycle baseline only (13-month smoothing, season.py); CC BY-NC 4.0 so hash only
 enso:
   series_id: noaa_nino34_8ba6cd0536ad
   sha256: 8ba6cd0536adffc9a904133762f5786513008429e711c1fc016c10d54cf9ccd1
   covers: {start: "1948-01-01", end: "2026-09-30"}
+sunspot:
+  series_id: silso_sn_monthly_1cf8a1f6f28f
+  sha256: 1cf8a1f6f28ff9ee479783d72fa323eb70a824056450ccf60d0152fa28abd72f
+  covers: {start: "1749-01-01", end: "2026-10-31"}
+  column: monthly mean total sunspot number (4th field, -1 is missing)
 season_date: "07-01"  # each season sits on 1 July of its year on the pipeline's date grid
 outcomes:
   - id: all_india_jjas_anomaly_pct
@@ -103,7 +113,7 @@ baselines:
   - id: nodal_18_6y
     source: core/stats/season.py nodal_baseline (six harmonics)
   - id: solar_cycle
-    source: core/stats/season.py solar_cycle_baseline (needs a sunspot series)
-    status: no committed sunspot snapshot; while it is missing the run has no baselines and R1 and R4 do not pass
+    source: core/stats/season.py solar_cycle_baseline (smoothed sunspot number)
+    snapshot: silso_sn_monthly_1cf8a1f6f28f
   - id: enso_nino34_jjas
     source: the pinned Nino 3.4 series, June-September mean

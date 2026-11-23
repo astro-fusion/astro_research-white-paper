@@ -14,6 +14,15 @@ rows:
     quality_flaws: []
     checked_by: "round 4 data audit (re-download, hash matched)"
     date: "2026-11-22"
+  - source_id: silso_sunspots
+    reproduced: false
+    open_items:
+      - no independent re-download or cross-check against a second source yet
+      - values of the most recent months are provisional (definitive marker 0) and are revised; the pinned hash fixes the snapshot
+      - licence on the SILSO pages is CC BY-NC 4.0 (brief said CC BY); owner to read the terms (H4)
+    quality_flaws: []
+    checked_by: "adapter author, fetch of 2026-11-23 against the SILSO documented CSV"
+    date: "2026-11-23"
   - source_id: usgs_comcat
     reproduced: false
     open_items:

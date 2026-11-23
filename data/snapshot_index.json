@@ -178,6 +178,19 @@
       "owner_archive_reason": null
     },
     {
+      "file": "data/snapshots/silso_sn_monthly_1cf8a1f6f28f.csv",
+      "sha256": "1cf8a1f6f28ff9ee479783d72fa323eb70a824056450ccf60d0152fa28abd72f",
+      "rows": 3334,
+      "date_min": "1749-01",
+      "date_max": "2026-10",
+      "source_id": "silso_sunspots",
+      "source_url": "https://www.sidc.be/SILSO/DATA/SN_m_tot_V2.0.csv",
+      "licence": "CC BY-NC 4.0 (data policy on the SILSO pages, checked 2026-11-23)",
+      "committable": false,
+      "committed": false,
+      "fetched_at": "2026-11-23T03:14:20+00:00"
+    },
+    {
       "file": "data/snapshots/silver_market_bb3e274e4079.csv",
       "sha256": "bb3e274e4079c6423bbefc316acd519d0534dcd564773709d2c65f4de3c8817d",
       "rows": 5824,
