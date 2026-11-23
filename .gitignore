@@ -158,6 +158,8 @@ docs/research/track_*/
 /assets/
 /reports/
 scripts/setup-context7.sh
+# Local notes that may hold API keys (owner: rotate any key found here).
+docs/CONTEXT7.md
 
 # Generated planetary dataset (python scripts/generate_planetary_dataset.py)
 /data/datasets/
