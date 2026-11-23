@@ -33,7 +33,7 @@
   },
   "plan": {
     "path": "studies/validity/domains/monsoon.yaml",
-    "sha256": "bf11a0e0b73f46df211ec3d9b5b468894f4eef283ed77727838d937f7dc94ab9",
+    "sha256": "8680b460fa84f8b85b6dc1b3dd393ae2f481bf1e4deae94a7a9cb5d9b4a57750",
     "status": "draft"
   },
   "provisional": true,
@@ -75,7 +75,7 @@
         "confirm_blocks": 1,
         "full_blocks": 2,
         "untestable": true,
-        "untestable_reason": "too_few_episodes"
+        "untestable_reason": "no_clean_control"
       },
       "level": 0,
       "limitations": [
@@ -109,7 +109,7 @@
         },
         {
           "kind": "not_tested",
-          "text": "Not tested on all_india_drought: the rule file names no test for it. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: there are fewer than 8 effective episodes, no outside threshold exists and support is not reachable."
+          "text": "Not tested on all_india_drought: the rule file names no test for it. Support was not reachable: there is no clean control time, the smallest attainable p-value is above the test's threshold. No effect could be excluded: there is no clean control time, no outside threshold exists and support is not reachable."
         },
         {
           "kind": "seen_before",
@@ -166,7 +166,7 @@
         "confirm_blocks": 1,
         "full_blocks": 2,
         "untestable": true,
-        "untestable_reason": "too_few_episodes"
+        "untestable_reason": "no_clean_control"
       },
       "level": 0,
       "limitations": [
@@ -200,7 +200,7 @@
         },
         {
           "kind": "not_tested",
-          "text": "Not tested on all_india_drought: the rule file names no test for it. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: there are fewer than 8 effective episodes, no outside threshold exists and support is not reachable."
+          "text": "Not tested on all_india_drought: the rule file names no test for it. Support was not reachable: there is no clean control time, the smallest attainable p-value is above the test's threshold. No effect could be excluded: there is no clean control time, no outside threshold exists and support is not reachable."
         },
         {
           "kind": "seen_before",
@@ -257,7 +257,7 @@
         "confirm_blocks": 1,
         "full_blocks": 2,
         "untestable": true,
-        "untestable_reason": "too_few_episodes"
+        "untestable_reason": "no_clean_control"
       },
       "level": 0,
       "limitations": [
@@ -291,7 +291,7 @@
         },
         {
           "kind": "not_tested",
-          "text": "Not tested on all_india_drought: the rule file names no test for it. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: there are fewer than 8 effective episodes, no outside threshold exists and support is not reachable."
+          "text": "Not tested on all_india_drought: the rule file names no test for it. Support was not reachable: there is no clean control time, the smallest attainable p-value is above the test's threshold. No effect could be excluded: there is no clean control time, no outside threshold exists and support is not reachable."
         },
         {
           "kind": "seen_before",
@@ -382,7 +382,7 @@
         },
         {
           "kind": "not_tested",
-          "text": "Not tested on peninsular_india_jjas_anomaly_pct, peninsular_india_drought: the rule file names no test for them. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+          "text": "Not tested on peninsular_india_jjas_anomaly_pct, peninsular_india_drought: the rule file names no test for them. Support was not reachable: there is no clean control time, the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
         },
         {
           "kind": "seen_before",
@@ -475,7 +475,7 @@
         },
         {
           "kind": "not_tested",
-          "text": "Not tested on peninsular_india_jjas_anomaly_pct, peninsular_india_drought: the rule file names no test for them. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+          "text": "Not tested on peninsular_india_jjas_anomaly_pct, peninsular_india_drought: the rule file names no test for them. Support was not reachable: there is no clean control time, the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
         },
         {
           "kind": "seen_before",
@@ -568,7 +568,7 @@
         },
         {
           "kind": "not_tested",
-          "text": "Not tested on peninsular_india_jjas_anomaly_pct, peninsular_india_drought: the rule file names no test for them. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+          "text": "Not tested on peninsular_india_jjas_anomaly_pct, peninsular_india_drought: the rule file names no test for them. Support was not reachable: there is no clean control time, the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
         },
         {
           "kind": "seen_before",
@@ -659,7 +659,7 @@
         },
         {
           "kind": "not_tested",
-          "text": "Not tested on peninsular_india_jjas_anomaly_pct, peninsular_india_drought: the rule file names no test for them. Support was not reachable: there are fewer than 8 effective episodes, the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
+          "text": "Not tested on peninsular_india_jjas_anomaly_pct, peninsular_india_drought: the rule file names no test for them. Support was not reachable: there is no clean control time, the smallest attainable p-value is above the test's threshold. No effect could be excluded: no outside threshold exists and support is not reachable."
         },
         {
           "kind": "seen_before",

@@ -222,6 +222,32 @@ def _jsonable(x: Any) -> Any:
     return str(x)
 
 
+#: Drop reasons that mean "the episode exists but has no clean control time".
+_CONTROL_DROPS = ("no_control", "unbalanced", "one_sided")
+
+
+def _few_blocks_reason(sd: _season.SeasonDesign) -> str:
+    """Why K_eff is below MIN_K_EFF: season, no clean control, or too few episodes.
+
+    Strategy audit 2 diagnosis (DIAG): a yearly calendar active in alternate
+    years has 31 episodes in 69 seasons, but every one-year gap is the odd
+    middle bar of section 1.1 item 2, so 29 blocks are dropped for want of a
+    control. The gate called that "too few episodes", which misreports a
+    limit of the block design as a shortage of episodes. When the episodes
+    in the period would reach MIN_K_EFF and blocks were lost for lack of
+    clean control time, the reason is "no_clean_control" (ADR-008 1.3 note).
+    Only the label changes: both abilities fail exactly as before.
+    """
+    if sd.untestable_reason:
+        return "season"
+    d = sd.blocks
+    drops = dict(d.drop_counts)
+    lost = sum(int(drops.get(k, 0)) for k in _CONTROL_DROPS)
+    if lost and int(d.n_used) + lost >= MIN_K_EFF:
+        return "no_clean_control"
+    return "too_few_episodes"
+
+
 def _blocks_needed(a_test: float, side: str) -> int:
     mult = 2.0 if side == "two-sided" else 1.0
     k = 0
@@ -367,7 +393,7 @@ def run_gate(calendar, dates, confirm, spec: GateSpec, *, available=None) -> Gat
     # ---- can support (confirm period)
     sup = list(common)
     if conf_d.k_eff < MIN_K_EFF:
-        sup.append("season" if conf_sd.untestable_reason else "too_few_episodes")
+        sup.append(_few_blocks_reason(conf_sd))
     if conf_d.p_min(side) > a:
         sup.append("p_not_attainable")
     ev_conf = _expected_events(conf_d, float(spec.base_rate)) if t == "events" else None
@@ -377,7 +403,7 @@ def run_gate(calendar, dates, confirm, spec: GateSpec, *, available=None) -> Gat
     # ---- can limit (whole period)
     lim = list(common)
     if full_d.k_eff < MIN_K_EFF:
-        lim.append("season" if full_sd.untestable_reason else "too_few_episodes")
+        lim.append(_few_blocks_reason(full_sd))
     need = _exclusion.min_informative(_exclusion.X95_ALPHA)
     need_strict = _exclusion.min_informative(a)
     info: Optional[float] = None

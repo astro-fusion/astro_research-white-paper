@@ -22,7 +22,7 @@ from __future__ import annotations
 
 from datetime import date
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Mapping, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -81,9 +81,10 @@ class EarthquakeDomain(DomainAdapter):
         snapshot: Optional[Path] = None,
         declustering: str = PRIMARY_METHOD,
         pinned_sha256: Optional[str] = None,
-        grades: Optional[Sequence[Mapping[str, Any]]] = None,
     ) -> None:
-        super().__init__(index, licences, grades)
+        # D-05 / N-21: no grade input here; the grade rows come from the
+        # committed register (data/registry/dataset_grades.yaml) only.
+        super().__init__(index, licences)
         if declustering not in METHODS:
             raise ValueError(f"unknown declustering method {declustering!r}")
         self.declustering = declustering
@@ -103,23 +104,38 @@ class EarthquakeDomain(DomainAdapter):
     def snapshot_path(self) -> Path:
         """The snapshot whose SHA-256 the plan pins (ADR-008 D-03).
 
-        There is no "newest snapshot" fallback: without `pinned_sha256` (or an
-        explicit `snapshot` file) this raises :class:`PinError`.
+        There is no "newest snapshot" fallback: without `pinned_sha256` this
+        raises :class:`PinError`. An explicit `snapshot` file does not replace
+        the pin (N-21): it is used only when its bytes hash to the pinned
+        value, which :meth:`verified_snapshot` checks on every read.
         """
-        if self._snapshot is not None:
-            return self._snapshot
         if not self._pinned:
             raise PinError("earthquake adapter needs the plan's pinned snapshot hash (D-03)")
+        if self._snapshot is not None:
+            return self._snapshot
         for e in self._index.get("snapshots", []):
             if e.get("sha256") == self._pinned:
                 return REPO / e["file"]
         raise PinError(f"pinned snapshot {self._pinned[:12]} is not in the snapshot index")
 
-    def dataset_spec(self) -> DatasetSpec:
+    def verified_snapshot(self) -> Tuple[Path, str]:
+        """The pinned snapshot and its SHA-256, after checking its bytes (N-21).
+
+        Raises :class:`PinError` when the file is missing or its bytes do not
+        hash to the pinned value (an edited or swapped file is never read).
+        """
         from vedic_astrology_core.stats.manifest import file_sha256
 
         path = self.snapshot_path()
+        if not Path(path).is_file():
+            raise PinError(f"pinned snapshot file {path} does not exist")
         sha = file_sha256(path)
+        if sha != self._pinned:
+            raise PinError(f"{path}: bytes hash to {sha[:12]}, the plan pins {str(self._pinned)[:12]} (D-03)")
+        return Path(path), sha
+
+    def dataset_spec(self) -> DatasetSpec:
+        _, sha = self.verified_snapshot()
         grid = self.grid()
         return DatasetSpec(
             id=f"usgs_comcat_himalaya_{sha[:12]}",
@@ -174,7 +190,8 @@ class EarthquakeDomain(DomainAdapter):
     def catalogue(self) -> Tuple[pd.DataFrame, Dict]:
         """Analysed catalogue (Mw at or above the completeness threshold)."""
         *_, pipeline, _ = _study_modules()
-        return pipeline.load_catalogue(self.snapshot_path())
+        path, _ = self.verified_snapshot()
+        return pipeline.load_catalogue(path)
 
     def mainshock_flags(self, cat: Optional[pd.DataFrame] = None) -> Dict[str, pd.Series]:
         """Boolean mainshock flags per declustering method.

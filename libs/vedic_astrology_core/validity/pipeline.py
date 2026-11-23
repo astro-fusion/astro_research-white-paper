@@ -287,7 +287,17 @@ def _dates(grid: Sequence[Any]) -> pd.DatetimeIndex:
 
 
 def _mask_between(dates: pd.DatetimeIndex, period: Tuple[Any, Any]) -> np.ndarray:
+    """Bars whose calendar day (in the grid's own time zone) lies in the period, ends included.
+
+    A period bound is a plain date; on a tz-aware grid it is read as that day
+    in the grid's zone (a UTC grid compares UTC days), so a tz-aware grid no
+    longer stops the run with a naive/aware comparison error.
+    """
     a, b = pd.Timestamp(period[0]), pd.Timestamp(period[1])
+    tz = getattr(dates, "tz", None)
+    if tz is not None:
+        a = a.tz_localize(tz) if a.tzinfo is None else a.tz_convert(tz)
+        b = b.tz_localize(tz) if b.tzinfo is None else b.tz_convert(tz)
     day = dates.normalize()
     return np.asarray((day >= a) & (day <= b), dtype=bool)
 

@@ -307,6 +307,12 @@ def _step_days(planet: str) -> float:
     return 0.1 if planet == "Moon" else 0.5
 
 
+#: Upper bounds (degrees a day) on the sidereal speed of the bodies that never
+#: turn retrograde (the Sun's true maximum is about 1.02, the Moon's about 15.4).
+#: Used only to skip the scan when no ingress is possible (performance).
+_DIRECT_MAX_SPEED = {"Sun": 1.1, "Moon": 16.0}
+
+
 @predicate(
     "ingress",
     Ingress,
@@ -329,6 +335,20 @@ def ingress(ctx: EvalContext, p: Ingress) -> Outcome:
     def sign_at(jd: float) -> int:
         return int(engine.get_planet_position(jd, body)["longitude"] // 30)
 
+    window = _window(p.days_before, p.days_after)
+    # Performance only (the outcome and its text are those of the scan below):
+    # the Sun and the Moon move one way only, so when they cover less than a
+    # sign in the window, the same sign at both ends means no crossing. The
+    # scan ends on sign_at(jd1), the sign its "stays in" text names.
+    vmax = _DIRECT_MAX_SPEED.get(p.planet)
+    if vmax is not None and (jd1 - jd0) * vmax < 30.0:
+        end_sign = sign_at(jd1)
+        if sign_at(jd0) == end_sign:
+            return Outcome(
+                False,
+                f"{p.planet} stays in {SIGN_NAMES[end_sign]} {window} the moment (no ingress)",
+            )
+
     step = _step_days(p.planet)
     crossings = []
     t, s = jd0, sign_at(jd0)
@@ -345,7 +365,6 @@ def ingress(ctx: EvalContext, p: Ingress) -> Outcome:
                     hi = mid
             crossings.append((hi, s2))
         t, s = t2, s2
-    window = _window(p.days_before, p.days_after)
     if not crossings:
         return Outcome(
             False,

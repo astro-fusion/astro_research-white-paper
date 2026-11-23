@@ -38,27 +38,15 @@
     }
   ],
   "headline": {
-    "below_entry_level": 6,
-    "expected_at_or_below_0_05_if_no_effect": 0.25,
+    "below_entry_level": 8,
+    "expected_at_or_below_0_05_if_no_effect": 0.35,
     "explore_p_at_or_below_0_05_uncorrected": 1,
     "gate_untestable": 1,
     "note": "descriptive, explore period only, no multiplicity correction and no verdict; about 5% of tests reach p <= 0.05 with no effect at all",
-    "registrable": 6,
+    "registrable": 8,
     "smallest_explore_p_uncorrected": 0.04894,
-    "tests": 6,
-    "with_explore_numbers": 5
-  },
-  "left_out": {
-    "note": "left out of this preview on request; not run, no number",
-    "rule": [],
-    "skip_rule": [
-      "eclipse_window",
-      "sun_ingress"
-    ],
-    "test_ids": [
-      "seismic.study.eclipse_window@1/primary/mainshock_rate",
-      "seismic.study.sun_ingress@1/primary/mainshock_rate"
-    ]
+    "tests": 8,
+    "with_explore_numbers": 7
   },
   "notes": {
     "baselines_declared": [
@@ -80,11 +68,142 @@
   },
   "plan": {
     "path": "studies/validity/domains/earthquake.yaml",
-    "sha256": "3f89962cea688407c22e30e65abdcf1b8c5e07ce7bc33f07e7d1dd4a9d51e491",
+    "sha256": "1d775510ddd0d150b2f2b27eb475ae6fcd9d9787b19e9bcebec3238b7ae1671f",
     "status": "draft"
   },
   "provisional": true,
   "records": [
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.13796655356277265,
+        "n_bars": 445608,
+        "sha256": "239529feeb51c5b349fe95bb475c6d6bbf74aaa7b8d33b640f9f637b59286cad"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "usgs_comcat_himalaya_d3d3d6ec8405",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently",
+          "ISC Bulletin cross-check catalogue not yet a committed snapshot (second-dataset cell open)",
+          "magnitudes are mostly converted from mb (review M7)"
+        ],
+        "n_events": null,
+        "n_units": 445608,
+        "sha256": "d3d3d6ec840599341782147b35579b69dae3919dd2668d762659270baef19972",
+        "span": [
+          "1976-01-01",
+          "2026-10-31"
+        ]
+      },
+      "estimate_with_without_baselines": {
+        "with_baselines": -0.00012871669455528383,
+        "without_baselines": -0.00012871669455528383
+      },
+      "explore": {
+        "blocks_used": 38,
+        "estimate": 0.8,
+        "p_descriptive_uncorrected": 0.74142,
+        "scale": "rate_ratio",
+        "statistic": -0.00012871669455528383
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": true,
+        "confirm_blocks": 17,
+        "full_blocks": 54,
+        "untestable": false,
+        "untestable_reason": null
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/earthquake/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/earthquake/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as something present at the same time as the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: hourly UTC grid step containing the event, no day boundary, chosen by the project. Other values: daily at 12:00 UTC, sunrise day at the arc centre. place: none: geocentric sidereal positions, chosen by the project. Other values: arc centre 28 N 85 E. horizon: the same grid step as the event, chosen by the project. Other values: 24 hours. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti. days = 7: no source is cited for its range."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention hourly UTC grid step containing the event, no day boundary, horizon the same grid step as the event."
+        },
+        {
+          "kind": "data",
+          "text": "1976-01-01 to 2026-10-31 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 14% of the time, 17 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "No effect could be excluded: no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "seen_before",
+          "text": "The confirm years were looked at in an earlier study (eq_v1_usgs_comcat_d3d3d6ec8405)."
+        }
+      ],
+      "name": "Earthquake Within 7 days either side of an eclipse maximum",
+      "outcome": "mainshock_rate",
+      "outcome_type": "events",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": {
+        "R1": {
+          "passed": null,
+          "status": "not_computable"
+        },
+        "R2": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R3": {
+          "passed": null,
+          "status": "not_run"
+        },
+        "R4": {
+          "passed": null,
+          "status": "not_computable"
+        }
+      },
+      "rule_id": "seismic.study.eclipse_window",
+      "side": "greater",
+      "test_id": "seismic.study.eclipse_window@1/primary/mainshock_rate",
+      "variant": "primary",
+      "x95_explore_per_test": {
+        "alpha": 0.05,
+        "informative_blocks": 0,
+        "k_eff": 34.202269711081314,
+        "level": 0.95,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 5,
+        "scale": "rate_ratio",
+        "unbounded": true
+      },
+      "x_strict_explore": {
+        "alpha": 0.005,
+        "informative_blocks": 0,
+        "k_eff": 34.202269711081314,
+        "level": 0.995,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 8,
+        "scale": "rate_ratio",
+        "unbounded": true
+      }
+    },
     {
       "below_entry_level": true,
       "calendar": {
@@ -299,10 +418,10 @@
         "unbounded": true
       },
       "x_strict_explore": {
-        "alpha": 0.006666666666666667,
+        "alpha": 0.005,
         "informative_blocks": 0,
         "k_eff": 17.533165596865185,
-        "level": 0.9933333333333333,
+        "level": 0.995,
         "reason": "no_sesoi",
         "required_informative_blocks": 8,
         "scale": "rate_ratio",
@@ -430,10 +549,10 @@
         "unbounded": true
       },
       "x_strict_explore": {
-        "alpha": 0.006666666666666667,
+        "alpha": 0.005,
         "informative_blocks": 0,
         "k_eff": 1602.547426129489,
-        "level": 0.9933333333333333,
+        "level": 0.995,
         "reason": "no_sesoi",
         "required_informative_blocks": 8,
         "scale": "rate_ratio",
@@ -561,10 +680,10 @@
         "unbounded": true
       },
       "x_strict_explore": {
-        "alpha": 0.006666666666666667,
+        "alpha": 0.005,
         "informative_blocks": 0,
         "k_eff": 686.5617437361174,
-        "level": 0.9933333333333333,
+        "level": 0.995,
         "reason": "no_sesoi",
         "required_informative_blocks": 8,
         "scale": "rate_ratio",
@@ -692,10 +811,10 @@
         "unbounded": true
       },
       "x_strict_explore": {
-        "alpha": 0.006666666666666667,
+        "alpha": 0.005,
         "informative_blocks": 0,
         "k_eff": 1607.4322166577883,
-        "level": 0.9933333333333333,
+        "level": 0.995,
         "reason": "no_sesoi",
         "required_informative_blocks": 8,
         "scale": "rate_ratio",
@@ -823,10 +942,141 @@
         "unbounded": true
       },
       "x_strict_explore": {
-        "alpha": 0.006666666666666667,
+        "alpha": 0.005,
         "informative_blocks": 0,
         "k_eff": 995.7801449081369,
-        "level": 0.9933333333333333,
+        "level": 0.995,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 8,
+        "scale": "rate_ratio",
+        "unbounded": true
+      }
+    },
+    {
+      "below_entry_level": true,
+      "calendar": {
+        "duty_cycle": 0.13141595303495449,
+        "n_bars": 445608,
+        "sha256": "e8d11cc2cf1bfba784df327a18bb6a353b52d020b0a10364107a25a9048c5652"
+      },
+      "dataset": {
+        "grade": "B",
+        "id": "usgs_comcat_himalaya_d3d3d6ec8405",
+        "limitations": [
+          "licence not yet read",
+          "not yet reproduced independently",
+          "ISC Bulletin cross-check catalogue not yet a committed snapshot (second-dataset cell open)",
+          "magnitudes are mostly converted from mb (review M7)"
+        ],
+        "n_events": null,
+        "n_units": 445608,
+        "sha256": "d3d3d6ec840599341782147b35579b69dae3919dd2668d762659270baef19972",
+        "span": [
+          "1976-01-01",
+          "2026-10-31"
+        ]
+      },
+      "estimate_with_without_baselines": {
+        "with_baselines": 0.0,
+        "without_baselines": 0.0
+      },
+      "explore": {
+        "blocks_used": 420,
+        "estimate": 1.0,
+        "p_descriptive_uncorrected": 0.5784,
+        "scale": "rate_ratio",
+        "statistic": 0.0
+      },
+      "gate": {
+        "all_blocks_dropped": false,
+        "can_limit": false,
+        "can_support": true,
+        "confirm_blocks": 190,
+        "full_blocks": 610,
+        "untestable": false,
+        "untestable_reason": null
+      },
+      "level": 0,
+      "limitations": [
+        {
+          "kind": "citation_level",
+          "text": "Level L0 (Recorded). Source: Study plan studies/earthquake/hypothesis.yaml. No independent astrologer has attested the encoding, so every verdict is about the project's encoding of the rule. Missing for L1: source.edition; source.translator; source.chapter; source.quote and more."
+        },
+        {
+          "kind": "tradition",
+          "text": "Modern practice. No classical chapter is cited for it (Study plan studies/earthquake/hypothesis.yaml)."
+        },
+        {
+          "kind": "reading_tested",
+          "text": "Tested as something present at the same time as the event. The project does not record how the source reads it, so a null here may not test the source's own claim."
+        },
+        {
+          "kind": "choices",
+          "text": "day_convention: hourly UTC grid step containing the event, no day boundary, chosen by the project. Other values: daily at 12:00 UTC, sunrise day at the arc centre. place: none: geocentric sidereal positions, chosen by the project. Other values: arc centre 28 N 85 E. horizon: the same grid step as the event, chosen by the project. Other values: 24 hours. ayanamsa: Lahiri, chosen by the project. Other values: Raman, Krishnamurti. days = 2: no source is cited for its range."
+        },
+        {
+          "kind": "conventions",
+          "text": "Zodiac not stated, ayanamsa not stated, mean node (default, not stated in the file), place none: geocentric sidereal positions, day convention hourly UTC grid step containing the event, no day boundary, horizon the same grid step as the event."
+        },
+        {
+          "kind": "data",
+          "text": "1976-01-01 to 2026-10-31 only. Data grade B. Licence not yet read."
+        },
+        {
+          "kind": "evidence_amount",
+          "text": "Active 13% of the time, 190 episodes in the confirm period. Smallest detectable effect: not recorded."
+        },
+        {
+          "kind": "not_tested",
+          "text": "No effect could be excluded: no outside threshold exists and support is not reachable."
+        },
+        {
+          "kind": "seen_before",
+          "text": "The confirm years were looked at in an earlier study (eq_v1_usgs_comcat_d3d3d6ec8405)."
+        }
+      ],
+      "name": "Earthquake Within 2 days either side of a Sun sign ingress (sankranti)",
+      "outcome": "mainshock_rate",
+      "outcome_type": "events",
+      "registrable": true,
+      "registration_problems": [],
+      "robustness": {
+        "R1": {
+          "passed": null,
+          "status": "not_computable"
+        },
+        "R2": {
+          "passed": null,
+          "status": "fail"
+        },
+        "R3": {
+          "passed": null,
+          "status": "not_run"
+        },
+        "R4": {
+          "passed": null,
+          "status": "not_computable"
+        }
+      },
+      "rule_id": "seismic.study.sun_ingress",
+      "side": "greater",
+      "test_id": "seismic.study.sun_ingress@1/primary/mainshock_rate",
+      "variant": "primary",
+      "x95_explore_per_test": {
+        "alpha": 0.05,
+        "informative_blocks": 0,
+        "k_eff": 420.0,
+        "level": 0.95,
+        "reason": "no_sesoi",
+        "required_informative_blocks": 5,
+        "scale": "rate_ratio",
+        "unbounded": true
+      },
+      "x_strict_explore": {
+        "alpha": 0.005,
+        "informative_blocks": 0,
+        "k_eff": 420.0,
+        "level": 0.995,
         "reason": "no_sesoi",
         "required_informative_blocks": 8,
         "scale": "rate_ratio",
