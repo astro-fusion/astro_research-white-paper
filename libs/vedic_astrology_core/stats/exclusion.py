@@ -101,6 +101,12 @@ Deprecated (not imported by ``core/validity``, checked by a test):
 :func:`.equivalence.upper_limit_episodes` (S-01: they assume symmetric
 episode differences), listed in :data:`DEPRECATED`.
 
+Yearly grids (ADR-008 Amendment A3.2, H-9). A vintage with ``grain: yearly``
+does not use blocks: exclusion and X95 there are effect removal followed by
+the year test, in core/stats/yearly.py (:func:`yearly_exclusion` here routes
+to it; :func:`method_for_grain` names the method a grain uses). The grain is
+a property of the data, so nobody chooses the method.
+
 Nothing here starts a thread (G-13). Every function is deterministic given
 its inputs, the thinning generator and the sign-flip seed.
 """
@@ -854,6 +860,28 @@ def _shape_not_positive(design: BlockDesign, outcome_type: str, side: str, sesoi
         k_eff=float(design.k_eff), n_used=int(design.n_used), n_thin=1, x95=recs[0],
         x_strict=recs[1] if a_test is not None else None, a_test=None if a_test is None else float(a_test),
         grid=tuple(float(x) for x in g))
+
+
+# --------------------------------------------------------------------------
+# Routing by grain (ADR-008 A3.2)
+# --------------------------------------------------------------------------
+
+#: The grain whose tests use the year test and yearly exclusion.
+YEARLY_GRAIN = "yearly"
+METHOD_BLOCKS = "exclusion_by_effect_removal"
+METHOD_YEARLY = "year_exclusion_by_effect_removal"
+
+
+def method_for_grain(grain: str) -> str:
+    """The exclusion method a vintage's grain uses (no rule-by-rule choice)."""
+    return METHOD_YEARLY if grain == YEARLY_GRAIN else METHOD_BLOCKS
+
+
+def yearly_exclusion(values, active, years, **kwargs):
+    """Exclusion p, X95 and X-strict on a yearly grid: core/stats/yearly.py year_exclusion (A3.2)."""
+    from .yearly import year_exclusion
+
+    return year_exclusion(values, active, years, **kwargs)
 
 
 def expected_informative(
