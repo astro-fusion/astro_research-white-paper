@@ -41,6 +41,11 @@ Section 6.1, item by item:
    earthquake plans add both (:func:`physical_baselines`,
    :data:`PHYSICAL_BASELINE_DOMAINS`). :func:`remove_baselines` gives the
    outcome "with baselines" for the primary row of the card (section 7.3).
+   Exclusion on that outcome must remove the effect in the shape the
+   regression leaves it (second strategy audit N-02):
+   :func:`baseline_effect_shape`, or :func:`effect_shape` for baselines and
+   detrending together. A flat removal over-removes whenever the calendar
+   correlates with a baseline and gives false "excluded".
 
 Amendment A2 (single-day and edge episodes): :func:`control_design` and
 :func:`season_design` take the plan seed as `side_seed`, which allows
@@ -575,7 +580,7 @@ def _check_window(window) -> int:
     return w
 
 
-def centred_detrend(values, window: int) -> np.ndarray:
+def centred_detrend(values, window: int, *, segments=None) -> np.ndarray:
     """Values minus a centred running mean over `window` bars, past and future alike.
 
     The window is declared in the plan (odd, at least 3). Each bar's
@@ -587,11 +592,26 @@ def centred_detrend(values, window: int) -> np.ndarray:
     missing and enter no mean. Linear in the values, so the same operator
     applied to the active-bar indicator gives the shape a steady effect
     takes after detrending (:func:`detrended_effect_shape`).
+
+    `segments` (N-22, optional): one label per bar, for example 0 on the
+    explore bars and 1 on the confirm bars. Every maximal run of equal labels
+    is detrended on its own, with the window cut back symmetrically at the
+    run's edges, so no baseline mixes bars of two periods and the explore
+    numbers are the same whether or not the confirm period is open.
     """
     w = _check_window(window)
     y = np.asarray(values, dtype=float)
     if y.ndim != 1:
         raise ValueError("values must be one-dimensional")
+    if segments is not None:
+        lab = np.asarray(segments).ravel()
+        if len(lab) != len(y):
+            raise ValueError(f"segments must have one label per bar ({len(y)}), got {len(lab)}")
+        out = np.full(len(y), np.nan)
+        cuts = np.flatnonzero(lab[1:] != lab[:-1]) + 1
+        for lo, hi in zip(np.r_[0, cuts], np.r_[cuts, len(y)]):
+            out[lo:hi] = centred_detrend(y[lo:hi], w)
+        return out
     n = len(y)
     ok = np.isfinite(y)
     out = np.full(n, np.nan)
@@ -607,7 +627,7 @@ def centred_detrend(values, window: int) -> np.ndarray:
     return out
 
 
-def detrended_effect_shape(calendar, window: int, finite=None) -> np.ndarray:
+def detrended_effect_shape(calendar, window: int, finite=None, *, segments=None) -> np.ndarray:
     """What a steady effect of size 1 on every active bar becomes after :func:`centred_detrend`.
 
     `finite` marks the bars that carry an outcome (NaN elsewhere, as the
@@ -615,11 +635,15 @@ def detrended_effect_shape(calendar, window: int, finite=None) -> np.ndarray:
     `effect_shape`) removes `r` times this shape, so the removed effect
     is the one the detrended data carry. Reads the calendar only.
     """
+    return centred_detrend(_indicator(calendar, finite), window, segments=segments)
+
+
+def _indicator(calendar, finite=None) -> np.ndarray:
     c = _mask(calendar, "calendar")
     ind = c.astype(float)
     if finite is not None:
         ind = np.where(_mask(finite, "finite", len(c)), ind, np.nan)
-    return centred_detrend(ind, window)
+    return ind
 
 
 # --------------------------------------------------------------------------
@@ -728,3 +752,44 @@ def remove_baselines(outcome, baselines) -> np.ndarray:
     coef, *_ = np.linalg.lstsq(A[ok], y[ok], rcond=None)
     out[ok] = y[ok] - A[ok] @ coef + y[ok].mean()
     return out
+
+
+def baseline_effect_shape(calendar, baselines, finite=None) -> np.ndarray:
+    """What a steady effect of size 1 on every active bar becomes after :func:`remove_baselines` (N-02).
+
+    :func:`remove_baselines` is linear in the outcome, so a steady effect
+    `r` on the active bars shows in the "with baselines" outcome as `r`
+    times this shape: the active-bar indicator with the same baselines
+    regressed out over the same bars (`finite`, the bars that carry an
+    outcome). When the calendar correlates with a baseline the regression
+    absorbs part of a real effect; removing a flat `r` then over-removes and
+    exclusion and X95 are anti-conservative (second strategy audit N-02:
+    13.5%, 33% and 46% false "excluded" at baseline R-squared 0.14, 0.29
+    and 0.39). Removing `r` times this shape is the same as removing the
+    effect from the outcome **before** fitting the baselines and refitting
+    (tested). Reads the calendar and the baselines only, never an outcome.
+    """
+    return remove_baselines(_indicator(calendar, finite), baselines)
+
+
+def effect_shape(calendar, *, baselines=None, detrend_window: Optional[int] = None, finite=None,
+                 segments=None) -> Optional[np.ndarray]:
+    """The effect shape exclusion must remove, after every linear step the outcome went through.
+
+    The pipeline's order: baselines regressed out (:func:`remove_baselines`,
+    continuous and log-ratio outcomes with declared baselines), then the
+    centred detrend (Amendment A2, daily and finer grids). Pass the
+    `baselines` the outcome was residualised on (None if it was not) and the
+    `detrend_window` (and `segments`) it was detrended with (None if it was
+    not). Returns None when neither step applies: removal is then the flat
+    shift on the active bars. The shape goes to
+    core/stats/exclusion.py `effect_shape`. Calendar and baselines only.
+    """
+    if baselines is None and detrend_window is None:
+        return None
+    h = _indicator(calendar, finite)
+    if baselines is not None:
+        h = remove_baselines(h, baselines)
+    if detrend_window is not None:
+        h = centred_detrend(h, detrend_window, segments=segments)
+    return h

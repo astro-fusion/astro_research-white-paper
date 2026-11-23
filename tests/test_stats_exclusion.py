@@ -661,3 +661,146 @@ def test_paperkit_refuses_a_number_on_an_unbounded_limit():
         r.get("y.value")
     with pytest.raises(paper.NullValueError):
         paper.format_number(float("inf"))
+
+
+
+# ------------------------------------- X11 correlated baselines (audit 2, N-02)
+#: Vectorised, so the full size (10,000 runs per cell) is cheap and always runs.
+X11_REPS = 10_000
+
+
+def _x11_calendar(n_active, gap, k):
+    lead = gap // 2
+    one = np.r_[np.zeros(lead), np.ones(n_active), np.zeros(gap - lead)].astype(bool)
+    return np.tile(one, k)
+
+
+def _contrast_matrix(design):
+    """Bars x used blocks: active mean minus control mean, as block_differences."""
+    m = np.zeros((design.n_bars, design.n_used))
+    for j, b in enumerate(design.used_blocks):
+        m[b.active, j] += 1.0 / len(b.active)
+        m[b.control, j] -= 1.0 / len(b.control)
+    return m
+
+
+def run_x11(n_active, gap, target_r2, kind="normal", true_effect=0.5, sesoi=0.5, k=12, reps=X11_REPS,
+            shaped=True):
+    """N-02: one baseline correlated with the calendar; false "excluded" at the SESOI.
+
+    outcome = true_effect x calendar + noise; baseline = mix x calendar +
+    Normal noise, with no effect of its own, mix set for the target baseline
+    R-squared. The outcome is regressed on the baseline (season.remove_baselines,
+    one row per run, vectorised) and exclusion removes the SESOI in the shape
+    the regression leaves it (season.baseline_effect_shape); shaped=False
+    removes the flat SESOI (the pre-fix pipeline). A run whose shape is not
+    positive in every block prints no limit (exclusion's conservative rule).
+    Returns (hits, mean baseline R-squared, design).
+    """
+    from vedic_astrology_core.stats import season as Z
+
+    c = _x11_calendar(n_active, gap, k)
+    d = B.build_blocks(c, merge_gap=0, side_seed=BASE_SEED)
+    m = _contrast_matrix(d)
+    w = B.block_differences(d, np.zeros(len(c)), outcome_type="continuous").w
+    cf = c.astype(float)
+    mix = math.sqrt(target_r2 / ((1.0 - target_r2) * cf.var()))
+    rng = _rng("X11", f"{n_active}/{gap}/{target_r2}/{kind}/{true_effect}", 0)
+    e = sim.continuous_bars(kind, len(c) * reps, rng).reshape(reps, len(c))
+    b = mix * cf + rng.normal(size=(reps, len(c)))
+    y = true_effect * cf + e
+    bc = b - b.mean(axis=1, keepdims=True)
+    bb = (bc * bc).sum(axis=1)
+    beta_y = (bc * (y - y.mean(axis=1, keepdims=True))).sum(axis=1) / bb
+    beta_c = (bc * (cf - cf.mean())).sum(axis=1) / bb
+    dy = (y - beta_y[:, None] * bc) @ m
+    shape_c = (cf[None, :] - beta_c[:, None] * bc) @ m if shaped else np.ones_like(dy)
+    p = X.sign_flip_p_rows(dy - sesoi * shape_c, w, "less")
+    ok = (shape_c > 0).all(axis=1)
+    # Continuous outcomes: every block is informative, so can_limit is K_eff >= 8.
+    hits = int(np.sum((p <= ALPHA) & ok & (d.k_eff >= X.MIN_K_EFF)))
+    r2 = float(np.mean([Z.baseline_r2(c, b[i]) for i in range(min(200, reps))]))
+    return hits, r2, (c, d, b, y, p)
+
+
+@pytest.mark.parametrize("n_active,gap,target_r2,kind", [
+    (5, 50, 0.1, "normal"), (5, 50, 0.2, "normal"), (5, 50, 0.3, "normal"), (5, 50, 0.4, "normal"),
+    (5, 50, 0.45, "normal"), (5, 50, 0.3, "lognormal"), (5, 50, 0.45, "lognormal"),
+    (20, 21, 0.1, "normal"), (20, 21, 0.3, "normal"), (20, 21, 0.45, "normal"),
+])
+def test_x11_exclusion_holds_size_with_correlated_baselines(n_active, gap, target_r2, kind):
+    hits, r2, (_, d, *_rest) = run_x11(n_active, gap, target_r2, kind)
+    assert d.n_used == 12 and abs(r2 - target_r2) < 0.03
+    _assert_rate(hits, X11_REPS, 0.06)  # full size, full mark
+
+
+@pytest.mark.parametrize("n_active,gap", [(5, 50), (20, 21)])
+def test_x11_flat_removal_after_baselines_is_anti_conservative(n_active, gap):
+    """Documents N-02: the pre-fix removal (flat r) at baseline R-squared 0.3."""
+    hits, _, _ = run_x11(n_active, gap, 0.3, shaped=False)
+    assert hits / X11_REPS > 0.10
+
+
+def test_x11_keeps_exclusion_power():
+    """The shape is not a blanket refusal: with no true effect the SESOI is still excluded often."""
+    hits, _, _ = run_x11(5, 50, 0.3, true_effect=0.0, reps=2_000)
+    assert hits / 2_000 > 0.4
+
+
+def test_x11_runner_is_the_pipeline_path():
+    """The vectorised runner gives the p of remove_baselines + season.effect_shape + exclusion()."""
+    from vedic_astrology_core.stats import season as Z
+
+    _, _, (c, d, b, y, p) = run_x11(5, 50, 0.3, reps=30)
+    for i in range(30):
+        y_with = Z.remove_baselines(y[i], b[i][:, None])
+        shape = Z.effect_shape(c, baselines=b[i][:, None], finite=np.isfinite(y[i]))
+        res = X.exclusion(d, y_with, outcome_type="continuous", side="greater", sesoi=0.5,
+                          grid=[0.5, 1.0], raw=y[i], effect_shape=shape)
+        assert res.p_exclusion == pytest.approx(p[i], abs=1e-12)
+
+
+def test_baseline_shape_removal_is_removal_before_fitting():
+    """Removing r x shape from the residualised outcome = removing r, then refitting the baselines."""
+    from vedic_astrology_core.stats import season as Z
+
+    c = _x11_calendar(5, 50, 12)
+    d = B.build_blocks(c, merge_gap=0, side_seed=BASE_SEED)
+    rng = np.random.default_rng(12)
+    base = np.column_stack([1.5 * c + rng.normal(size=len(c)), rng.normal(size=len(c))])
+    y = rng.normal(size=len(c)) + 0.7 * c
+    y[[3, 40]] = np.nan
+    fin = np.isfinite(y)
+    shape = Z.baseline_effect_shape(c, base, fin)
+    after = X.shift_active(d, Z.remove_baselines(y, base), 0.7, outcome_type="continuous", effect_shape=shape)
+    before = Z.remove_baselines(np.where(c, y - 0.7, y), base)
+    assert np.allclose(after[fin], before[fin]) and np.isnan(after[~fin]).all()
+    flat = X.shift_active(d, Z.remove_baselines(y, base), 0.7, outcome_type="continuous")
+    assert not np.allclose(flat[fin], before[fin])
+
+
+def test_effect_shape_composes_baselines_then_detrending():
+    from vedic_astrology_core.stats import season as Z
+
+    c = _x11_calendar(5, 50, 12)
+    base = np.random.default_rng(3).normal(size=len(c)) + c
+    assert Z.effect_shape(c) is None
+    assert np.allclose(Z.effect_shape(c, detrend_window=31), Z.detrended_effect_shape(c, 31))
+    assert np.allclose(Z.effect_shape(c, baselines=base), Z.baseline_effect_shape(c, base))
+    both = Z.effect_shape(c, baselines=base, detrend_window=31)
+    assert np.allclose(both, Z.centred_detrend(Z.baseline_effect_shape(c, base), 31))
+
+
+def test_shape_absorbed_by_baselines_gives_no_limit():
+    """A baseline equal to the calendar absorbs the whole effect: no E, no X (conservative)."""
+    from vedic_astrology_core.stats import season as Z
+
+    c = _x11_calendar(5, 50, 12)
+    d = B.build_blocks(c, merge_gap=0, side_seed=BASE_SEED)
+    y = np.random.default_rng(8).normal(size=len(c))
+    base = c.astype(float)[:, None]
+    res = X.exclusion(d, Z.remove_baselines(y, base), outcome_type="continuous", side="greater", sesoi=0.5,
+                      grid=[0.5, 1.0], a_test=0.01, effect_shape=Z.baseline_effect_shape(c, base))
+    assert res.p_exclusion is None and not res.excluded(0.05)
+    assert res.x95.unbounded and res.x95.reason == X.REASON_SHAPE_NOT_POSITIVE
+    assert res.x_strict.unbounded and res.to_dict()["x95"]["reason"] == X.REASON_SHAPE_NOT_POSITIVE

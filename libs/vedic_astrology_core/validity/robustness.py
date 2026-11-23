@@ -25,8 +25,13 @@ R2 Placebo skies (section 5)
       shifts k = 1 to 100 in both directions; others random day offsets of at
       least 400 days (time_shift_plan()).
     * R2 passes when (1 + number of applicable placebos with a strictly larger
-      statistic) / (n + 1) <= 0.05, "larger" in the claimed direction (|T| for
-      two-sided). Ties never count against the real sky.
+      statistic + half the number of tied ones) / (n + 1) <= 0.05, "larger"
+      in the claimed direction (|T| for two-sided). Mid-rank ties (second
+      strategy audit N-06 ii): a placebo sky that is a different calendar and
+      ties the real statistic counts one half; only a sky identical to the
+      real calendar (changed share 0) does not count. The old rule ("ties
+      never count") let a real sky tied with 150 of 200 skies pass at
+      p = 0.005, and event and flag statistics tie often.
     * CALIBRATION-FIX (WP-98 W1, Z3), two outcome-free rules on the skies:
       (a) Overlap. A shifted sky is a valid placebo only if it carries less
           than MAX_PLACEBO_OVERLAP (0.5) of a steady effect on the real
@@ -81,9 +86,12 @@ R3 Sensitivity grid (section 5, F-07)
     Counts **distinct calendars**: a cell counts only if it changes at least
     5% of the active bars against the primary. R3 passes when the statistic has
     the claimed sign (two-sided: the primary's sign) in at least 80% of the
-    distinct cells. With no distinct cell R3 is "not applicable" and passes:
-    the declared grid offered no different calendar, so it cannot show the
-    effect to be fragile.
+    distinct cells. With no distinct cell (including an empty grid) R3 has
+    status "not_run" (second strategy audit N-18: it was "not_applicable",
+    which read as a check that ran and found nothing wrong). It still does not
+    block the verdict, because the grid offered no different calendar to
+    show the effect fragile; the record carries the reason so the card can
+    say the check was not run.
 
 R4 Separability (section 6.1 item 5)
     baseline_r2 of the calendar on all the domain's baselines; fails at 0.5 or
@@ -119,6 +127,9 @@ __all__ = [
     "MIN_DISTINCT_PLACEBOS",
     "MAX_PLACEBO_CANDIDATES",
     "R2_INSUFFICIENT",
+    "R3_NOT_RUN",
+    "YEARLY_GRID_MIN_SPACING_DAYS",
+    "is_yearly_grid",
     "RobustnessError",
     "Placebo",
     "R2Result",
@@ -168,6 +179,12 @@ MIN_DISTINCT_PLACEBOS = 19
 MAX_PLACEBO_CANDIDATES = 10 * N_TIME_SHIFT
 #: R2 status when fewer than MIN_DISTINCT_PLACEBOS distinct calendars exist.
 R2_INSUFFICIENT = "insufficient_placebos"
+#: R3 status when no declared cell is a distinct calendar (N-18).
+R3_NOT_RUN = "not_run"
+#: N-07: a grid whose median bar spacing is at least this many days is yearly;
+#: its time-shift skies are whole years (k = 1 to 100 both ways), because day
+#: offsets of at most MAX_OFFSET_DAYS give only about 20 distinct yearly skies.
+YEARLY_GRID_MIN_SPACING_DAYS = 360.0
 
 _SIDES = ("greater", "less", "two-sided")
 
@@ -211,18 +228,35 @@ def changed_share(primary, other) -> float:
     return diff / n
 
 
+def is_yearly_grid(dates) -> bool:
+    """True for a grid with one bar a year or fewer (median spacing >= 360 days; plain years)."""
+    arr = np.asarray(dates)
+    if arr.dtype.kind in "iu":
+        return True  # plain years
+    if len(arr) < 2:
+        return False
+    ns = np.asarray(arr, dtype="datetime64[ns]").astype(np.int64)
+    return bool(np.median(np.diff(ns)) >= YEARLY_GRID_MIN_SPACING_DAYS * 86_400 * 10**9)
+
+
 def time_shift_plan(season_linked: bool, rng: Optional[np.random.Generator] = None,
-                    n: int = N_TIME_SHIFT) -> Dict[str, Any]:
+                    n: int = N_TIME_SHIFT, *, dates=None) -> Dict[str, Any]:
     """The time-shift placebo skies of one test (section 5, section 6.1 item 3).
 
     Season-linked: whole-year shifts -100..-1 and 1..100 (exactly 200, no
     randomness), so the Sun and the season stay in place. Otherwise n distinct
     day offsets with 400 <= |offset| <= 3650 from rng (the test's own
     "placebo" stream, ADR-008 3.5).
+
+    N-07: with the grid `dates` given, a yearly grid (:func:`is_yearly_grid`)
+    also gets the 200 whole-year shifts. Day offsets capped at 3,650 days
+    move a yearly grid by at most ten years, about 20 distinct skies, so R2
+    could never pass for slow calendars (Saturn in fire: 18, Rahu in dual
+    signs: 15) while the gate said "can support".
     """
-    if season_linked:
+    if season_linked or (dates is not None and is_yearly_grid(dates)):
         if n != N_TIME_SHIFT:
-            raise RobustnessError("season-linked calendars use the 200 whole-year shifts")
+            raise RobustnessError("season-linked calendars and yearly grids use the 200 whole-year shifts")
         return {"kind": "whole_year", "unit": "years", "shifts": _season.whole_year_shifts()}
     if not isinstance(rng, np.random.Generator):
         raise RobustnessError("day-offset placebos need the test's own placebo stream (rng)")
@@ -424,6 +458,7 @@ def r2_placebo(real_statistic: float, placebos: Iterable[Placebo], side: str, *,
             raise RobustnessError("changed_share must be non-negative")
         by_kind.setdefault(pl.kind, []).append(pl)
     used: List[float] = []
+    shares: List[float] = []
     clusters: List[Optional[int]] = []
     applicable, not_applicable = [], []
     for kind in sorted(by_kind):
@@ -431,6 +466,7 @@ def r2_placebo(real_statistic: float, placebos: Iterable[Placebo], side: str, *,
         if float(np.mean([float(p.changed_share) for p in skies])) >= MIN_PLACEBO_CHANGE:
             applicable.append(kind)
             used.extend(float(p.statistic) for p in skies)
+            shares.extend(float(p.changed_share) for p in skies)
             clusters.extend((kind, p.cluster) if p.cluster is not None else None for p in skies)
         else:
             not_applicable.append(kind)
@@ -454,13 +490,17 @@ def r2_placebo(real_statistic: float, placebos: Iterable[Placebo], side: str, *,
     else:
         tied = np.abs(arr - real) <= eps
     k = int(larger.sum())
-    p = (1 + k) / (n + 1)
+    # N-06 (ii): mid-rank ties. A sky that ties the real statistic but is a
+    # different calendar counts one half (it is as extreme as the real sky);
+    # only a sky identical to the real one (changed share 0) does not count.
+    score = larger.astype(float) + 0.5 * (tied & ~larger & (np.asarray(shares) > 0.0))
+    p = (1.0 + float(score.sum())) / (n + 1)
     if n_distinct is not None and all(c is not None for c in clusters):
         groups: Dict[Any, List[int]] = {}
         for i, c in enumerate(clusters):
             groups.setdefault(c, []).append(i)
         m = len(groups)
-        p = (1.0 + sum(float(larger[ix].mean()) for ix in groups.values())) / (m + 1)
+        p = (1.0 + sum(float(score[ix].mean()) for ix in groups.values())) / (m + 1)
     if n_distinct is not None and int(n_distinct) < MIN_DISTINCT_PLACEBOS:
         why = (f"only {int(n_distinct)} distinct placebo calendars (at least {MIN_DISTINCT_PLACEBOS} "
                "are needed); the placebo check cannot clear a Supported")
@@ -498,6 +538,8 @@ class R3Result:
     same_sign_share: Optional[float]
     distinct: Tuple[str, ...]
     near_copies: Tuple[str, ...]
+    #: Plain words for status "not_run".
+    reason: Optional[str] = None
 
     def to_dict(self) -> Dict[str, Any]:
         d = asdict(self)
@@ -515,8 +557,11 @@ def r3_sensitivity(primary_statistic: float, cells: Iterable[Cell], side: str) -
     distinct = [c for c in cells if float(c.changed_share) >= MIN_DISTINCT_CHANGE]
     copies = [c for c in cells if float(c.changed_share) < MIN_DISTINCT_CHANGE]
     if not distinct:
-        return R3Result(True, "not_applicable", len(cells), 0, 0, None, (),
-                        tuple(c.name for c in copies))
+        why = ("no declared sensitivity cell" if not cells else
+               f"none of the {len(cells)} declared cells changes at least {MIN_DISTINCT_CHANGE:.0%} "
+               "of the active bars")
+        return R3Result(True, R3_NOT_RUN, len(cells), 0, 0, None, (),
+                        tuple(c.name for c in copies), reason=why + "; the sensitivity check was not run")
     if side == "two-sided":
         ref = 1.0 if t0 > 0 else (-1.0 if t0 < 0 else 0.0)
         same = [c for c in distinct if ref != 0.0 and np.sign(_finite(c.statistic, "cell")) == ref]

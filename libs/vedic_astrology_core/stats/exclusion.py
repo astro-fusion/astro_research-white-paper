@@ -76,6 +76,22 @@ argument above is unchanged. Events and flags are not detrended (thinning
 needs whole counts); measured with A2 blocks on daily new-moon and eclipse
 calendars, a doubling event rate holds size without it.
 
+Outcomes with baselines removed (second strategy audit N-02). The pipeline
+regresses continuous and log-ratio outcomes on the domain's baselines before
+the block test (core/stats/season.py remove_baselines). When the calendar
+correlates with a baseline, that regression absorbs part of a real effect, so
+a flat removal of r over-removes: false "excluded" at a true effect equal to
+the SESOI rose to 13.5%, 33% and 46% at baseline R-squared 0.14, 0.29 and
+0.39. The effect shape is then the active-bar indicator put through the same
+regression (and the detrend, if any): season.effect_shape(calendar,
+baselines=..., detrend_window=...). Removing r times that shape is the same as
+removing the effect before the baselines are fitted and refitting, so the
+exactness argument holds again (tests: X11 at 10,000 runs, baseline
+R-squared 0.1 to 0.45). When the baselines absorb the whole effect in some
+used block (a contrast ``c_k <= 0``), the effect is not identified there:
+:func:`exclusion` then prints no limit and no exclusion p (reason
+:data:`REASON_SHAPE_NOT_POSITIVE`), which is the conservative reading.
+
 What stays outside the guarantee (section 2.3): the guarantee is for a
 **steady** effect. :func:`card_lines` gives the two fixed sentences every card
 with an X prints, with ``f = 1 - 0.05 ** (1 / K)`` (:func:`not_addressed_share`).
@@ -140,6 +156,8 @@ REASON_FEW_BLOCKS = "k_eff_below_8"
 REASON_LOW_INFORMATION = "too_few_informative_blocks"
 REASON_NOT_REACHED = "not_rejected_on_grid"
 REASON_NO_SESOI = "no_sesoi"
+#: N-02: the effect shape (after baselines or detrending) is not positive in every used block.
+REASON_SHAPE_NOT_POSITIVE = "effect_shape_not_positive"
 
 
 # --------------------------------------------------------------------------
@@ -378,8 +396,8 @@ class EffectRemoval:
         n_draws: Monte Carlo sign patterns above 20 used blocks.
         effect_shape: ``continuous`` and ``log_ratio`` only: per bar, what a
             steady effect of size 1 on the active bars becomes after the
-            outcome's detrending (Amendment A2; core/stats/season.py
-            detrended_effect_shape). Removing an effect r then subtracts
+            outcome's baseline removal and detrending (N-02, Amendment A2;
+            core/stats/season.py effect_shape). Removing an effect r then subtracts
             ``r * c_k`` from block k's difference (:func:`shape_contrasts`),
             so the removed effect is the one the detrended data carry. None:
             ``c_k = 1`` (no detrending). Every ``c_k`` must be positive.
@@ -779,6 +797,13 @@ def exclusion(
         if not 0.0 < float(a_test) < 1.0:
             raise ValueError("a_test must lie in (0, 1)")
         levels.append(float(a_test))
+    if effect_shape is not None and outcome_type not in THINNED_TYPES:
+        c = shape_contrasts(design, effect_shape)
+        if len(c) and not (np.isfinite(c).all() and (c > 0).all()):
+            # N-02: a used block where the baselines (or the detrend) absorb the
+            # whole effect: no removal is identified there, so no limit at all.
+            _blocks.block_differences(design, outcome, outcome_type=outcome_type, raw=raw)
+            return _shape_not_positive(design, outcome_type, side, sesoi, levels, a_test, g)
     er = EffectRemoval(design, outcome, outcome_type=outcome_type,
                        thinning_rng=thinning_rng, signflip_seed=signflip_seed,
                        n_thin=n_thin, n_draws=n_draws, effect_shape=effect_shape, raw=raw)
@@ -816,6 +841,19 @@ def exclusion(
         grid=tuple(float(x) for x in g),
         p_reps=p_reps,
     )
+
+
+def _shape_not_positive(design: BlockDesign, outcome_type: str, side: str, sesoi, levels,
+                        a_test, g) -> ExclusionResult:
+    recs = [LimitRecord(alpha=a, value=None, unbounded=True, reason=REASON_SHAPE_NOT_POSITIVE,
+                        scale=SCALES[outcome_type], informative=0, required_informative=min_informative(a),
+                        k_eff=float(design.k_eff)) for a in levels]
+    return ExclusionResult(
+        outcome_type=outcome_type, effect_model=EFFECT_MODELS[outcome_type], scale=SCALES[outcome_type],
+        side=side, sesoi=None if sesoi is None else float(sesoi), p_exclusion=None, informative_at_sesoi=None,
+        k_eff=float(design.k_eff), n_used=int(design.n_used), n_thin=1, x95=recs[0],
+        x_strict=recs[1] if a_test is not None else None, a_test=None if a_test is None else float(a_test),
+        grid=tuple(float(x) for x in g))
 
 
 def expected_informative(

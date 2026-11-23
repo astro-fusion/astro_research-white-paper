@@ -611,3 +611,42 @@ def test_d1_drift_holds_size_after_detrending_fast():
 @pytest.mark.skipif(not FULL, reason="full calibration runs in the certificate suite")
 def test_full_d1_drift():
     _assert_all(run_d1(10_000))
+
+
+
+# ------------------------------------------------- second strategy audit (2026-11-23)
+def test_detrend_segments_keep_explore_numbers_fixed():
+    """N-22: detrended per period, the explore bars do not depend on the confirm bars."""
+    rng = np.random.default_rng(22)
+    y = rng.normal(size=400) + np.linspace(0.0, 3.0, 400)
+    seg = np.r_[np.zeros(250, int), np.ones(150, int)]
+    a = S.centred_detrend(y, 31, segments=seg)
+    y2 = y.copy()
+    y2[250:] += 50.0  # whatever the confirm period holds
+    b = S.centred_detrend(y2, 31, segments=seg)
+    assert np.array_equal(a[:250], b[:250])
+    assert np.allclose(a[:250], S.centred_detrend(y[:250], 31))
+    assert np.allclose(a[250:], S.centred_detrend(y[250:], 31))
+    # Without segments the centred mean crosses the split (the finding).
+    assert not np.allclose(S.centred_detrend(y, 31)[:250], S.centred_detrend(y2, 31)[:250])
+    with pytest.raises(ValueError, match="one label per bar"):
+        S.centred_detrend(y, 31, segments=seg[:-1])
+    cal_ = np.zeros(400, bool)
+    cal_[::20] = True
+    assert np.allclose(S.detrended_effect_shape(cal_, 31, segments=seg),
+                       S.centred_detrend(cal_.astype(float), 31, segments=seg))
+
+
+def test_baseline_effect_shape_is_the_indicator_through_remove_baselines():
+    """N-02: calendar and baselines only; NaN where the outcome is missing."""
+    c = np.zeros(300, bool)
+    c[::10] = True
+    base = np.random.default_rng(1).normal(size=300) + 2.0 * c
+    fin = np.ones(300, bool)
+    fin[5] = False
+    h = S.baseline_effect_shape(c, base, fin)
+    assert np.isnan(h[5]) and np.isfinite(np.delete(h, 5)).all()
+    assert np.allclose(h, S.remove_baselines(np.where(fin, c.astype(float), np.nan), base), equal_nan=True)
+    # The regression absorbs part of the indicator: the active-minus-control gap shrinks below 1.
+    gap = np.nanmean(h[c]) - np.nanmean(h[~c])
+    assert 0.0 < gap < 1.0

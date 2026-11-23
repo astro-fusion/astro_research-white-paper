@@ -10,6 +10,7 @@ pass at (1 + strictly larger) / (n + 1) <= 0.05. R3 counts distinct calendars
 from __future__ import annotations
 
 import numpy as np
+import pandas as pd
 import pytest
 
 from vedic_astrology_core.stats import blocks as B
@@ -77,10 +78,34 @@ def test_label_free_calendars_with_a_strong_effect_pass_r2(make):
     assert res.n_placebo == 200
 
 
-def test_old_tie_rule_would_have_failed_and_new_one_does_not():
-    # Every placebo equals the real statistic: ties never count against the real sky.
+def test_ties_are_mid_rank_unless_the_sky_is_identical():
+    # N-06 (ii): a different calendar tied with the real statistic counts one half.
     res = R.r2_placebo(0.7, [R.Placebo("time_shift", 0.7, 0.5)] * 200, "greater")
-    assert res.n_tied == 200 and res.n_larger == 0 and res.passes
+    assert res.n_tied == 200 and res.n_larger == 0 and not res.passes
+    assert res.p_value == pytest.approx(101 / 201)
+    # The audit's probe: 150 tied and 50 lower gave p = 0.005 under "ties never count".
+    probe = R.r2_placebo(1.0, [R.Placebo("time_shift", 1.0, 0.3)] * 150 + [R.Placebo("time_shift", 0.0, 0.3)] * 50,
+                         "greater")
+    assert probe.p_value == pytest.approx(76 / 201) and not probe.passes
+    # A sky identical to the real calendar (changed share 0) is not counted as a tie.
+    same = [R.Placebo("time_shift", 1.0, 0.0)] * 5 + [R.Placebo("time_shift", 0.0, 0.3)] * 195
+    assert R.r2_placebo(1.0, same, "greater").p_value == pytest.approx(1 / 201)
+    # Cluster weighting uses the same half count.
+    cl = [R.Placebo("time_shift", 1.0, 0.3, cluster=0), R.Placebo("time_shift", 0.0, 0.3, cluster=0)]
+    cl += [R.Placebo("time_shift", 0.0, 0.3, cluster=1 + i) for i in range(19)]
+    assert R.r2_placebo(1.0, cl, "greater", n_distinct=20).p_value == pytest.approx(1.25 / 21)
+
+
+def test_r2_null_rate_with_tied_discrete_statistics_10000_runs():
+    """N-06 (ii): a discrete statistic (many ties) under no effect passes R2 in at most 5%."""
+    rng = np.random.default_rng(2611)
+    n_runs = 10_000
+    sims = rng.poisson(0.3, size=(n_runs, 201)).astype(float)
+    passes = 0
+    for row in sims:
+        pls = [R.Placebo("time_shift", float(v), 0.5) for v in row[1:]]
+        passes += R.r2_placebo(float(row[0]), pls, "greater").passes
+    assert clopper_pearson_upper(passes, n_runs) <= 0.06, passes
 
 
 def test_r2_boundaries():
@@ -151,6 +176,21 @@ def test_time_shift_plan():
         R.time_shift_plan(True, n=50)
 
 
+def test_yearly_grids_get_whole_year_skies():
+    """N-07: day offsets of at most 3,650 days give a yearly grid only about 20 skies."""
+    years = pd.date_range("1871-06-01", periods=146, freq="YS-JUN")
+    assert R.is_yearly_grid(years) and R.is_yearly_grid(np.arange(1871, 2017))
+    assert not R.is_yearly_grid(pd.date_range("2000-01-01", periods=100, freq="D"))
+    plan = R.time_shift_plan(False, fam.stream_rng(9, "t", "placebo"), dates=years)
+    assert plan["kind"] == "whole_year" and len(set(plan["shifts"])) == 200
+    daily = R.time_shift_plan(False, fam.stream_rng(9, "t", "placebo"),
+                              dates=pd.date_range("2000-01-01", periods=100, freq="D"))
+    assert daily["kind"] == "random_offset"
+    # Before: random offsets on a yearly grid move it by 1 to 10 whole years at most.
+    old = R.time_shift_plan(False, fam.stream_rng(9, "t", "placebo"))
+    assert len({round(s / 365.25) for s in old["shifts"]}) <= 20
+
+
 def test_changed_share():
     a = np.array([1, 1, 0, 0, 1, 0, 0, 0], dtype=bool)
     assert R.changed_share(a, a) == 0.0
@@ -171,7 +211,10 @@ def test_r3_counts_distinct_calendars_only():
     worse = R.r3_sensitivity(0.6, distinct + [R.Cell("second_dataset", -0.2, 1.0)], "greater")
     assert not worse.passes
     none = R.r3_sensitivity(0.6, near, "greater")
-    assert none.status == "not_applicable" and none.passes
+    assert none.status == R.R3_NOT_RUN and none.passes and "not run" in none.reason
+    # N-18: an empty grid is "not run" too, and the record says so.
+    empty = R.r3_sensitivity(0.6, [], "greater")
+    assert empty.status == R.R3_NOT_RUN and "no declared sensitivity cell" in empty.to_dict()["reason"]
     two = R.r3_sensitivity(-0.6, [R.Cell("a", -0.2, 0.5), R.Cell("b", -0.1, 0.5)], "two-sided")
     assert two.passes and two.n_same_sign == 2
 
