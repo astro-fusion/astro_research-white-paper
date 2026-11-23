@@ -145,6 +145,12 @@ def test_extra_and_missing_pages_fail(built):
     assert any("SENTENCE card/stray.md" in p for p in problems)
 
 
+def test_insufficient_placebos_sentence_is_allowed_on_a_card():
+    assert RP.allowed_line("Placebo-sky check not possible: fewer than 19 distinct placebo calendars on this grid; "
+                           "Supported is not available.")
+    assert not RP.allowed_line("Placebo-sky check not possible: fewer than 5 distinct placebo calendars.")
+
+
 @pytest.mark.parametrize("phrase", ["debunked", "astrology fails", "proven", "confirmed", "no evidence for astrology"])
 def test_paraphrases_fail_the_allow_list(phrase):
     assert not RP.allowed_line(f"The principle is {phrase}.")

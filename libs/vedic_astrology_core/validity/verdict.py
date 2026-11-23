@@ -126,6 +126,7 @@ class VerdictInput:
 
     side: "greater", "less" or "two-sided" (the claimed direction).
     robustness: R1..R4 to pass/fail; a missing key fails.
+    r2_status: the R2 status; "insufficient_placebos" prints "check not possible" instead of "failed".
     estimate_magnitude: the confirm estimate on the SESOI's scale, signed so
         that a larger value is further in the claimed direction (for
         below_sesoi only).
@@ -145,6 +146,7 @@ class VerdictInput:
     p_ex: Optional[float] = None
     explore_same_sign: Optional[bool] = None
     robustness: Mapping[str, bool] = field(default_factory=dict)
+    r2_status: Optional[str] = None
     source_published: DateLike = None
     confirm_start: DateLike = None
     sesoi: Optional[float] = None
@@ -411,6 +413,9 @@ def _lines(code: str, inp: VerdictInput, flags: Tuple[str, ...], failed: Tuple[s
     for f in flags:
         if f == "signal_not_robust":
             for chk in failed:
+                if chk == "R2" and inp.r2_status == "insufficient_placebos":
+                    lines.append(_s.render("flag.signal_not_robust.insufficient_placebos"))
+                    continue
                 lines.append(_s.render("flag.signal_not_robust", check=_s.CHECK_NAMES[chk]))
         elif f == "support_underpowered":
             if inp.p_support_at_sesoi is None:

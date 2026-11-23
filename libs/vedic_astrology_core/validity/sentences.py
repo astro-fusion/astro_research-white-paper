@@ -151,6 +151,11 @@ TEMPLATES: Dict[str, str] = {
         "Support was hardly reachable: the chance of Supported at the project's threshold is not known."
     ),
     "flag.signal_not_robust": "A signal was found, but the {check} check failed.",
+    # R2 status insufficient_placebos (ADR-008 section 5): the check could not be run, it did not fail.
+    "flag.signal_not_robust.insufficient_placebos": (
+        "Placebo-sky check not possible: fewer than 19 distinct placebo calendars on this grid; "
+        "Supported is not available."
+    ),
     "flag.signal_on_seen_data": (
         "A signal on data the project had already seen cannot support or contradict the principle."
     ),

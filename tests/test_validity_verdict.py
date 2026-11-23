@@ -287,6 +287,19 @@ def test_reading_differs_title_and_columns():
         run(reading_differs=True)
 
 
+def test_r2_insufficient_placebos_says_not_possible_not_failed():
+    v = run(p_sup=A, robustness={"R1": True, "R2": False, "R3": True, "R4": True}, r2_status="insufficient_placebos")
+    msg = ("Placebo-sky check not possible: fewer than 19 distinct placebo calendars on this grid; "
+           "Supported is not available.")
+    assert v.code == "N" and "signal_not_robust" in v.flags
+    assert msg in v.lines and S.is_allowed(msg)
+    assert not any("placebo-sky check failed" in ln for ln in v.lines)
+    assert S.disallowed(v.lines) == []
+    # an ordinary R2 failure keeps the old sentence
+    w = run(p_sup=A, robustness={"R1": True, "R2": False, "R3": True, "R4": True}, r2_status="fail")
+    assert "A signal was found, but the placebo-sky check failed." in w.lines
+
+
 def test_flags_are_ordered_and_known():
     v = run(p_sup=A, robustness={}, tuned=True, support_underpowered=True, p_support_at_sesoi=0.5,
             source_published=None, recomputed_bars_changed=3)

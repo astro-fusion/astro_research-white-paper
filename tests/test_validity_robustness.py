@@ -240,6 +240,13 @@ def test_distinct_clusters_merge_near_copies():
     assert R.count_distinct([base, near, far], int(base.sum())) == 2
 
 
+def test_insufficient_placebos_sentence_names_the_minimum():
+    from vedic_astrology_core.validity import sentences as S
+    key = "flag.signal_not_robust.insufficient_placebos"
+    assert f"fewer than {R.MIN_DISTINCT_PLACEBOS} distinct placebo calendars" in S.TEMPLATES[key]
+    assert S.render(key) == S.TEMPLATES[key]
+
+
 def test_r2_needs_distinct_placebo_calendars_and_counts_each_once():
     sk = [R.Placebo("time_shift", -1.0, 0.5, cluster=i) for i in range(R.MIN_DISTINCT_PLACEBOS)]
     ok = R.r2_placebo(1.0, sk, "greater", n_distinct=R.MIN_DISTINCT_PLACEBOS)

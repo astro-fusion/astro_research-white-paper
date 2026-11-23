@@ -633,6 +633,7 @@ def _compute(p: _Prepared, dates: pd.DatetimeIndex, y_raw: np.ndarray, B: Option
     numbers: Dict[str, Any] = {"effect": None, "p": None, "bound": None, "robustness": None, "estimate": None}
     vin: Dict[str, Any] = {}
     rob_passed: Dict[str, bool] = {}
+    r2_status: Optional[str] = None
     if not g.untestable:
         finite = np.isfinite(y_raw)
         avail_full = p.available
@@ -686,6 +687,7 @@ def _compute(p: _Prepared, dates: pd.DatetimeIndex, y_raw: np.ndarray, B: Option
         rob, extra = _robustness(p, dates, y_with, finite if not finite.all() else None,
                                  res_full, B, sd_full.season_linked, run, raw)
         rob_passed = rob.passed()
+        r2_status = None if rob.r2 is None else rob.r2.status
         vin = dict(
             p_sup=res_conf.p_value if res_conf is not None and res_conf.n_used else None,
             p_opp=res_opp.p_value if confirm_open and res_opp is not None else None,
@@ -718,7 +720,8 @@ def _compute(p: _Prepared, dates: pd.DatetimeIndex, y_raw: np.ndarray, B: Option
         level=int(t.level), eligibility=p.eligibility, side=side,
         can_support=g.can_support, can_limit=g.can_limit, all_blocks_dropped=g.all_blocks_dropped,
         untestable_reason=g.untestable_reason, direction_disputed=t.direction_disputed,
-        robustness=rob_passed, source_published=t.source_published,
+        robustness=rob_passed, r2_status=r2_status,
+        source_published=t.source_published,
         confirm_start=per.get("start") if isinstance(per, Mapping) else None,
         sesoi=t.sesoi, support_underpowered=g.support_underpowered,
         p_support_at_sesoi=g.p_support_at_sesoi, known_channel=t.known_channel,
