@@ -270,9 +270,12 @@ def test_rule5_later_batch_needs_fresh_data():
     with pytest.raises(fam.StaleVintageError):
         lock.close_batch(vintage=overlap, seal_bundle_sha256=BUNDLE)
     unopened = dict(overlap, id="other_dataset", never_opened=True)
-    assert lock.close_batch(vintage=unopened, seal_bundle_sha256=BUNDLE)["batch"] == 2
+    with pytest.raises(fam.StaleVintageError, match="never_opened"):  # N-03 a: the flag exempts nothing
+        lock.close_batch(vintage=unopened, seal_bundle_sha256=BUNDLE)
+    assert lock.close_batch(vintage=V2, seal_bundle_sha256=BUNDLE)["batch"] == 2
     with pytest.raises(fam.FamilyError):
-        lock.close_batch(vintage=V2, seal_bundle_sha256=BUNDLE)  # batch 3 is empty
+        lock.close_batch(vintage=dict(V2, id="v3", confirm_period={"start": "2006-01", "end": "2010-12"}),
+                         seal_bundle_sha256=BUNDLE)  # batch 3 is empty
     with pytest.raises(fam.FamilyError):
         fam.FamilyLock(None, "x").close_batch(vintage={"id": "v", "confirm_period": V1["confirm_period"]},
                                               seal_bundle_sha256=BUNDLE)  # no 'seen'
@@ -418,3 +421,43 @@ def test_family_wise_statement_is_per_domain():
     s = fam.FAMILY_WISE_STATEMENT.format(d=4)
     assert s.startswith("Chance of at least one false Supported in a domain: at most 5% over all time.")
     assert "4 x 3 x 5%" in s
+
+
+# ------------------------------------------- strategy audit 2: N-03 a, N-04
+def test_n03a_never_opened_reissue_of_the_same_period_gets_no_fresh_alpha():
+    """Batch 2 on a self-declared never_opened copy of the batch-1 period is refused (was S-eligible at 0.008)."""
+    lock, _ = new_lock(2)
+    lock.close_batch(vintage=V1, seal_bundle_sha256=BUNDLE)
+    lock.register(rule_id="gold.b2", version=1, outcome="ret_lbma_usd", calendar_hash=cal("b2-n03"))
+    reissue = dict(V1, id="v1-reissue", never_opened=True)
+    with pytest.raises(fam.StaleVintageError):
+        lock.close_batch(vintage=reissue, seal_bundle_sha256=BUNDLE)
+    assert lock.closed_batches() == [1]
+
+
+def test_n03a_lock_file_with_a_never_opened_overlap_is_refused_on_read(tmp_path):
+    path = tmp_path / "lock.jsonl"
+    lock, _ = new_lock(2, path=path)
+    lock.close_batch(vintage=V1, seal_bundle_sha256=BUNDLE)
+    lock.register(rule_id="gold.b2", version=1, outcome="ret_lbma_usd", calendar_hash=cal("b2-file"))
+    entry = {"kind": "batch_close", "batch": 2, "vintage": fam._vintage(dict(V1, id="v1b", never_opened=True)),
+             "test_ids": lock.batch_tests(2), "n_b": 1, "alpha_first": "1/25", "alpha_ratio": "1/5",
+             "alpha_b": 0.008, "a_test": 0.008, "seal_bundle_sha256": BUNDLE, "plan_sha256": None,
+             "domain": "gold", "seq": len(lock.entries) + 1,
+             "prev_sha256": hashlib.sha256(path.read_text().splitlines()[-1].encode()).hexdigest()}
+    with open(path, "a") as fh:
+        fh.write(fam.canonical_bytes(entry).decode() + "\n")
+    with pytest.raises(fam.StaleVintageError):
+        fam.FamilyLock(path, "gold")
+
+
+def test_n04_outcome_type_is_recorded_and_checked(tmp_path):
+    path = tmp_path / "lock.jsonl"
+    lock = fam.FamilyLock(path, "gold")
+    e = lock.register(rule_id="gold.t", version=1, outcome="ret", calendar_hash=cal("t"), outcome_type="log_ratio")
+    assert e["outcome_type"] == "log_ratio"
+    assert fam.FamilyLock(path, "gold").test_record(e["test_id"])["outcome_type"] == "log_ratio"
+    with pytest.raises(fam.FamilyError, match="outcome_type"):
+        lock.register(rule_id="gold.u", version=1, outcome="ret", calendar_hash=cal("u"), outcome_type="returns")
+    plain = lock.register(rule_id="gold.v", version=1, outcome="ret", calendar_hash=cal("v"))
+    assert "outcome_type" not in plain  # older lock lines keep their bytes

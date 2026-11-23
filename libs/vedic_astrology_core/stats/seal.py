@@ -26,8 +26,8 @@ same lineage) does not open a second confirm. Deleting or truncating a ledger
 that was ever committed is detected from git history.
 
 Confirm ledgers are not run inputs: :func:`tree_state` ignores an added or
-modified ``confirm_ledger.jsonl`` (not a deleted one), so writing the entry
-does not make the confirm run itself provisional (code audit M1).
+modified ``confirm_ledger.jsonl`` (not a deleted, renamed or rewritten one, strategy audit 2 N-24), so writing
+the entry does not make the confirm run itself provisional (code audit M1).
 
 External timestamp: the entry carries ``external_timestamp: null``. The
 owner can stamp the entry outside the repository (OpenTimestamps, Zenodo,
@@ -121,9 +121,37 @@ def _porcelain_path(line: str) -> str:
     return path.strip().strip('"')
 
 
-def _is_ledger_append(line: str) -> bool:
-    """An added or modified confirm ledger; a deletion still counts as dirty."""
-    return Path(_porcelain_path(line)).name == LEDGER_NAME and "D" not in line[:2]
+def _is_ledger_append(line: str, top: Path) -> bool:
+    """An append to a confirm ledger; anything else named like one still counts as dirty.
+
+    Clean only when the file is named ``confirm_ledger.jsonl``, is not
+    deleted, renamed or copied, every non-empty line is a JSON object, and,
+    when HEAD tracks it, the committed text is a prefix of the file now (lines
+    appended, none edited or removed). Strategy audit 2 N-24: a name alone no
+    longer makes a modified file clean.
+    """
+    rel = _porcelain_path(line)
+    if Path(rel).name != LEDGER_NAME or any(c in line[:2] for c in "DRC"):
+        return False
+    p = top / rel
+    if not p.is_file():
+        return False
+    try:
+        text = p.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return False
+    for ln in text.splitlines():
+        if not ln.strip():
+            continue
+        try:
+            if not isinstance(json.loads(ln), dict):
+                return False
+        except json.JSONDecodeError:
+            return False
+    committed = _git(["show", f"HEAD:{rel}"], top)
+    if committed.returncode == 0 and not text.startswith(committed.stdout):
+        return False
+    return True
 
 
 def tree_state(repo_root: Optional[PathLike] = None) -> Dict[str, Any]:
@@ -131,8 +159,9 @@ def tree_state(repo_root: Optional[PathLike] = None) -> Dict[str, Any]:
 
     Outside git (or with no commit yet) ``commit`` and ``dirty`` are None.
     ``changes`` lists the porcelain lines that make the tree dirty. An added
-    or modified ``confirm_ledger.jsonl`` is not a change: the ledger is a log
-    of runs, never an input of one (a deleted ledger still counts).
+    or modified ``confirm_ledger.jsonl`` is not a change when it is a pure
+    append of JSON lines: the ledger is a log of runs, never an input of one
+    (a deleted, renamed or rewritten ledger still counts).
     This is the one definition of dirty (manifest, seal, mundane writer).
     """
     top = _repo_toplevel(repo_root)
@@ -145,7 +174,7 @@ def tree_state(repo_root: Optional[PathLike] = None) -> Dict[str, Any]:
     if status.returncode != 0:
         return {"commit": head.stdout.strip(), "dirty": None, "changes": []}
     changes = [ln for ln in status.stdout.splitlines()
-               if ln.strip() and not _is_ledger_append(ln)]
+               if ln.strip() and not _is_ledger_append(ln, top)]
     return {"commit": head.stdout.strip(), "dirty": bool(changes), "changes": changes}
 
 
@@ -376,8 +405,15 @@ def _same_key(entry: Mapping[str, Any], principle_id: Optional[str], identity: s
     return bool(_entry_identity(entry) & identity)
 
 
-def _repo_ledger_entries(top: Path) -> List[Tuple[str, Dict[str, Any]]]:
-    """Every confirm entry of every ledger: working tree and git history, any ref."""
+def _repo_ledger_entries(
+    top: Path, extra_refs: Sequence[str] = ()
+) -> List[Tuple[str, Dict[str, Any]]]:
+    """Every confirm entry of every ledger: working tree and git history, any ref.
+
+    ``extra_refs`` adds histories that ``--all`` may not reach, such as
+    ``FETCH_HEAD`` after fetching the public remote: a ledger commit that was
+    pushed and then reset away locally is still found (strategy audit 2 N-03 d).
+    """
     found: List[Tuple[str, Dict[str, Any]]] = []
     seen = set()
 
@@ -397,15 +433,18 @@ def _repo_ledger_entries(top: Path) -> List[Tuple[str, Dict[str, Any]]]:
     for rel in listed.stdout.split("\0") if listed.returncode == 0 else []:
         if rel and Path(rel).name == LEDGER_NAME and (top / rel).exists():
             add(rel, (top / rel).read_text(encoding="utf-8"))
-    log = _git(["log", "--all", "--format=commit %H", "--name-only", "--", f"*{LEDGER_NAME}"], top)
-    sha = None
-    for ln in log.stdout.splitlines() if log.returncode == 0 else []:
-        if ln.startswith("commit "):
-            sha = ln.split()[1]
-        elif ln.strip() and sha and Path(ln.strip()).name == LEDGER_NAME:
-            show = _git(["show", f"{sha}:{ln.strip()}"], top)
-            if show.returncode == 0:
-                add(f"{ln.strip()}@{sha[:12]}", show.stdout)
+    for ref in ("--all", *extra_refs):
+        log = _git(["log", ref, "--format=commit %H", "--name-only", "--", f"*{LEDGER_NAME}"], top)
+        if ref != "--all" and log.returncode != 0:
+            raise SealError(f"cannot read the confirm ledgers of {ref}: {log.stderr.strip()}")
+        sha = None
+        for ln in log.stdout.splitlines() if log.returncode == 0 else []:
+            if ln.startswith("commit "):
+                sha = ln.split()[1]
+            elif ln.strip() and sha and Path(ln.strip()).name == LEDGER_NAME:
+                show = _git(["show", f"{sha}:{ln.strip()}"], top)
+                if show.returncode == 0:
+                    add(f"{ln.strip()}@{sha[:12]}", show.stdout)
     return found
 
 
@@ -569,6 +608,12 @@ def read_lock(path: PathLike) -> Dict[str, str]:
     return pins
 
 
+def lock_python(path: PathLike) -> Optional[str]:
+    """The ``major.minor`` Python a uv/pip-compile lock was compiled for, from its header; None if absent."""
+    m = re.search(r"--python-version[ =](\d+\.\d+)", Path(path).read_text(encoding="utf-8"))
+    return m.group(1) if m else None
+
+
 def installed_versions() -> Dict[str, str]:
     """``{normalised name: version}`` of every distribution this interpreter sees."""
     found: Dict[str, str] = {}
@@ -610,6 +655,8 @@ def environment_stamp(
         "lock_mismatches": [],
         "lock_missing": [],
         "unlocked": [],
+        "lock_python": None,
+        "python_matches_lock": None,
     }
     if not lock.is_file():
         return stamp
@@ -619,6 +666,7 @@ def environment_stamp(
     except ValueError:
         stamp["lock_path"] = str(lock)
     stamp["lock_sha256"] = _file_sha256(lock)
+    stamp["lock_python"] = lock_python(lock)
     pins = read_lock(lock)
     have = installed_versions()
     stamp["lock_mismatches"] = [
@@ -628,7 +676,9 @@ def environment_stamp(
     ]
     stamp["lock_missing"] = sorted(n for n in pins if n not in have)
     stamp["unlocked"] = sorted(f"{n}=={v}" for n, v in have.items() if n not in pins)
-    stamp["matches_lock"] = not stamp["lock_mismatches"]
+    py = ".".join(platform.python_version().split(".")[:2])
+    stamp["python_matches_lock"] = stamp["lock_python"] is None or stamp["lock_python"] == py
+    stamp["matches_lock"] = not stamp["lock_mismatches"] and stamp["python_matches_lock"]
     return stamp
 
 
@@ -644,6 +694,12 @@ def require_locked_environment(
         return stamp
     if stamp["lock_sha256"] is None:
         raise EnvironmentMismatchError(f"no dependency lock ({LOCK_REL}); a sealed run needs one")
+    if not stamp["python_matches_lock"]:
+        raise EnvironmentMismatchError(
+            f"Python {stamp['python']} is not the Python {stamp['lock_python']} that "
+            f"{stamp['lock_path']} was compiled for (strategy audit 2 N-12); use the locked "
+            "interpreter or flag the run provisional"
+        )
     if stamp["lock_mismatches"]:
         shown = ", ".join(
             f"{m['name']} {m['installed']} (lock {m['locked']})" for m in stamp["lock_mismatches"][:8]

@@ -5,19 +5,32 @@ code enforces is::
 
     seal_domain()                       issue_confirm_handle()
     1 clean tree, no legacy reader      1 not provisional, clean tree
-    2 build the seal bundle             2 bundle bytes canonical, recomputed
-    3 batch_close in the family lock      now equals the stamped one
-      carries the bundle's SHA-256      3 family lock closes the batch with
-    4 commit bundle + lock, push          this bundle hash
-    5 stamp the HASH (only the hash)    4 calibration certificate still holds
-      with OpenTimestamps; commit and   5 the .ots proof verifies: completed
-      push the .ots proof                 Bitcoin attestation for this hash
-                                        6 the commit that holds batch_close
+    2 build the seal bundle; every      2 bundle bytes canonical, recomputed
+      test's outcome type comes from      now equals the stamped one; only
+      the family lock (N-04)              seal and ledger files changed since
+    3 no ledger (local, history or        the bundle commit (N-11)
+      remote) has confirmed this        3 family lock closes the batch with
+      data, outcome and period (N-03)     this bundle hash
+    4 stamp the HASH (only the hash)    4 calibration certificate holds for
+      with OpenTimestamps; nothing is     every outcome type of the batch
+      written if this fails (N-10)        (an empty list refuses, N-04)
+    5 batch_close in the family lock    5 the .ots proof verifies: completed
+      carries the bundle's SHA-256;       Bitcoin attestation for this hash,
+      bundle, lock and proof in one       attested before now (N-24)
+      commit; push                      6 the commit that holds batch_close
                                           is an ancestor of the remote head
-                                        7 confirm ledger chain and history
-                                          intact; no entry with the same key
-                                        8 one keyed entry per test appended
-                                          AND committed; only then a handle
+                                        7 environment matches the lock
+                                          (before any ledger write, N-10)
+                                        8 confirm ledger chain and history
+                                          intact; no entry, in any ledger of
+                                          any domain, local or on the remote,
+                                          confirms the same data (path or
+                                          hash) on an overlapping period for
+                                          the same outcome or calendar (N-03)
+                                        9 one keyed entry per test appended,
+                                          committed AND pushed; the remote
+                                          head must hold it; only then a
+                                          handle (N-03 d)
 
 A completed attestation takes hours, so sealing and confirming are never the
 same sitting (intended).
@@ -36,7 +49,10 @@ a later date raises :class:`ConfirmAccessError`; values that cannot be cut by
 date (counts, totals, a ``confirm`` key) are withheld. A handle is a Python
 object registered in this module when :func:`issue_confirm_handle` succeeds;
 a handle built by hand is not registered and opens nothing. A provisional run
-never gets a handle. The adapters' own methods are not changed here: a caller
+never gets a handle. The registry is in-process: code running in the same
+interpreter can forge an entry (strategy audit 2 N-26); what an outsider can
+check is the outside timestamp and the pushed ledger, not this dictionary.
+The adapters' own methods are not changed here: a caller
 that bypasses :func:`guarded` still reaches every row (open item for the
 adapter files, ADR-008 4.1).
 
@@ -50,8 +66,17 @@ Keyed confirm ledger (ADR-008 4.1): one file,
 ``studies/validity/confirm_ledger.jsonl``, hash-chained (each line holds the
 SHA-256 of the line before it). Key of a confirm entry: ``(domain,
 dataset_sha256, period, lineage_id, version, variant, outcome)``; one entry
-per key, for ever, searched in every ledger of the working tree and of git
-history on any ref. ``dataset_sha256`` is recomputed from the snapshot files.
+per key, for ever, searched in every ledger of the working tree, of git
+history on any ref and of the fetched remote branch. ``dataset_sha256`` is
+recomputed from the snapshot files. The key alone would let a new domain
+string, a renamed copy in its own lock or another lock file confirm the same
+data twice (strategy audit 2 N-03 b, c), so the refusal does not use the key:
+an earlier confirm entry of ANY domain whose datasets share a path or a hash
+with this bundle's, whose confirm period overlaps this one, and that has the
+same outcome name or the same calendar hash, refuses the confirm (and the
+seal, before the batch closes). Lineage identity is therefore (calendar hash,
+outcome, dataset identity, period), independent of domain, rule id and lock
+path.
 
 No thread is started here (G-13). Network is touched only by ``git push`` and
 ``git fetch`` against the named remote, and by :func:`ots_client` once wired.
@@ -75,16 +100,18 @@ from ..domains.base import GateHashError, verify_gate
 from ..stats.seal import (
     ConfirmAlreadyRunError,
     DirtyTreeError,
+    EnvironmentMismatchError,
     LedgerTamperedError,
     SealError,
     _git,
     _repo_ledger_entries,
     _repo_toplevel,
     require_clean_tree,
+    require_locked_environment,
     verify_ledger,
 )
 from . import calibration
-from .family import FamilyLock, canonical_bytes
+from .family import FamilyLock, _vintage, canonical_bytes
 
 __all__ = [
     "ADAPTER_ONLY_MARKER",
@@ -97,6 +124,7 @@ __all__ = [
     "ConfirmAlreadyRunError",
     "ConfirmHandle",
     "DirtyTreeError",
+    "EnvironmentMismatchError",
     "GateHashError",
     "GuardedAdapter",
     "LedgerTamperedError",
@@ -112,6 +140,7 @@ __all__ = [
     "bundle_problems",
     "bundle_sha256",
     "confirm_key",
+    "dataset_identity",
     "guarded",
     "handle_is_valid",
     "issue_confirm_handle",
@@ -121,7 +150,7 @@ __all__ = [
     "verify_chain",
 ]
 
-BUNDLE_SCHEMA = 1
+BUNDLE_SCHEMA = 2  # 2: per-test outcome_type from the family lock (N-04)
 DEFAULT_LEDGER = "studies/validity/confirm_ledger.jsonl"
 DEFAULT_BUNDLE_DIR = "studies/validity/seals"
 _HEX64 = re.compile(r"^[0-9a-f]{64}$")
@@ -339,6 +368,81 @@ def confirm_key(
     }
 
 
+def dataset_identity(datasets: Sequence[Mapping[str, str]]) -> List[str]:
+    """Identity tokens of a bundle's datasets: each file's path and each file's hash.
+
+    Two confirms share data when any token is shared: the same file under
+    another path (same hash) or the same path with changed bytes (same path).
+    """
+    toks = set()
+    for d in datasets:
+        toks.add(f"sha256:{d['sha256']}")
+        toks.add(f"path:{d['path']}")
+    return sorted(toks)
+
+
+def _entry_datasets(entry: Mapping[str, Any]) -> set:
+    toks = set(entry.get("dataset_identity") or ())
+    key = entry.get("key")
+    if isinstance(key, Mapping) and isinstance(key.get("dataset_sha256"), str):
+        toks.add(f"sha256:{key['dataset_sha256']}")
+    return toks
+
+
+def _overlap(a: Mapping[str, Any], b: Mapping[str, Any]) -> bool:
+    try:
+        return str(a["start"]) <= str(b["end"]) and str(b["start"]) <= str(a["end"])
+    except (KeyError, TypeError):
+        return True  # an unreadable period is treated as overlapping (conservative)
+
+
+def _fetch_remote(top: Path, remote: str, branch: str) -> str:
+    _git_ok(["fetch", "-q", remote, branch], top, f"git fetch {remote} {branch}")
+    return _git_ok(["rev-parse", "FETCH_HEAD"], top, "git rev-parse FETCH_HEAD")
+
+
+def _prior_confirms(top: Path, ledger: Path, remote_head: str) -> List[Tuple[str, Dict[str, Any]]]:
+    """Confirm entries of the target ledger, every ledger in the tree and history, and the remote."""
+    local = [(ledger.relative_to(top).as_posix(), e) for e in verify_chain(ledger)]
+    return local + _repo_ledger_entries(top, extra_refs=(remote_head,))
+
+
+def _refuse_spent(
+    prior: Sequence[Tuple[str, Mapping[str, Any]]],
+    datasets: Sequence[Mapping[str, str]],
+    period: Mapping[str, str],
+    tests: Sequence[Mapping[str, Any]],
+) -> None:
+    """Raise ConfirmAlreadyRunError when an earlier confirm already opened this data.
+
+    Any domain, any lock, any rule id (N-03 b, c): shared dataset path or hash,
+    overlapping period, and the same outcome name, calendar hash or lineage.
+    """
+    mine = set(dataset_identity(datasets))
+    for where, e in prior:
+        if not isinstance(e, Mapping) or e.get("kind", "confirm") != "confirm":
+            continue
+        key = e.get("key")
+        if not isinstance(key, Mapping):
+            continue  # plan-lineage entries of stats.seal.begin_confirm
+        if not (_entry_datasets(e) & mine) or not _overlap(key.get("period") or {}, period):
+            continue
+        for t in tests:
+            same = (
+                key.get("outcome") == t["outcome"]
+                or e.get("calendar_hash") == t["calendar_hash"]
+                or key.get("lineage_id") == t["lineage_id"]
+            )
+            if same:
+                raise ConfirmAlreadyRunError(
+                    f"{where} already records a confirm ({key.get('domain')!r}, "
+                    f"{e.get('test_id')!r}) on the same data and an overlapping period "
+                    f"{(key.get('period') or {}).get('start')}..{(key.get('period') or {}).get('end')} "
+                    f"for the same outcome or calendar as {t['test_id']!r}; that data is spent for it "
+                    "whatever the domain, rule id or lock file (one confirm per data, outcome and period)"
+                )
+
+
 # ---------------------------------------------------------- legacy readers
 def legacy_reader_problems(repo_root: PathLike, domain: str) -> List[str]:
     """Listed old pipelines of the domain that still exist without the adapter-only marker."""
@@ -357,8 +461,10 @@ class SealSources:
     """Every input the seal bundle hashes. Paths are inside the repository.
 
     ``gates`` maps each test id of the open batch to its written
-    ``gate.json``. ``outcome_types`` are the calibration outcome types the
-    batch's tests use; the certificate is checked for each at confirm.
+    ``gate.json``. The calibration outcome types are derived from the
+    batch's tests in the family lock (each registered with ``outcome_type``);
+    ``outcome_types`` may restate them and must then equal them. It cannot
+    replace or empty them (strategy audit 2 N-04).
     """
 
     domain: str
@@ -413,8 +519,17 @@ def build_bundle(repo_root: PathLike, src: SealSources) -> Dict[str, Any]:
             f"{sorted(set(test_ids) - set(gates))}, extra {sorted(set(gates) - set(test_ids))}"
         )
     tests = []
+    types = set()
     for tid in test_ids:
         e = lock.test(tid)
+        ot = e.get("outcome_type")
+        if ot not in calibration.OUTCOME_TYPES:
+            raise SealBundleError(
+                f"{tid} has no calibration outcome type in the family lock (register it with "
+                f"outcome_type, one of {calibration.OUTCOME_TYPES}); without it the certificate "
+                "check could be skipped (N-04)"
+            )
+        types.add(ot)
         rec = verify_gate(_hash_file(top, gates[tid]), top / gates[tid])
         tests.append({
             "test_id": tid,
@@ -422,10 +537,18 @@ def build_bundle(repo_root: PathLike, src: SealSources) -> Dict[str, Any]:
             "version": e["version"],
             "variant": e["variant"],
             "outcome": e["outcome"],
+            "outcome_type": ot,
             "calendar_hash": e["calendar_hash"],
             "lineage_id": e["lineage_id"],
             "gate": {"path": gates[tid], "sha256": rec.sha256},
         })
+    if src.outcome_types and set(src.outcome_types) != types:
+        raise SealBundleError(
+            f"outcome types given {sorted(set(src.outcome_types))} differ from those of the batch's "
+            f"tests in the family lock {sorted(types)}"
+        )
+    if not types:  # unreachable: a batch has tests and each has a type
+        raise SealBundleError("the batch names no calibration outcome type (N-04)")
     ledger_rel = _rel(top, src.ledger)
     lines = _ledger_lines(top / ledger_rel)
     verify_chain(top / ledger_rel)
@@ -449,7 +572,7 @@ def build_bundle(repo_root: PathLike, src: SealSources) -> Dict[str, Any]:
         "environment_lock": {"path": env_rel, "sha256": _hash_file(top, env_rel)},
         "ephemeris": [{"path": r, "sha256": _hash_file(top, r)} for r in eph],
         "certificate": {"path": cert_rel, "sha256": _hash_file(top, cert_rel)},
-        "outcome_types": sorted(set(src.outcome_types)),
+        "outcome_types": sorted(types),
     }
 
 
@@ -482,6 +605,32 @@ def _dataset_key_hash(datasets: Sequence[Mapping[str, str]]) -> str:
     return hashes[0] if len(hashes) == 1 else _sha_bytes("|".join(hashes).encode("utf-8"))
 
 
+def _utc(value: Any) -> Optional[datetime]:
+    """An aware UTC datetime from an ISO string (None when absent or unreadable)."""
+    if not isinstance(value, str) or not value:
+        return None
+    try:
+        dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if dt.tzinfo is None:
+        return None
+    return dt.astimezone(timezone.utc)
+
+
+#: Paths that are code or environment: none may change between the bundle
+#: commit and the confirm (N-11). Inputs the bundle names (plan, rules, data,
+#: gates, ephemeris, lock, certificate) are compared by hash instead, so other
+#: studies may keep sealing and committing their own files meanwhile.
+CODE_PREFIXES = ("libs/", "ops/", "tests/", "scripts/", "apps/")
+CODE_FILES = ("pyproject.toml", "setup.cfg", "setup.py", "uv.lock", "Makefile", "conftest.py")
+CODE_SUFFIXES = (".py", ".pyx", ".so", ".pth", ".toml", ".cfg", ".ini", ".lock")
+
+
+def _is_code(rel: str) -> bool:
+    return rel.startswith(CODE_PREFIXES) or rel in CODE_FILES or rel.endswith(CODE_SUFFIXES)
+
+
 def _close_entry(lock: FamilyLock, sha: str) -> Optional[Dict[str, Any]]:
     for b in lock.closed_batches():
         close = lock.batch_close_entry(b)
@@ -490,14 +639,19 @@ def _close_entry(lock: FamilyLock, sha: str) -> Optional[Dict[str, Any]]:
     return None
 
 
-def bundle_problems(repo_root: PathLike, bundle: Mapping[str, Any], sha: str) -> List[str]:
+def bundle_problems(
+    repo_root: PathLike, bundle: Mapping[str, Any], sha: str, bundle_path: Optional[str] = None
+) -> List[str]:
     """Every difference between the stamped bundle and the repository now (empty: equal).
 
     Content hashes are recomputed from the files the bundle names. The family
     lock must hold the batch_close carrying ``sha``, written directly after
     the recorded lock head, for exactly the recorded tests and calendars. The
     recorded commit must be an ancestor of HEAD; the recorded confirm-ledger
-    head must still be a line of the ledger.
+    head must still be a line of the ledger. With ``bundle_path`` given, no
+    code file (:data:`CODE_PREFIXES`, :data:`CODE_SUFFIXES`) may differ
+    between the recorded commit and HEAD, so rule-evaluation, ephemeris and
+    market code cannot change after sealing (N-11).
     """
     top = _top(repo_root)
     out: List[str] = []
@@ -520,6 +674,19 @@ def bundle_problems(repo_root: PathLike, bundle: Mapping[str, Any], sha: str) ->
     commit = bundle.get("commit")
     if not isinstance(commit, str) or not _is_ancestor(top, commit, "HEAD"):
         out.append(f"bundle commit {commit} is not an ancestor of HEAD")
+    elif bundle_path is not None:
+        allowed = {bundle_path, bundle_path + ".ots", bundle["family_lock"]["path"],
+                   bundle["confirm_ledger"]["path"]}
+        diff = _git(["diff", "--name-only", "-z", commit, "HEAD"], top)
+        if diff.returncode != 0:
+            out.append(f"cannot compare HEAD with the bundle commit: {diff.stderr.strip()}")
+        else:
+            extra = sorted(p for p in {p for p in diff.stdout.split("\0") if p} - allowed if _is_code(p))
+            if extra:
+                out.append(
+                    "files changed since the seal (no code may change between seal and confirm): "
+                    + ", ".join(extra[:10]) + (" ..." if len(extra) > 10 else "")
+                )
     head = bundle["confirm_ledger"]["head"]
     led_lines = _ledger_lines(top / bundle["confirm_ledger"]["path"])
     if head is not None and head not in {_line_sha(ln) for ln in led_lines}:
@@ -548,9 +715,12 @@ def bundle_problems(repo_root: PathLike, bundle: Mapping[str, Any], sha: str) ->
         except Exception:  # noqa: BLE001
             out.append(f"{t['test_id']} is not registered in the lock")
             continue
-        for k in ("calendar_hash", "lineage_id", "version", "variant", "outcome", "rule_id"):
-            if e[k] != t[k]:
+        for k in ("calendar_hash", "lineage_id", "version", "variant", "outcome", "rule_id", "outcome_type"):
+            if e.get(k) != t.get(k):
                 out.append(f"{t['test_id']}: {k} differs from the lock")
+    types = sorted({t.get("outcome_type") for t in bundle.get("tests", [])}, key=str)
+    if bundle.get("outcome_types") != types:
+        out.append("outcome_types differ from the outcome types of the bundle's tests")
     return out
 
 
@@ -563,10 +733,13 @@ def seal_domain(
     branch: str = "main",
     bundle_dir: PathLike = DEFAULT_BUNDLE_DIR,
 ) -> Dict[str, Any]:
-    """``astro-validity seal <domain>``: bundle, batch_close, commit, push, stamp (4.2 steps 1-2).
+    """``astro-validity seal <domain>``: bundle, stamp, batch_close, commit, push (4.2 steps 1-2).
 
-    Refuses a dirty tree and a domain whose legacy confirm readers remain.
-    Commits only the bundle, the family lock and the proof file.
+    Refuses a dirty tree, a domain whose legacy confirm readers remain, and a
+    batch whose data, outcome and period an earlier confirm of any domain
+    already opened (N-03). The hash is stamped BEFORE anything is written:
+    a timestamp failure leaves the batch open and the tree unchanged (N-10).
+    Bundle, family lock and proof go into one commit, which is pushed.
     Returns the bundle path, its hash, the closing commit and the proof path.
     """
     top = _top(repo_root)
@@ -583,23 +756,28 @@ def seal_domain(
     bpath = top / bundle_rel
     if bpath.exists():
         raise SealBundleError(f"{bundle_rel} already exists; a batch is sealed once")
+    try:
+        period = _vintage(src.vintage)["confirm_period"]
+    except ValueError as exc:
+        raise SealBundleError(f"vintage: {exc}") from exc
+    remote_head = _fetch_remote(top, remote, branch)
+    prior = _prior_confirms(top, top / bundle["confirm_ledger"]["path"], remote_head)
+    _refuse_spent(prior, bundle["datasets"], period, bundle["tests"])
     data = _bundle_bytes(bundle)
     sha = _sha_bytes(data)
+    proof = _ots("stamp", sha)  # first: a failure here writes nothing (N-10)
+    if not isinstance(proof, (bytes, bytearray)) or not proof:
+        raise OtsProofError("the timestamp client returned no proof bytes")
     bpath.parent.mkdir(parents=True, exist_ok=True)
     bpath.write_bytes(data)
     lock = FamilyLock(top / bundle["family_lock"]["path"], src.domain)
     lock.close_batch(vintage=src.vintage, seal_bundle_sha256=sha, plan_sha256=bundle["plan"]["sha256"])
-    commit = _commit_paths(
-        top, [bundle_rel, bundle["family_lock"]["path"]],
-        f"seal({src.domain}): close batch {bundle['batch']}, bundle {sha[:12]}",
-    )
-    _push(top, remote, branch)
-    proof = _ots("stamp", sha)
-    if not isinstance(proof, (bytes, bytearray)) or not proof:
-        raise OtsProofError("the timestamp client returned no proof bytes")
     ots_rel = bundle_rel + ".ots"
     (top / ots_rel).write_bytes(bytes(proof))
-    _commit_paths(top, [ots_rel], f"seal({src.domain}): OpenTimestamps proof for {sha[:12]}")
+    commit = _commit_paths(
+        top, [bundle_rel, bundle["family_lock"]["path"], ots_rel],
+        f"seal({src.domain}): close batch {bundle['batch']}, bundle {sha[:12]}, OpenTimestamps proof",
+    )
     _push(top, remote, branch)
     return {"bundle": bundle_rel, "bundle_sha256": sha, "commit": commit, "ots": ots_rel,
             "batch": bundle["batch"]}
@@ -663,14 +841,27 @@ def issue_confirm_handle(
     require_clean_tree(top, provisional=False)
     brel = _rel(top, bundle_path)
     bundle, sha = _read_bundle(top / brel)
-    problems = bundle_problems(top, bundle, sha)
+    problems = bundle_problems(top, bundle, sha, bundle_path=brel)
     if problems:
         raise BundleMismatchError("seal bundle differs from the repository: " + "; ".join(problems))
-    for ot in bundle.get("outcome_types") or [None]:
+    types = bundle.get("outcome_types")
+    if not isinstance(types, list) or not types:  # N-04: never skip the case check
+        raise SealBundleError(
+            "calibration certificate refuses the confirm: the bundle names no outcome type, so no "
+            "calibration case could be checked"
+        )
+    for t in bundle["tests"]:
+        if t.get("outcome_type") not in types:
+            raise SealBundleError(
+                f"calibration certificate refuses the confirm: {t['test_id']} has outcome type "
+                f"{t.get('outcome_type')!r}, not one the certificate is checked for"
+            )
+    for ot in types:
         try:
             calibration.check_certificate(top / bundle["certificate"]["path"], top, ot)
-        except calibration.CertificateError as exc:
+        except (calibration.CertificateError, ValueError) as exc:
             raise SealBundleError(f"calibration certificate refuses the confirm: {exc}") from exc
+    when_dt = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     ots_rel = brel + ".ots"
     if not (top / ots_rel).is_file():
         raise OtsProofError(f"no OpenTimestamps proof at {ots_rel}")
@@ -681,29 +872,39 @@ def issue_confirm_handle(
         raise OtsProofError(f"the proof is {res.status!r}, not a completed Bitcoin attestation")
     if isinstance(res.block_height, bool) or not isinstance(res.block_height, int) or res.block_height <= 0:
         raise OtsProofError("the proof names no Bitcoin block height")
+    attested = _utc(res.attested_utc)
+    if attested is None:
+        raise OtsProofError("the proof names no readable attestation time")
+    if attested > when_dt:  # N-24: the attestation must precede the confirm
+        raise OtsProofError(
+            f"the attestation time {res.attested_utc} is after the confirm time {when_dt.isoformat()}"
+        )
     lock_rel = bundle["family_lock"]["path"]
     added = _git(["log", "--format=%H", "-S", sha, "--", lock_rel], top)
     commits = added.stdout.split() if added.returncode == 0 else []
     if not commits:
         raise NotPublishedError("no commit holds the batch_close of this bundle")
     close_commit = commits[-1]  # the oldest commit whose diff added the hash
-    _git_ok(["fetch", "-q", remote, branch], top, f"git fetch {remote} {branch}")
-    remote_head = _git_ok(["rev-parse", "FETCH_HEAD"], top, "git rev-parse FETCH_HEAD")
+    remote_head = _fetch_remote(top, remote, branch)
     if not _is_ancestor(top, close_commit, remote_head):
         raise NotPublishedError(
             f"the batch_close commit {close_commit[:12]} is not on {remote}/{branch}; push it first"
         )
+    # N-10: everything that can refuse runs before the ledger is written.
+    require_locked_environment(top / bundle["environment_lock"]["path"], top)
 
     lock = FamilyLock(top / lock_rel, bundle["domain"])
     close = _close_entry(lock, sha)
     period = dict(close["vintage"]["confirm_period"])
     ledger_rel = bundle["confirm_ledger"]["path"]
     ledger = top / ledger_rel
-    local = verify_chain(ledger)  # P9
+    verify_chain(ledger)  # P9
     verify_ledger(ledger, top)  # P2: committed lines removed
+    prior = _prior_confirms(top, ledger, remote_head)  # working tree, history, remote (N-03 d)
+    _refuse_spent(prior, bundle["datasets"], period, bundle["tests"])  # any domain or lock (N-03 b, c)
     dataset = _dataset_key_hash(bundle["datasets"])
+    ds_identity = dataset_identity(bundle["datasets"])
     keys = [(t, confirm_key(bundle["domain"], dataset, period, t)) for t in bundle["tests"]]
-    prior = [(str(ledger_rel), e) for e in local] + _repo_ledger_entries(top)
     for t, key in keys:
         for where, e in prior:
             if isinstance(e, dict) and e.get("kind", "confirm") == "confirm" and e.get("key") == key:
@@ -712,7 +913,7 @@ def issue_confirm_handle(
                     f"{key['lineage_id'][:12]} ({key['outcome']}, {key['variant']}, v{key['version']}) "
                     f"on this dataset and period (as {e.get('test_id')!r}); one confirm per key"
                 )
-    when = (now or datetime.now(timezone.utc)).astimezone(timezone.utc).isoformat(timespec="seconds")
+    when = when_dt.isoformat(timespec="seconds")
     head_commit = _git_ok(["rev-parse", "HEAD"], top, "git rev-parse")
     lines = _ledger_lines(ledger)
     new = []
@@ -722,10 +923,14 @@ def issue_confirm_handle(
             "key": key,
             "test_id": t["test_id"],
             "principle_id": t["test_id"],
-            "identity": [f"lineage_id:{key['lineage_id']}"],
+            "identity": [f"lineage_id:{key['lineage_id']}", f"calendar_hash:{t['calendar_hash']}"],
+            "calendar_hash": t["calendar_hash"],
+            "outcome_type": t["outcome_type"],
+            "dataset_identity": ds_identity,
             "batch": bundle["batch"],
             "bundle_sha256": sha,
             "bitcoin_block_height": res.block_height,
+            "attested_utc": res.attested_utc,
             "commit": head_commit,
             "utc": when,
             "prev_sha256": _line_sha(lines[-1]) if lines else None,
@@ -737,10 +942,26 @@ def issue_confirm_handle(
     with open(ledger, "a", encoding="utf-8") as fh:
         for line in new:
             fh.write(line + "\n")
-    # No handle before the entries are committed (P2): a failure here leaves no handle.
+    # No handle before the entries are committed (P2) AND published (N-03 d): a
+    # local-only entry could be reset away and the confirm run again.
     ledger_commit = _commit_paths(
         top, [ledger_rel], f"confirm({bundle['domain']}): batch {bundle['batch']}, bundle {sha[:12]}"
     )
+    try:
+        _push(top, remote, branch)
+        published = _fetch_remote(top, remote, branch)
+    except SealBundleError as exc:
+        raise NotPublishedError(
+            f"the confirm ledger commit {ledger_commit[:12]} is not on {remote}/{branch} ({exc}); no handle "
+            "was issued and no confirm row was read, but the entry is committed: these keys are spent"
+        ) from exc
+    if not _is_ancestor(top, ledger_commit, published):
+        raise NotPublishedError(
+            f"the confirm ledger commit {ledger_commit[:12]} is not on {remote}/{branch}; no handle issued"
+        )
+    on_remote = _git(["show", f"{published}:{ledger_rel}"], top)
+    if on_remote.returncode != 0 or not set(new) <= set(on_remote.stdout.splitlines()):
+        raise NotPublishedError(f"{remote}/{branch} does not hold the new ledger lines; no handle issued")
     handle = ConfirmHandle(
         domain=bundle["domain"],
         batch=int(bundle["batch"]),

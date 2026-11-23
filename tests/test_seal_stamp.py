@@ -352,3 +352,27 @@ def test_study_modules_are_loaded_once():
     a = earthquake._study_modules()
     b = earthquake._study_modules()
     assert all(x is y for x, y in zip(a, b))
+
+
+# ------------------------------------------------ strategy audit 2 N-12: Python version
+
+
+def test_n12_python_version_in_the_lock_header_is_enforced(repo):
+    """Before: the Python version was recorded and never compared with the lock."""
+    lock = repo / "ops" / "requirements.lock.txt"
+    body = lock.read_text()
+    lock.write_text("#    uv pip compile pyproject.toml --python-version 2.7 -o ops/requirements.lock.txt\n" + body)
+    stamp = environment_stamp(lock)
+    assert stamp["lock_python"] == "2.7" and stamp["python_matches_lock"] is False
+    assert stamp["matches_lock"] is False
+    with pytest.raises(EnvironmentMismatchError, match="Python"):
+        require_locked_environment(lock)
+    assert require_locked_environment(lock, provisional=True)["python_matches_lock"] is False
+    here = ".".join(sys.version.split()[0].split(".")[:2])
+    lock.write_text(f"#    uv pip compile --python-version {here} -o x\n" + body)
+    ok = require_locked_environment(lock)
+    assert ok["lock_python"] == here and ok["matches_lock"] is True
+
+
+def test_n12_project_lock_names_its_python():
+    assert seal.lock_python(REPO / "ops" / "requirements.lock.txt") == "3.12"

@@ -19,7 +19,13 @@ import pandas as pd
 import pytest
 
 from vedic_astrology_core.domains.base import DatasetSpec, DomainAdapter, GateHashError, Periods, write_gate
-from vedic_astrology_core.stats.seal import ConfirmAlreadyRunError, DirtyTreeError, LedgerTamperedError
+from vedic_astrology_core.stats.seal import (
+    ConfirmAlreadyRunError,
+    DirtyTreeError,
+    EnvironmentMismatchError,
+    LedgerTamperedError,
+    installed_versions,
+)
 from vedic_astrology_core.validity import calibration, sealbundle as sb
 from vedic_astrology_core.validity.family import DuplicateCalendarError, FamilyLock, calendar_hash
 
@@ -28,6 +34,8 @@ VINTAGE = {"id": "v1", "confirm_period": {"start": "2000-01-11", "end": "2000-01
 HEX = re.compile(r"^[0-9a-f]{64}$")
 CAL_A = calendar_hash(np.array([1, 0, 0, 1, 0, 1, 0, 0, 1, 0]))
 CAL_B = calendar_hash(np.array([0, 1, 1, 0, 0, 0, 1, 0, 0, 1]))
+CAL_C = calendar_hash(np.array([1, 1, 0, 0, 0, 0, 0, 0, 1, 1]))
+CAL_D = calendar_hash(np.array([0, 0, 0, 1, 1, 0, 0, 1, 0, 0]))
 
 
 def git(cwd: Path, *args: str) -> str:
@@ -48,6 +56,7 @@ class FakeOts:
         self.calls = []
         self.mode = "complete"
         self.block_height = 870_000
+        self.attested_utc = "2026-01-01T00:00:00+00:00"
 
     def __call__(self, action, digest, proof=None):
         self.calls.append((action, digest, proof))
@@ -57,10 +66,11 @@ class FakeOts:
         if self.mode == "pending":
             return sb.OtsResult("pending", attested, None)
         if self.mode == "wrong":
-            return sb.OtsResult("complete", "0" * 64, self.block_height)
+            return sb.OtsResult("complete", "0" * 64, self.block_height, self.attested_utc)
         if self.mode == "no_height":
-            return {"status": "complete", "digest": attested, "block_height": None}
-        return sb.OtsResult("complete", attested, self.block_height)
+            return {"status": "complete", "digest": attested, "block_height": None,
+                    "attested_utc": self.attested_utc}
+        return sb.OtsResult("complete", attested, self.block_height, self.attested_utc)
 
 
 @pytest.fixture
@@ -70,27 +80,30 @@ def ots(monkeypatch):
     return fake
 
 
-def _register(lock_path: Path, rule_prefix: str = "rule") -> FamilyLock:
-    lock = FamilyLock(lock_path, DOMAIN)
-    lock.register(rule_id=f"{rule_prefix}.a", version=1, outcome="returns", calendar_hash=CAL_A)
-    lock.register(rule_id=f"{rule_prefix}.b", version=1, outcome="returns", calendar_hash=CAL_B)
+def _register(lock_path: Path, rule_prefix: str = "rule", *, domain: str = DOMAIN,
+              outcome_type="continuous", cals=(CAL_A, CAL_B)) -> FamilyLock:
+    lock = FamilyLock(lock_path, domain)
+    for name, cal in zip(("a", "b"), cals):
+        lock.register(rule_id=f"{rule_prefix}.{name}", version=1, outcome="returns", calendar_hash=cal,
+                      outcome_type=outcome_type)
     return lock
 
 
-def _study(repo: Path, folder: str, rule_prefix: str = "rule") -> sb.SealSources:
+def _study(repo: Path, folder: str, rule_prefix: str = "rule", *, domain: str = DOMAIN,
+           outcome_type="continuous", cals=(CAL_A, CAL_B), vintage=None) -> sb.SealSources:
     """Plan, rules, family lock and gates of one study folder (outcome-free)."""
     d = repo / "studies" / folder
     (d / "rules").mkdir(parents=True, exist_ok=True)
     (d / "plan.yaml").write_text("domain: testdomain\nsesoi: 0.10\nsplit: [2000-01-10, 2000-01-11]\n")
     for name in ("a", "b"):
         (d / "rules" / f"{name}.yaml").write_text(f"id: {rule_prefix}.{name}\nversion: 1\n")
-    lock = _register(d / "family_lock.jsonl", rule_prefix)
+    lock = _register(d / "family_lock.jsonl", rule_prefix, domain=domain, outcome_type=outcome_type, cals=cals)
     gates = {}
     for i, tid in enumerate(lock.batch_tests(1)):
         rec = write_gate(d / "gates" / f"{i}.json", {"test_id": tid, "k_eff": 9, "blocks": 10})
         gates[tid] = rec.path
     return sb.SealSources(
-        domain=DOMAIN,
+        domain=domain,
         plan=d / "plan.yaml",
         family_lock=d / "family_lock.jsonl",
         gates=gates,
@@ -99,8 +112,28 @@ def _study(repo: Path, folder: str, rule_prefix: str = "rule") -> sb.SealSources
         environment_lock=repo / "ops" / "requirements.lock.txt",
         ephemeris_files=[repo / "ephe" / "sepl_18.se1"],
         certificate=repo / calibration.DEFAULT_CERTIFICATE_PATH,
-        vintage=VINTAGE,
+        vintage=vintage or VINTAGE,
     )
+
+
+def passing_results(skip=()):
+    """A result for every calibration case, each passing at full size (fixture only)."""
+    out = []
+    for spec in calibration.CASES.values():
+        if spec.case_id in skip:
+            continue
+        if spec.rule == calibration.PROPERTY:
+            out.append(calibration.property_result(spec.case_id, "all", True))
+        elif spec.rule in (calibration.RATE_ABOVE, calibration.RATE_AT_LEAST):
+            out.append(calibration.evaluate(spec.case_id, "all", spec.replications, spec.replications))
+        else:
+            out.append(calibration.evaluate(spec.case_id, "all", 0, spec.replications))
+    return out
+
+
+def locked_environment() -> str:
+    """A dependency lock equal to this interpreter's packages (the confirm checks it, N-10)."""
+    return "".join(f"{n}=={v}\n" for n, v in sorted(installed_versions().items()))
 
 
 @pytest.fixture
@@ -116,13 +149,13 @@ def repo(tmp_path):
     git(r, "remote", "add", "origin", str(remote))
     for rel, text in {
         "data/snap.csv": "date,value\n2000-01-01,1\n",
-        "ops/requirements.lock.txt": "numpy==1.0\n",
+        "ops/requirements.lock.txt": locked_environment(),
         "ephe/sepl_18.se1": "ephemeris bytes",
         "libs/vedic_astrology_core/stats/method.py": "X = 1\n",
     }.items():
         (r / rel).parent.mkdir(parents=True, exist_ok=True)
         (r / rel).write_text(text)
-    calibration.write_certificate(r / calibration.DEFAULT_CERTIFICATE_PATH, [], r, seed=1)
+    calibration.write_certificate(r / calibration.DEFAULT_CERTIFICATE_PATH, passing_results(), r, seed=1)
     commit_all(r, "init")
     git(r, "push", "-q", "origin", "HEAD:refs/heads/main")
     return r
@@ -149,6 +182,8 @@ def test_seal_then_confirm_issues_a_handle(sealed, ots):
     assert info["bundle_sha256"] == hashlib.sha256((repo / info["bundle"]).read_bytes()).hexdigest()
     assert {"commit", "plan", "family_lock", "confirm_ledger", "tests", "rule_files", "datasets",
             "environment_lock", "ephemeris", "certificate"} <= set(bundle)
+    assert bundle["outcome_types"] == ["continuous"]
+    assert all(t["outcome_type"] == "continuous" for t in bundle["tests"])
     assert all(HEX.match(t["calendar_hash"]) and HEX.match(t["gate"]["sha256"]) for t in bundle["tests"])
     lock = FamilyLock(repo / "studies/x/family_lock.jsonl", DOMAIN)
     assert lock.batch_close_entry(1)["seal_bundle_sha256"] == info["bundle_sha256"]
@@ -188,9 +223,8 @@ def test_p1_copied_study_cannot_confirm_again(sealed, ots):
     _confirm(repo, info)
     copy = _study(repo, "x_copy")  # same rules, calendars and data in a new folder
     commit_all(repo, "copy the study")
-    info2 = sb.seal_domain(repo, copy, bundle_dir="studies/validity/seals_copy")
-    with pytest.raises(ConfirmAlreadyRunError):
-        _confirm(repo, info2)
+    with pytest.raises(ConfirmAlreadyRunError):  # refused before its batch even closes
+        sb.seal_domain(repo, copy, bundle_dir="studies/validity/seals_copy")
 
 
 def test_p2_no_handle_before_the_ledger_commit(sealed, ots, monkeypatch):
@@ -351,21 +385,190 @@ def test_unpublished_batch_close_is_refused(sealed, ots):
         _confirm(repo, info)
 
 
-def test_changed_certified_code_refuses_the_handle(sealed, ots):
-    repo, _, info = sealed
+def test_changed_certified_code_refuses_the_handle(repo, ots):
     (repo / "libs/vedic_astrology_core/stats/method.py").write_text("X = 2\n")
-    commit_all(repo, "change the statistics after calibrating")
-    with pytest.raises(sb.SealBundleError, match="certificate"):
-        _confirm(repo, info)
-
-
-def test_certificate_without_required_cases_refuses(repo, ots):
     src = _study(repo, "x")
-    src = sb.SealSources(**{**src.__dict__, "outcome_types": ("flags",)})
-    commit_all(repo)
+    commit_all(repo, "change the statistics after calibrating, then seal")
     info = sb.seal_domain(repo, src)
     with pytest.raises(sb.SealBundleError, match="certificate"):
         _confirm(repo, info)
+
+
+def test_code_changed_after_the_seal_refuses_the_handle(sealed, ots):
+    """N-11: only the seal and confirm files may change between the bundle commit and HEAD."""
+    repo, _, info = sealed
+    (repo / "libs/vedic_astrology_core/stats/method.py").write_text("X = 2\n")
+    commit_all(repo, "change the statistics after sealing")
+    with pytest.raises(sb.BundleMismatchError, match="no code may change.*method.py"):
+        _confirm(repo, info)
+    assert not (repo / sb.DEFAULT_LEDGER).exists()
+
+
+def test_certificate_without_required_cases_refuses(repo, ots):
+    calibration.write_certificate(repo / calibration.DEFAULT_CERTIFICATE_PATH,
+                                  passing_results(skip=("X3",)), repo, seed=1)  # X3: events only
+    src = _study(repo, "x", outcome_type="events")
+    commit_all(repo)
+    info = sb.seal_domain(repo, src)
+    assert json.loads((repo / info["bundle"]).read_text())["outcome_types"] == ["events"]
+    with pytest.raises(sb.SealBundleError, match="certificate.*X3"):
+        _confirm(repo, info)
+    assert not (repo / sb.DEFAULT_LEDGER).exists()
+
+
+# ------------------------------------------ N-04: the certificate check cannot be skipped
+
+
+def test_n04_test_without_outcome_type_cannot_be_sealed(repo, ots):
+    """Before: SealSources.outcome_types defaulted to () and the certificate was checked for hashes only."""
+    src = _study(repo, "x", outcome_type=None)
+    commit_all(repo)
+    with pytest.raises(sb.SealBundleError, match="outcome type"):
+        sb.seal_domain(repo, src)
+    assert ots.calls == []
+    assert FamilyLock(repo / "studies/x/family_lock.jsonl", DOMAIN).closed_batches() == []
+
+
+def test_n04_caller_cannot_replace_the_outcome_types(repo, ots):
+    src = _study(repo, "x", outcome_type="events")
+    src = sb.SealSources(**{**src.__dict__, "outcome_types": ("continuous",)})
+    commit_all(repo)
+    with pytest.raises(sb.SealBundleError, match="differ"):
+        sb.seal_domain(repo, src)
+
+
+def test_n04_bundle_with_empty_outcome_types_is_refused(repo, ots, monkeypatch):
+    """A bundle whose outcome-type list is empty never gets past the certificate gate."""
+    real = sb.build_bundle
+
+    def stripped(top, src):
+        b = real(top, src)
+        b["outcome_types"] = []
+        for t in b["tests"]:
+            t.pop("outcome_type")
+        return b
+
+    monkeypatch.setattr(sb, "build_bundle", stripped)
+    src = _study(repo, "x")
+    commit_all(repo)
+    info = sb.seal_domain(repo, src)
+    with pytest.raises(sb.SealBundleError):
+        _confirm(repo, info)
+    assert not (repo / sb.DEFAULT_LEDGER).exists()
+
+
+# ------------------------------------------------- N-03: four ways to confirm twice
+
+
+def test_n03b_new_domain_string_on_the_same_data_is_refused(sealed, ots):
+    repo, _, info = sealed
+    _confirm(repo, info)
+    other = _study(repo, "y", domain="testdomain_v2", cals=(CAL_C, CAL_D))  # new lock, new calendars
+    commit_all(repo, "same data under a new domain name")
+    with pytest.raises(ConfirmAlreadyRunError, match="same data"):
+        sb.seal_domain(repo, other)
+
+
+def test_n03c_renamed_copy_in_its_own_lock_is_refused(sealed, ots):
+    repo, _, info = sealed
+    _confirm(repo, info)
+    copy = _study(repo, "x_renamed", rule_prefix="renamed")  # new rule ids, own lock, same calendars
+    commit_all(repo, "renamed copy")
+    with pytest.raises(ConfirmAlreadyRunError):
+        sb.seal_domain(repo, copy, bundle_dir="studies/validity/seals_renamed")
+
+
+def test_n03c_copy_sealed_before_the_first_confirm_is_refused_at_confirm(repo, ots):
+    src = _study(repo, "x")
+    commit_all(repo)
+    info = sb.seal_domain(repo, src)
+    copy = _study(repo, "x_renamed", rule_prefix="renamed")
+    commit_all(repo, "renamed copy")
+    info2 = sb.seal_domain(repo, copy, bundle_dir="studies/validity/seals_renamed")
+    _confirm(repo, info)
+    with pytest.raises(ConfirmAlreadyRunError):
+        _confirm(repo, info2)
+
+
+def test_n03_fresh_period_on_the_same_data_is_allowed(sealed, ots):
+    """Not over-blocking: a later, non-overlapping confirm period is new data."""
+    repo, _, info = sealed
+    _confirm(repo, info)
+    later = {"id": "v2", "confirm_period": {"start": "2000-01-21", "end": "2000-01-31"}, "seen": False}
+    other = _study(repo, "y", domain="testdomain_v2", vintage=later)
+    commit_all(repo, "replication on a later period")
+    info2 = sb.seal_domain(repo, other)
+    assert sb.handle_is_valid(_confirm(repo, info2))
+
+
+def test_n03d_ledger_commit_is_pushed_before_the_handle(sealed, ots):
+    repo, _, info = sealed
+    h = _confirm(repo, info)
+    assert git(repo, "ls-remote", "origin", "refs/heads/main").split()[0] == h.ledger_commit
+
+
+def test_n03d_unpushed_ledger_commit_issues_no_handle(sealed, ots, monkeypatch):
+    repo, _, info = sealed
+    before = dict(sb._ISSUED)
+
+    def no_push(top, remote, branch):
+        raise sb.SealBundleError("simulated: remote unreachable")
+
+    monkeypatch.setattr(sb, "_push", no_push)
+    with pytest.raises(sb.NotPublishedError):
+        _confirm(repo, info)
+    assert sb._ISSUED == before
+
+
+def test_n03d_local_reset_does_not_reopen_the_confirm(sealed, ots):
+    """Reset the ledger commit away locally (and forget the remote-tracking ref): still refused."""
+    repo, _, info = sealed
+    _confirm(repo, info)
+    git(repo, "reset", "-q", "--hard", "HEAD~1")
+    git(repo, "update-ref", "-d", "refs/remotes/origin/main")
+    git(repo, "reflog", "expire", "--expire=now", "--all")
+    assert not (repo / sb.DEFAULT_LEDGER).exists()
+    with pytest.raises((ConfirmAlreadyRunError, LedgerTamperedError)):  # the remote still holds the entries
+        _confirm(repo, info)
+
+
+# ---------------------------------------- N-10, N-24: order of seal and confirm
+
+
+def test_n10_failed_stamp_leaves_the_batch_open(repo, monkeypatch):
+    def unwired(action, digest, proof=None):
+        raise sb.OtsNotConfiguredError("not wired")
+
+    monkeypatch.setattr(sb, "ots_client", unwired)
+    src = _study(repo, "x")
+    commit_all(repo)
+    head = git(repo, "rev-parse", "HEAD")
+    with pytest.raises(sb.OtsNotConfiguredError):
+        sb.seal_domain(repo, src)
+    assert git(repo, "rev-parse", "HEAD") == head
+    assert git(repo, "status", "--porcelain") == ""
+    assert FamilyLock(repo / "studies/x/family_lock.jsonl", DOMAIN).closed_batches() == []
+
+
+def test_n10_environment_checked_before_the_ledger_is_written(sealed, ots, monkeypatch):
+    repo, _, info = sealed
+
+    def mismatch(*a, **k):
+        raise EnvironmentMismatchError("simulated: numpy differs from the lock")
+
+    monkeypatch.setattr(sb, "require_locked_environment", mismatch)
+    with pytest.raises(EnvironmentMismatchError):
+        _confirm(repo, info)
+    assert not (repo / sb.DEFAULT_LEDGER).exists()
+
+
+@pytest.mark.parametrize("attested", [None, "not a time", "2999-01-01T00:00:00+00:00"])
+def test_n24_attestation_must_precede_the_confirm(sealed, ots, attested):
+    repo, _, info = sealed
+    ots.attested_utc = attested
+    with pytest.raises(sb.OtsProofError, match="attestation time"):
+        _confirm(repo, info)
+    assert not (repo / sb.DEFAULT_LEDGER).exists()
 
 
 def test_edited_bundle_bytes_are_refused(sealed, ots):

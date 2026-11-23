@@ -405,3 +405,41 @@ def test_manifest_hashes_untracked_and_ignored_inputs(repo):
     assert by["studies/demo/hypothesis.yaml"]["git_status"] == "tracked"
     assert {"path": "loose.py", "sha256": hashlib.sha256(loose.read_bytes()).hexdigest()} in m["untracked_files"]
     assert m["provisional"] is True
+
+
+# ------------------------------------------ strategy audit 2 N-24: ledger name is not enough
+
+
+def test_n24_rewritten_committed_ledger_is_dirty(repo):
+    """Before: any modified file named confirm_ledger.jsonl counted as clean."""
+    _confirm(repo)
+    _commit_all(repo, "ledger")
+    led = repo / "studies" / "demo" / "confirm_ledger.jsonl"
+    entry = json.loads(led.read_text().splitlines()[0])
+    entry["utc"] = "1999-01-01T00:00:00+00:00"  # an edited line, not an append
+    led.write_text(json.dumps(entry, sort_keys=True) + "\n")
+    assert seal.tree_state(repo)["dirty"] is True
+    with pytest.raises(DirtyTreeError):
+        require_clean_tree(repo)
+
+
+def test_n24_appended_ledger_line_stays_clean(repo):
+    _confirm(repo)
+    _commit_all(repo, "ledger")
+    led = repo / "studies" / "demo" / "confirm_ledger.jsonl"
+    led.write_text(led.read_text() + json.dumps({"kind": "note"}) + "\n")
+    assert seal.tree_state(repo)["dirty"] is False
+
+
+def test_n24_non_ledger_content_under_the_ledger_name_is_dirty(repo):
+    (repo / "studies" / "other").mkdir()
+    (repo / "studies" / "other" / "confirm_ledger.jsonl").write_text("date,value\n2000-01-01,1\n")
+    assert seal.tree_state(repo)["dirty"] is True
+
+
+def test_n24_renamed_ledger_is_dirty(repo):
+    _confirm(repo)
+    _commit_all(repo, "ledger")
+    (repo / "studies" / "copy").mkdir()
+    _git(repo, "mv", "studies/demo/confirm_ledger.jsonl", "studies/copy/confirm_ledger.jsonl")
+    assert seal.tree_state(repo)["dirty"] is True

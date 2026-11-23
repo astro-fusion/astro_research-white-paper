@@ -24,7 +24,9 @@ Each line holds the SHA-256 of the line before it. Entry kinds:
 
 Rules implemented here (ADR-008 3.2): 1 vintages, 2 batches, 3 alpha spending
 ``alpha_b = 0.04 x 0.2^(b-1)``, 4 fixed Bonferroni threshold per batch, 5 fresh
-data for batch 2 onward, 6 registered after unblinding is descriptive, 7 seen
+data for batch 2 onward (a confirm period that starts after every earlier
+one ends; a self-declared ``never_opened`` flag does not exempt a vintage,
+strategy audit 2 N-03 a), 6 registered after unblinding is descriptive, 7 seen
 confirm periods, 8 at most 3 candidate variants per lineage per batch,
 9 controls outside every batch, 10 replication as a new test in a later batch.
 Section 3.5: ``seed = first 8 bytes of SHA-256(plan seed | test id | purpose)``.
@@ -254,6 +256,14 @@ def _sha(data: Union[str, bytes]) -> str:
     if isinstance(data, str):
         data = data.encode("utf-8")
     return hashlib.sha256(data).hexdigest()
+
+
+def _check_outcome_type(value: Any) -> str:
+    from .calibration import OUTCOME_TYPES  # noqa: PLC0415 - scipy only when needed
+
+    if value not in OUTCOME_TYPES:
+        raise FamilyError(f"outcome_type must be one of {OUTCOME_TYPES}, got {value!r}")
+    return value
 
 
 def _check_hex(value: Any, what: str) -> str:
@@ -519,8 +529,15 @@ class FamilyLock:
         replication_of: Optional[str] = None,
         control: bool = False,
         test_id: Optional[str] = None,
+        outcome_type: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Register one test into the open batch and return its lock entry.
+
+        outcome_type is the calibration outcome type of the test (one of
+        calibration.OUTCOME_TYPES). It is optional here, but a batch can be
+        sealed only when every test carries one: the seal bundle derives the
+        certificate cases it checks from these entries, never from the caller
+        (strategy audit 2 N-04).
 
         Refuses a duplicate test id, a calendar already registered for the
         same outcome (a renamed copy, P6), a fourth candidate variant of one
@@ -541,6 +558,8 @@ class FamilyLock:
             raise FamilyError("control must be a bool")
         _check_hex(calendar_hash, "calendar hash")
         parents = _pin_parents(use_parents)
+        if outcome_type is not None:
+            _check_outcome_type(outcome_type)
         tid = test_id or make_test_id(rule_id, version, variant, outcome)
         body: Dict[str, Any] = {
             "kind": "register",
@@ -557,6 +576,8 @@ class FamilyLock:
             "batch": None if control else self.open_batch(),
             "after_close_of": self.closed_batches(),
         }
+        if outcome_type is not None:
+            body["outcome_type"] = outcome_type
         self._check_register(body)
         return self._append(body)
 
@@ -610,6 +631,8 @@ class FamilyLock:
             if k not in e:
                 raise FamilyLockError(f"lock line {seq}: register entry lacks {k!r}")
         _check_hex(e["calendar_hash"], "calendar hash")
+        if "outcome_type" in e:
+            _check_outcome_type(e["outcome_type"])
         if e["lineage_id"] != lineage_id(e["rule_id"], e["calendar_hash"]):
             raise FamilyLockError(f"lock line {seq}: lineage id does not match rule and calendar")
         if e["after_close_of"] != self.closed_batches():
@@ -637,9 +660,11 @@ class FamilyLock:
         Must happen before any confirm outcome of the vintage is read (the
         seal bundle and its outside timestamp, WP-89, prove the order).
         Batch 1 may close on any vintage of the plan. A later batch needs a
-        fresh vintage (rule 5): not used by an earlier close, and either
-        listed never_opened or with a confirm period that starts after every
-        earlier vintage's confirm period ends. The alpha schedule is fixed by
+        fresh vintage (rule 5): not used by an earlier close, with a confirm
+        period that starts after every earlier vintage's confirm period ends.
+        The vintage's never_opened flag is recorded but exempts nothing: it is
+        typed by the owner, so an overlapping period is refused whatever it
+        says (strategy audit 2 N-03 a). The alpha schedule is fixed by
         the first close; a later close with another schedule is refused.
         """
         b = self.open_batch()
@@ -694,12 +719,13 @@ class FamilyLock:
             raise StaleVintageError(
                 f"batch {b}: vintage {v['id']} was unblinded by an earlier batch; a later batch needs unseen data"
             )
-        if prior and not v["never_opened"]:
+        if prior:  # never_opened exempts nothing (N-03 a)
             last_end = max(p["confirm_period"]["end"] for p in prior)
             if v["confirm_period"]["start"] <= last_end:
                 raise StaleVintageError(
                     f"batch {b}: vintage {v['id']} starts {v['confirm_period']['start']}, not after the "
-                    f"previous confirm data end {last_end}; it is not fresh (rule 5)"
+                    f"previous confirm data end {last_end}; it is not fresh (rule 5; a never_opened "
+                    "flag does not exempt it)"
                 )
         self._schedule = sched
         batch.close = dict(e)
@@ -728,6 +754,7 @@ class FamilyLock:
             "version": e["version"],
             "variant": e["variant"],
             "outcome": e["outcome"],
+            "outcome_type": e.get("outcome_type"),
             "calendar_hash": e["calendar_hash"],
             "lineage_id": e["lineage_id"],
             "use_parents": e["use_parents"],
