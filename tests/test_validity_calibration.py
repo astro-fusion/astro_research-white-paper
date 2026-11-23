@@ -29,15 +29,22 @@ How it runs (``make calibrate``)::
 
 Replications are split into job files; worker PROCESSES (no thread, G-13)
 claim them by an atomic rename, so an interrupted run resumes where it
-stopped. ``--write`` aggregates every finished job, adds the property cases
+stopped. Every finished chunk carries ``calibration.provenance()`` (code,
+harness, lock and installed-package digests; audit 2 N-01): a work directory
+holding chunks of other code is refused when jobs are planned and when chunks
+are added up, so counts of old code are never stamped with new hashes.
+``--fresh`` empties the work directory first. ``--write`` aggregates every finished job, adds the property cases
 and writes ``studies/validity/calibration/certificate.json`` through
 ``core/validity/calibration.py``, tied to the git blob hashes of
 ``core/stats``, ``core/validity``, ``core/domains``, ``tests/simulators.py``
 and to the environment lock hash.
 
 A cell that ran fewer replications than ADR-008 asks (10,000 per-test, 2,000
-families, 1,000 power) is written with its true count, the fast mark
-(observed rate at or below 0.085, ADR-008 1.3) and a note. check_certificate()
+families, 1,000 power) is written with its true count, the fast mark and a
+note. REVIEW_1 fix 2: a fast size cell passes only when its upper
+Clopper-Pearson bound, not its observed rate, is at or below 0.085 (ADR-008
+1.3); one that misses it is inconclusive, and ``--escalate`` re-runs it at
+full size. check_certificate()
 refuses such a cell, so ``begin_confirm`` refuses the outcome types that need
 it until the full run is done. A failed cell is written as failed; no
 threshold is relaxed here.
@@ -96,7 +103,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FULL = os.environ.get("ASTRO_CALIBRATE_FULL") == "1"
 BASE_SEED = 20261122
 FAST_REPS = 400
-FAST_RATE = 0.085  # ADR-008 1.3 fast mark: observed rate over 400 replications
+FAST_RATE = cal.FAST_THRESHOLD  # ADR-008 1.3 fast mark, judged on the Clopper-Pearson upper bound (REVIEW_1)
 ALPHA = 0.05
 DETREND_WINDOW = 31  # bars; the plan value of the A2 runs (daily grids)
 CERTIFICATE = ROOT / cal.DEFAULT_CERTIFICATE_PATH
@@ -1472,9 +1479,33 @@ def _job_name(prio: int, sid: str, a: int, b: int) -> str:
     return f"{prio}__{sid}__{a:06d}_{b:06d}.json"
 
 
-def plan_jobs(work: Path, targets: Dict[str, int]) -> int:
-    """Write a job file for every chunk not yet done, queued or claimed; return the number written."""
+def _done_files(d: Dict[str, Path]) -> List[Path]:
+    return sorted(p for p in d["done"].iterdir() if p.name.endswith(".json"))
+
+
+def check_work_provenance(work: Path) -> int:
+    """N-01: refuse a work directory whose finished chunks were not made by the code on disk."""
     d = _dirs(work)
+    provs = [json.loads(p.read_text(encoding="utf-8")).get("provenance") for p in _done_files(d)]
+    return cal.check_provenance(provs, cal.provenance(ROOT))
+
+
+def empty_work(work: Path) -> None:
+    """Remove every job, claim and finished chunk (``--fresh``; ``make calibrate`` from a clean start)."""
+    d = _dirs(work)
+    for k in ("jobs", "claimed", "done"):
+        for p in d[k].iterdir():
+            p.unlink()
+
+
+def plan_jobs(work: Path, targets: Dict[str, int]) -> int:
+    """Write a job file for every chunk not yet done, queued or claimed; return the number written.
+
+    N-01: a finished chunk counts as done only if it was produced by the code
+    on disk; any other chunk in the work directory stops the run.
+    """
+    d = _dirs(work)
+    check_work_provenance(work)
     present = {p.name.split(".json")[0] + ".json" for k in ("jobs", "claimed", "done") for p in d[k].iterdir()}
     written = 0
     for sid, reps in targets.items():
@@ -1497,6 +1528,7 @@ def worker(work: Path) -> None:
     """Claim job files until none is left (atomic rename); one process, no thread."""
     d = _dirs(work)
     install_cache()
+    prov = cal.provenance(ROOT)  # N-01: what produced every chunk this worker writes
     ctxs: Dict[str, Ctx] = {}
     run_root = d["runs"] / str(os.getpid())
     while True:
@@ -1528,6 +1560,7 @@ def worker(work: Path) -> None:
         except Exception:  # noqa: BLE001 - the error goes into the done file and fails the cell
             res = {"error": traceback.format_exc()}
         res.update(job)
+        res["provenance"] = prov
         res["seconds"] = round(time.time() - t0, 3)
         res["pid"] = os.getpid()
         tmp = d["done"] / f"{pick}.tmp"
@@ -1566,10 +1599,10 @@ def aggregate(work: Path) -> Tuple[List[cal.CaseResult], Dict[str, Any]]:
     per: Dict[str, Dict[str, Any]] = {}
     old: List[cal.CaseResult] = []
     errors: Dict[str, str] = {}
-    for p in sorted(d["done"].iterdir()):
-        if not p.name.endswith(".json"):
-            continue
-        r = json.loads(p.read_text(encoding="utf-8"))
+    chunks = [json.loads(p.read_text(encoding="utf-8")) for p in _done_files(d)]
+    current = cal.provenance(ROOT)
+    cal.check_provenance([r.get("provenance") for r in chunks], current)  # N-01: never sum a mix
+    for r in chunks:
         sid = r["sid"]
         if "error" in r:
             errors[sid] = r["error"]
@@ -1616,8 +1649,28 @@ def aggregate(work: Path) -> Tuple[List[cal.CaseResult], Dict[str, Any]]:
         if sid.startswith("old."):
             results.append(cal.CaseResult(sid.split(".", 1)[1], "old-method run", None, None, None, None, False,
                                           cal.get_case(sid.split(".", 1)[1]).rule, None, "ERROR"))
-    summary = {"per": per, "errors": errors, "aux_total": aux_total, "domain_reps": domain_reps}
+    summary = {"per": per, "errors": errors, "aux_total": aux_total, "domain_reps": domain_reps,
+               "provenance": current}
     return results, summary
+
+
+#: Note prefix of a fast size cell whose upper bound misses the fast mark (REVIEW_1 fix 2).
+FAST_INCONCLUSIVE = "inconclusive at fast size"
+
+
+def escalation_targets(results: Sequence[cal.CaseResult], summary: Dict[str, Any]) -> Dict[str, int]:
+    """Scenarios with a fast size cell that missed the fast mark but not conclusively: run at full size.
+
+    REVIEW_1 fix 2: a fast cell is judged on its Clopper-Pearson upper bound;
+    one that misses the mark is decided only by the full replications.
+    """
+    bad = {(r.case_id, r.cell) for r in results if FAST_INCONCLUSIVE in (r.note or "")}
+    out: Dict[str, int] = {}
+    for sid in summary["per"]:
+        sc = scenarios().get(sid)
+        if sc is not None and any((o.case_id, o.cell) in bad for o in sc.outputs):
+            out[sid] = sc.replications
+    return out
 
 
 def make_result(o: Output, count: int, reps: int, note: str = "", failed: bool = False) -> cal.CaseResult:
@@ -1633,14 +1686,18 @@ def make_result(o: Output, count: int, reps: int, note: str = "", failed: bool =
     rate = count / reps
     ub = cal.clopper_pearson_upper(count, reps)
     if spec.rule == cal.UPPER_BOUND_AT_MOST:
-        thr = spec.fast_threshold if spec.fast_threshold is not None else FAST_RATE
-        ok = rate <= thr
+        # REVIEW_1 fix 2: the fast mark is judged on the upper Clopper-Pearson bound.
+        thr = cal.fast_threshold(spec)
+        ok = cal.fast_passes(spec, count, reps)
         # Conclusive already: the lower 95% bound lies above the full-size mark, so no
         # number of further replications can pass the cell.
         lower = float(_beta.ppf(0.05, count, reps - count + 1)) if count else 0.0
         if lower > float(spec.threshold):
             ok = False
             note = f"fails conclusively: lower 95% bound {lower:.4f} above {spec.threshold}; " + note
+        elif not ok:
+            note = (f"{FAST_INCONCLUSIVE}: upper bound {ub:.4f} above the fast mark {thr}; "
+                    "run at full size (--escalate); " + note)
     elif spec.rule == cal.RATE_ABOVE:
         thr, ok = spec.threshold, rate > spec.threshold
     elif spec.rule == cal.RATE_AT_LEAST:
@@ -1661,7 +1718,7 @@ def write_certificate(work: Path, path: Path = CERTIFICATE, with_properties: boo
             results += property_results(summary["aux_total"], summary["domain_reps"])
         finally:
             remove_cache()
-    cert = cal.write_certificate(path, results, ROOT, BASE_SEED,
+    cert = cal.write_certificate(path, results, ROOT, BASE_SEED, run_provenance=summary["provenance"],
                                  created_utc=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"))
     rows = [r.to_dict() for r in results]
     (Path(work) / "summary.json").write_text(json.dumps({"rows": rows, "errors": summary["errors"],
@@ -1684,6 +1741,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     r.add_argument("--fast-reps", type=int, default=FAST_REPS)
     r.add_argument("--write", action="store_true", help="write the certificate after the run")
     r.add_argument("--no-run", action="store_true", help="only aggregate and write")
+    r.add_argument("--fresh", action="store_true",
+                   help="empty the work directory first (N-01: never mix chunks of other code)")
+    r.add_argument("--escalate", action="store_true",
+                   help="re-run at full size every scenario with a fast size cell whose upper bound "
+                        "misses the fast mark (REVIEW_1 fix 2)")
     w = sub.add_parser("worker")
     w.add_argument("--work", type=Path, default=DEFAULT_WORK)
     sub.add_parser("list", help="list scenario ids")
@@ -1706,10 +1768,18 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         targets[sid] = sc.replications if full else min(a.fast_reps, sc.replications)
     if not only:
         targets.update({j: 1 for j in OLD_METHOD_JOBS})
+    if a.fresh:
+        empty_work(a.work)
     if not a.no_run:
         n = plan_jobs(a.work, targets)
         print(f"{n} new job files; {a.workers} workers; work dir {a.work}", flush=True)
         run_workers(a.work, a.workers)
+        if a.escalate:
+            more = escalation_targets(*aggregate(a.work))
+            if more:
+                n = plan_jobs(a.work, more)
+                print(f"escalating {len(more)} scenarios to full size: {n} new job files", flush=True)
+                run_workers(a.work, a.workers)
     if a.write:
         cert = write_certificate(a.work)
         failed = [(r["case_id"], r["cell"]) for r in cert["cases"] if not r["passed"]]
@@ -1830,6 +1900,90 @@ def test_begin_confirm_refuses_without_a_valid_certificate(tmp_path):
 @pytest.mark.parametrize("outcome_type", cal.OUTCOME_TYPES)
 def test_full_certificate_is_green(outcome_type):
     cal.check_certificate(CERTIFICATE, ROOT, outcome_type)
+
+
+# ------------------------------------------------- REVIEW_1 fix 2, audit 2 N-01, N-12, N-23
+def test_fast_cells_are_judged_on_the_upper_bound():
+    """REVIEW_1 fix 2: a fast size cell passes on its Clopper-Pearson bound, never its observed rate."""
+    # 31 of 400 (7.75%, bound 0.103) passed the old observed-rate mark; 24 of 400 (bound 0.0833) passes.
+    assert not cal.evaluate("B3", "x", 31, 400, fast=True).passed
+    assert not cal.evaluate("B3", "x", 25, 400, fast=True).passed
+    assert cal.evaluate("B3", "x", 24, 400, fast=True).passed
+    o = Output("B3", "ar1_0.3 daily moon_nakshatra_group", "rej")
+    bad = make_result(o, 31, 400)
+    assert not bad.passed and FAST_INCONCLUSIVE in bad.note and bad.upper_bound > FAST_RATE
+    assert make_result(o, 24, 400).passed
+    # escalation picks exactly the scenario whose fast cell missed the mark
+    summary = {"per": {"B3.ar1_0.3.daily.moon_nakshatra_group": {}, "B1.normal.5-5.K12": {}}}
+    ok = make_result(Output("B1", "normal 5/5 K=12", "rej"), 10, 400)
+    assert escalation_targets([bad, ok], summary) == {"B3.ar1_0.3.daily.moon_nakshatra_group": 10_000}
+
+
+def _done_chunk(work: Path, name: str, prov) -> None:
+    d = _dirs(work)
+    body = {"sid": "B1.normal.5-5.K12", "a": 0, "b": 50, "counts": {"B1|normal 5/5 K=12": 2}, "aux": {},
+            "extra": {}, "seconds": 1.0}
+    if prov is not None:
+        body["provenance"] = prov
+    (d["done"] / name).write_text(json.dumps(body), encoding="utf-8")
+
+
+def test_chunks_of_other_code_are_never_summed(tmp_path):
+    """N-01: chunks carry their provenance; a mix, an old chunk or a chunk without one is refused."""
+    now = cal.provenance(ROOT)
+    _done_chunk(tmp_path, "1__B1.normal.5-5.K12__000000_000050.json", now)
+    check_work_provenance(tmp_path)  # one chunk of the code on disk: fine
+    assert aggregate(tmp_path)[1]["provenance"] == now
+    _done_chunk(tmp_path, "1__B1.normal.5-5.K12__000050_000100.json", {**now, "code_sha256": "0" * 64})
+    with pytest.raises(cal.CertificateError, match="not produced by the code on disk"):
+        aggregate(tmp_path)
+    with pytest.raises(cal.CertificateError, match="empty work directory"):
+        plan_jobs(tmp_path, {"B1.normal.5-5.K12": 100})
+    empty_work(tmp_path)
+    _done_chunk(tmp_path, "1__B1.normal.5-5.K12__000000_000050.json", None)  # pre-N-01 chunk
+    with pytest.raises(cal.CertificateError, match="carry no provenance"):
+        aggregate(tmp_path)
+
+
+def _copy_certified(repo: Path) -> None:
+    import shutil
+
+    for rel in cal.CERTIFIED_PATHS + (cal.ENV_LOCK_PATH, cal.HARNESS_PATH):
+        src, dst = ROOT / rel, repo / rel
+        if src.is_dir():
+            shutil.copytree(src, dst, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
+        else:
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            dst.write_bytes(src.read_bytes())
+
+
+def test_certificate_records_provenance_and_refuses_fast_cases(tmp_path):
+    """N-01, N-12, N-23: commit, harness hash and installed versions recorded and checked;
+    a case with a fast cell is not passed."""
+    repo = tmp_path / "repo"
+    _copy_certified(repo)
+    path = repo / cal.DEFAULT_CERTIFICATE_PATH
+    fast = cal.evaluate("B1", "normal 5/5 K=12", 10, 400, fast=True)
+    assert fast.passed
+    cert = cal.write_certificate(path, [fast, cal.property_result("B4", "x", True)], repo, BASE_SEED,
+                                 run_provenance=cal.provenance(repo))
+    assert cert["case_passed"] == {"B1": False, "B4": True}
+    assert cert["harness_sha256"] == cal.harness_hash(repo) is not None
+    assert cert["installed"] == cal.installed_versions() and "commit" in cert
+    cal.check_certificate(path, repo)
+    with pytest.raises(cal.CertificateError, match="differs from the code on disk"):
+        cal.build_certificate([fast], repo, BASE_SEED, run_provenance={**cal.provenance(repo), "code_sha256": "x"})
+    h = repo / cal.HARNESS_PATH
+    h.write_bytes(h.read_bytes() + b"\n# scenario changed after calibration\n")
+    with pytest.raises(cal.CertificateError, match="harness changed"):
+        cal.check_certificate(path, repo)
+    # A certificate written before N-01 (no provenance) is refused even with unchanged code.
+    body = {k: v for k, v in cert.items() if k not in ("body_sha256", "provenance", "harness_sha256",
+                                                       "harness_path", "installed", "commit")}
+    body["body_sha256"] = hashlib.sha256(cal._canonical(body)).hexdigest()
+    path.write_text(json.dumps(body), encoding="utf-8")
+    with pytest.raises(cal.CertificateError, match="no run provenance"):
+        cal.check_certificate(path, repo)
 
 
 if __name__ == "__main__":

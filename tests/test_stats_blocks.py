@@ -651,10 +651,12 @@ def _b3_generators():
     }
 
 
-def run_b1(reps, fast=False, shapes=sim.PERIODIC_SHAPES, counts=sim.PERIODIC_EPISODES):
+def run_b1(reps, fast=False, shapes=sim.PERIODIC_SHAPES, counts=sim.PERIODIC_EPISODES, only=None):
     out = []
     for (a, g), k in itertools.product(shapes, counts):
         cell = f"{a}/{g} K={k}"
+        if only is not None and cell not in only:
+            continue
         hits, _ = _rejections(sim.periodic_calendar(a, g, k), _bars("normal"), reps,
                               cal.case_seed(BASE_SEED, "B1", cell))
         out.append(cal.evaluate("B1", cell, hits, reps, fast=fast))
@@ -662,10 +664,12 @@ def run_b1(reps, fast=False, shapes=sim.PERIODIC_SHAPES, counts=sim.PERIODIC_EPI
 
 
 def run_b2(reps, fast=False, shapes=sim.PERIODIC_SHAPES, counts=sim.PERIODIC_EPISODES,
-           kinds=sim.SKEWED_KINDS):
+           kinds=sim.SKEWED_KINDS, only=None):
     out = []
     for (a, g), k, kind in itertools.product(shapes, counts, kinds):
         cell = f"{kind} {a}/{g} K={k}"
+        if only is not None and cell not in only:
+            continue
         hits, _ = _rejections(sim.periodic_calendar(a, g, k), _bars(kind), reps,
                               cal.case_seed(BASE_SEED, "B2", cell))
         out.append(cal.evaluate("B2", cell, hits, reps, fast=fast))
@@ -674,7 +678,7 @@ def run_b2(reps, fast=False, shapes=sim.PERIODIC_SHAPES, counts=sim.PERIODIC_EPI
 
 def run_b3(reps, fast=False, shapes=sim.PERIODIC_SHAPES, counts=sim.PERIODIC_EPISODES,
            real=("mercury_retrograde", "moon_nakshatra_group", "tithi_group", "eclipse_window"),
-           generators=None):
+           generators=None, only=None):
     gens = _b3_generators() if generators is None else generators
     out = []
     cals = [(f"{a}/{g} K={k}", sim.periodic_calendar(a, g, k))
@@ -684,6 +688,8 @@ def run_b3(reps, fast=False, shapes=sim.PERIODIC_SHAPES, counts=sim.PERIODIC_EPI
         cals += [(name, frame[name].to_numpy()) for name in real]
     for (cname, c), (gname, gen) in itertools.product(cals, gens.items()):
         cell = f"{gname} {cname}"
+        if only is not None and cell not in only:
+            continue
         hits, _ = _rejections(c, gen, reps, cal.case_seed(BASE_SEED, "B3", cell))
         out.append(cal.evaluate("B3", cell, hits, reps, fast=fast))
     return out
@@ -810,7 +816,8 @@ def test_a2_fast():
     cells = [cell for cell in a2_cells(real=("new_moon",), counts=(12,))
              if cell[:2] in keep and (cell[2] == "new_moon" or cell[2].startswith(("1/4", "forced")))]
     assert len(cells) == 12
-    _assert_all([run_a2_cell(*cell, FAST_REPS, fast=True)[0] for cell in cells])
+    _assert_fast(lambda reps, only=None: [run_a2_cell(*cell, reps, fast=True)[0] for cell in cells
+                                          if only is None or f"A2 {cell[1]} {cell[2]}" in only])
 
 
 def _assert_all(results):
@@ -818,20 +825,63 @@ def _assert_all(results):
     assert not failed, failed
 
 
+#: REVIEW_1 fix 2: a fast cell is judged on its upper Clopper-Pearson bound
+#: (fast mark 0.085: at 400 replications, 24 rejections or fewer). A cell that
+#: misses it is inconclusive and is decided on more replications of the same
+#: seeded stream (the first 400 included), still on the bound and the same mark.
+ESCALATED_REPS = 2_000
+
+
+def _assert_fast(run):
+    """``run(reps, only=None)`` gives fast results; inconclusive cells are re-run at ESCALATED_REPS."""
+    first = run(FAST_REPS)
+    bad = {r.cell for r in first if not r.passed}
+    results = [r for r in first if r.passed]
+    if bad:
+        again = run(ESCALATED_REPS, only=bad)
+        assert {r.cell for r in again} == bad
+        results += again
+    _assert_all(results)
+
+
 def test_b1_fast():
-    _assert_all(run_b1(FAST_REPS, fast=True, shapes=((5, 50), (20, 20), (20, 5)), counts=(12,)))
+    _assert_fast(lambda reps, only=None: run_b1(reps, fast=True, shapes=((5, 50), (20, 20), (20, 5)),
+                                                counts=(12,), only=only))
 
 
 def test_b2_fast():
-    _assert_all(run_b2(FAST_REPS, fast=True, shapes=((20, 20), (5, 50)), counts=(12,),
-                       kinds=("lognormal", "zero_inflated")))
+    _assert_fast(lambda reps, only=None: run_b2(reps, fast=True, shapes=((20, 20), (5, 50)), counts=(12,),
+                                                kinds=("lognormal", "zero_inflated"), only=only))
 
 
 def test_b3_fast():
     gens = _b3_generators()
-    _assert_all(run_b3(FAST_REPS, fast=True, shapes=((20, 20),), counts=(12,),
-                       real=("mercury_retrograde",),
-                       generators={"garch": gens["garch"], "ar1_0.3": gens["ar1_0.3"]}))
+    _assert_fast(lambda reps, only=None: run_b3(reps, fast=True, shapes=((20, 20),), counts=(12,),
+                                                real=("mercury_retrograde",),
+                                                generators={"garch": gens["garch"], "ar1_0.3": gens["ar1_0.3"]},
+                                                only=only))
+
+
+def test_review1_daily_moon_cells_hold_size():
+    """REVIEW_1 fix 3: B3 AR(1) 0.3 and GARCH on the daily Moon-nakshatra and tithi calendars (A2 blocks).
+
+    The certificate's fast cells read 31/400 and 29/400 (Moon) and 26/400
+    (tithi; checked at full size outside pytest, too slow here). Re-run at 10,000 replications through the same pipeline path and
+    seeds (REVIEW_1 R1-SIZE report): 506/10,000 for AR(1) 0.3 on the Moon
+    calendar, so the fast rates were sampling noise of the first 400 seeds.
+    The design explains why: single-day blocks 5 to 9 days apart, so block
+    differences are nearly uncorrelated under AR(1) 0.3 (lag-1 correlation of
+    consecutive block differences about 0.003), and exactly sign-symmetric
+    under symmetric GARCH (negating a block's innovations leaves every
+    variance unchanged). This keeps the cells in the fast suite on the bound.
+    """
+    gens = a2_generators()
+    cells = [(case, g, name, functools.partial(a2_daily_calendar, name))
+             for (case, g) in (("B3", "ar1_0.3"), ("B3", "garch"))
+             for name in ("moon_nakshatra_group",)]
+    assert all((c[0], c[1]) in gens for c in cells)
+    _assert_fast(lambda reps, only=None: [run_a2_cell(*cell, reps, fast=True)[0] for cell in cells
+                                          if only is None or f"A2 {cell[1]} {cell[2]}" in only])
 
 
 def test_b5_old_design_still_fails():

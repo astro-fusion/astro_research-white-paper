@@ -20,7 +20,19 @@ outcome types). The code that runs a case lives with the method it certifies
 every case.
 
 Pass mark used throughout: the upper one-sided 95% Clopper-Pearson bound on
-the rate. No thread is started here (G-13).
+the rate, also for the fast subset (REVIEW_1 fix 2: a fast cell passes only
+when its bound, not its observed rate, is at or below the fast mark; a cell
+that misses it is inconclusive and must be run at full size).
+
+Provenance (audit 2 N-01, N-12, N-23). Every chunk of a calibration run
+carries :func:`provenance` (digests of the certified code, of the harness
+file :data:`HARNESS_PATH`, of the environment lock and of the installed
+packages). The harness refuses to add up chunks whose provenance differs from
+the code on disk, and the certificate stores the commit, the harness hash and
+the installed versions. :func:`check_certificate` refuses a certificate
+without them, or whose harness or installed packages differ now. A case with
+any cell below its full replications is not passed in ``case_passed``.
+No thread is started here (G-13).
 """
 
 from __future__ import annotations
@@ -29,9 +41,10 @@ import hashlib
 import json
 import math
 import os
+import subprocess
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
 from scipy.stats import beta as _beta
 
@@ -50,6 +63,12 @@ CERTIFIED_PATHS: Tuple[str, ...] = (
     "tests/simulators.py",
 )
 ENV_LOCK_PATH = "ops/requirements.lock.txt"
+#: The whole-pipeline harness that holds the scenarios (audit 2 N-23): its
+#: hash is stored in the certificate and checked like the certified code.
+HARNESS_PATH = "tests/test_validity_calibration.py"
+#: Fast-subset mark (ADR-008 1.3) when a case names none. Judged on the upper
+#: Clopper-Pearson bound (REVIEW_1 fix 2), never on the observed rate.
+FAST_THRESHOLD = 0.085
 DEFAULT_CERTIFICATE_PATH = "studies/validity/calibration/certificate.json"
 
 _SKIP_DIRS = {"__pycache__", ".pytest_cache", ".mypy_cache"}
@@ -250,9 +269,12 @@ def evaluate(case_id: str, cell: str, count: int, replications: int, fast: bool 
     """Turn a count of rejections (or of successes for power) into a result.
 
     ``fast`` uses the case's fast subset mark (ADR-008 1.3: 400 replications,
-    pass at an observed rate at or below 0.085, which is about nominal plus
-    three binomial standard errors). A fast result never satisfies
-    :func:`check_certificate` because its replications are below the case's.
+    mark 0.085). REVIEW_1 fix 2: a fast cell passes only when its upper
+    Clopper-Pearson bound is at or below the mark (at 400 replications: 24
+    rejections or fewer), not its observed rate; a fast cell that misses the
+    mark is inconclusive and must be run at full size. A fast result never
+    satisfies :func:`check_certificate` because its replications are below
+    the case's.
     """
     spec = get_case(case_id)
     if spec.rule == PROPERTY:
@@ -266,7 +288,7 @@ def evaluate(case_id: str, cell: str, count: int, replications: int, fast: bool 
             raise ValueError(f"{case_id} has no fast subset")
         threshold = spec.fast_threshold
     if fast:
-        passed = rate <= threshold
+        passed = fast_passes(spec, k, n)
     elif spec.rule == UPPER_BOUND_AT_MOST:
         passed = ub <= threshold
     elif spec.rule == RATE_ABOVE:
@@ -278,6 +300,23 @@ def evaluate(case_id: str, cell: str, count: int, replications: int, fast: bool 
     else:  # RECORD
         passed = True
     return CaseResult(case_id, str(cell), n, k, rate, ub, bool(passed), spec.rule, threshold)
+
+
+def fast_threshold(spec: CaseSpec) -> float:
+    """The fast-subset mark of a case (its own, else :data:`FAST_THRESHOLD`)."""
+    return float(spec.fast_threshold if spec.fast_threshold is not None else FAST_THRESHOLD)
+
+
+def fast_passes(spec: CaseSpec, count: int, replications: int) -> bool:
+    """Fast-subset judgement of a size case (REVIEW_1 fix 2).
+
+    The upper one-sided 95% Clopper-Pearson bound on the rejection rate must
+    be at or below the fast mark. The observed rate is never the rule. Only
+    for :data:`UPPER_BOUND_AT_MOST` cases; other rules have no fast mark.
+    """
+    if spec.rule != UPPER_BOUND_AT_MOST:
+        raise ValueError(f"{spec.case_id}: only upper-bound cases have a fast mark")
+    return clopper_pearson_upper(int(count), int(replications)) <= fast_threshold(spec)
 
 
 def property_result(case_id: str, cell: str, passed: bool, note: str = "") -> CaseResult:
@@ -334,10 +373,92 @@ def env_lock_hash(repo_root, lock_path: str = ENV_LOCK_PATH) -> Optional[str]:
     return hashlib.sha256(p.read_bytes()).hexdigest()
 
 
-# ------------------------------------------------------------ certificate
 def _canonical(obj) -> bytes:
     return json.dumps(obj, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
 
+
+def _digest(obj) -> str:
+    return hashlib.sha256(_canonical(obj)).hexdigest()
+
+
+def harness_hash(repo_root, harness_path: str = HARNESS_PATH) -> Optional[str]:
+    """Git blob hash of the calibration harness, or None when there is none (N-23)."""
+    p = Path(repo_root) / harness_path
+    return git_blob_sha1(p.read_bytes()) if p.is_file() else None
+
+
+def installed_versions() -> Dict[str, str]:
+    """Installed distributions of this interpreter, name (lower case) to version (N-12)."""
+    from importlib import metadata
+
+    out: Dict[str, str] = {}
+    for dist in metadata.distributions():
+        name = (dist.metadata.get("Name") or "").strip().lower()
+        if name:
+            out[name] = str(dist.version)
+    return dict(sorted(out.items()))
+
+
+def git_commit(repo_root) -> Optional[str]:
+    """HEAD commit of the repository, or None outside git (recorded, never checked)."""
+    try:
+        out = subprocess.run(["git", "rev-parse", "HEAD"], cwd=str(repo_root), capture_output=True,
+                             text=True, timeout=30, check=False)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    sha = out.stdout.strip()
+    return sha if out.returncode == 0 and len(sha) == 40 else None
+
+
+def provenance(
+    repo_root,
+    paths: Sequence[str] = CERTIFIED_PATHS,
+    lock_path: str = ENV_LOCK_PATH,
+    harness_path: str = HARNESS_PATH,
+) -> Dict[str, Optional[str]]:
+    """What produced a calibration count (audit 2 N-01).
+
+    Digests of the certified code (every blob hash under `paths`), of the
+    harness file, of the environment lock and of the installed packages.
+    Every chunk of a run carries it; chunks with different provenance are
+    never added up, and the certificate stores the one its counts came from.
+    """
+    return {
+        "code_sha256": _digest(code_hashes(repo_root, paths)),
+        "harness_sha256": harness_hash(repo_root, harness_path),
+        "env_lock_sha256": env_lock_hash(repo_root, lock_path),
+        "installed_sha256": _digest(installed_versions()),
+    }
+
+
+def check_provenance(chunks: Iterable[Optional[Mapping]], current: Mapping) -> int:
+    """Refuse (raise :class:`CertificateError`) unless every chunk was made by `current`.
+
+    `chunks` holds one provenance per finished chunk (None when a chunk
+    has none, as chunks written before N-01 do). Returns the number checked.
+    A mix of code versions, or chunks from code other than the code on disk,
+    can never be summed into one certificate (N-01).
+    """
+    want = dict(current)
+    n = 0
+    stale = 0
+    missing = 0
+    for p in chunks:
+        n += 1
+        if p is None:
+            missing += 1
+        elif dict(p) != want:
+            stale += 1
+    if missing or stale:
+        raise CertificateError(
+            f"{stale + missing} of {n} calibration chunks were not produced by the code on disk "
+            f"({missing} carry no provenance, {stale} another code, harness, lock or environment); "
+            "start from an empty work directory"
+        )
+    return n
+
+
+# ------------------------------------------------------------ certificate
 
 def _clean_rate(v):
     return None if (isinstance(v, float) and math.isnan(v)) else v
@@ -350,8 +471,20 @@ def build_certificate(
     created_utc: Optional[str] = None,
     paths: Sequence[str] = CERTIFIED_PATHS,
     lock_path: str = ENV_LOCK_PATH,
+    run_provenance: Optional[Mapping] = None,
+    harness_path: str = HARNESS_PATH,
 ) -> Dict:
-    """Certificate body plus its own SHA-256 (``body_sha256``)."""
+    """Certificate body plus its own SHA-256 (``body_sha256``).
+
+    ``run_provenance``: the provenance every chunk of the run carried (the
+    harness has checked they agree); it must equal :func:`provenance` of
+    the files on disk now, or the certificate is refused here (N-01).
+    ``case_passed`` is False for a case with any cell below the case's full
+    replications (a fast cell can never make a case pass).
+    """
+    now = provenance(repo_root, paths, lock_path, harness_path)
+    if run_provenance is not None and dict(run_provenance) != now:
+        raise CertificateError("the run's provenance differs from the code on disk; recalibrate")
     rows = []
     for r in results:
         get_case(r.case_id)  # unknown ids are refused
@@ -361,7 +494,11 @@ def build_certificate(
     rows.sort(key=lambda d: (d["case_id"], d["cell"]))
     summary = {}
     for cid in sorted({d["case_id"] for d in rows}):
-        summary[cid] = all(d["passed"] for d in rows if d["case_id"] == cid)
+        need = get_case(cid).replications
+        summary[cid] = all(
+            d["passed"] and (need is None or d["replications"] is None or int(d["replications"]) >= int(need))
+            for d in rows if d["case_id"] == cid
+        )
     body = {
         "schema_version": SCHEMA_VERSION,
         "created_utc": created_utc,
@@ -370,6 +507,11 @@ def build_certificate(
         "code_hashes": code_hashes(repo_root, paths),
         "env_lock_path": lock_path,
         "env_lock_sha256": env_lock_hash(repo_root, lock_path),
+        "commit": git_commit(repo_root),
+        "harness_path": harness_path,
+        "harness_sha256": now["harness_sha256"],
+        "installed": installed_versions(),
+        "provenance": now,
         "cases": rows,
         "case_passed": summary,
     }
@@ -434,6 +576,14 @@ def check_certificate(
     lock = cert.get("env_lock_path", ENV_LOCK_PATH)
     if env_lock_hash(repo_root, lock) != cert.get("env_lock_sha256"):
         raise CertificateError("environment lock changed since calibration")
+    prov = cert.get("provenance")
+    if not isinstance(prov, dict) or "harness_sha256" not in cert:
+        raise CertificateError("certificate has no run provenance (commit, harness, installed packages; "
+                               "audit 2 N-01); recalibrate from an empty work directory")
+    if harness_hash(repo_root, cert.get("harness_path", HARNESS_PATH)) != cert.get("harness_sha256"):
+        raise CertificateError("calibration harness changed since calibration (N-23)")
+    if _digest(installed_versions()) != prov.get("installed_sha256"):
+        raise CertificateError("installed packages differ from those the calibration ran on (N-12)")
     if outcome_type is not None:
         rows = cert.get("cases", [])
         for spec in required_cases(outcome_type):
@@ -469,7 +619,16 @@ __all__ = [
     "derive_seed",
     "env_lock_hash",
     "evaluate",
+    "FAST_THRESHOLD",
+    "HARNESS_PATH",
+    "check_provenance",
+    "fast_passes",
+    "fast_threshold",
     "get_case",
+    "git_commit",
+    "harness_hash",
+    "installed_versions",
+    "provenance",
     "git_blob_sha1",
     "load_certificate",
     "max_passing_count",
