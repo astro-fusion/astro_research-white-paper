@@ -163,8 +163,14 @@ def test_rules_without_conditions_are_counted_not_encodable(eq):
 
 
 def test_a_declared_baseline_without_data_leaves_no_baselines(eq):
-    assert eq.notes["baselines_missing"] == ["solar_cycle"]
-    assert eq.run.baselines is None  # R1 and R4 then cannot pass (conservative)
+    # REVIEW_1 fix 4: the solar term is now built from the pinned SILSO snapshot; only a clone
+    # without that hash-only file still gets no baselines (R1 and R4 then cannot pass, conservative).
+    silso = ROOT / "data" / "snapshots" / "silso_sn_monthly_1cf8a1f6f28f.csv"
+    if silso.is_file():
+        assert "baselines_missing" not in eq.notes and eq.run.baselines is not None
+    else:
+        assert eq.notes["baselines_missing"] == ["solar_cycle"]
+        assert eq.run.baselines is None
 
 
 def test_disputed_rules_get_the_flag_from_disputes_md(tmp_path, rules):

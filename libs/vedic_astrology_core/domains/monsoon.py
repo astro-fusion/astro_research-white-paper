@@ -934,7 +934,8 @@ class MonsoonDomain(DomainAdapter):
             "note": "each calendar rotated by k seasons (YearCalendar.shifted)",
         }]
         out["pending"] = {
-            "sunspot": "SILSO has no fetch script or snapshot yet",
+            "sunspot": ("not read here: the solar_cycle baseline comes from the validity plan's pinned SILSO "
+                        "snapshot (core/validity/bindings.py)"),
         }
         if "nino34_long" not in out:
             out["pending"]["nino34_long"] = "no pinned long Nino 3.4 snapshot in the plan (scripts/fetch/nino34_long.py)"

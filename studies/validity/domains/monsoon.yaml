@@ -120,3 +120,29 @@ baselines:
     snapshot: silso_sn_monthly_1cf8a1f6f28f
   - id: enso_nino34_jjas
     source: the pinned Nino 3.4 series, June-September mean
+positive_controls:
+  # REVIEW_1 fix 3, ADR-008 O-04. Fixed 2026-11-23 before any control was computed on real data.
+  alpha: 0.05
+  pass_rule: >-
+    A control is detected when its explore-period block sign-flip p (the pipeline's primary test and
+    statistic T, the same as for every principle; one-sided in the control's direction; no multiplicity
+    correction) is at or below alpha and T has the stated sign. The gate control is the first control in
+    this list whose outcome-free gate is testable and that ran; the domain's control is detected only if
+    the gate control is (core/validity/bindings.py evaluate_positive_controls).
+  if_failed: >-
+    Every card of the domain carries control_not_detected (DomainRun.control_not_detected, set by
+    core/validity/bindings.py from the stored evaluation for this plan hash; also when no control was
+    run). The domain is then read as unable to see a known effect of this kind: its N and E rows are not
+    read as evidence of absence, and the report says so before any principle's row.
+  note: >-
+    The enso_nino34_jjas baseline regresses ENSO out of the continuous anomaly, so the control uses the
+    drought flag, which the pipeline does not residualise. Real rainfall stays behind the ADR-007 4.3
+    firewall: until it opens the control is not run and the domain carries control_not_detected.
+  controls:
+    - id: control.el_nino
+      name: All-India drought in El Nino seasons
+      kind: enso_phase
+      threshold_c: 0.5     # June-September Nino 3.4 anomaly against enso.phase_base_period
+      outcome: all_india_drought
+      direction: increase
+      source: "Sikka 1980, Proc. Indian Acad. Sci. (Earth Planet. Sci.) 89, 179; Kumar, Rajagopalan and Cane 1999, Science 284, 2156"

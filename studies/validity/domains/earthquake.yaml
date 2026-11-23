@@ -77,4 +77,40 @@ baselines:
   - id: solar_cycle
     source: core/stats/season.py solar_cycle_baseline (smoothed sunspot number)
     snapshot: silso_sn_monthly_1cf8a1f6f28f
+positive_controls:
+  # REVIEW_1 fix 3, ADR-008 O-04. Fixed 2026-11-23 before any control was computed on real data.
+  # Known non-astrological calendar effects on the same outcome, run through the same pipeline (role
+  # control, outside every batch, never registered). W3 planted recovery remains the ADR's separate check.
+  alpha: 0.05
+  pass_rule: >-
+    A control is detected when its explore-period block sign-flip p (the pipeline's primary test and
+    statistic T, the same as for every principle; one-sided in the control's direction; no multiplicity
+    correction) is at or below alpha and T has the stated sign. The gate control is the first control in
+    this list whose outcome-free gate is testable and that ran; the domain's control is detected only if
+    the gate control is (core/validity/bindings.py evaluate_positive_controls).
+  if_failed: >-
+    Every card of the domain carries control_not_detected (DomainRun.control_not_detected, set by
+    core/validity/bindings.py from the stored evaluation for this plan hash; also when no control was
+    run). The domain is then read as unable to see a known effect of this kind: its N and E rows are not
+    read as evidence of absence, and the report says so before any principle's row.
+  note: >-
+    The month control is season-linked, so the gate gives it same-season windows (ADR-008 F-01); if that
+    leaves it untestable the spring-tide control is the gate control. Both effects were reported on local
+    or global catalogues; on a declustered M4.5+ Himalayan catalogue they may be too small to see, which
+    is what the control is there to show.
+  controls:
+    - id: control.monsoon_season
+      name: Himalayan mainshock rate in the summer monsoon months (June to September, UTC)
+      kind: months
+      months: [6, 7, 8, 9]
+      outcome: mainshock_rate
+      direction: decrease
+      source: "Bollinger et al. 2007, Geophys. Res. Lett. 34, L08304: Nepal seismicity is lower in summer (monsoon water loading) and higher in winter"
+    - id: control.spring_tide
+      name: Himalayan mainshock rate within 12 degrees of new or full Moon (spring tides)
+      kind: syzygy
+      orb_deg: 12
+      outcome: mainshock_rate
+      direction: increase
+      source: "Metivier et al. 2009, Earth Planet. Sci. Lett. 278, 370; Ide, Yabe and Tanaka 2016, Nat. Geosci. 9, 834: tidal triggering near syzygy"
 limit_only: true      # ADR-008 D-03: until ETAS declustering (ADR-004 WP-26) lands the domain can only limit

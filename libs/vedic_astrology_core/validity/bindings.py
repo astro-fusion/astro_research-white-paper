@@ -20,6 +20,28 @@ source date, disputed flag, known channel, reading flag, project-extension
 flag, market and currency, guard bars, base rate, detrending window, missing
 bars, baselines, vintage, plan seed and plan hash all come from the files.
 
+Physical baselines (ADR-008 6.1 item 6, F-02; REVIEW_1 fix 4). The nodal
+term comes from the grid dates; the solar-cycle term from the plan's pinned
+SILSO snapshot (plan key "sunspot"): the 4th semicolon-separated field of
+SN_m_tot_V2.0.csv (-1 is missing), smoothed on the MONTHLY series by
+stats/season.py solar_cycle_baseline (13-month centred mean), then read for
+each bar's month (hourly and daily grids) or averaged over June to
+September (the yearly monsoon grid). Smoothing on the grid itself would
+average 13 hours or 13 years instead of 13 months. Event and flag outcomes
+are not residualised on the baselines (pipeline _residualised,
+season.remove_baselines): for them the with- and without-baselines
+estimates are equal by design, and the baselines enter R1 and R4 only.
+
+Positive controls (REVIEW_1 fix 3, ADR-008 O-04). A plan's
+"positive_controls" lists known non-astrological calendar effects on the
+same outcomes, each with its direction and source, and the plan's pass rule
+and consequence. They are built as tests of role "control", never
+registrable (outside every batch, ADR-008 3.2 rule 9), so the preview runs
+them through the same pipeline as every principle.
+evaluate_positive_controls() applies the pass rule to a preview file, and
+bind() sets DomainRun.control_not_detected unless the stored evaluation for
+this plan hash says the gate control was detected.
+
 Outcome types. The plan's types are mapped once (N-05: nothing mapped them):
 continuous -> continuous, absolute_return -> log_ratio (on the log scale with
 the plan's floor), event -> events, binary -> flags.
@@ -83,6 +105,14 @@ __all__ = [
     "bind",
     "sampling_frame",
     "horizon_allows_monthly",
+    "parse_silso_monthly",
+    "solar_cycle_monthly",
+    "sun_moon_elongation",
+    "ControlCalendar",
+    "control_specs",
+    "evaluate_positive_controls",
+    "stored_control_status",
+    "annotate_preview",
 ]
 
 REPO = Path(__file__).resolve().parents[3]
@@ -413,7 +443,13 @@ class DomainBinding:
         return [b.definition for b in self.tests]
 
     def rule_ids(self) -> List[str]:
-        return sorted({b.definition.rule_id for b in self.tests} | {e.rule_id for e in self.excluded})
+        """Ids of the rule files behind the tests (positive controls have no rule file)."""
+        return sorted({b.definition.rule_id for b in self.tests if b.role != "control"}
+                      | {e.rule_id for e in self.excluded})
+
+    def control_tests(self) -> List[_pl.TestDefinition]:
+        """The plan's positive controls (never registrable; the preview runs them with the rest)."""
+        return [b.definition for b in self.tests if b.role == "control"]
 
 
 # ---------------------------------------------------------------- helpers
@@ -541,13 +577,17 @@ def _physical_baselines(ids: Sequence[str], notes: Dict[str, Any],
     """
     missing = []
     for b in ids:
-        if b == "nodal_18_6y" or (extra and b in extra):
+        if b == "nodal_18_6y" or (extra and extra.get(b) is not None):
             continue
         missing.append(b)
     notes["baselines_declared"] = list(ids)
     if missing:
         notes["baselines_missing"] = missing
         return None
+    notes["baselines_in_estimate"] = (
+        "continuous and log-ratio outcomes are regressed on the baselines before every statistic; "
+        "event and flag outcomes are not (pipeline _residualised): their with- and without-baselines "
+        "estimates are equal by design and the baselines enter R1 and R4 (baseline_r2) only")
 
     def fn(dates: pd.DatetimeIndex) -> np.ndarray:
         cols = []
@@ -559,6 +599,279 @@ def _physical_baselines(ids: Sequence[str], notes: Dict[str, Any],
         return np.column_stack(cols)
 
     return fn
+
+
+# ------------------------------------------------------- solar cycle
+def parse_silso_monthly(text: str) -> pd.Series:
+    """SILSO SN_m_tot_V2.0.csv: monthly mean total sunspot number by month.
+
+    Semicolon-separated rows: year; month; decimal year; monthly mean (4th
+    field); standard deviation; observations; provisional marker. A mean of
+    -1 is missing and becomes NaN. Indexed by monthly pandas Periods.
+    """
+    rows: Dict[pd.Period, float] = {}
+    for line in str(text).splitlines():
+        parts = [p.strip() for p in line.split(";")]
+        if len(parts) < 4 or not parts[0].isdigit() or not parts[1].isdigit():
+            continue
+        v = float(parts[3])
+        rows[pd.Period(year=int(parts[0]), month=int(parts[1]), freq="M")] = np.nan if v < 0 else v
+    if not rows:
+        raise BindingError("no SILSO rows found (expected 'year;month;decimal year;mean;...')")
+    return pd.Series(rows, dtype=float).sort_index()
+
+
+def solar_cycle_monthly(sunspots: pd.Series) -> pd.Series:
+    """The solar-cycle baseline on the monthly series (season.solar_cycle_baseline, 13 months).
+
+    The months must be contiguous and finite: a gap would shift the window,
+    so it is refused rather than filled.
+    """
+    s = pd.Series(sunspots, dtype=float)
+    full = pd.period_range(s.index.min(), s.index.max(), freq="M")
+    if len(full) != len(s) or not s.index.equals(full) or not np.isfinite(s.to_numpy()).all():
+        raise BindingError("the sunspot series has missing months; the 13-month smoothing needs every month")
+    return pd.Series(_season.solar_cycle_baseline(s.to_numpy(float)), index=s.index)
+
+
+def _month_lookup(monthly: pd.Series, dates: pd.DatetimeIndex) -> np.ndarray:
+    d = pd.DatetimeIndex(dates)
+    d = d.tz_convert("UTC").tz_localize(None) if d.tz is not None else d
+    v = monthly.reindex(d.to_period("M")).to_numpy(float)
+    if not np.isfinite(v).all():
+        raise BindingError("the sunspot series does not cover every bar of the grid")
+    return v
+
+
+def _season_mean(monthly: pd.Series, dates: pd.DatetimeIndex, months: Sequence[int] = (6, 7, 8, 9)) -> np.ndarray:
+    years = pd.DatetimeIndex(dates).year
+    out = np.empty(len(years))
+    for i, y in enumerate(years):
+        idx = [pd.Period(year=int(y), month=int(m), freq="M") for m in months]
+        out[i] = float(monthly.reindex(idx).mean(skipna=False))
+    if not np.isfinite(out).all():
+        raise BindingError("the sunspot series does not cover every season of the grid")
+    return out
+
+
+def _solar_cycle(plan: Mapping[str, Any], root: Path, notes: Dict[str, Any]) -> Optional[pd.Series]:
+    """The plan's pinned SILSO series, smoothed on its months; None (with a note) if absent.
+
+    Refuses a file whose bytes do not hash to the plan's pin (N-21). The
+    snapshot is hash-only (CC BY-NC), so a clone without it gets no
+    solar term and, conservatively, no baselines at all (_physical_baselines).
+    """
+    spec = plan.get("sunspot")
+    if not isinstance(spec, Mapping) or not spec.get("series_id"):
+        return None
+    snap = _snapshot(plan, str(spec["series_id"]))
+    if spec.get("sha256") and spec["sha256"] != snap.get("sha256"):
+        raise BindingError("the plan's sunspot sha256 differs from its pinned snapshot")
+    path = Path(root) / snap["file"]
+    if not path.is_file():
+        notes.setdefault("baselines_unavailable", {})["solar_cycle"] = (
+            f"{snap['file']} is not on disk (hash-only data)")
+        return None
+    from ..stats.manifest import file_sha256
+
+    if file_sha256(path) != snap["sha256"]:
+        raise BindingError(f"{path}: bytes do not hash to the plan's pinned SHA-256 (N-21)")
+    sm = solar_cycle_monthly(parse_silso_monthly(path.read_text(encoding="latin-1")))
+    notes["solar_cycle"] = {
+        "series_id": snap["id"], "months": [str(sm.index.min()), str(sm.index.max())],
+        "method": ("4th field of SN_m_tot_V2.0.csv; 13-month centred running mean on the monthly series "
+                   "(season.solar_cycle_baseline), then the value of each bar's month "
+                   "(June-September mean on a yearly grid)"),
+    }
+    return sm
+
+
+# ------------------------------------------------------ positive controls
+#: Plan direction of a control -> pipeline side.
+_CONTROL_KINDS = ("months", "weekday", "syzygy", "enso_phase")
+_WEEKDAYS = {"monday": 0, "tuesday": 1, "wednesday": 2, "thursday": 3, "friday": 4, "saturday": 5, "sunday": 6}
+CONTROL_PROBLEM = ("positive control: outside every batch (ADR-008 3.2 rule 9); run by the preview and the "
+                   "sealed run as the domain's control, never registered")
+_ELONG_TABLE: Dict[str, Any] = {}
+
+
+def _jd(instants: pd.DatetimeIndex) -> np.ndarray:
+    d = pd.DatetimeIndex(instants)
+    d = d.tz_convert("UTC").tz_localize(None) if d.tz is not None else d
+    return 2440587.5 + d.as_unit("ns").asi8 / 86_400e9
+
+
+def sun_moon_elongation(instants: pd.DatetimeIndex, step_hours: int = 6) -> np.ndarray:
+    """Moon minus Sun ecliptic longitude in degrees [0, 360) (0 new Moon, 180 full Moon).
+
+    Swiss Ephemeris (Moshier, no ephemeris file) on a 6-hour table, linearly
+    interpolated (the elongation moves about 3 degrees in 6 hours). The
+    difference does not depend on the ayanamsa. Reads no outcome.
+    """
+    import swisseph as swe
+
+    jd = _jd(instants)
+    if not len(jd):
+        return np.zeros(0)
+    lo, hi = float(np.floor(jd.min())) - 2.0, float(np.ceil(jd.max())) + 2.0
+    tab = _ELONG_TABLE.get("t")
+    if tab is None or tab[0][0] > lo or tab[0][-1] < hi:
+        if tab is not None:
+            lo, hi = min(lo, tab[0][0]), max(hi, tab[0][-1])
+        grid = np.arange(lo, hi + step_hours / 24.0, step_hours / 24.0)
+        flag = swe.FLG_MOSEPH
+        el = np.array([swe.calc_ut(t, swe.MOON, flag)[0][0] - swe.calc_ut(t, swe.SUN, flag)[0][0] for t in grid])
+        _ELONG_TABLE["t"] = (grid, np.unwrap(np.radians(el)))
+        tab = _ELONG_TABLE["t"]
+    return np.degrees(np.interp(jd, tab[0], tab[1])) % 360.0
+
+
+def _enso_anomaly_by_year(plan: Mapping[str, Any], root: Path) -> pd.Series:
+    """June-September mean Nino 3.4 minus its mean over the plan's phase_base_period (degrees C)."""
+    from ..domains.monsoon import parse_psl_monthly
+
+    e = plan["enso"]
+    snap = _snapshot(plan, e["series_id"])
+    df = parse_psl_monthly((Path(root) / snap["file"]).read_text(encoding="latin-1"))
+    jjas = df[["JUN", "JUL", "AUG", "SEP"]].mean(axis=1, skipna=False)
+    bp = e.get("phase_base_period") or {}
+    b0, b1 = pd.Timestamp(str(bp["start"])).year, pd.Timestamp(str(bp["end"])).year
+    base = jjas.loc[b0:b1]
+    if base.isna().any() or len(base) != b1 - b0 + 1:
+        raise BindingError("the ENSO base period is not covered by the pinned series")
+    return jjas - float(base.mean())
+
+
+class ControlCalendar:
+    """A positive control's calendar: a known non-astrological effect, outcome-free.
+
+    Kinds: "months" (calendar months of each bar, UTC), "weekday" (weekday
+    of each bar's date), "syzygy" (Sun-Moon elongation within orb_deg of 0
+    or 180 degrees: spring tides), "enso_phase" (years whose June-September
+    Nino 3.4 anomaly against the plan's base period is at or above
+    threshold_c; years outside the series are inactive).
+    """
+
+    def __init__(self, spec: Mapping[str, Any], plan: Mapping[str, Any], root: Path) -> None:
+        self.spec = dict(spec)
+        self.kind = str(spec.get("kind"))
+        if self.kind not in _CONTROL_KINDS:
+            raise BindingError(f"control {spec.get('id')}: kind {self.kind!r} is not one of {_CONTROL_KINDS}")
+        self._enso = _enso_anomaly_by_year(plan, root) if self.kind == "enso_phase" else None
+
+    def __call__(self, dates: pd.DatetimeIndex) -> np.ndarray:
+        d = pd.DatetimeIndex(dates)
+        d = d.tz_convert("UTC").tz_localize(None) if d.tz is not None else d
+        s = self.spec
+        if self.kind == "months":
+            return np.asarray(d.month.isin([int(m) for m in s["months"]]), dtype=bool)
+        if self.kind == "weekday":
+            days = [_WEEKDAYS[str(x).lower()] for x in s["days"]]
+            return np.asarray(d.day_of_week.isin(days), dtype=bool)
+        if self.kind == "syzygy":
+            e = sun_moon_elongation(d) % 180.0
+            return np.minimum(e, 180.0 - e) <= float(s["orb_deg"])
+        a = self._enso.reindex(d.year).to_numpy(float)
+        return np.where(np.isfinite(a), a, -np.inf) >= float(s["threshold_c"])
+
+
+def control_specs(plan: Mapping[str, Any]) -> List[Dict[str, Any]]:
+    pc = plan.get("positive_controls") or {}
+    return [dict(c) for c in (pc.get("controls") or [])] if isinstance(pc, Mapping) else []
+
+
+def _control_tests(plan: Mapping[str, Any], root: Path, outcomes: Mapping[str, Mapping[str, Any]],
+                   excluded: List["Excluded"]) -> List["BoundTest"]:
+    """The plan's positive controls as tests of role "control" (never registrable)."""
+    out: List[BoundTest] = []
+    for c in control_specs(plan):
+        cid = str(c.get("id") or "")
+        if not cid.startswith("control."):
+            raise BindingError(f"positive control id {cid!r} must start with 'control.'")
+        o = outcomes.get(str(c.get("outcome")))
+        if o is None:
+            raise BindingError(f"{cid}: the plan declares no outcome {c.get('outcome')!r}")
+        side = SIDES.get(str(c.get("direction")))
+        if side is None:
+            raise BindingError(f"{cid}: direction must be one of {sorted(SIDES)}")
+        t = _pl.TestDefinition(
+            rule_id=cid, version=int(c.get("version", 1)), outcome=o["id"], calendar=ControlCalendar(c, plan, root),
+            side=side, outcome_type=OUTCOME_TYPES[o["type"]], x_grid=[float(x) for x in o["grid_x"]],
+            name=str(c.get("name") or cid), level=0, rule=None, merge_gap=plan["merge_gap"],
+            guard_bars=int(o.get("guard_bars", plan["guard_bars"])), sesoi=None, base_rate=o.get("base_rate"),
+            noise_sd=o.get("noise_sd"), encoded=True, source_published=None, known_channel=str(c.get("source")),
+            placebo_kinds=tuple(plan.get("placebo_sets") or ("time_shift",)), entry="project",
+            market=str(o.get("market") or "not a market"), currency=str(o.get("currency") or "none"),
+        )
+        out.append(BoundTest(t, False, (CONTROL_PROBLEM,), "control"))
+    return out
+
+
+def evaluate_positive_controls(doc: Mapping[str, Any], plan: Mapping[str, Any]) -> Dict[str, Any]:
+    """Apply the plan's pass rule to the control rows of a preview (or run) document.
+
+    Each control is "detected" (explore p at or below the plan's alpha and
+    the statistic in the stated direction), "not_detected", "untestable"
+    (the outcome-free gate) or "not_run" (no row with numbers, e.g. the
+    monsoon firewall refused the outcomes). The gate control is the first
+    control in plan order whose gate is testable and that ran; the domain's
+    control is detected only if that one is. Nothing else is read.
+    """
+    pc = plan.get("positive_controls") or {}
+    alpha = float(pc.get("alpha", 0.05))
+    rows = {(r.get("rule_id"), r.get("outcome")): r for r in doc.get("records") or []}
+    out = []
+    gate = None
+    for c in control_specs(plan):
+        r = rows.get((c["id"], c["outcome"]))
+        side = SIDES[str(c["direction"])]
+        ex = (r or {}).get("explore") or {}
+        p, stat = ex.get("p_descriptive_uncorrected"), ex.get("statistic")
+        if r is None:
+            status = "not_run"
+        elif (r.get("gate") or {}).get("untestable"):
+            status = "untestable"
+        elif p is None or stat is None:
+            status = "not_run"
+        else:
+            sign_ok = (stat > 0) if side == "greater" else (stat < 0) if side == "less" else stat != 0
+            status = "detected" if (float(p) <= alpha and sign_ok) else "not_detected"
+        item = {"id": c["id"], "outcome": c["outcome"], "direction": c["direction"], "status": status,
+                "p_explore": p, "statistic": stat, "estimate": ex.get("estimate"),
+                "untestable_reason": (r or {}).get("gate", {}).get("untestable_reason") if r else None}
+        if r is not None and r.get("outcomes_refused"):
+            item["outcomes_refused"] = r["outcomes_refused"]
+        out.append(item)
+        if gate is None and status in ("detected", "not_detected"):
+            gate = item
+    detected = bool(gate is not None and gate["status"] == "detected")
+    return {"plan_sha256": _plan.plan_hash(plan), "alpha": alpha, "pass_rule": pc.get("pass_rule"),
+            "if_failed": pc.get("if_failed"), "controls": out, "gate_control": None if gate is None else gate["id"],
+            "detected": detected, "control_not_detected": not detected}
+
+
+def stored_control_status(plan_path: Path, plan: Mapping[str, Any], root: Path = REPO) -> Optional[Dict[str, Any]]:
+    """The evaluation stored in the domain's preview file for this exact plan hash, if any."""
+    f = Path(root) / "studies" / "validity" / "preview" / Path(plan_path).stem / "results.json"
+    if not f.is_file():
+        return None
+    try:
+        doc = json.loads(f.read_text(encoding="utf-8"))
+    except ValueError:
+        return None
+    st = doc.get("positive_controls")
+    if not isinstance(st, Mapping) or st.get("plan_sha256") != _plan.plan_hash(plan):
+        return None
+    return dict(st)
+
+
+def annotate_preview(path: Path, plan: Mapping[str, Any]) -> Dict[str, Any]:
+    """Write the control evaluation into a preview file (key "positive_controls"); returns it."""
+    doc = json.loads(Path(path).read_text(encoding="utf-8"))
+    st = evaluate_positive_controls(doc, plan)
+    doc["positive_controls"] = st
+    Path(path).write_text(json.dumps(doc, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return st
 
 
 def _earthquake(plan: Mapping[str, Any], root: Path, vintage: Mapping[str, Any]) -> _DomainParts:
@@ -596,8 +909,10 @@ def _earthquake(plan: Mapping[str, Any], root: Path, vintage: Mapping[str, Any])
     def cells_for(rf: RuleFile, exp) -> Dict[str, Callable]:
         return _rule_cells(rf, exp, lambda r: SkyCalendar(r, _utc, group=group))
 
-    return _DomainParts(adapter, calendar_for, cells_for, _physical_baselines(_baseline_ids(plan), notes), {},
-                        plan.get("detrend_window"), False, notes)
+    solar = _solar_cycle(plan, root, notes)
+    extra = {"solar_cycle": None if solar is None else (lambda dates, _s=solar: _month_lookup(_s, dates))}
+    return _DomainParts(adapter, calendar_for, cells_for, _physical_baselines(_baseline_ids(plan), notes, extra),
+                        {}, plan.get("detrend_window"), False, notes)
 
 
 def _gold(plan: Mapping[str, Any], root: Path, vintage: Mapping[str, Any]) -> _DomainParts:
@@ -716,8 +1031,11 @@ def _monsoon(plan: Mapping[str, Any], root: Path, vintage: Mapping[str, Any]) ->
             raise BindingError("the ENSO series does not cover every season of the grid")
         return v
 
+    solar = _solar_cycle(plan, root, notes)
+    extra = {"enso_nino34_jjas": enso,
+             "solar_cycle": None if solar is None else (lambda dates, _s=solar: _season_mean(_s, dates))}
     return _DomainParts(adapter, calendar_for, cells_for,
-                        _physical_baselines(_baseline_ids(plan), notes, {"enso_nino34_jjas": enso}), {},
+                        _physical_baselines(_baseline_ids(plan), notes, extra), {},
                         plan.get("detrend_window"), False, notes)
 
 
@@ -758,11 +1076,17 @@ def _detrend_problem(cal_fn: Callable, dates: pd.DatetimeIndex, t: _pl.TestDefin
 
 def bind(plan_path: Path, *, root: Path = REPO, rule_files: Optional[Dict[str, RuleFile]] = None,
          disputes: Optional[Sequence[str]] = None, n_domains: Optional[int] = None,
-         check_detrend: bool = True) -> DomainBinding:
+         check_detrend: bool = True, control_status: Optional[Mapping[str, Any]] = None) -> DomainBinding:
     """Build the run of one domain plan from the plan file and the rule files.
 
     Reads no outcome. Raises plan.PlanError for an invalid plan and
     BindingError when the plan names a domain with no adapter here.
+
+    control_status is an evaluate_positive_controls() result; by default the
+    one stored in the domain's preview file for this plan hash. Unless it
+    says the gate control was detected, a plan that declares positive
+    controls gets DomainRun.control_not_detected (every card carries the
+    flag). The evaluation reads only control rows, never a principle's.
     """
     root = Path(root)
     plan_path = Path(plan_path)
@@ -784,7 +1108,7 @@ def bind(plan_path: Path, *, root: Path = REPO, rule_files: Optional[Dict[str, R
         baselines=parts.baselines, plan=plan, disputes=tuple(disp),
         first_look_calendars=tuple(plan.get("first_look_calendars") or ()),
         pseudo_out_of_sample=bool(parts.adapter.periods().pseudo_out_of_sample),
-        control_not_detected=False,
+        control_not_detected=False,  # set below from the plan's positive controls
         domains_in_run_set=int(n_domains if n_domains is not None else max(len(plan_files(root)), 1)),
         detrend_window=None if parts.detrend_window is None else int(parts.detrend_window),
         missing_bars=dict(parts.missing),
@@ -861,9 +1185,21 @@ def bind(plan_path: Path, *, root: Path = REPO, rule_files: Optional[Dict[str, R
                     excluded.append(Excluded(rid, o["id"], "untestable", why, exp.variant))
                     continue
             tests.append(BoundTest(t, not problems, problems, exp.role, dict(lvl.missing)))
+    tests.extend(_control_tests(plan, root, {o["id"]: o for o in plan["outcomes"]}, excluded))
+    notes = dict(parts.notes)
+    not_detected = False
+    if control_specs(plan):
+        st = control_status if control_status is not None else stored_control_status(plan_path, plan, root)
+        not_detected = not (isinstance(st, Mapping) and st.get("detected") is True
+                            and st.get("plan_sha256") in (None, run.plan_sha256))
+        pc = plan.get("positive_controls") or {}
+        notes["positive_controls"] = {
+            "controls": [c["id"] for c in control_specs(plan)], "pass_rule": pc.get("pass_rule"),
+            "if_failed": pc.get("if_failed"), "evaluated": st is not None,
+            "control_not_detected": not_detected}
     out = DomainBinding(plan_path.stem, plan_path, plan, run.plan_sha256, parts.adapter, run, tests, excluded,
-                        rules, dict(parts.notes))
-    out.run = replace(run, sampling_frame=sampling_frame(out))
+                        rules, notes)
+    out.run = replace(run, sampling_frame=sampling_frame(out), control_not_detected=not_detected)
     return out
 
 
@@ -878,3 +1214,30 @@ def sampling_frame(binding: DomainBinding) -> Dict[str, int]:
         if not b.registrable and any(p.startswith("source.") for p in b.problems):
             out["not_sourced"].add(b.definition.rule_id)
     return {k: len(v) for k, v in out.items()}
+
+
+def _main(argv: Optional[Sequence[str]] = None) -> int:
+    """python -m vedic_astrology_core.validity.bindings controls: evaluate the controls of each preview file.
+
+    Reads studies/validity/preview/<plan>/results.json (written by
+    "astro-validity preview") and writes its "positive_controls" section.
+    """
+    import argparse
+
+    ap = argparse.ArgumentParser(prog="python -m vedic_astrology_core.validity.bindings")
+    ap.add_argument("command", choices=["controls"])
+    ap.add_argument("--root", type=Path, default=REPO)
+    args = ap.parse_args(argv)
+    for p in plan_files(args.root):
+        plan = load_domain_plan(p, args.root)
+        f = Path(args.root) / "studies" / "validity" / "preview" / p.stem / "results.json"
+        if not control_specs(plan) or not f.is_file():
+            continue
+        st = annotate_preview(f, plan)
+        print(f"{p.stem}: gate control {st['gate_control']}, detected {st['detected']}: "
+              + ", ".join(f"{c['id']} {c['status']} (p {c['p_explore']})" for c in st["controls"]))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(_main())

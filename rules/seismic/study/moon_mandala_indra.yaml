@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=../../schema.json
 # Moon in a Indra-mandala nakshatra: earthquake study indicator as a rule file.
 id: seismic.study.moon_mandala_indra
-version: 1
+version: 2
 name: Earthquake Moon in a Indra-mandala nakshatra
 domain: seismic
 claim: 'Moon in a Indra-mandala nakshatra: the rate of declustered Himalayan-arc earthquakes differs from
@@ -21,13 +21,40 @@ author: astro-research study plan (ported 2026-11-22)
 tier: experimental
 status: active
 conditions:
-  moon_mandala:
-    mandalas:
-    - indra
+  # Indra circle, Brihat Samhita 32.16 (Bhat tr. p. 301): Abhijit, Shravana, Dhanishtha, Rohini, Jyeshtha,
+  # Uttara Ashadha, Anuradha. Written as the Moon's sidereal longitude ranges so the Abhijit choice is a
+  # declared parameter (REVIEW_1 fix 6; operationalisation choice "abhijit"). The primary values are the
+  # boundaries of the 27 equal nakshatras: the same calendar as moon_mandala {mandalas: [indra]}
+  # (tests/test_validity_controls_baselines.py checks this bar for bar).
+  any:
+  - longitude_between: {planet: Moon, start: $rohini_start, end: $rohini_end}
+  - longitude_between: {planet: Moon, start: $anuradha_start, end: $jyeshtha_end}
+  - longitude_between: {planet: Moon, start: $uttarashadha_start, end: $dhanishta_end}
 expected_effect:
   event: earthquake
   direction: either
   fixed_by: project
+params:
+  # 27 equal nakshatras of 13 deg 20 min: Rohini (4th), Anuradha and Jyeshtha (17th, 18th), Uttara Ashadha
+  # to Dhanishtha (21st to 23rd). Abhijit's classical span lies inside the third range.
+  rohini_start: {value: 40.0, min: 38.0, max: 41.0, step: 0.5, unit: deg, range_source: "author's choice: 27 or 28 equal divisions of the sidereal zodiac (BS 32.16 names the members, not their spans)"}
+  rohini_end: {value: 53.333333333333336, min: 51.0, max: 54.0, step: 0.5, unit: deg, range_source: "author's choice: 27 or 28 equal divisions of the sidereal zodiac (BS 32.16 names the members, not their spans)"}
+  anuradha_start: {value: 213.33333333333334, min: 205.0, max: 214.0, step: 0.5, unit: deg, range_source: "author's choice: 27 or 28 equal divisions of the sidereal zodiac (BS 32.16 names the members, not their spans)"}
+  jyeshtha_end: {value: 240.0, min: 231.0, max: 241.0, step: 0.5, unit: deg, range_source: "author's choice: 27 or 28 equal divisions of the sidereal zodiac (BS 32.16 names the members, not their spans)"}
+  uttarashadha_start: {value: 266.6666666666667, min: 257.0, max: 267.0, step: 0.5, unit: deg, range_source: "author's choice: 27 or 28 equal divisions of the sidereal zodiac (BS 32.16 names the members, not their spans)"}
+  dhanishta_end: {value: 306.6666666666667, min: 306.0, max: 309.0, step: 0.5, unit: deg, range_source: "author's choice: 27 or 28 equal divisions of the sidereal zodiac (BS 32.16 names the members, not their spans)"}
+variants:
+- id: abhijit_28_equal
+  role: sensitivity
+  # 28 equal asterisms of 12 deg 51 min 26 s with Abhijit the 22nd: Rohini 4th, Anuradha and Jyeshtha 17th
+  # and 18th, Uttara Ashadha, Abhijit, Shravana, Dhanishtha 21st to 24th (7 of 28 asterisms).
+  params:
+    rohini_start: 38.57142857142857
+    rohini_end: 51.42857142857143
+    anuradha_start: 205.71428571428572
+    jyeshtha_end: 231.42857142857142
+    uttarashadha_start: 257.14285714285717
+    dhanishta_end: 308.57142857142856
 reference_cases:
 - moment: '2001-07-30T06:00:00Z'
   expect: fires
@@ -59,6 +86,16 @@ operationalisation:
   fixed_by: project
   alternatives:
   - 24 hours
+- choice: abhijit
+  value: >-
+    included with its classical span, 276 deg 40 min to 280 deg 53 min 20 s sidereal (the last quarter of
+    Uttara Ashadha and the first fifteenth of Shravana). Both of those nakshatras are Indra members, so on the
+    27 equal nakshatras including Abhijit changes no bar: the primary calendar is the 27-nakshatra Indra circle
+  fixed_by: project
+  alternatives:
+  - 28 equal asterisms with Abhijit the 22nd (sensitivity variant abhijit_28_equal)
+  - Abhijit dropped (the same calendar as the primary on 27 nakshatras)
+  note: Bhat's list (BS 32.16) names Abhijit; engine versions before 2 dropped it without saying so (REVIEW_1 fix 6).
 - choice: ayanamsa
   value: Lahiri
   fixed_by: project
