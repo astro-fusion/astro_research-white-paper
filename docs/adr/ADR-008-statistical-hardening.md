@@ -642,3 +642,152 @@ Until all hold, every number on real data is provisional and labelled so.
 A1 dropped every block with one active bar (a one-sided block was forbidden) and most edge episodes. That makes daily-event principles (tithi days, new/full moon, ingress days, eclipse days) Untestable by construction, which is a bias against testing exactly the principles practitioners use most.
 
 **Decision:** a block may take its equal-size control from ONE side when the other side is unavailable or when the active run is a single bar. The side is chosen before any outcome is read: alternate sides in calendar order, starting side fixed by the plan seed. Each control bar still lies within the gap-midpoint limit and outside guard bars, and is used by one block only. B1, B2, B3 and X1, X2 must pass at full size for daily-event calendars (new moon, tithi, eclipse window) under this rule, including a drift simulator (one-sided controls are sensitive to trend: the leave-year-out anomaly or detrending baseline must be applied first, and a drift case D1 must hold size).
+
+
+## Amendment A3 (2026-11-23): yearly-grid primary test, SESOI procedure, side rule and batch size
+
+Inputs: the explore previews (`studies/validity/preview/*/results.json`), the DIAG note in `core/validity/gate.py` (`_few_blocks_reason`), the draft domain plans, STRATEGY_AUDIT_2 (N-02, N-05). Scope unchanged: past data only.
+
+### A3.0 Findings
+
+1. **Yearly grids cannot use the block rule.** Mars in Rohini is active in 54% of the 69 monsoon seasons, mostly in alternate years. Every one-year gap is the odd middle bar of section 1.1 item 2, so neither neighbour gets a control year. 2 blocks are usable in the whole period and 1 in the confirm period. The other two monsoon rules keep 6 or 7 confirm blocks, and the one-sided sign-flip needs 8 at a_test = 0.04 / 7 = 0.0057 (2^-7 = 0.0078). So 7 of 7 monsoon tests are Untestable although 35 to 69 seasons exist.
+2. **No SESOI anywhere.** `sesoi_sources.yaml` is empty, so no test can limit. 15 of 42 gold tests and 4 of 7 monsoon tests have enough blocks to limit but cannot support, so "no SESOI" is the only reason they are Untestable.
+3. **Two-sided tests miss the threshold by a hair.** All gold rules have direction `either` (fixed by the project). At a_test = 0.04 / 42 = 9.52e-4 a two-sided sign-flip needs 12 blocks (2 x 2^-11 = 9.77e-4 is above the threshold). 15 of the 42 gold tests are Untestable for reasons that never depend on a_test (9 season, 6 too few episodes), yet they are counted in n_b.
+
+Four decisions follow. Each is one choice.
+
+| Id | Decision |
+|---|---|
+| H-8 | Yearly vintages use one **stratified year test with a dependence envelope** (the "year test"). The block rule is not applied to yearly grids. |
+| H-9 | Exclusion and X95 on yearly grids are effect removal followed by the year test. |
+| H-10 | One SESOI per (domain, outcome), chosen by a fixed order from candidates listed outside this ADR and checked at the page. |
+| H-11 | The side comes from the source only. A test pays one share of alpha whatever its side. Tests the calendar-only gate can never judge do not count in n_b. |
+
+### A3.1 The year test (H-8; replaces section 1.1 item 6)
+
+**Routing.** A vintage with `grain: yearly` uses the year test for every test and every outcome type. Every other grain uses the block test. The grain is a property of the data, so nobody chooses a method. This is not the routing table that S-08 deleted: there is no rule-by-rule choice.
+
+New module `core/stats/yearly.py`. The design step reads the calendar and the ENSO series only, never an outcome.
+
+**Design.**
+
+1. **Units.** The years of the tested period with a finite outcome. A year is active as the adapter defines it. Every year is used at most once.
+2. **Strata.** ENSO phase x epoch.
+   - ENSO phase from the plan's pinned Nino 3.4 series, June to September mean anomaly: cold at or below -0.5 C, warm at or above +0.5 C, neutral otherwise. The threshold is fixed here; the anomaly base period is a required plan key (`enso.phase_base_period`).
+   - Epoch: the two halves of the tested period by year count (an odd middle year goes to the earlier half).
+   - Collapse rule, from counts only: an ENSO phase with fewer than 2 active or fewer than 2 inactive years in either half loses its epoch split. A phase that still has fewer than 2 active or fewer than 2 inactive years is dropped with the reason `no_stratum_control`; its years are counted and printed.
+   - The Indian Ocean Dipole is **not** a stratum: no IOD series is pinned. When one is pinned it enters as a sensitivity cell, never as a change to the primary design of a closed batch.
+3. **Gate (G4 for yearly grids).** Used active years >= 8, used inactive years >= 8, and K_eff >= 8 where K_eff = (sum w)^2 / sum(w^2) over the runs of active years (w = years in the run, runs merged with the plan's `merge_gap`). Reasons: `too_few_years`, `too_few_episodes`. A calendar that is one long active stretch therefore stays Untestable (ADR-004 D-6 kept). R4 applies unchanged.
+4. **Outcome.** As in section 6.1: leave-year-out anomaly, then the plan's baselines removed by the pipeline's baseline-aware method (audit 2 N-02 fix).
+5. **Statistic and estimand.** `T = sum_s n1_s (mean_active_s - mean_inactive_s) / sum_s n1_s` over used strata s (n1_s = active years in s). Binary outcomes: the same form on the yes/no flags for the test; the card shows the pooled risk ratio. T is the estimate, the tested number, the X scale and the SESOI scale (S-06 kept). The card also prints the unstratified, no-baseline difference as the "without known channels" row (section 7.3).
+6. **Null distribution: prewhitened permutation, worst case over an envelope.** Let u_t = outcome minus the mean of its stratum (both arms together). For each rho in the fixed grid **G = {-0.3, -0.2, -0.1, 0, +0.1, +0.2, +0.3}**:
+   - innovations e_t = u_t - rho u_(t-1); the first year of each unbroken stretch has e_t = sqrt(1 - rho^2) u_t. The recursion runs over all finite years of the period, including years of dropped strata;
+   - draw B permutations of the innovations, rebuild u* by the same recursion, compute T* on the fixed calendar and strata;
+   - p_rho = (1 + number of T* at least as extreme as T on the plan's side) / (B + 1).
+   - **p = the largest p_rho over G.**
+   B = min(200,000, max(19,999, ceil(50 / a_test))), seeded as section 3.5 with purpose `yearperm`. Smallest attainable p = 1 / (B + 1); G5 uses it.
+7. **One-way safety check.** rho_hat = lag-1 autocorrelation of u over the tested period, printed on the card. If |rho_hat| > 0.3 + 1.645 / sqrt(N) the record gets the flag `dependence_outside_envelope` and S, C and E are impossible; numbers stay as "descriptive". The check can only remove a verdict, never grant one.
+8. **The envelope is fixed here, not in a plan.** Its outside basis is the published description of the all-India summer monsoon series as free of significant year-to-year persistence (Mooley and Parthasarathy 1984, Climatic Change 6, 287-301; the statement is to be verified at the page by the owner, H21). +-0.3 is wide against that. Changing G needs an amendment before any real yearly outcome is read through this test.
+
+**Why this is equal in spirit to the block test.**
+
+| Property of the block test | How the year test keeps it |
+|---|---|
+| No control is subtracted twice (S-02) | One stratified comparison; every year enters once; the null re-draws the whole series, so shared stratum means are accounted for. No per-episode differences are treated as independent. |
+| Size under skew | Innovations are permuted, not assumed Normal. |
+| Trend and epochs | Leave-year-out anomaly, baselines, epoch strata. |
+| ENSO | ENSO strata plus the ENSO baseline, so a calendar that happens to load on El Nino years gains nothing. |
+| Dependence between years | The largest p over AR(1) members from -0.3 to +0.3. The negative end covers the two-year (biennial) tendency, which is the real danger for calendars that alternate, such as Mars in Rohini. |
+| One method, no choice (S-08) | Grain decides. Envelope, strata, statistic and B are constants of this amendment. |
+
+**What it does not guarantee.** It is exact only if year-to-year dependence after strata and baselines is AR(1) inside the envelope and means are known. Means and baselines are estimated, so validity is shown by simulation, not claimed by argument. Dependence outside the envelope is reported (Y11) and caught only in part by item 7. The card prints: "Valid if the year-to-year dependence of the outcome, after ENSO and trend, is no stronger than lag-1 correlation 0.3 in either direction."
+
+**Rejected for this job.** (a) Giving the single gap year to one neighbour (the A2 rule): adjacent pairs are correlated with each other, and with lag-1 correlation -0.2 the true variance is about a quarter larger than the sign-flip assumes. (b) Free permutation of years: same fault; calendar-only arithmetic gives a true-to-assumed variance ratio of about 1.5 for a strictly alternating calendar at lag-1 -0.2. (c) Circular or whole-year shifts of the calendar as primary: at most N - 1 distinct shifts, so p cannot go below 1/34 or 1/69, above a_test; it stays R2. (d) Block permutation of years: with 34 years and blocks of 3 or 4 there are too few blocks and the joins bias the null. (e) A fitted AR(1) null: rho estimated from 34 values has standard error 0.17; a fixed envelope needs no estimate from the tested data.
+
+### A3.2 Exclusion and X95 on yearly grids (H-9; extends section 2)
+
+1. **Effect removal first.** An effect of size r is removed from the active years on the raw outcome scale, in the claimed direction, **before** the anomaly, the baselines and the strata are computed; the whole chain is re-run for each r (N-02). Continuous: shift by r. Yes/no per year: keep each "yes" in the arm the claim calls higher with probability 1/r, 199 nested thinnings, p = twice the median (section 2.2).
+2. **Test.** The year test, one-sided against the claim. p_ex(r) is again the largest p over G.
+3. **X95** = the smallest r on the plan's grid such that p_ex <= 0.05 at r and at every larger grid value (bisection between grid points). **X-strict** is the same at a_test. Defining it this way makes the limit monotone even if p_ex is not (YX4 checks that it is).
+4. **Two-sided claims.** Both directions must be excluded, each at the level in use (intersection-union, no halving). The printed X is the larger of the two limits.
+5. **Minimum-information rule.** Continuous: the gate of A3.1 item 3. Yes/no: the expected number of "yes" years in the smaller arm after thinning at r = SESOI, from the plan's base rate, must be at least 5 for X95 and at least ceil(log2(1 / a_test)) for X-strict; otherwise `unbounded: true`. With about 69 seasons and a drought rate near one in six, the drought-flag tests will mostly be unbounded. That is the honest answer.
+6. **"Not addressed" line** (section 2.3) uses K = number of active runs.
+7. The plan's `grid_x` must contain the SESOI and at least one value on each side of it (validator). The monsoon drought `base_rate: 0.5` is a placeholder; a plan with a drought SESOI must carry a base rate from a named publication.
+
+### A3.3 Proof test for the year test (certificate cases; nothing yearly runs on real data before they pass)
+
+`tests/test_stats_yearly.py` (fast) and the certificate suite. The simulators and cases are committed before `yearly.py` (section 4.4 rule). No effect planted unless stated. One-sided 5%, both sides tested separately. Pass mark "bound" = upper one-sided 95% Clopper-Pearson bound.
+
+Calendars (C): real, from the ephemeris through `tests/simulators.yearly_calendars`: Mars in Rohini in the season window; malefic weekday lord at the Ardra ingress; the Varsheshvara rule; Saturn in one sign; Jupiter in one sign; Rahu in one sign. Synthetic: strict alternation; Bernoulli(0.4); three years on, four off. Record lengths N = 34, 69, 146. ENSO driver: simulated, and the pinned Nino 3.4 series where the case says "real driver" (it is a baseline input, not an outcome).
+
+| Case | Outcome generator (standard deviation 10 points unless stated) | Replications | Pass |
+|---|---|---|---|
+| Y1 Independent | Normal | 10,000 per calendar and N | bound <= 0.06 |
+| Y2 Skew | Mirrored Lognormal(0, 1) (long dry tail); mirrored Exponential(1); drought flag = Y1 value below its 15% point | 10,000 | bound <= 0.06 |
+| Y3 AR(1) inside the envelope | lag-1 -0.3, -0.15, +0.15, +0.3 | 10,000 | bound <= 0.06 |
+| Y4 Biennial tendency | AR(2) with spectral peak at 2.3 years and lag-1 correlation -0.25; Normal plus an alternating +-3 points whose phase flips with probability 0.15 a year | 10,000 | bound <= 0.06, on the strict-alternation and Mars calendars in particular |
+| Y5 ENSO-driven dependence | Z3 generator (ENSO-like driver worth 4 points per standard deviation). (a) driver seen by the test; (b) test sees a proxy correlated 0.7 with the driver; (c) asymmetric: warm years -8, cold years +3; (d) driver with a 4-year quasi-cycle; (e) real driver | 10,000 | bound <= 0.06 |
+| Y6 Trend and epoch | Linear trend of 1 standard deviation over the record; 31-year wave of amplitude 0.5; level step of 0.5 at two thirds of the record (a splice) | 10,000 | bound <= 0.06 |
+| Y7 Calendar tied to ENSO | Synthetic calendars with `baseline_r2` 0.14, 0.29, 0.39 against the driver (the N-02 values); Y5(a) outcome | 10,000 | bound <= 0.06 for every value that passes R4 |
+| Y8 Tail, at the level verdicts use | Y1, Y3 at +-0.3, Y4, Y5(a); Mars and Ardra-weekday calendars; N = 34 and 69; nominal level 0.005; production B | 40,000 | bound <= 0.0065 (about 233 rejections or fewer) |
+| Y9 Design properties | every case | once | Each year in one stratum and used once; strata, drops and gate identical when outcomes are shuffled (spy: the design reads no outcome); numbers of test A byte-identical when test B is added |
+| Y10 Naive designs fail (documented) | (a) gap-midpoint block rule on strict alternation; (b) free permutation, no strata, on Y4 with strict alternation; (c) the same on Y7 at 0.39 | 10,000 | (a) at most 2 usable blocks; (b) and (c) rejection rate above 0.07. These keep the reason for the design on record |
+| Y11 Outside the envelope (reported, not a gate) | AR(1) at +-0.5; long memory (fractional d = 0.2) | 10,000 | Rates and the share of runs where `dependence_outside_envelope` fires are stored in the certificate and shown on the methods page next to the validity sentence |
+| Y12 Power | Constant effect of twice the gate's minimal detectable effect, tests the gate calls supportable | 1,000 | S in at least 80% (W1). Also reported, no gate: rejection rate under Y1 on the Bernoulli calendar (the cost of the envelope) |
+| YX1 False exclusion | Y1 to Y7 generators with a steady effect planted in the active years; simulation SESOI 0.5 and 1 standard deviation | 10,000 | false "excluded" at r = SESOI: bound <= 0.06 |
+| YX2 Yes/no | Drought flag, base rate 15%, risk ratio 1.5 and 2.0 planted | 10,000 | bound <= 0.06; an "excluded" where A3.2 item 5 says unbounded counts as a failure |
+| YX3 Coverage | YX1, YX2; true effect 0, half, one and two times the SESOI | 10,000 | share of runs with X95 below the true effect: bound <= 0.06 at every value |
+| YX4 Monotone | all | property | p_ex never increases as r grows over the grid; if it does anywhere, the case is listed and the item 3 definition of X95 is what protects the limit |
+| YX5 Uneven effect (reported) | whole effect in 20% of active runs | 10,000 | stored and shown, no pass mark (as X9) |
+| YX6 Families | 2,000 null families of the 7 monsoon tests on their real calendars, whole pipeline | 2,000 | any S: bound <= 0.06; any false E at the SESOI: bound <= 0.06 |
+
+Fast subset for every pull request: 400 replications, cases Y1, Y4, YX1, pass at or below 0.085. Calibration cells at the 5% level may use B = 1,999; Y8 uses the production B.
+
+Z3 (section 6.3) is re-run through the year test and keeps its pass mark.
+
+**If a gate case fails:** every yearly test is Untestable with the reason `no_certified_yearly_test`. The envelope, the strata or the statistic may then be changed only by a further amendment, argued from the simulations, never from a real outcome.
+
+### A3.4 SESOI procedure (H-10; tightens section 7.2)
+
+1. **One SESOI per (domain, outcome).** Every test on that outcome uses it. No per-test value.
+2. **Order.** (i) The rule's own source prints a size: that size, for that rule only (7.2 rule 1). (ii) Otherwise the domain yardstick. When several publications qualify, the order is: same market, arc or region as the tested series; then a sample period that overlaps the tested period; then the earliest publication. The owner records the choice in `OWNER_DECISIONS.md` before the batch closes.
+3. **Candidates** are listed in [SESOI_PROPOSAL.md](../research/SESOI_PROPOSAL.md) with their outside basis. That file holds proposals only. Nothing enters `sesoi_sources.yaml` until the owner has read the number at the page (H18) and filled `page`, `number_as_printed`, `checker`, `date`. This ADR still writes no SESOI number.
+4. **A category boundary is not an effect size.** An official band (for example a meteorological "deficient" class) may be used only when the source's own words name that class; it then enters under rule (i) with the quotation, and the band's publication is cited for the number.
+5. **Kinds.** `SESOI_KINDS` gains `daily_volatility`, `extreme_move_risk`, `monsoon_drought_risk`. An outcome with no candidate of its kind keeps `sesoi: null` and shows X95 and X-strict only.
+6. **Seen vintages.** On a vintage marked `seen: true` the project knows the answer, so the order of item 2 is applied mechanically and the owner may reject a candidate but not prefer a later one over an earlier qualifying one.
+
+### A3.5 Side and the family budget (H-11; amends sections 1.1 item 10 and 3.2)
+
+1. **The side comes from the source, never from the gate.** A test is one-sided if and only if its rule states `increase` or `decrease`, that direction is `fixed_by: source` or `fixed_by: practitioner`, the quotation is in the rule file with its page (or an opened page with the date it was read), and the rule is not in the disputes list. Otherwise it is two-sided.
+2. **So: yes, a test whose source states a direction is registered one-sided in that direction, and it is so always, not only when the two-sided p is out of reach.** A test whose source states no direction stays two-sided; if its smallest attainable p is above a_test it is limit-only. Nothing may be switched to one-sided because the two-sided threshold cannot be met.
+3. **A direction fixed by the project is two-sided.** Today that covers both weekday-lord monsoon rules (`fixed_by: project`) and, until a maintainer has opened the page and stored the quotation, Mars in Rohini. It also covers every gold rule (`either`). The seismic rules with `increase` are checked the same way at registration.
+4. **Budget.** A test pays one share, alpha_b / n_b, whatever its side. One-sided: S needs p_sup <= a_test in the claimed direction; C needs p_opp <= a_test. Two-sided: the two-sided p <= a_test gives S with the wording "differs"; C does not exist. The per-domain, per-verdict-type guarantee of section 3.3 is unchanged. A one-sided test gets twice the per-tail level of a two-sided one; that is the fair price of a direction stated in advance by someone else.
+5. **One (calendar hash, outcome) is one test with one side.** Registering the two directions of an `either` rule as two tests is refused at registration (same lineage key).
+6. **n_b counts only tests that can ever be judged.** At batch close the calendar-only gate is run once. A test that fails it for a reason that does not depend on a_test (`season`, `too_few_episodes`, `too_few_years`, `no_clean_control` with every block dropped, `not_encoded`, `not_operationalised`, `data_quality`, `chart_time`) is written into the batch with `a_test: null` and verdict U, final for that vintage, and is not counted in n_b. Tests that fail only for `p_not_attainable`, `too_little_information`, `too_few_events` or `no_sesoi` **are** counted. One pass, no iteration, so a_test cannot be tuned by dropping tests. This is valid because the gate reads no outcome, and a test that can return only U cannot make an error.
+7. **What it changes, by block count** (K_eff decides in the end): gold n_b goes from 42 to 27 and a_test from 9.5e-4 to 1.48e-3; the two-sided test then needs 11 blocks, not 12, which moves the six Jupiter-combust and Saturn-retrograde tests (11 confirm blocks) to "can support". The nine tests with 5 to 10 confirm blocks stay limit-only and need a SESOI to say anything.
+
+Proof test: verdict table rows for each side and fixed_by value; register refuses a one-sided test without quotation and the split of an `either` rule; **F9**: 2,000 null families of 42 tests with 15 gate-U tests left out of n_b, any S: bound <= 0.06; the batch record of a gate-U test has no a_test and cannot be S, C or E in any later run on that vintage.
+
+### A3.6 Consequences
+
+- The monsoon vintage is `seen: true`, so S and C stay impossible there. The year test gives monsoon its estimates, X95, X-strict and, with a checked SESOI, E. Support needs a fresh or never-opened yearly vintage.
+- With every monsoon direction two-sided for now, exclusion needs both directions ruled out. Sourcing the direction (H11) is what makes the tests one-sided.
+- The envelope costs power on calendars that alternate. The cost is printed (Y12) and is the price of holding size.
+- Gold stays two-sided throughout, because no gold rule has a sourced direction.
+
+### A3.7 Owner decisions and packages
+
+| Id | Decision | Default |
+|---|---|---|
+| H18 | Check each SESOI candidate at the page; choose by A3.4 item 2 | none; without it no E |
+| H21 (new) | Envelope +-0.3, ENSO threshold 0.5 C, two epoch halves; read the persistence statement at the page | as A3.1 |
+| H22 (new) | Side rule and n_b counting of A3.5 (extends H20) | as A3.5 |
+
+| Package | Files | Acceptance | Owner |
+|---|---|---|---|
+| WP-100 Yearly simulators and cases | `tests/simulators.py`, `tests/test_stats_yearly.py` (new), certificate case list | Generators of Y1 to Y11 proven against their stated moments; cases fail against a stub. Committed before WP-101 | Sonnet |
+| WP-101 Year test and yearly exclusion | `core/stats/yearly.py` (new), `core/stats/exclusion.py` | A3.1, A3.2; Y and YX cases at full size | Opus (subtle: null validity under dependence) |
+| WP-102 Routing, gate, side, n_b | `core/validity/{gate,pipeline,bindings,family,verdict}.py`, their tests | Grain routing; yearly G4 and G5; A3.5 items 1 to 6; F9; flag `dependence_outside_envelope` | Opus (subtle: multiplicity and eligibility) |
+| WP-103 Plan and SESOI validator | `core/validity/plan.py`, `studies/validity/domains/*.yaml`, `sesoi_sources.yaml` header | A3.2 item 7, A3.4 items 1, 4, 5; `enso.phase_base_period` required for yearly plans | Sonnet |
+
+Order: WP-100, then WP-101 and WP-103 together, then WP-102, then `make calibrate` once in the main session.
