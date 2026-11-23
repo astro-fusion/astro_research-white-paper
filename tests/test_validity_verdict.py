@@ -612,3 +612,32 @@ def test_validity_does_not_import_deprecated_functions():
                 assert not (node.module or "").endswith("equivalence")
             if isinstance(node, ast.Import):
                 assert not any(a.name.endswith("equivalence") for a in node.names)
+
+
+# ------------------------------------------ second strategy audit (WIRE package)
+def test_n18_r3_not_run_is_flagged_and_printed():
+    """N-18: R3 with no distinct cell counts as passed, but the card says it was not run."""
+    v = run(p_sup=A, r3_status="not_run", r3_n_cells=0)
+    assert v.code == "S"  # no pass threshold changed
+    assert "sensitivity_not_run" in v.flags
+    assert "Sensitivity-grid check not run: no sensitivity cell was declared." in v.lines
+    v = run(r3_status="not_run", r3_n_cells=3)
+    assert "sensitivity_not_run" in v.flags
+    assert ("Sensitivity-grid check not run: none of the 3 declared cells changes at least 5% of the "
+            "active bars.") in v.lines
+    assert S.disallowed(v.lines) == []
+    assert "sensitivity_not_run" not in run(p_sup=A, r3_status="pass", r3_n_cells=2).flags
+    u = run(can_support=False, can_limit=False, r3_status="not_run", r3_n_cells=0)
+    assert u.code == "U" and "sensitivity_not_run" not in u.flags
+
+
+def test_n25_e_with_unbounded_x_strict_does_not_print_no_family_bound():
+    """N-25: an E card never says "no family-level bound" beside "excluded above"."""
+    v = run(p_ex=A, x_strict=lim(None, A))
+    assert v.code == "E"
+    assert v.words == "Effect excluded above 0.0025"  # the SESOI
+    assert "There is no family-level bound." not in v.lines
+    assert ("With the family guarantee, a steady effect at the project's threshold of 0.0025 is ruled out; "
+            "the plan's grid gives no other family-level bound.") in v.lines
+    assert S.disallowed(v.lines) == []
+    assert "There is no family-level bound." in run(x_strict=lim(None, A)).lines  # N keeps the old line

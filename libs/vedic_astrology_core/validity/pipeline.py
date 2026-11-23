@@ -24,12 +24,17 @@ in one fixed order and adds no statistic of its own:
     and log-ratio outcomes are detrended by a centred running mean over the
     plan's ``detrend_window`` before any block statistic (A2: one-sided
     controls are sensitive to trend). Without a declared window such a run
-    stops before any outcome is read. Exclusion removes the effect in the
-    shape the detrending gives it (stats/exclusion.py effect_shape).
+    stops before any outcome is read. Each period (explore, confirm) is
+    detrended on its own (audit-2 N-22). Exclusion removes the effect in the
+    shape the baseline regression and the detrending give it
+    (stats/season.py effect_shape, audit-2 N-02).
 4.  Exclusion by effect removal (stats/exclusion.py): p_ex, X95 and X-strict
     at the test's a_test.
-5.  Robustness R1 to R4 (validity/robustness.py): baselines, placebo skies,
-    declared sensitivity cells, separability.
+5.  Robustness R1 to R4 (validity/robustness.py): baselines, placebo skies
+    (whole-year shifts on yearly grids, N-07), declared sensitivity cells,
+    separability. Fewer distinct placebo skies than R2 needs makes the test
+    "limit only" in the verdict (N-07); an R3 that was not run is printed
+    as such (N-18).
 6.  Verdict, a pure function (validity/verdict.py).
 7.  Limitations box (validity/limitations.py).
 8.  Result records: the keys of schema validity-report-input/1
@@ -423,26 +428,66 @@ def _and(a: np.ndarray, avail: Optional[np.ndarray]) -> np.ndarray:
     return a if avail is None else (a & avail)
 
 
-def _effect_shape(p: _Prepared, run: DomainRun, finite: np.ndarray) -> np.ndarray:
-    return _season.detrended_effect_shape(p.calendar, int(run.detrend_window), finite)
+def _segments(explore: np.ndarray, confirm: np.ndarray) -> np.ndarray:
+    """N-22: one label per bar (0 explore, 1 confirm, 2 neither) for the centred detrend.
+
+    Each period is detrended on its own, so no running mean mixes explore and
+    confirm bars and the explore numbers of a provisional run equal those of
+    the confirm run.
+    """
+    return np.where(explore, 0, np.where(confirm, 1, 2))
 
 
-def _check_detrending(p: _Prepared, dates: pd.DatetimeIndex, run: DomainRun) -> None:
-    """Before any outcome: a window is declared and no used block is absorbed by it."""
+def _residualised(p: _Prepared, B: Optional[np.ndarray]) -> bool:
+    """The outcome of this test is regressed on the domain's baselines (continuous, log-ratio)."""
+    return B is not None and p.test.outcome_type in ("continuous", "log_ratio")
+
+
+def _effect_shape(p: _Prepared, run: DomainRun, finite: np.ndarray, B: Optional[np.ndarray],
+                  segments: np.ndarray) -> Optional[np.ndarray]:
+    """What a steady effect of size 1 becomes after every linear step the outcome went through.
+
+    N-02: the active-bar indicator is put through the same baseline regression
+    (over the same bars) and the same segmented centred detrend as the
+    outcome (core/stats/season.py effect_shape), so exclusion removes exactly
+    the effect the residual outcome carries. None: no step applies (flat removal).
+    """
+    return _season.effect_shape(p.calendar, baselines=B if _residualised(p, B) else None,
+                                detrend_window=int(run.detrend_window) if p.detrend else None,
+                                finite=finite, segments=segments if p.detrend else None)
+
+
+def _check_detrending(p: _Prepared, dates: pd.DatetimeIndex, run: DomainRun, explore: np.ndarray,
+                      confirm: np.ndarray, confirm_open: bool) -> None:
+    """Before any outcome: a window is declared and no used block is absorbed by it.
+
+    Checked on the whole available period and, without a confirm handle, on
+    the explore design exclusion will use, with the segmented detrend (N-22).
+    The detrend alone decides the stop (a window too short for the active
+    runs is a plan error); where the baselines absorb a block's effect
+    (N-02), exclusion itself reports no limit (stats/exclusion.py
+    REASON_SHAPE_NOT_POSITIVE), so that test keeps no E and no X and the
+    other tests of the domain still run.
+    """
     if not p.detrend or p.gate is None or p.gate.untestable:
         return
     if run.detrend_window is None:
         raise PipelineError(f"{p.test.test_id}: a daily or hourly outcome needs the plan's detrend_window "
                             "(ADR-008 A2); run stopped before any outcome was read")
-    try:
-        sd = _design(p.calendar, dates, p.test, p.available, run.plan_seed)
-        fin = np.ones(len(dates), dtype=bool) if p.available is None else p.available
-        c = _exclusion.shape_contrasts(sd.blocks, _effect_shape(p, run, fin))
-    except ValueError as exc:
-        raise PipelineError(f"{p.test.test_id}: detrending: {exc}; run stopped") from exc
-    if len(c) and not (c > 0).all():
-        raise PipelineError(f"{p.test.test_id}: the detrend_window {run.detrend_window} absorbs a used "
-                            "block's active run (effect shape not positive); run stopped")
+    seg = _segments(explore, confirm)
+    full = np.ones(len(dates), dtype=bool) if p.available is None else p.available
+    bars = [(p.available, full)]
+    if not confirm_open:
+        bars.append((_and(explore, p.available), _and(explore, full)))
+    for avail, fin in bars:
+        try:
+            sd = _design(p.calendar, dates, p.test, avail, run.plan_seed)
+            c = _exclusion.shape_contrasts(sd.blocks, _effect_shape(p, run, fin, None, seg))
+        except ValueError as exc:
+            raise PipelineError(f"{p.test.test_id}: detrending: {exc}; run stopped") from exc
+        if len(c) and not (c > 0).all():
+            raise PipelineError(f"{p.test.test_id}: the detrend_window {run.detrend_window} absorbs a used "
+                                "block's active run (effect shape not positive); run stopped")
 
 
 def _primary(design: _blocks.BlockDesign, y: np.ndarray, t: TestDefinition, side: str,
@@ -490,7 +535,7 @@ def _placebo_skies(cal: np.ndarray, dates: pd.DatetimeIndex, t: TestDefinition, 
     tried. Whole-year skies are a fixed set and are not replaced.
     """
     rng = stream_rng(plan_seed, t.test_id, "placebo")
-    plan = _rob.time_shift_plan(season_linked, rng)
+    plan = _rob.time_shift_plan(season_linked, rng, dates=dates)  # N-07: yearly grids shift whole years
     queue = list(plan["shifts"])
     used = set(queue)
     skies: List[Tuple[str, _blocks.BlockDesign, float]] = []
@@ -634,6 +679,9 @@ def _compute(p: _Prepared, dates: pd.DatetimeIndex, y_raw: np.ndarray, B: Option
     vin: Dict[str, Any] = {}
     rob_passed: Dict[str, bool] = {}
     r2_status: Optional[str] = None
+    r3_status: Optional[str] = None
+    r3_cells: Optional[int] = None
+    few_skies = False
     if not g.untestable:
         finite = np.isfinite(y_raw)
         avail_full = p.available
@@ -645,17 +693,17 @@ def _compute(p: _Prepared, dates: pd.DatetimeIndex, y_raw: np.ndarray, B: Option
                 f"{t.test_id}: outcome {t.outcome!r} is missing on {undeclared} bar(s) the plan's "
                 f"missing_bars does not declare and has values on {extra} declared-missing or unreadable "
                 "bar(s); the gate's blocks would differ from the test's (S-15); run stopped")
-        y_with = y_raw
-        if t.outcome_type in ("continuous", "log_ratio") and B is not None:
-            y_with = _season.remove_baselines(y_raw, B)
+        residualised = _residualised(p, B)
+        y_with = _season.remove_baselines(y_raw, B) if residualised else y_raw
         y_with = np.where(finite, y_with, np.nan)
         y_without = np.where(finite, y_raw, np.nan)
-        shape = None
-        if p.detrend:  # A2: centred running mean before every block statistic
+        seg = _segments(explore, confirm)
+        if p.detrend:  # A2: centred running mean before every block statistic, per period (N-22)
             w = int(run.detrend_window)
-            y_with = _season.centred_detrend(y_with, w)
-            y_without = _season.centred_detrend(y_without, w)
-            shape = _effect_shape(p, run, finite)
+            y_with = _season.centred_detrend(y_with, w, segments=seg)
+            y_without = _season.centred_detrend(y_without, w, segments=seg)
+        # N-02: the effect in the shape the baseline regression and the detrend give it.
+        shape = _effect_shape(p, run, finite, B, seg)
         # CALIBRATION-FIX: the outcome as read; a block whose raw values are all
         # equal has d_k = 0 whatever residue baselines or detrending left there.
         raw = np.where(finite, y_raw, np.nan)
@@ -688,6 +736,12 @@ def _compute(p: _Prepared, dates: pd.DatetimeIndex, y_raw: np.ndarray, B: Option
                                  res_full, B, sd_full.season_linked, run, raw)
         rob_passed = rob.passed()
         r2_status = None if rob.r2 is None else rob.r2.status
+        if rob.r3 is not None:  # N-18: a sensitivity check that was not run is printed as such
+            r3_status, r3_cells = rob.r3.status, int(rob.r3.n_cells)
+        # N-07: fewer distinct placebo skies than R2 needs (counted from calendars only):
+        # Supported is out of reach by construction, so the card says "limit only".
+        few_skies = (rob.r2 is not None and rob.r2.n_distinct is not None
+                     and int(rob.r2.n_distinct) < _rob.MIN_DISTINCT_PLACEBOS)
         vin = dict(
             p_sup=res_conf.p_value if res_conf is not None and res_conf.n_used else None,
             p_opp=res_opp.p_value if confirm_open and res_opp is not None else None,
@@ -718,9 +772,10 @@ def _compute(p: _Prepared, dates: pd.DatetimeIndex, y_raw: np.ndarray, B: Option
     per = run.vintage.get("confirm_period") if isinstance(run.vintage, Mapping) else None
     v = verdict(VerdictInput(
         level=int(t.level), eligibility=p.eligibility, side=side,
-        can_support=g.can_support, can_limit=g.can_limit, all_blocks_dropped=g.all_blocks_dropped,
+        can_support=bool(g.can_support and not (few_skies and g.can_limit)), can_limit=g.can_limit,
+        all_blocks_dropped=g.all_blocks_dropped,
         untestable_reason=g.untestable_reason, direction_disputed=t.direction_disputed,
-        robustness=rob_passed, r2_status=r2_status,
+        robustness=rob_passed, r2_status=r2_status, r3_status=r3_status, r3_n_cells=r3_cells,
         source_published=t.source_published,
         confirm_start=per.get("start") if isinstance(per, Mapping) else None,
         sesoi=t.sesoi, support_underpowered=g.support_underpowered,
@@ -893,12 +948,17 @@ def run_domain(
             "schema": DOMAIN_GATE_SCHEMA, "domain": run.domain, "plan_sha256": run.plan_sha256,
             "dataset_sha256": ds.sha256, "vintage": dict(run.vintage), "tests": gate_index}))
         for p in prepared:
-            _check_detrending(p, dates, run)  # A2, still before any outcome is read
+            _check_detrending(p, dates, run, explore, confirm, confirm_open)  # A2, before any outcome is read
             p.input_sha256 = _input_hash(p, ds.sha256, run)
 
         reuse = _reusable_batches(lock, prev)
         todo = [p for p in prepared
                 if not (lock.test_record(p.test.test_id)["batch"] in reuse and p.test.test_id in prev_records)]
+        # N-10 (iii): every stop that the stored records can cause comes before the outcome read.
+        for p in prepared:
+            if p not in todo and prev_records[p.test.test_id].get("input_sha256") != p.input_sha256:
+                raise ReproductionError(f"{p.test.test_id}: inputs changed for a closed batch whose results "
+                                        "are recorded; run stopped before any outcome was read")
         y_by_outcome: Dict[str, np.ndarray] = {}
         if any(not p.gate.untestable for p in todo):
             raw = g_adapter.outcomes(domain_gate)  # step 2b: only now, after every gate file
@@ -930,7 +990,10 @@ def run_domain(
             rec = _record(p, _compute(p, dates, y, B, explore, confirm, confirm_open, run), ds, run,
                           confirm_open, lock)
             old = prev_records.get(tid)
+            # N-10 (iii): a record of the other kind (provisional against confirm) is not a
+            # reproduction of this run: explore rows only give other numbers by design.
             if old is not None and old.get("input_sha256") == p.input_sha256 \
+                    and bool(old.get("confirm_open")) == bool(confirm_open) \
                     and canonical_bytes(old) != canonical_bytes(rec):
                 raise ReproductionError(f"{tid}: unchanged inputs did not reproduce the stored record; run stopped")
             records.append(rec)

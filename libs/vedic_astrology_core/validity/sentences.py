@@ -139,6 +139,12 @@ TEMPLATES: Dict[str, str] = {
     # ---- limits (S-11, G-11, section 2.3)
     "x_strict.value": "With the family guarantee, a steady effect above {x} is ruled out.",
     "x_strict.unbounded": "There is no family-level bound.",
+    # N-25: verdict E whose X-strict found no value on the plan's grid; the exclusion at the SESOI
+    # carries the family guarantee by itself.
+    "x_strict.sesoi_only": (
+        "With the family guarantee, a steady effect at the project's threshold of {x} is ruled out; "
+        "the plan's grid gives no other family-level bound."
+    ),
     "x95.value": "Per-test value: a steady effect above {x} is ruled out at the 95% level.",
     "x95.unbounded": "Per-test value: no bound.",
     "ruled_out": "Ruled out: a steady effect of {x} or more in every episode.",
@@ -173,6 +179,11 @@ TEMPLATES: Dict[str, str] = {
     "flag.tuned": "The tested version came from tuning; the cells tried are shown.",
     "flag.pseudo_out_of_sample": "The confirm period had been seen before the run.",
     "flag.control_not_detected": "The method did not detect the planted control effect of this domain.",
+    # N-18: R3 passes when no distinct cell exists; the card says it was not run.
+    "flag.sensitivity_not_run": "Sensitivity-grid check not run: no sensitivity cell was declared.",
+    "flag.sensitivity_not_run.copies": (
+        "Sensitivity-grid check not run: none of the {n} declared cells changes at least 5% of the active bars."
+    ),
     "flag.recomputed_after_confirm": (
         "Recomputed once after an engine fix; both results are shown and {n} calendar bars changed."
     ),

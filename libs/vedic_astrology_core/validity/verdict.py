@@ -41,7 +41,10 @@ Conservative readings chosen where the ADR leaves a gap:
   the confirm start's year.
 * The E verdict words cite X-strict; when X-strict is unbounded the SESOI is
   printed (p_ex <= a_test rules out a steady effect at the SESOI with the
-  family guarantee).
+  family guarantee), and the X-strict line says so instead of "There is no
+  family-level bound" (second strategy audit N-25).
+* R3 with no distinct declared cell counts as passed (no threshold changed)
+  but the card carries the flag sensitivity_not_run with its reason (N-18).
 
 Flags (ADR-007's six stay; ADR-008 adds the rest): FLAGS. Words follow the
 level (section 7.1) through core/validity/sentences.py; every line a verdict
@@ -99,6 +102,8 @@ FLAGS: Tuple[str, ...] = (
     "project_extension",
     "reading_differs",
     "recomputed_after_confirm",
+    # second strategy audit N-18: R3 counted as passed with no distinct cell
+    "sensitivity_not_run",
     # eligibility rows of core/validity/family.py
     "batch_open",
     "not_batch_vintage",
@@ -127,6 +132,8 @@ class VerdictInput:
     side: "greater", "less" or "two-sided" (the claimed direction).
     robustness: R1..R4 to pass/fail; a missing key fails.
     r2_status: the R2 status; "insufficient_placebos" prints "check not possible" instead of "failed".
+    r3_status, r3_n_cells: the R3 status and the number of declared cells; "not_run" (no
+        distinct cell) adds the flag sensitivity_not_run (N-18), R3 still counts as passed.
     estimate_magnitude: the confirm estimate on the SESOI's scale, signed so
         that a larger value is further in the claimed direction (for
         below_sesoi only).
@@ -147,6 +154,8 @@ class VerdictInput:
     explore_same_sign: Optional[bool] = None
     robustness: Mapping[str, bool] = field(default_factory=dict)
     r2_status: Optional[str] = None
+    r3_status: Optional[str] = None
+    r3_n_cells: Optional[int] = None
     source_published: DateLike = None
     confirm_start: DateLike = None
     sesoi: Optional[float] = None
@@ -337,6 +346,8 @@ def verdict(inp: VerdictInput) -> Verdict:
             flags.append(name)
     if inp.recomputed_bars_changed is not None:
         flags.append("recomputed_after_confirm")
+    if inp.r3_status == "not_run" and not untestable:
+        flags.append("sensitivity_not_run")
 
     code = "N"
     if untestable:
@@ -402,8 +413,12 @@ def _lines(code: str, inp: VerdictInput, flags: Tuple[str, ...], failed: Tuple[s
     if code != "U":
         # X-strict carries the family guarantee; X95 is the per-test value (S-11).
         if inp.x_strict is not None:
-            lines.append(_s.render("x_strict.value", x=_s.fmt_number(xs)) if xs is not None
-                         else _s.render("x_strict.unbounded"))
+            if xs is not None:
+                lines.append(_s.render("x_strict.value", x=_s.fmt_number(xs)))
+            elif code == "E":  # N-25: never "no family-level bound" beside "excluded above"
+                lines.append(_s.render("x_strict.sesoi_only", x=_s.fmt_number(float(inp.sesoi))))
+            else:
+                lines.append(_s.render("x_strict.unbounded"))
         x95 = _x_value(inp.x95)
         if inp.x95 is not None:
             lines.append(_s.render("x95.value", x=_s.fmt_number(x95)) if x95 is not None
@@ -428,6 +443,10 @@ def _lines(code: str, inp: VerdictInput, flags: Tuple[str, ...], failed: Tuple[s
                 lines.append(_s.render("flag.known_channel", channel=ch))
             except _s.SentenceError:
                 lines.append(_s.render("flag.known_channel.generic"))
+        elif f == "sensitivity_not_run":
+            n = int(inp.r3_n_cells or 0)
+            lines.append(_s.render("flag.sensitivity_not_run") if n == 0
+                         else _s.render("flag.sensitivity_not_run.copies", n=n))
         elif f == "recomputed_after_confirm":
             lines.append(_s.render("flag.recomputed_after_confirm", n=int(inp.recomputed_bars_changed)))
         else:

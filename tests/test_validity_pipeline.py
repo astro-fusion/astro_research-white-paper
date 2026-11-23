@@ -275,9 +275,9 @@ def test_default_sealer_is_sealedrun_and_stamps(tmp_path, monkeypatch):
 def test_planted_effect_is_found(tmp_path):
     """Found (p), but not Supported: a year-keyed toy calendar has too few distinct placebo skies.
 
-    Day offsets of 400 to 3650 days move a calendar keyed by the year by 1 to
-    10 years, and a 2-in-6 calendar repeats every 6 years: after the overlap
-    rule only a handful of distinct placebo calendars remain, fewer than
+    On a yearly grid the placebo skies are whole-year shifts (N-07), and a
+    2-in-6 calendar repeats every 6 years: after the overlap rule only a
+    handful of distinct placebo calendars remain, fewer than
     MIN_DISTINCT_PLACEBOS, so R2 is "insufficient_placebos" and cannot clear
     an S (CALIBRATION-FIX, conservative). test_scattered_daily_calendar_reaches_s
     shows S end to end on a calendar with enough distinct skies.
@@ -566,3 +566,148 @@ def test_scattered_daily_calendar_reaches_s(tmp_path):
     assert r2["n_placebo"] == 200  # rejected skies were replaced from the placebo stream
     assert rec["verdict"]["code"] == "S", rec["verdict"]
     assert 0.7 < rec["effect"]["confirm"]["estimate"] < 1.3
+
+
+# ------------------------------------------ second strategy audit (WIRE package)
+_BASELINE_NOISE = np.random.default_rng(424242).normal(size=YEARS)
+
+
+def correlated_baseline(dates) -> np.ndarray:
+    """A baseline that follows the calendar (no effect of its own): baseline R-squared about 0.3."""
+    years = np.asarray([d.year for d in dates]) - START
+    return active_years(dates).astype(float) + 0.7 * _BASELINE_NOISE[years]
+
+
+def test_n02_correlated_baselines_keep_exclusion_at_size(tmp_path):
+    """N-02 end to end: true effect = SESOI, baseline correlated with the calendar, R4 passes.
+
+    Before the wiring the baseline regression absorbed part of the effect and the
+    flat removal over-removed: "excluded" in every run here (and X95 below the
+    true effect). With the effect removed in the shape the regression gives it,
+    false "excluded" and X95 below the truth stay within the a_test bound.
+    """
+    n, effect = 12, 1.0
+    t = definition(sesoi=effect, n_draws=999, power_reps=20)
+    codes, x_below = [], 0
+    for seed in range(300, 300 + n):
+        d = tmp_path / str(seed)
+        lock = make_lock(d, [t])
+        dom = PlantedDomain(seed=seed, effect=effect, run_dir=d / "run")
+        h = handle_for([t], token=f"n02-{seed}")
+        try:
+            res = P.run_domain(dom, run_spec(baselines=correlated_baseline), [t], lock, d / "run", handle=h,
+                               provisional=False, sealer=FakeSeal)
+        finally:
+            SB._ISSUED.pop(h.token, None)
+        rec = res["records"][0]
+        r4 = rec["robustness"]["R4"]
+        assert r4["passes"] and 0.2 < r4["detail"]["baseline_r2"] < 0.5
+        codes.append(rec["verdict"]["code"])
+        x95 = rec["bound"]["x95"]
+        x_below += int(not x95["unbounded"] and x95["value"] < effect)
+    bound = _st.binom.ppf(0.999, n, 0.05)
+    assert codes.count("E") <= bound, codes
+    assert x_below <= bound
+
+
+def test_n02_shape_is_residualised_on_the_baselines():
+    """The removed effect is the active indicator with the same baselines regressed out."""
+    dates = pd.DatetimeIndex([pd.Timestamp(START + i, 1, 1) for i in range(YEARS)])
+    p = P._Prepared(definition(), active_years(dates), "x")
+    B = correlated_baseline(dates)[:, None]
+    fin = np.ones(YEARS, dtype=bool)
+    seg = np.zeros(YEARS, dtype=int)
+    shape = P._effect_shape(p, run_spec(), fin, B, seg)
+    from vedic_astrology_core.stats import season as _season
+    assert np.allclose(shape, _season.remove_baselines(active_years(dates).astype(float), B))
+    assert P._effect_shape(p, run_spec(), fin, None, seg) is None  # no baselines, no detrend: flat removal
+    flags = definition(outcome_type="flags")
+    assert P._effect_shape(P._Prepared(flags, p.calendar, "x"), run_spec(), fin, B, seg) is None
+
+
+def aperiodic_years(dates) -> np.ndarray:
+    years = np.asarray([d.year for d in dates], dtype=float)
+    return np.mod(years * 0.6180339887498949, 1.0) < 0.3
+
+
+def test_n07_yearly_grid_uses_whole_year_placebo_skies():
+    """N-07: day offsets of at most ten years gave about 20 skies on a yearly grid; now 200 whole years."""
+    dates = pd.DatetimeIndex([pd.Timestamp(START + i, 1, 1) for i in range(YEARS)])
+    t = definition(calendar=aperiodic_years)
+    ps = P._placebo_skies(aperiodic_years(dates), dates, t, None, SEED, False)
+    assert ps.kind == "whole_year"
+    assert ps.n_candidates == 200
+    assert ps.n_distinct >= 19
+
+
+def test_n07_too_few_distinct_skies_is_limit_only(tmp_path):
+    """A calendar with fewer distinct skies than R2 needs cannot be supported: the card says so."""
+    res, _, _ = confirm_run(tmp_path, effect=1.5, seed=11)
+    rec = res["records"][0]
+    assert rec["robustness"]["R2"]["status"] == "insufficient_placebos"
+    assert rec["gate"]["can_limit"] is True
+    assert "limit_only" in rec["verdict"]["flags"]
+    assert "This dataset could not have supported the principle. It could only limit it." in rec["verdict"]["lines"]
+
+
+def test_n18_r3_not_run_is_on_the_card(tmp_path):
+    res, _, _ = confirm_run(tmp_path, effect=1.5, seed=11, tests=[definition(sensitivity={})])
+    rec = res["records"][0]
+    assert rec["robustness"]["R3"]["status"] == "not_run" and rec["robustness"]["passed"]["R3"] is True
+    assert "sensitivity_not_run" in rec["verdict"]["flags"]
+    assert "Sensitivity-grid check not run: no sensitivity cell was declared." in rec["verdict"]["lines"]
+
+
+def test_n22_explore_numbers_do_not_depend_on_the_confirm_rows(tmp_path):
+    """N-22: the centred detrend no longer crosses the explore/confirm split."""
+    conf, _ = daily_run(tmp_path / "c", effect=1.0, seed=3, detrend_window=31, baselines=None)
+    t = daily_definition()
+    lock = FamilyLock(tmp_path / "p" / "lock.jsonl", "simulated")
+    dom = DailyDomain(seed=3, effect=1.0)
+    dates = pd.DatetimeIndex(pd.to_datetime(list(dom.grid())))
+    lock.register(rule_id=t.rule_id, version=t.version, outcome=t.outcome,
+                  calendar_hash=calendar_hash(t.calendar(dates)))
+    lock.close_batch(vintage=VINTAGE_D, seal_bundle_sha256="ab" * 32)
+    spec = run_spec(vintage=VINTAGE_D, detrend_window=31, baselines=None,
+                    plan={"domain": "simulated", "outcomes": [{"id": "value"}], "vintages": [VINTAGE_D]})
+    prov = P.run_domain(dom, spec, [t], lock, tmp_path / "p" / "run", provisional=True, sealer=FakeSeal)
+    ce, pe = conf["records"][0]["effect"]["explore"], prov["records"][0]["effect"]["explore"]
+    assert pe["n_used"] == ce["n_used"] > 0
+    assert pe["statistic"] == ce["statistic"] and pe["p"] == ce["p"]
+
+
+def test_n10_provisional_record_is_not_a_reproduction_of_a_confirm(tmp_path):
+    """N-10 (iii): a provisional results file as previous does not stop the confirm after the read."""
+    t = definition()
+    lock = make_lock(tmp_path, [t])
+    dom = PlantedDomain(seed=5, effect=1.0, run_dir=tmp_path / "prov")
+    P.run_domain(dom, run_spec(), [t], lock, tmp_path / "prov", provisional=True, sealer=FakeSeal)
+    h = handle_for([t], "n10")
+    try:
+        dom2 = PlantedDomain(seed=5, effect=1.0, run_dir=tmp_path / "conf")
+        res = P.run_domain(dom2, run_spec(), [t], lock, tmp_path / "conf", handle=h, provisional=False,
+                           sealer=FakeSeal, previous=tmp_path / "prov" / "results.json")
+    finally:
+        SB._ISSUED.pop("n10", None)
+    assert res["provisional"] is False and res["records"][0]["confirm_open"] is True
+
+
+def test_n10_changed_inputs_of_a_recorded_batch_stop_before_the_read(tmp_path):
+    t = definition()
+    lock = make_lock(tmp_path, [t])
+    dom = PlantedDomain(seed=5, effect=1.0, run_dir=tmp_path / "run")
+    h = handle_for([t], "n10b")
+    try:
+        res = P.run_domain(dom, run_spec(), [t], lock, tmp_path / "run", handle=h, provisional=False,
+                           sealer=FakeSeal)
+    finally:
+        SB._ISSUED.pop("n10b", None)
+    P.record_batch_results(lock, res)
+    v2 = definition(version=2, calendar=lambda d: np.asarray([x.year % 6 in (2, 3) for x in d]))
+    dates = pd.DatetimeIndex([pd.Timestamp(START + i, 1, 1) for i in range(YEARS)])
+    lock.register(rule_id=v2.rule_id, version=2, outcome="value", calendar_hash=calendar_hash(v2.calendar(dates)))
+    dom2 = PlantedDomain(seed=5, effect=1.0, run_dir=tmp_path / "run2")
+    with pytest.raises(P.ReproductionError, match="before any outcome was read"):
+        P.run_domain(dom2, run_spec(plan_sha256="ef" * 32), [t, v2], lock, tmp_path / "run2", sealer=FakeSeal,
+                     previous=tmp_path / "run" / "results.json")
+    assert dom2.outcome_reads == 0
