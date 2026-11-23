@@ -18,7 +18,7 @@ source:
   checked_at: null
 definition:
   inputs: ["event_year","capital_place"]
-  formula: "The chart cast for the capital at the start of Chaitra Shukla Pratipada, with the year's lord."
+  formula: "The chart cast for the capital at the start of Chaitra Shukla Pratipada, with the year's lord (practitioner convention; BS 19 does not state the chart or how the lord is chosen)."
   conventions: {zodiac: sidereal, ayanamsa: lahiri, node: mean, houses: whole_sign}
   variants: []
 implementation:
@@ -31,4 +31,4 @@ needs:
 change_period: "needs place and year; no founding time"
 reference_cases: []
 scope: ["case_file"]
-notes: "Phase 2. From memory or a docstring, no page and no quotation; owner task H11. Practitioner usage also exists."
+notes: "CORRECTED 2026-11-23: BS ch. 19 gives effects of the year's lord only. It does not say how the lord is chosen and has no Chaitra Shukla Pratipada chart for the capital (Bhat's note points to Panchasiddhantika I.8-10, 17-19); the chart and the selection rule are project or practitioner conventions. Phase 2. From memory or a docstring, no page and no quotation; owner task H11. Practitioner usage also exists."

@@ -6,10 +6,12 @@ domain: seismic
 claim: A Mars-Ketu conjunction is amplified when Mars is in a fire sign.
 source:
   text: Brihat Samhita
-  chapter: '17'
+  chapter: 'none: no verse found at Ch. 17'
   note: >-
-    Old catalog: 'Brihat Samhita + Elemental Amplification'. Not verified against the text;
-    see mangal_ketu_primary.
+    Old catalog: 'Brihat Samhita + Elemental Amplification', Ch. 17. Ch. 17 (planetary war) has no
+    Mars-Ketu or earthquake passage (round 5 check, awaiting owner check; CORRECTIONS.md
+    2026-11-23); no verse supports the fire-sign amplification either. Stays experimental.
+    See mangal_ketu_primary.
 author: astro-research combinations catalog (migrated 2026-11-08)
 tier: experimental
 params:

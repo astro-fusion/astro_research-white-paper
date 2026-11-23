@@ -7,11 +7,13 @@ claim: >-
   Ashadha Lunar Transit Weather Predictor - If Ashadha Krishna Paksha + Moon in Rohini: Determine
   quantity and distribution of upcoming rainfall.
 source:
-  text: Chapter 2 (Meghamala / Brihat Samhita)
-  chapter: Chapter 2 (Meghamala / Brihat Samhita)
+  text: Brihat Samhita
+  chapter: '24'
+  verse: '5'
   app_registry: docs/mundane/rule-registry.yaml
   id: RULE-016
   note: >-
+    Round 5 check (Bhat tr. 1981, ch. 24 "Rohini-yoga", v. 5, p. 248-250; machine-located, awaiting owner check): the Moon with Rohini in the dark fortnight of Ashadha is BS 24.5. The earlier "Chapter 2 (Meghamala)" did not locate it. The chapter given here earlier is the registry's own, not the book's (CORRECTIONS.md 2026-11-23).
     Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
     to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
     see the export PROVENANCE.

@@ -7,11 +7,12 @@ claim: >-
   Planetary Geographical Regional Rulership - Evaluate affliction/prominence score for 7 Grahas
   + Rahu/Ketu.
 source:
-  text: Chapter 1 (Brihat Samhita)
-  chapter: Chapter 1 (Brihat Samhita)
+  text: Brihat Samhita
+  chapter: '16'
   app_registry: docs/mundane/rule-registry.yaml
   id: RULE-002
   note: >-
+    Round 5 check (Bhat tr. 1981, ch. 16 "Planetary Rulership", vv. 1-5, p. 191-192; machine-located, awaiting owner check): planetary regional rulership is BS ch. 16; BS ch. 1 is introductory. The chapter given here earlier is the registry's own, not the book's (CORRECTIONS.md 2026-11-23).
     Chapter refers to the mundane text synthesis behind the AstroFusion registry (attributed
     to B.V. Raman and M.C. Jain plus classical authors); the book edition is not identified,
     see the export PROVENANCE.

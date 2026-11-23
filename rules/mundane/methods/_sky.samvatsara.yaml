@@ -18,7 +18,7 @@ source:
   checked_at: null
 definition:
   inputs: ["event_moment"]
-  formula: "The year of the sixty-year cycle running at the moment, counted from Chaitra Shukla Pratipada. The calendar convention is a parameter."
+  formula: "The year of the sixty-year cycle running at the moment, counted from Chaitra Shukla Pratipada. This is a project convention (luni-solar), not Brihat Samhita ch. 8, which defines the cycle by Jupiter. The calendar convention is a parameter. TODO: Jupiter-based method following BS 8."
   conventions: {zodiac: sidereal, ayanamsa: lahiri, node: mean, houses: whole_sign}
   variants: []
 implementation:
@@ -31,4 +31,4 @@ needs:
 change_period: "1 year; needs only the event moment"
 reference_cases: []
 scope: ["case_file","aggregate"]
-notes: "From memory or a docstring, no page and no quotation; owner task H11. Calendar convention is a parameter. Round 5 (machine-located, awaiting owner check): Bhat ch. 8 defines the cycle by Jupiter (Prabhava starts when Jupiter rises in Dhanishtha in Magha, v. 27), not by the luni-solar Chaitra start used in astrology/mundane.py."
+notes: "CORRECTED 2026-11-23: the cited verses (BS 8.20-27) define the Jovian cycle; the implementation is a project convention. From memory or a docstring, no page and no quotation; owner task H11. Calendar convention is a parameter. Round 5 (machine-located, awaiting owner check): Bhat ch. 8 defines the cycle by Jupiter (Prabhava starts when Jupiter rises in Dhanishtha in Magha, v. 27), not by the luni-solar Chaitra start used in astrology/mundane.py."

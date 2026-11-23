@@ -7,10 +7,13 @@ claim: >-
   A Mars-Ketu conjunction within 15 degrees releases sudden martial energy (earthquakes).
 source:
   text: Brihat Samhita
-  chapter: '17'
+  chapter: 'none: no verse found at Ch. 17'
   note: >-
-    Carried over from the old catalog. Brihat Samhita Ch. 17 is on planetary war (graha yuddha);
-    earthquakes are Ch. 32. The citation does not support the claim, so the rule stays experimental.
+    Carried over from the old catalog, which cited Brihat Samhita Ch. 17. Ch. 17 is planetary war
+    (graha yuddha) among the five star-planets; it has no Mars-Ketu conjunction and no earthquake
+    passage (round 5 check against Bhat tr. 1981, machine-located, awaiting owner check; see
+    CORRECTIONS.md 2026-11-23). Earthquakes are Ch. 32, which does not state this claim either.
+    No classical verse supports the rule, so it stays experimental.
 author: astro-research combinations catalog (migrated 2026-11-08)
 tier: experimental
 params:

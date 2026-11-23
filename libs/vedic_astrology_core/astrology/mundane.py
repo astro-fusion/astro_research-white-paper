@@ -23,11 +23,16 @@ module evaluates a rule.
 * :func:`eclipse_magnitude`: greatest-eclipse magnitude from the Swiss
   Ephemeris (``sol_eclipse_where`` then ``sol_eclipse_how`` for a solar
   eclipse, ``lun_eclipse_how`` umbral magnitude for a lunar one).
-* :data:`SAMVATSARA_NAMES` and :func:`samvatsara`: the sixty-year cycle of
-  Brihat Samhita ch. 8 (Brihaspati-chara) in the luni-solar (South Indian)
-  convention: the year starts at Chaitra Shukla Pratipada (the new Moon
-  with the sidereal Sun in Pisces before Mesha sankranti; the earlier one
-  if Chaitra is doubled), and the year beginning in 1987 is Prabhava.
+* :data:`SAMVATSARA_NAMES` and :func:`samvatsara`: the sixty names of the
+  cycle, counted in the luni-solar (South Indian) convention: the year
+  starts at Chaitra Shukla Pratipada (the new Moon with the sidereal Sun in
+  Pisces before Mesha sankranti; the earlier one if Chaitra is doubled), and
+  the year beginning in 1987 is Prabhava. This is a project convention, not
+  Brihat Samhita ch. 8: BS 8 defines the cycle by Jupiter (Prabhava begins
+  when Jupiter rises in Dhanishtha in Magha, v. 27; Bhat tr. 1981, p. 88-91;
+  round 5 check, CORRECTIONS.md 2026-11-23). TODO: add a Jupiter-based
+  samvatsara method following BS 8 and keep this one as the luni-solar
+  convention.
 """
 
 from datetime import datetime
@@ -305,7 +310,12 @@ def year_start(gregorian_year: int) -> float:
 
 
 def samvatsara(jd: float) -> Tuple[str, int, datetime]:
-    """Return (name, index 0-59, start of that year) for the moment ``jd``."""
+    """Return (name, index 0-59, start of that year) for the moment ``jd``.
+
+    Luni-solar project convention (Chaitra Shukla Pratipada start), not
+    Brihat Samhita ch. 8, which counts the cycle by Jupiter.
+    TODO: Jupiter-based method following BS 8.
+    """
     year = julian_day_to_datetime(jd).year
     start = year_start(year)
     if jd < start:
